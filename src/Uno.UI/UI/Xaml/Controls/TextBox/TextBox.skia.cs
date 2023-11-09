@@ -47,7 +47,7 @@ public partial class TextBox
 	private (int start, int length)? _pendingSelection;
 
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
-	private bool _isPressed;
+	private bool _isPressed; // can still be false if the pointer is still pressed but Escape is pressed.
 
 	private bool _clearHistoryOnTextChanged = true;
 
@@ -393,35 +393,48 @@ public partial class TextBox
 				KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.A when ctrl:
-				args.Handled = true;
-				CurrentlyTyping = false;
-				selectionStart = 0;
-				selectionLength = text.Length;
+				if (!_isPressed)
+				{
+					args.Handled = true;
+					CurrentlyTyping = false;
+					selectionStart = 0;
+					selectionLength = text.Length;
+				}
 				break;
 			case VirtualKey.Z when ctrl:
-				args.Handled = !_isPressed;
-				Undo();
+				if (!_isPressed)
+				{
+					args.Handled = true;
+					Undo();
+				}
 				return;
 			case VirtualKey.Y when ctrl:
-				args.Handled = !_isPressed;
-				Redo();
+				if (!_isPressed)
+				{
+					args.Handled = !_isPressed;
+					Redo();
+				}
 				return;
 			case VirtualKey.X when ctrl:
-				args.Handled = true;
 				CutSelectionToClipboard();
 				selectionLength = 0;
 				text = Text;
 				break;
 			case VirtualKey.V when ctrl:
-				args.Handled = true;
 				PasteFromClipboard(); // async so doesn't actually do anything right now
 				break;
 			case VirtualKey.C when ctrl:
-				args.Handled = true;
 				CopySelectionToClipboard();
 				break;
+			case VirtualKey.Escape:
+				if (_isPressed)
+				{
+					args.Handled = true;
+					_isPressed = false;
+				}
+				break;
 			default:
-				if (!IsReadOnly && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				if (!IsReadOnly && !_isPressed && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
 					CurrentlyTyping = true;
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -440,7 +453,10 @@ public partial class TextBox
 		_suppressCurrentlyTyping = true;
 		if (text == Text)
 		{
-			SelectInternal(selectionStart, selectionLength);
+			if (!_isPressed)
+			{
+				SelectInternal(selectionStart, selectionLength);
+			}
 		}
 		else
 		{
@@ -453,6 +469,10 @@ public partial class TextBox
 	}
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (_isPressed)
+		{
+			return;
+		}
 		if (selectionLength != 0)
 		{
 			CurrentlyTyping = false;
@@ -493,6 +513,10 @@ public partial class TextBox
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+up
+		if (_isPressed)
+		{
+			return;
+		}
 		if (Text.Length != 0)
 		{
 			CurrentlyTyping = false;
@@ -517,6 +541,10 @@ public partial class TextBox
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+down
+		if (_isPressed)
+		{
+			return;
+		}
 		if (Text.Length != 0)
 		{
 			CurrentlyTyping = false;
@@ -540,6 +568,10 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
+		if (_isPressed)
+		{
+			return;
+		}
 		if (Text.Length != 0)
 		{
 			CurrentlyTyping = false;
@@ -582,6 +614,10 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (_isPressed)
+		{
+			return;
+		}
 		if (Text.Length != 0)
 		{
 			CurrentlyTyping = false;
@@ -632,6 +668,10 @@ public partial class TextBox
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (_isPressed)
+		{
+			return;
+		}
 		if (Text.Length != 0)
 		{
 			CurrentlyTyping = false;
@@ -653,6 +693,10 @@ public partial class TextBox
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (_isPressed)
+		{
+			return;
+		}
 		if (Text.Length != 0)
 		{
 			CurrentlyTyping = false;
@@ -695,6 +739,10 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (_isPressed)
+		{
+			return;
+		}
 		CurrentlyTyping = false;
 		args.Handled = true;
 		var oldText = text;

@@ -1098,6 +1098,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
 
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
 			// the selection should start on the right
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
 			await WindowHelper.WaitForIdle();
@@ -1153,7 +1156,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Pointer_Hold_While_Typing()
+		public async Task When_Typing_While_Pointer_Held()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1196,15 +1199,236 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("Hellod", SUT.Text);
-			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
+			Assert.AreEqual("Hello world", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.Left, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Right, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Up, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Down, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Home, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.End, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Back, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.Delete, VirtualKeyModifiers.None)]
+		[DataRow(VirtualKey.A, VirtualKeyModifiers.Control)]
+		public async Task When_Move_Caret_While_Pointer_Held(VirtualKey key, VirtualKeyModifiers modifiers)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			var handled = false;
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, e) => handled = e.Handled), true);
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(0, -1);
+			mouse.MoveBy(-50, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length - 2, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, modifiers));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(false, handled);
+			Assert.AreEqual("Hello world", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Cut_While_Pointer_Held()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-50, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hd", SUT.Text);
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(10, -1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(1, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_While_Pointer_Held()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-50, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Hcopied contentd", SUT.Text);
+			Assert.AreEqual(15, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -1); // nudge the mouse a bit to recalculate selection, this is the behaviour on WinUI as well
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(13, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Escape_While_Pointer_Held()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-50, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Escape, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(-10, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(9, SUT.SelectionLength);
+
+			// We're pretty much "not pressed" at all at this point, even if we're technically still holding the mouse
+			// so we can actually type stuff in!
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.None, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Had", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1241,6 +1465,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 150
 			};
+
+			var handled = false;
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, args) => handled |= args.Handled), true);
+
 			WindowHelper.WindowContent = SUT;
 
 			await WindowHelper.WaitForIdle();
@@ -1257,6 +1485,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(handled);
 			Assert.AreEqual(text, SUT.Text);
 
 			SUT.Select(2, 4);
@@ -1264,6 +1493,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(handled);
 			Assert.AreEqual(SUT.Text.Substring(2, 4), await Clipboard.GetContent()!.GetTextAsync());
 			Assert.AreEqual(2, SUT.SelectionStart);
 			Assert.AreEqual(4, SUT.SelectionLength);
@@ -1273,6 +1503,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(handled);
 			Assert.AreEqual("copied contenpiedt", SUT.Text);
 			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
@@ -1282,6 +1513,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(handled);
 			Assert.AreEqual("copiedpiedntenpiedt", SUT.Text);
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
@@ -1298,6 +1530,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Text = "Hello world"
 			};
 
+			var handled = false;
+			SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, args) => handled |= args.Handled), true);
+
 			WindowHelper.WindowContent = SUT;
 
 			await WindowHelper.WaitForIdle();
@@ -1308,6 +1543,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, VirtualKeyModifiers.Control, unicodeKey: 'x'));
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(handled);
 			Assert.AreEqual("llo ", await Clipboard.GetContent()!.GetTextAsync());
 			Assert.AreEqual("Heworld", SUT.Text);
 			Assert.AreEqual(2, SUT.SelectionStart);
@@ -1318,6 +1554,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
 			await WindowHelper.WaitForIdle();
 
+			Assert.IsFalse(handled);
 			Assert.AreEqual("Heworlllo d", SUT.Text);
 			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
