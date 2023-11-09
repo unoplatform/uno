@@ -77,56 +77,56 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return element.GetAutomationPeer();
 		}
 
-		protected override string GetLocalizedControlTypeCore()
-		{
-			if (AutomationProperties.GetLocalizedControlType(Owner) is string localizedControlType && !string.IsNullOrEmpty(localizedControlType))
-			{
-				return localizedControlType;
-			}
+		//protected override string GetLocalizedControlTypeCore()
+		//{
+		//	if (AutomationProperties.GetLocalizedControlType(Owner) is string localizedControlType && !string.IsNullOrEmpty(localizedControlType))
+		//	{
+		//		return localizedControlType;
+		//	}
 
-			return base.GetLocalizedControlTypeCore();
-		}
+		//	return base.GetLocalizedControlTypeCore();
+		//}
 
-		protected override AutomationPeer GetLabeledByCore()
-		{
-			if (AutomationProperties.GetLabeledBy(Owner) is IFrameworkElement label) // TODO: UIElement
-			{
-				return label.GetAutomationPeer();
-			}
+		//protected override AutomationPeer GetLabeledByCore()
+		//{
+		//	if (AutomationProperties.GetLabeledBy(Owner) is IFrameworkElement label) // TODO: UIElement
+		//	{
+		//		return label.GetAutomationPeer();
+		//	}
 
-			return base.GetLabeledByCore();
-		}
+		//	return base.GetLabeledByCore();
+		//}
 
-		protected override string GetNameCore()
-		{
-			if (AutomationProperties.GetName(Owner) is string name && !string.IsNullOrEmpty(name))
-			{
-				return name;
-			}
+		//protected override string GetNameCore()
+		//{
+		//	if (AutomationProperties.GetName(Owner) is string name && !string.IsNullOrEmpty(name))
+		//	{
+		//		return name;
+		//	}
 
-			if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
-			{
-				return label;
-			}
+		//	if (GetLabeledBy() is AutomationPeer labelAutomationPeer && labelAutomationPeer.GetName() is string label && !string.IsNullOrEmpty(label))
+		//	{
+		//		return label;
+		//	}
 
-			if (GetSimpleAccessibilityName() is string simpleAccessibilityName && !string.IsNullOrEmpty(simpleAccessibilityName))
-			{
-				return simpleAccessibilityName;
-			}
+		//	if (GetSimpleAccessibilityName() is string simpleAccessibilityName && !string.IsNullOrEmpty(simpleAccessibilityName))
+		//	{
+		//		return simpleAccessibilityName;
+		//	}
 
-			if ((Owner as FrameworkElement)?.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
-			{
-				return innerText;
-			}
+		//	if ((Owner as FrameworkElement)?.GetAccessibilityInnerText() is string innerText && !string.IsNullOrEmpty(innerText))
+		//	{
+		//		return innerText;
+		//	}
 
-			return base.GetNameCore();
-		}
+		//	return base.GetNameCore();
+		//}
 
-		/// <inheritdoc />
-		protected override IList<AutomationPeer> GetChildrenCore()
-		{
-			return Owner.GetChildren().OfType<UIElement>().Select(CreatePeerForElement).ToList();
-		}
+		///// <inheritdoc />
+		//protected override IList<AutomationPeer> GetChildrenCore()
+		//{
+		//	return Owner.GetChildren().OfType<UIElement>().Select(CreatePeerForElement).ToList();
+		//}
 
 		private string GetSimpleAccessibilityName()
 		{
