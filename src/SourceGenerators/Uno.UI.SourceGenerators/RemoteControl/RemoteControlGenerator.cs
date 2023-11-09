@@ -54,8 +54,8 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			var isProjectConfigEnabled = IsMSBuildPropertyTrue("UnoDevServer_IncludeProjectConfiguration");
-			var isServerProcessorsConfigEnabled = IsMSBuildPropertyTrue("UnoDevServer_IncludeServerProcessorsConfiguration");
+			var isProjectConfigEnabled = IsMSBuildPropertyTrue("UnoForceIncludeProjectConfiguration");
+			var isServerProcessorsConfigEnabled = IsMSBuildPropertyTrue("UnoForceIncludeServerProcessorsConfiguration");
 
 			if (!DesignTimeHelper.IsDesignTime(context)
 				&& context.GetMSBuildPropertyValue("Configuration") == "Debug")
