@@ -149,11 +149,6 @@ namespace Windows.UI.Xaml
 				return; // Only FrameworkElements are measurable
 			}
 
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
 			if (Visibility == Visibility.Collapsed)
 			{
 				if (availableSize == LastAvailableSize)
