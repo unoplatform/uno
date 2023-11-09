@@ -164,6 +164,7 @@ namespace UnoWinUIRevert
 			@"\bin\",
 			@"\.git",
 			@"\.vs",
+			@"\docs\",
 		}
 		.Select(AlignPath)
 		.ToArray();
