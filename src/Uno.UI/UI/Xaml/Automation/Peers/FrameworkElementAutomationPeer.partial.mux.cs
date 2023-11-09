@@ -371,25 +371,9 @@ partial class FrameworkElementAutomationPeer
 	//	return S_OK;
 	//}
 
-	//GetLiveSettingCore(_Out_ xaml_automation_peers::AutomationLiveSetting * returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> spOwner;
-	//	IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
+	protected override AutomationLiveSetting GetLiveSettingCore() => AutomationProperties.GetLiveSetting(Owner);
 
-	//	IFC_RETURN(AutomationProperties::GetLiveSettingStatic(spOwner.Cast<UIElement>(), returnValue));
-
-	//	return S_OK;
-	//}
-
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::GetPositionInSetCoreImpl(_Out_ INT* returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> spOwner;
-	//	IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
-
-	//	IFC_RETURN(AutomationProperties::GetPositionInSetStatic(spOwner.Cast<UIElement>(), returnValue));
-
-	//	return S_OK;
-	//}
+	protected override int GetPositionInSetCore() => AutomationProperties.GetPositionInSet(Owner);
 
 	//_Check_return_ HRESULT FrameworkElementAutomationPeer::GetSizeOfSetCoreImpl(_Out_ INT* returnValue)
 	//{
@@ -480,40 +464,13 @@ partial class FrameworkElementAutomationPeer
 	//	return S_OK;
 	//}
 
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::ShowContextMenuCoreImpl()
-	//{
-	//	return (static_cast<CAutomationPeer*>(GetHandle())->ShowContextMenuHelper());
-	//}
+	protected override void ShowContextMenuCore() => ShowContextMenuHelper();
 
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::IsPeripheralCoreImpl(_Out_ BOOLEAN* returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> spOwner;
-	//	IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
+	protected override bool IsPeripheralCore() => AutomationProperties.GetIsPeripheral(Owner);
 
-	//	IFC_RETURN(AutomationProperties::GetIsPeripheralStatic(spOwner.Cast<UIElement>(), returnValue));
+	protected override bool IsDataValidForFormCore() => AutomationProperties.GetIsDataValidForForm(Owner);
 
-	//	return S_OK;
-	//}
-
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::IsDataValidForFormCoreImpl(_Out_ BOOLEAN* returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> spOwner;
-	//	IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
-
-	//	IFC_RETURN(AutomationProperties::GetIsDataValidForFormStatic(spOwner.Cast<UIElement>(), returnValue));
-
-	//	return S_OK;
-	//}
-
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::GetFullDescriptionCoreImpl(_Out_ HSTRING* returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> spOwner;
-	//	IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
-
-	//	IFC_RETURN(AutomationProperties::GetFullDescriptionStatic(spOwner.Cast<UIElement>(), returnValue));
-
-	//	return S_OK;
-	//}
+	protected override string GetFullDescriptionCore() => AutomationProperties.GetFullDescription(Owner);
 
 	//_Check_return_ HRESULT FrameworkElementAutomationPeer::GetDescribedByCoreImpl(_Outptr_ wfc::IIterable<xaml_automation_peers::AutomationPeer*>** returnValue)
 	//{
@@ -533,25 +490,9 @@ partial class FrameworkElementAutomationPeer
 	//	return S_OK;
 	//}
 
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::GetHeadingLevelCoreImpl(_Out_ xaml_automation_peers::AutomationHeadingLevel* returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> spOwner;
-	//	IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
+	protected override AutomationHeadingLevel GetHeadingLevelCore() => AutomationProperties.GetHeadingLevel(Owner);
 
-	//	IFC_RETURN(AutomationProperties::GetHeadingLevelStatic(spOwner.Cast<UIElement>(), returnValue));
-
-	//	return S_OK;
-	//}
-
-	//_Check_return_ HRESULT FrameworkElementAutomationPeer::IsDialogCoreImpl(_Out_ BOOLEAN* returnValue)
-	//{
-	//	ctl::ComPtr<IUIElement> owner;
-	//	IFC_RETURN(get_Owner(owner.GetAddressOf()));
-
-	//	IFC_RETURN(AutomationProperties::GetIsDialogStatic(owner.Cast<UIElement>(), returnValue));
-
-	//	return S_OK;
-	//}
+	protected override bool IsDialogCore() => AutomationProperties.GetIsDialog(Owner);
 
 	//_Check_return_ HRESULT FrameworkElementAutomationPeer::GetControlledPeersCoreImpl(_Outptr_ wfc::IVectorView<xaml_automation_peers::AutomationPeer*>** returnValue)
 	//{
