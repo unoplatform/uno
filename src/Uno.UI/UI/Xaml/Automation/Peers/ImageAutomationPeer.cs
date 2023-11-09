@@ -1,19 +1,44 @@
-namespace Windows.UI.Xaml.Automation.Peers
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ImageAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+
+using Windows.UI.Xaml.Controls;
+
+namespace Windows.UI.Xaml.Automation.Peers;
+
+public partial class ImageAutomationPeer : FrameworkElementAutomationPeer
 {
-	public partial class ImageAutomationPeer : FrameworkElementAutomationPeer
+	public ImageAutomationPeer(Image owner) : base(owner)
 	{
-		public ImageAutomationPeer(Controls.Image owner) : base(owner)
+	}
+
+	protected override string GetClassNameCore() => nameof(Image);
+
+	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Image;
+
+	protected override string GetNameCore()
+	{
+		var returnValue = base.GetNameCore();
+
+		if (string.IsNullOrEmpty(returnValue))
 		{
+			var image = (Image)Owner;
+			returnValue = image.GetTitle();
 		}
 
-		protected override string GetClassNameCore()
+		return returnValue;
+	}
+
+	protected override string GetFullDescriptionCore()
+	{
+		var returnValue = base.GetFullDescriptionCore();
+
+		if (string.IsNullOrEmpty(returnValue))
 		{
-			return "Image";
+			var image = (Image)Owner;
+			returnValue = image.GetDescription();
 		}
 
-		protected override AutomationControlType GetAutomationControlTypeCore()
-		{
-			return AutomationControlType.Image;
-		}
+		return returnValue;
 	}
 }
