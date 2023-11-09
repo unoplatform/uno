@@ -368,14 +368,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// This is matching Windows and is important to keep the behavior of this test like this.
 			Assert.AreEqual(new Size(120, 50), grid.AvailableSizeUsedForMeasure);
 
-#if __SKIA__
-			// https://github.com/unoplatform/uno/issues/7271
-			// This assert is NOT correct. The correct size is 50, 15
-			// It's happening because ContentControl is measuring incorrectly because GetFirstChild is returning null instead of the Border.
-			Assert.AreEqual(new Size(50, 0), grid.DesiredSize);
-#else
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-#endif
 
 #if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);

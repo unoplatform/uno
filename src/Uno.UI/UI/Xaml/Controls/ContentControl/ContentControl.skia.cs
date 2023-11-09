@@ -25,6 +25,16 @@ namespace Windows.UI.Xaml.Controls
 			RemoveChild(ContentTemplateRoot);
 		}
 
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			// This is the same as Control.MeasureOverride, except that we use Content if FindFirstChild is null.
+			// The fact that FindFirstChild is null is actually a BUG!
+			// The way this works in WinUI is:
+			// 1. FrameworkElement.MeasureCore calls 'InvokeApplyTemplate'
+			// 2. ContentControl overrides ApplyTemplate to do a bunch of stuff, including a call to CreateDefaultVisuals.
+			// 3. CreateDefaultVisuals adds the Content as Child if it's a UIElement.
+			var child = this.FindFirstChild() ?? (Content as UIElement);
+			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+		}
 	}
 }
