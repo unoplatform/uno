@@ -35,17 +35,33 @@ public partial class TextBox
 	private const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond / 20;
 
 	private TextBoxView _textBoxView;
+
 	private readonly Rectangle _caretRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
 	private int _usedRects;
+
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
+
 	private (int start, int length)? _pendingSelection;
+
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
 	private bool _isPressed;
+
+	private bool _clearHistoryOnTextChanged = true;
+
+	private bool _currentlyTyping;
+	private bool _suppressCurrentlyTyping;
+	private (int selectionStart, int selectionLength, bool selectionEndsAtTheStart) _selectionWhenTypingStarted;
+	private string _textWhenTypingStarted;
+
+	private int _historyIndex;
+	private List<(TextBoxAction action, int selectionStart, int selectionLength, bool selectionEndsAtTheStart)> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
+
 	private (int start, int length, bool tripleTap)? _multiTapChunk;
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
+
 	private readonly DispatcherTimer _timer = new DispatcherTimer
 	{
 		Interval = TimeSpan.FromSeconds(0.5)
@@ -57,6 +73,74 @@ public partial class TextBox
 	internal TextBoxView TextBoxView => _textBoxView;
 
 	internal ContentControl ContentElement => _contentElement;
+
+	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
+	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
+	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
+	private bool CurrentlyTyping
+	{
+		set
+		{
+			if (value == _currentlyTyping || _suppressCurrentlyTyping)
+			{
+				return;
+			}
+
+			if (value)
+			{
+				_textWhenTypingStarted = Text;
+				_selectionWhenTypingStarted = (
+					_selection.start,
+					_selection.length,
+					_selectionEndsAtTheStart);
+			}
+			else
+			{
+				global::System.Diagnostics.Debug.Assert(!IsSkiaTextBox || _selection.length == 0);
+				_historyIndex++;
+				_history.RemoveAllAt( _historyIndex);
+				_history.Add((
+					new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
+					_selectionWhenTypingStarted.selectionStart,
+					_selectionWhenTypingStarted.selectionLength,
+					_selectionWhenTypingStarted.selectionEndsAtTheStart));
+				UpdateCanUndoRedo();
+			}
+
+			_currentlyTyping = value;
+		}
+		get => _currentlyTyping;
+	}
+
+	public static DependencyProperty CanUndoProperty { get; } =
+		DependencyProperty.Register(
+			nameof(CanUndo), typeof(bool),
+			typeof(TextBox),
+			new FrameworkPropertyMetadata(true));
+
+	public bool CanUndo
+	{
+		get => (bool)GetValue(CanUndoProperty);
+		private set => SetValue(CanUndoProperty, value);
+	}
+
+	public static DependencyProperty CanRedoProperty { get; } =
+	DependencyProperty.Register(
+		nameof(CanRedo), typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(true));
+
+	public bool CanRedo
+	{
+		get => (bool)GetValue(CanRedoProperty);
+		private set => SetValue(CanRedoProperty, value);
+	}
+
+	private void UpdateCanUndoRedo()
+	{
+		CanUndo = _historyIndex > 0;
+		CanRedo = _historyIndex < _history.Count - 1;
+	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
@@ -108,7 +192,10 @@ public partial class TextBox
 			{
 				if (ContentElement.Content is not Grid { Name: "TextBoxViewGrid" })
 				{
-					var canvas = new Canvas();
+					var canvas = new Canvas
+					{
+						HorizontalAlignment = HorizontalAlignment.Left
+					};
 					var grid = new Grid
 					{
 						Name = "TextBoxViewGrid",
@@ -119,12 +206,11 @@ public partial class TextBox
 						},
 						RowDefinitions =
 						{
-							new RowDefinition { Height = GridLengthHelper.OneStar },
 							new RowDefinition { Height = GridLengthHelper.OneStar }
 						}
 					};
 
-					Grid.SetRow(canvas, 0);
+					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight));
 
 					var inlines = displayBlock.Inlines;
 					inlines.DrawingStarted += () =>
@@ -157,14 +243,11 @@ public partial class TextBox
 
 					inlines.CaretFound += rect =>
 					{
-						if (_showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0)
-						{
-							_caretRect.Width = Math.Ceiling(rect.Width);
-							_caretRect.Height = Math.Ceiling(rect.Height);
-							_caretRect.SetValue(Canvas.LeftProperty, rect.Left);
-							_caretRect.SetValue(Canvas.TopProperty, rect.Top);
-							canvas.Children.Add(_caretRect);
-						}
+						_caretRect.Width = Math.Ceiling(rect.Width);
+						_caretRect.Height = Math.Ceiling(rect.Height);
+						_caretRect.SetValue(Canvas.LeftProperty, rect.Left);
+						_caretRect.SetValue(Canvas.TopProperty, rect.Top);
+						canvas.Children.Add(_caretRect);
 					};
 
 					ContentElement.Content = grid;
@@ -190,6 +273,7 @@ public partial class TextBox
 			}
 			else
 			{
+				CurrentlyTyping = false;
 				_showCaret = false;
 				_timer.Stop();
 			}
@@ -199,6 +283,7 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
+		CurrentlyTyping = false;
 		_selectionEndsAtTheStart = false;
 		_selection = (start, length);
 		if (!IsSkiaTextBox)
@@ -236,7 +321,8 @@ public partial class TextBox
 			var startLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart).GetCenter().Y, true)?.index ?? 0;
 			var endLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart + SelectionLength).GetCenter().Y, true)?.index ?? 0;
 			inlines.Selection = new InlineCollection.SelectionDetails(startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
-			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			inlines.RenderCaret = inlines.RenderSelection && _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
 			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
 			TextBoxView?.DisplayBlock.InvalidateInlines(true);
 		}
@@ -253,7 +339,8 @@ public partial class TextBox
 
 			var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionEnd);
 
-			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(rect.Left - sv.ViewportWidth + rect.Height * InlineCollection.CaretThicknessAsRatioOfLineHeight);
+			// TODO: we are sometimes horizontally overscrolling, but it's more visually pleasant that underscrolling as we want the caret to be fully showing.
+			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight)));
 			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportWidth);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
@@ -270,8 +357,7 @@ public partial class TextBox
 
 		base.OnKeyDown(args);
 
-		// Note: On windows only keys that are "moving the cursor" are handled
-		//		 AND ** only KeyDown ** is handled (not KeyUp)
+		// Note: On windows ** only KeyDown ** is handled (not KeyUp)
 
 		// move to possibly-negative selection length format
 		var (selectionStart, selectionLength) = _selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
@@ -308,9 +394,18 @@ public partial class TextBox
 				break;
 			case VirtualKey.A when ctrl:
 				args.Handled = true;
+				CurrentlyTyping = false;
 				selectionStart = 0;
 				selectionLength = text.Length;
 				break;
+			case VirtualKey.Z when ctrl:
+				args.Handled = !_isPressed;
+				Undo();
+				return;
+			case VirtualKey.Y when ctrl:
+				args.Handled = !_isPressed;
+				Redo();
+				return;
 			case VirtualKey.X when ctrl:
 				args.Handled = true;
 				CutSelectionToClipboard();
@@ -328,6 +423,7 @@ public partial class TextBox
 			default:
 				if (!IsReadOnly && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
+					CurrentlyTyping = true;
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
 
@@ -341,20 +437,27 @@ public partial class TextBox
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
+		_suppressCurrentlyTyping = true;
 		if (text == Text)
 		{
 			SelectInternal(selectionStart, selectionLength);
 		}
 		else
 		{
+			_clearHistoryOnTextChanged = false;
 			_pendingSelection = (selectionStart, selectionLength);
 			Text = text;
+			_clearHistoryOnTextChanged = true;
 		}
+		_suppressCurrentlyTyping = false;
 	}
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		if (selectionLength != 0)
 		{
+			CurrentlyTyping = false;
+			CurrentlyTyping = true;
+
 			var start = Math.Min(selectionStart, selectionStart + selectionLength);
 			var end = Math.Max(selectionStart, selectionStart + selectionLength);
 			text = text[..start] + text[end..];
@@ -363,15 +466,38 @@ public partial class TextBox
 		}
 		else if (selectionStart != 0)
 		{
+			if (ctrl)
+			{
+				// ctrl always ends the previous typing run
+				CurrentlyTyping = false;
+			}
+			else
+			{
+				// idempotent call to make sure we're starting a new typing run if we're not in one already
+				CurrentlyTyping = true;
+			}
+
+			var oldText = text;
 			var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
 			text = text[..index] + text[selectionStart..];
 			selectionStart = index;
+
+			if (ctrl)
+			{
+				// typing after ctrl starts a new run, and not a part of the ctrl-backspace run
+				CommitAction(new ReplaceAction(oldText, text, selectionStart));
+			}
 		}
 	}
 
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+up
+		if (Text.Length != 0)
+		{
+			CurrentlyTyping = false;
+		}
+
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
 		var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
@@ -391,6 +517,11 @@ public partial class TextBox
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+down
+		if (Text.Length != 0)
+		{
+			CurrentlyTyping = false;
+		}
+
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
 		var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
@@ -409,6 +540,11 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
+		if (Text.Length != 0)
+		{
+			CurrentlyTyping = false;
+		}
+
 		if (!shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0)
 		{
 			return;
@@ -446,6 +582,10 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (Text.Length != 0)
+		{
+			CurrentlyTyping = false;
+		}
 
 		var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
 		if (!moveOutRight)
@@ -492,6 +632,10 @@ public partial class TextBox
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (Text.Length != 0)
+		{
+			CurrentlyTyping = false;
+		}
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
@@ -509,6 +653,10 @@ public partial class TextBox
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		if (Text.Length != 0)
+		{
+			CurrentlyTyping = false;
+		}
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
@@ -547,18 +695,26 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-
+		CurrentlyTyping = false;
 		args.Handled = true;
+		var oldText = text;
 		if (selectionLength != 0)
 		{
 			var start = Math.Min(selectionStart, selectionStart + selectionLength);
 			var end = Math.Max(selectionStart, selectionStart + selectionLength);
 			text = text[..start] + text[end..];
+			CommitAction(new DeleteAction(oldText, text, selectionStart,  selectionLength));
 			selectionLength = 0;
 			selectionStart = start;
 		}
 		else if (selectionStart != text.Length)
 		{
+			if (shift)
+			{
+				// On WinUI, shift-delete doesn't do anything if nothing is selected for some reason
+				// We still end the previous typing run
+				return;
+			}
 			int index;
 			if (ctrl)
 			{
@@ -570,6 +726,8 @@ public partial class TextBox
 				index = selectionStart + 1;
 			}
 			text = text[..selectionStart] + text[index..];
+			// On WinUI, when ctrl-delete is Undone, the deleted text actually gets selected even though initially, nothing was selected
+			CommitAction(new DeleteAction(oldText, text, selectionStart, ctrl ? index - selectionStart : 0));
 		}
 	}
 
@@ -647,11 +805,12 @@ public partial class TextBox
 				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
 
 				// TODO: port localized resources from WinUI
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				// undo/redo
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
+				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCut"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCopy"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxPaste"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxUndo"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
+				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxRedo"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(SelectAll) } });
 			}
 
 			_contextMenu.Items.Clear();
@@ -659,7 +818,14 @@ public partial class TextBox
 			if (_selection.length == 0)
 			{
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				// undo/redo
+				if (CanUndo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
+				}
+				if (CanRedo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
+				}
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
 			else
@@ -667,7 +833,14 @@ public partial class TextBox
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				// undo/redo
+				if (CanUndo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
+				}
+				if (CanRedo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
+				}
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
 
@@ -688,6 +861,7 @@ public partial class TextBox
 
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
+		CurrentlyTyping = false;
 		if (IsSkiaTextBox
 			&& args.GetCurrentPoint(null) is var currentPoint
 			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
@@ -966,6 +1140,11 @@ public partial class TextBox
 			{
 				SelectInternal(0, 0);
 			}
+
+			if (_clearHistoryOnTextChanged)
+			{
+				ClearUndoRedoHistory();
+			}
 		}
 	}
 
@@ -986,6 +1165,16 @@ public partial class TextBox
 	{
 		if (IsSkiaTextBox)
 		{
+			if (CurrentlyTyping)
+			{
+				CurrentlyTyping = false;
+			}
+			else
+			{
+				// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
+				// we will already get a new action from the setter, so we don't need to commit another one here.
+				CommitAction(new ReplaceAction(Text, newText, selectionStart));
+			}
 			_pendingSelection = (selectionStart + clipboardText.Length, 0);
 		}
 	}
@@ -994,8 +1183,147 @@ public partial class TextBox
 	{
 		if (IsSkiaTextBox)
 		{
+			if (CurrentlyTyping)
+			{
+				CurrentlyTyping = false;
+			}
+			else
+			{
+				// we only commit an action if we were not typing, because if we were typing and we now set CurrentlyTyping = false,
+				// we will already get a new action from the setter, so we don't need to commit another one here.
+				CommitAction(new ReplaceAction(Text, Text.Remove(SelectionStart, SelectionLength), SelectionStart + SelectionLength));
+			}
 			_pendingSelection = (_selection.start, 0);
 		}
+	}
+
+	private void EnsureHistory()
+	{
+		if (_history.Count == 0)
+		{
+			_history.Add((SentinelAction.Instance, _selection.start, _selection.length, _selectionEndsAtTheStart));
+		}
+		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
+		UpdateCanUndoRedo();
+	}
+
+	public void ClearUndoRedoHistory()
+	{
+		CurrentlyTyping = false;
+		_history.Clear();
+		EnsureHistory();
+	}
+
+	/// <summary>
+	/// Adds a new Action at the present point in history and deletes the old "future"
+	/// </summary>
+	private void CommitAction(TextBoxAction action)
+	{
+		_historyIndex++;
+		_history.RemoveAllAt( _historyIndex);
+		_history.Add((action, _selection.start, _selection.length, _selectionEndsAtTheStart));
+		UpdateCanUndoRedo();
+	}
+
+	public void Undo()
+	{
+		if (!IsSkiaTextBox)
+		{
+			return;
+		}
+
+		CurrentlyTyping = false;
+		if (_historyIndex == 0 || _isPressed)
+		{
+			return;
+		}
+
+		var currentAction = _history[_historyIndex];
+		_historyIndex--;
+
+		_clearHistoryOnTextChanged = false;
+		switch (currentAction.action)
+		{
+			case ReplaceAction r:
+				// remember that we use the possibly-negative format in _pendingSelection
+				_pendingSelection = currentAction.selectionEndsAtTheStart ?
+					(currentAction.selectionStart + currentAction.selectionLength, -currentAction.selectionLength):
+					(currentAction.selectionStart, currentAction.selectionLength);
+				Text = r.OldText;
+				break;
+			case DeleteAction d:
+				_pendingSelection = (d.UndoSelectionStart, d.UndoSelectionLength);
+				Text = d.OldText;
+				break;
+			case SentinelAction:
+				break;
+			default:
+				global::System.Diagnostics.Debug.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+				break;
+		}
+		_clearHistoryOnTextChanged = true;
+		UpdateCanUndoRedo();
+	}
+
+	public void Redo()
+	{
+		if (!IsSkiaTextBox)
+		{
+			return;
+		}
+
+		if (_historyIndex == _history.Count - 1 || _isPressed)
+		{
+			return;
+		}
+
+		CurrentlyTyping = false;
+
+		_historyIndex++;
+		var currentAction = _history[_historyIndex];
+
+		_clearHistoryOnTextChanged = false;
+		switch (currentAction.action)
+		{
+			case ReplaceAction r:
+				_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
+				Text = r.NewText;
+				break;
+			case DeleteAction d:
+				_pendingSelection = (Math.Min(d.UndoSelectionStart, d.UndoSelectionStart + d.UndoSelectionLength), 0);
+				Text = d.NewText;
+				break;
+			case SentinelAction:
+				break;
+			default:
+				global::System.Diagnostics.Debug.Assert(false, "TextBoxActions are not exhaustively switch-matched.");
+				break;
+		}
+		_clearHistoryOnTextChanged = true;
+		UpdateCanUndoRedo();
+	}
+
+	private abstract record TextBoxAction;
+	/// <summary>
+	/// Instead of remembered what was removed and what was added in place, we just remember the initial and final states
+	/// as well as where the caret will be if we Redo. This is used by typing, paste, etc.
+	/// </summary>
+	private record ReplaceAction(string OldText, string NewText, int caretIndexAfterReplacement) : TextBoxAction;
+	/// <summary>
+	/// Unlike other forms of text modification, Delete doesn't follow the simple undo sequence of *unapply modification* -> *select what was selected when the action happened*
+	/// So we need to specifically need to remember what selection to go to when we Undo depending on how we got here (e.g. ctrl vs no ctrl)
+	/// Selection uses the possibly-negative format
+	/// </summary>
+	private record DeleteAction(string OldText, string NewText, int UndoSelectionStart, int UndoSelectionLength) : TextBoxAction;
+
+	/// <summary>
+	/// Probably unnecessary, but we pad the bottom of the history as it makes index manipulation easier (the invariant we
+	/// get is that history is never empty)
+	/// </summary>
+	private record SentinelAction : TextBoxAction
+	{
+		private SentinelAction() { }
+		public static SentinelAction Instance { get; } = new SentinelAction();
 	}
 
 	private sealed class TextBoxCommand : ICommand

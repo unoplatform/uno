@@ -119,6 +119,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if __SKIA__
 			_timer.Tick += TimerOnTick;
+			EnsureHistory();
 #endif
 		}
 
@@ -1214,7 +1215,15 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				var content = Clipboard.GetContent();
-				var clipboardText = await content.GetTextAsync();
+				string clipboardText;
+				try
+				{
+					clipboardText = await content.GetTextAsync();
+				}
+				catch (InvalidOperationException)
+				{
+					clipboardText = "";
+				}
 				var selectionStart = SelectionStart;
 				var selectionLength = SelectionLength;
 				var currentText = Text;
@@ -1228,7 +1237,13 @@ namespace Windows.UI.Xaml.Controls
 
 				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
 
+#if __SKIA__
+				_suppressCurrentlyTyping = true;
+#endif
 				Text = currentText;
+#if __SKIA__
+				_suppressCurrentlyTyping = false;
+#endif
 			});
 		}
 
@@ -1255,7 +1270,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			CopySelectionToClipboard();
 			CutSelectionToClipboardPartial();
+#if __SKIA__
+			_suppressCurrentlyTyping = true;
+#endif
 			Text = Text.Remove(SelectionStart, SelectionLength);
+#if __SKIA__
+			_suppressCurrentlyTyping = false;
+#endif
 		}
 
 		partial void CutSelectionToClipboardPartial();

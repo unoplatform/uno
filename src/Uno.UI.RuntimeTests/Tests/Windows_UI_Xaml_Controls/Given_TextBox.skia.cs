@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
@@ -8,10 +9,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml.Core;
 using static Private.Infrastructure.TestServices;
 using Point = Windows.Foundation.Point;
 
@@ -1974,6 +1977,848 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// No residual colors on canvas
 			var cleared = await UITestHelper.ScreenShot(canvas);
 			ImageAssert.DoesNotHaveColorInRectangle(cleared, new Rectangle(System.Drawing.Point.Empty, cleared.Size), SUT.SelectionHighlightColor.Color);
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_Basic()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_Keyboard_Basic()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Z, VirtualKeyModifiers.Control, unicodeKey: 'z'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Y, VirtualKeyModifiers.Control, unicodeKey: 'z'));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_with_Backspace_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Over_Selection_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(6, 5);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello hello", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Undo_Redo_ContextMenu_Basic()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() => (VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			var flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
+			Assert.AreEqual(3, flyoutItems.Count);
+
+			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			flyoutItems = (VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child as FrameworkElement).FindChildren<MenuFlyoutItem>().ToList();
+			Assert.AreEqual(3, flyoutItems.Count);
+
+			mouse.MoveTo(flyoutItems[1].GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_History_Cleared()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Text = "Changed";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Changed", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Changed", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Changed", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_ClearUndoRedoHistory()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.ClearUndoRedoHistory();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Nothing()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None)); // break typing run
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.Y)] // redo
+		[DataRow(VirtualKey.C)] // copy
+		public async Task When_Redo_Copy_DoesNot_Break_Typing(VirtualKey key)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+
+		[TestMethod]
+		[DataRow(VirtualKey.X)] // cut
+		[DataRow(VirtualKey.V)] // paste
+		public async Task When_Cut_Paste_Breaks_Typing(VirtualKey key)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("");
+			Clipboard.SetContent(dataPackage); // even with nothing to paste, typing still breaks
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("he", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_CanRedo_CanUndo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 40
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.CanRedo);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None)); // break typing run
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellohello", SUT.Text);
+
+			Assert.IsFalse(SUT.CanRedo);
+			Assert.IsTrue(SUT.CanUndo);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+
+			Assert.IsTrue(SUT.CanRedo);
+			Assert.IsTrue(SUT.CanUndo);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			Assert.IsTrue(SUT.CanRedo);
+			Assert.IsFalse(SUT.CanUndo);
+
+			SUT.Redo();
+
+			Assert.IsTrue(SUT.CanRedo);
+			Assert.IsTrue(SUT.CanUndo);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Clicked_Typing_Ends()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellohello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hellohello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Pressed_Undo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			// no release
+			await WindowHelper.WaitForIdle();
+
+			// Shouldn't be able to undo
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Pressed_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			// no release
+			await WindowHelper.WaitForIdle();
+
+			// Shouldn't be able to redo
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Unfocused_Typing_Ends()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			VisualTree.GetFocusManagerForElement(SUT)!.TryMoveFocusInstance(FocusNavigationDirection.Next);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellohello", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hellohello", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Caret_Moves_Typing_Ends()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.H, VirtualKeyModifiers.None, unicodeKey: 'h'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.O, VirtualKeyModifiers.None, unicodeKey: 'o'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", SUT.Text);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hellllo", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hellllo", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Repeated_Delete_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("lo", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("llo", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("ello", SUT.Text);
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("ello", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("llo", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("lo", SUT.Text);
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("o", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Delete_Undo_Redo()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(6, SUT.SelectionLength); // When Ctrl-delete is undone, we select what was (un)deleted!!!
+			SUT.Redo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("world", SUT.Text);
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable

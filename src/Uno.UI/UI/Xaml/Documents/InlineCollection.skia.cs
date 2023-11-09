@@ -44,12 +44,13 @@ namespace Windows.UI.Xaml.Documents
 		/// measure and draw once after each invalidation.
 		/// </summary>
 		private (bool wentThroughMeasure, bool wentThroughDraw) _drawingValid;
-		private (SelectionDetails? selection, bool caretAtEndOfSelection, bool renderSelectionAndCaret) _lastDrawingState;
+		private (SelectionDetails? selection, bool caretAtEndOfSelection, bool renderSelection, bool renderCaret) _lastDrawingState;
 
 		// these should only be used by TextBox.
 		internal SelectionDetails? Selection { get; set; }
 		internal bool CaretAtEndOfSelection { get; set; }
-		internal bool RenderSelectionAndCaret { get; set; }
+		internal bool RenderSelection { get; set; }
+		internal bool RenderCaret { get; set; }
 
 		internal event Action DrawingStarted;
 		internal event Action<Rect> SelectionFound;
@@ -333,9 +334,10 @@ namespace Windows.UI.Xaml.Documents
 		/// </summary>
 		internal void Draw(in DrawingSession session)
 		{
-			var fireEvents = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && _lastDrawingState != (Selection, CaretAtEndOfSelection, RenderSelectionAndCaret);
+			var newDrawingState = (Selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
+			var fireEvents = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && _lastDrawingState != newDrawingState;
 			_drawingValid.wentThroughDraw = true;
-			_lastDrawingState = (Selection, CaretAtEndOfSelection, RenderSelectionAndCaret);
+			_lastDrawingState = newDrawingState;
 
 			if (fireEvents)
 			{
@@ -347,7 +349,14 @@ namespace Windows.UI.Xaml.Documents
 				if (fireEvents)
 				{
 					DrawingFinished?.Invoke();
+					// empty, so caret is at the beginning
+					if (RenderCaret)
+					{
+						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(_lastDefaultLineHeight * CaretThicknessAsRatioOfLineHeight, _lastDefaultLineHeight)));
+					}
+					DrawingFinished?.Invoke();
 				}
+
 				return;
 			}
 
@@ -507,7 +516,7 @@ namespace Windows.UI.Xaml.Documents
 
 		private void HandleSelection(int lineIndex, int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset, RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, bool fireEvents, float y, RenderLine line)
 		{
-			if (RenderSelectionAndCaret && Selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
+			if (RenderSelection && Selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 			{
 				var spanStartingIndex = characterCountSoFar;
 
@@ -564,7 +573,7 @@ namespace Windows.UI.Xaml.Documents
 		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, Span<SKPoint> positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
 		{
 			var spanStartingIndex = characterCountSoFar;
-			if (RenderSelectionAndCaret && Selection is { } selection)
+			if (RenderCaret && Selection is { } selection)
 			{
 				var (l, i) = CaretAtEndOfSelection ? (selection.EndLine, selection.EndIndex) : (selection.StartLine, selection.StartIndex);
 
@@ -777,6 +786,8 @@ namespace Windows.UI.Xaml.Documents
 
 			return _lineIntervals;
 		}
+
+		internal float AverageLineHeight => _renderLines.Count > 0 ? _renderLines.Average(r => r.Height) : _lastDefaultLineHeight;
 
 		// RenderSegmentSpan.GlyphsLength includes spaces, but not \r
 		private int GlyphsLengthWithCR(RenderSegmentSpan span)
