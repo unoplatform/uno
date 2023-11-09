@@ -33,6 +33,7 @@ namespace Windows.UI.Xaml.Controls
 			// 1. FrameworkElement.MeasureCore calls 'InvokeApplyTemplate'
 			// 2. ContentControl overrides ApplyTemplate to do a bunch of stuff, including a call to CreateDefaultVisuals.
 			// 3. CreateDefaultVisuals adds the Content as Child if it's a UIElement.
+			// Tracking issue: https://github.com/unoplatform/uno/issues/190
 			var child = this.FindFirstChild() ?? (Content as UIElement);
 			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 		}
