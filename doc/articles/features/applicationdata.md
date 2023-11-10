@@ -4,7 +4,7 @@ uid: Uno.Features.ApplicationData
 
 # Application Data and Settings
 
-![Application Data and Preferences](../Assets/features/applicationdata/appdata.jpeg)
+![Application Data and Preferences](../Assets/features/applicationdata/appdata.jpg)
 
 To store persistent application data and user settings, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
 
