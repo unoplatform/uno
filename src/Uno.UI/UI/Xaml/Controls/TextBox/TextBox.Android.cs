@@ -87,12 +87,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			SetupTextBoxView();
-		}
-
 		partial void InitializePropertiesPartial()
 		{
 			OnImeOptionsChanged(ImeOptions);
