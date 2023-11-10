@@ -1757,6 +1757,7 @@
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
