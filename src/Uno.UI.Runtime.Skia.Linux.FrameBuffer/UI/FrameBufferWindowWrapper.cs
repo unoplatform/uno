@@ -12,6 +12,8 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	internal static FrameBufferWindowWrapper Instance => _instance.Value;
 
+	public override object? NativeWindow => null;
+
 	internal Window? Window { get; private set; }
 
 	internal XamlRoot? XamlRoot { get; private set; }

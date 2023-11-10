@@ -14,7 +14,7 @@ internal interface INativeWindowWrapper
 
 	Rect VisibleBounds { get; }
 
-	object NativeWindow { get; }
+	object? NativeWindow { get; }
 
 	CoreWindowActivationState ActivationState { get; }
 

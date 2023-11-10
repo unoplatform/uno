@@ -14,7 +14,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private bool _visible;
 	private CoreWindowActivationState _activationState;
 
-	public abstract object NativeWindow { get; }
+	public abstract object? NativeWindow { get; }
 
 	public Rect Bounds
 	{
