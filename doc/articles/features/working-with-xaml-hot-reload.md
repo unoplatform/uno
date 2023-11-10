@@ -60,7 +60,9 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
   - Both C# and XAML Hot Reload are fully supported
   - Adding new C# or XAML files to the project is not yet supported
 - In Visual Studio for Windows:
-  - If your app is using port 5000 in development, [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) may cause problems, changing to another port in `Properties/launchSettings.json` (e.g. 5001) will work around it.
+  - Hot Reload is sensitive to Web Workers caching, which can cause errors like [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228), with a `BrowserConnectionException` error. In order to fix this:
+    - Update to Uno.Wasm.Bootstrap 8.0.3 or later
+    - Unregister any Web Worker associated to your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
 
 # [**iOS, Android Catalyst**](#tab/mobile)
