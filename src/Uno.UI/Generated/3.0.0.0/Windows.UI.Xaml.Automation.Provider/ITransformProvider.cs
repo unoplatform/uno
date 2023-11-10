@@ -3,24 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Provider
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface ITransformProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		bool CanMove
 		{
 			get;
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		bool CanResize
 		{
 			get;
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		bool CanRotate
 		{
 			get;
@@ -29,13 +29,13 @@ namespace Windows.UI.Xaml.Automation.Provider
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.ITransformProvider.CanMove.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.ITransformProvider.CanResize.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.ITransformProvider.CanRotate.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void Move(double x, double y);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void Resize(double width, double height);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void Rotate(double degrees);
 #endif
 	}
