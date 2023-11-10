@@ -15,6 +15,14 @@
 				   x:FieldModifier="Public"
 				   Tag="{Binding Source={local:ParserContextMarkupExtension}}" />
 
+		<StackPanel x:Name="EnumMarkupExtension_Horizontal"
+				   x:FieldModifier="Public"
+				   Orientation="{local:HorOrientation}" />
+
+		<StackPanel x:Name="EnumMarkupExtension_Vertical"
+				   x:FieldModifier="Public"
+				   Orientation="{local:VerOrientation}" />
+
 	</StackPanel>
 
 </Page>
