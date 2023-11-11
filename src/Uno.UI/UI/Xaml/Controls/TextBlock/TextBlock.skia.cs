@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Windows.Foundation;
 using Windows.UI.Xaml.Documents;
-using Uno.Extensions;
-using System.Linq;
-using Windows.UI.Xaml.Hosting;
 using SkiaSharp;
 using Windows.UI.Composition;
 using System.Numerics;
-using Windows.UI.Composition.Interactions;
-using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Windows.UI.Xaml.Documents.TextFormatting;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 #nullable enable
 
@@ -23,6 +18,7 @@ namespace Windows.UI.Xaml.Controls
 	partial class TextBlock : FrameworkElement, IBlock
 	{
 		private readonly TextVisual _textVisual;
+		private Action? _selectionHighlightColorChanged;
 
 		public TextBlock()
 		{
@@ -30,6 +26,10 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
+
+			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
+
+			AddHandler(DoubleTappedEvent, new DoubleTappedEventHandler((s, e) => ((TextBlock)s).OnDoubleTapped(e)), true);
 		}
 
 #if DEBUG
@@ -67,6 +67,8 @@ namespace Windows.UI.Xaml.Controls
 
 			return desiredSize;
 		}
+
+		partial void OnIsTextSelectionEnabledChangedPartial() => RecalculateSubscribeToPointerEvents();
 
 		private void ApplyFlowDirection(float width)
 		{
@@ -169,5 +171,61 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Inlines.InvalidateMeasure();
 		}
+
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		public void Invalidate(bool updateText) => InvalidateInlines(updateText);
+
+		private void SetupInlines()
+		{
+			_inlines.FireDrawingEventsOnEveryRedraw = true;
+			_inlines.RenderSelection = true;
+			_inlines.SelectionFound += t =>
+			{
+				var canvas = t.canvas;
+				var rect = t.rect;
+				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
+				{
+					Color = SelectionHighlightColor.Color.ToSKColor(), Style = SKPaintStyle.Fill
+				});
+			};
+		}
+
+		private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
+			if (nullableSpan.HasValue)
+			{
+				Selection = Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span);
+			}
+		}
+
+		// The following should be moved to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		public SolidColorBrush SelectionHighlightColor
+		{
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
+			set => SetValue(SelectionHighlightColorProperty, value);
+		}
+
+		public static DependencyProperty SelectionHighlightColorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColor),
+				typeof(SolidColorBrush),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					DefaultBrushes.SelectionHighlightColor,
+					propertyChangedCallback: (s, e) => ((TextBlock)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
+
+		private void OnSelectionHighlightColorChanged(SolidColorBrush? oldBrush, SolidColorBrush? newBrush)
+		{
+			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
+			newBrush ??= DefaultBrushes.SelectionHighlightColor;
+			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
 	}
 }

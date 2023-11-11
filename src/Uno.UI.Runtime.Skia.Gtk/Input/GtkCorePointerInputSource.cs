@@ -486,7 +486,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		var pointerPoint = new Windows.UI.Input.PointerPoint(
 			frameId: time,
-			timestamp: time,
+			timestamp: time * (ulong)TimeSpan.TicksPerMillisecond, // time is in ms, timestamp is in ticks
 			device: pointerDevice,
 			pointerId: pointerId,
 			rawPosition: rawPosition,

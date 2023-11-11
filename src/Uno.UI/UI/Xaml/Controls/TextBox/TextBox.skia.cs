@@ -31,9 +31,6 @@ public partial class TextBox
 		SelectAll
 	}
 
-	// made up value, but feels close enough.
-	private const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond / 20;
-
 	private TextBoxView _textBoxView;
 
 	private readonly Rectangle _caretRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
@@ -224,8 +221,9 @@ public partial class TextBox
 						_cachedRects.RemoveRange(_usedRects, _cachedRects.Count - _usedRects);
 					};
 
-					inlines.SelectionFound += rect =>
+					inlines.SelectionFound += t =>
 					{
+						var rect = t.rect;
 						if (_cachedRects.Count <= _usedRects)
 						{
 							_cachedRects.Add(new Rectangle());
@@ -318,13 +316,10 @@ public partial class TextBox
 	{
 		if (IsSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
-			var startLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart).GetCenter().Y, true)?.index ?? 0;
-			var endLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart + SelectionLength).GetCenter().Y, true)?.index ?? 0;
-			inlines.Selection = new InlineCollection.SelectionDetails(startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
+			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
 			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			inlines.RenderCaret = inlines.RenderSelection && _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
 			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
-			TextBoxView?.DisplayBlock.InvalidateInlines(true);
 		}
 	}
 
@@ -337,7 +332,7 @@ public partial class TextBox
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
 
-			var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionEnd);
+			var rect = DisplayBlockInlines.GetRectForIndex(selectionEnd);
 
 			// TODO: we are sometimes horizontally overscrolling, but it's more visually pleasant that underscrolling as we want the caret to be fully showing.
 			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight)));
@@ -806,7 +801,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position, false);
+			var index = displayBlock.Inlines.GetIndexAt(point.Position, false);
 			if (_multiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -903,7 +898,7 @@ public partial class TextBox
 		var currentPosition = down.Position;
 
 		return previousTap.id == currentId
-			&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
+			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayTicks
 			&& !GestureRecognizer.Gesture.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
@@ -921,7 +916,7 @@ public partial class TextBox
 				// multiple left presses
 
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position, false);
+				var index = displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false);
 
 				if (_lastPointerDown.repeatedPresses == 1)
 				{
@@ -945,7 +940,7 @@ public partial class TextBox
 			{
 				// single click
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position, true);
+				var index = displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true);
 				Select(index, 0);
 				_lastPointerDown = (currentPoint, 0);
 			}
@@ -1017,10 +1012,10 @@ public partial class TextBox
 
 		var newLineIndex = selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1);
 
-		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
+		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x, y), true);
+		var index = DisplayBlockInlines.GetIndexAt(new Point(x, y), true);
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -1052,10 +1047,10 @@ public partial class TextBox
 
 		var newLineIndex = selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
-		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
+		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x, y), true);
+		var index = DisplayBlockInlines.GetIndexAt(new Point(x, y), true);
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length

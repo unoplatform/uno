@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 
@@ -46,16 +47,63 @@ namespace Windows.UI.Xaml.Documents
 		private (bool wentThroughMeasure, bool wentThroughDraw) _drawingValid;
 		private (SelectionDetails? selection, bool caretAtEndOfSelection, bool renderSelection, bool renderCaret) _lastDrawingState;
 
-		// these should only be used by TextBox.
-		internal SelectionDetails? Selection { get; set; }
-		internal bool CaretAtEndOfSelection { get; set; }
-		internal bool RenderSelection { get; set; }
-		internal bool RenderCaret { get; set; }
+		private SelectionDetails? _selection;
+		private bool _renderSelection;
+		private bool _caretAtEndOfSelection;
+		private bool _renderCaret;
+		internal bool CaretAtEndOfSelection
+		{
+			get => _caretAtEndOfSelection;
+			set
+			{
+				_caretAtEndOfSelection = value;
+				((IBlock)_collection.GetParent()).Invalidate(false);
+			}
+		}
+		internal bool RenderSelection
+		{
+			get => _renderSelection;
+			set
+			{
+				_renderSelection = value;
+				((IBlock)_collection.GetParent()).Invalidate(false);
+			}
+		}
+		internal bool RenderCaret
+		{
+			get => _renderCaret;
+			set
+			{
+				_renderCaret = value;
+				((IBlock)_collection.GetParent()).Invalidate(false);
+			}
+		}
+
+		/// <summary>
+		/// Depending on the event listeners, one might want to send the drawing events
+		/// every time we <see cref="Draw"/>. In the case of a TextBox, we need a layout
+		/// cycle every time the events fire, so we only fire when something changes.
+		/// In the case of a TextBlock with selection, we directly draw on the SKCanvas
+		/// so we need the events to fire everytime we redraw.
+		/// </summary>
+		internal bool FireDrawingEventsOnEveryRedraw { get; set; }
 
 		internal event Action DrawingStarted;
-		internal event Action<Rect> SelectionFound;
+		internal event Action<(Rect rect, SKCanvas canvas)> SelectionFound;
 		internal event Action DrawingFinished;
 		internal event Action<Rect> CaretFound;
+
+		internal (int start, int end) Selection
+		{
+			set
+			{
+				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
+				var startLine = GetRenderLineAt(GetRectForIndex(value.start).GetCenter().Y, true)?.index ?? 0;
+				var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
+				_selection = new SelectionDetails(startLine, value.start, endLine, value.end);
+				((IBlock)_collection.GetParent()).Invalidate(false);
+			}
+		}
 
 		/// <summary>
 		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
@@ -334,8 +382,9 @@ namespace Windows.UI.Xaml.Documents
 		/// </summary>
 		internal void Draw(in DrawingSession session)
 		{
-			var newDrawingState = (Selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
-			var fireEvents = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && _lastDrawingState != newDrawingState;
+			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
+			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && !_lastDrawingState.Equals(newDrawingState);
+			var fireEvents = FireDrawingEventsOnEveryRedraw || somethingChanged;
 			_drawingValid.wentThroughDraw = true;
 			_lastDrawingState = newDrawingState;
 
@@ -389,6 +438,7 @@ namespace Windows.UI.Xaml.Documents
 
 				for (int s = 0; s < line.RenderOrderedSegmentSpans.Count; s++)
 				{
+					var xBeforeGlyphOffsets = x;
 					var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 					var segment = segmentSpan.Segment;
@@ -411,32 +461,8 @@ namespace Windows.UI.Xaml.Documents
 							alpha: (byte)(scb.Color.A * scb.Opacity * session.Filters.Opacity));
 					}
 
-					var decorations = inline.TextDecorations;
-					const TextDecorations allDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
-
-					if ((decorations & allDecorations) != 0)
-					{
-						var metrics = fontInfo.SKFontMetrics;
-						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
-
-						if ((decorations & TextDecorations.Underline) != 0)
-						{
-							// TODO: what should default thickness/position be if metrics does not contain it?
-							float yPos = y + baselineOffsetY + (metrics.UnderlinePosition ?? 0);
-							DrawDecoration(canvas, x, yPos, width, metrics.UnderlineThickness ?? 1, paint);
-						}
-
-						if ((decorations & TextDecorations.Strikethrough) != 0)
-						{
-							// TODO: what should default thickness/position be if metrics does not contain it?
-							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? fontInfo.SKFontSize / -2);
-							DrawDecoration(canvas, x, yPos, width, metrics.StrikeoutThickness ?? 1, paint);
-						}
-					}
-
-					var run = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength);
-					var glyphs = run.GetGlyphSpan(segmentSpan.GlyphsLength);
-					var positions = run.GetPositionSpan(segmentSpan.GlyphsLength);
+					var glyphs = new ushort[segmentSpan.GlyphsLength];
+					var positions = new SKPoint[segmentSpan.GlyphsLength];
 
 					if (segment.Direction == FlowDirection.LeftToRight)
 					{
@@ -485,12 +511,39 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					HandleSelection(lineIndex, characterCountSoFar, positions, x, justifySpaceOffset, segmentSpan, segment, fontInfo, fireEvents, y, line);
+					// Skia doesn't have the concept of a Z-axis here. Drawings are drawn on top of one another,
+					// so we need to draw from the bottom layer to the top layer (from inside the screen to outside)
+					// 1. Selection never covers anything, so it goes first
+					// 2. Text and text decorations don't generally overlap, so they're interchangeable.
+					// 3. The caret goes on top so that it's always fully showing without anything covering it.
+					// Note that carets and text decorations never occur at the same time for now (TextBox has a caret but no
+					// decorations, TextBlock doesn't have a caret), but a RichTextBox can have both, so that should be kept in mind
 
-					if (glyphs.Length != 0)
+					HandleSelection(lineIndex, characterCountSoFar, positions, x, justifySpaceOffset, segmentSpan, segment, fontInfo, fireEvents, y, line, canvas);
+
+					RenderText(lineIndex, characterCountSoFar, segmentSpan, fontInfo, positions, glyphs, canvas, y, baselineOffsetY, paint);
+
+					var decorations = inline.TextDecorations;
+					const TextDecorations allDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
+
+					if ((decorations & allDecorations) != 0)
 					{
-						using var textBlob = _textBlobBuilder.Build();
-						canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+						var metrics = fontInfo.SKFontMetrics;
+						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
+
+						if ((decorations & TextDecorations.Underline) != 0)
+						{
+							// TODO: what should default thickness/position be if metrics does not contain it?
+							float yPos = y + baselineOffsetY + (metrics.UnderlinePosition ?? 0);
+							DrawDecoration(canvas, xBeforeGlyphOffsets, yPos, width, metrics.UnderlineThickness ?? 1, paint);
+						}
+
+						if ((decorations & TextDecorations.Strikethrough) != 0)
+						{
+							// TODO: what should default thickness/position be if metrics does not contain it?
+							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? fontInfo.SKFontSize / -2);
+							DrawDecoration(canvas, xBeforeGlyphOffsets, yPos, width, metrics.StrikeoutThickness ?? 1, paint);
+						}
 					}
 
 					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positions, x, justifySpaceOffset, fireEvents, y, line);
@@ -514,9 +567,9 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		private void HandleSelection(int lineIndex, int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset, RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, bool fireEvents, float y, RenderLine line)
+		private void HandleSelection(int lineIndex, int characterCountSoFar, SKPoint[] positions, float x, float justifySpaceOffset, RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, bool fireEvents, float y, RenderLine line, SKCanvas canvas)
 		{
-			if (RenderSelection && Selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
+			if (RenderSelection && _selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 			{
 				var spanStartingIndex = characterCountSoFar;
 
@@ -565,15 +618,98 @@ namespace Windows.UI.Xaml.Documents
 
 				if (Math.Abs(left - right) > 0.01 && fireEvents)
 				{
-					SelectionFound?.Invoke(new Rect(new Point(left, y - line.Height), new Point(right, y)));
+					SelectionFound?.Invoke((new Rect(new Point(left, y - line.Height), new Point(right, y)), canvas));
 				}
 			}
 		}
 
-		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, Span<SKPoint> positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
+		private void RenderText(int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo, SKPoint[] positions, ushort[] glyphs, SKCanvas canvas, float y, float baselineOffsetY, SKPaint paint)
+		{
+			if (!RenderSelection || _selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
+			{
+				if (segmentSpan.GlyphsLength > 0)
+				{
+					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength);
+					positions.CopyTo(run1.GetPositionSpan(segmentSpan.GlyphsLength));
+					glyphs.CopyTo(run1.GetGlyphSpan(segmentSpan.GlyphsLength));
+					using var textBlob = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+				}
+			}
+			else
+			{
+				var spanStartingIndex = characterCountSoFar;
+				int startOfSelection;
+				int endOfSelection;
+
+				if (bg.StartIndex < spanStartingIndex)
+				{
+					// the selection starts from a previous span, so this span is selected from the very beginning
+					startOfSelection = 0;
+				}
+				else if (bg.StartIndex - spanStartingIndex < segmentSpan.GlyphsLength)
+				{
+					// part or all of this span is selected
+					startOfSelection = bg.StartIndex - spanStartingIndex;
+				}
+				else
+				{
+					// this span is not a part of the selection
+					startOfSelection = segmentSpan.GlyphsLength;
+				}
+
+				if (bg.EndIndex - spanStartingIndex < 0)
+				{
+					// this span is not a part of the selection
+					endOfSelection = 0;
+				}
+				else if (bg.EndIndex - spanStartingIndex < segmentSpan.GlyphsLength)
+				{
+					// part or all of this span is selected
+					endOfSelection = bg.EndIndex - spanStartingIndex;
+				}
+				else
+				{
+					// the selection ends after this span, so this span is selected to the very end
+					endOfSelection = segmentSpan.GlyphsLength;
+				}
+
+				if (startOfSelection > 0) // pre selection
+				{
+					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, startOfSelection);
+					new Span<SKPoint>(positions, 0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
+					new Span<ushort>(glyphs, 0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
+					using var textBlob1 = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob1, 0, y + baselineOffsetY, paint);
+				}
+
+				if (endOfSelection - startOfSelection > 0) // selection
+				{
+					var run2 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, endOfSelection - startOfSelection);
+					new Span<SKPoint>(positions, startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetPositionSpan(endOfSelection - startOfSelection));
+					new Span<ushort>(glyphs, startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
+					using var textBlob2 = _textBlobBuilder.Build();
+					var color = paint.Color;
+					paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
+					canvas.DrawText(textBlob2, 0, y + baselineOffsetY, paint);
+					paint.Color = color;
+				}
+
+				if (segmentSpan.GlyphsLength - endOfSelection > 0) // post selection
+				{
+					var run3 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength - endOfSelection);
+					new Span<SKPoint>(positions, endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
+					new Span<ushort>(glyphs, endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
+					using var textBlob3 = _textBlobBuilder.Build();
+					canvas.DrawText(textBlob3, 0, y + baselineOffsetY, paint);
+				}
+			}
+		}
+
+		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, SKPoint[] positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
 		{
 			var spanStartingIndex = characterCountSoFar;
-			if (RenderCaret && Selection is { } selection)
+			if (RenderCaret && _selection is { } selection)
 			{
 				var (l, i) = CaretAtEndOfSelection ? (selection.EndLine, selection.EndIndex) : (selection.StartLine, selection.StartIndex);
 
@@ -604,8 +740,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		// Warning: this is only tested and currently used by TextBox
-		internal int GetIndexForTextBlock(Point p, bool ignoreEndingSpace)
+		internal int GetIndexAt(Point p, bool ignoreEndingSpace)
 		{
 			var line = GetRenderLineAt(p.Y, true)?.line;
 
@@ -618,14 +753,18 @@ namespace Windows.UI.Xaml.Documents
 				.TakeWhile(l => l != line) // all previous lines
 				.Sum(currentLine => currentLine.SegmentSpans.Sum(GlyphsLengthWithCR)); // all characters in line
 
-			var (span, x) = GetRenderSegmentSpanAt(p, true)!.Value;
+			var (span, x) = GetRenderSegmentSpanAt(p, true)!.Value; // never null because we already found a line
 
 			characterCount += line.SegmentSpans
 				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
 				.Sum(GlyphsLengthWithCR); // all characters in span
 
 			var segment = span.Segment;
-			var run = (Run)segment.Inline;
+			if (segment.Inline is not Run run)
+			{
+				return characterCount;
+			}
+
 			var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 			// The rest of the function uses GlyphsLength and not FullGlyphsLength as we can only really find a rendered glyph with a pointer.
@@ -655,7 +794,7 @@ namespace Windows.UI.Xaml.Documents
 		}
 
 		// Warning: this is only tested and currently used by TextBox
-		internal Rect GetRectForTextBlockIndex(int index)
+		internal Rect GetRectForIndex(int index)
 		{
 			var characterCount = 0;
 			float y = 0, x = 0;
@@ -764,6 +903,30 @@ namespace Windows.UI.Xaml.Documents
 			return extendedSelection ? (span, spanX - span.Width) : null;
 		}
 
+		internal (int start, int end) GetStartAndEndIndicesForSpan(RenderSegmentSpan span)
+		{
+			var characterCount = 0;
+			var lineIndex = 0;
+			RenderLine line;
+			for (; lineIndex < _renderLines.Count; lineIndex++)
+			{
+				line = _renderLines[lineIndex];
+				if (line.SegmentSpans.Contains(span))
+				{
+					break;
+				}
+				characterCount += line.SegmentSpans.Sum(GlyphsLengthWithCR);
+			}
+
+			line = _renderLines[lineIndex];
+
+			characterCount += line.SegmentSpans
+				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
+				.Sum(GlyphsLengthWithCR); // all characters in span
+
+			return (characterCount, characterCount + GlyphsLengthWithCR(span));
+		}
+
 		// Warning: this is only tested and currently used by TextBox
 		internal List<(int start, int length)> GetLineIntervals()
 		{
@@ -810,6 +973,21 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		internal record SelectionDetails(int StartLine, int StartIndex, int EndLine, int EndIndex);
+		private record SelectionDetails(int StartLine, int StartIndex, int EndLine, int EndIndex)
+		{
+			public virtual bool Equals(SelectionDetails? other)
+			{
+				if (ReferenceEquals(null, other))
+				{
+					return false;
+				}
+				if (ReferenceEquals(this, other))
+				{
+					return true;
+				}
+				return StartLine == other.StartLine && StartIndex == other.StartIndex && EndLine == other.EndLine && EndIndex == other.EndIndex;
+			}
+			public override int GetHashCode() => HashCode.Combine(StartLine, StartIndex, EndLine, EndIndex);
+		}
 	}
 }
