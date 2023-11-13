@@ -14,7 +14,7 @@ namespace UnoApp50
 
 		protected internal override void OnLaunched(LaunchActivatedEventArgs args)
 		{
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
+#if (NET6_0_OR_GREATER && WINDOWS && !HAS_UNO) || HAS_UNO_WINUI
 			_window = new Window();
 #else
 			_window = Microsoft.UI.Xaml.Window.Current;
