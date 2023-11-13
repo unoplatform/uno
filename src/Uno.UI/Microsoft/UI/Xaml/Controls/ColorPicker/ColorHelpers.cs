@@ -20,6 +20,12 @@ using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
 using size_t = System.UInt64; // Uno Doc: size_t is 8 bytes on mosts modern machines
 
+#if HAS_UNO_WINUI
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+#else
+using DispatcherQueue = Windows.System.DispatcherQueue;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	internal static class ColorHelpers

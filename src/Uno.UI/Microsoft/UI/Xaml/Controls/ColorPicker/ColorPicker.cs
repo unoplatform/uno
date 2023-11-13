@@ -1416,7 +1416,7 @@ namespace Microsoft.UI.Xaml.Controls
 						GetCheckerColor(),
 						bgraCheckeredPixelData,
 						m_createColorPreviewRectangleCheckeredBackgroundBitmapAction,
-						DispatcherQueue.GetForCurrentThread(), // Uno Doc: this should be a DispatcherQueue
+						DispatcherQueue,
 						(WriteableBitmap checkeredBackgroundSoftwareBitmap) =>
 						{
 							strongThis.m_colorPreviewRectangleCheckeredBackgroundImageBrush.ImageSource = checkeredBackgroundSoftwareBitmap;
@@ -1444,7 +1444,7 @@ namespace Microsoft.UI.Xaml.Controls
 						GetCheckerColor(),
 						bgraCheckeredPixelData,
 						m_alphaSliderCheckeredBackgroundBitmapAction,
-						DispatcherQueue.GetForCurrentThread(), // Uno Doc: this should be a DispatcherQueue
+						DispatcherQueue,
 						(WriteableBitmap checkeredBackgroundSoftwareBitmap) =>
 						{
 							strongThis.m_alphaSliderCheckeredBackgroundImageBrush.ImageSource = checkeredBackgroundSoftwareBitmap;
