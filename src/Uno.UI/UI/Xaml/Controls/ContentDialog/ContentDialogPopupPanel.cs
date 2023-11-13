@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -58,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 		private Size CalculateDialogAvailableSize(Size availableSize)
 		{
 			// Skip calculation if in the context of Uno Islands.
-			if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
+			if (!CoreApplication.IsFullFledgedApp)
 			{
 				return availableSize;
 			}
