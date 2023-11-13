@@ -531,6 +531,9 @@ namespace Windows.UI.Xaml.Documents
 						var metrics = fontInfo.SKFontMetrics;
 						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
 
+						// We don't need to see where selection starts and ends in this case, as the decoration color doesn't
+						// get affected by the selection.
+
 						if ((decorations & TextDecorations.Underline) != 0)
 						{
 							// TODO: what should default thickness/position be if metrics does not contain it?
@@ -549,7 +552,7 @@ namespace Windows.UI.Xaml.Documents
 					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positions, x, justifySpaceOffset, fireEvents, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInCR(segment, segmentSpan) ? 1 : 0);
+					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInCR(segmentSpan) ? 1 : 0);
 				}
 			}
 
@@ -609,7 +612,7 @@ namespace Windows.UI.Xaml.Documents
 					var allTrailingSpaces = segmentSpan.FullGlyphsLength - segmentSpan.GlyphsLength; // rendered and non-rendered trailing spaces
 					right = x + justifySpaceOffset * allTrailingSpaces;
 
-					if (bg.StartIndex != bg.EndIndex && SpanEndsInCR(segment, segmentSpan))
+					if (bg.StartIndex != bg.EndIndex && SpanEndsInCR(segmentSpan))
 					{
 						// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
 						right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
@@ -903,7 +906,7 @@ namespace Windows.UI.Xaml.Documents
 			return extendedSelection ? (span, spanX - span.Width) : null;
 		}
 
-		internal (int start, int end) GetStartAndEndIndicesForSpan(RenderSegmentSpan span)
+		internal (int start, int end) GetStartAndEndIndicesForSpan(RenderSegmentSpan span, bool includeNewline)
 		{
 			var characterCount = 0;
 			var lineIndex = 0;
@@ -923,6 +926,11 @@ namespace Windows.UI.Xaml.Documents
 			characterCount += line.SegmentSpans
 				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
 				.Sum(GlyphsLengthWithCR); // all characters in span
+
+			if (!includeNewline && (SpanEndsInCR(span) || SpanEndsIn(span, '\n')))
+			{
+				characterCount--;
+			}
 
 			return (characterCount, characterCount + GlyphsLengthWithCR(span));
 		}
@@ -954,13 +962,16 @@ namespace Windows.UI.Xaml.Documents
 
 		// RenderSegmentSpan.GlyphsLength includes spaces, but not \r
 		private int GlyphsLengthWithCR(RenderSegmentSpan span)
-			=> span.FullGlyphsLength + (SpanEndsInCR(span.Segment, span) ? 1 : 0);
+			=> span.FullGlyphsLength + (SpanEndsInCR(span) ? 1 : 0);
 
-		private static bool SpanEndsInCR(Segment segment, RenderSegmentSpan segmentSpan)
+		private static bool SpanEndsInCR(RenderSegmentSpan segmentSpan) => SpanEndsIn(segmentSpan, '\r');
+
+		private static bool SpanEndsIn(RenderSegmentSpan segmentSpan, char c)
 		{
+			var segment = segmentSpan.Segment;
 			try
 			{
-				return segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == '\r';
+				return segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == c;
 			}
 			catch (Exception)
 			{

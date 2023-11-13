@@ -54,11 +54,12 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				_selection = value;
-#if __SKIA__
-				Inlines.Selection = (Math.Min(value.start, value.end), Math.Max(value.start, value.end));
-#endif
+
+				OnSelectionChanged();
 			}
 		}
+
+		partial void OnSelectionChanged();
 
 #if !UNO_REFERENCE_API
 		public TextBlock()
@@ -107,14 +108,14 @@ namespace Windows.UI.Xaml.Controls
 					_inlines = new InlineCollection(this);
 					UpdateInlines(Text);
 
-#if __SKIA__
 					SetupInlines();
-#endif
 				}
 
 				return _inlines;
 			}
 		}
+
+		partial void SetupInlines();
 
 		internal void InvalidateInlines(bool updateText)
 		{

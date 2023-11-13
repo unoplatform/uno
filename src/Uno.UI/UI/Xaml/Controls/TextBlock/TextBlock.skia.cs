@@ -179,7 +179,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Invalidate(bool updateText) => InvalidateInlines(updateText);
 
-		private void SetupInlines()
+		partial void OnSelectionChanged()
+			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+
+		partial void SetupInlines()
 		{
 			_inlines.FireDrawingEventsOnEveryRedraw = true;
 			_inlines.RenderSelection = true;
@@ -196,10 +199,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
 		{
-			var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
-			if (nullableSpan.HasValue)
+			if (IsTextSelectionEnabled)
 			{
-				Selection = Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span);
+				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
+				if (nullableSpan.HasValue)
+				{
+					Selection = Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false);
+				}
 			}
 		}
 
