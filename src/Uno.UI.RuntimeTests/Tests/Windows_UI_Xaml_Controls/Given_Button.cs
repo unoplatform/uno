@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -9,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -109,6 +111,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// The button cannot be refocused
 			Assert.IsFalse(firstButton.Focus(FocusState.Programmatic));
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_DoubleTap_Timing()
+		{
+			// This is actually a test for GestureRecognizer and pointer gesture events
+
+			var SUT = new Button();
+
+			var doubleTaps = 0;
+			SUT.DoubleTapped += (_, _) => doubleTaps++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+
+			Assert.AreEqual(1, doubleTaps);
+
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+			await Task.Delay(200);
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+
+			Assert.AreEqual(2, doubleTaps);
+
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+			await Task.Delay(400);
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+
+			Assert.AreEqual(3, doubleTaps);
+
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+			await Task.Delay(500);
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+
+			Assert.AreEqual(3, doubleTaps);
 		}
 
 #if HAS_UNO && !__MACOS__
