@@ -19,7 +19,7 @@ namespace UnoApp50
 #else
 			_window = Microsoft.UI.Xaml.Window.Current;
 #endif
-			_window.EnableHotReload();
+			_window!.EnableHotReload();
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
 			if (_window!.Content is not Frame rootFrame)

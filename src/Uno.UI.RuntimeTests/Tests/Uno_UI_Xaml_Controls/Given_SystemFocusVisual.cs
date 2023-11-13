@@ -54,7 +54,7 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
-		var visualTree = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.VisualTree;
+		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
@@ -62,14 +62,14 @@ public class Given_SystemFocusVisual
 
 		var focusVisual = focusVisualLayer.Children.First();
 
-		var transform = focusVisual.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
+		var transform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 		var initialPoint = transform.TransformPoint(default);
 
 		scrollViewer.ChangeView(null, 100, null, true);
 
 		await TestServices.WindowHelper.WaitFor(() =>
 		{
-			transform = focusVisual.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
+			transform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 			var currentPoint = transform.TransformPoint(default);
 
 			return currentPoint.Y < initialPoint.Y;
@@ -77,7 +77,7 @@ public class Given_SystemFocusVisual
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		transform = focusVisual.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
+		transform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 		var scrolledPoint = transform.TransformPoint(default);
 		Assert.AreEqual(initialPoint.Y - 100, scrolledPoint.Y, 0.5);
 	}
@@ -116,7 +116,7 @@ public class Given_SystemFocusVisual
 
 		buttons[2].Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
-		var visualTree = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.VisualTree;
+		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
