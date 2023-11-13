@@ -29,7 +29,7 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 			this.InitializeComponent();
 
 #if HAS_UNO
-			_selectedColor = (Windows.UI.Xaml.Window.CurrentSafe.Background as SolidColorBrush)?.Color ?? Colors.White;
+			_selectedColor = (Windows.UI.Xaml.Window.Current?.Background as SolidColorBrush)?.Color ?? Colors.White;
 #endif
 		}
 
@@ -41,9 +41,9 @@ namespace UITests.Windows_UI_Xaml.WindowTests
 				_selectedColor = value;
 
 #if HAS_UNO
-				if (Windows.UI.Xaml.Window.CurrentSafe is { }) // could be null if on WinUI tree
+				if (Windows.UI.Xaml.Window.Current is { }) // could be null if on WinUI tree
 				{
-					Windows.UI.Xaml.Window.CurrentSafe.Background = new SolidColorBrush(_selectedColor);
+					Windows.UI.Xaml.Window.Current.Background = new SolidColorBrush(_selectedColor);
 				}
 #endif
 			}
