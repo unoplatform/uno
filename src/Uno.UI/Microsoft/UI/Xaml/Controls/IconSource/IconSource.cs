@@ -45,7 +45,9 @@ public partial class IconSource : DependencyObject
 		// }
 		element = CreateIconElementCore();
 
-		if (element != null)
+		if (element != null
+			// Uno Specific: WinUI doesn't check if Foreground is null, it sets it anyway
+			&& Foreground != null)
 		{
 			Brush foreground = Foreground;
 			element.Foreground = foreground;
