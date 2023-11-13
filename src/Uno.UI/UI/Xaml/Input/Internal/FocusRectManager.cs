@@ -8,6 +8,7 @@
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Rendering;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -70,8 +71,13 @@ namespace Uno.UI.Xaml.Input
 			FocusNavigationDirection focusNavigationDirection,
 			bool cleanOnly)
 		{
-			// TODO Uno specific: This implementation differs significantly from WinUI.			
-			var visualTree = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.VisualTree;
+			// TODO Uno specific: This implementation differs significantly from WinUI.
+			VisualTree? visualTree = null;
+			if (focusedElement is UIElement focusedUIElement)
+			{
+				visualTree = focusedUIElement.XamlRoot?.VisualTree;
+			}
+
 			if (visualTree?.FocusVisualRoot is { } focusVisualLayer)
 			{
 				if (_focusVisual == null)
