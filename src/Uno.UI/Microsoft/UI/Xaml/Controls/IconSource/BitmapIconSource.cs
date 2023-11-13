@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BitmapIconSource.cpp, commit 083796a
+
+// MUX Reference BitmapIconSource_Partial.cpp, tag winui3/release/1.4.2
 
 using System;
 using Windows.Foundation.Metadata;
@@ -34,22 +35,13 @@ public partial class BitmapIconSource : IconSource
 #endif
 	protected override IconElement CreateIconElementCore()
 	{
+		Uri uriSource = UriSource;
+		bool showAsMonochrome = ShowAsMonochrome;
+
 		var bitmapIcon = new BitmapIcon();
 
-		if (UriSource != null)
-		{
-			bitmapIcon.UriSource = UriSource;
-		}
-
-		if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.BitmapIcon", "ShowAsMonochrome"))
-		{
-			bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
-		}
-
-		if (Foreground != null)
-		{
-			bitmapIcon.Foreground = Foreground;
-		}
+		bitmapIcon.UriSource = UriSource;
+		bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
 
 		return bitmapIcon;
 	}
@@ -67,7 +59,9 @@ public partial class BitmapIconSource : IconSource
 		{
 			return BitmapIcon.UriSourceProperty;
 		}
-
-		return base.GetIconElementPropertyCore(iconSourceProperty);
+		else
+		{
+			return base.GetIconElementPropertyCore(iconSourceProperty);
+		}
 	}
 }
