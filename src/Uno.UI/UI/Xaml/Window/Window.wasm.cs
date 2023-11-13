@@ -28,5 +28,5 @@ public sealed partial class Window
 {
 	[JSExport]
 	[Preserve]
-	public static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
+	internal static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
 }
