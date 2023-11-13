@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<RollForward>Major</RollForward>
@@ -25,7 +25,7 @@
 		<PackageReference Include="GtkSharp" />
 		<Manifest Remove="app.manifest" />
 		<Manifest Include="$(ApplicationManifest)" />
-		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.20" />
 		<PackageReference Include="VideoLAN.LibVLC.Mac" Version="3.1.3.1" />
 	</ItemGroup>
 
