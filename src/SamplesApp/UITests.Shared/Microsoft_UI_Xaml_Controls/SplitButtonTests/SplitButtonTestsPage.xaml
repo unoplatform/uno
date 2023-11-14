@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests.SplitButtonPage"
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests.SplitButtonTestsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
@@ -130,7 +130,7 @@
                         </controls:SplitButton.Flyout>
                     </controls:SplitButton>
 
-                    <util:ControlStateViewer x:Name="ControlStateViewer" Margin="0,16,0,0" />
+                    <util:ControlStateViewer x:Name="OrdinaryControlStateViewer" Margin="0,16,0,0" />
 
                     <util:ControlStateViewer x:Name="ToggleControlStateViewer" Margin="0,6,0,0" />
                 </StackPanel>

@@ -7,20 +7,20 @@ using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
-using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
+using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 #if HAS_UNO
 using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
 #endif
-using ToggleSplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton;
-using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
+using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
+using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 {
@@ -28,7 +28,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
 	[Sample("MUX", "Buttons")]
-	public sealed partial class SplitButtonPage : Page
+	public sealed partial class SplitButtonTestsPage : Page
 	{
 		private int _clickCount = 0;
 		private int _flyoutOpenedCount = 0;
@@ -39,7 +39,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 
 		private Flyout _placementFlyout;
 
-		public SplitButtonPage()
+		public SplitButtonTestsPage()
 		{
 			this.InitializeComponent();
 #if HAS_UNO
@@ -54,8 +54,8 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			textBlock.Text = "Placement Flyout";
 			_placementFlyout.Content = textBlock;
 
-			ControlStateViewer.ControlType = TestSplitButton.GetType();
-			ControlStateViewer.States = new List<string>
+			OrdinaryControlStateViewer.ControlType = TestSplitButton.GetType();
+			OrdinaryControlStateViewer.States = new List<string>
 			{
 				"Normal",
 				"FlyoutOpen",
@@ -170,12 +170,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 	{
 		public event EventHandler CanExecuteChanged;
 
-		private SplitButtonPage _parentPage;
+		private SplitButtonTestsPage _parentPage;
 		private bool _canExecute = true;
 
 		public MyCommand() { }
 
-		public MyCommand(SplitButtonPage parentPage)
+		public MyCommand(SplitButtonTestsPage parentPage)
 		{
 			_parentPage = parentPage;
 		}
