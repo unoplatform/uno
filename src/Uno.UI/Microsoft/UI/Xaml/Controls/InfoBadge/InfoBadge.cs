@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class InfoBadge : Control
 {
-	//private const string IconPresenterName = "IconPresenter";
+	//private const string c_IconPresenterName = "IconPresenter";
 
 	/// <summary>
 	/// Initializes a new instance of the InfoBadge class.
@@ -55,7 +55,8 @@ public partial class InfoBadge : Control
 			}
 		}
 
-		if (property == ValueProperty || property == IconSourceProperty)
+		if (property == ValueProperty ||
+			property == IconSourceProperty)
 		{
 			OnDisplayKindPropertiesChanged();
 		}
@@ -99,6 +100,9 @@ public partial class InfoBadge : Control
 			{
 				return new CornerRadius();
 			}
+			// Uno Specific: WinUI2 source had an extra if condition wrapping the previous if,
+			// so this return was reachable. That condition was removed in WinUI3, but the
+			// return was left here even though it's unreachable
 			//return new CornerRadius(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue);
 		}
 
