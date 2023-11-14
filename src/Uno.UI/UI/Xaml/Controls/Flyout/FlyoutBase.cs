@@ -252,7 +252,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
-			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
