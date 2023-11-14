@@ -1,3 +1,5 @@
+using Windows.Foundation;
+
 namespace Windows.UI.Xaml.Automation.Provider;
 
 /// <summary>
