@@ -26,7 +26,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Uno.UI;
 
 #if !HAS_UNO
 using Uno.Logging;
