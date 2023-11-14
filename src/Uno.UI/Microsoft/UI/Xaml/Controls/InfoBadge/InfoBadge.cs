@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference InfoBadge.cpp, commit 76bd573
+
+// MUX Reference InfoBadge.cpp, tag winui3/release/1.4.2
 
 using System;
 using Uno.UI.Helpers.WinUI;
@@ -12,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class InfoBadge : Control
 	{
-		//private const string IconPresenterName = "IconPresenter";
+		//private const string c_IconPresenterName = "IconPresenter";
 
 		public InfoBadge()
 		{
@@ -50,7 +51,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			if (property == ValueProperty || property == IconSourceProperty)
+			if (property == ValueProperty ||
+				property == IconSourceProperty)
 			{
 				OnDisplayKindPropertiesChanged();
 			}
@@ -66,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (IconSource is { } iconSource)
 			{
 				TemplateSettings.IconElement = iconSource.CreateIconElement();
-				if (iconSource is FontIconSource)
+				if (iconSource is FontIconSource fontIconSource)
 				{
 					VisualStateManager.GoToState(thisAsControl, "FontIcon", true);
 				}
@@ -81,23 +83,23 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			CornerRadius GetCornerRadius()
 			{
 				var cornerRadiusValue = ActualHeight / 2;
-				if (SharedHelpers.IsRS5OrHigher())
+				if (ReadLocalValue(CornerRadiusProperty) == DependencyProperty.UnsetValue)
 				{
-					if (ReadLocalValue(CornerRadiusProperty) == DependencyProperty.UnsetValue)
-					{
-						return new CornerRadius(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue);
-					}
-					else
-					{
-						return new CornerRadius();
-					}
+					return new CornerRadius(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue);
 				}
-				return new CornerRadius(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue);
+				else
+				{
+					return new CornerRadius();
+				}
+				// Uno Specific: WinUI2 source had an extra if condition wrapping the previous if,
+				// so this return was reachable. That condition was removed in WinUI3, but the
+				// return was left here even though it's unreachable
+				// return new CornerRadius(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue);
 			}
 
 			var value = GetCornerRadius();
