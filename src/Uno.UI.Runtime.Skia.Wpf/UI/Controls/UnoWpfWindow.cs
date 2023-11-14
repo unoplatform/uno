@@ -44,6 +44,7 @@ internal class UnoWpfWindow : WpfWindow
 
 	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{
+		Host.Focus();
 		if (!_shown)
 		{
 			_shown = true;
