@@ -2,11 +2,16 @@
 uid: Uno.Features.WSPickers
 ---
 
-# Windows.Storage.Pickers
+# Storage Pickers
+
+> [!TIP]
+> This article covers Uno-specific information for `Windows.Storage.Pickers` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.storage.pickers
+
+* The `Windows.Storage.Pickers` namespace provides classes that allow the user to pick a folder or a file on the local file system so that the application can work with it.
 
 ![Android JumpList sample](../Assets/features/filepickers/fileopenpicker.png)
 
-File pickers allow the user to pick a folder or a file on the local file system so that the application can work with it. The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
+The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
   - ✔️  Supported

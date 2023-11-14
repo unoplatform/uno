@@ -4,6 +4,11 @@ uid: Uno.Features.SpeechRecognition
 
 # Speech Recognition in Uno
 
+> [!TIP]
+> This article covers Uno-specific information for `Windows.Media.SpeechRecognition`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.media.speechrecognition
+
+* The `Windows.Media.SpeechRecognition` class allows an application to recognize voice input.
+
 Uno's implementation currently supports basic native speech recognition. 
 
 ## Supported Features

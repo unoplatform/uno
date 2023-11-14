@@ -2,7 +2,12 @@
 uid: Uno.Features.WAMEmail
 ---
 
-# Uno Support for Windows.ApplicationModel.Email
+# E-mail
+
+> [!TIP]
+> This article covers Uno-specific information for `Windows.ApplicationModel.Email` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.applicationmodel.email
+
+* The `Windows.ApplicationModel.Email` namespace provides classes for accessing and managing e-mail messages.
 
 ## `EmailManager`
 
