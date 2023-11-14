@@ -89,7 +89,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		// We need to make sure that in case of fractional DPI, we use the nearest whole DPI instead,
 		// otherwise we get GuardBand related rendering issues.
 		var fractionalDpi = dpi / DisplayInformation.BaseDpi;
-		var wholeDpi = Math.Max(1.0, float.Floor(fractionalDpi));
+		var wholeDpi = Math.Max(1.0f, float.Floor(fractionalDpi));
 		return wholeDpi * DisplayInformation.BaseDpi;
 	}
 }
