@@ -448,7 +448,7 @@ namespace Windows.Globalization
 		public string HourAsString() =>
 			_time
 				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _resolvedCulture)
-				.TrimStart(new[] { '0' });
+				.TrimStart('0');
 
 		public string HourAsPaddedString(int minDigits) =>
 			_clock == ClockIdentifiers.TwentyFourHour

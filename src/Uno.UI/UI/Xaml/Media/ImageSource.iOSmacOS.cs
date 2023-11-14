@@ -28,12 +28,13 @@ namespace Windows.UI.Xaml.Media;
 public partial class ImageSource
 {
 	private readonly bool _isOriginalSourceUIImage;
+	private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 	partial void InitFromResource(Uri uri)
 	{
 		var path = uri
 			.PathAndQuery
-			.TrimStart(new[] { '/' })
+			.TrimStart('/')
 
 			// UWP supports backward slash in path for directory separators.
 			.Replace("\\", "/");

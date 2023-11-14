@@ -11,22 +11,27 @@ Depending on the target platform, the UI rendering may be using OpenGL or softwa
 Note that for Linux, the [framebuffer rendering](using-linux-framebuffer.md) head is also available.
 
 ## Get started with the Skia+GTK head
-Follow the getting started guide [for Linux](../get-started-with-linux.md) or [Windows](../get-started-vs-2022.md)
+Follow the getting started guide [for Linux](xref:Uno.GetStarted.Linux), [Windows](xref:Uno.GetStarted.vs2022) or [VS Ccode for macOS](xref:Uno.GetStarted.vscode).
 
-You will also need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) to run a GTK+3 based app on Windows.
+Additionally:
+- If you're using Windows, you will need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
+- If you're using macOS, you will need to make sure to install `gtk+3` package using the following command line:
+   ```bash
+   brew install gtk+3
+   ```
 
-Once done, you can create a new app using:
+Once done, you can create a new app with [`dotnet new`](xref:Uno.GetStarted.dotnet-new) using:
 ```
-dotnet new unoapp -o MyApp
+dotnet new unoapp --preset=blank -o MyApp
 ```
 
-or by using the Visual Studio "project new" templates.
+or by using the Visual Studio ["project new" templates](xref:Uno.GetStarted.vs2022).
 
 ## Changing the rendering target
 
 It may be required, depending on the environment, to use software rendering.
 
-To do so, immediately before the line `host.Run()` in you `main.cs` file, add the following:
+To do so, immediately before the line `host.Run()` in you `Program.cs` file, add the following:
 ```
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```

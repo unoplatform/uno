@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarItem.h, commit f4a2812
+// MUX Reference BreadcrumbBarItem.h, tag winui3/release/1.4.2
 
 #nullable enable
 
@@ -37,7 +37,7 @@ public partial class BreadcrumbBarItem : ContentControl
 	// Flyout content for ellipsis item
 	private Flyout? m_ellipsisFlyout = null;
 	private ItemsRepeater? m_ellipsisItemsRepeater = null;
-	private DataTemplate? m_ellipsisDropDownItemDataTemplate = null;
+	private IElementFactory? m_ellipsisDropDownItemDataTemplate = null;
 	private BreadcrumbElementFactory? m_ellipsisElementFactory = null;
 
 	// Ellipsis dropdown item fields

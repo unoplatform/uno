@@ -14,12 +14,11 @@ using System.Drawing;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 
-using View = Windows.UI.Xaml.UIElement;
 using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Panel : IEnumerable
+	public partial class Panel
 	{
 		private Action _borderBrushChanged;
 
@@ -71,14 +70,9 @@ namespace Windows.UI.Xaml.Controls
 		/// }
 		/// </summary>
 		/// <param name="view"></param>
-		public void Add(View view)
+		public void Add(UIElement view)
 		{
 			Children.Add(view);
-		}
-
-		public new IEnumerator GetEnumerator()
-		{
-			return this.GetChildren().GetEnumerator();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)

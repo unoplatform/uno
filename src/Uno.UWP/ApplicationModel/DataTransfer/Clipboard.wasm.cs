@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 
 		[JSExport]
-		public static int DispatchContentChanged()
+		internal static int DispatchContentChanged()
 		{
 			OnContentChanged();
 			return 0;

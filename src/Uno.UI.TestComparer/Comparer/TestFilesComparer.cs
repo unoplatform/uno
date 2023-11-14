@@ -57,7 +57,7 @@ namespace Uno.UI.TestComparer.Comparer
 						Files = files.AsParallel().ToArray(),
 					};
 
-			var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
+			var allFolders = LogForeach(q, i => Helpers.WriteLineWithTime($"Processed {i.Path}")).ToArray();
 
 			testResult.Folders.AddRange(allFolders.Select((p, index) => (index, p.Path)).AsParallel());
 
@@ -168,7 +168,7 @@ namespace Uno.UI.TestComparer.Comparer
 								}
 								catch (Exception ex)
 								{
-									Console.WriteLine($"[ERROR] Failed to process [{folderInfo.Path}] and [{previousFolderInfo.Path}]\n({ex})");
+									Helpers.WriteLineWithTime($"[ERROR] Failed to process [{folderInfo.Path}] and [{previousFolderInfo.Path}]\n({ex})");
 								}
 							}
 

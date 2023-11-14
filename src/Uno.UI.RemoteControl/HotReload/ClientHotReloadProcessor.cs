@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,14 +20,13 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	private string? _projectPath;
 	private string[]? _xamlPaths;
 	private readonly IRemoteControlClient _rcClient;
+	private HotReloadMode? _forcedHotReloadMode;
 
-	private static readonly Logger _log = typeof(ClientHotReloadProcessor).Log();
 	private Dictionary<string, string>? _msbuildProperties;
 
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 	{
 		_rcClient = rcClient;
-		InitializeMetadataUpdater();
 	}
 
 	partial void InitializeMetadataUpdater();
@@ -40,14 +40,12 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
 		switch (frame.Name)
 		{
-#if __WASM__ || __SKIA__
 			case AssemblyDeltaReload.Name:
 				AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content)!);
 				break;
-#endif
 
 			case FileReload.Name:
-				await PartialReload(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
+				await ProcessFileReload(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
 				break;
 
 			case HotReloadWorkspaceLoadResult.Name:
@@ -63,6 +61,23 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		}
 
 		return;
+	}
+
+	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
+	{
+		if ((
+				_forcedHotReloadMode is null
+				&& !_supportsLightweightHotReload
+				&& !_serverMetadataUpdatesEnabled
+				&& _supportsXamlReader)
+			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
+		{
+			ReloadFileWithXamlReader(fileReload);
+		}
+		else
+		{
+			await PartialReload(fileReload);
+		}
 	}
 
 	private async Task ConfigureServer()
@@ -89,13 +104,16 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				}
 			}
 
-			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), config.MSBuildProperties);
+			_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
+
+			ConfigureHotReloadMode();
+			InitializeMetadataUpdater();
+			InitializePartialReload();
+			InitializeXamlReader();
+
+			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
 
 			await _rcClient.SendMessage(message);
-
-			_msbuildProperties = message.MSBuildProperties;
-
-			InitializePartialReload();
 		}
 		else
 		{
@@ -104,5 +122,37 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				this.Log().LogError("Unable to find ProjectConfigurationAttribute");
 			}
 		}
+	}
+
+	private void ConfigureHotReloadMode()
+	{
+		var unoHotReloadMode = GetMSBuildProperty("UnoHotReloadMode");
+
+		if (!string.IsNullOrEmpty(unoHotReloadMode))
+		{
+			if (!Enum.TryParse<HotReloadMode>(unoHotReloadMode, true, out var hotReloadMode))
+			{
+				throw new NotSupportedException($"The hot reload mode {unoHotReloadMode} is not supported.");
+			}
+
+			_forcedHotReloadMode = hotReloadMode;
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Forced Hot Reload Mode:{_forcedHotReloadMode}");
+			}
+		}
+	}
+
+	private string GetMSBuildProperty(string property, string defaultValue = "")
+	{
+		var output = defaultValue;
+
+		if (_msbuildProperties is not null && !_msbuildProperties.TryGetValue(property, out output))
+		{
+			return defaultValue;
+		}
+
+		return output;
 	}
 }

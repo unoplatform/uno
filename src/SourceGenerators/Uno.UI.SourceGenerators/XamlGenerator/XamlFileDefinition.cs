@@ -65,13 +65,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (obj is XamlFileDefinition xfd)
 			{
-				return ReferenceEquals(this, xfd)
-					|| string.Equals(UniqueID, xfd.UniqueID, StringComparison.InvariantCultureIgnoreCase);
+				return Equals(xfd);
 			}
 
 			return false;
 		}
 
-		public override int GetHashCode() => (UniqueID != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID) : 0);
+		public override int GetHashCode() => UniqueID != null
+			? StringComparer.InvariantCultureIgnoreCase.GetHashCode(UniqueID)
+			: 0;
 	}
 }

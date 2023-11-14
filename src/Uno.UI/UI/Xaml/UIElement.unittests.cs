@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public Func<Size, Size> DesiredSizeSelector { get; set; }
+		internal Func<Size, Size> DesiredSizeSelector { get; set; }
 
 		public IntPtr Handle { get; set; }
 

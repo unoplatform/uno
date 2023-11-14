@@ -32,6 +32,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		internal const string ParseContextPropertyName = "__ParseContext_";
 		internal const string ParseContextPropertyType = "global::Uno.UI.Xaml.XamlParseContext";
+		internal const string ParseContextGetterMethod = "GetParseContext";
+
+		private static readonly char[] _commaArray = new[] { ',' };
 
 		private readonly Uno.Roslyn.MSBuildItem[] _xamlSourceFiles;
 		private readonly string[] _xamlSourceLinks;
@@ -77,7 +80,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _skipUserControlsInVisualTree;
 
 		/// <summary>
-		/// Exists for compatibility only. This option should be removed in Uno 5 and fuzzy matching should be disabled.
+		/// Exists for compatibility only. This option should be removed in Uno 6 and fuzzy matching should be disabled.
 		/// </summary>
 		private readonly bool _enableFuzzyMatching;
 
@@ -185,7 +188,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_includeXamlNamespaces = context.GetMSBuildPropertyValue("IncludeXamlNamespacesProperty");
 
-			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 
 			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
 
@@ -235,7 +238,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableXamlFuzzyMatching"), out _enableFuzzyMatching))
 			{
-				_enableFuzzyMatching = true;
+				_enableFuzzyMatching = false;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out _disableBindableTypeProvidersGeneration))
@@ -255,7 +258,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					Key = i.Identity,
 					Value = i.GetMetadataValue("Mappings")
-						?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+						?.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries)
 						.Select(m => m.Trim())
 						.Where(m => !m.IsNullOrWhiteSpace())
 				})
@@ -387,8 +390,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
 
-				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				var includeXamlNamespaces = _includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
+				var includeXamlNamespaces = _includeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);

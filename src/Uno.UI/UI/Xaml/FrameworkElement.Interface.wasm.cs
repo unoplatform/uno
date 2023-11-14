@@ -45,11 +45,11 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		protected FrameworkElement(string htmlTag) : this(htmlTag, false)
+		private protected FrameworkElement(string htmlTag) : this(htmlTag, false)
 		{
 		}
 
-		protected FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
+		private protected FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
 		{
 			Initialize();
 
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
+			=> IFrameworkElementHelper.FindName(this, this, name);
 
 
 		public void Dispose()

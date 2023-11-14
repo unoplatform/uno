@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		{
 			if (IsEnabled())
 			{
-				((ToggleButton)Owner).AutomationPeerToggle();
+				((ToggleButton)Owner).AutomationToggleButtonOnToggle();
 			}
 		}
 

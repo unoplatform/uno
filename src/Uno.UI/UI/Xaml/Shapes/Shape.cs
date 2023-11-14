@@ -156,5 +156,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		internal override bool IsViewHit()
 			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
+		}
 	}
 }

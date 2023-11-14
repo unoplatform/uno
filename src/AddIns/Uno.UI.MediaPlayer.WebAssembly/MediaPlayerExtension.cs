@@ -363,7 +363,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (!_uri.IsAbsoluteUri || _uri.Scheme == "")
 			{
-				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart(new char[] { '/' }));
+				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart('/'));
 			}
 
 			if (_uri.IsLocalResource())

@@ -316,6 +316,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			scp.HorizontalOffset.Should().Be(0);
 			scp.VerticalOffset.Should().Be(0);
 		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Nested_ScrollViewers_WheelChanged()
+		{
+			var inner = new ScrollViewer
+			{
+				Height = 20,
+				Content = new Button
+				{
+					Height = 100,
+					Background = new SolidColorBrush(Colors.Green)
+				},
+			};
+
+			var outer = new ScrollViewer
+			{
+				Height = 150,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Red),
+							Height = 100,
+							Width = 200
+						},
+						inner,
+						new Rectangle
+						{
+							Fill = new SolidColorBrush(Colors.Blue),
+							Height = 100,
+							Width = 200
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = outer;
+
+			await WindowHelper.WaitForLoaded(outer);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(inner.GetAbsoluteBounds().GetCenter());
+			mouse.Wheel(-50, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, outer.VerticalOffset);
+			Assert.IsTrue(inner.VerticalOffset > 0);
+
+			mouse.Wheel(-500, steps: 5);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(outer.VerticalOffset > outer.ScrollableHeight / 2);
+			Assert.AreEqual(inner.ScrollableHeight, inner.VerticalOffset);
+		}
 #endif
 
 		[TestMethod]

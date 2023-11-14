@@ -54,7 +54,7 @@ partial class InputManager
 
 			originalSource.RaiseEvent(
 				UIElement.KeyDownEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus)
+				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 				{
 					CanBubbleNatively = false
 				}
@@ -84,7 +84,7 @@ partial class InputManager
 
 			originalSource.RaiseEvent(
 				UIElement.KeyUpEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus)
+				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 				{
 					CanBubbleNatively = false
 				}

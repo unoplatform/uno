@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<RollForward>Major</RollForward>
+		<RollForward>minor</RollForward>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -34,8 +34,14 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
-	<ItemGroup>
+	
+			<ItemGroup>
+				<!-- 
+					This forces the .net version to use, so the dev server will load the right core assemblies.
+					Even if we make sure to run the version from the right .net<7|8> directory, if the computer has a newer version of .net than the version used to compiled the target app, 
+					it might use that newer version (even if we have a RollFoward policy).
+					This works only when the dev-server is started in the .dll file directory! (Which is the case of hot-reload tests helper of the runtime-tests engine).
+				-->
 		<Content Update="Config\*.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
@@ -47,7 +53,7 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>
-	</ItemGroup>
+	</ItemGroup>	
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>

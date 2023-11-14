@@ -14,6 +14,7 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Windows.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Xaml.Core;
 
 #nullable enable
 
@@ -42,10 +43,29 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var padding = Padding;
-			var availableSizeWithoutPadding = availableSize.Subtract(padding);
-			var desiredSize = Inlines.Measure(availableSizeWithoutPadding);
+			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
+			var defaultLineHeight = GetComputedLineHeight();
+			var desiredSize = Inlines.Measure(availableSizeWithoutPadding, defaultLineHeight);
 
-			return desiredSize.Add(padding);
+			desiredSize = desiredSize.Add(padding);
+
+			if (GetUseLayoutRounding())
+			{
+				// In order to prevent text clipping as a result of layout rounding at
+				// scales other than 1.0x, the ceiling of the rescaled size is used.
+				var plateauScale = RootScale.GetRasterizationScaleForElement(this);
+				Size pageNodeSize = desiredSize;
+				desiredSize.Width = ((int)Math.Ceiling(pageNodeSize.Width * plateauScale)) / plateauScale;
+				desiredSize.Height = ((int)Math.Ceiling(pageNodeSize.Height * plateauScale)) / plateauScale;
+
+				// LsTextLine is not aware of layoutround and uses baseline height to place the rendered text.
+				// However, because the height of the *block is potentionally layoutround-ed up, we should adjust the
+				// placement of text by the difference.  Horizontal adjustment is not of concern since
+				// LsTextLine uses arranged size which is already layoutround-ed.
+				//_layoutRoundingHeightAdjustment = desiredSize.Height - pageNodeSize.Height;
+			}
+
+			return desiredSize;
 		}
 
 		private void ApplyFlowDirection(float width)
@@ -71,6 +91,26 @@ namespace Windows.UI.Xaml.Controls
 			return base.ArrangeOverride(finalSize);
 		}
 
+		/// <summary>
+		/// Gets the line height of the TextBlock either 
+		/// based on the LineHeight property or the default 
+		/// font line height.
+		/// </summary>
+		/// <returns>Computed line height</returns>
+		internal float GetComputedLineHeight()
+		{
+			var lineHeight = LineHeight;
+			if (!lineHeight.IsNaN() && lineHeight > 0)
+			{
+				return (float)lineHeight;
+			}
+			else
+			{
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+				return font.LineHeight;
+			}
+		}
+
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);
@@ -83,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		private Hyperlink? FindHyperlinkAt(Point point)
 		{
 			var padding = Padding;
-			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false);
+			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false)?.span;
 
 			if (span == null)
 			{

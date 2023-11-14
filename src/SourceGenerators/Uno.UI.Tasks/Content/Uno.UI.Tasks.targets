@@ -15,6 +15,7 @@
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.EmbeddedResourceInjector.EmbeddedResourceInjectorTask_v0" TaskFactory="TaskHostFactory" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsSelector.RuntimeAssetsSelectorTask_v0" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
@@ -80,10 +81,15 @@
 			<Output TaskParameter="AssignedFiles" ItemName="PRIResourceWithTargetPath" />
 		</AssignTargetPath>
 
+		<PropertyGroup>
+			<_ResourceOutputPath>$(IntermediateOutputPath)g\ResourcesGenerator</_ResourceOutputPath>
+			<_ResourceStampFile>$(IntermediateOutputPath)g\uno.stamp</_ResourceStampFile>
+		</PropertyGroup>
+
 		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(XamarinProjectType)"
-									 IntermediateOutputPath="$(IntermediateOutputPath)"
+									 OutputPath="$(_ResourceOutputPath)"
 									 DefaultLanguage="$(DefaultLanguage)"
 									 IsUnoHead="$(_IsUnoHead)"
 									 ProjectName="$(AssemblyName)"
@@ -93,7 +99,10 @@
 		</ResourcesGenerationTask_v0>
 		<ItemGroup>
 			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
-			<AndroidResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
+			<LibraryResourceDirectories Condition="'@(_UnoAndroidResources->Count ())' != '0' " Include="$(_ResourceOutputPath)\r">
+                <StampFile>$(_ResourceStampFile)</StampFile>
+            </LibraryResourceDirectories>
 			<EmbeddedResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Uno'" Include="@(GeneratedFiles)" />
 
 			<!-- Clear temporary group -->

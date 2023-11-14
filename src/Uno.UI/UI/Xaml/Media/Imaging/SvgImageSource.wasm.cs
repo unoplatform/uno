@@ -91,20 +91,5 @@ namespace Windows.UI.Xaml.Media.Imaging
 		internal override void ReportImageLoaded() => RaiseImageOpened();
 
 		internal override void ReportImageFailed(string errorMessage) => RaiseImageFailed(SvgImageSourceLoadStatus.Other);
-
-		public override string ToString()
-		{
-			if (AbsoluteUri is { } uri)
-			{
-				return $"{GetType().Name}/{uri}";
-			}
-
-			if (_stream is { } stream)
-			{
-				return $"{GetType().Name}/{stream.GetType()}";
-			}
-
-			return $"{GetType().Name}/-empty-";
-		}
 	}
 }

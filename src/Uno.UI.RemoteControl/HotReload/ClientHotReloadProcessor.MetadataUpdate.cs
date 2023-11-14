@@ -1,5 +1,8 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -9,166 +12,42 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
-using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
+#if !WINUI
+using Windows.System;
+#else
+using Microsoft.UI.Dispatching;
+#endif
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-partial class ClientHotReloadProcessor : IRemoteControlProcessor
+partial class ClientHotReloadProcessor
 {
 	private static int _isReloading;
 
-	private bool _linkerEnabled;
-	private HotReloadAgent _agent;
-	private ElementUpdateAgent? _elementAgent;
-	private static ClientHotReloadProcessor? _instance;
-	private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
+	private static ElementUpdateAgent? _elementAgent;
 
-	private ElementUpdateAgent ElementAgent
+	private static Logger _log = typeof(ClientHotReloadProcessor).Log();
+
+	private static ElementUpdateAgent ElementAgent
 	{
 		get
 		{
 			_elementAgent ??= new ElementUpdateAgent(s =>
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (_log.IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace(s);
+						_log.Trace(s);
 					}
 				});
 
 			return _elementAgent;
 		}
 	}
-
-	private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
-		=> _hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
-
-	/// <summary>
-	/// Waits for the server's hot reload workspace to be loaded
-	/// </summary>
-	/// <param name="ct"></param>
-	/// <returns></returns>
-	public Task<bool> WaitForWorkspaceLoaded(CancellationToken ct)
-		=> _hotReloadWorkloadSpaceLoaded.Task;
-
-	[MemberNotNull(nameof(_agent))]
-	partial void InitializeMetadataUpdater()
-	{
-		_instance = this;
-
-		_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
-
-		if (_linkerEnabled)
-		{
-			var message = "The application was compiled with the IL linker enabled, hot reload is disabled. " +
-						"See WasmShellILLinkerEnabled for more details.";
-
-			Console.WriteLine($"[ERROR] {message}");
-		}
-
-		_agent = new HotReloadAgent(s =>
-		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace(s);
-			}
-		});
-	}
-
-	private string[] GetMetadataUpdateCapabilities()
-	{
-		if (Type.GetType(HotReloadAgent.MetadataUpdaterType) is { } type)
-		{
-			if (type.GetMethod("GetCapabilities", BindingFlags.Static | BindingFlags.NonPublic) is { } getCapabilities)
-			{
-				if (getCapabilities.Invoke(null, Array.Empty<string>()) is string caps)
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"Metadata Updates runtime capabilities: {caps}");
-					}
-
-					return caps.Split(' ');
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Trace($"Runtime does not support Hot Reload (Invalid returned type for {HotReloadAgent.MetadataUpdaterType}.GetCapabilities())");
-					}
-				}
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Trace($"Runtime does not support Hot Reload (Unable to find method {HotReloadAgent.MetadataUpdaterType}.GetCapabilities())");
-				}
-			}
-		}
-		else
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Trace($"Runtime does not support Hot Reload (Unable to find type {HotReloadAgent.MetadataUpdaterType})");
-			}
-		}
-		return Array.Empty<string>();
-	}
-
-#if __WASM__ || __SKIA__
-	private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
-	{
-		if (assemblyDeltaReload.IsValid())
-		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
-			}
-
-			var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
-			var changedTypesReader = new BinaryReader(changedTypesStreams);
-
-			var delta = new UpdateDelta()
-			{
-				MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
-				ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
-				PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
-				ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
-				UpdatedTypes = ReadIntArray(changedTypesReader)
-			};
-
-			_agent.ApplyDeltas(new[] { delta });
-		}
-		else
-		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Failed to apply IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload})");
-			}
-		}
-	}
-
-	static int[] ReadIntArray(BinaryReader binaryReader)
-	{
-		var numValues = binaryReader.ReadInt32();
-		if (numValues == 0)
-		{
-			return Array.Empty<int>();
-		}
-
-		var values = new int[numValues];
-
-		for (var i = 0; i < numValues; i++)
-		{
-			values[i] = binaryReader.ReadInt32();
-		}
-
-		return values;
-	}
-#endif
 
 	private static async Task<bool> ShouldReload()
 	{
@@ -187,6 +66,8 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		return true;
 	}
 
+	internal static Window? CurrentWindow { get; set; }
+
 	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
 	{
 		if (!await ShouldReload())
@@ -196,8 +77,9 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 		try
 		{
+			UpdateGlobalResources(updatedTypes);
 
-			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
+			var handlerActions = ElementAgent?.ElementHandlerActions;
 
 			// Action: BeforeVisualTreeUpdate
 			// This is called before the visual tree is updated
@@ -207,7 +89,7 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 			var isCapturingState = true;
 			var treeIterator = EnumerateHotReloadInstances(
-					Window.Current.Content,
+					CurrentWindow?.Content,
 					async (fe, key) =>
 					{
 						// Get the original type of the element, in case it's been replaced
@@ -301,6 +183,151 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		}
 	}
 
+	/// <summary>
+	/// Updates App-level resources (from app.xaml) using the provided updated types list.
+	/// </summary>
+	private static void UpdateGlobalResources(Type[] updatedTypes)
+	{
+		var globalResourceTypes = updatedTypes
+			.Where(t => t?.FullName is { Length: > 0 } name
+				&& !name.Contains('+') // Ignore nested types
+				&& (name.IndexOf('#') switch
+				{
+					< 0 => name,
+					{ } sharp => name[..sharp],
+				}).EndsWith("GlobalStaticResources", StringComparison.OrdinalIgnoreCase)
+			)
+			.ToArray();
+
+		if (globalResourceTypes.Length != 0)
+		{
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.Debug($"Updating app resources");
+			}
+
+			MethodInfo? GetInitMethod(Type type, string name)
+			{
+				if (type.GetMethod(
+					name,
+					BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Array.Empty<Type>()) is { } initializeMethod)
+				{
+					return initializeMethod;
+				}
+				else
+				{
+					if (_log.IsEnabled(LogLevel.Debug))
+					{
+						_log.Debug($"{name} method not found on {type}");
+					}
+
+					return null;
+				}
+			}
+
+			// First, register all dictionaries
+			foreach (var globalResourceType in globalResourceTypes)
+			{
+				// Follow the initialization sequence implemented by
+				// App.InitializeComponent (Initialize then RegisterResourceDictionariesBySourceLocal).
+
+				if (GetInitMethod(globalResourceType, "Initialize") is { } initializeMethod)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Initializing resources for {globalResourceType}");
+					}
+
+					// Invoke initializers so default types and other resources get updated.
+					initializeMethod.Invoke(null, null);
+				}
+
+				// This should be called by the init of root app GlobalStaticResource.Initialize(), but here as we are reloading only the StaticResources of the dependency library,
+				// we have to invoke it to make sure that all registrations are updated (including the "ms-appx://[NAME_OF_MY_LIBRARY]/...").
+				if (GetInitMethod(globalResourceType, "RegisterResourceDictionariesBySource") is { } registerResourceDictionariesBySourceMethod)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Initializing resources sources for {globalResourceType}");
+					}
+
+					// Invoke initializers so default types and other resources get updated.
+					registerResourceDictionariesBySourceMethod.Invoke(null, null);
+				}
+
+				// This is needed for the head only (causes some extra invalid registration ins the ResourceResolver, but it has no negative impact)
+				if (GetInitMethod(globalResourceType, "RegisterResourceDictionariesBySourceLocal") is { } registerResourceDictionariesBySourceLocalMethod)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Initializing local resources sources for {globalResourceType}");
+					}
+
+					// Invoke initializers so default types and other resources get updated.
+					registerResourceDictionariesBySourceLocalMethod.Invoke(null, null);
+				}
+			}
+
+
+#if !(WINUI || WINDOWS_UWP)
+			// Then find over updated types to find the ones that are implementing IXamlResourceDictionaryProvider
+			List<Uri> updatedDictionaries = new();
+
+			foreach (var updatedType in updatedTypes)
+			{
+				if (updatedType.GetInterfaces().Contains(typeof(IXamlResourceDictionaryProvider)))
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Updating resources for {updatedType}");
+					}
+
+					// This assumes that we're using an explicit implementation of IXamlResourceDictionaryProvider, which
+					// provides an instance property that returns the new dictionary.
+					var staticDictionaryProperty = updatedType
+						.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+
+					if (staticDictionaryProperty?.GetMethod is { } getMethod)
+					{
+						if (getMethod.Invoke(null, null) is IXamlResourceDictionaryProvider provider
+							&& provider.GetResourceDictionary() is { Source: not null } dictionary)
+						{
+							updatedDictionaries.Add(dictionary.Source);
+						}
+					}
+				}
+			}
+
+			// Traverse the current app's tree to replace dictionaries matching the source property
+			// with the updated ones.
+			UpdateResourceDictionaries(updatedDictionaries, Application.Current.Resources);
+
+			// Force the app reevaluate global resources changes
+			Application.Current.UpdateResourceBindingsForHotReload();
+#endif
+		}
+	}
+
+#if !(WINUI || WINDOWS_UWP)
+	/// <summary>
+	/// Refreshes ResourceDictionary instances that have been detected as updated
+	/// </summary>
+	/// <param name="updatedDictionaries"></param>
+	/// <param name="root"></param>
+	private static void UpdateResourceDictionaries(List<Uri> updatedDictionaries, ResourceDictionary root)
+	{
+		var dictionariesToRefresh = root
+			.MergedDictionaries
+			.Where(merged => updatedDictionaries.Any(d => d == merged.Source))
+			.ToArray();
+
+		foreach (var merged in dictionariesToRefresh)
+		{
+			root.RefreshMergedDictionary(merged);
+		}
+	}
+#endif
+
 	private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
 	{
 		if (replacementType.GetConstructor(Array.Empty<Type>()) is { } creator)
@@ -317,28 +344,9 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				newInstanceFE is not null)
 			{
 				handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
-			}
-			switch (instance)
-			{
-#if __IOS__
-				case UserControl userControl:
-					if (newInstance is UIKit.UIView newUIViewContent)
-					{
-						SwapViews(userControl, newUIViewContent);
-					}
-					break;
-#endif
-				case ContentControl content:
-					if (newInstance is ContentControl newContent)
-					{
-						SwapViews(content, newContent);
-					}
-					break;
-			}
 
-			if (instanceFE is not null &&
-				newInstanceFE is not null)
-			{
+				SwapViews(instanceFE, newInstanceFE);
+
 				handler?.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
 			}
 		}
@@ -366,9 +374,23 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 			_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 		}
 
-		_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
-			Windows.UI.Core.CoreDispatcherPriority.Normal,
-			async () => await ReloadWithUpdatedTypes(types));
+#if WINUI
+		var dispatcherQueue = CurrentWindow?.DispatcherQueue;
+		if (dispatcherQueue is not null)
+		{
+			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(types));
+		}
+#else
+		var dispatcher = CurrentWindow?.Dispatcher;
+		if (dispatcher is not null)
+		{
+			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(types));
+		}
+#endif
+		else if (_log.IsEnabled(LogLevel.Warning))
+		{
+			_log.Warn($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload");
+		}
 	}
 }
 

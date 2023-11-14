@@ -53,6 +53,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 			typeof(FontWeight),
 		};
 
+		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
+
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
 			_fileDefinition = xamlFileDefinition;
@@ -244,7 +246,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			value ??= "";
 
-			if (value.Contains("("))
+			if (value.Contains('('))
 			{
 				foreach (var ns in _fileDefinition.Namespaces)
 				{
@@ -262,12 +264,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					do
 					{
-						if (!match.Value.Contains(":"))
+						if (!match.Value.Contains(':'))
 						{
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split(new[] { '.' });
+							var parts = match.Value.Trim(_parenthesesArray).Split('.');
 
 							if (parts.Length == 2)
 							{
@@ -534,7 +536,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value is string targetPath)
 			{
 				// This builds property setters for specified member setter.
-				var separatorIndex = targetPath.IndexOf(".", StringComparison.Ordinal);
+				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
 				var propertyName = targetPath.Substring(separatorIndex + 1);
 
@@ -1264,9 +1266,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var sourceType = propertyType;
 				var methodName = createFromString.MethodName;
-				if (createFromString.MethodName.Contains("."))
+				if (createFromString.MethodName.Contains('.'))
 				{
-					var splitIndex = createFromString.MethodName.LastIndexOf(".", StringComparison.Ordinal);
+					var splitIndex = createFromString.MethodName.LastIndexOf('.');
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);
 					sourceType = TypeResolver.FindType(typeName);
 					methodName = createFromString.MethodName.Substring(splitIndex + 1);

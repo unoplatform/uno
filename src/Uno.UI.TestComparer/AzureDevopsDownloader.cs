@@ -47,10 +47,10 @@ namespace Uno.UI.TestComparer
 				targetBranchName = "refs/heads/" + targetBranchName;
 			}
 
-			Console.WriteLine($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {targetBranchName}, {buildId}, {runLimit})");
+			Helpers.WriteLineWithTime($"Getting definitions ({basePath}, {project}, {definitionName}, {artifactName}, {sourceBranch}, {targetBranchName}, {buildId}, {runLimit})");
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
-			Console.WriteLine("Getting builds");
+			Helpers.WriteLineWithTime("Getting builds");
 			var builds = await client.GetBuildsAsync(
 				project,
 				definitions: new[] { definitions.First().Id },
@@ -82,7 +82,7 @@ namespace Uno.UI.TestComparer
 
 					if (artifacts.Any(a => a.Name == artifactName))
 					{
-						Console.WriteLine($"Getting artifact for build {build.Id}");
+						Helpers.WriteLineWithTime($"Getting artifact for build {build.Id}");
 						using (var stream = await client.GetArtifactContentZipAsync(project, build.Id, artifactName))
 						{
 							using (var f = File.OpenWrite(tempFile))
@@ -91,7 +91,7 @@ namespace Uno.UI.TestComparer
 							}
 						}
 
-						Console.WriteLine($"Extracting artifact for build {build.Id}");
+						Helpers.WriteLineWithTime($"Extracting artifact for build {build.Id}");
 
 						fullPath = fullPath.Replace("\\\\", "\\");
 
@@ -120,12 +120,12 @@ namespace Uno.UI.TestComparer
 					}
 					else
 					{
-						Console.WriteLine($"Skipping download artifact for build {build.Id} (The artifact {artifactName} cannot be found)");
+						Helpers.WriteLineWithTime($"Skipping download artifact for build {build.Id} (The artifact {artifactName} cannot be found)");
 					}
 				}
 				else
 				{
-					Console.WriteLine($"Skipping already downloaded build {build.Id} artifacts");
+					Helpers.WriteLineWithTime($"Skipping already downloaded build {build.Id} artifacts");
 				}
 			}
 

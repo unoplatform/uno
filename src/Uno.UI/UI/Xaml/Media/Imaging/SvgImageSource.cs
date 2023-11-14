@@ -152,4 +152,21 @@ public partial class SvgImageSource : ImageSource
 #endif
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
+
+#if __CROSSRUNTIME__
+	public override string ToString()
+	{
+		if (AbsoluteUri is { } uri)
+		{
+			return $"{GetType().Name}/{uri}";
+		}
+
+		if (_stream is { } stream)
+		{
+			return $"{GetType().Name}/{stream.GetType()}";
+		}
+
+		return $"{GetType().Name}/-empty-";
+	}
+#endif
 }

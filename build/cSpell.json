@@ -27,6 +27,7 @@
 	"Docfx",
 	"ellipsize",
 	"Expando",
+	"flyouts",
 	"Framebuffer",
 	"Gamepad",
 	"gamepads",
@@ -45,6 +46,7 @@
 	"mergeable",
 	"MSAL",
 	"msbuild",
+	"MVUX",
 	"MVVM",
 	"NETSDK",
 	"netstandard",
@@ -58,6 +60,7 @@
 	"POSIX",
 	"reentrantly",
 	"Resizetizer",
+	"resw",
 	"roadmap",
 	"sandboxed",
 	"Segoe",
@@ -85,6 +88,7 @@
   ],
   "ignoreWords": [
 	"ADAL",
+	"appsettings",
 	"Authenticode",
 	"automagically",
 	"Divio's",
@@ -109,7 +113,10 @@
 	"Mergify",
 	"netstd",
 	"nventive",
+	"odel",
+	"pdate",
 	"Ronica",
+	"Serilog",
 	"Singh",
 	"slnf",
 	"Stetho",
@@ -123,7 +130,8 @@
 	"Findlay",
 	"Logpoints",
 	"addin",
-	"Yowza"
+	"Yowza",
+	"unpackaged"
   ],
   "patterns": [
 	{

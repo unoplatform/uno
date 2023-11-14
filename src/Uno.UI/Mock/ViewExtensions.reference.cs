@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml;
+using Uno.Collections;
 
 namespace Uno.UI
 {
@@ -14,7 +12,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		internal static IEnumerable<UIElement> GetChildren(this UIElement group) => throw new NotImplementedException();
+		internal static MaterializableList<UIElement> GetChildren(this UIElement group) => throw new NotImplementedException();
 
 		internal static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
 

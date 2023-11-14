@@ -27,7 +27,11 @@ namespace Uno.UI.Xaml
 				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
 				return trimmedPath;
 			}
+#if NETSTANDARD
 			else if (relativeTargetPath.StartsWith("/", StringComparison.Ordinal))
+#else
+			else if (relativeTargetPath.StartsWith('/'))
+#endif
 			{
 				// Paths that start with '/' mean they're relative to the root (ie, absolute paths).
 				// We remove the leading / because that's what the callers expect.

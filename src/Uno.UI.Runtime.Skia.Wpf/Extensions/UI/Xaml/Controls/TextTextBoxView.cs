@@ -33,7 +33,11 @@ internal class TextTextBoxView : WpfTextBoxView
 	public override (int start, int length) Selection
 	{
 		get => (_textBox.SelectionStart, _textBox.SelectionLength);
-		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
+		set
+		{
+			(_textBox.SelectionStart, _textBox.SelectionLength) = value;
+			(_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length) = value;
+		}
 	}
 
 	public override (int start, int length) SelectionBeforeKeyDown

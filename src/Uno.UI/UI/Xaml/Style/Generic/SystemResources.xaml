@@ -72,8 +72,8 @@
 			<x:Double x:Key="ComboBoxThemeMinWidth">64</x:Double>
 			<x:Double x:Key="ComboBoxPopupThemeMinWidth">80</x:Double>
 			<x:Double x:Key="ComboBoxPopupThemeTouchMinWidth">240</x:Double>
-			<x:Double x:Key="ControlContentThemeFontSize">15</x:Double>
-			<x:Double x:Key="ContentControlFontSize">15</x:Double>
+			<x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+			<x:Double x:Key="ContentControlFontSize">14</x:Double>
 			<x:Double x:Key="ContentDialogMinWidth">320</x:Double>
 			<x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
 			<x:Double x:Key="ContentDialogMinHeight">184</x:Double>
@@ -1378,8 +1378,8 @@
 			<x:Double x:Key="ComboBoxThemeMinWidth">64</x:Double>
 			<x:Double x:Key="ComboBoxPopupThemeMinWidth">80</x:Double>
 			<x:Double x:Key="ComboBoxPopupThemeTouchMinWidth">240</x:Double>
-			<x:Double x:Key="ControlContentThemeFontSize">15</x:Double>
-			<x:Double x:Key="ContentControlFontSize">15</x:Double>
+			<x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+			<x:Double x:Key="ContentControlFontSize">14</x:Double>
 			<x:Double x:Key="ContentDialogMinWidth">320</x:Double>
 			<x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
 			<x:Double x:Key="ContentDialogMinHeight">184</x:Double>
@@ -2672,8 +2672,8 @@
 			<x:Double x:Key="ComboBoxThemeMinWidth">64</x:Double>
 			<x:Double x:Key="ComboBoxPopupThemeMinWidth">80</x:Double>
 			<x:Double x:Key="ComboBoxPopupThemeTouchMinWidth">240</x:Double>
-			<x:Double x:Key="ControlContentThemeFontSize">15</x:Double>
-			<x:Double x:Key="ContentControlFontSize">15</x:Double>
+			<x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+			<x:Double x:Key="ContentControlFontSize">14</x:Double>
 			<x:Double x:Key="ContentDialogMinWidth">320</x:Double>
 			<x:Double x:Key="ContentDialogMaxWidth">548</x:Double>
 			<x:Double x:Key="ContentDialogMinHeight">184</x:Double>
