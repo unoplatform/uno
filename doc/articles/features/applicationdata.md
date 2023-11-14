@@ -9,16 +9,16 @@ uid: Uno.Features.ApplicationData
 To store persistent application data and user settings, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
 
 Legend
-  - ✔️  Supported
+  - ✔  Supported
 
 | Picker         | WinUI/UWP   | WebAssembly | Android | iOS/Mac Catalyst   | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `LocalFolder` | ✔️   | ✔️   | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| `RoamingFolder` | ✔️   | ✔️  | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| `LocalCacheFolder`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
-| `TemporaryFolder`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
-| `LocalSettings`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
-| `RoamingSettings`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
+| `LocalFolder` | ✔   | ✔   | ✔     | ✔    | ✔   | ✔  | ✔  |
+| `RoamingFolder` | ✔   | ✔  | ✔     | ✔    | ✔   | ✔  | ✔  |
+| `LocalCacheFolder`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
+| `TemporaryFolder`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
+| `LocalSettings`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
+| `RoamingSettings`   | ✔   | ✔          | ✔     | ✔| ✔   | ✔  | ✔  |
 
 Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
 
