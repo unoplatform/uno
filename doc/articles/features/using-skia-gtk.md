@@ -31,7 +31,7 @@ or by using the Visual Studio ["project new" templates](xref:Uno.GetStarted.vs20
 
 It may be required, depending on the environment, to use software rendering.
 
-To do so, immediately before the line `host.Run()` in you `main.cs` file, add the following:
+To do so, immediately before the line `host.Run()` in you `Program.cs` file, add the following:
 ```
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```
