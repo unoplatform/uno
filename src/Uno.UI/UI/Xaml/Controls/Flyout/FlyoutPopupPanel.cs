@@ -10,6 +10,8 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
@@ -43,20 +45,42 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnPointerPressedDismissed(PointerRoutedEventArgs args)
 		{
-			if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement
-				|| !Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
+			if (this.Log().IsEnabled(LogLevel.Debug)) this.Log().Debug($"{this.GetDebugName()} Dismissing flyout (OverlayInputPassThroughElement:{Flyout.OverlayInputPassThroughElement.GetDebugIdentifier()}).");
+
+			if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement)
+			{
+				return;
+			}
+
+			if (!Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
 			{
 				// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
+						+ $" is not a parent of the Flyout ({Flyout.GetAllParents().Select(elt => elt.GetDebugName()).Reverse().JoinBy(">")}).");
+
 				return;
 			}
 
 			var point = args.GetCurrentPoint(null);
-			var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(this);
+			var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
 			var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot, hitTestIgnoringThis);
 
-			if (elementHitUnderOverlay is null
-				|| !VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
+			if (elementHitUnderOverlay is null)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element is null.");
+
+				return;
+			}
+
+			if(!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+					this.Log().Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
+						+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
+
 				// The element found by the HitTest is not a child of the pass-through element.
 				return;
 			}
@@ -65,6 +89,10 @@ namespace Microsoft.UI.Xaml.Controls
 			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
 #else
 			XamlRoot?.VisualTree.RootVisual.ReRoutePointerDownEvent(args, from: this, to: elementHitUnderOverlay);
+#if __IOS__
+			// On iOS, the FlyoutPopupPanel does not have nay parent (cf. https://github.com/unoplatform/uno/issues/14405), so we are forcefully causing the ProcessPointerDown here.
+			XamlRoot?.VisualTree.RootVisual.ProcessPointerDown(args);
+#endif
 #endif
 		}
 	}

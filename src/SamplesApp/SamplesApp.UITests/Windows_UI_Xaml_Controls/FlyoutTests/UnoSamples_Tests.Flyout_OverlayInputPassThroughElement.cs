@@ -57,9 +57,9 @@ partial class Flyout_Tests : PopupUITestBase
 	}
 
 #if !IS_RUNTIME_UI_TESTS
-	[Test][AutoRetry] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_DontPassThrough_withOn() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOn");
-	[Test][AutoRetry] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_DontPassThrough_withOff() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOff");
-	[Test][AutoRetry] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_DontPassThrough_withAuto() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withAuto");
+	[Test][AutoRetry] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withOn() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOn");
+	[Test][AutoRetry] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withOff() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withOff");
+	[Test][AutoRetry] public Task FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough_withAuto() => FlyoutTest_When_OverlayInputPassThroughElement_Then_PassThrough("withAuto");
 #else
 	[Test]
 	[AutoRetry]

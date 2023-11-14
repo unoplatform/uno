@@ -38,10 +38,10 @@ namespace Microsoft.UI.Xaml
 	internal static class GetHitTestabilityExtensions
 	{
 		/// <summary>
-		/// Wrap the given hitTest delegate to exclude (i.e. consider as <see cref="HitTestability.Invisible"/>) the provided element.
+		/// Wrap the given hitTest delegate to exclude (i.e. consider as <see cref="HitTestability.Collapsed"/>) the provided element.
 		/// </summary>
 		/// <param name="hitTest">The hit-testing delegate to wrap.</param>
-		/// <param name="element">The element that should be considered as <see cref="HitTestability.Invisible"/>)</param>
+		/// <param name="element">The element that should be considered as <see cref="HitTestability.Collapsed"/>)</param>
 		/// <returns></returns>
 		internal static GetHitTestability Except(this GetHitTestability hitTest, UIElement element)
 		{
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (elt == element)
 				{
-					return (HitTestability.Invisible, hitTest);
+					return (HitTestability.Collapsed, hitTest);
 				}
 				else
 				{
