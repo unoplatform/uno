@@ -95,7 +95,7 @@ public partial class TextBox
 			{
 				global::System.Diagnostics.Debug.Assert(!IsSkiaTextBox || _selection.length == 0);
 				_historyIndex++;
-				_history.RemoveAllAt( _historyIndex);
+				_history.RemoveAllAt(_historyIndex);
 				_history.Add((
 					new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
 					_selectionWhenTypingStarted.selectionStart,
@@ -122,10 +122,10 @@ public partial class TextBox
 	}
 
 	public static DependencyProperty CanRedoProperty { get; } =
-	DependencyProperty.Register(
-		nameof(CanRedo), typeof(bool),
-		typeof(TextBox),
-		new FrameworkPropertyMetadata(true));
+		DependencyProperty.Register(
+			nameof(CanRedo), typeof(bool),
+			typeof(TextBox),
+			new FrameworkPropertyMetadata(true));
 
 	public bool CanRedo
 	{
@@ -746,7 +746,7 @@ public partial class TextBox
 			var start = Math.Min(selectionStart, selectionStart + selectionLength);
 			var end = Math.Max(selectionStart, selectionStart + selectionLength);
 			text = text[..start] + text[end..];
-			CommitAction(new DeleteAction(oldText, text, selectionStart,  selectionLength));
+			CommitAction(new DeleteAction(oldText, text, selectionStart, selectionLength));
 			selectionLength = 0;
 			selectionStart = start;
 		}
@@ -1263,7 +1263,7 @@ public partial class TextBox
 	private void CommitAction(TextBoxAction action)
 	{
 		_historyIndex++;
-		_history.RemoveAllAt( _historyIndex);
+		_history.RemoveAllAt(_historyIndex);
 		_history.Add((action, _selection.start, _selection.length, _selectionEndsAtTheStart));
 		UpdateCanUndoRedo();
 	}
@@ -1290,7 +1290,7 @@ public partial class TextBox
 			case ReplaceAction r:
 				// remember that we use the possibly-negative format in _pendingSelection
 				_pendingSelection = currentAction.selectionEndsAtTheStart ?
-					(currentAction.selectionStart + currentAction.selectionLength, -currentAction.selectionLength):
+					(currentAction.selectionStart + currentAction.selectionLength, -currentAction.selectionLength) :
 					(currentAction.selectionStart, currentAction.selectionLength);
 				Text = r.OldText;
 				break;
@@ -1347,11 +1347,13 @@ public partial class TextBox
 	}
 
 	private abstract record TextBoxAction;
+
 	/// <summary>
 	/// Instead of remembered what was removed and what was added in place, we just remember the initial and final states
 	/// as well as where the caret will be if we Redo. This is used by typing, paste, etc.
 	/// </summary>
 	private record ReplaceAction(string OldText, string NewText, int caretIndexAfterReplacement) : TextBoxAction;
+
 	/// <summary>
 	/// Unlike other forms of text modification, Delete doesn't follow the simple undo sequence of *unapply modification* -> *select what was selected when the action happened*
 	/// So we need to specifically need to remember what selection to go to when we Undo depending on how we got here (e.g. ctrl vs no ctrl)
