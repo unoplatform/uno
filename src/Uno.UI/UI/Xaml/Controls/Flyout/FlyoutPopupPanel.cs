@@ -75,11 +75,12 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if(!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
+			if (!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
-					this.Log().Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
-						+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
+					this.Log()
+						.Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
+							+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
 
 				// The element found by the HitTest is not a child of the pass-through element.
 				return;
