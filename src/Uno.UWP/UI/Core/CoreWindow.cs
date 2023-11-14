@@ -11,163 +11,162 @@ using Windows.UI.Input;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
 
-namespace Windows.UI.Core
+namespace Windows.UI.Core;
+
+/// <summary>
+/// Represents the UWP app with input events and basic user interface behaviors.
+/// </summary>
+public partial class CoreWindow
 {
-	/// <summary>
-	/// Represents the UWP app with input events and basic user interface behaviors.
-	/// </summary>
-	public partial class CoreWindow
+	[ThreadStatic]
+	private static CoreWindow? _current;
+
+	private Point? _pointerPosition;
+	private CoreWindowActivationState _lastActivationState;
+
+	internal static CoreWindow GetOrCreateForCurrentThread() => _current ??= new CoreWindow();
+
+	private CoreWindow()
 	{
-		[ThreadStatic]
-		private static CoreWindow? _current;
+		_current = this;
+		Main ??= this;
 
-		private Point? _pointerPosition;
-		private CoreWindowActivationState _lastActivationState;
+		InitializePartial();
+	}
 
-		internal static CoreWindow GetOrCreateForCurrentThread() => _current ??= new CoreWindow();
+	partial void InitializePartial();
 
-		private CoreWindow()
-		{
-			_current = this;
-			Main ??= this;
+	/// <summary>
+	/// Occurs when the window size is changed.
+	/// </summary>
+	public event TypedEventHandler<CoreWindow, WindowSizeChangedEventArgs>? SizeChanged;
 
-			InitializePartial();
-		}
+	/// <summary>
+	/// Is fired when the window completes activation or deactivation.
+	/// </summary>
+	public event TypedEventHandler<CoreWindow, WindowActivatedEventArgs>? Activated;
 
-		partial void InitializePartial();
+	/// <summary>
+	/// Is fired when the window visibility is changed.
+	/// </summary>
+	public event TypedEventHandler<CoreWindow, VisibilityChangedEventArgs>? VisibilityChanged;
 
-		/// <summary>
-		/// Occurs when the window size is changed.
-		/// </summary>
-		public event TypedEventHandler<CoreWindow, WindowSizeChangedEventArgs>? SizeChanged;
+	internal static CoreWindow? Main { get; private set; }
 
-		/// <summary>
-		/// Is fired when the window completes activation or deactivation.
-		/// </summary>
-		public event TypedEventHandler<CoreWindow, WindowActivatedEventArgs>? Activated;
+	/// <summary>
+	/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
+	/// </summary>
+	public Rect Bounds { get; private set; }
+	/// <summary>
+	/// Gets the event dispatcher for the window.
+	/// </summary>
+	public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
-		/// <summary>
-		/// Is fired when the window visibility is changed.
-		/// </summary>
-		public event TypedEventHandler<CoreWindow, VisibilityChangedEventArgs>? VisibilityChanged;
+	public DispatcherQueue DispatcherQueue => DispatcherQueue.Main;
 
-		internal static CoreWindow? Main { get; private set; }
-
-		/// <summary>
-		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
-		/// </summary>
-		public Rect Bounds { get; private set; }
-		/// <summary>
-		/// Gets the event dispatcher for the window.
-		/// </summary>
-		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
-
-		public DispatcherQueue DispatcherQueue => DispatcherQueue.Main;
-
-		/// <summary>
-		/// Gets the client coordinates of the pointer.
-		/// </summary>
-		public Point PointerPosition
-		{
-			get => _pointerPosition ?? LastPointerEvent?.GetLocation(null).Position ?? new Point();
-			set => _pointerPosition = value;
-		}
+	/// <summary>
+	/// Gets the client coordinates of the pointer.
+	/// </summary>
+	public Point PointerPosition
+	{
+		get => _pointerPosition ?? LastPointerEvent?.GetLocation(null).Position ?? new Point();
+		set => _pointerPosition = value;
+	}
 
 #if !__WASM__ && !__MACOS__ && !__SKIA__
-		/// <summary>
-		/// Gets or sets the cursor used by the app.
-		/// </summary>
-		[Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
+	/// <summary>
+	/// Gets or sets the cursor used by the app.
+	/// </summary>
+	[Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+	public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif
 
-		/// <summary>
-		/// Gets a value that indicates whether the window is visible.
-		/// </summary>
-		public bool Visible { get; private set; }
+	/// <summary>
+	/// Gets a value that indicates whether the window is visible.
+	/// </summary>
+	public bool Visible { get; private set; }
 
-		/// <summary>
-		/// Gets a value that indicates the activation state of the window.
-		/// </summary>
-		public CoreWindowActivationMode ActivationMode { get; private set; } = CoreWindowActivationMode.None;
+	/// <summary>
+	/// Gets a value that indicates the activation state of the window.
+	/// </summary>
+	public CoreWindowActivationMode ActivationMode { get; private set; } = CoreWindowActivationMode.None;
 
-		internal IPointerEventArgs? LastPointerEvent { get; set; }
+	internal IPointerEventArgs? LastPointerEvent { get; set; }
 
-		/// <summary>
-		/// Gets the CoreWindow instance for the currently active thread.
-		/// Always null in Uno.WinUI.
-		/// </summary>
-		public static CoreWindow? GetForCurrentThread() => GetOrCreateForCurrentThread();
+	/// <summary>
+	/// Gets the CoreWindow instance for the currently active thread.
+	/// Always null in Uno.WinUI.
+	/// </summary>
+	public static CoreWindow? GetForCurrentThread() => GetOrCreateForCurrentThread();
 
 #pragma warning disable RS0030 // GetForCurrentThread is banned
-		/// <summary>
-		/// Use this instead of GetForCurrentThread throughout this codebase
-		/// to prove it is intentional (the property will be null in future versions of Uno.WinUI).
-		/// </summary>
-		internal static CoreWindow? GetForCurrentThreadSafe() => GetForCurrentThread();
+	/// <summary>
+	/// Use this instead of GetForCurrentThread throughout this codebase
+	/// to prove it is intentional (the property will be null in future versions of Uno.WinUI).
+	/// </summary>
+	internal static CoreWindow? GetForCurrentThreadSafe() => GetForCurrentThread();
 #pragma warning restore RS0030
 
-		public CoreVirtualKeyStates GetAsyncKeyState(System.VirtualKey virtualKey)
-			=> KeyboardStateTracker.GetAsyncKeyState(virtualKey);
+	public CoreVirtualKeyStates GetAsyncKeyState(System.VirtualKey virtualKey)
+		=> KeyboardStateTracker.GetAsyncKeyState(virtualKey);
 
-		public CoreVirtualKeyStates GetKeyState(System.VirtualKey virtualKey)
-			=> KeyboardStateTracker.GetKeyState(virtualKey);
+	public CoreVirtualKeyStates GetKeyState(System.VirtualKey virtualKey)
+		=> KeyboardStateTracker.GetKeyState(virtualKey);
 
-		internal void OnActivated(WindowActivatedEventArgs args)
+	internal void OnActivated(WindowActivatedEventArgs args)
+	{
+		_lastActivationState = args.WindowActivationState;
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			_lastActivationState = args.WindowActivationState;
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug($"CoreWindow activating with {_lastActivationState} state.");
-			}
-
-			UpdateActivationMode();
-
-			Activated?.Invoke(this, args);
+			this.Log().LogDebug($"CoreWindow activating with {_lastActivationState} state.");
 		}
 
-		internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
-		{
-			//Windows.Bounds doesn't implemment X an Y Windows Origin as well.
-			var newBounds = new Rect(0, 0, windowSizeChangedEventArgs.Size.Width, windowSizeChangedEventArgs.Size.Height);
-			if (newBounds != Bounds)
-			{
-				Bounds = newBounds;
-			}
+		UpdateActivationMode();
 
-			SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+		Activated?.Invoke(this, args);
+	}
+
+	internal void OnSizeChanged(WindowSizeChangedEventArgs windowSizeChangedEventArgs)
+	{
+		//Windows.Bounds doesn't implemment X an Y Windows Origin as well.
+		var newBounds = new Rect(0, 0, windowSizeChangedEventArgs.Size.Width, windowSizeChangedEventArgs.Size.Height);
+		if (newBounds != Bounds)
+		{
+			Bounds = newBounds;
 		}
 
-		internal interface IPointerEventArgs
+		SizeChanged?.Invoke(this, windowSizeChangedEventArgs);
+	}
+
+	internal interface IPointerEventArgs
+	{
+		object OriginalSource { get; }
+
+		PointerIdentifier Pointer { get; }
+
+		PointerPoint GetLocation(object? relativeTo);
+	}
+
+	internal void OnVisibilityChanged(VisibilityChangedEventArgs visibilityChangedEventArgs)
+	{
+		Visible = visibilityChangedEventArgs.Visible;
+		UpdateActivationMode();
+
+		VisibilityChanged?.Invoke(this, visibilityChangedEventArgs);
+	}
+
+	private void UpdateActivationMode()
+	{
+		if (_lastActivationState == CoreWindowActivationState.Deactivated)
 		{
-			object OriginalSource { get; }
-
-			PointerIdentifier Pointer { get; }
-
-			PointerPoint GetLocation(object? relativeTo);
+			ActivationMode = CoreWindowActivationMode.Deactivated;
 		}
-
-		internal void OnVisibilityChanged(VisibilityChangedEventArgs visibilityChangedEventArgs)
+		else
 		{
-			Visible = visibilityChangedEventArgs.Visible;
-			UpdateActivationMode();
-
-			VisibilityChanged?.Invoke(this, visibilityChangedEventArgs);
-		}
-
-		private void UpdateActivationMode()
-		{
-			if (_lastActivationState == CoreWindowActivationState.Deactivated)
-			{
-				ActivationMode = CoreWindowActivationMode.Deactivated;
-			}
-			else
-			{
-				ActivationMode = Visible ?
-					CoreWindowActivationMode.ActivatedInForeground :
-					CoreWindowActivationMode.ActivatedNotForeground;
-			}
+			ActivationMode = Visible ?
+				CoreWindowActivationMode.ActivatedInForeground :
+				CoreWindowActivationMode.ActivatedNotForeground;
 		}
 	}
 }

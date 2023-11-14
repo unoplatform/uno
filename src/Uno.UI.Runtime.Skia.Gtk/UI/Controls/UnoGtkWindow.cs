@@ -56,6 +56,7 @@ internal class UnoGtkWindow : Window
 		Shown += UnoGtkWindow_Shown;
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
+		UpdateWindowPropertiesFromCoreApplication();
 	}
 
 	internal static event EventHandler<UnoGtkWindow>? NativeWindowShown;
