@@ -14,15 +14,15 @@ uid: Uno.Features.WSPickers
 The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
-  - ✔️  Supported
+  - ✔  Supported
   - 💬 Partially supported (see below for more details)
-  - ❌ Not supported
+  - ✖ Not supported
 
 | Picker         | UWP   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|-------|-------|-----|-----|
-| FileOpenPicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| FileSavePicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| FolderPicker   | ✔️   | ✔️          | ✔️     | 💬 (2)| ✔️   | ❌  | ✔️  |
+| FileOpenPicker | ✔   | ✔  (1)     | ✔     | ✔    | ✔   | ✔  | ✔  |
+| FileSavePicker | ✔   | ✔  (1)     | ✔     | ✔    | ✔   | ✔  | ✔  |
+| FolderPicker   | ✔   | ✔          | ✔     | 💬 (2)| ✔   | ✖  | ✔  |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*
 *(2) - See iOS section below*
@@ -31,9 +31,9 @@ On some platforms, you can further customize the file picking experience by util
 
 | Feature                 | UWP  | WebAssembly | Android | iOS | macOS | WPF | GTK |
 |-------------------------|------|-------------|---------|-----|-------|-----|-----|
-| SuggestedFileName       | ✔️   | ✔️         | ❌      | ❌ | ✔️   | ✔️  | ✔️ |
-| SuggestedStartLocation  | ✔️   | ✔️  (1)    | ❌      | ❌ | ✔️   | ✔️  | ✔️ |
-| SettingsIdentifier      | ✔️   | ✔️  (1)    | ✔️      | ❌ | ❌   | ❌  | ❌ |
+| SuggestedFileName       | ✔   | ✔         | ✖      | ✖ | ✔   | ✔  | ✔ |
+| SuggestedStartLocation  | ✔   | ✔  (1)    | ✖      | ✖ | ✔   | ✔  | ✔ |
+| SettingsIdentifier      | ✔   | ✔  (1)    | ✔      | ✖ | ✖   | ✖  | ✖ |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*
 

@@ -12,22 +12,21 @@ uid: Uno.Features.WSPower
 ## `PowerManager`
 
 **Legend**
-  - ✔️  Supported
-  - 💬 Partially supported (see below for more details)
-  - ❌ Not supported
+  - ✔  Supported
+  - ✖ Not supported
 
 | Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `BatteryStatus` | ✔️   | ✔️  | ✔️     | ✔️    |❌ ️   | ❌ | ❌ ️  |
-| `EnergySaverStatus` | ✔️   |  ❌ | ✔️     | ✔️    |❌ ️   | ❌ | ❌ ️  |
-| `PowerSupplyStatus` | ✔️   | ✔️  | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingChargePercent` | ✔️   | ✔️ | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingDischargeTime` | ✔️   | ✔️ |  ❌    | ❌ |❌ ️   | ❌ | ❌ ️  |
-| `BatteryStatusChanged` | ✔️   | ✔️  | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `EnergySaverStatusChanged` | ✔️   |  ❌ | ✔️     | ✔️    |❌ ️   | ❌ | ❌ ️  |
-| `PowerSupplyStatusChanged` | ✔️   | ✔️  | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingChargePercentChanged` | ✔️   | ✔️| ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingDischargeTimeChanged` | ✔️   | ✔️     |  ❌     |  ❌  |❌ ️   | ❌ | ❌ ️  |
+| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
+| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
+| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ | ✖ ️  |
+| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
+| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ | ✖ ️  |
 
 ### Usage
 

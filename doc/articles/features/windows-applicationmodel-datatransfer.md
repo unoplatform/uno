@@ -17,9 +17,9 @@ Currently, the following types of content can be shared:
 
 | Type of content   | Android | iOS | macOS | WASM | Tizen |
 |-------------------|---------|-----|-------|------| ----- |
-| Text              | ✅      | ✅ | ✅    | ✅  | ✅    |
-| Uri               | ✅      | ✅ | ✅    | ✅  |✅     |
-| File              | ❌      | ❌ | ❌    | ❌  |❌     |   
+| Text              | ✔      | ✔ | ✔    | ✔  | ✔    |
+| Uri               | ✔      | ✔ | ✔    | ✔  |✔     |
+| File              | ✖      | ✖ | ✖    | ✖  |✖     |   
 
 To set up the `DataTransferManager` use the following snippet:
 
