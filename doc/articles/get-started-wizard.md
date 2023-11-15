@@ -40,7 +40,7 @@ See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-refere
 
 #### The XAML editor shows `The type 'page' does not support direct content` message
 
-This issue has been fixed in Visual Studio 17.8 Preview 5 and later.
+This issue has been fixed in Visual Studio 17.8 and later.
 
 If you're using an earlier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
 
@@ -48,7 +48,7 @@ To work around this issue, close all XAML editors, open a C# file and select the
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 
-This issue has been fixed in Visual Studio 17.8 Preview 5 and later.
+This issue has been fixed in Visual Studio 17.8 and later.
 
 If you're using an earlier version, Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
 

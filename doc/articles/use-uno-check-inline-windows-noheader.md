@@ -19,6 +19,3 @@
     ```
 
 1. Follow the instructions indicated by the tool
-
-> [!NOTE]
-> Until the release of [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) ([November 14th, 2023](https://www.dotnetconf.net/)) and Visual Studio 17.8, running `uno-check --pre-major` is required. Uno Platform supports [Visual Studio 17.8 Preview 5](https://visualstudio.microsoft.com/vs/preview/) and .NET 8 RC2 until this date.
