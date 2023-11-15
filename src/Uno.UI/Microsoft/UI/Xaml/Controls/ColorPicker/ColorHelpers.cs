@@ -22,8 +22,10 @@ using size_t = System.UInt64; // Uno Doc: size_t is 8 bytes on mosts modern mach
 
 #if HAS_UNO_WINUI
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
+using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives

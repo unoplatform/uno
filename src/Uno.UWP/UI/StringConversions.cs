@@ -7,7 +7,7 @@
 using System;
 namespace Windows.UI;
 
-internal class StringConversions
+internal static class StringConversions
 {
 	public static void
 		UnsignedFromHexString(

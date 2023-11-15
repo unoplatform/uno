@@ -6,7 +6,7 @@
 using System;
 namespace Windows.UI;
 
-internal class Ctypes
+internal static class Ctypes
 {
 	public const Int32 XCLASS_UPPER = 0x0001;
 	public const Int32 XCLASS_LOWER = 0x0002;
