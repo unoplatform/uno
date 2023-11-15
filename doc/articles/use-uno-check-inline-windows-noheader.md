@@ -18,4 +18,4 @@
     uno-check
     ```
 
-1. Follow the instructions indicated by the tool
+1. Follow the instructions indicated by the tool.
