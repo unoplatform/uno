@@ -254,7 +254,7 @@ namespace Uno.UI.Controls
 			scalableViews.ForEach(v => v.RefreshFont());
 		}
 
-		public override UIView HitTest(CGPoint point, UIEvent? uievent)
+		public override UIView? HitTest(CGPoint point, UIEvent? uievent)
 		{
 			if (!BypassCheckToCloseKeyboard && uievent is { Type: UIEventType.Touches })
 			{
@@ -275,7 +275,7 @@ namespace Uno.UI.Controls
 				_focusedView = newlyFocusedView;
 
 				if (_inputPane.Visible
-					&& !NeedsKeyboard(_focusedView!))
+					&& !NeedsKeyboard(_focusedView))
 				{
 					// Note: prefer call the IsWithinAWebView after the NeedsKeyboard since it is more power consuming.
 					if (IsWithinAWebView(_focusedView))
@@ -294,7 +294,7 @@ namespace Uno.UI.Controls
 					}
 				}
 
-				return _focusedView! ?? base.HitTest(point, uievent);
+				return _focusedView ?? base.HitTest(point, uievent);
 			}
 			else
 			{
@@ -304,7 +304,7 @@ namespace Uno.UI.Controls
 					_touchTrace = null;
 				}
 
-				return base.HitTest(point, uievent)!;
+				return base.HitTest(point, uievent);
 			}
 		}
 
@@ -469,7 +469,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private static bool GetNeedsKeyboard(UIView view)
+		private static bool GetNeedsKeyboard(UIView? view)
 		{
 			if (view == null)
 			{
@@ -481,7 +481,7 @@ namespace Uno.UI.Controls
 			return superViews.Any(superView => _attachedProperties.GetValue(superView, NeedsKeyboardAttachedPropertyKey, () => default(bool?)).GetValueOrDefault());
 		}
 
-		private static bool NeedsKeyboard(UIView view)
+		private static bool NeedsKeyboard(UIView? view)
 		{
 			return view is UISearchBar
 				|| view is UITextView
@@ -498,7 +498,7 @@ namespace Uno.UI.Controls
 				view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 		}
 
-		private bool IsFocusable(UIView view)
+		private bool IsFocusable(UIView? view)
 		{
 			// Basic IsFocusable support that only works with buttons.
 			// This prevent the keyboard from being dismissed when tapping on a button that doesn't want focus.
