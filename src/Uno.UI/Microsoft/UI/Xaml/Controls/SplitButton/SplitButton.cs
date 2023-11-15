@@ -3,7 +3,6 @@
 
 // MUX Reference SplitButton.cpp, tag winui3/release/1.4.2
 
-using System;
 using Microsoft.UI.Private.Controls;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
@@ -103,6 +102,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (m_primaryButton is { } primaryButton)
 			{
+				m_clickPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.Click -= OnClickPrimary);
 				primaryButton.Click += OnClickPrimary;
 
 				var pressedPrimaryToken = primaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
@@ -131,6 +131,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var secondaryName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SplitButtonSecondaryButtonName);
 				AutomationProperties.SetName(secondaryButton, secondaryName);
 
+				m_clickSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.Click -= OnClickSecondary);
 				secondaryButton.Click += OnClickSecondary;
 
 				var pressedSecondaryToken = secondaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
@@ -139,17 +140,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				m_pointerOverSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, pointerOverSecondaryToken));
 
 				// Register for pointer events so we can keep track of the last used pointer type
-				m_pointerEnteredPrimaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerEntered -= OnPointerEvent);
+				m_pointerEnteredSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerEntered -= OnPointerEvent);
 				secondaryButton.PointerEntered += OnPointerEvent;
-				m_pointerExitedPrimaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerExited -= OnPointerEvent);
+				m_pointerExitedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerExited -= OnPointerEvent);
 				secondaryButton.PointerExited += OnPointerEvent;
-				m_pointerPressedPrimaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerPressed -= OnPointerEvent);
+				m_pointerPressedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerPressed -= OnPointerEvent);
 				secondaryButton.PointerPressed += OnPointerEvent;
-				m_pointerReleasedPrimaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerReleased -= OnPointerEvent);
+				m_pointerReleasedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerReleased -= OnPointerEvent);
 				secondaryButton.PointerReleased += OnPointerEvent;
-				m_pointerCanceledPrimaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerCanceled -= OnPointerEvent);
+				m_pointerCanceledSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerCanceled -= OnPointerEvent);
 				secondaryButton.PointerCanceled += OnPointerEvent;
-				m_pointerCaptureLostPrimaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerCaptureLost -= OnPointerEvent);
+				m_pointerCaptureLostSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerCaptureLost -= OnPointerEvent);
 				secondaryButton.PointerCaptureLost += OnPointerEvent;
 			}
 
@@ -190,14 +191,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			m_flyoutClosedRevoker.Dispose();
 			m_flyoutPlacementChangedRevoker.Dispose();
 
-			if (Flyout != null)
+			// Uno Specific: use a local variable instead of the property to capture the flyout reference even if Flyout changes
+			if (Flyout is { } flyout)
 			{
-				m_flyoutOpenedRevoker.Disposable = new DisposableAction(() => Flyout.Opened -= OnFlyoutOpened);
-				Flyout.Opened += OnFlyoutOpened;
-				m_flyoutClosedRevoker.Disposable = new DisposableAction(() => Flyout.Closed -= OnFlyoutClosed);
-				Flyout.Closed += OnFlyoutClosed;
-				var flyoutPlacementChangedToken = Flyout.RegisterPropertyChangedCallback(FlyoutBase.PlacementProperty, OnFlyoutPlacementChanged);
-				m_flyoutPlacementChangedRevoker.Disposable = new DisposableAction(() => Flyout.UnregisterPropertyChangedCallback(FlyoutBase.PlacementProperty, flyoutPlacementChangedToken));
+				m_flyoutOpenedRevoker.Disposable = new DisposableAction(() => flyout.Opened -= OnFlyoutOpened);
+				flyout.Opened += OnFlyoutOpened;
+				m_flyoutClosedRevoker.Disposable = new DisposableAction(() => flyout.Closed -= OnFlyoutClosed);
+				flyout.Closed += OnFlyoutClosed;
+				var flyoutPlacementChangedToken = flyout.RegisterPropertyChangedCallback(FlyoutBase.PlacementProperty, OnFlyoutPlacementChanged);
+				m_flyoutPlacementChangedRevoker.Disposable = new DisposableAction(() => flyout.UnregisterPropertyChangedCallback(FlyoutBase.PlacementProperty, flyoutPlacementChangedToken));
 			}
 		}
 
@@ -375,16 +377,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		// Uno Specific: to be used by tests
-		internal void OnClickPrimaryInternal() => OnClickPrimary(null, null);
-
 		private void OnClickSecondary(object sender, RoutedEventArgs args)
 		{
 			OpenFlyout();
 		}
-
-		// Uno Specific: to be used by tests
-		internal void OnClickSecondaryInternal() => OnClickSecondary(null, null);
 
 		internal void Invoke()
 		{
@@ -445,6 +441,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (IsEnabled)
 				{
 					OnClickPrimary(null, null);
+					ExecuteCommand();
 					args.Handled = true;
 				}
 			}
