@@ -275,7 +275,7 @@ namespace Uno.UI.Controls
 				_focusedView = newlyFocusedView;
 
 				if (_inputPane.Visible
-					&& !NeedsKeyboard(_focusedView))
+					&& !NeedsKeyboard(_focusedView!))
 				{
 					// Note: prefer call the IsWithinAWebView after the NeedsKeyboard since it is more power consuming.
 					if (IsWithinAWebView(_focusedView))
@@ -294,7 +294,7 @@ namespace Uno.UI.Controls
 					}
 				}
 
-				return _focusedView ?? base.HitTest(point, uievent);
+				return _focusedView! ?? base.HitTest(point, uievent);
 			}
 			else
 			{
@@ -304,7 +304,7 @@ namespace Uno.UI.Controls
 					_touchTrace = null;
 				}
 
-				return base.HitTest(point, uievent);
+				return base.HitTest(point, uievent)!;
 			}
 		}
 
