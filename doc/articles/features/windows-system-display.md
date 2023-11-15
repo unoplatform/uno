@@ -7,7 +7,7 @@ uid: Uno.Features.WSDisplay
 > [!TIP]
 > This article covers Uno-specific information for `Windows.System.Display` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system.display
 
-* The `Windows.System.Display.DisplayRequest` class enables an application to request for keeping the device's screen on.
+* The `Windows.System.Display.DisplayRequest` class enables an application to request to keep the device's screen on.
 
 ## `DisplayRequest`
 
