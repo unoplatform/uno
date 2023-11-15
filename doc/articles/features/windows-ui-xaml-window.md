@@ -2,12 +2,12 @@
 uid: Uno.Features.WinUIWindow
 ---
 
-# Windows.UI.Xaml.Window
+# Window
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.UI.Xaml.Window`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window
+> This article covers Uno-specific information for `Microsoft.UI.Xaml.Window`. For a full description of the feature and instructions on using it, consult the Microsoft documentation: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window
 
-* The `Windows.UI.Xaml.Window` class allows for managing the window of the application.
+* The `Microsoft.UI.Xaml.Window` class allows for managing the window of the application.
 
 ## Setting the background color for the Window
 

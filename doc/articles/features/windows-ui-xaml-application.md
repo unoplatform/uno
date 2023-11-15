@@ -5,9 +5,9 @@ uid: Uno.Features.WinUIApplication
 # Application
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.UI.Xaml.Application`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.application
+> This article covers Uno-specific information for `Microsoft.UI.Xaml.Application`. For a full description of the feature and instructions on using it, consult the Microsoft documentation: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application
 
-* The `Windows.UI.Xaml.Application` class enables an application to manage the lifetime of the application and to query the application's state.
+* The `Microsoft.UI.Xaml.Application` class enables an application to manage the lifetime of the application and to query the application's state.
 
 ## Application.Suspending event
 
