@@ -303,6 +303,8 @@
           items:
             - name: Accelerometer
               href: features/accelerometer.md
+            - name: Android TV
+              href: features/android-tv.md  
             - name: App Actions
               href: features/windows-ui-startscreen.md
             - name: App Close Handler
