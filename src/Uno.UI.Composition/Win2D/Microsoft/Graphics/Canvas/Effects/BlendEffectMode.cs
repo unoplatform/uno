@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas.Effects;
 
-public enum BlendEffectMode
+internal enum BlendEffectMode
 {
 	Multiply = 0,
 	Screen = 1,

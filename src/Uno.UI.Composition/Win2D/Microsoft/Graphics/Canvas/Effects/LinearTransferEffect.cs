@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("AD47C8FD-63EF-4ACC-9B51-67979C036C06")]
-public class LinearTransferEffect : ICanvasEffect
+internal class LinearTransferEffect : ICanvasEffect
 {
 	private string _name = "LinearTransferEffect";
 	private Guid _id = new Guid("AD47C8FD-63EF-4ACC-9B51-67979C036C06");

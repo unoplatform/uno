@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("811D79A4-DE28-4454-8094-C64685F8BD4C")]
-public class OpacityEffect : ICanvasEffect
+internal class OpacityEffect : ICanvasEffect
 {
 	private string _name = "OpacityEffect";
 	private Guid _id = new Guid("811D79A4-DE28-4454-8094-C64685F8BD4C");

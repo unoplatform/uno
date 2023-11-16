@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("E0C3784D-CB39-4E84-B6FD-6B72F0810263")]
-public class InvertEffect : ICanvasEffect
+internal class InvertEffect : ICanvasEffect
 {
 	private string _name = "InvertEffect";
 	private Guid _id = new Guid("E0C3784D-CB39-4E84-B6FD-6B72F0810263");

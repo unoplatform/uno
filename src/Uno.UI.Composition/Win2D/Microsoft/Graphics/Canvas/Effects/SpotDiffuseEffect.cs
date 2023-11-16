@@ -10,7 +10,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("818A1105-7932-44F4-AA86-08AE7B2F2C93")]
-public class SpotDiffuseEffect : ICanvasEffect
+internal class SpotDiffuseEffect : ICanvasEffect
 {
 	private string _name = "SpotDiffuseEffect";
 	private Guid _id = new Guid("818A1105-7932-44F4-AA86-08AE7B2F2C93");

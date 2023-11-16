@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("0F4458EC-4B32-491B-9E85-BD73F44D3EB6")]
-public class HueRotationEffect : ICanvasEffect
+internal class HueRotationEffect : ICanvasEffect
 {
 	private string _name = "HueRotationEffect";
 	private Guid _id = new Guid("0F4458EC-4B32-491B-9E85-BD73F44D3EB6");

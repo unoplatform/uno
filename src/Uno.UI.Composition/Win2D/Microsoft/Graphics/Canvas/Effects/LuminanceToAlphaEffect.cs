@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("41251AB7-0BEB-46F8-9DA7-59E93FCCE5DE")]
-public class LuminanceToAlphaEffect : ICanvasEffect
+internal class LuminanceToAlphaEffect : ICanvasEffect
 {
 	private string _name = "LuminanceToAlphaEffect";
 	private Guid _id = new Guid("41251AB7-0BEB-46F8-9DA7-59E93FCCE5DE");

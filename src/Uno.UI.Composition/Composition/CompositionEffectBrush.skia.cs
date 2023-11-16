@@ -27,7 +27,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	private SKImageFilter? GenerateGaussianBlurEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
-		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 		{
 			SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 			if (sourceFilter is null && !_isCurrentInputBackdrop)
@@ -38,12 +38,12 @@ public partial class CompositionEffectBrush : CompositionBrush
 			_isCurrentInputBackdrop = false;
 
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
-			effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
-			effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _);
+			//effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
+			//effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _); // TODO
 
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
-			_ = (uint?)effectInterop.GetProperty(optProp); // TODO
-			_ = (uint?)effectInterop.GetProperty(borderProp); // TODO
+			//_ = (uint?)effectInterop.GetProperty(optProp);
+			//_ = (uint?)effectInterop.GetProperty(borderProp); // TODO
 
 			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
 				new(UseBlurPadding ?

@@ -10,7 +10,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("3E7EFD62-A32D-46D4-A83C-5278889AC954")]
-public class DistantDiffuseEffect : ICanvasEffect
+internal class DistantDiffuseEffect : ICanvasEffect
 {
 	private string _name = "DistantDiffuseEffect";
 	private Guid _id = new Guid("3E7EFD62-A32D-46D4-A83C-5278889AC954");

@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5")]
-public class GaussianBlurEffect : ICanvasEffect
+internal class GaussianBlurEffect : ICanvasEffect
 {
 	private string _name = "GaussianBlurEffect";
 	private Guid _id = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");

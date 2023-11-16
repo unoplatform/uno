@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("409444C4-C419-41A0-B0C1-8CD0C0A18E42")]
-public class GammaTransferEffect : ICanvasEffect
+internal class GammaTransferEffect : ICanvasEffect
 {
 	private string _name = "GammaTransferEffect";
 	private Guid _id = new Guid("409444C4-C419-41A0-B0C1-8CD0C0A18E42");

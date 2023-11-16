@@ -10,7 +10,7 @@ using System.Numerics;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("61C23C20-AE69-4D8E-94CF-50078DF638F2")]
-public class ColorSourceEffect : ICanvasEffect
+internal class ColorSourceEffect : ICanvasEffect
 {
 	private string _name = "ColorSourceEffect";
 	private Guid _id = new Guid("61C23C20-AE69-4D8E-94CF-50078DF638F2");

@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas;
 
-public enum CanvasComposite
+internal enum CanvasComposite
 {
 	SourceOver = 0,
 	DestinationOver = 1,

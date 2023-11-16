@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("921F03D6-641C-47DF-852D-B4BB6153AE11")]
-public class ColorMatrixEffect : ICanvasEffect
+internal class ColorMatrixEffect : ICanvasEffect
 {
 	private string _name = "ColorMatrixEffect";
 	private Guid _id = new Guid("921F03D6-641C-47DF-852D-B4BB6153AE11");

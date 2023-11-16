@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("89176087-8AF9-4A08-AEB1-895F38DB1766")]
-public class TemperatureAndTintEffect : ICanvasEffect
+internal class TemperatureAndTintEffect : ICanvasEffect
 {
 	private string _name = "TemperatureAndTintEffect";
 	private Guid _id = new Guid("89176087-8AF9-4A08-AEB1-895F38DB1766");

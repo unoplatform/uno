@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas;
 
-public enum CanvasEdgeBehavior
+internal enum CanvasEdgeBehavior
 {
 	Clamp = 0,
 	Wrap = 1,

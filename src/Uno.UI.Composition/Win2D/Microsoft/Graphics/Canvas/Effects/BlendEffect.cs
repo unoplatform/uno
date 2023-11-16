@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("81C5B77B-13F8-4CDD-AD20-C890547AC65D")]
-public class BlendEffect : ICanvasEffect
+internal class BlendEffect : ICanvasEffect
 {
 	private string _name = "BlendEffect";
 	private Guid _id = new Guid("81C5B77B-13F8-4CDD-AD20-C890547AC65D");

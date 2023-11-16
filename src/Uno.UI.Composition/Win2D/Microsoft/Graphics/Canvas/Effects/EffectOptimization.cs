@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas.Effects;
 
-public enum EffectOptimization
+internal enum EffectOptimization
 {
 	Speed = 0,
 	Balanced = 1,

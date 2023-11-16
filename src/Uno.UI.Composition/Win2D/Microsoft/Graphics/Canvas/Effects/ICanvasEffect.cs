@@ -10,7 +10,7 @@ using Windows.Graphics.Effects.Interop;
 
 namespace Microsoft.Graphics.Canvas.Effects;
 
-public interface ICanvasEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop, IDisposable
+internal interface ICanvasEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop, IDisposable
 {
 	public CanvasBufferPrecision? BufferPrecision { get; set; }
 

@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("36DDE0EB-3725-42E0-836D-52FB20AEE644")]
-public class GrayscaleEffect : ICanvasEffect
+internal class GrayscaleEffect : ICanvasEffect
 {
 	private string _name = "GrayscaleEffect";
 	private Guid _id = new Guid("36DDE0EB-3725-42E0-836D-52FB20AEE644");

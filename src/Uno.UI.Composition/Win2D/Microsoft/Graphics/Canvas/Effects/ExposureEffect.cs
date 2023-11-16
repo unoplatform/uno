@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("B56C8CFA-F634-41EE-BEE0-FFA617106004")]
-public class ExposureEffect : ICanvasEffect
+internal class ExposureEffect : ICanvasEffect
 {
 	private string _name = "ExposureEffect";
 	private Guid _id = new Guid("B56C8CFA-F634-41EE-BEE0-FFA617106004");

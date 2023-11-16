@@ -9,7 +9,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("6AA97485-6354-4CFC-908C-E4A74F62C96C")]
-public class Transform2DEffect : ICanvasEffect
+internal class Transform2DEffect : ICanvasEffect
 {
 	private string _name = "Transform2DEffect";
 	private Guid _id = new Guid("6AA97485-6354-4CFC-908C-E4A74F62C96C");

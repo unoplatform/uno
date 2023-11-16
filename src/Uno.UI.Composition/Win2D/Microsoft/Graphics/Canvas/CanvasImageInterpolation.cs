@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas;
 
-public enum CanvasImageInterpolation
+internal enum CanvasImageInterpolation
 {
 	NearestNeighbor = 0,
 	Linear = 1,

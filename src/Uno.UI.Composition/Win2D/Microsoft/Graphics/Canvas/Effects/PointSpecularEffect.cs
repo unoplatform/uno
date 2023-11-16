@@ -10,7 +10,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("09C3CA26-3AE2-4F09-9EBC-ED3865D53F22")]
-public class PointSpecularEffect : ICanvasEffect
+internal class PointSpecularEffect : ICanvasEffect
 {
 	private string _name = "PointSpecularEffect";
 	private Guid _id = new Guid("09C3CA26-3AE2-4F09-9EBC-ED3865D53F22");

@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("2A2D49C0-4ACF-43C7-8C6A-7C4A27874D27")]
-public class BorderEffect : ICanvasEffect
+internal class BorderEffect : ICanvasEffect
 {
 	private string _name = "BorderEffect";
 	private Guid _id = new Guid("2A2D49C0-4ACF-43C7-8C6A-7C4A27874D27");

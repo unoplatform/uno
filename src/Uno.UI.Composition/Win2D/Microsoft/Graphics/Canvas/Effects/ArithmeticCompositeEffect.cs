@@ -9,7 +9,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("FC151437-049A-4784-A24A-F1C4DAF20987")]
-public class ArithmeticCompositeEffect : ICanvasEffect
+internal class ArithmeticCompositeEffect : ICanvasEffect
 {
 	private string _name = "ArithmeticCompositeEffect";
 	private Guid _id = new Guid("FC151437-049A-4784-A24A-F1C4DAF20987");

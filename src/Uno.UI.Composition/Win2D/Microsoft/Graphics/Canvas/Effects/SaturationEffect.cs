@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("5CB2D9CF-327D-459F-A0CE-40C0B2086BF7")]
-public class SaturationEffect : ICanvasEffect
+internal class SaturationEffect : ICanvasEffect
 {
 	private string _name = "SaturationEffect";
 	private Guid _id = new Guid("5CB2D9CF-327D-459F-A0CE-40C0B2086BF7");

@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("B648A78A-0ED5-4F80-A94A-8E825ACA6B77")]
-public class ContrastEffect : ICanvasEffect
+internal class ContrastEffect : ICanvasEffect
 {
 	private string _name = "ContrastEffect";
 	private Guid _id = new Guid("B648A78A-0ED5-4F80-A94A-8E825ACA6B77");

@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("3A1AF410-5F1D-4DBE-84DF-915DA79B7153")]
-public class SepiaEffect : ICanvasEffect
+internal class SepiaEffect : ICanvasEffect
 {
 	private string _name = "SepiaEffect";
 	private Guid _id = new Guid("3A1AF410-5F1D-4DBE-84DF-915DA79B7153");

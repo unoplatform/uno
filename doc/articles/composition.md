@@ -135,6 +135,70 @@ Or alternatively this, if you want to enable all available Composition capabilit
 - [TintEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_TintEffect.htm)
 - [Transform2DEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_Transform2DEffect.htm)
 
+Note that while Uno Platform implements these effects and their Win2D wrappers, the Win2D wrappers are still internal and not exposed to users, but the effects can still be used by temporary implementing the [IGraphicsEffectD2D1Interop](https://learn.microsoft.com/en-us/windows/win32/api/windows.graphics.effects.interop/nn-windows-graphics-effects-interop-igraphicseffectd2d1interop) interface manually until the Win2D wrappers become public, like for example the [GaussianBlurEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_GaussianBlurEffect.htm) can be implemented like this:
+
+```csharp
+#nullable enable
+
+using System;
+using Windows.Graphics.Effects;
+using Windows.Graphics.Effects.Interop;
+
+internal class GaussianBlurEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+{
+	private string _name = "GaussianBlurEffect";
+	private Guid _id = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
+
+	public string Name
+	{
+		get => _name;
+		set => _name = value;
+	}
+
+	public IGraphicsEffectSource? Source { get; set; }
+
+	public float BlurAmount { get; set; } = 3.0f;
+
+	public Guid GetEffectId() => _id;
+
+	public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+	{
+		switch (name)
+		{
+			case nameof(BlurAmount):
+				{
+					index = 0;
+					mapping = GraphicsEffectPropertyMapping.Direct;
+					break;
+				}
+			default:
+				{
+					index = 0xFF;
+					mapping = (GraphicsEffectPropertyMapping)0xFF;
+					break;
+				}
+		}
+	}
+
+	public object? GetProperty(uint index)
+	{
+		switch (index)
+		{
+			case 0:
+				return BlurAmount;
+			default:
+				return null;
+		}
+	}
+
+	public uint GetPropertyCount() => 1;
+	public IGraphicsEffectSource? GetSource(uint index) => Source;
+	public uint GetSourceCount() => 1;
+}
+```
+
+The GUID used in the example above is the Effect CLSID of the [Direct2D Gaussian Blur Effect](https://learn.microsoft.com/en-us/windows/win32/direct2d/gaussian-blur), you can find a list of built-in Direct2D effects and their corresponding CLSIDs [here](https://learn.microsoft.com/en-us/windows/win32/direct2d/built-in-effects).
+
 ## Known issues
 
 * When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.

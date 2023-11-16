@@ -2,7 +2,7 @@
 
 namespace Microsoft.Graphics.Canvas.Effects;
 
-public struct Matrix5x4
+internal struct Matrix5x4
 {
 	public float M11;
 	public float M12;

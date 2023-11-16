@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("12F575E8-4DB1-485F-9A84-03A07DD3829F")]
-public class CrossFadeEffect : ICanvasEffect
+internal class CrossFadeEffect : ICanvasEffect
 {
 	private string _name = "CrossFadeEffect";
 	private Guid _id = new Guid("12F575E8-4DB1-485F-9A84-03A07DD3829F");

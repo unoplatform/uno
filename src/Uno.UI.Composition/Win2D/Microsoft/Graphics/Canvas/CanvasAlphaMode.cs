@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas;
 
-public enum CanvasAlphaMode
+internal enum CanvasAlphaMode
 {
 	Premultiplied = 0,
 	Straight = 1,

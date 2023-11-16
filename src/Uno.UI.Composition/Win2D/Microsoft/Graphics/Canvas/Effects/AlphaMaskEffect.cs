@@ -8,7 +8,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("C80ECFF0-3FD5-4F05-8328-C5D1724B4F0A")]
-public class AlphaMaskEffect : ICanvasEffect
+internal class AlphaMaskEffect : ICanvasEffect
 {
 	private string _name = "AlphaMaskEffect";
 	private Guid _id = new Guid("C80ECFF0-3FD5-4F05-8328-C5D1724B4F0A");

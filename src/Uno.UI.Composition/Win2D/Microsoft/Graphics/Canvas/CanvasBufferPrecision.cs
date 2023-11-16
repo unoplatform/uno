@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.Graphics.Canvas;
 
-public enum CanvasBufferPrecision
+internal enum CanvasBufferPrecision
 {
 	Precision8UIntNormalized = 0,
 	Precision8UIntNormalizedSrgb = 1,

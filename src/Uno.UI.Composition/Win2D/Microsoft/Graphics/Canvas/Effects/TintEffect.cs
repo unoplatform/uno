@@ -9,7 +9,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects;
 
 [Guid("36312B17-F7DD-4014-915D-FFCA768CF211")]
-public class TintEffect : ICanvasEffect
+internal class TintEffect : ICanvasEffect
 {
 	private string _name = "TintEffect";
 	private Guid _id = new Guid("36312B17-F7DD-4014-915D-FFCA768CF211");
