@@ -177,6 +177,20 @@ namespace Uno.UI
 		}
 
 		[Pure]
+		internal static Size Subtract(this Size size, double width, double height)
+		{
+			if (width == default && height == default)
+			{
+				return size;
+			}
+
+			return new Size(
+				size.Width - width,
+				size.Height - height
+			);
+		}
+
+		[Pure]
 		internal static Size Subtract(this Size left, Size right)
 		{
 			if (right == default)
