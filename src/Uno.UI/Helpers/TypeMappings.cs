@@ -121,9 +121,10 @@ public static class TypeMappings
 	/// </summary>
 	/// <returns>A task that will complete when type mapping collection
 	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active</returns>
-	public static Task WaitForMappingsToResume()
-		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.CompletedTask;
+	/// is currently active
+	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
+	public static Task<bool> WaitForMappingsToResume()
+		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
 
 	/// <summary>
 	/// Pause the collection of type mappings.
@@ -139,7 +140,8 @@ public static class TypeMappings
 	/// was paused, those new mappings will be applied before
 	/// the WaitForMappingsToResume task completes
 	/// </summary>
-	public static void Resume()
+	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
+	public static void Resume(bool updateLayout = true)
 	{
 		var completion = _mappingsPaused;
 		_mappingsPaused = null;
@@ -147,7 +149,7 @@ public static class TypeMappings
 		{
 			MappedTypeToOrignalTypeMapings = AllMappedTypeToOrignalTypeMapings.ToDictionary(x => x.Key, x => x.Value);
 			OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
-			completion.TrySetResult(true);
+			completion.TrySetResult(updateLayout);
 		}
 	}
 }

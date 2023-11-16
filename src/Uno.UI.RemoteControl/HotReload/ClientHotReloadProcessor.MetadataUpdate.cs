@@ -57,13 +57,12 @@ partial class ClientHotReloadProcessor
 		}
 		try
 		{
-			await TypeMappings.WaitForMappingsToResume();
+			return await TypeMappings.WaitForMappingsToResume();
 		}
 		finally
 		{
 			Interlocked.Exchange(ref _isReloading, 0);
 		}
-		return true;
 	}
 
 	internal static Window? CurrentWindow { get; set; }
