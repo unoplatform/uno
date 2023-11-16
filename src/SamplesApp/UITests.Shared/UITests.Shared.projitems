@@ -614,6 +614,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePicker_DuplicateFile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FolderPickerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5675,6 +5679,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePickerTests.xaml.cs">
       <DependentUpon>FileSavePickerTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePicker_DuplicateFile.xaml.cs">
+      <DependentUpon>FileSavePicker_DuplicateFile.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FolderPickerTests.xaml.cs">
       <DependentUpon>FolderPickerTests.xaml</DependentUpon>
