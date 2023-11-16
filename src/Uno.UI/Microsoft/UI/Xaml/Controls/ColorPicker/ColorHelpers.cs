@@ -557,6 +557,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return bitmap;
 		}
 
+		// UNO TODO: This method is only used when drawing the color spectrum using WinUI composition API's which are currently unsupported.
 		public static LoadedImageSurface CreateSurfaceFromPixelData(
 			int pixelWidth,
 			int pixelHeight,
