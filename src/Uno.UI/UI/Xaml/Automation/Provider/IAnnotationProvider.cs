@@ -24,7 +24,7 @@ public partial interface IAnnotationProvider
 	/// <summary>
 	/// Gets the date and time when this annotation was created.
 	/// </summary>
-	string DateTime { get;  }
+	string DateTime { get; }
 
 	/// <summary>
 	/// Gets the UI Automation element that is being annotated.

@@ -14,7 +14,7 @@ public enum RowOrColumnMajor
 	/// Data in the table should be read column by column.
 	/// </summary>
 	ColumnMajor = 1,
-	
+
 	/// <summary>
 	/// The best way to present the data is indeterminate.
 	/// </summary>
