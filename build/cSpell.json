@@ -84,7 +84,8 @@
 	"UWP's",
 	"VSIX",
 	"walkthrough",
-	"WEBASSEMBLY"
+	"WEBASSEMBLY",
+	"Haptics"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -131,7 +132,8 @@
 	"Logpoints",
 	"addin",
 	"Yowza",
-	"unpackaged"
+	"unpackaged",
+	"GNSS"
   ],
   "patterns": [
 	{
