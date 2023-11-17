@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
+using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -48,13 +49,16 @@ public partial class TextBox
 
 	private bool _clearHistoryOnTextChanged = true;
 
+	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
+	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
+	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
 	private (int selectionStart, int selectionLength, bool selectionEndsAtTheStart) _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
 	private int _historyIndex;
-	private List<(TextBoxAction action, int selectionStart, int selectionLength, bool selectionEndsAtTheStart)> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
+	private List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
 	private (int start, int length, bool tripleTap)? _multiTapChunk;
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
@@ -71,72 +75,59 @@ public partial class TextBox
 
 	internal ContentControl ContentElement => _contentElement;
 
-	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
-	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
-	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
-	private bool CurrentlyTyping
-	{
-		set
-		{
-			if (value == _currentlyTyping || _suppressCurrentlyTyping)
-			{
-				return;
-			}
-
-			if (value)
-			{
-				_textWhenTypingStarted = Text;
-				_selectionWhenTypingStarted = (
-					_selection.start,
-					_selection.length,
-					_selectionEndsAtTheStart);
-			}
-			else
-			{
-				global::System.Diagnostics.Debug.Assert(!IsSkiaTextBox || _selection.length == 0);
-				_historyIndex++;
-				_history.RemoveAllAt(_historyIndex);
-				_history.Add((
-					new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
-					_selectionWhenTypingStarted.selectionStart,
-					_selectionWhenTypingStarted.selectionLength,
-					_selectionWhenTypingStarted.selectionEndsAtTheStart));
-				UpdateCanUndoRedo();
-			}
-
-			_currentlyTyping = value;
-		}
-		get => _currentlyTyping;
-	}
-
-	public static DependencyProperty CanUndoProperty { get; } =
-		DependencyProperty.Register(
-			nameof(CanUndo), typeof(bool),
-			typeof(TextBox),
-			new FrameworkPropertyMetadata(true));
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
 
 	public bool CanUndo
 	{
-		get => (bool)GetValue(CanUndoProperty);
-		private set => SetValue(CanUndoProperty, value);
+		get => GetCanUndoValue();
+		private set => SetCanUndoValue(value);
 	}
 
-	public static DependencyProperty CanRedoProperty { get; } =
-		DependencyProperty.Register(
-			nameof(CanRedo), typeof(bool),
-			typeof(TextBox),
-			new FrameworkPropertyMetadata(true));
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty CanRedoProperty { get; } = CreateCanRedoProperty();
 
 	public bool CanRedo
 	{
-		get => (bool)GetValue(CanRedoProperty);
-		private set => SetValue(CanRedoProperty, value);
+		get => GetCanRedoValue();
+		private set => SetCanRedoValue(value);
 	}
 
 	private void UpdateCanUndoRedo()
 	{
 		CanUndo = _historyIndex > 0;
 		CanRedo = _historyIndex < _history.Count - 1;
+	}
+
+	private void TrySetCurrentlyTyping(bool newValue)
+	{
+		if (newValue == _currentlyTyping || _suppressCurrentlyTyping)
+		{
+			return;
+		}
+
+		if (newValue)
+		{
+			_textWhenTypingStarted = Text;
+			_selectionWhenTypingStarted = (
+				_selection.start,
+				_selection.length,
+				_selectionEndsAtTheStart);
+		}
+		else
+		{
+			global::System.Diagnostics.Debug.Assert(!IsSkiaTextBox || _selection.length == 0);
+			_historyIndex++;
+			_history.RemoveAllAt(_historyIndex);
+			_history.Add(new HistoryRecord(
+				new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
+				_selectionWhenTypingStarted.selectionStart,
+				_selectionWhenTypingStarted.selectionLength,
+				_selectionWhenTypingStarted.selectionEndsAtTheStart));
+			UpdateCanUndoRedo();
+		}
+
+		_currentlyTyping = newValue;
 	}
 
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
@@ -271,7 +262,7 @@ public partial class TextBox
 			}
 			else
 			{
-				CurrentlyTyping = false;
+				TrySetCurrentlyTyping(false);
 				_showCaret = false;
 				_timer.Stop();
 			}
@@ -281,7 +272,7 @@ public partial class TextBox
 
 	partial void SelectPartial(int start, int length)
 	{
-		CurrentlyTyping = false;
+		TrySetCurrentlyTyping(false);
 		_selectionEndsAtTheStart = false;
 		_selection = (start, length);
 		if (!IsSkiaTextBox)
@@ -391,7 +382,7 @@ public partial class TextBox
 				if (!_isPressed)
 				{
 					args.Handled = true;
-					CurrentlyTyping = false;
+					TrySetCurrentlyTyping(false);
 					selectionStart = 0;
 					selectionLength = text.Length;
 				}
@@ -431,7 +422,7 @@ public partial class TextBox
 			default:
 				if (!IsReadOnly && !_isPressed && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
-					CurrentlyTyping = true;
+					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
 
@@ -470,8 +461,8 @@ public partial class TextBox
 		}
 		if (selectionLength != 0)
 		{
-			CurrentlyTyping = false;
-			CurrentlyTyping = true;
+			TrySetCurrentlyTyping(false);
+			TrySetCurrentlyTyping(true);
 
 			var start = Math.Min(selectionStart, selectionStart + selectionLength);
 			var end = Math.Max(selectionStart, selectionStart + selectionLength);
@@ -484,12 +475,12 @@ public partial class TextBox
 			if (ctrl)
 			{
 				// ctrl always ends the previous typing run
-				CurrentlyTyping = false;
+				TrySetCurrentlyTyping(false);
 			}
 			else
 			{
 				// idempotent call to make sure we're starting a new typing run if we're not in one already
-				CurrentlyTyping = true;
+				TrySetCurrentlyTyping(true);
 			}
 
 			var oldText = text;
@@ -514,7 +505,7 @@ public partial class TextBox
 		}
 		if (Text.Length != 0)
 		{
-			CurrentlyTyping = false;
+			TrySetCurrentlyTyping(false);
 		}
 
 		var start = selectionStart;
@@ -542,7 +533,7 @@ public partial class TextBox
 		}
 		if (Text.Length != 0)
 		{
-			CurrentlyTyping = false;
+			TrySetCurrentlyTyping(false);
 		}
 
 		var start = selectionStart;
@@ -569,7 +560,7 @@ public partial class TextBox
 		}
 		if (Text.Length != 0)
 		{
-			CurrentlyTyping = false;
+			TrySetCurrentlyTyping(false);
 		}
 
 		if (!shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0)
@@ -615,7 +606,7 @@ public partial class TextBox
 		}
 		if (Text.Length != 0)
 		{
-			CurrentlyTyping = false;
+			TrySetCurrentlyTyping(false);
 		}
 
 		var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
@@ -669,7 +660,7 @@ public partial class TextBox
 		}
 		if (Text.Length != 0)
 		{
-			CurrentlyTyping = false;
+			TrySetCurrentlyTyping(false);
 		}
 
 		var start = selectionStart;
@@ -694,7 +685,7 @@ public partial class TextBox
 		}
 		if (Text.Length != 0)
 		{
-			CurrentlyTyping = false;
+			TrySetCurrentlyTyping(false);
 		}
 
 		var start = selectionStart;
@@ -738,7 +729,7 @@ public partial class TextBox
 		{
 			return;
 		}
-		CurrentlyTyping = false;
+		TrySetCurrentlyTyping(false);
 		args.Handled = true;
 		var oldText = text;
 		if (selectionLength != 0)
@@ -904,7 +895,7 @@ public partial class TextBox
 
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
-		CurrentlyTyping = false;
+		TrySetCurrentlyTyping(false);
 		if (IsSkiaTextBox
 			&& args.GetCurrentPoint(null) is var currentPoint
 			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
@@ -1208,9 +1199,9 @@ public partial class TextBox
 	{
 		if (IsSkiaTextBox)
 		{
-			if (CurrentlyTyping)
+			if (_currentlyTyping)
 			{
-				CurrentlyTyping = false;
+				TrySetCurrentlyTyping(false);
 			}
 			else
 			{
@@ -1226,9 +1217,9 @@ public partial class TextBox
 	{
 		if (IsSkiaTextBox)
 		{
-			if (CurrentlyTyping)
+			if (_currentlyTyping)
 			{
-				CurrentlyTyping = false;
+				TrySetCurrentlyTyping(false);
 			}
 			else
 			{
@@ -1244,7 +1235,7 @@ public partial class TextBox
 	{
 		if (_history.Count == 0)
 		{
-			_history.Add((SentinelAction.Instance, _selection.start, _selection.length, _selectionEndsAtTheStart));
+			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selectionEndsAtTheStart));
 		}
 		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
 		UpdateCanUndoRedo();
@@ -1252,7 +1243,7 @@ public partial class TextBox
 
 	public void ClearUndoRedoHistory()
 	{
-		CurrentlyTyping = false;
+		TrySetCurrentlyTyping(false);
 		_history.Clear();
 		EnsureHistory();
 	}
@@ -1264,7 +1255,7 @@ public partial class TextBox
 	{
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
-		_history.Add((action, _selection.start, _selection.length, _selectionEndsAtTheStart));
+		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selectionEndsAtTheStart));
 		UpdateCanUndoRedo();
 	}
 
@@ -1275,7 +1266,7 @@ public partial class TextBox
 			return;
 		}
 
-		CurrentlyTyping = false;
+		TrySetCurrentlyTyping(false);
 		if (_historyIndex == 0 || _isPressed)
 		{
 			return;
@@ -1285,13 +1276,13 @@ public partial class TextBox
 		_historyIndex--;
 
 		_clearHistoryOnTextChanged = false;
-		switch (currentAction.action)
+		switch (currentAction.Action)
 		{
 			case ReplaceAction r:
 				// remember that we use the possibly-negative format in _pendingSelection
-				_pendingSelection = currentAction.selectionEndsAtTheStart ?
-					(currentAction.selectionStart + currentAction.selectionLength, -currentAction.selectionLength) :
-					(currentAction.selectionStart, currentAction.selectionLength);
+				_pendingSelection = currentAction.SelectionEndsAtTheStart ?
+					(currentAction.SelectionStart + currentAction.SelectionLength, -currentAction.SelectionLength) :
+					(currentAction.SelectionStart, currentAction.SelectionLength);
 				Text = r.OldText;
 				break;
 			case DeleteAction d:
@@ -1320,13 +1311,13 @@ public partial class TextBox
 			return;
 		}
 
-		CurrentlyTyping = false;
+		TrySetCurrentlyTyping(false);
 
 		_historyIndex++;
 		var currentAction = _history[_historyIndex];
 
 		_clearHistoryOnTextChanged = false;
-		switch (currentAction.action)
+		switch (currentAction.Action)
 		{
 			case ReplaceAction r:
 				_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
@@ -1345,6 +1336,8 @@ public partial class TextBox
 		_clearHistoryOnTextChanged = true;
 		UpdateCanUndoRedo();
 	}
+
+	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
 
 	private abstract record TextBoxAction;
 

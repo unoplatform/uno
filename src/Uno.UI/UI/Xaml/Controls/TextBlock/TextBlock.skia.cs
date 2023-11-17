@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
 				if (nullableSpan.HasValue)
 				{
-					Selection = Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false);
+					Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
 				}
 			}
 		}

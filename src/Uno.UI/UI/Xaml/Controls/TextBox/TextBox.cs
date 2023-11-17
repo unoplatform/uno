@@ -1238,11 +1238,18 @@ namespace Windows.UI.Xaml.Controls
 				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
 
 #if __SKIA__
-				_suppressCurrentlyTyping = true;
+				try
+				{
+
+					_suppressCurrentlyTyping = true;
 #endif
 				Text = currentText;
 #if __SKIA__
-				_suppressCurrentlyTyping = false;
+				}
+				finally
+				{
+					_suppressCurrentlyTyping = false;
+				}
 #endif
 			});
 		}
@@ -1271,11 +1278,17 @@ namespace Windows.UI.Xaml.Controls
 			CopySelectionToClipboard();
 			CutSelectionToClipboardPartial();
 #if __SKIA__
-			_suppressCurrentlyTyping = true;
+			try
+			{
+				_suppressCurrentlyTyping = true;
 #endif
 			Text = Text.Remove(SelectionStart, SelectionLength);
 #if __SKIA__
-			_suppressCurrentlyTyping = false;
+			}
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+			}
 #endif
 		}
 

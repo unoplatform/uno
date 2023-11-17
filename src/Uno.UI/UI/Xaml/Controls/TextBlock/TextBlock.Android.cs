@@ -67,11 +67,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public TextBlock()
-		{
-			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
-		}
-
 		/// <summary>
 		/// Finds a private constructor that allows for the specification of MaxLines.
 		/// </summary>

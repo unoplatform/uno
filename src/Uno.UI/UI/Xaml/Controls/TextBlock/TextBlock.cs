@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _skipInlinesChangedTextSetter;
 		private bool _subscribeToPointerEvents;
 		private bool _isPressed;
-		private (int start, int end) Selection
+		private Range Selection
 		{
 			get => _selection;
 			set
@@ -66,6 +66,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			IFrameworkElementHelper.Initialize(this);
 			SetDefaultForeground(ForegroundProperty);
+
+			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
 			InitializeProperties();
 
@@ -269,7 +271,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateInlines(newValue);
 
-			Selection = (0, 0);
+			Selection = new Range(0, 0);
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
@@ -500,7 +502,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnIsTextSelectionEnabledChanged()
 		{
-			Selection = (0, 0);
+			Selection = new Range(0, 0);
 
 			OnIsTextSelectionEnabledChangedPartial();
 		}
@@ -849,7 +851,7 @@ namespace Windows.UI.Xaml.Controls
 			if (that.IsTextSelectionEnabled)
 			{
 				var index = that.Inlines.GetIndexAt(point.Position, false);
-				that.Selection = (index, index);
+				that.Selection = new Range(index, index);
 			}
 
 			if (that.FindHyperlinkAt(point.Position) is Hyperlink hyperlink)
@@ -876,7 +878,7 @@ namespace Windows.UI.Xaml.Controls
 			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) is Hyperlink hyperlink)
 			{
 				// if we release on a hyperlink, we don't select anything
-				that.Selection = (0, 0);
+				that.Selection = new Range(0, 0);
 			}
 
 			that._isPressed = false;
@@ -983,7 +985,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private readonly ObservableCollection<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new();
-		private (int start, int end) _selection;
+		private Range _selection;
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1144,5 +1146,12 @@ namespace Windows.UI.Xaml.Controls
 			IsVisible() &&
 			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop) &&
 			AreAllAncestorsVisible();
+
+		private record struct Range(int start, int end)
+		{
+			public Range((int start, int end) tuple) : this(tuple.start, tuple.end)
+			{
+			}
+		}
 	}
 }
