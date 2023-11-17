@@ -477,8 +477,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IsTextSelectionEnabled Dependency Property
 
-#if !__WASM__
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if !__WASM__ && !__SKIA__
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -486,8 +486,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetValue(IsTextSelectionEnabledProperty, value);
 		}
 
-#if !__WASM__
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if !__WASM__ && !__SKIA__
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -850,7 +850,11 @@ namespace Windows.UI.Xaml.Controls
 			that._isPressed = true;
 			if (that.IsTextSelectionEnabled)
 			{
+#if __SKIA__
 				var index = that.Inlines.GetIndexAt(point.Position, false);
+#else
+				var index = 0;
+#endif
 				that.Selection = new Range(index, index);
 			}
 
@@ -933,7 +937,7 @@ namespace Windows.UI.Xaml.Controls
 			if (that._isPressed && that.IsTextSelectionEnabled)
 			{
 				var index = that.Inlines.GetIndexAt(point.Position, false);
-				that.Selection = (that.Selection.start, index);
+				that.Selection = new Range(that.Selection.start, index);
 			}
 		};
 
