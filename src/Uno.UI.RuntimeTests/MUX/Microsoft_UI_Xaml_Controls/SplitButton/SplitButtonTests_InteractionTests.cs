@@ -7,7 +7,6 @@
 
 using System;
 using System.Linq;
-
 using Windows.UI.Xaml.Controls;
 using Common;
 using System.Threading.Tasks;
@@ -214,46 +213,46 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task KeyboardTest()
-        {
+		{
 			var splitButtonPage = new SplitButtonPage();
 			WindowHelper.WindowContent = splitButtonPage;
 			await WindowHelper.WaitForIdle();
 
-            SplitButton splitButton = FindElementByName<SplitButton>("TestSplitButton");
+			SplitButton splitButton = FindElementByName<SplitButton>("TestSplitButton");
 
-            TextBlock clickCountTextBlock = FindElementByName<TextBlock>("ClickCountTextBlock");
-            TextBlock flyoutOpenedCountTextBlock = FindElementByName<TextBlock>("FlyoutOpenedCountTextBlock");
-            TextBlock flyoutClosedCountTextBlock = FindElementByName<TextBlock>("FlyoutClosedCountTextBlock");
+			TextBlock clickCountTextBlock = FindElementByName<TextBlock>("ClickCountTextBlock");
+			TextBlock flyoutOpenedCountTextBlock = FindElementByName<TextBlock>("FlyoutOpenedCountTextBlock");
+			TextBlock flyoutClosedCountTextBlock = FindElementByName<TextBlock>("FlyoutClosedCountTextBlock");
 
-            Verify.AreEqual("0", clickCountTextBlock.Text);
-            Log.Comment("Verify that pressing Space on SplitButton causes a click");
-            // splitButton.SetFocus();
+			Verify.AreEqual("0", clickCountTextBlock.Text);
+			Log.Comment("Verify that pressing Space on SplitButton causes a click");
+			// splitButton.SetFocus();
 			splitButton.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-            KeyboardHelper.Space();
+			KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
-            Verify.AreEqual("1", clickCountTextBlock.Text);
+			Verify.AreEqual("1", clickCountTextBlock.Text);
 
-            Verify.AreEqual("0", flyoutOpenedCountTextBlock.Text);
-            Log.Comment("Verify that pressing alt-down on SplitButton opens the flyout");
+			Verify.AreEqual("0", flyoutOpenedCountTextBlock.Text);
+			Log.Comment("Verify that pressing alt-down on SplitButton opens the flyout");
 			KeyboardHelper.PressKeySequence("$d$_alt#$d$_down#$u$_down#alt");
 			await WindowHelper.WaitForIdle();
-            Verify.AreEqual("1", flyoutOpenedCountTextBlock.Text);
+			Verify.AreEqual("1", flyoutOpenedCountTextBlock.Text);
 
-            Verify.AreEqual("0", flyoutClosedCountTextBlock.Text);
-            Log.Comment("Verify that pressing escape closes the flyout");
-            KeyboardHelper.Escape();
+			Verify.AreEqual("0", flyoutClosedCountTextBlock.Text);
+			Log.Comment("Verify that pressing escape closes the flyout");
+			KeyboardHelper.Escape();
 			await WindowHelper.WaitForIdle();
-            Verify.AreEqual("1", flyoutClosedCountTextBlock.Text);
+			Verify.AreEqual("1", flyoutClosedCountTextBlock.Text);
 
-            Log.Comment("Verify that F4 opens the flyout");
-            // splitButton.SetFocus();
+			Log.Comment("Verify that F4 opens the flyout");
+			// splitButton.SetFocus();
 			splitButton.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-            // TextInput.SendText("{F4}");
+			// TextInput.SendText("{F4}");
 			KeyboardHelper.PressKeySequence("$d$_f4#$u$_f4");
 			await WindowHelper.WaitForIdle();
-            Verify.AreEqual("2", flyoutOpenedCountTextBlock.Text);
+			Verify.AreEqual("2", flyoutOpenedCountTextBlock.Text);
 
 			// Uno Specific: close flyouts when done
 			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.IsForFlyout).ForEach(p => p.AssociatedFlyout.Hide());
@@ -263,79 +262,79 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
 #endif
-        public async Task ToggleTest()
-        {
+		public async Task ToggleTest()
+		{
 			var splitButtonPage = new SplitButtonPage();
 			WindowHelper.WindowContent = splitButtonPage;
 			await WindowHelper.WaitForIdle();
 
-	        SplitButton splitButton = FindElementByName<SplitButton>("ToggleSplitButton");
+			SplitButton splitButton = FindElementByName<SplitButton>("ToggleSplitButton");
 
-	        TextBlock toggleStateTextBlock = FindElementByName<TextBlock>("ToggleStateTextBlock");
-	        TextBlock toggleStateOnClickTextBlock = FindElementByName<TextBlock>("ToggleStateOnClickTextBlock");
+			TextBlock toggleStateTextBlock = FindElementByName<TextBlock>("ToggleStateTextBlock");
+			TextBlock toggleStateOnClickTextBlock = FindElementByName<TextBlock>("ToggleStateOnClickTextBlock");
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-	        Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
-	        Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
+			Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
+			Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
 
-	        Log.Comment("Click primary button to check button");
-	        // using (var toggleStateWaiter = new PropertyChangedEventWaiter(splitButton, Scope.Element, UIProperty.Get("Toggle.ToggleState")))
-	        // {
-	        //     ClickPrimaryButton(splitButton);
-	        //     Verify.IsTrue(toggleStateWaiter.TryWait(TimeSpan.FromSeconds(1)), "Waiting for the Toggle.ToggleState event should succeed");
-	        // }
+			Log.Comment("Click primary button to check button");
+			// using (var toggleStateWaiter = new PropertyChangedEventWaiter(splitButton, Scope.Element, UIProperty.Get("Toggle.ToggleState")))
+			// {
+			//     ClickPrimaryButton(splitButton);
+			//     Verify.IsTrue(toggleStateWaiter.TryWait(TimeSpan.FromSeconds(1)), "Waiting for the Toggle.ToggleState event should succeed");
+			// }
 			var peer = ((IToggleProvider)splitButton.GetAutomationPeer());
 			Assert.AreEqual(ToggleState.Off, peer.ToggleState);
 			peer.Toggle();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(ToggleState.On, peer.ToggleState);
 
-	        Verify.AreEqual("Checked", toggleStateTextBlock.Text);
-	        // Verify.AreEqual("Checked", toggleStateOnClickTextBlock.Text); // Uno TODO: WinUI expects OnClick to trigger, but there's no reason for it to.
+			Verify.AreEqual("Checked", toggleStateTextBlock.Text);
+			// Verify.AreEqual("Checked", toggleStateOnClickTextBlock.Text); // Uno TODO: WinUI expects OnClick to trigger, but there's no reason for it to.
 
-	        Log.Comment("Click primary button to uncheck button");
-	        // ClickPrimaryButton(splitButton);
+			Log.Comment("Click primary button to uncheck button");
+			// ClickPrimaryButton(splitButton);
 			await ClickPrimaryButton(splitButton, mouse);
 
-	        Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
-	        Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
+			Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
+			Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
 
-	        Log.Comment("Clicking secondary button should not change toggle state");
+			Log.Comment("Clicking secondary button should not change toggle state");
 			// ClickSecondaryButton(splitButton);
 			await ClickSecondaryButton(splitButton, mouse);
 
-	        Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
-            Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
+			Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
+			Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
 
 			// Uno Specific: close flyouts when done
 			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.IsForFlyout).ForEach(p => p.AssociatedFlyout.Hide());
-        }
+		}
 
-        [TestMethod]
-        public async Task ToggleAccessibilityTest()
-        {
+		[TestMethod]
+		public async Task ToggleAccessibilityTest()
+		{
 			var splitButtonPage = new SplitButtonPage();
 			WindowHelper.WindowContent = splitButtonPage;
 			await WindowHelper.WaitForIdle();
 
-            ToggleSplitButton toggleButton = FindElementByName<ToggleSplitButton>("ToggleSplitButton");
+			ToggleSplitButton toggleButton = FindElementByName<ToggleSplitButton>("ToggleSplitButton");
 
-            TextBlock toggleStateTextBlock = FindElementByName<TextBlock>("ToggleStateTextBlock");
+			TextBlock toggleStateTextBlock = FindElementByName<TextBlock>("ToggleStateTextBlock");
 
-            Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
-            // Verify.AreEqual(ToggleState.Off, toggleButton.ToggleState);
+			Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
+			// Verify.AreEqual(ToggleState.Off, toggleButton.ToggleState);
 			Verify.AreEqual(ToggleState.Off, ((IToggleProvider)toggleButton.GetAutomationPeer()).ToggleState);
 
-            Log.Comment("Verify that toggling the SplitButton works");
-            // toggleButton.Toggle();
+			Log.Comment("Verify that toggling the SplitButton works");
+			// toggleButton.Toggle();
 			((IToggleProvider)toggleButton.GetAutomationPeer()).Toggle();
 			await WindowHelper.WaitForIdle();
 
-            Verify.AreEqual("Checked", toggleStateTextBlock.Text);
-            Verify.AreEqual(ToggleState.On, ((IToggleProvider)toggleButton.GetAutomationPeer()).ToggleState);
-        }
+			Verify.AreEqual("Checked", toggleStateTextBlock.Text);
+			Verify.AreEqual(ToggleState.On, ((IToggleProvider)toggleButton.GetAutomationPeer()).ToggleState);
+		}
 
 		// Uno Specific: There's no SplitButton.Click, so we use our own implementation
 		private async Task ClickPrimaryButton(SplitButton splitButton, IInjectedPointer pointer)

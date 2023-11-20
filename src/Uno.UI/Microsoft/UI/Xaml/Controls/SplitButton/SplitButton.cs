@@ -70,8 +70,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private SerialDisposable m_flyoutClosedRevoker = new();
 		private SerialDisposable m_flyoutPlacementChangedRevoker = new();
 
-		// event_source<winrt::TypedEventHandler<winrt::SplitButton, winrt::SplitButtonClickEventArgs>> m_clickEventSource;
-
 		protected bool m_hasLoaded = false;
 
 		public SplitButton()
@@ -86,7 +84,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			Unloaded += (_, _) => UnregisterEvents();
 		}
 
-		// Uno Specific: Click is not in the C++ source, but is part of the public API
 		public
 #if __ANDROID__
 			new
@@ -367,8 +364,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		protected virtual void OnClickPrimary(object sender, RoutedEventArgs args)
 		{
 			var eventArgs = new SplitButtonClickEventArgs();
-			Click?.Invoke(this, eventArgs); // Uno Specific: Click is not in the C++ source, but is part of the public API
-			// m_clickEventSource(*this, *eventArgs);
+			Click?.Invoke(this, eventArgs);
 
 			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
 			if (peer != null)
@@ -447,7 +443,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 			else if (key == VirtualKey.Down)
 			{
-				CoreVirtualKeyStates menuState = InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
+				CoreVirtualKeyStates menuState = Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
 				bool menuKeyDown = (menuState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 				if (IsEnabled && menuKeyDown)
