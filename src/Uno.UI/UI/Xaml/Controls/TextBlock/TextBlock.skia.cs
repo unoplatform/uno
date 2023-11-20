@@ -192,7 +192,8 @@ namespace Windows.UI.Xaml.Controls
 				var rect = t.rect;
 				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
 				{
-					Color = SelectionHighlightColor.Color.ToSKColor(), Style = SKPaintStyle.Fill
+					Color = SelectionHighlightColor.Color.ToSKColor(),
+					Style = SKPaintStyle.Fill
 				});
 			};
 		}

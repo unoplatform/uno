@@ -112,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The button cannot be refocused
 			Assert.IsFalse(firstButton.Focus(FocusState.Programmatic));
 		}
-
+#if HAS_UNO
 		[TestMethod]
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
@@ -164,6 +164,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(3, doubleTaps);
 		}
+#endif
 
 #if HAS_UNO && !__MACOS__
 		[TestMethod]

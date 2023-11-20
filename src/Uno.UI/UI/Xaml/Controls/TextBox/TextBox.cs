@@ -1242,10 +1242,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 
 					_suppressCurrentlyTyping = true;
+#else
+				{
 #endif
-				Text = currentText;
-#if __SKIA__
+					Text = currentText;
 				}
+#if __SKIA__
 				finally
 				{
 					_suppressCurrentlyTyping = false;
@@ -1281,10 +1283,12 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_suppressCurrentlyTyping = true;
+#else
+			{
 #endif
-			Text = Text.Remove(SelectionStart, SelectionLength);
-#if __SKIA__
+				Text = Text.Remove(SelectionStart, SelectionLength);
 			}
+#if __SKIA__
 			finally
 			{
 				_suppressCurrentlyTyping = false;

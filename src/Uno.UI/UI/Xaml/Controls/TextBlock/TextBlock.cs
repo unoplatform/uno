@@ -40,14 +40,16 @@ namespace Windows.UI.Xaml.Controls
 
 #if !__WASM__
 		private Hyperlink _hyperlinkOver;
+		private bool _subscribeToPointerEvents;
+		private bool _isPressed;
 #endif
 
 		private Action _foregroundChanged;
 
 		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
-		private bool _subscribeToPointerEvents;
-		private bool _isPressed;
+		private Range _selection;
+
 		private Range Selection
 		{
 			get => _selection;
@@ -853,7 +855,7 @@ namespace Windows.UI.Xaml.Controls
 #if __SKIA__
 				var index = that.Inlines.GetIndexAt(point.Position, false);
 #else
-				var index = 0;
+				var index = that.Inlines.GetCharacterIndexAtPoint(Point point);
 #endif
 				that.Selection = new Range(index, index);
 			}
@@ -936,7 +938,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (that._isPressed && that.IsTextSelectionEnabled)
 			{
+#if __SKIA__
 				var index = that.Inlines.GetIndexAt(point.Position, false);
+#else
+				var index = that.Inlines.GetCharacterIndexAtPoint(Point point);
+#endif
 				that.Selection = new Range(that.Selection.start, index);
 			}
 		};
@@ -989,7 +995,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private readonly ObservableCollection<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new();
-		private Range _selection;
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
