@@ -163,9 +163,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			AdjustCoords(o, args.Event);
-
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerEntered(ptArgs);
 			}
@@ -180,13 +178,11 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			AdjustCoords(o, args.Event);
-
 			// The Ungrab mode event is triggered after clicking even when the pointer does not leave the window.
 			// This may need to be removed when we implement native pointer capture support properly.
 			if (args.Event.Mode != CrossingMode.Ungrab)
 			{
-				if (AsPointerArgs(args.Event) is { } ptArgs)
+				if (AsPointerArgs(o, args.Event) is { } ptArgs)
 				{
 					RaisePointerExited(ptArgs);
 				}
@@ -215,9 +211,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		try
 		{
-			AdjustCoords(o, args.Event);
-
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerPressed(ptArgs);
 			}
@@ -232,9 +226,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			AdjustCoords(o, args.Event);
-
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerReleased(ptArgs);
 			}
@@ -249,9 +241,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			AdjustCoords(o, args.Event);
-
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerMoved(ptArgs);
 			}
@@ -266,9 +256,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			AdjustCoords(o, args.Event);
-
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerWheelChanged(ptArgs);
 			}
@@ -283,9 +271,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			AdjustCoords(o!, evt);
-
-			if (AsPointerArgs(evt) is { } ptArgs)
+			if (AsPointerArgs(o!, evt) is { } ptArgs)
 			{
 				switch (evt.Type)
 				{
@@ -319,7 +305,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerExited(ptArgs);
 			}
@@ -334,7 +320,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerEntered(ptArgs);
 			}
@@ -369,17 +355,49 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	#region Convert helpers
-	private PointerEventArgs? AsPointerArgs(EventTouch evt)
-		=> AsPointerArgs(
+	private PointerEventArgs? AsPointerArgs(object o, EventTouch evt)
+	{
+		var (windowX, windowY) = GetWindowCoordinates(o);
+		evt.X = evt.XRoot - windowX;
+		evt.Y = evt.YRoot - windowY;
+
+		return AsPointerArgs(
 			evt.Device, PointerDeviceType.Touch, (uint?)evt.Sequence?.Handle ?? 1u,
 			evt.Type, evt.Time,
 			evt.XRoot, evt.YRoot,
 			evt.X, evt.Y,
 			(ModifierType)evt.State,
 			evt: null);
+	}
 
-	private PointerEventArgs? AsPointerArgs(Event evt)
+	private PointerEventArgs? AsPointerArgs(object o, Event evt)
 	{
+		// The coordinates received in the event args are relative to the widget that raised the event.
+		// Usually, that's the native overlay (which embodies the entire window, minus the titlebar). However,
+		// if another overlay (e.g. TextBox) raises an event, we still want the coordinates relative to the
+		// top-left of the window. This method makes that adjustment
+		var (windowX, windowY) = GetWindowCoordinates(o);
+		if (evt is EventCrossing ec)
+		{
+			ec.X = ec.XRoot - windowX;
+			ec.Y = ec.YRoot - windowY;
+		}
+		else if (evt is EventButton eb)
+		{
+			eb.X = eb.XRoot - windowX;
+			eb.Y = eb.YRoot - windowY;
+		}
+		else if (evt is EventMotion em)
+		{
+			em.X = em.XRoot - windowX;
+			em.Y = em.YRoot - windowY;
+		}
+		else if (evt is EventScroll es)
+		{
+			es.X = es.XRoot - windowX;
+			es.Y = es.YRoot - windowY;
+		}
+
 		var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
 		var type = evt.Type;
 		var time = EventHelper.GetTime(evt);
@@ -611,99 +629,22 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		PointerWheelChanged?.Invoke(this, ptArgs);
 	}
 
-	/// <summary>
-	/// The coordinates received in the event args are relative to the widget that raised the event.
-	/// Usually, that's the native overlay (which embodies the entire window, minus the titlebar). However,
-	/// if another overlay (e.g. TextBox) raises an event, we still want the coordinates relative to the
-	/// top-left of the window. This method makes that adjustment
-	/// </summary>
-	private static void AdjustCoords(object o, EventCrossing e)
+	private static (int x, int y) GetWindowCoordinates(object eventSource)
 	{
-		while (o is not UnoGtkWindow)
+		// Calling GetGeometry on any window reference such as e.Window or (o as Widget).window will return wrong
+		// values (usually just 0). Only UnoGtkWindow.Window will give us what we need.
+		while (eventSource is not UnoGtkWindow)
 		{
-			if (o is not Widget w)
+			if (eventSource is not Widget w)
 			{
-				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow: don't adjust and hope for the best
-				return;
+				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow.
+				throw new InvalidOperationException("Gtk widget has no UnoGtkWindow parent.");
 			}
 
-			o = w.Parent;
+			eventSource = w.Parent;
 		}
 
-		((UnoGtkWindow)o).Window.GetGeometry(out var x, out var y, out _, out _);
-		e.X = e.XRoot - x;
-		e.Y = e.YRoot - y;
-	}
-
-	private static void AdjustCoords(object o, EventButton e)
-	{
-		while (o is not UnoGtkWindow)
-		{
-			if (o is not Widget w)
-			{
-				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow: don't adjust and hope for the best
-				return;
-			}
-
-			o = w.Parent;
-		}
-
-		((UnoGtkWindow)o).Window.GetGeometry(out var x, out var y, out _, out _);
-		e.X = e.XRoot - x;
-		e.Y = e.YRoot - y;
-	}
-
-	private static void AdjustCoords(object o, EventMotion e)
-	{
-		while (o is not UnoGtkWindow)
-		{
-			if (o is not Widget w)
-			{
-				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow: don't adjust and hope for the best
-				return;
-			}
-
-			o = w.Parent;
-		}
-
-		((UnoGtkWindow)o).Window.GetGeometry(out var x, out var y, out _, out _);
-		e.X = e.XRoot - x;
-		e.Y = e.YRoot - y;
-	}
-
-	private static void AdjustCoords(object o, EventScroll e)
-	{
-		while (o is not UnoGtkWindow)
-		{
-			if (o is not Widget w)
-			{
-				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow: don't adjust and hope for the best
-				return;
-			}
-
-			o = w.Parent;
-		}
-
-		((UnoGtkWindow)o).Window.GetGeometry(out var x, out var y, out _, out _);
-		e.X = e.XRoot - x;
-		e.Y = e.YRoot - y;
-	}
-
-	private void AdjustCoords(object o, EventTouch e)
-	{
-		while (o is not UnoGtkWindow)
-		{
-			if (o is not Widget w)
-			{
-				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow: don't adjust and hope for the best
-				return;
-			}
-
-			o = w.Parent;
-		}
-
-		((UnoGtkWindow)o).Window.GetGeometry(out var x, out var y, out _, out _);
-		e.X = e.XRoot - x;
-		e.Y = e.YRoot - y;
+		((UnoGtkWindow)eventSource).Window.GetGeometry(out var x, out var y, out _, out _);
+		return (x, y);
 	}
 }
