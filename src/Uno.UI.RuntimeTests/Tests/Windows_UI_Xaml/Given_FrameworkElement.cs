@@ -271,10 +271,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
-
+#if HAS_UNO
+				// Unlike WinUI, we don't crash.
+				SUT.Measure(new Size(double.NaN, double.NaN));
+				SUT.Measure(new Size(42.0, double.NaN));
+				SUT.Measure(new Size(double.NaN, 42.0));
+#else
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+#endif
 			});
 
 		[TestMethod]
