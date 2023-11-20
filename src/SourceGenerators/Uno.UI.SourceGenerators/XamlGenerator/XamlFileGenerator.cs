@@ -3277,8 +3277,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					bool hasLazyProperties = false;
+					// Build events first. See https://github.com/unoplatform/uno/issues/4718 for info.
+					foreach (var member in extendedProperties)
+					{
+						_generatorContext.CancellationToken.ThrowIfCancellationRequested();
 
+						var declaringTypeSymbol = FindType(member.Member.DeclaringType);
+						var @event = _metadataHelper.FindEventType(declaringTypeSymbol, member.Member.Name);
+						if (@event is not null)
+						{
+							BuildExtendedProperty(objectDefinition, objectUid, objectDefinitionType, closureName, writer, ref uidMember, ref nameMember, componentDefinition, ref uiAutomationId, extractionTargetMembers, member);
+						}
+					}
+
+					bool hasLazyProperties = false;
 					foreach (var member in extendedProperties)
 					{
 						_generatorContext.CancellationToken.ThrowIfCancellationRequested();
@@ -3288,7 +3300,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							continue;
 						}
 
-						BuildExtendedProperty(objectDefinition, objectUid, objectDefinitionType, closureName, writer, ref uidMember, ref nameMember, componentDefinition, ref uiAutomationId, extractionTargetMembers, member);
+						var @event = _metadataHelper.FindEventType(FindType(member.Member.DeclaringType), member.Member.Name);
+						if (@event is null)
+						{
+							BuildExtendedProperty(objectDefinition, objectUid, objectDefinitionType, closureName, writer, ref uidMember, ref nameMember, componentDefinition, ref uiAutomationId, extractionTargetMembers, member);
+						}
 					}
 
 					var implicitContentChild = FindImplicitContentMember(objectDefinition);
