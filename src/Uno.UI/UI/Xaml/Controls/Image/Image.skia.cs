@@ -130,6 +130,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_currentSurface = currentData.CompositionSurface;
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
+				_surfaceBrush.UsePaintColorToColorSurface = MonochromeColor is not null;
+				_imageSprite.SetPaintColor(MonochromeColor);
 				_imageSprite.Brush = _surfaceBrush;
 				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			}
