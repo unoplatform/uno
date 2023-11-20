@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Security.Cryptography.Core;
@@ -130,7 +131,7 @@ public sealed partial class Window
 			_rootVisual.XamlRoot!.InvalidateMeasure();
 			_rootVisual.XamlRoot!.InvalidateArrange();
 
-			UIElement.RootElementLoaded(_rootVisual);
+			NativeDispatcher.Main.Enqueue(() => UIElement.RootElementLoaded(_rootVisual));
 		}
 
 		if (Dispatcher.HasThreadAccess)
