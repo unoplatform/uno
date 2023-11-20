@@ -28,14 +28,14 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class RatingControl : Control
 {
-	//private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
+	//private const float c_horizontalScaleAnimationCenterPoint = 0.5f; Unused in MUX
 	private const float c_verticalScaleAnimationCenterPoint = 0.8f;
 	private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
 	private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done
 	private const int c_defaultItemSpacing = 8;
 
 	private const float c_mouseOverScale = 0.8f;
-	private const float c_touchOverScale = 1.0f;
+	//private const float c_touchOverScale = 1.0f; Unused in MUX
 	private const float c_noPointerOverMagicNumber = -100;
 
 	// 22 = 20(compensate for the -20 margin on StackPanel) + 2(magic number makes the text and star center-aligned)
@@ -894,13 +894,16 @@ public partial class RatingControl : Control
 		return ratingStarsWidth + textSpacing + captionWidth;
 	}
 
-	double CalculateStarCenter(int starIndex)
+
+#if false // TODO Uno: Unused until composition APIs are enabled
+	private double CalculateStarCenter(int starIndex)
 	{
 		// TODO: MSFT sub in real API DP values
 		// MSFT #10030063
 		// [real Rating Size * (starIndex + 0.5)] + (starIndex * itemSpacing)
 		return (ActualRatingFontSize() * (starIndex + 0.5)) + (starIndex * ItemSpacing());
 	}
+#endif
 
 	private double CalculateActualRatingWidth()
 	{
