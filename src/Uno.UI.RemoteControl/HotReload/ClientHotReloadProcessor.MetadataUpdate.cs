@@ -57,7 +57,7 @@ partial class ClientHotReloadProcessor
 		}
 		try
 		{
-			return await TypeMappings.WaitForMappingsToResume();
+			return await TypeMappings.WaitForResume();
 		}
 		finally
 		{

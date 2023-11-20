@@ -122,9 +122,22 @@ public static class TypeMappings
 	/// <returns>A task that will complete when type mapping collection
 	/// has resumed. Returns a completed task if type mapping collection
 	/// is currently active
+	[Obsolete("Use WaitForResume instead")]
+	public static Task WaitForMappingsToResume()
+		=> WaitForResume();
+
+	/// <summary>
+	/// Gets a Task that can be awaited to ensure type mappings
+	/// are being applied. This is useful particularly for testing 
+	/// HR the pause/resume function of type mappings
+	/// </summary>
+	/// <returns>A task that will complete when type mapping collection
+	/// has resumed. Returns a completed task if type mapping collection
+	/// is currently active
 	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
-	public static Task<bool> WaitForMappingsToResume()
+	public static Task<bool> WaitForResume()
 		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
+
 
 	/// <summary>
 	/// Pause the collection of type mappings.
@@ -138,10 +151,19 @@ public static class TypeMappings
 	/// Resumes the collection of type mappings
 	/// If new types have been created whilst type mapping
 	/// was paused, those new mappings will be applied before
-	/// the WaitForMappingsToResume task completes
+	/// the WaitForResume task completes
+	/// </summary>
+	public static void Resume()
+		=> Resume(true);
+
+	/// <summary>
+	/// Resumes the collection of type mappings
+	/// If new types have been created whilst type mapping
+	/// was paused, those new mappings will be applied before
+	/// the WaitForResume task completes
 	/// </summary>
 	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
-	public static void Resume(bool updateLayout = true)
+	public static void Resume(bool updateLayout)
 	{
 		var completion = _mappingsPaused;
 		_mappingsPaused = null;
