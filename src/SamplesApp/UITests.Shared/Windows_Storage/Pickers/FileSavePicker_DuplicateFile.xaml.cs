@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace UITests.Shared.Windows_Storage.Pickers
 {
-	[Sample("Windows.Storage", ViewModelType = typeof(FileSavePicker_DuplicateFileViewModel),IgnoreInSnapshotTests = true, IsManualTest = true,
+	[Sample("Windows.Storage", ViewModelType = typeof(FileSavePicker_DuplicateFileViewModel), IgnoreInSnapshotTests = true, IsManualTest = true,
 		Description =
 			"Tap each of the buttons twice. For the first button, enter the file name in the dialog manually to be 'test.txt' or 'test'. " +
 			"The second time the button is tapped, the dialog should either tell you the file with the same name exists and ask you if you want to overwrite, " +
