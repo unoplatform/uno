@@ -747,7 +747,7 @@ namespace Uno.UWPSyncGenerator
 					)
 					|| !IsNotUWPMapping(ownerType, property))
 				{
-					return;
+					continue;
 				}
 
 				if (allProperties.HasUndefined)
