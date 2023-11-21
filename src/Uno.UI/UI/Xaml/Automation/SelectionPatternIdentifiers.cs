@@ -13,15 +13,15 @@ public partial class SelectionPatternIdentifiers
 	/// <summary>
 	/// Identifies the CanSelectMultiple automation property.
 	/// </summary>
-	public static AutomationProperty CanSelectMultipleProperty => new();
+	public static AutomationProperty CanSelectMultipleProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the IsSelectionRequired automation property.
 	/// </summary>
-	public static AutomationProperty IsSelectionRequiredProperty => new();
+	public static AutomationProperty IsSelectionRequiredProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the property that gets the selected items in a container.
 	/// </summary>
-	public static AutomationProperty SelectionProperty => new();
+	public static AutomationProperty SelectionProperty { get; } = new();
 }
