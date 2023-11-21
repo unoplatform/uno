@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 			};
 		}
 
-		private void OnNaturalVideoDimensionChanged(MediaPlayer sender, object args)
+		private void OnNaturalVideoDimensionChanged(Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
