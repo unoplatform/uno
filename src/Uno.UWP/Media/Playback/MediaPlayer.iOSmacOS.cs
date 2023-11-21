@@ -123,6 +123,9 @@ namespace Windows.Media.Playback
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
 
+		internal uint NaturalVideoHeight { get; private set; }
+		internal uint NaturalVideoWidth { get; private set; }
+
 		private void Initialize()
 		{
 			_observer = new Observer(this);
@@ -386,8 +389,10 @@ namespace Windows.Media.Playback
 
 		private void OnVideoRectChanged()
 		{
-			if (_videoLayer?.VideoRect != null)
+			if (_videoLayer?.VideoRect is { } videoRect)
 			{
+				NaturalVideoWidth = (uint)videoRect.Width;
+				NaturalVideoHeight = (uint)videoRect.Height;
 				NaturalVideoDimensionChanged?.Invoke(this, null);
 			}
 		}
