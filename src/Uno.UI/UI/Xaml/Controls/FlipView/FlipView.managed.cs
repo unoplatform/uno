@@ -492,6 +492,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#pragma warning disable IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 		void OnScrollViewerViewChanged(object pSender, ScrollViewerViewChangedEventArgs pArgs)
 		{
 			bool isIntermediate = true;
@@ -586,6 +587,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#pragma warning enable IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 
 #if false
 		void OnItemsHostAvailable()
