@@ -127,10 +127,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly Stack<string> _currentDefaultBindMode = new Stack<string>(new[] { "OneTime" });
 
-		// Determines if the source generator will skip the inclusion of UseControls in the
-		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private readonly bool _skipUserControlsInVisualTree;
-
 		private readonly IDictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
 
 		private readonly string[] _includeXamlNamespaces;
@@ -206,7 +202,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isHotReloadEnabled,
 			bool isDesignTimeBuild,
 			bool isInsideMainAssembly,
-			bool skipUserControlsInVisualTree,
 			bool shouldAnnotateGeneratedXaml,
 			bool isUnoAssembly,
 			bool isUnoFluentAssembly,
@@ -233,7 +228,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
 			_isDesignTimeBuild = isDesignTimeBuild;
-			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
 			_enableFuzzyMatching = enableFuzzyMatching;
@@ -2389,23 +2383,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
 									writer.AppendIndented("new Run { Text = \"" + escapedString + "\" }");
 								}
-							}
-						}
-						else if (_skipUserControlsInVisualTree && IsUserControl(topLevelControlSymbol))
-						{
-							if (implicitContentChild.Objects.Any())
-							{
-								var firstChild = implicitContentChild.Objects.First();
-
-								var elementType = topLevelControlSymbol ?? throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(topLevelControl.Type));
-								var contentProperty = FindContentProperty(elementType);
-
-								writer.AppendLineInvariantIndented("{0}{1} = ",
-									setterPrefix,
-									contentProperty != null ? contentProperty.Name : "Content"
-								);
-
-								BuildChild(writer, implicitContentChild, firstChild);
 							}
 						}
 						else if (IsPage(topLevelControlSymbol))
@@ -5908,22 +5885,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					BuildComplexPropertyValue(writer, owner, null, closureName: outerClosure, generateAssignation: outerClosure != null);
 				}
-				else if (
-					_skipUserControlsInVisualTree
-					&& IsDirectUserControlSubType(knownType)
-					&& HasNoUserControlProperties(xamlObjectDefinition))
-				{
-					writer.AppendLineInvariantIndented("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
-
-					using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
-					{
-						RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
-						BuildLiteralProperties(innerWriter, xamlObjectDefinition, closureName);
-						BuildProperties(innerWriter, xamlObjectDefinition, closureName: closureName);
-					}
-
-					BuildExtendedProperties(writer, xamlObjectDefinition, useGenericApply: true);
-				}
 				else if (HasInitializer(xamlObjectDefinition))
 				{
 					BuildInitializer(writer, xamlObjectDefinition, owner);
@@ -6112,20 +6073,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return null;
-		}
-
-		private bool HasNoUserControlProperties(XamlObjectDefinition objectDefinition)
-		{
-			return
-			objectDefinition
-				.Members
-				.Where(m =>
-					(
-						m.Member.Name != "DataContext"
-						&& m.Member.Name != "_UnknownContent"
-					)
-				)
-				.None();
 		}
 
 		private XamlObjectDefinition? GetControlOwner(XamlObjectDefinition? owner)
@@ -6716,11 +6663,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return displayString;
-		}
-
-		private bool IsDirectUserControlSubType(INamedTypeSymbol? symbol)
-		{
-			return Generation.UserControlSymbol.Value.Equals(symbol?.BaseType, SymbolEqualityComparer.Default);
 		}
 
 		private NameScope CurrentScope

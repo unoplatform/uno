@@ -182,11 +182,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(symbol, Generation.BorderSymbol.Value);
 		}
 
-		private bool IsUserControl(INamedTypeSymbol? symbol)
-		{
-			return IsType(symbol, Generation.UserControlSymbol.Value);
-		}
-
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
 			return IsType(xamlType, Generation.FrameworkElementSymbol.Value);
