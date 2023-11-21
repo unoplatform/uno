@@ -47,24 +47,6 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\AnnotationPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\AutomationElementIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\DockPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\DragPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\DropTargetPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\GridItemPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\MultipleViewPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\SelectionPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\SpreadsheetItemPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\StylesPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\TableItemPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\TablePatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\TransformPattern2Identifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\TransformPatternIdentifiers.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Automation\WindowPatternIdentifiers.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
