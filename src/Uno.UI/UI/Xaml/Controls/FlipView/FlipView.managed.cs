@@ -410,7 +410,10 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpScrollViewer != null)
 			{
 				m_tpScrollViewer.SizeChanged -= OnScrollingHostPartSizeChanged;
-				m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+
+#if !__WASM__
+					m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+#endif
 			}
 
 			m_tpButtonsFadeOutTimer?.Stop();
@@ -482,7 +485,9 @@ namespace Windows.UI.Xaml.Controls
 					//	return OnScrollViewerViewChanged(pSender, pArgs);
 					//}));
 
+#if !__WASM__ // Workaround for https://github.com/unoplatform/uno/issues/14488
 					m_tpScrollViewer.ViewChanged += OnScrollViewerViewChanged;
+#endif
 				}
 			}
 		}
@@ -1511,7 +1516,7 @@ namespace Windows.UI.Xaml.Controls
 				// with SetFixOffsetTimer.
 				if (m_animateNewIndex)
 				{
-					bool succeeded = (bool)(m_tpScrollViewer?.CancelDirectManipulations());
+					//bool succeeded = (bool)(m_tpScrollViewer?.CancelDirectManipulations());
 					RestoreSnapPointsTypes();
 					m_animateNewIndex = false;
 					SetFixOffsetTimer();
