@@ -13,30 +13,30 @@ public partial class WindowPatternIdentifiers
 	/// <summary>
 	/// Identifies the Maximizable automation property.
 	/// </summary>
-	public static AutomationProperty CanMaximizeProperty => new();
+	public static AutomationProperty CanMaximizeProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the Minimizable automation property.
 	/// </summary>
-	public static AutomationProperty CanMinimizeProperty => new();
+	public static AutomationProperty CanMinimizeProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the IsModal automation property.
 	/// </summary>
-	public static AutomationProperty IsModalProperty => new();
+	public static AutomationProperty IsModalProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the IsTopmost automation property.
 	/// </summary>
-	public static AutomationProperty IsTopmostProperty => new();
+	public static AutomationProperty IsTopmostProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the InteractionState automation property.
 	/// </summary>
-	public static AutomationProperty WindowInteractionStateProperty => new();
+	public static AutomationProperty WindowInteractionStateProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the VisualState automation property.
 	/// </summary>
-	public static AutomationProperty WindowVisualStateProperty => new();
+	public static AutomationProperty WindowVisualStateProperty { get; } = new();
 }

@@ -12,25 +12,25 @@ public partial class GridItemPatternIdentifiers
 	/// <summary>
 	/// Identifies the Column automation property.
 	/// </summary>
-	public static AutomationProperty ColumnProperty => new();
+	public static AutomationProperty ColumnProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the ColumnSpan automation property.
 	/// </summary>
-	public static AutomationProperty ColumnSpanProperty => new();
+	public static AutomationProperty ColumnSpanProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the ContainingGrid automation property.
 	/// </summary>
-	public static AutomationProperty ContainingGridProperty => new();
+	public static AutomationProperty ContainingGridProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the Row automation property.
 	/// </summary>
-	public static AutomationProperty RowProperty => new();
+	public static AutomationProperty RowProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the RowSpan property.
 	/// </summary>
-	public static AutomationProperty RowSpanProperty => new();
+	public static AutomationProperty RowSpanProperty { get; } = new();
 }

@@ -12,10 +12,10 @@ public partial class DropTargetPatternIdentifiers
 	/// <summary>
 	/// Gets the identifier for the DropEffect automation property.
 	/// </summary>
-	public static AutomationProperty DropTargetEffectProperty => new();
+	public static AutomationProperty DropTargetEffectProperty { get; } = new();
 
 	/// <summary>
 	/// Gets the identifier for the DropEffects automation property.
 	/// </summary>
-	public static AutomationProperty DropTargetEffectsProperty => new();
+	public static AutomationProperty DropTargetEffectsProperty { get; } = new();
 }

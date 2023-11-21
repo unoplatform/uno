@@ -12,5 +12,5 @@ public partial class SpreadsheetItemPatternIdentifiers
 	/// <summary>
 	/// Identifies the Formula automation property.
 	/// </summary>
-	public static AutomationProperty FormulaProperty => new();
+	public static AutomationProperty FormulaProperty { get; } = new();
 }

@@ -12,5 +12,5 @@ public partial class DockPatternIdentifiers
 	/// <summary>
 	/// Identifies the DockPosition automation property.
 	/// </summary>
-	public static AutomationProperty DockPositionProperty => new();
+	public static AutomationProperty DockPositionProperty { get; } = new();
 }

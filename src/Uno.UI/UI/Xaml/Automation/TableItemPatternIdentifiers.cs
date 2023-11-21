@@ -13,10 +13,10 @@ public partial class TableItemPatternIdentifiers
 	/// <summary>
 	/// Identifies the automation property that retrieves all the column headers associated with a table item or cell.
 	/// </summary>
-	public static AutomationProperty ColumnHeaderItemsProperty => new();
+	public static AutomationProperty ColumnHeaderItemsProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the automation property that retrieves all the row headers associated with a table item or cell.
 	/// </summary>
-	public static AutomationProperty RowHeaderItemsProperty => new();
+	public static AutomationProperty RowHeaderItemsProperty { get; } = new();
 }
