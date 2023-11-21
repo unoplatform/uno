@@ -12,15 +12,15 @@ public partial class TablePatternIdentifiers
 	/// <summary>
 	/// Identifies the automation property that is accessed by the GetColumnHeaders method.
 	/// </summary>
-	public static AutomationProperty ColumnHeadersProperty => new();
+	public static AutomationProperty ColumnHeadersProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the automation property that is accessed by the GetRowHeaders method.
 	/// </summary>
-	public static AutomationProperty RowHeadersProperty => new();
+	public static AutomationProperty RowHeadersProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the RowOrColumnMajor automation property.
 	/// </summary>
-	public static AutomationProperty RowOrColumnMajorProperty => new();
+	public static AutomationProperty RowOrColumnMajorProperty { get; } = new();
 }
