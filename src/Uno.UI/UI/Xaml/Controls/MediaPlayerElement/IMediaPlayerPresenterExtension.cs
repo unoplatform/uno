@@ -15,5 +15,9 @@ namespace Windows.UI.Xaml.Controls
 		void RequestCompactOverlay();
 
 		void ExitCompactOverlay();
+
+		uint NaturalVideoHeight { get; }
+
+		uint NaturalVideoWidth { get; }
 	}
 }

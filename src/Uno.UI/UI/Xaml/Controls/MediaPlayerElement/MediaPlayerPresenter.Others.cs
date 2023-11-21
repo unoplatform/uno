@@ -30,6 +30,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal uint NaturalVideoHeight => _extension?.NaturalVideoHeight ?? 0;
+		internal uint NaturalVideoWidth => _extension?.NaturalVideoWidth ?? 0;
+
 		partial void OnMediaPlayerChangedPartial(MediaPlayer mediaPlayer)
 			=> _extension?.MediaPlayerChanged();
 

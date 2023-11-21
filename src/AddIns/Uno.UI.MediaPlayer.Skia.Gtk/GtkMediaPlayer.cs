@@ -32,7 +32,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
-	private double _videoRatio;
 	private readonly MediaPlayerPresenter _owner;
 	private (double playerHeight, double playerWidth, uint videoHeight, uint videoWidth) _lastSetDimensions;
 
@@ -61,6 +60,9 @@ public partial class GtkMediaPlayer : FrameworkElement
 		//_libvlc?.Dispose();
 	}
 
+	internal uint NaturalVideoHeight => _lastSetDimensions.videoHeight;
+	internal uint NaturalVideoWidth => _lastSetDimensions.videoWidth;
+
 	public string Source
 	{
 		get => (string)GetValue(SourceProperty);
@@ -73,19 +75,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	public double Duration { get; set; }
 
-	public double VideoRatio
-	{
-		get => _videoRatio;
-		set
-		{
-			if (_videoRatio != value)
-			{
-				_videoRatio = value;
-
-				OnVideoRatioChanged?.Invoke(this, EventArgs.Empty);
-			}
-		}
-	}
+	public double VideoRatio { get; set; }
 
 	public bool IsVideo
 		=> _mediaPlayer?.Media?.Tracks?.Any(x => x.TrackType == TrackType.Video) == true;
@@ -357,6 +347,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 					}
 
 					VideoRatio = (double)videoHeight / (double)videoWidth;
+					if (videoHeight != _lastSetDimensions.videoHeight || videoWidth != _lastSetDimensions.videoWidth)
+					{
+						OnNaturalVideoDimensionChanged?.Invoke();
+					}
 
 					var currentSize = new Size(ActualWidth, ActualHeight);
 
@@ -467,10 +461,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 					var topInsetFill = (playerHeight - newHeight) / 2;
 					var leftInsetFill = 0;
-
-					var newHeightFill = (int)(videoHeight * playerRatio);
-					var newWidthFill = (int)(videoWidth * playerRatio);
-					double correctVideoRate = (VideoRatio / playerRatio);
 
 					if (_videoView is not null)
 					{

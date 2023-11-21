@@ -272,7 +272,7 @@ namespace Windows.Media.Playback
 			{
 				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
 
-				VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+				NaturalVideoDimensionChanged?.Invoke(this, null);
 
 				IsVideo = mp.GetTrackInfo()?.Any(x => x.TrackType == MediaTrackType.Video) == true;
 

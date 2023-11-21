@@ -388,7 +388,7 @@ namespace Windows.Media.Playback
 		{
 			if (_videoLayer?.VideoRect != null)
 			{
-				VideoRatioChanged?.Invoke(this, _videoLayer.VideoRect.Width / Math.Max(_videoLayer.VideoRect.Height, 1));
+				NaturalVideoDimensionChanged?.Invoke(this, null);
 			}
 		}
 
