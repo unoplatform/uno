@@ -4446,6 +4446,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Canvas_DependentAnimation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimationUsingKeyFrames_Fill.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7859,6 +7863,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations.xaml.cs">
       <DependentUpon>BeginTime_MultipleAnimations.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Canvas_DependentAnimation.xaml.cs">
+      <DependentUpon>Canvas_DependentAnimation.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimationUsingKeyFrames_Fill.xaml.cs">
       <DependentUpon>ColorAnimationUsingKeyFrames_Fill.xaml</DependentUpon>
