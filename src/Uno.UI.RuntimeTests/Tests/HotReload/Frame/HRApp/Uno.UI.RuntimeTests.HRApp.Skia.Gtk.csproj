@@ -29,7 +29,7 @@
 
 		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
 		
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
@@ -41,7 +41,7 @@
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
 		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.8.33" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />

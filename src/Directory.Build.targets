@@ -119,8 +119,11 @@
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
-		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Update="System.Drawing.Common" Version="8.0.0" />
+		<PackageReference Update="System.Management" Version="8.0.0" />
+		<PackageReference Update="System.Configuration.ConfigurationManager" Version="8.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
