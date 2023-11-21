@@ -255,7 +255,13 @@ public partial class Window : UIWindow
 		scalableViews.ForEach(v => v.RefreshFont());
 	}
 
-	public override UIView HitTest(CGPoint point, UIEvent? uievent)
+	public override
+#if NET8_0_OR_GREATER
+		UIView?
+#else
+		UIView
+#endif
+		HitTest(CGPoint point, UIEvent? uievent)
 	{
 		if (!BypassCheckToCloseKeyboard && uievent is { Type: UIEventType.Touches })
 		{
@@ -276,7 +282,7 @@ public partial class Window : UIWindow
 			_focusedView = newlyFocusedView;
 
 			if (_inputPane.Visible
-				&& !NeedsKeyboard(_focusedView))
+				&& !NeedsKeyboard(_focusedView!))
 			{
 				// Note: prefer call the IsWithinAWebView after the NeedsKeyboard since it is more power consuming.
 				if (IsWithinAWebView(_focusedView))
@@ -470,7 +476,7 @@ public partial class Window : UIWindow
 		}
 	}
 
-	private static bool GetNeedsKeyboard(UIView view)
+	private static bool GetNeedsKeyboard(UIView? view)
 	{
 		if (view == null)
 		{
@@ -482,7 +488,7 @@ public partial class Window : UIWindow
 		return superViews.Any(superView => _attachedProperties.GetValue(superView, NeedsKeyboardAttachedPropertyKey, () => default(bool?)).GetValueOrDefault());
 	}
 
-	private static bool NeedsKeyboard(UIView view)
+	private static bool NeedsKeyboard(UIView? view)
 	{
 		return view is UISearchBar
 			|| view is UITextView
@@ -499,7 +505,7 @@ public partial class Window : UIWindow
 			view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 	}
 
-	private bool IsFocusable(UIView view)
+	private bool IsFocusable(UIView? view)
 	{
 		// Basic IsFocusable support that only works with buttons.
 		// This prevent the keyboard from being dismissed when tapping on a button that doesn't want focus.
