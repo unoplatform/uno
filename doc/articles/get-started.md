@@ -14,7 +14,7 @@ To set up your development environment, first select the operating system you're
 
 # [**Windows**](#tab/windows)
 
-If you're developing on Windows, we recommend you use [**Visual Studio 2022**](xref:Uno.GetStarted.vs2022), for the richest XAML development experience and broadest platform coverage. 
+If you're developing on Windows, we recommend you use [**Visual Studio 2022**](xref:Uno.GetStarted.vs2022), for the richest XAML development experience and broadest platform coverage.
 
 If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
 
