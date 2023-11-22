@@ -377,33 +377,15 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		// if another overlay (e.g. TextBox) raises an event, we still want the coordinates relative to the
 		// top-left of the window. This method makes that adjustment
 		var (windowX, windowY) = GetWindowCoordinates(o);
-		if (evt is EventCrossing ec)
-		{
-			ec.X = ec.XRoot - windowX;
-			ec.Y = ec.YRoot - windowY;
-		}
-		else if (evt is EventButton eb)
-		{
-			eb.X = eb.XRoot - windowX;
-			eb.Y = eb.YRoot - windowY;
-		}
-		else if (evt is EventMotion em)
-		{
-			em.X = em.XRoot - windowX;
-			em.Y = em.YRoot - windowY;
-		}
-		else if (evt is EventScroll es)
-		{
-			es.X = es.XRoot - windowX;
-			es.Y = es.YRoot - windowY;
-		}
 
 		var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
 		var type = evt.Type;
 		var time = EventHelper.GetTime(evt);
 		EventHelper.GetRootCoords(evt, out var rootX, out var rootY);
-		EventHelper.GetCoords(evt, out var x, out var y);
 		EventHelper.GetState(evt, out var state);
+
+		var x = rootX - windowX;
+		var y = rootY - windowY;
 
 		return AsPointerArgs(
 			dev, GetDeviceType(dev), 1u,
