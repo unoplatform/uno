@@ -87,12 +87,10 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Green)
 		};
 
-		TestServices.WindowHelper.WindowContent = bitmapIcon;
-		await TestServices.WindowHelper.WaitForLoaded(bitmapIcon);
-		await TestServices.WindowHelper.WaitForIdle();
+		await UITestHelper.Load(bitmapIcon);
 
 		var sc = await UITestHelper.ScreenShot(bitmapIcon);
-		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.FromARGB(255, 240, 28, 36));
-		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.FromARGB(255, 255, 255, 255));
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 255, 255, 255));
 	}
 }
