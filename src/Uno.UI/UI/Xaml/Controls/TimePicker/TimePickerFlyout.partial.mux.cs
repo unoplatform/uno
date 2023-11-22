@@ -230,7 +230,7 @@ partial class TimePickerFlyout
 		}
 	}
 
-	private object GetDefaultTime()
+	private static TimeSpan GetDefaultTime()
 	{
 		TimeSpan retTimeSpan = default;
 
@@ -276,12 +276,12 @@ partial class TimePickerFlyout
 		return retTimeSpan;
 	}
 
-	private object GetDefaultClockIdentifier()
+	private static string GetDefaultClockIdentifier()
 	{
 		var spFormatter = new DateTimeFormatter(s_strHourFormat);
 
 		return spFormatter.Clock;
 	}
 
-	private object GetDefaultMinuteIncrement() => 1;
+	private static int GetDefaultMinuteIncrement() => 1;
 }

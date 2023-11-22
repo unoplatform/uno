@@ -22,7 +22,7 @@ partial class TimePickerFlyout
 			typeof(string),
 			typeof(TimePickerFlyout),
 			new FrameworkPropertyMetadata(
-				defaultValue: (string)Windows.Globalization.ClockIdentifiers.TwelveHour,
+				defaultValue: (string)TimePickerFlyout.GetDefaultClockIdentifier(),
 				options: FrameworkPropertyMetadataOptions.None)
 		);
 
@@ -38,7 +38,7 @@ partial class TimePickerFlyout
 			typeof(int),
 			typeof(TimePickerFlyout),
 			new FrameworkPropertyMetadata(
-				defaultValue: (int)1,
+				defaultValue: (int)TimePickerFlyout.GetDefaultMinuteIncrement(),
 				options: FrameworkPropertyMetadataOptions.None)
 		);
 
@@ -54,7 +54,7 @@ partial class TimePickerFlyout
 			typeof(TimeSpan),
 			typeof(TimePickerFlyout),
 			new FrameworkPropertyMetadata(
-				defaultValue: (TimeSpan)DateTime.Now.TimeOfDay,
+				defaultValue: (TimeSpan)TimePickerFlyout.GetDefaultTime(),
 				options: FrameworkPropertyMetadataOptions.None)
 		);
 

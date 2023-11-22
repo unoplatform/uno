@@ -77,6 +77,7 @@ partial class TimePicker
 		m_reactionToSelectionChangeAllowed = false;
 		m_defaultTime = new TimeSpan(GetNullTimeSentinelValue());
 		m_currentTime = new TimeSpan(GetNullTimeSentinelValue());
+		InitPartial();
 		PrepareState();
 	}
 
@@ -120,11 +121,6 @@ partial class TimePicker
 		RefreshSetup();
 
 		Loaded += OnLoaded;
-
-		if (pCurrentWindow is not null)
-		{
-			v
-		}
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)

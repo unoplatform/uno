@@ -45,6 +45,7 @@ namespace Windows.UI.Xaml.Controls
 			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "TimePickerLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: false);
 
 			DefaultStyleKey = typeof(TimePicker);
+			InitPartial();
 		}
 
 		#region Time DependencyProperty
