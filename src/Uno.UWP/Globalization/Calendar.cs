@@ -51,12 +51,11 @@ namespace Windows.Globalization
 				global::System.Globalization.UmAlQuraCalendar _ => CalendarIdentifiers.UmAlQura,
 				global::System.Globalization.PersianCalendar _ => CalendarIdentifiers.Persian,
 				global::System.Globalization.ChineseLunisolarCalendar _ => CalendarIdentifiers.ChineseLunar,
-				// Not supported by UWP as of 2019-05-23
-				// https://docs.microsoft.com/en-us/uwp/api/windows.globalization.calendaridentifiers
+				global::System.Globalization.TaiwanLunisolarCalendar _ => CalendarIdentifiers.TaiwanLunar,
+				global::System.Globalization.KoreanLunisolarCalendar _ => CalendarIdentifiers.KoreanLunar,
+				global::System.Globalization.JapaneseLunisolarCalendar _ => CalendarIdentifiers.JapaneseLunar,
+				// Missing support in System.Globalization for VietnameseLunar calendar.
 				// case CalendarIdentifiers.VietnameseLunar: return new global::System.Globalization.VietnameseLunarCalendar();
-				// case CalendarIdentifiers.TaiwanLunar: return new global::System.Globalization.TaiwanLunarCalendar();
-				// case CalendarIdentifiers.KoreanLunar: return new global::System.Globalization.KoreanLunarCalendar();
-				// case CalendarIdentifiers.JapaneseLunar: return new global::System.Globalization.JapaneseLunarCalendar();
 				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
 			};
 		}
@@ -231,7 +230,17 @@ namespace Windows.Globalization
 				}
 			}
 
-			set => AddHours(value - Hour);
+			set
+			{
+				if (value == 12 && _clock == ClockIdentifiers.TwelveHour)
+				{
+					AddHours(-Hour);
+				}
+				else
+				{
+					AddHours(value - Hour);
+				}
+			}
 		}
 
 		public int Minute
