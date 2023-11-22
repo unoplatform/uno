@@ -56,10 +56,6 @@
   items:
     - name: High Level Architecture
       topicHref: xref:Uno.Development.About
-
-    - name: Topics
-      href: xref:Uno.Overview.Topics
-
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
