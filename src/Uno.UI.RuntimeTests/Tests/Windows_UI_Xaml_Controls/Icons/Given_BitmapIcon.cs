@@ -92,7 +92,7 @@ public class Given_BitmapIcon
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var sc = await UITestHelper.ScreenShot(bitmapIcon);
-		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.FromARGB(255,  240, 28, 36));
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.FromARGB(255, 240, 28, 36));
 		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.FromARGB(255, 255, 255, 255));
 	}
 }
