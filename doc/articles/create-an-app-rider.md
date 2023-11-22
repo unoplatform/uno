@@ -60,7 +60,7 @@ Select the Skia.WPF project, then Run.
 
 ## Explore
 
-Next, [read through our guides about Uno Platform's architecture](xref:Uno.Development.About), and the structure of the app that was just created.
+Next, [explore the Uno Plaform App solution structure](xref:Uno.Development.About).
 
 ## Troubleshoot Issues
 

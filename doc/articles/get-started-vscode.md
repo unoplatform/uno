@@ -17,9 +17,11 @@ See these sections for information about using Uno Platform with:
 - The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 - For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
 
-[!include[getting-help](use-uno-check-inline.md)]
+## Check your environment
 
-## Configuring VS Code
+[!include[getting-help](use-uno-check-inline-noheader.md)]
+
+## Configure VS Code
 
 If you are new to VS Code or to developing C# applications with VS Code take the time to follow the next steps.
 
@@ -34,8 +36,6 @@ No other extensions are needed to complete this guide.
 ## C# Dev Kit Compatibility
 
 At this time, the preview version of the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit` is not compatible with the Uno Platform extension. It requires a preview version of the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` that contains major breaking changes.
-
-### Workaround
 
 You can use both the Uno Platform and C# Dev Kit extensions but not simultaneously. The easiest way to accomplish this is to [create profiles](https://code.visualstudio.com/docs/editor/profiles) inside VSCode. Using this method, you can:
 

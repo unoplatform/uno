@@ -33,68 +33,87 @@ To create an Uno Platform app:
 
 ## Debug the App
 
-1. To debug the **Windows** head:
-    - Right-click on the `MyApp.Windows` project, select **Set as startup project**
-    - Select the `Debug|x86` configuration
-    - Press the `MyApp.Windows` button to deploy the app
-    - If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
-1. To run the **WebAssembly** (Wasm) head:
-    - Right click on the `MyApp.Wasm` project, select **Set as startup project**
-    - Press the `MyApp.Wasm` button to deploy the app
-    - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 - see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started
-1. To run the ASP.NET Hosted **WebAssembly** (Server) head:
-    - Right click on the `MyApp.Server` project, select **Set as startup project**
-    - Press the `MyApp.Server` button to deploy the app
-1. To debug for **iOS**:
-    - Right-click on the `MyApp.Mobile` project, select **Set as startup project**
-        > [!NOTE]
-        > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
+# [**Windows**](#tab/windows)
 
-    - In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
+To run the **Windows** (WinAppSDK) head:
 
-      ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
-      
-    - Select:
-      - An active device, if your IDE is connected to a macOS Host
-      - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
-      
-        > [!NOTE] 
-        > If no iOS devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
+- Right-click on the `MyApp.Windows` project, select **Set as startup project**
+- Select the `Debug|x86` configuration
+- Press the `MyApp.Windows` button to deploy the app
+- If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
 
-1. To debug the **Android** platform:
-    - Right click on the `MyApp.Mobile` project, select **Set as startup project**
-    - In the **Debug toolbar** drop down, select framework `net7.0-android`
-    - Select an active device in the "Device" sub-menu
-        > [!NOTE] 
-        > If no android devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
+# [**WebAssembly**](#tab/wasm)
 
-1. To debug your **Skia+GTK** head:
-    - Directly on Windows:
-        - Right-click the `MyApp.Skia.Gtk` project, select **Set as startup project**
-        - In the debug toolbar, next to the green arrow, select `MyApp.Skia.Gtk`, then press `F5`.
-    - Using WSL:
-        - In the debugger menu, next to the green arrow, press the drop down to select **WSL**
-        - If this is the first time debugging the app:
-            - Locate and open the `Properties/launchSettings.json` file
-            - In the "WSL" section, add the following:
-                ```json
+To run the **WebAssembly** (Wasm) head:
+
+- Right click on the `MyApp.Wasm` project, select **Set as startup project**
+- Press the `MyApp.Wasm` button to deploy the app
+- To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 (see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started)
+
+# [**ASP.NET Hosted WebAssembly**](#tab/wasm-hosted)
+
+To run the ASP.NET Hosted **WebAssembly** (Server) head:
+- Right click on the `MyApp.Server` project, select **Set as startup project**
+- Press the `MyApp.Server` button to deploy the app
+
+# [**iOS**](#tab/iOS)
+
+To debug for **iOS**:
+- Right-click on the `MyApp.Mobile` project, select **Set as startup project**
+    > [!NOTE]
+    > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
+
+- In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
+
+    ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
+    
+- Select:
+    - An active device, if your IDE is connected to a macOS Host
+    - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
+    
+    > [!NOTE] 
+    > If no iOS devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
+
+# [**Android**](#tab/Android)
+
+To debug the **Android** platform:
+- Right click on the `MyApp.Mobile` project, select **Set as startup project**
+- In the **Debug toolbar** drop down, select framework `net7.0-android`
+- Select an active device in the "Device" sub-menu
+    > [!NOTE] 
+    > If no android devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
+
+# [**Skia+GTK**](#tab/skiagtk)
+
+To debug your **Skia+GTK** head:
+- Directly on Windows:
+    - Right-click the `MyApp.Skia.Gtk` project, select **Set as startup project**
+    - In the debug toolbar, next to the green arrow, select `MyApp.Skia.Gtk`, then press `F5`.
+- Using WSL:
+    - In the debugger menu, next to the green arrow, press the drop down to select **WSL**
+    - If this is the first time debugging the app:
+        - Locate and open the `Properties/launchSettings.json` file
+        - In the "WSL" section, add the following:
+            ```json
+            "environmentVariables": {
+                "DISPLAY": ":0",
+                "GDK_GL": "gles"
+            },
+            ```
+            The section should look then like this:
+            ```json
+            "WSL": {
+                "commandName": "WSL2",
+                "distributionName": "",
                 "environmentVariables": {
                     "DISPLAY": ":0",
                     "GDK_GL": "gles"
-                },
-                ```
-                The section should look then like this:
-                ```json
-                "WSL": {
-                    "commandName": "WSL2",
-                    "distributionName": "",
-                    "environmentVariables": {
-                        "DISPLAY": ":0",
-                        "GDK_GL": "gles"
-                    }
                 }
-                ```
-        - Then press `F5` or the green arrow to start debugging the app
+            }
+            ```
+    - Then press `F5` or the green arrow to start debugging the app
+
+***
 
 You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
@@ -103,7 +122,7 @@ You're all set, and don't forget to take a look at our [Hot Reload feature](xref
 
 ## Explore
 
-Next, [read through our guides about Uno Platform's architecture](xref:Uno.Development.About), and the structure of the app that was just created.
+Next, [explore the Uno Plaform App solution structure](xref:Uno.Development.About).
 
 ## Troubleshoot Issues
 

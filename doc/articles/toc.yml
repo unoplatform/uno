@@ -11,7 +11,7 @@
       - name: Rider
         href: get-started-rider.md
         
-    - name: Create Your First App
+    - name: Create an App
       items:
       - name: Visual Studio 2022 for Windows
         href: create-an-app-vs2022.md
@@ -20,7 +20,10 @@
       - name: Rider
         href: create-an-app-rider.md
 
-    - name: Common Issues
+    - name: Architecture
+      href: xref:Uno.Development.AppStructure
+
+    - name: Troubleshoot
       topicHref: xref:Uno.UI.CommonIssues
       items:
       - name: All Development Environments
@@ -53,9 +56,6 @@
   items:
     - name: High Level Architecture
       topicHref: xref:Uno.Development.About
-      items:
-      - name: Solution Structure
-        href: xref:Uno.Development.AppStructure
 
     - name: Topics
       href: xref:Uno.Overview.Topics
@@ -141,8 +141,6 @@
           href: using-uno-ui.md
         - name: About
           items:
-            - name: Overview
-              href: what-is-uno.md
             - name: Supported Platforms
               href: getting-started/requirements.md
             - name: Features List
@@ -183,8 +181,6 @@
               href: guides/how-to-add-platforms-existing-project.md
             - name: Feature flags
               href: feature-flags.md
-            - name: Uno app solution structure
-              href: uno-app-solution-structure.md
             - name: Best practices
               href: best-practices-uno.md
             - name: Visual Studio Wizard
