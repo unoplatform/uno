@@ -14,23 +14,24 @@ To set up your development environment, first select the operating system you're
 
 # [**Windows**](#tab/windows)
 
-If you're developing on Windows, we recommend you use [**Visual Studio 2022**](get-started-vs-2022.md), for the richest XAML development experience and broadest platform coverage. 
+If you're developing on Windows, we recommend you use [**Visual Studio 2022**](xref:Uno.GetStarted.vs2022), for the richest XAML development experience and broadest platform coverage. 
 
 If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
 
 **Choose the IDE you want to use:**
 
- - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
- - [Get started with Rider](get-started-rider.md)
+ - [Get started with Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+ - [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+ - [Get started with Rider](xref:Uno.GetStarted.Rider)
 
  #### Target platform coverage by IDE on Windows
 
-|                                                  | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
-|--------------------------------------------------|----------------------------|---------|-----|-------------------|--------------|------------------|------------------|-----------------------|
-| [**Visual Studio**](get-started-vs-2022.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
-| [**VS Code**](get-started-vscode.md)             | ❌                         | ✔️     | ✔️†† | ✔️               | ✔️††          | ✔️††              | ✔️           | ✔️                   |
-| [**Codespaces / Gitpod**](get-started-vscode.md) | ❌                         | ❌     | ❌  | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
-| [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
+|                                                       | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|-------------------------------------------------------|----------------------------|---------|-----|-------------------|--------------|------------------|------------------|-----------------------|
+| [**Visual Studio**](xref:Uno.GetStarted.vs2022)       | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
+| [**VS Code**](xref:Uno.GetStarted.vscode)             | ❌                         | ✔️     | ✔️†† | ✔️               | ✔️††          | ✔️††              | ✔️           | ✔️                   |
+| [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode) | ❌                         | ❌     | ❌  | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
+| [**JetBrains Rider**](xref:Uno.GetStarted.Rider)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
 
 
 * † You will need to be connected to a Mac to run and debug iOS apps from Windows.
@@ -38,22 +39,20 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
 # [**macOS**](#tab/macos)
 
-You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio Code** to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
+You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform applications on macOS. See the support matrix below for supported target platforms.
 
 **Choose the IDE you want to use:**
 
- - [Get started with Visual Studio for Mac](get-started-vsmac.md)
- - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
- - [Get started with Rider](get-started-rider.md)
+ - [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+ - [Get started with Rider](xref:Uno.GetStarted.Rider)
 
  #### Target platform coverage by IDE on macOS
 
-|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
-|---------------------------------------------------|-------------------------|---------|-----|-------------------|-------|--------|-------------------|-----------------------|
-| [**Visual Studio for Mac**](get-started-vsmac.md) | ❌                      | ✔️     | ✔️ | ❌                | ✔️    | ✔️    | ✔️               | ❌                   |
-| [**VS Code**](get-started-vscode.md)              | ❌                      | ✔️     | ❌ | ✔️                | ❌    | ✔️    | ✔️               | ❌                   |
-| [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                      | ❌     | ❌ | ✔️                | ❌    | ✔️    | ✔️               | ✔️                   |
-| [**JetBrains Rider**](get-started-rider.md)       | ❌                      | ✔️     | ✔️ | ✔️                | ✔️    | ✔️    | ✔️               | ❌                   |
+|                                                        | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|--------------------------------------------------------|-------------------------|---------|-----|-------------------|--------------|------------------|------------------|-----------------------|
+| [**VS Code**](xref:Uno.GetStarted.vscode)              | ❌                      | ✔️     | ✔️ | ✔️                | ✔️           | ✔️              | ✔️               | ❌                   |
+| [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode)  | ❌                      | ❌     | ❌ | ✔️                | ❌           | ✔️              | ✔️               | ✔️                   |
+| [**JetBrains Rider**](xref:Uno.GetStarted.Rider)       | ❌                      | ✔️     | ✔️ | ✔️                | ✔️           | ✔️              | ✔️               | ❌                   |
 
 # [**Linux**](#tab/linux)
 
@@ -61,18 +60,19 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
  
 **Choose the IDE you want to use:**
 
- - [Get started with Visual Studio Code, Codespaces and GitPod](get-started-vscode.md)
-  - [Get started with Rider](get-started-rider.md)
+- [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+
+- [Get started with Rider](xref:Uno.GetStarted.Rider)
 
  There's [additional information here](get-started-with-linux.md) about developing from, and for, Linux with Uno Platform.
 
- #### Target platform coverage by IDE on Linux
+#### Target platform coverage by IDE on Linux
 
-|                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
-|---------------------------------------------------|------------------------|---------|-----|--------------------|-------|-------|------------------|-----------------------|
-| [**VS Code**](get-started-vscode.md)              | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
-| [**Codespaces / Gitpod**](get-started-vscode.md)  | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
-| [**JetBrains Rider**](get-started-rider.md)       | ❌                    | ❌†     | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
+|                                                        | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
+|--------------------------------------------------------|------------------------|---------|-----|--------------------|-------|-------|------------------|-----------------------|
+| [**VS Code**](xref:Uno.GetStarted.vscode)              | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
+| [**Codespaces / Gitpod**](xref:Uno.GetStarted.vscode)  | ❌                    | ❌      | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
+| [**JetBrains Rider**](xref:Uno.GetStarted.Rider)       | ❌                    | ❌†     | ❌  | ✔️                | ❌  | ✔️   | ✔️              | ❌                    |
 
 **Notes:**
 

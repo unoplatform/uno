@@ -24,7 +24,7 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 
 # Getting Started
 
-See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, JetBrains Rider, or Visual Studio for Mac.
+See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, or JetBrains Rider.
 
 For a larger example and features demo:
 * Visit the [Uno Gallery](https://github.com/unoplatform/uno.gallery) repository.
