@@ -54,6 +54,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			this.InitializeComponent();
 		}
 
+		private int PrivateInstanceProperty => 41;
+
 		public int InstanceProperty => 42;
 
 		public static int StaticProperty => 43;
