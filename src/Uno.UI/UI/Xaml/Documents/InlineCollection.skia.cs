@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Documents
 				if (inline is LineBreak lineBreak)
 				{
 					Segment breakSegment = new(lineBreak);
-					RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0);
+					RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 					lineSegmentSpans.Add(breakSegmentSpan);
 
 					MoveToNextLine(currentLineWrapped: false);
@@ -165,6 +165,7 @@ namespace Windows.UI.Xaml.Documents
 						// Exclude leading spaces at the start of the line only if the previous line ended because it was wrapped and not because of a line break
 
 						int start = x == 0 && previousLineWrapped ? segment.LeadingSpaces : 0;
+						int skippedLeadingSpaces = start;
 
 					BeginSegmentFitting:
 
@@ -174,15 +175,16 @@ namespace Windows.UI.Xaml.Documents
 						}
 
 						float remainingWidth = availableWidth - x;
-						(int length, float width) = GetSegmentRenderInfo(segment, start, characterSpacing);
+						(int segmentLengthWithoutTrailingSpaces, float widthWithoutTrailingSpaces) = GetSegmentRenderInfo(segment, start, characterSpacing);
 
 						// Check if whole segment fits
 
-						if (width <= remainingWidth)
+						if (widthWithoutTrailingSpaces <= remainingWidth)
 						{
 							// Add in as many trailing spaces as possible
 
-							float widthWithoutTrailingSpaces = width;
+							int length = segmentLengthWithoutTrailingSpaces;
+							float width = widthWithoutTrailingSpaces;
 							int end = segment.LineBreakAfter ? segment.Glyphs.Count - 1 : segment.Glyphs.Count;
 							int trailingSpaces = 0;
 
@@ -195,7 +197,12 @@ namespace Windows.UI.Xaml.Documents
 								trailingSpaces++;
 							}
 
-							RenderSegmentSpan segmentSpan = new(segment, start, length, trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces, end);
+							var fullGlyphsLength = start == skippedLeadingSpaces ? segment.Glyphs.Count : segment.Glyphs.Count - start;
+							if (segment.LineBreakAfter)
+							{
+								fullGlyphsLength--;
+							}
+							RenderSegmentSpan segmentSpan = new(segment, start, length, Math.Max(0, segment.LeadingSpaces - start), trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces, fullGlyphsLength);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
 
@@ -203,8 +210,14 @@ namespace Windows.UI.Xaml.Documents
 							{
 								MoveToNextLine(currentLineWrapped: false);
 							}
-							else if (length < end)
+							else if (start + length < end)
 							{
+								// equivalently condition would be `trailingSpaces < segment.TrailingSpaces`
+								global::System.Diagnostics.Debug.Assert(end - (start + length) == segment.TrailingSpaces - trailingSpaces);
+
+								// We could fit the segment, but not all of the trailing spaces
+								// These remaining trailing spaces will never be rendered, that's
+								// how WinUI does it.
 								MoveToNextLine(currentLineWrapped: true);
 							}
 
@@ -216,11 +229,12 @@ namespace Windows.UI.Xaml.Documents
 						if (start == 0 && segment.LeadingSpaces > 0)
 						{
 							int spaces = 0;
-							width = 0;
+							float width = 0;
 
 							if (x == 0)
 							{
 								// minimum 1 space if this is the start of the line
+								// if we didn't add even a single space, then we're not making any progress
 
 								spaces = 1;
 								width = GetGlyphWidthWithSpacing(segment.Glyphs[0], characterSpacing);
@@ -234,10 +248,13 @@ namespace Windows.UI.Xaml.Documents
 								spaces++;
 							}
 
+							// The remaining leading spaces that didn't fit won't be rendered at all, and will not continue
+							// on the next line like one would intuitively assume. This matches WinUI. This is similar
+							// to the case of trailing spaces that don't fit.
+
 							if (width > 0)
 							{
-								// TODO: confirm FullGlyphsLength is set correctly
-								RenderSegmentSpan segmentSpan = new(segment, 0, spaces, 0, characterSpacing, width, 0, length);
+								RenderSegmentSpan segmentSpan = new(segment, 0, spaces, spaces, 0, characterSpacing, widthWithoutTrailingSpaces, 0, segment.LeadingSpaces);
 								lineSegmentSpans.Add(segmentSpan);
 								x += width;
 
@@ -245,9 +262,22 @@ namespace Windows.UI.Xaml.Documents
 							}
 						}
 
+						// By this point, we must have at least dealt with the leading spaces.
+						global::System.Diagnostics.Debug.Assert(start >= segment.LeadingSpaces);
+
 						if (x > 0)
 						{
 							// There is content on this line and the segment did not fit so wrap to the next line and retry adding the segment
+
+							// But only if there's actually content ahead. This is explicitly to handle a content
+							// of just too many spaces. We don't want to add a new line even if only some of
+							// the spaces fit as the remainder of the spaces will just not render.
+							// This is most definitely not perfect, as it won't catch cases of having more empty inlines
+							// after, but it should be good enough for the majority of cases.
+							if (PreorderTree[^1] == run && run.Segments[^1] == segment && start == segment.LeadingSpaces && segment.LeadingSpaces == segment.Glyphs.Count)
+							{
+								continue;
+							}
 
 							MoveToNextLine(currentLineWrapped: true);
 							goto BeginSegmentFitting;
@@ -259,9 +289,14 @@ namespace Windows.UI.Xaml.Documents
 						{
 							// Put the whole segment on the line and move to the next line.
 
-							RenderSegmentSpan segmentSpan = new(segment, start, length, segment.TrailingSpaces, characterSpacing, width, width, length + segment.TrailingSpaces);
+							var fullGlyphsLength = start == skippedLeadingSpaces ? segment.Glyphs.Count : segment.Glyphs.Count - start;
+							if (segment.LineBreakAfter)
+							{
+								fullGlyphsLength--;
+							}
+							RenderSegmentSpan segmentSpan = new(segment, start, segmentLengthWithoutTrailingSpaces - segment.LeadingSpaces, 0, segment.TrailingSpaces, characterSpacing, widthWithoutTrailingSpaces, widthWithoutTrailingSpaces, fullGlyphsLength);
 							lineSegmentSpans.Add(segmentSpan);
-							x += width;
+							x += widthWithoutTrailingSpaces;
 
 							MoveToNextLine(currentLineWrapped: !segment.LineBreakAfter);
 						}
@@ -269,8 +304,8 @@ namespace Windows.UI.Xaml.Documents
 						{
 							// Put as much of the segment on this line as possible then continue fitting the rest of the segment on the next line
 
-							length = 1;
-							width = GetGlyphWidthWithSpacing(segment.Glyphs[start], characterSpacing);
+							var length = 1;
+							var width = GetGlyphWidthWithSpacing(segment.Glyphs[start], characterSpacing);
 
 							while (start + length < segment.Glyphs.Count
 								&& (width + GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing)) is var newWidth
@@ -280,7 +315,11 @@ namespace Windows.UI.Xaml.Documents
 								length++;
 							}
 
-							RenderSegmentSpan segmentSpan = new(segment, start, length, 0, characterSpacing, width, width, length);
+							// We've already dealt with leading spaces.
+							// We can't fit the segment content (excluding trailing spaces),
+							// so this span definitely doesn't include any trailing spaces either.
+
+							RenderSegmentSpan segmentSpan = new(segment, start, length, 0, 0, characterSpacing, widthWithoutTrailingSpaces, widthWithoutTrailingSpaces, start == skippedLeadingSpaces ? length + skippedLeadingSpaces : length);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
 							start += length;
@@ -292,8 +331,26 @@ namespace Windows.UI.Xaml.Documents
 				}
 			}
 
+			if (lineSegmentSpans.Count == 0 && !previousLineWrapped)
+			{
+				// We ended on a <LineBreak /> or a Run ending in \r or \n. We usually just wait for the following content to
+				// fill the line and then create a RenderLine. In this case, there is no following content, so we must
+				// create the RenderLine now.
+
+				lineHeight = defaultLineHeight;
+				lineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+
+				// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span
+				Segment breakSegment = new(new LineBreak());
+				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
+				lineSegmentSpans.Add(breakSegmentSpan);
+
+				MoveToNextLine(false);
+			}
+
 			if (lineSegmentSpans.Count != 0)
 			{
+				// every line gets finalized in MoveToNextLine, so it must be called for the last line too.
 				MoveToNextLine(false);
 			}
 
@@ -552,7 +609,7 @@ namespace Windows.UI.Xaml.Documents
 					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positions, x, justifySpaceOffset, fireEvents, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInCR(segmentSpan) ? 1 : 0);
+					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? 1 : 0);
 				}
 			}
 
@@ -609,10 +666,10 @@ namespace Windows.UI.Xaml.Documents
 				else
 				{
 					// the selection ends after this span, so this span is selected to the very end
-					var allTrailingSpaces = segmentSpan.FullGlyphsLength - segmentSpan.GlyphsLength; // rendered and non-rendered trailing spaces
-					right = x + justifySpaceOffset * allTrailingSpaces;
+					right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 
-					if (bg.StartIndex != bg.EndIndex && SpanEndsInCR(segmentSpan))
+					var selectionNotEmpty = bg.StartIndex != bg.EndIndex;
+					if (selectionNotEmpty && SpanEndsInNewLine(segmentSpan))
 					{
 						// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
 						right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
@@ -787,7 +844,7 @@ namespace Windows.UI.Xaml.Documents
 				characterCount++;
 			}
 
-			if (ignoreEndingSpace && span == line.SegmentSpans[^1] && span.GlyphsStart + span.GlyphsLength > 0 && segment.Text[span.GlyphsStart + span.GlyphsLength - 1] == ' ')
+			if (ignoreEndingSpace && span == line.SegmentSpans[^1] && span.GlyphsStart + span.GlyphsLength > 0 && char.IsWhiteSpace(segment.Text[span.GlyphsStart + span.GlyphsLength - 1]))
 			{
 				// in cases like clicking at the end of a line that ends in a wrapping space, we actually want the character right before the space
 				characterCount--;
@@ -927,7 +984,7 @@ namespace Windows.UI.Xaml.Documents
 				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
 				.Sum(GlyphsLengthWithCR); // all characters in span
 
-			if (!includeNewline && (SpanEndsInCR(span) || SpanEndsIn(span, '\n')))
+			if (!includeNewline && (SpanEndsInNewLine(span)))
 			{
 				characterCount--;
 			}
@@ -960,28 +1017,16 @@ namespace Windows.UI.Xaml.Documents
 
 		internal float AverageLineHeight => _renderLines.Count > 0 ? _renderLines.Average(r => r.Height) : _lastDefaultLineHeight;
 
-		// RenderSegmentSpan.GlyphsLength includes spaces, but not \r
+		// RenderSegmentSpan.FullGlyphsLength includes spaces, but not \r
 		private int GlyphsLengthWithCR(RenderSegmentSpan span)
-			=> span.FullGlyphsLength + (SpanEndsInCR(span) ? 1 : 0);
+			=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? 1 : 0);
 
-		private static bool SpanEndsInCR(RenderSegmentSpan segmentSpan) => SpanEndsIn(segmentSpan, '\r');
-
-		private static bool SpanEndsIn(RenderSegmentSpan segmentSpan, char c)
+		private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
 		{
 			var segment = segmentSpan.Segment;
-			try
-			{
-				return segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == c;
-			}
-			catch (Exception)
-			{
-				if (segment.Log().IsEnabled(LogLevel.Error))
-				{
-					// There's an exception that happens in CI for some reason. Root cause unknown for now
-					segment.Log().Error($"Unexpected exception: segment.Length = {segment.Length}, segmentSpan.[GlyphsStart,FullGlyphsLength] = [{segmentSpan.GlyphsStart},{segmentSpan.FullGlyphsLength}]");
-				}
-				return false;
-			}
+
+			return segment is { Inline: Run, LineBreakAfter: true } &&
+				segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength; // last in segment
 		}
 
 		private record SelectionDetails(int StartLine, int StartIndex, int EndLine, int EndIndex)

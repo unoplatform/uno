@@ -190,12 +190,6 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				DisplayBlock.Text = text;
-
-				if (text.EndsWith('\r'))
-				{
-					// this works around a bug in TextBlock where the last newline is not shown
-					DisplayBlock.Text += '\r';
-				}
 			}
 
 			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)

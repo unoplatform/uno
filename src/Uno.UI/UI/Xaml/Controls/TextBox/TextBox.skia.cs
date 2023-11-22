@@ -918,7 +918,7 @@ public partial class TextBox
 					_multiTapChunk = (SelectionStart, SelectionLength, true);
 					_lastPointerDown = (currentPoint, 2);
 				}
-				else // _lastPointerDown.repeatedPresses == 0
+				else // _lastPointerDown.repeatedPresses == 0 or 2
 				{
 					// double tap
 					var chunk = FindChunkAt(index, true);

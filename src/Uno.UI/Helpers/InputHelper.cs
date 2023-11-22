@@ -32,7 +32,7 @@ internal static class InputHelper
 
 		var result = new StringBuilder();
 		var conversionStatus = ToUnicodeEx(keyCode, scanCode, keyboardState, result, (int)5, (uint)0, inputLocaleIdentifier);
-		if (conversionStatus <= 0 || char.IsControl(result[0]))
+		if (conversionStatus <= 0 || (char.IsControl(result[0]) && result[0] != '\r'))
 		{
 			return "";
 		}
