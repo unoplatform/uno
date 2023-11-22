@@ -33,7 +33,9 @@ Next, open the project using Visual Studio Code:
 
 ## Debug the App
 
-### WebAssembly
+Uno Platform provides integrated support for debugging your app on Windows, mac and Linux.
+
+# [**WebAssembly**](#tab/Wasm)
 
 1. In the debugger section of the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select `Debug (Chrome, WebAssembly)`
 1. In the status bar, ensure the `MyApp.Wasm.csproj` project is selected - by default `MyApp.sln` is selected.
@@ -41,7 +43,7 @@ Next, open the project using Visual Studio Code:
 1. Place a breakpoint inside the `OnClick` method
 1. Click the button in the app, and the breakpoint will hit
 
-### Skia GTK
+# [**Skia GTK**](#tab/skiagtk)
 
 1. In the debugger section of the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select `Skia.GTK (Debug)`
 1. In the status bar, ensure the `MyApp.Skia.Gtk.csproj` project is selected - by default `MyApp.sln` is selected.
@@ -65,18 +67,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
     dotnet run
     ```
 
-### Mobile Targets (iOS, Android, Mac Catalyst)
-
-The Uno Platform extension provides support for debugging:
-
-- The Android target on Windows
-- The iOS, Android and Mac Catalyst targets on macOS
-
-It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) addin to connect to a macOS machine from a Windows or Linux machine to debug iOS and Mac Catalyst apps remotely.
-
 # [**Android**](#tab/androiddebug)
-
-#### Debugging for Android
 
 - In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
@@ -93,7 +84,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 # [**iOS**](#tab/iosdebug)
 
 > [!NOTE]
-> Debugging for iOS is only possible when running locally (or remotely through SSH) on a macOS machine.
+> Debugging for iOS is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.
 
 - In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
@@ -113,7 +104,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 # [**Mac Catalyst**](#tab/catalystdebug)
 
 > [!NOTE]
-> Debugging for Mac Catalyst is only possible when running locally (or remotely through SSH) on a macOS machine.
+> Debugging for Mac Catalyst is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.
 
 - In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
@@ -132,7 +123,7 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Explore
 
-Next, [read through our guides about Uno Platform's architecture](xref:Uno.Development.About), and the structure of the app that was just created.
+Next, [explore the Uno Plaform App solution structure](xref:Uno.Development.About).
 
 ## Troubleshoot Issues
 
