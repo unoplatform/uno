@@ -2,7 +2,7 @@
 uid: Uno.Overview.Topics
 ---
 
-Templates 
+Templates
 
 Hot Reload 
 
