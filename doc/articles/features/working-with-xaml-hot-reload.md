@@ -26,9 +26,6 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## How to use Hot Reload
 
-> [!IMPORTANT]
-> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
-
 # [**Visual Studio 2022**](#tab/vswin)
 - Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
 - Start your application (with or without the debugger, depending on the supported features below)
@@ -39,6 +36,9 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 - Start the application (with or without the debugger, depending on the supported features below)
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
 - Make changes to your XAML or C# code, then save your file
+
+> [!IMPORTANT]
+> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
 
 ***
 

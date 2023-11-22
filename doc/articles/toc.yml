@@ -1,80 +1,68 @@
-- name: Overview
-  topicHref: intro.md
 - name: Get Started
   topicHref: get-started.md
   items:
-    - name: Development Environment
+    - name: Setup
       topicHref: get-started-vs-2022.md
       items:
-      - name: Visual Studio 2022
+      - name: Visual Studio 2022 for Windows
         href: get-started-vs-2022.md
       - name: VS Code
         href: get-started-vscode.md
-      - name: Visual Studio 2022 for Mac
-        href: get-started-vsmac.md
       - name: Rider
         href: get-started-rider.md
-      - name: Linux
-        href: get-started-with-linux.md
-      - name: "dotnet new"
-        href: get-started-dotnet-new.md
-      - name: Using Uno Check
-        href: external/uno.check/doc/using-uno-check.md
-      - name: Visual Studio 2019
-        href: get-started-vs.md
+        
     - name: Create Your First App
-      topicHref: getting-started-tutorial-1.md
       items:
-      - name: Tutorial 1
-        href: getting-started-tutorial-1.md
-      - name: Tutorial 2
-        href: getting-started-tutorial-2.md
-    - name: Migration
-      items:
-      - name: Xamarin Forms
-        items:
-          - name: Migrating Custom Controls
-            href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
-          - name: Migrating Custom-Drawn Controls
-            href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
-          - name: Migrating Animations
-            href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
-          - name: Migrating Renderers
-            href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
-          # - name: Migrating Third Party Controls
-          #   href: guides/xf-migration/third-party-controls.md
-      - name: WPF
-        items:
-          - name: Migrating WPF Apps to Web
-            href: wpf-migration.md
-      - name: UWP-only code
-        items:
-          - name: Overview
-            href: howto-migrate-existing-code.md
-          - name: Checklist
-            href: migrating-before-you-start.md
-          - name: Applications
-            href: migrating-apps.md
-          - name: Class libraries
-            href: migrating-libraries.md
-          - name: General guidance
-            href: migrating-guidance.md
-      - name: Silverlight
-        topicHref: guides/silverlight-migration/silverlight-migration-landing.md
-        href: guides/silverlight-migration/toc.yml
+      - name: Visual Studio 2022 for Windows
+        href: create-an-app-vs2022.md
+      - name: VS Code
+        href: create-an-app-vscode.md
+      - name: Rider
+        href: create-an-app-rider.md
 
     - name: Common Issues
-      href: get-started-wizard.md
+      topicHref: xref:Uno.UI.CommonIssues
+      items:
+      - name: All Development Environments
+        href: xref:Uno.UI.CommonIssues.AllIDEs
+      - name: Visual Studio 2022 for Windows
+        href: xref:Uno.UI.CommonIssues.vs2022
+      - name: VS Code
+        href: xref:Uno.UI.CommonIssues.vscode
+      - name: WebAssembly
+        href: xref:Uno.UI.CommonIssues.Wasm
+      - name: Skia (Gtk/Wpf/Framebuffer)
+        href: xref:Uno.UI.CommonIssues.Skia
+      - name: iOS/mac Catalyst
+        href: xref:Uno.UI.CommonIssues.IosCatalyst
 
-- name: Workshops
+- name: Samples & Tutorials
   items:
+    - name: Tutorial 1
+      href: getting-started-tutorial-1.md
+    - name: Tutorial 2
+      href: getting-started-tutorial-2.md
     - name: Tube Player
       topicHref: external/workshops/tube-player/README.md
       href: external/workshops/tube-player/toc.yml
     - name: Simple Calc
       topicHref: external/workshops/simple-calc/README.md
       href: external/workshops/simple-calc/toc.yml
-      
+
+- name: Overview
+  items:
+    - name: High Level Architecture
+      topicHref: xref:Uno.Development.About
+      items:
+      - name: Solution Structure
+        href: xref:Uno.Development.AppStructure
+
+    - name: Topics
+      href: xref:Uno.Overview.Topics
+
+    - name: FAQ
+      href: xref:Uno.Development.FAQ
+
 - name: Fundamentals
   topicHref: what-is-uno.md
   items:
@@ -200,30 +188,9 @@
             - name: Best practices
               href: best-practices-uno.md
             - name: Visual Studio Wizard
-              topicHref: getting-started/wizard/using-wizard.md
-              items:
-                - name: Framework options
-                  href: getting-started/wizard/framework.md
-                - name: Platforms options
-                  href: getting-started/wizard/platforms.md
-                - name: Presentation options
-                  href: getting-started/wizard/presentation.md
-                - name: Markup options
-                  href: getting-started/wizard/markup.md
-                - name: Theme options
-                  href: getting-started/wizard/themes.md
-                - name: Extensions options
-                  href: getting-started/wizard/extensions.md
-                - name: Features options
-                  href: getting-started/wizard/features.md
-                - name: Authentication options
-                  href: getting-started/wizard/authentication.md
-                - name: Application options
-                  href: getting-started/wizard/application.md
-                - name: Testing options
-                  href: getting-started/wizard/testing.md
-                - name: CI Pipeline options
-                  href: getting-started/wizard/cipipeline.md
+              href: getting-started/wizard/using-wizard.md
+            - name: dotnet new Templates
+              href: get-started-dotnet-new.md
 
         - name: WinUI Features
           items:
@@ -467,8 +434,45 @@
               href: guides/solution-building-single-targetframework.md
             - name: Hosting a WebAssembly app
               href: how-to-host-a-webassembly-app.md
+            - name: Additional VS Code Topics
+              href: additional-vscode-topics.md
+
+            - name: Migration
+              items:
+              - name: Xamarin Forms
+                items:
+                  - name: Migrating Custom Controls
+                    href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
+                  - name: Migrating Custom-Drawn Controls
+                    href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
+                  - name: Migrating Animations
+                    href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
+                  - name: Migrating Renderers
+                    href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
+              - name: WPF
+                items:
+                  - name: Migrating WPF Apps to Web
+                    href: wpf-migration.md
+              - name: UWP-only code
+                items:
+                  - name: Overview
+                    href: howto-migrate-existing-code.md
+                  - name: Checklist
+                    href: migrating-before-you-start.md
+                  - name: Applications
+                    href: migrating-apps.md
+                  - name: Class libraries
+                    href: migrating-libraries.md
+                  - name: General guidance
+                    href: migrating-guidance.md
+              - name: Silverlight
+                topicHref: guides/silverlight-migration/silverlight-migration-landing.md
+                href: guides/silverlight-migration/toc.yml
+
         - name: Debugging
           items:
+            - name: Hot Reload
+              href: xref:Uno.Features.HotReload
             - name: Troubleshooting build errors
               href: uno-builds-troubleshooting.md
             - name: How to create a repro sample
@@ -477,10 +481,8 @@
               href: uno-build-error-codes.md
             - name: 'Debugging C# on WASM'
               href: debugging-wasm.md
-            - name: XAML Hot Reload
-              href: features/working-with-xaml-hot-reload.md
             - name: VS Code Advanced Mobile Debugging
-              href: features/vscode-advanced-mobile-debugging.md
+              href: xref:uno.vscode.mobile.advanced.debugging
         - name: Supported 3rd-party libraries
           href: supported-libraries.md
         - name: Performance
@@ -489,19 +491,6 @@
               href: Uno-UI-Performance.md
             - name: How to profile applications
               href: guides/profiling-applications.md
-              
-        - name: Tooling
-          items:
-            - name: Uno WebAssembly Bootstrapper
-              href: external/uno.wasm.bootstrap/doc/toc.yml
-            - name: Uno Check
-              href: external/uno.check/doc/toc.yml
-            - name: Xaml Merging
-              href: external/uno.xamlmerge.task/doc/toc.yml
-            - name: Uno Resizetizer
-              href: external/uno.resizetizer/doc/toc.yml
-            - name: Uno.UITest
-              href: external/uno.uitest/doc/toc.yml
 
     - name: Reference
       items:
@@ -618,3 +607,15 @@
   topicHref: external/figma-docs/overview/getting-started-uno-figma.md
   href: external/figma-docs/toc.yml
 
+- name: Tooling
+  items:
+    - name: Uno WebAssembly Bootstrapper
+      href: external/uno.wasm.bootstrap/doc/toc.yml
+    - name: Uno Check
+      href: external/uno.check/doc/toc.yml
+    - name: Xaml Merging
+      href: external/uno.xamlmerge.task/doc/toc.yml
+    - name: Uno Resizetizer
+      href: external/uno.resizetizer/doc/toc.yml
+    - name: Uno.UITest
+      href: external/uno.uitest/doc/toc.yml
