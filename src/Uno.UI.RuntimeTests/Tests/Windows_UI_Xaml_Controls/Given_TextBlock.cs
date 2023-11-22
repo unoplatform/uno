@@ -303,13 +303,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Text_Ends_In_LineReturn()
+		public async Task When_Text_Ends_In_LineBreak()
 		{
 			var SUT0 = new TextBlock();
 			var SUT1 = new TextBlock();
 
 			SUT0.Text = "text";
-			SUT1.Inlines.Add(new Run { Text = "text"});
+			SUT1.Inlines.Add(new Run { Text = "text" });
 			SUT1.Inlines.Add(new LineBreak());
 
 			var sp = new StackPanel
@@ -337,7 +337,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Text_Ends_In_LineReturn2()
+		public async Task When_Text_Ends_In_LineBreak2()
 		{
 			var SUT0 = new TextBlock();
 			var SUT1 = new TextBlock();

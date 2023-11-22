@@ -855,7 +855,7 @@ namespace Windows.UI.Xaml.Controls
 #if __SKIA__
 				var index = that.Inlines.GetIndexAt(point.Position, false);
 #else
-				var index = that.Inlines.GetCharacterIndexAtPoint(Point point);
+				var index = that.GetCharacterIndexAtPoint(point.Position);
 #endif
 				that.Selection = new Range(index, index);
 			}
@@ -941,7 +941,7 @@ namespace Windows.UI.Xaml.Controls
 #if __SKIA__
 				var index = that.Inlines.GetIndexAt(point.Position, false);
 #else
-				var index = that.Inlines.GetCharacterIndexAtPoint(Point point);
+				var index = that.GetCharacterIndexAtPoint(point.Position);
 #endif
 				that.Selection = new Range(that.Selection.start, index);
 			}
