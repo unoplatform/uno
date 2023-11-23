@@ -13,11 +13,15 @@ uid: Uno.GetStarted.Rider
 
 ## Rider Platforms support
 
-|                       | Windows (UWP/WinUI) | Android | iOS  | Wasm | macOS | Skia-GTK (Linux) | Skia-WPF |
-| --------------------- | ------------------- | ------- | ---- | ---- | ----- | -------- | -------- |
-| **Rider for Linux**   | ❌                   | ❌†      | ❌    | ✔️†   | ❌     | ✔️        | ❌        |
-| **Rider for Mac**     | ❌                   | ✔️       | ✔️    | ✔️†   | ✔️     | ✔️†       | ❌        |
-| **Rider for Windows** | ✔️                   | ✔️       | ✔️†   | ✔️†   | ❌     | ✔️        | ✔️        |
+|                       | **Rider for Linux** | **Rider for Mac** | **Rider for Windows** |
+|-----------------------|---------------------|-------------------|-----------------------|
+| Windows (UWP/WinUI)   | ❌                 | ❌                | ✔️                   |
+| Android               | ❌†                | ✔️                | ✔️                   |
+| iOS                   | ❌                 | ✔️                | ✔️†                  |
+| Wasm                  | ✔️†                | ✔️†               | ✔️†                  |
+| Catalyst              | ❌                 | ✔️                | ❌                   |
+| Skia-GTK (Linux)      | ✔️                 | ✔️†               | ✔️                   |
+| Skia-WPF              | ❌                 | ❌                | ✔️                   |
 
 <details>
     <summary>† Notes (Click to expand)</summary>
