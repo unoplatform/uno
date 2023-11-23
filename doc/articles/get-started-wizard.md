@@ -17,4 +17,4 @@ uid: Uno.GetStarted.Wizard
 > [!IMPORTANT]
 > Take a look at our [common issues list](xref:Uno.UI.CommonIssues) if you're having trouble with your app.
 
-[!include[getting-help](xref:Uno.Development.GettingHelp)]
+[!include[getting-help](getting-help.md)]
