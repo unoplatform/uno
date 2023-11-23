@@ -27,6 +27,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.Extensions
 {
+	public delegate void SpanAction<T, in TArg>(Span<T> span, TArg arg);
+
 	internal static partial class StringExtensions
 	{
 		// https://www.meziantou.net/split-a-string-into-lines-without-allocation.htm
@@ -152,6 +154,19 @@ namespace Uno.Extensions
 			{
 				return source;
 			}
+		}
+
+		public static string Create<TState>(int length, TState state, SpanAction<char, TState> action)
+		{
+			scoped Span<char> buffer;
+
+			if (length <= 128)
+				buffer = stackalloc char[512];
+			else
+				buffer = new char[length];
+
+			action(buffer.Slice(0, length), state);
+			return buffer.Slice(0, length).ToString();
 		}
 	}
 }
