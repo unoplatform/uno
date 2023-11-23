@@ -183,6 +183,8 @@
               href: getting-started/wizard/using-wizard.md
             - name: dotnet new Templates
               href: get-started-dotnet-new.md
+            - name: dotnet new Templates
+              href: xref:Uno.GetStarted.Wizard
 
         - name: WinUI Features
           items:

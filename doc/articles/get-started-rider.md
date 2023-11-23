@@ -2,7 +2,7 @@
 uid: Uno.GetStarted.Rider
 ---
 
-# Get Started on JetBrains Rider
+## Get Started on JetBrains Rider
 
 ## Prerequisites
 * [**Rider Version 2023.2+**](https://www.jetbrains.com/rider/download/)
