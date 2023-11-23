@@ -123,7 +123,7 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Explore
 
-Next, [explore the Uno Platform App solution structure](xref:Uno.Development.About).
+Next, [explore the Uno Platform App solution structure](Uno.Development.AppStructure).
 
 ## Troubleshoot Issues
 
