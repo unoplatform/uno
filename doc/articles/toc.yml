@@ -400,8 +400,10 @@
               href: features/using-il-linker-webassembly.md
             - name: Build telemetry
               href: uno-toolchain-telemetry.md
-            - name: Adding native views
+            - name: Adding native views for mobile
               href: native-views.md
+            - name: Embedding Native Views for Skia
+              href: xref:Uno.Skia.Embedding.Native
             - name: Native control styles
               href: native-styles.md
             - name: URI Protocol activation
