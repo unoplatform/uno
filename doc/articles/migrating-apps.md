@@ -12,7 +12,7 @@ After you've migrated the files and dependencies, the general [migration guidanc
 
 ## Prerequisites
 
-Follow the instructions to [set up your development environment for Uno Platform with Visual Studio for Windows](get-started-vs.md). You can also use another IDE such as [VS Code](get-started-vscode.md), however some steps may be slightly different.
+Follow the instructions to [set up your development environment for Uno Platform with Visual Studio for Windows](xref:Uno.GetStarted.vs2022). You can also use another IDE such as [VS Code](xref:Uno.GetStarted.vscode), however some steps may be slightly different.
 
 ## Migrating files to the Uno solution structure
 
