@@ -78,7 +78,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 - Then, to the right of the target framework, select the device to debug with. You will need to connect an android device, or create an Android simulator.
 
   ![android device name](Assets/quick-start/vs-code-debug-device-android.png)
-- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Finally, in the debugger side menu, select the `Uno Platform Mobile` profile
 - Either press `F5` or press the green arrow to start the debugging session.
 
 # [**iOS**](#tab/iosdebug)
@@ -95,7 +95,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 - Then, to the right of the target framework, select the device to debug with. You will need to connect an iOS device, or use an existing iOS simulator.
 
   ![ios device](Assets/quick-start/vs-code-debug-device-ios.png)
-- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Finally, in the debugger side menu, select the `Uno Platform Mobile` profile
 - Either press `F5` or press the green arrow
 
 > [!TIP]
@@ -112,7 +112,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 - To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-maccatalyst | Debug`
 
   ![catalyst target framework](Assets/quick-start/vs-code-debug-tf-catalyst.png)
-- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Finally, in the debugger side menu, select the `Uno t Mobile` profile
 - Either press `F5` or press the green arrow to start the debugging session.
 
 ***
@@ -123,7 +123,7 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Explore
 
-Next, [explore the Uno Plaform App solution structure](xref:Uno.Development.About).
+Next, [explore the Uno Platform App solution structure](xref:Uno.Development.About).
 
 ## Troubleshoot Issues
 

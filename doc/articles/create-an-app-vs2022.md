@@ -122,7 +122,7 @@ You're all set, and don't forget to take a look at our [Hot Reload feature](xref
 
 ## Explore
 
-Next, [explore the Uno Plaform App solution structure](xref:Uno.Development.About).
+Next, [explore the Uno Platform App solution structure](xref:Uno.Development.About).
 
 ## Troubleshoot Issues
 
