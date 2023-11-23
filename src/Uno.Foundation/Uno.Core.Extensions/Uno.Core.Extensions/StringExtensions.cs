@@ -161,7 +161,7 @@ namespace Uno.Extensions
 			scoped Span<char> buffer;
 
 			if (length <= 128)
-				buffer = stackalloc char[512];
+				buffer = stackalloc char[128];
 			else
 				buffer = new char[length];
 
