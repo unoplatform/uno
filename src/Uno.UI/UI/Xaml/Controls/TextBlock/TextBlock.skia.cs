@@ -68,7 +68,11 @@ namespace Windows.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		partial void OnIsTextSelectionEnabledChangedPartial() => RecalculateSubscribeToPointerEvents();
+		partial void OnIsTextSelectionEnabledChangedPartial()
+		{
+			RecalculateSubscribeToPointerEvents();
+			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
+		}
 
 		private void ApplyFlowDirection(float width)
 		{
@@ -184,7 +188,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void SetupInlines()
 		{
-			_inlines.FireDrawingEventsOnEveryRedraw = true;
 			_inlines.RenderSelection = true;
 			_inlines.SelectionFound += t =>
 			{
