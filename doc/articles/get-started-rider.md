@@ -22,7 +22,7 @@ uid: Uno.GetStarted.Rider
 <details>
     <summary>† Notes (Click to expand)</summary>
 
-  * **WebAssembly**: debugging from the IDE is not available yet on Rider.  But you can use the [Chromium in-browser debugger](https://github.com/unoplatform/Uno.Wasm.Bootstrap#how-to-use-the-browser-debugger) instead.
+  * **WebAssembly**: debugging from the IDE is not available yet on Rider.  But you can use the [Chromium in-browser debugger](external/uno.wasm.boostrap/doc/debugger-support.md#how-to-use-the-browser-debugger) instead.
 
   * **iOS** on Windows: An attached Mac is needed, the iOS simulator will open on the Mac.
 
