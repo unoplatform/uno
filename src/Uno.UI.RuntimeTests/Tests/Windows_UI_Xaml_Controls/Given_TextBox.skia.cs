@@ -2214,7 +2214,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore("Flaky in CI.")]
 		public async Task When_Multiline_Pointer_TripleTap_With_Wrapping()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
