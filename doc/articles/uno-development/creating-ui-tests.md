@@ -23,7 +23,7 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 
 ## Running UI tests locally
 
-1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.
+1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 1. Ensure `UnoTargetFrameworkOverride` is set to `net7.0-android` for testing on Android, `net7.0-ios` for testing on iOS, and `net7.0` for testing on Wasm.
 1. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
 1. [Build and run the SamplesApp](working-with-the-samples-apps.md) at least once.

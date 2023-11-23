@@ -58,7 +58,7 @@ Browse the set of available controls and their properties.
 
 <br/>
 
-Uno Platform lets you write an application once in XAML and C#, and deploy it to any target platform.
+Uno Platform lets you write an application once in XAML or C# Markup and C#.
 
 <br/>
 <br/>
@@ -70,7 +70,7 @@ Uno Platform lets you write an application once in XAML and C#, and deploy it to
 
 #### What platforms can I target with Uno Platform?
 
-Uno Platform applications run on Web (via WebAssembly), Windows, Linux, macOS, iOS, Android and Tizen. [Check supported platform versions.](getting-started/requirements.md)
+Uno Platform applications run on Web (via WebAssembly), Windows, Linux, mac Catalyst, iOS, Android. [Check supported platform versions.](getting-started/requirements.md)
 
 #### Are Uno Platform applications native?
 
@@ -90,10 +90,9 @@ Third, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows 
 
 Fourth, Uno Platform provides an optional [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps.
 
-Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like DataGrid, TreeView, TabView, NavigationView and many others.
+Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like `DataGrid`, `TreeView`, `TabView`, `NavigationView` and many others.
 
 At the practical level, we suggest you try both and see which works the best for your skill set and scenario.
-
 
 #### How is Uno Platform different from Blazor?
 
@@ -109,11 +108,11 @@ Uno Platform and Flutter solve a similar problem - pixel-perfect applications on
 
 #### Do I need to have an existing UWP/WinUI app or skills to use Uno Platform?
 
-No, there's no need to have an existing UWP or WinUI application, or have that specific skill set. The [Uno Platform templates](get-started.md) make it easy to create a new project in Visual Studio or from the command line for anyone familiar with C# and XAML.
+No, there's no need to have an existing UWP or WinUI application, or have that specific skill set. The [Uno Platform templates](xref:Uno.GetStarted) make it easy to create a new project in Visual Studio or from the command line for anyone familiar with C# and XAML.
 
 #### What 3rd parties support Uno Platform?
 
-Uno Platform is supported by a number of 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](supported-libraries.md)
+Uno Platform is supported by a number of 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
 
 #### Where do I get help if I have any questions?
 
