@@ -11,7 +11,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   UnoCheck_Version: '1.17.0'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/da169bd8884a1b48e3e1483218d3d731d0688290/manifests/uno.ui.manifest.json'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/4befa714987c2581e205cec9a56d48b32d76c843/manifests/uno.ui.manifest.json'
 
   # Only convert using NetPrevious
   UnoDisableNetCurrentMobile: true
