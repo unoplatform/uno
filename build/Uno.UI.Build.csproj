@@ -478,7 +478,7 @@
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;branch=$(GITVERSION_BranchName);commitid=$(GITVERSION_VersionSourceSha)</NuSpecProperties>
 
 			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'=='true'">$(NuSpecProperties);winuisourcepath=uap10.0.18362;winuitargetpath=UAP</NuSpecProperties>
-			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'!='true'">$(NuSpecProperties);winuisourcepath=net5.0-windows10.0.18362.0;winuitargetpath=net5.0-windows10.0.18362.0</NuSpecProperties>
+			<NuSpecProperties Condition="'$(UNO_UWP_BUILD)'!='true'">$(NuSpecProperties);winuisourcepath=net5.0-windows10.0.18362.0;winuitargetpath=net5.0-windows10.0.18362.0;winuilatesttargetpath=net7.0-windows10.0.18362.0</NuSpecProperties>
 		</PropertyGroup>
 
 		<!-- Pre-validation of contents to be packed -->
