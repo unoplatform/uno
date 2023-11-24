@@ -116,7 +116,7 @@ Here are some highlighted articles from the Uno Blog:
 
 - [An Introduction to UI Testing](https://platform.uno/blog/an-introduction-to-unit-testing-for-uno-platform-applications/)
 
-- [How To Build a Single-Page Web App in XAML and C# with WASM]( https://platform.uno/blog/how-to-build-a-single-page-web-app-in-xaml-and-c-with-webassembly-using-uno-platform/)
+- [How To Build a Single-Page Web App in XAML and/or C# with WASM]( https://platform.uno/blog/how-to-build-a-single-page-web-app-in-xaml-and-c-with-webassembly-using-uno-platform/)
 
 #### Check out some code examples
 - The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
