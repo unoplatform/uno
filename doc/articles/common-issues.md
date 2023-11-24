@@ -10,7 +10,7 @@ The Uno Platform features and support are constantly evolving, yet you may encou
 
 ### Hot Reload
 
-More troubleshooting information is available [in this section](xref:Uno.Features.HotReload#Troubleshooting).
+More troubleshooting information is available [in this section](xref:Uno.Features.HotReload#troubleshooting).
 
 ### Development Environments
 
