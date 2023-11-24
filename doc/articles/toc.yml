@@ -1,24 +1,24 @@
 - name: Get Started
-  topicHref: get-started.md
+  topicHref: xref:Uno.GetStarted
   items:
     - name: Setup
-      topicHref: get-started-vs-2022.md
+      topicHref: xref:Uno.GetStarted.vs2022
       items:
       - name: Visual Studio 2022 for Windows
-        href: get-started-vs-2022.md
+        href: xref:Uno.GetStarted.vs2022
       - name: VS Code
-        href: get-started-vscode.md
+        href: xref:Uno.GetStarted.vscode
       - name: Rider
-        href: get-started-rider.md
+        href: xref:Uno.GetStarted.Rider
         
     - name: Create an App
       items:
       - name: Visual Studio 2022 for Windows
-        href: create-an-app-vs2022.md
+        href: xref:Uno.GettingStarted.CreateAnApp.VS2022
       - name: VS Code
-        href: create-an-app-vscode.md
+        href: xref:Uno.GettingStarted.CreateAnApp.vscode
       - name: Rider
-        href: create-an-app-rider.md
+        href: xref:Uno.GettingStarted.CreateAnApp.rider
 
     - name: Architecture
       href: xref:Uno.Development.AppStructure
@@ -53,6 +53,7 @@
       href: external/workshops/simple-calc/toc.yml
 
 - name: Overview
+  topicHref: xref:Uno.Documentation.Intro
   items:
     - name: High Level Architecture
       topicHref: xref:Uno.Development.About

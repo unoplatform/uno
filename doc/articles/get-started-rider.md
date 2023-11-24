@@ -6,12 +6,12 @@ uid: Uno.GetStarted.Rider
 
 ## Prerequisites
 * [**Rider Version 2023.2+**](https://www.jetbrains.com/rider/download/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
+* [**Rider Xamarin Android Support**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) plugin from Rider in **Settings** / **Plugins**
 
 ## Check your environment
 [!include[getting-help](use-uno-check-inline-noheader.md)]
 
-## Rider Platforms support
+## Supported Platforms
 
 |                       | **Rider for Linux** | **Rider for Mac** | **Rider for Windows** |
 |-----------------------|---------------------|-------------------|-----------------------|

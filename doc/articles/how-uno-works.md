@@ -10,7 +10,7 @@ How does Uno Platform make the same application code run on all platforms?
 
 On Windows (the Windows head project), an Uno Platform application isn't using Uno.UI at all. It's compiled just like a single-platform WinUI application, using Microsoft's own tooling.
 
-The rest of this article discusses how the Uno.UI tooling allows WinUI-compatible XAML and C# applications to run on non-Windows platforms.
+The rest of this article discusses how the Uno.UI tooling allows WinUI-compatible XAML and/or C# applications to run on non-Windows platforms.
 
 ## Uno.UI at runtime
 

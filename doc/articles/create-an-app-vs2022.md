@@ -115,18 +115,24 @@ To debug your **Skia+GTK** head:
 
 ***
 
-You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+You're all set!
 
 > [!IMPORTANT]
 > Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
 ## Explore
 
-Next, [explore the Uno Platform App solution structure](xref:Uno.Development.AppStructure).
+### Hot Reload
+
+Make sure to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload) to enhance your development experience.
+
+### App Solution Architecture
+
+Next, explore the [Uno Platform App solution structure](xref:Uno.Development.AppStructure) to understand how to navigate the projects of your new app.
 
 ## Troubleshoot Issues
 
-You may encounter issues while developing your app. Please see [Common Issues](xref:Uno.UI.CommonIssues) we have documented.
+You may encounter issues while developing your app. Please see the [troubleshooting](xref:Uno.UI.CommonIssues) section.
 
 ## Next Steps
 

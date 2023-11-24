@@ -117,17 +117,23 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 
 ***
 
-You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)!
+You're all set!
 
 You can also find [additional VS Code topics](xref:Uno.vscode.additional), such as using snippets, updating existing apps to use VS Code
 
 ## Explore
 
-Next, [explore the Uno Platform App solution structure](Uno.Development.AppStructure).
+### Hot Reload
+
+Make sure to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload) to enhance your development experience.
+
+### App Solution Architecture
+
+Next, explore the [Uno Platform App solution structure](xref:Uno.Development.AppStructure) to understand how to navigate the projects of your new app.
 
 ## Troubleshoot Issues
 
-You may encounter issues while developing your app. Please see [Common Issues](xref:Uno.UI.CommonIssues) we have documented.
+You may encounter issues while developing your app. Please see the [troubleshooting](xref:Uno.UI.CommonIssues) section.
 
 ## Next Steps
 
