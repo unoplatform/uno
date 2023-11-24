@@ -69,7 +69,7 @@ Select the Skia.WPF project, then Run.
 
 ## Explore
 
-Next, explore the [Uno Platform App solution structure](Uno.Development.AppStructure) to understand how to navigate the projects of your new app.
+Next, explore the [Uno Platform App solution structure](xref:Uno.Development.AppStructure) to understand how to navigate the projects of your new app.
 
 ## Troubleshoot Issues
 
