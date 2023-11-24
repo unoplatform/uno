@@ -153,7 +153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await Press(10000);
 			await Release(1);
-			await Press(500);
+			await Press(501);
 			await Release(1);
 
 			Assert.AreEqual(3, doubleTaps);
