@@ -4,9 +4,9 @@ uid: Uno.GetStarted
 
 #### Get Started
 
-Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and C# in no time. 
+Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time. 
 
-The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials. 
+The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials.
 
 To set up your development environment, first select the operating system you're developing on.
 
@@ -20,9 +20,9 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
 **Choose the IDE you want to use:**
 
- - [Get started with Visual Studio 2022](xref:Uno.GetStarted.vs2022)
- - [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
- - [Get started with Rider](xref:Uno.GetStarted.Rider)
+ - [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+ - [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+ - [Rider](xref:Uno.GetStarted.Rider)
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
@@ -71,7 +71,6 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 **Choose the IDE you want to use:**
 
 - [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
-
 - [Get started with Rider](xref:Uno.GetStarted.Rider)
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:

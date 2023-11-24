@@ -11,7 +11,7 @@ uid: Uno.GetStarted.Rider
 ## Check your environment
 [!include[getting-help](use-uno-check-inline-noheader.md)]
 
-## Rider Platforms support
+## Supported Platforms
 
 |                       | **Rider for Linux** | **Rider for Mac** | **Rider for Windows** |
 |-----------------------|---------------------|-------------------|-----------------------|

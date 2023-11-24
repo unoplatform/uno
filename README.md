@@ -16,7 +16,11 @@
 # What is the Uno Platform?
 The Uno Platform is a UI Platform for building single-codebase applications for Windows, Web/WebAssembly, iOS, macOS, Android, and Linux. 
 
+<<<<<<< HEAD
 It allows C# and WinUI XAML code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Windows.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+=======
+It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+>>>>>>> ee720859ae (docs: Misc getting started updates, markup wording)
 
 Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
@@ -43,7 +47,11 @@ For a larger example and features demo:
     * [C# Hot Reload](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp) on Windows (VS2022), Linux and macOS (VS Code)
     * Validate on other platforms as late as possible
     * Develop in VS Code, Codespaces or GitPod
+<<<<<<< HEAD
     * XAML Hot Reload for WebAssembly, Linux, iOS and Android
+=======
+    * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
+>>>>>>> ee720859ae (docs: Misc getting started updates, markup wording)
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls:
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)

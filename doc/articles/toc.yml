@@ -1,5 +1,5 @@
 - name: Get Started
-  topicHref: get-started.md
+  topicHref: intro.md
   items:
     - name: Setup
       topicHref: get-started-vs-2022.md
@@ -53,6 +53,7 @@
       href: external/workshops/simple-calc/toc.yml
 
 - name: Overview
+  topicHref: xref:Uno.Documentation.Intro
   items:
     - name: High Level Architecture
       topicHref: xref:Uno.Development.About
