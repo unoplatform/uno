@@ -89,6 +89,7 @@
   ],
   "ignoreWords": [
 	"ADAL",
+	"AEHD",
 	"appsettings",
 	"Authenticode",
 	"automagically",
