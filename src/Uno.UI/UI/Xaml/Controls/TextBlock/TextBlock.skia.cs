@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 			Inlines.InvalidateMeasure();
 		}
 
-		public void Invalidate(bool updateText) => InvalidateInlines(updateText);
+		void IBlock.Invalidate(bool updateText) => InvalidateInlines(updateText);
 
 		partial void OnSelectionChanged()
 			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
