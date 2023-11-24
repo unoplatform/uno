@@ -15,14 +15,14 @@ public static class TypeMappings
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
 	/// </summary>
-	private static IDictionary<Type, Type> AllMappedTypeToOrignalTypeMapings { get; } = new Dictionary<Type, Type>();
+	private static IDictionary<Type, Type> AllMappedTypeToOriginalTypeMappings { get; } = new Dictionary<Type, Type>();
 
 	/// <summary>
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
-	/// Similiar to AllMappedTypeToOrignalTypeMapings but doesn't update whilst hot reload is paused
+	/// Similiar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
 	/// </summary>
-	private static IDictionary<Type, Type> MappedTypeToOrignalTypeMapings { get; set; } = new Dictionary<Type, Type>();
+	private static IDictionary<Type, Type> MappedTypeToOriginalTypeMappings { get; set; } = new Dictionary<Type, Type>();
 
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
@@ -72,7 +72,7 @@ public static class TypeMappings
 		OriginalTypeToMappedType.TryGetValue(originalType, out var mappedType) ? mappedType : default;
 
 	internal static Type GetOriginalType(this Type mappedType) =>
-		MappedTypeToOrignalTypeMapings.TryGetValue(mappedType, out var originalType) ? originalType : default;
+		MappedTypeToOriginalTypeMappings.TryGetValue(mappedType, out var originalType) ? originalType : default;
 
 	internal static bool IsReplacedBy(this Type sourceType, Type mappedType)
 	{
@@ -90,11 +90,11 @@ public static class TypeMappings
 
 	internal static void RegisterMapping(Type mappedType, Type originalType)
 	{
-		AllMappedTypeToOrignalTypeMapings[mappedType] = originalType;
+		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
 		AllOriginalTypeToMappedType[originalType] = mappedType;
 		if (_mappingsPaused is null)
 		{
-			MappedTypeToOrignalTypeMapings[mappedType] = originalType;
+			MappedTypeToOriginalTypeMappings[mappedType] = originalType;
 			OriginalTypeToMappedType[originalType] = mappedType;
 		}
 	}
@@ -106,9 +106,9 @@ public static class TypeMappings
 	/// </summary>
 	internal static void ClearMappings()
 	{
-		MappedTypeToOrignalTypeMapings.Clear();
+		MappedTypeToOriginalTypeMappings.Clear();
 		OriginalTypeToMappedType.Clear();
-		AllMappedTypeToOrignalTypeMapings.Clear();
+		AllMappedTypeToOriginalTypeMappings.Clear();
 		AllOriginalTypeToMappedType.Clear();
 	}
 
@@ -121,7 +121,7 @@ public static class TypeMappings
 	/// </summary>
 	/// <returns>A task that will complete when type mapping collection
 	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active
+	/// is currently active.</returns>
 	[Obsolete("Use WaitForResume instead")]
 	public static Task WaitForMappingsToResume()
 		=> WaitForResume();
@@ -169,7 +169,7 @@ public static class TypeMappings
 		_mappingsPaused = null;
 		if (completion is not null)
 		{
-			MappedTypeToOrignalTypeMapings = AllMappedTypeToOrignalTypeMapings.ToDictionary(x => x.Key, x => x.Value);
+			MappedTypeToOriginalTypeMappings = AllMappedTypeToOriginalTypeMappings.ToDictionary(x => x.Key, x => x.Value);
 			OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
 			completion.TrySetResult(updateLayout);
 		}
