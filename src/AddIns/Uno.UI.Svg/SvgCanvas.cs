@@ -107,7 +107,7 @@ internal partial class SvgCanvas : SkiaCanvas
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		finalSize = base.ArrangeOverride(finalSize);
+		finalSize = ArrangeFirstChild(finalSize);
 		_lastArrangeSize = finalSize;
 		Invalidate();
 		return finalSize;
