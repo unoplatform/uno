@@ -22,10 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Enabled_Inside_Disabled_Control()
 		{
-			var SUT = new Button()
-			{
-				IsEnabled = true
-			};
+			var SUT = new Button() { IsEnabled = true };
 
 			var cc = new ContentControl()
 			{
@@ -131,38 +128,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var finger = injector.GetFinger();
+			using var finger = injector.GetFinger(id: 42);
 
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
+			await Press(0);
+			await Release(1);
+			await Press(1);
+			await Release(1);
 
 			Assert.AreEqual(1, doubleTaps);
 
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
-			await Task.Delay(200);
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
+			await Press(10000);
+			await Release(1);
+			await Press(200);
+			await Release(1);
 
 			Assert.AreEqual(2, doubleTaps);
 
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
-			await Task.Delay(400);
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
+			await Press(10000);
+			await Release(1);
+			await Press(400);
+			await Release(1);
 
 			Assert.AreEqual(3, doubleTaps);
 
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
-			await Task.Delay(500);
-			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
-			finger.Release();
+			await Press(10000);
+			await Release(1);
+			await Press(500);
+			await Release(1);
 
 			Assert.AreEqual(3, doubleTaps);
+
+			async Task Press(uint i)
+			{
+				var secondPress = Finger.GetPress(42, SUT.GetAbsoluteBounds().GetCenter());
+				var pointerInfo = secondPress.PointerInfo;
+				pointerInfo.TimeOffsetInMilliseconds = i;
+				secondPress.PointerInfo = pointerInfo;
+				injector.InjectTouchInput(new[]
+				{
+					secondPress
+				});
+				await WindowHelper.WaitForIdle();
+
+			}
+			async Task Release(uint i)
+			{
+				var secondPress = Finger.GetRelease(SUT.GetAbsoluteBounds().GetCenter());
+				var pointerInfo = secondPress.PointerInfo;
+				pointerInfo.TimeOffsetInMilliseconds = i;
+				secondPress.PointerInfo = pointerInfo;
+				injector.InjectTouchInput(new[]
+				{
+					secondPress
+				});
+				await WindowHelper.WaitForIdle();
+			}
 		}
 #endif
 
@@ -236,10 +256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = "Test button",
 				Command = firstButtonCommand
 			};
-			var secondButton = new Button()
-			{
-				Content = "Do not focus me!"
-			};
+			var secondButton = new Button() { Content = "Do not focus me!" };
 
 			var stackPanel = new StackPanel()
 			{

@@ -68,8 +68,6 @@ public partial class InputInjector
 		var touch = _touch!.Value.state;
 		foreach (var info in input)
 		{
-			touch.Timestamp = (ulong)DateTime.Now.Ticks; // Timestamp is stale
-
 			var args = info.ToEventArgs(touch);
 
 			if (_touch is { isAdded: false })
@@ -95,7 +93,6 @@ public partial class InputInjector
 	{
 		foreach (var info in input)
 		{
-			_mouse.Timestamp = (ulong)DateTime.Now.Ticks; // Timestamp is stale
 			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
 			_mouse!.Update(args);
 
