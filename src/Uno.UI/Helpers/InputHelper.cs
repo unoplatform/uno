@@ -17,7 +17,7 @@ internal static class InputHelper
 	[DllImport("user32.dll")]
 	private static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
 
-	public static string WindowsKeyCodeToUnicode(uint keyCode)
+	private static string InputToUnicode(uint keyCode, uint scanCode)
 	{
 		var keyboardState = new byte[255];
 		var keyboardStateStatus = GetKeyboardState(keyboardState);
@@ -27,7 +27,6 @@ internal static class InputHelper
 			return "";
 		}
 
-		var scanCode = MapVirtualKey(keyCode, 0);
 		var inputLocaleIdentifier = GetKeyboardLayout((uint)Environment.CurrentManagedThreadId);
 
 		var result = new StringBuilder();
@@ -38,5 +37,22 @@ internal static class InputHelper
 		}
 
 		return result.ToString();
+	}
+
+	public static string WindowsKeyCodeToUnicode(uint keyCode) => InputToUnicode(keyCode, MapVirtualKey(keyCode, 0));
+	// For a scancode table, see https://www.win.tue.nl/~aeb/linux/kbd/scancodes-10.html
+	public static string WindowsScancodeToUnicode(uint scanCode) => InputToUnicode(MapVirtualKey(scanCode, 1), scanCode);
+
+	public static bool TryConvertKeyCodeToScanCode(uint keyCode, out uint scanCode)
+	{
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		{
+			scanCode = MapVirtualKey(keyCode, 0);
+			return true;
+		}
+
+		// Uno TODO: get scan codes on other platforms
+		scanCode = keyCode;
+		return false;
 	}
 }
