@@ -24,6 +24,21 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 
 See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
+### Deploying an Android app takes a long time
+
+Android deployment requires a few considerations:
+- Android physical device
+    - Make sure to have a good cable (USB 3 or C) to have a good connection
+    - Avoid debugging through wifi
+- Android Emulators
+    - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/device-manager).
+    - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/hardware-acceleration))
+    - Try disabling `Fast Deployment` in your app configuration
+        1. Open your project properties
+        1. In the android section search for `Fast Deployment` 
+        1. uncheck all target platforms
+
+## Legacy issues 
 
 ### The XAML editor shows `The type 'page' does not support direct content` message
 
@@ -56,7 +71,6 @@ A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml
 When building an application that uses native dependencies (such as Skia, SQLite) or using PG-AOT/AOT, using WSL 2 may cause abnormally long build times.
 
 You can migrate your WSL v2 installation into a v1, by [visiting this document](get-started-with-linux.md).
-
 
 ### WebAssembly: Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint
 

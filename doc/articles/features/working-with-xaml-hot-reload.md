@@ -117,12 +117,17 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
     ```
 
 ### Visual Studio 2022
+- Make sure that **C# Hot Reload** is not disabled in Visual studio
+  - Open Tools / Options
+  - Search for **.NET / C++ Hot Reload**
+  - Ensure that all three check boxes are checked (_**Enable hot reload when deugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_))
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
     - Ensure you have the latest version of the Visual Studio extension installed.
     - Rebuild the app until the number is different than zero.
+- 
 
 ### VS Code
 - The output window in Code has an output named "Uno Platform - Hot Reload" in its drop down. Diagnostics messages from the extension appear there.
