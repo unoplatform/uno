@@ -41,7 +41,8 @@ Select Wasm as your startup project then run.
 
 A new browser window will automatically run your application.
 
-Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools. 
+> [!NOTE]
+> There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 
 # [**Catalyst**](#tab/catalyst)
 You will be able to build the Catalyst project, by selecting one of the project with the apple logo.
@@ -58,7 +59,7 @@ You will be able to build the Windows project.
 # [**Skia Gtk**](#tab/gtk)
 Select the Skia.Gtk project, then Run.
 
-# [**Skia WPF**](#tab/gtk)
+# [**Skia WPF**](#tab/wpf)
 Select the Skia.WPF project, then Run.
 
 > [!NOTE] 
