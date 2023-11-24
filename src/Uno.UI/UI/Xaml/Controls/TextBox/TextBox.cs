@@ -1220,9 +1220,14 @@ namespace Windows.UI.Xaml.Controls
 				{
 					clipboardText = await content.GetTextAsync();
 				}
-				catch (InvalidOperationException)
+				catch (InvalidOperationException e)
 				{
 					clipboardText = "";
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+					}
 				}
 				var selectionStart = SelectionStart;
 				var selectionLength = SelectionLength;
