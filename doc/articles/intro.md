@@ -58,7 +58,7 @@ Browse the set of available controls and their properties.
 
 <br/>
 
-Uno Platform lets you write an application once in XAML or C# Markup and C#.
+Uno Platform lets you write an application once in XAML and/or C#.
 
 <br/>
 <br/>
@@ -70,7 +70,7 @@ Uno Platform lets you write an application once in XAML or C# Markup and C#.
 
 #### What platforms can I target with Uno Platform?
 
-Uno Platform applications run on Web (via WebAssembly), Windows, Linux, mac Catalyst, iOS, Android. [Check supported platform versions.](getting-started/requirements.md)
+Uno Platform applications run on Web (via WebAssembly), Windows, Linux, mac Catalyst, iOS, Android. [Check supported platform versions.](xref:Uno.GettingStarted.Requirements)
 
 #### Are Uno Platform applications native?
 
@@ -78,7 +78,7 @@ Yes - Uno Platform taps into the native UI frameworks on most supported platform
 
 #### Can applications look the same on all platforms?
 
-Yes. Unless you specify otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
+Yes. Unless configured otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno Platform achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
 
 #### How is Uno Platform different from .NET MAUI?
 
