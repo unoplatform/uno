@@ -29,7 +29,10 @@ namespace Windows.UI.Xaml.Controls
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
-			AddHandler(DoubleTappedEvent, new DoubleTappedEventHandler((s, e) => ((TextBlock)s).OnDoubleTapped(e)), true);
+			// UNO TODO: subscribiting to DoubleTappedEvent seems to break pointer events in some way
+			// even if the you subscribe with an empty handler (!!!). See VerifyNavigationViewItemExpandsCollapsesWhenChevronTapped
+			// for a test that fails.
+			// AddHandler(DoubleTappedEvent, new DoubleTappedEventHandler((s, e) => ((TextBlock)s).OnDoubleTapped(e)), true);
 		}
 
 #if DEBUG
@@ -201,17 +204,17 @@ namespace Windows.UI.Xaml.Controls
 			};
 		}
 
-		private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
-		{
-			if (IsTextSelectionEnabled)
-			{
-				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
-				if (nullableSpan.HasValue)
-				{
-					Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
-				}
-			}
-		}
+		// private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		// {
+		// 	if (IsTextSelectionEnabled)
+		// 	{
+		// 		var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
+		// 		if (nullableSpan.HasValue)
+		// 		{
+		// 			Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
+		// 		}
+		// 	}
+		// }
 
 		// The following should be moved to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
 		public SolidColorBrush SelectionHighlightColor
