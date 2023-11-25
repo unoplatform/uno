@@ -19,6 +19,8 @@ using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Automation;
 using Uno.Extensions;
+
+
 #if __IOS__
 using UIKit;
 #endif
@@ -704,6 +706,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				sut.BaseUri);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HasChildren_Should_Measure_And_Arrange()
+		{
+			var sut = new MyChildContainer() { Width = 100, Height = 100 };
+			var tbNativeTyped = (_View)new TextBox() { Text = "Hello Uno Platform", HorizontalAlignment = HorizontalAlignment.Stretch };
+
+			sut.AddChild(tbNativeTyped);
+
+			var hostPanel = new Grid { Children = { sut } };
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, sut.ChildCount);
+			Assert.IsTrue(tbNativeTyped.Width > 0);
+			Assert.IsTrue(tbNativeTyped.Height > 0);
+		}
+
 #if UNO_REFERENCE_API
 		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
 		// (cf. notes in the tests)
@@ -799,6 +820,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			MeasureOverrides.Add(availableSize);
 			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
 		}
+	}
+
+	public partial class MyChildContainer : FrameworkElement
+	{
+		internal override bool CanHaveChildren() => true;
 	}
 
 	public partial class AspectRatioView : FrameworkElement
