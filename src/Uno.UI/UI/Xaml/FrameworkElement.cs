@@ -278,7 +278,7 @@ namespace Windows.UI.Xaml
 				? MeasureElement(child, availableSize)
 				: new Size(0, 0);
 #else
-            return default;
+			return default;
 #endif
 		}
 
