@@ -588,7 +588,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-#pragma warning enable IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
+#pragma warning restore IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 
 #if false
 		void OnItemsHostAvailable()
