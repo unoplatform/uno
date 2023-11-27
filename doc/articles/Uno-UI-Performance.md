@@ -10,7 +10,7 @@ Here's what to look for:
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible, using explicit `Width` and `Height` properties.
-- `Collapsed` elements are not considered when measuring and arranging the visual tree, which makes them almost costless. Consider `x:Load`` below for further optimizations.
+- `Collapsed` elements are not considered when measuring and arranging the visual tree, which makes them almost costless. Consider `x:Load` below for further optimizations.
 - When binding or animating (via `VisualState.Setters`) the `Visibility` property, make sure to enable lazy loading:
 	`x:Load="False"`.
 - Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling from `true` to `false` effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
