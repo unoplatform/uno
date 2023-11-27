@@ -508,11 +508,7 @@
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'==''">
-<<<<<<< HEAD
 		<!-- Disabled for release branch -->
-=======
-		<!-- Disable breaking changes validation -->
->>>>>>> 359e2f6ca1 (chore: disable breaking changes validation)
 	</Target>
 
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
