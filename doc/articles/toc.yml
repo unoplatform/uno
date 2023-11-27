@@ -56,16 +56,8 @@
 - name: Overview
   topicHref: xref:Uno.Documentation.Intro
   items:
-    - name: High Level Architecture
+    - name: Architecture
       topicHref: xref:Uno.Development.About
-    - name: FAQ
-      href: xref:Uno.Development.FAQ
-
-- name: Fundamentals
-  topicHref: what-is-uno.md
-  items:
-    - name: Overview
-      href: what-is-uno.md
       items:
         - name: Supported Platforms
           href: getting-started/requirements.md
@@ -77,6 +69,122 @@
         - name: How Uno Works
           href: how-uno-works.md
 
+    - name: Debugging
+      items:
+        - name: Hot Reload
+          href: xref:Uno.Features.HotReload
+        - name: Troubleshooting build errors
+          href: uno-builds-troubleshooting.md
+        - name: How to create a repro sample
+          href: uno-howto-create-a-repro.md
+        - name: Build error codes
+          href: uno-build-error-codes.md
+        - name: 'Debugging C# on WASM'
+          href: debugging-wasm.md
+        - name: VS Code Advanced Mobile Debugging
+          href: xref:uno.vscode.mobile.advanced.debugging
+
+    - name: Contributing to Uno Platform
+      items:
+      - name: Overview
+        href: uno-development/contributing-intro.md
+      - name: Code of Conduct
+        href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
+      - name: Ways to contribute
+        href: uno-development/ways-to-contribute.md
+      - name: How Uno works
+        items:
+          - name: Overview
+            href: uno-development/uno-internals-overview.md
+          - name: Android
+            href: uno-development/uno-internals-android.md
+          - name: Layouting in Android
+            href: uno-development/Uno-UI-Layouting-Android.md
+          - name: iOS
+            href: uno-development/uno-internals-ios.md
+          - name: Layouting in iOS
+            href: uno-development/Uno-UI-Layouting-iOS.md
+          - name: WASM
+            href: uno-development/uno-internals-wasm.md
+          - name: macOS
+            href: uno-development/uno-internals-macos.md
+          - name: DependencyProperty backing generator
+            href: uno-development/Internal-DependencyProperty-Generator.md
+          - name: x:Bind in Uno Platform
+            href: uno-development/Uno-UI-xBind-architecture.md
+      - name: Building Uno.UI
+        href: uno-development/building-uno-ui.md
+      - name: Debugging Uno.UI
+        href: uno-development/debugging-uno-ui.md
+      - name: Building Uno.UI for macOS using Visual Studio for Mac
+        href: uno-development/building-uno-macos.md
+      - name: Using Codespaces
+        href: features/working-with-codespaces.md
+      - name: Using Gitpod
+        href: features/working-with-gitpod.md
+      - name: Inspecting the visual tree
+        href: uno-development/debugging-inspect-visual-tree.md
+      - name: Guidelines for code style
+        href: contributing/guidelines/code-style.md
+      - name: Using the SamplesApp
+        href: uno-development/working-with-the-samples-apps.md
+      - name: Guidelines for creating tests
+        items:
+          - name: Overview
+            href: contributing/guidelines/creating-tests.md
+          - name: Mocked unit tests (Uno.UI.Tests)
+            href: uno-development/creating-mocked-tests.md
+          - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
+            href: uno-development/creating-runtime-tests.md
+          - name: UI tests with Uno.UITest
+            href: uno-development/creating-ui-tests.md
+      - name: Debugging Solution Templates
+        href: uno-development/debugging-templates.md
+      - name: Conventional Commits format
+        href: uno-development/git-conventional-commits.md
+      - name: Guidelines for pull-requests
+        href: contributing/guidelines/pull-requests.md
+      - name: Guidelines for breaking changes
+        href: contributing/guidelines/breaking-changes.md
+      - name: Guidelines for updating dependencies
+        href: contributing/guidelines/updating-dependencies.md
+      - name: Guidelines for issue triage
+        href: contributing/guidelines/issue-triage.md
+      - name: Guidelines for implementing a new WinUI/WinRT feature
+        href: contributing/guidelines/implementing-a-new winui-winrt-feature.md
+      - name: Adding documentation
+        href: uno-development/doc-on-docs.md
+      - name: DocFX
+        href: uno-development/docfx.md
+      - name: Uno.UI release procedure
+        href: uno-development/release-procedure.md
+      - name: Build Artifacts
+        href: contributing/build-artifacts.md
+      - name: Advanced topics
+        items:
+          - name: Adding functionality with API extensions
+            href: uno-development/api-extensions.md
+          - name: The WeakEventHelper class
+            href: uno-development/Internal-WeakEventHelper.md
+          - name: Debugging Uno.UI Java code with Android studio
+            href: uno-development/Uno-UI-Debugging-Android-Studio.md
+          - name: Converting the source tree to WinUI
+            href: uno-development/winui-conversion.md
+          - name: Troubleshooting Memory Issues
+            href: uno-development/troubleshooting-memory-issues.md
+          - name: Troubleshooting Source Generation
+            href: uno-development/troubleshooting-source-generation.md
+          - name: The XAML Trimming phase
+            href: uno-development/Uno-UI-XAML-ResourceTrimming.md
+          - name: Hot Reload internals
+            href: xref:Uno.Contributing.Internals.HotReload
+
+    - name: FAQ
+      href: xref:Uno.Development.FAQ
+
+- name: Fundamentals
+  topicHref: what-is-uno.md
+  items:
     - name: Learn
       items:
 
@@ -139,24 +247,16 @@
           href: using-uno-ui.md
         - name: About
           items:
-            - name: Supported Platforms
-              href: getting-started/requirements.md
             - name: Features List
               href: supported-features.md
-            - name: How Uno Works
-              href: how-uno-works.md
             - name: Differences From WinUI
               href: api-differences.md
-            - name: Philosophy of Uno
-              href: concepts/overview/philosophy-of-uno.md
             - name: About NotImplemented members
               href: uno-notimplemented-types.md
             - name: Uno and WinUI 3
               href: uwp-vs-winui3.md
             - name: .NET Version Support
               href: net-version-support.md
-            - name: FAQ
-              href: faq.md
         - name: WinUI links
           items:
             - name: Overview
@@ -185,7 +285,7 @@
               href: getting-started/wizard/using-wizard.md
             - name: dotnet new Templates
               href: get-started-dotnet-new.md
-            - name: dotnet new Templates
+            - name: Get started wizard
               href: xref:Uno.GetStarted.Wizard
 
         - name: WinUI Features
@@ -466,21 +566,6 @@
               - name: Silverlight
                 topicHref: guides/silverlight-migration/silverlight-migration-landing.md
                 href: guides/silverlight-migration/toc.yml
-
-        - name: Debugging
-          items:
-            - name: Hot Reload
-              href: xref:Uno.Features.HotReload
-            - name: Troubleshooting build errors
-              href: uno-builds-troubleshooting.md
-            - name: How to create a repro sample
-              href: uno-howto-create-a-repro.md
-            - name: Build error codes
-              href: uno-build-error-codes.md
-            - name: 'Debugging C# on WASM'
-              href: debugging-wasm.md
-            - name: VS Code Advanced Mobile Debugging
-              href: xref:uno.vscode.mobile.advanced.debugging
         - name: Supported 3rd-party libraries
           href: supported-libraries.md
         - name: Performance
@@ -495,101 +580,6 @@
         - name: Implemented Views
           href: implemented/toc.yml
           topicHref: implemented-views.md
-
-    - name: Contributing to Uno Platform
-      items:
-      - name: Overview
-        href: uno-development/contributing-intro.md
-      - name: Code of Conduct
-        href: https://github.com/unoplatform/uno/blob/master/CODE_OF_CONDUCT.md
-      - name: Ways to contribute
-        href: uno-development/ways-to-contribute.md
-      - name: How Uno works
-        items:
-          - name: Overview
-            href: uno-development/uno-internals-overview.md
-          - name: Android
-            href: uno-development/uno-internals-android.md
-          - name: Layouting in Android
-            href: uno-development/Uno-UI-Layouting-Android.md
-          - name: iOS
-            href: uno-development/uno-internals-ios.md
-          - name: Layouting in iOS
-            href: uno-development/Uno-UI-Layouting-iOS.md
-          - name: WASM
-            href: uno-development/uno-internals-wasm.md
-          - name: macOS
-            href: uno-development/uno-internals-macos.md
-          - name: DependencyProperty backing generator
-            href: uno-development/Internal-DependencyProperty-Generator.md
-          - name: x:Bind in Uno Platform
-            href: uno-development/Uno-UI-xBind-architecture.md
-      - name: Building Uno.UI
-        href: uno-development/building-uno-ui.md
-      - name: Debugging Uno.UI
-        href: uno-development/debugging-uno-ui.md
-      - name: Building Uno.UI for macOS using Visual Studio for Mac
-        href: uno-development/building-uno-macos.md
-      - name: Using Codespaces
-        href: features/working-with-codespaces.md
-      - name: Using Gitpod
-        href: features/working-with-gitpod.md
-      - name: Inspecting the visual tree
-        href: uno-development/debugging-inspect-visual-tree.md
-      - name: Guidelines for code style
-        href: contributing/guidelines/code-style.md
-      - name: Using the SamplesApp
-        href: uno-development/working-with-the-samples-apps.md
-      - name: Guidelines for creating tests
-        items:
-          - name: Overview
-            href: contributing/guidelines/creating-tests.md
-          - name: Mocked unit tests (Uno.UI.Tests)
-            href: uno-development/creating-mocked-tests.md
-          - name: Platform-runtime unit tests (Uno.UI.RuntimeTests)
-            href: uno-development/creating-runtime-tests.md
-          - name: UI tests with Uno.UITest
-            href: uno-development/creating-ui-tests.md
-      - name: Debugging Solution Templates
-        href: uno-development/debugging-templates.md
-      - name: Conventional Commits format
-        href: uno-development/git-conventional-commits.md
-      - name: Guidelines for pull-requests
-        href: contributing/guidelines/pull-requests.md
-      - name: Guidelines for breaking changes
-        href: contributing/guidelines/breaking-changes.md
-      - name: Guidelines for updating dependencies
-        href: contributing/guidelines/updating-dependencies.md
-      - name: Guidelines for issue triage
-        href: contributing/guidelines/issue-triage.md
-      - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: contributing/guidelines/implementing-a-new winui-winrt-feature.md
-      - name: Adding documentation
-        href: uno-development/doc-on-docs.md
-      - name: DocFX
-        href: uno-development/docfx.md
-      - name: Uno.UI release procedure
-        href: uno-development/release-procedure.md
-      - name: Build Artifacts
-        href: contributing/build-artifacts.md
-      - name: Advanced topics
-        items:
-          - name: Adding functionality with API extensions
-            href: uno-development/api-extensions.md
-          - name: The WeakEventHelper class
-            href: uno-development/Internal-WeakEventHelper.md
-          - name: Debugging Uno.UI Java code with Android studio
-            href: uno-development/Uno-UI-Debugging-Android-Studio.md
-          - name: Converting the source tree to WinUI
-            href: uno-development/winui-conversion.md
-          - name: Troubleshooting Memory Issues
-            href: uno-development/troubleshooting-memory-issues.md
-          - name: Troubleshooting Source Generation
-            href: uno-development/troubleshooting-source-generation.md
-          - name: The XAML Trimming phase
-            href: uno-development/Uno-UI-XAML-ResourceTrimming.md
-          - name: Hot Reload internals
-            href: xref:Uno.Contributing.Internals.HotReload
 
 - name: Extensions
   topicHref: external/uno.extensions/doc/ExtensionsOverview.md
