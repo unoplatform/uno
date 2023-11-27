@@ -12,6 +12,7 @@
         href: xref:Uno.GetStarted.Rider
         
     - name: Create an App
+      topicHref: xref:Uno.GettingStarted.CreateAnApp.VS2022
       items:
       - name: Visual Studio 2022 for Windows
         href: xref:Uno.GettingStarted.CreateAnApp.VS2022

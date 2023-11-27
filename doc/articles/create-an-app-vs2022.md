@@ -17,7 +17,7 @@ To create an Uno Platform app:
 
     ![Visual Studio - Configure project name and location](Assets/tutorial01/configure-new-unoplatform-app.PNG)
 
-1. Choose the base template to build your application
+1. Choose a template to build your application
    
     ![Visual Studio - Configure your new project](getting-started/wizard/assets/intro.jpg)
 
