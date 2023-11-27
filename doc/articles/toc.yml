@@ -262,8 +262,6 @@
               href: uno-notimplemented-types.md
             - name: Uno and WinUI 3
               href: uwp-vs-winui3.md
-            - name: .NET Version Support
-              href: net-version-support.md
         - name: WinUI links
           items:
             - name: Overview
