@@ -21,8 +21,12 @@
       - name: Rider
         href: xref:Uno.GettingStarted.CreateAnApp.rider
 
-    - name: Architecture
-      href: xref:Uno.Development.AppStructure
+    - name: Write your app
+      topicHref: xref:Uno.GettingStarted.Explore
+      - name: App Structure
+        href: xref:Uno.Development.AppStructure
+      - name: Hot Reload
+        href: xref:Uno.Features.HotReload
 
     - name: Troubleshoot
       topicHref: xref:Uno.UI.CommonIssues
@@ -134,8 +138,6 @@
 
     - name: Debugging
       items:
-        - name: Hot Reload
-          href: xref:Uno.Features.HotReload
         - name: How to create a repro sample
           href: uno-howto-create-a-repro.md
         - name: 'Debugging C# on WASM'
@@ -334,6 +336,26 @@
         href: supported-features.md
       - name: Feature flags
         href: feature-flags.md
+      - name: WinUI Compatibility
+        items:
+        - name: Differences From WinUI
+          href: api-differences.md
+        - name: About NotImplemented members
+          href: uno-notimplemented-types.md
+        - name: Uno and WinUI 3
+          href: uwp-vs-winui3.md
+        - name: WinAppSDK Specifics
+          href: features/winapp-sdk-specifics.md
+        - name: WinUI links
+          items:
+            - name: Overview
+              href: winui-doc-links.md
+            - name: Tutorials
+              href: winui-doc-links-tutorials.md
+            - name: Development
+              href: winui-doc-links-development.md
+            - name: Design
+              href: winui-doc-links-design.md
 
     - name: UI
       items:
@@ -533,27 +555,6 @@
         href: features/web-authentication-broker.md
       - name: Working with cookies
         href: features/working-with-cookies.md
-
-    - name: WinUI
-      items:
-      - name: Differences From WinUI
-        href: api-differences.md
-      - name: About NotImplemented members
-        href: uno-notimplemented-types.md
-      - name: Uno and WinUI 3
-        href: uwp-vs-winui3.md
-      - name: WinAppSDK Specifics
-        href: features/winapp-sdk-specifics.md
-      - name: WinUI links
-        items:
-          - name: Overview
-            href: winui-doc-links.md
-          - name: Tutorials
-            href: winui-doc-links-tutorials.md
-          - name: Development
-            href: winui-doc-links-development.md
-          - name: Design
-            href: winui-doc-links-design.md
 
 - name: Extensions
   topicHref: external/uno.extensions/doc/ExtensionsOverview.md
