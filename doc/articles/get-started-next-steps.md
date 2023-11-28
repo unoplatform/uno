@@ -2,32 +2,28 @@
 uid: Uno.GetStarted.NextSteps
 ---
 
-If you have already [completed the initial getting started tutorial](getting-started-tutorial-1.md) and you’re now ready to learn more, these resources will help you on your way. 
+If you have already [completed the initial getting started tutorial](ref:Uno.GettingStarted.Tutorial1) and you’re now ready to learn more, these resources will help you on your way. 
 
-Below you will find resources provided by our team, community and Microsoft. 
-
+You will find below resources provided by our team, the community and Microsoft. 
 
 ## Uno Platform provided Worshops / Step-by-step Tutorials (Free)
-- [Simple Calculator Workshop](https://platform.uno/docs/articles/external/workshops/simple-calc/README.html). A level 100 workshop you can complete in 1 hour. It will guide you throgh the process of setting up your developer environment and learnining the essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
-- [Tube Player Workshop](https://platform.uno/docs/articles/external/workshops/simple-calc/README.html). A level 200 workshop you can complete in 2 hours. It will guide throiugh creation of an Uno Platform application that enables the user to search for, and stream, YouTube videos. You will learn how to easily import Figma designs into your application.
-  
 
+- [Simple Calculator Workshop](external/workshops/simple-calc/README.md). A level 100 workshop you can complete in 1 hour. It will guide you through the process of setting up your developer environment, learning essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
+- [Tube Player Workshop](external/workshops/simple-calc/README.md). A level 200 workshop you can complete in 2 hours. It will guide through the creation of an Uno Platform application that enables the user to search for and stream, YouTube videos. You will learn how to easily import Figma designs into your application.
 
 ## Community Provided Learning Resources (Free and Paid)
 
-
 #### Syncfusion - Uno Platform Succinctly eBook (Free)
 
-Syncfusion published [Uno Platform Succinctly]( https://www.syncfusion.com/succinctly-free-ebooks/uno-platform-succinctly). A free eBook that will take you from setting up your first Uno Platform project with Syncfusion UI Conrols in Visual Studio to a fully functioning single-page application.
+Syncfusion published [Uno Platform Succinctly]( https://www.syncfusion.com/succinctly-free-ebooks/uno-platform-succinctly). A free eBook that will take you from setting up your first Uno Platform project with Syncfusion UI Controls in Visual Studio to a fully functioning single-page application.
 
 
 
 #### Pluralsight - Uno Platform Fundamentals (Paid)
 
-If you already have a subscription to Pluralsight, you can find our [Uno Platform Fundamentals course](https://www.pluralsight.com/courses/uno-platform-fundamentals). By the end of the course, you will have created your first Uno Platform solution in Visual Studio and you’ll have the skills and knowledge needed to build multi-platform apps with Uno Platform. The course covers shows how to build a user interface in XAML, how to apply the MVVM pattern, how to adapt your user interface to different screen sizes, how to write platform-specific code and how to connect your application to a data source to load data. _If you’re not Pluralsight subscriber, you can still use the course it with a 30-day trial._
+If you already have a subscription to Pluralsight, you can find our [Uno Platform Fundamentals course](https://www.pluralsight.com/courses/uno-platform-fundamentals). By the end of the course, you will have created your first Uno Platform solution in Visual Studio and you’ll have the skills and knowledge needed to build multi-platform apps with Uno Platform. 
 
-
-
+The course covers how to build a user interface in XAML, how to apply the MVVM pattern, how to adapt your user interface to different screen sizes, how to write platform-specific code and how to connect your application to a data source. _If you’re not Pluralsight subscriber, you can still use the course it with a 30-day trial._
 
 #### Skye Hoefling – Getting Started with Uno Platform (Free)
 
@@ -65,7 +61,7 @@ Microsoft MVP Skye Hoefling put together [Uno Platform: Getting Started Series](
 
 #### Book - Creating Cross-Platform C# Applications with Uno Platform (Packt, Paid)
 
-[Creating Cross-Platform C# Applications with Uno Platform]( https://www.packtpub.com/product/creating-cross-platform-c-applications-with-uno-platform/9781801078498) book by Matt Lacey & Marcel Alexander Wagner is a helpful guide packed with tips and practical examples to help you build applications for common scenarios. It’s available on Packt as well as Amazon.ca/.com
+[Creating Cross-Platform C# Applications with Uno Platform](https://www.packtpub.com/product/creating-cross-platform-c-applications-with-uno-platform/9781801078498) book by Matt Lacey & Marcel Alexander Wagner is a helpful guide packed with tips and practical examples to help you build applications for common scenarios. It’s available on Packt as well as Amazon.
 
 
 #### Book - Getting Started with the Uno Platform and WinUI 3: Hands-On Building of Cross-Platform Desktop, Mobile, and Web Applications That Can Run Anywhere (Apress, Paid)
@@ -76,10 +72,9 @@ Microsoft MVP Skye Hoefling put together [Uno Platform: Getting Started Series](
 
 If you are looking to bring your cross-platform apps to Raspberry Pi with Uno Platform, Peter Gallagher wrote an [article to help you get started]( https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) or try our [getting started with Raspberry Pi documentation]( https://platform.uno/docs/articles/guides/raspberry-pi/raspberry-pi-intro.html).
 
-
 #### XAML Fundamentals for Web and Mobile (Free)
 
-Any UWP/WinUI/XAML material is a great starting point as all we do is take that over the Uno bridge. To that point, one Uno contributor and Microsoft MVP, Nick Randolph has been revitalizing older XAML resources on his [.NET Travels blog.](https://nicksnettravels.builttoroam.com/xaml-basics/) Uno Platform will be continuing the series on our blog.
+Any UWP/WinUI/XAML material is a great starting point as all we do is take that over the Uno Platform bridge. To that point, one Uno Platform contributor and Microsoft MVP, Nick Randolph has been revitalizing older XAML resources on his [.NET Travels blog.](https://nicksnettravels.builttoroam.com/xaml-basics/) Uno Platform will be continuing the series on our blog.
 
 ## Microsoft docs and blogs on Uno Platform (Free) 
 
@@ -95,7 +90,6 @@ Any UWP/WinUI/XAML material is a great starting point as all we do is take that 
 
 #### Uno Team Community Support
 
-
 If you have a question about Uno Platform that others might benefit from, post it on [Uno Platform GitHub discussions](https://github.com/unoplatform/uno/discussions) or If you think you've encountered a bug (e.g. something works on WinAppSDK or UWP but not on another platform), [check for an existing issue on GitHub]( https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
 
 For more chat-like troubleshooting, visit the Uno Platform team and the Uno community on our [Discord Channel #uno-platform]( https://discord.gg/eBHZSKG). Both have our engineering team monitoring discussions and answering questions.
@@ -103,10 +97,10 @@ For more chat-like troubleshooting, visit the Uno Platform team and the Uno comm
 
 ## Some additional resources:
 
-- [Performance tips and tricks](Uno-UI-Performance.md)
+- [Performance tips and tricks](xref:Uno.Development.Performance)
 - The [Uno Platform YouTube](https://www.youtube.com/c/UnoPlatform) channel is also a great source for learning. On top of publishing tutorials and demos, we also have weekly live coding sessions that tackle different areas of Uno Platform.
 - The [Uno Platform blog](http://platform.uno/blog) is frequently active, publishing articles weekly on a wide array of topics and varying complexity.
-- - The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
+- The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
 - For those who wish to learn from real-life code, you can use the [Ch9 sample app]( https://github.com/unoplatform/Uno.Ch9) (source code and real-world app) it uses the publicly available video feed from Microsoft's Channel 9 for content.
 - With [Uno Calculator](https://calculator.platform.uno/) we took Microsoft's open-sourced Windows 10 Calculator, ported it to C#, and put it on Android, iOS, WebAssembly, macOS, and Linux. [Check out all the code here.](https://github.com/unoplatform/calculator)
 
