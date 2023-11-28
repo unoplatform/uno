@@ -93,7 +93,18 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 
 	// WPF doesn't expose the scancode, but it exists internally
 	private static uint GetScanCode(KeyEventArgs args)
-		=> (uint)((int)(typeof(KeyEventArgs).GetProperty("ScanCode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(args) ?? 0));
+	{
+		try
+		{
+			return (uint)((int)(typeof(KeyEventArgs).GetProperty("ScanCode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(args) ?? 0));
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine("Couldn't get ScanCode from WPF KeyEventArgs.");
+			Console.WriteLine(e);
+			return 0;
+		}
+	}
 
 	private static char? KeyCodeToUnicode(uint keyCode)
 	{
