@@ -2,7 +2,7 @@
 // #define TRACK_REFS
 #nullable enable
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -99,7 +99,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon), 15)]
+#if !WINAPPSDK
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBadge), 15)]
+#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBar), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
@@ -109,7 +111,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
+#if !WINAPPSDK
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15)]
+#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons), 15)]

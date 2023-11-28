@@ -175,7 +175,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static IList<T> FindDescendents<T>(DependencyObject root)
-#if WINDOWS_UWP
+#if WINAPPSDK
 			where T : DependencyObject
 #else
 			where T : class, DependencyObject

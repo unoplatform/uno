@@ -9,7 +9,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using Microsoft.UI.Input;
 #endif
 
@@ -25,7 +25,7 @@ namespace SamplesApp.Wasm.Windows_UI_Input
 
 		private void ChangeButtonCursor(object sender, PointerRoutedEventArgs e)
 		{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			var SizeWestEastCursor = InputSystemCursor.Create(InputSystemCursorShape.SizeWestEast);
 			this.ProtectedCursor = SizeWestEastCursor;
 #endif
@@ -33,7 +33,7 @@ namespace SamplesApp.Wasm.Windows_UI_Input
 
 		private void ChangeBorderCursor(object sender, PointerRoutedEventArgs e)
 		{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			var waitCursor = InputSystemCursor.Create(InputSystemCursorShape.Wait);
 			this.ProtectedCursor = waitCursor;
 #endif
@@ -41,7 +41,7 @@ namespace SamplesApp.Wasm.Windows_UI_Input
 
 		private void CaptureCursor(object sender, PointerRoutedEventArgs e)
 		{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			var border = (Border)sender;
 			border.CapturePointer(e.Pointer);
 #endif

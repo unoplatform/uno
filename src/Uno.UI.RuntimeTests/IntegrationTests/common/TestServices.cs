@@ -37,7 +37,7 @@ namespace Private.Infrastructure
 
 			}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			internal static FrameworkElement GetPopupOverlayElement(Popup popup)
 			{
 				return null;

@@ -389,7 +389,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var SUT = new Border() { Background = new SolidColorBrush(Colors.Blue) };
-			var inner = new Border() { CornerRadius = CornerRadiusHelper.FromUniformRadius(40), Width = 80, Height = 80 };
+			var inner = new Border() { CornerRadius = new CornerRadius(40), Width = 80, Height = 80 };
 			inner.Child = new Microsoft.UI.Xaml.Shapes.Rectangle() { Fill = new SolidColorBrush(Colors.Red), Width = 80, Height = 80 };
 			SUT.Child = inner;
 

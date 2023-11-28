@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 		{
 			this.InitializeComponent();
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			bool originalUseInvalidateMeasurePath = FeatureConfiguration.UIElement.UseInvalidateMeasurePath;
 			bool originalUseInvalidateArrangePath = FeatureConfiguration.UIElement.UseInvalidateArrangePath;
 
@@ -191,7 +191,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 		private void changeOptimizeMeasure(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (optimizeMeasure.IsChecked is true)
 			{
 				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = true;

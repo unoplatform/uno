@@ -7,6 +7,7 @@ if '%Platform%' NEQ '' if '%CI%' == '' goto question
 
 :convert
 echo Make sure that :
+echo - Run on a clean repo (git clean -fdx) otherwise symbols will be incorrectly generated
 echo - crosstargeting_override.props is not defininig UnoTargetFrameworkOverride
 echo - This script is run from the build folder (not src/build)
 pause

@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_ThemeResource
 	{
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("Fails on UWP with 'The parameter is incorrect.'")]
 #endif
 #if __MACOS__

@@ -1,4 +1,4 @@
-﻿#if !WINDOWS_UWP
+﻿#if !WINAPPSDK
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

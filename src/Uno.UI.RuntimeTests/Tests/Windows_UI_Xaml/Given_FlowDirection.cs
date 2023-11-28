@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Shapes;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
-#if !SUPPORTS_RTL && !WINDOWS_UWP
+#if !SUPPORTS_RTL && !WINAPPSDK
 [Ignore("RTL is not supported")]
 #endif
 public class Given_FlowDirection
@@ -68,7 +68,7 @@ public class Given_FlowDirection
 	}
 
 	private static Rect GetWindowBounds() =>
-#if WINDOWS_UWP
+#if WINAPPSDK
 		Window.Current.Bounds;
 #else
 		TestServices.WindowHelper.WindowContent.XamlRoot.Bounds;

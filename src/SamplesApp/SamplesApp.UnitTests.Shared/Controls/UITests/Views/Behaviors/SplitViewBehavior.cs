@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Extensions;
 using System;
 
-#if NETFX_CORE
+#if WINAPPSDK
 #elif __IOS__
 using UIKit;
 using Uno.UI.Controls;

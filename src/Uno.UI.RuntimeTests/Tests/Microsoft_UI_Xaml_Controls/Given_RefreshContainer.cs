@@ -111,7 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Deferral deferral = null;
 			refreshContainer.RequestRefresh();
 
-			await Task.Delay(200); // Artifical delay to allow the indicator to animate in
+			await Task.Delay(200); // Artificial delay to allow the indicator to animate in
 			var screenshotAfter = await TakeScreenshot(grid);
 			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotAfter);
 			deferral.Complete();

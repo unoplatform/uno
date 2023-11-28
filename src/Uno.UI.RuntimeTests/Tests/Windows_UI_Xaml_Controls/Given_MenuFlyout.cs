@@ -57,7 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				try
 				{
 					await ControlHelper.DoClickUsingAP(page.SUT);
-#if !NETFX_CORE
+#if !WINAPPSDK
 					Assert.AreEqual(false, flyout.UseNativePopup);
 #endif
 					var flyoutItem = page.FirstFlyoutItem;

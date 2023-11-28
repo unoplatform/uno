@@ -625,7 +625,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// Background on this code path taking the following xaml just as an example:
 				// https://github.com/unoplatform/uno/blob/12c3b1c3cdd6bcd856005d181be4057cd3751212/src/Uno.UI.FluentTheme.v2/Resources/Version2/PriorityDefault/CommandBarFlyout.xaml#L5-L6
-				// In the above XAML, we have 'local:CommandBarFlyoutCommandBar' which refers to 'using:Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar'
+				// In the above XAML, we have 'local:CommandBarFlyoutCommandBar' which refers to 'using:Microsoft/**/.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar'
 				// However, we have 'CommandBarFlyoutCommandBar' in Windows namespace for UWP tree, and in Microsoft namespace for WinUI tree.
 				// So, if we couldn't get Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar, we try with Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar
 				// Ideally we would like UWP and WinUI trees to individually have the correct namespace. Until that happens, we have to live with this workaround.

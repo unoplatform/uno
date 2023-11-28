@@ -391,7 +391,12 @@ namespace SampleControl.Presentation
 				_useFluentStyles = value;
 				if (_useFluentStyles)
 				{
-					_fluentResources = _fluentResources ?? new XamlControlsResources() { ControlsResourcesVersion = ControlsResourcesVersion.Version2 };
+					_fluentResources = _fluentResources ?? new XamlControlsResources()
+					{
+#if !WINAPPSDK
+						ControlsResourcesVersion = ControlsResourcesVersion.Version2
+#endif
+					};
 					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
 				}
 				else

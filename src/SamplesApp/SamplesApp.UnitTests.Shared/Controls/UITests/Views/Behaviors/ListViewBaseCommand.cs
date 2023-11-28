@@ -7,7 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 #endif
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Windows.ApplicationModel.Store;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

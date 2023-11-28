@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 using _NativeType = Microsoft.UI.Xaml.Controls.Grid;
 #elif __ANDROID__
@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 		private async void Button_UseUWPDefaultStyles_Loaded(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			var originalFlagValue = Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles;
 			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;
 #endif
@@ -65,7 +65,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 			{
 				ResultsTextBlock.Text = "Native view not found";
 			}
-#if !NETFX_CORE
+#if !WINAPPSDK
 			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = originalFlagValue;
 #endif
 		}

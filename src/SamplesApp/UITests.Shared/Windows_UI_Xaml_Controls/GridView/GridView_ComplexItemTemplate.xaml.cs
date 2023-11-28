@@ -20,7 +20,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System.Globalization;
 using Uno.UI.Samples.Controls;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using System.Runtime.InteropServices.WindowsRuntime;
 #elif XAMARIN
 #endif

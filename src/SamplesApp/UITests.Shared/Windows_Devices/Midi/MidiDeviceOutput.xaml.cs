@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
@@ -214,7 +214,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			resetButton.IsEnabled = true;
 
 			// Reset selections on parameters
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			parameter1.Value = 0;
 			parameter2.Value = 0;
 			parameter3.Value = 0;
@@ -468,7 +468,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="e">Event arguments</param>
 		private void Parameter1_SelectionChanged(object sender, object e)
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			int parameter1SelectedIndex = int.Parse(this.parameter1.Text);
 #else
 			// Find the index of the user's choice
@@ -505,7 +505,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		private void UpdateParameterList2()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			int parameter2SelectedIndex = int.Parse(this.parameter2.Text);
 #else
 			// Find the index of the user's choice
@@ -583,7 +583,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		private void UpdateParameterList3()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			int parameter3SelectedIndex = int.Parse(this.parameter3.Text);
 #else
 			// Find the index of the user's choice
@@ -639,7 +639,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			}
 		}
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		/// <summary>
 		/// Helper function to populate a dropdown lists with options
 		/// </summary>

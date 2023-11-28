@@ -13,6 +13,7 @@ namespace Uno.UI.Extensions; // same as in ViewExtensions.visual-tree.cs
 
 internal static class VisualTreeExtensions // non-uno counterpart to src\Uno.UI\Extensions\ViewExtensions.visual-tree.cs
 {
+#if !WINAPPSDK
 	/// <summary>
 	/// Returns the first descendant of a specified type.
 	/// </summary>
@@ -69,6 +70,7 @@ internal static class VisualTreeExtensions // non-uno counterpart to src\Uno.UI\
 			}
 		}
 	}
+#endif
 
 	private static IEnumerable<_View> EnumerateChildren(this _View? reference)
 	{

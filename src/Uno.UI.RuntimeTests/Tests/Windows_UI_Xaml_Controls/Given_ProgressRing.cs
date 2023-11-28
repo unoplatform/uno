@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 
-#if HAS_UNO_WINUI && !WINDOWS_UWP
+#if HAS_UNO_WINUI && !WINAPPSDK
 using ProgressRing = Uno.UI.Controls.Legacy.ProgressRing;
 #else
 using ProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
@@ -61,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					Width = 10,
 					Height = 10,
-					Margin = ThicknessHelper.FromUniformLength(5)
+					Margin = new Thickness(5)
 				};
 
 				var root = new Grid

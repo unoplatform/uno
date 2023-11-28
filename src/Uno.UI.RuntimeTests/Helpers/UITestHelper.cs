@@ -288,7 +288,7 @@ public static class InputInjectorExtensions
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 	public static Mouse GetMouse(this InputInjector injector)
 		=> new(injector);
 #endif
@@ -470,7 +470,7 @@ public class Finger : IInjectedPointer, IDisposable
 #endif
 }
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 public class Mouse : IInjectedPointer, IDisposable
 {
 	private readonly InputInjector _input;

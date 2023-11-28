@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Windows.ApplicationModel.Store;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

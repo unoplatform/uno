@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -225,7 +225,7 @@ internal class Given_FrameworkTemplatePool
 			if (i > vm.Editors.Length - 1)
 			{
 				textBox.Focus(FocusState.Programmatic);
-				await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
+				await WindowHelper.WaitFor(() => Equals(FocusManager.GetFocusedElement(WindowHelper.XamlRoot), textBox));
 			}
 
 			AssertEditorContents();

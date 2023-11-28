@@ -15,7 +15,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 public static class Ext
 {
 	public static Color WithOpacity(this Color color, double opacity)
@@ -35,7 +35,7 @@ public static class Ext
 [TestClass]
 internal class Given_CompositionClip
 {
-#if __SKIA__ || WINDOWS_UWP
+#if __SKIA__ || WINAPPSDK
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_TransformElementClippedByParent_Then_ClippingAppliedPostRendering()

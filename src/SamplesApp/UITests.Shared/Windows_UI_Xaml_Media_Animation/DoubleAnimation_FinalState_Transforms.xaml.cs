@@ -75,7 +75,7 @@ If 'Set From' was selected, then rollback means back to value before animation, 
 			var animation = new DoubleAnimation
 			{
 				To = 150,
-				Duration = DurationHelper.FromTimeSpan(_duration),
+				Duration = new Duration(_duration),
 				FillBehavior = fill
 			};
 

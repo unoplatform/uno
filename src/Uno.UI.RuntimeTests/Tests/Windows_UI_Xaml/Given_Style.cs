@@ -14,7 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_Style
 	{
-#if !NETFX_CORE // Control template does not support lambda parameter
+#if !WINAPPSDK // Control template does not support lambda parameter
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_StyleFailsToApply()

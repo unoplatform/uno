@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 		private void changeOptimizeMeasure(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (sender is ToggleButton { IsChecked: true })
 			{
 				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = true;
@@ -30,7 +30,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 		internal void changeOptimizeElements(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (sender is ToggleButton { IsChecked: true })
 			{
 				FrameworkElementHelper.SetUseMeasurePathDisabled(elements2, true);

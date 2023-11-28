@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		internal static IEnumerable<Popup> GetOpenPopups(DependencyObject element)
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return VisualTreeHelper.GetOpenPopups(Window.Current);
 #else
 			return VisualTreeHelper.GetOpenPopupsForXamlRoot(GetXamlRoot(element));
@@ -100,7 +100,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		internal static XamlRoot GetXamlRoot(DependencyObject obj)
 		{
 			XamlRoot xamlRoot = default;

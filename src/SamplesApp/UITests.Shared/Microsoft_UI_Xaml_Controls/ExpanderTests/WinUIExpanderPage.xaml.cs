@@ -28,7 +28,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests
 		public WinUIExpanderPage()
 		{
 			this.InitializeComponent();
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			var customControlPeer = FrameworkElementAutomationPeer.FromElement(CustomControl);
 			var expanderPeer = FrameworkElementAutomationPeer.FromElement(ExpanderWithCustomEventsSource);
 

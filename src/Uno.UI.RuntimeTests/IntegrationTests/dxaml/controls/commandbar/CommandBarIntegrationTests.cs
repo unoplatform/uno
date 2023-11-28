@@ -5229,7 +5229,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});

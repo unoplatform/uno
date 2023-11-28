@@ -14,11 +14,16 @@
 		<None Include="UI\Xaml\Controls\ProgressBar\*.cs"/>
 
 		<Compile Remove="UI\Xaml\Controls\Icons\BitmapIconSource.cs" />
+		<Compile Remove="UI\Xaml\Controls\Icons\SymbolIconSource.cs" />
+		<Compile Remove="UI\Xaml\Controls\Icons\PathIconSource.cs" />
 		<Compile Remove="UI\Xaml\Controls\Icons\FontIconSource.cs" />
 		<Compile Remove="UI\Xaml\Controls\Icons\IconSource.cs" />
-		<Compile Remove="UI\Xaml\Controls\Icons\PathIconSource.cs" />
-		<Compile Remove="UI\Xaml\Controls\Icons\SymbolIconSource.cs" />
+		<Compile Remove="UI\Xaml\Media\RevealBrush.Android.cs" />
 		<Compile Remove="UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs" />
+		
+		<Compile Remove="UI\Xaml\Controls\NavigationView\**\*.cs" />
+		<Page Remove="UI\Xaml\Controls\NavigationView\**\*.xaml" />
+		<XamlMergeInput Remove="UI\Xaml\Controls\NavigationView\**\*.xaml" />
 	</ItemGroup>
 
 </Project>

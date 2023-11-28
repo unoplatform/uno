@@ -16,6 +16,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[RunsOnUIThread]
 	public class Given_RevealBrush
 	{
+#if !WINAPPSDK // RevealBrush is not implemented in WinUI yet
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -55,6 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.AreEqual(43, siblingBorder.ActualWidth, delta);
 			Assert.AreEqual(22, siblingBorder.ActualHeight);
 		}
+#endif
 
 #if __ANDROID__
 		[TestMethod]

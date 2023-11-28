@@ -4,7 +4,7 @@
 
 // Do not run on UWP because the event tester does not work there
 // Do not run on WASM because the tests are very slow for some reason
-#if !WINDOWS_UWP && !__WASM__
+#if !WINAPPSDK && !__WASM__
 
 using System;
 using System.Collections.Generic;
@@ -461,7 +461,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});

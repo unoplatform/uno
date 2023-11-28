@@ -1721,6 +1721,9 @@
 
 	<IgnoreSet baseVersion="5.0">
 		<Types>
+			<Member fullName="Windows.Gaming.UI.GameMonitor" reason="Removed from UWP" />
+			<Member fullName="Windows.ApplicationModel.IAppInfoStatics" reason="Removed from UWP" />
+			<Member fullName="Windows.Gaming.UI.GameMonitoringPermission" reason="Removed from UWP" />
 		</Types>
 
 		<Events>
@@ -1733,6 +1736,7 @@
 
 		<Properties>
 			<Member fullName="Windows.UI.Color Microsoft.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 		</Properties>
 
 		<Methods>
@@ -1740,6 +1744,8 @@
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.remove_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="Windows.UI.Color Microsoft.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
 
 			<Member fullName="System.Void Uno.Media.Playback.IMediaPlayerEventsExtension.RaiseVideoRatioChanged(System.Double videoRatio)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />

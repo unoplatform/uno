@@ -375,7 +375,7 @@ namespace Private.Infrastructure
 
 		internal static void CheckFocusedItem()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			var item = FocusManager.GetFocusedElement();
 #else
 			var item = FocusManager.GetFocusedElement((TestServices.WindowHelper.WindowContent as UIElement)?.XamlRoot);

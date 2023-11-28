@@ -24,7 +24,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			var sv = MyListView.FindFirstChild<ScrollViewer>();
 			sv.ViewChanged += (o, e2) =>
 			{
-				var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+				var t = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 				{
 					var panel = MyListView.ItemsPanelRoot as ItemsStackPanel;
 					FirstCacheIndexTextBlock.Text = $"FirstCacheIndex: {panel.FirstCacheIndex}";

@@ -53,7 +53,7 @@ namespace SamplesApp.Windows_UI_Xaml_Media.Animation
 			var anim = new DoubleAnimation()
 			{
 				To = to,
-				Duration = DurationHelper.FromTimeSpan(DURATION),
+				Duration = new Duration(DURATION),
 				EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseInOut }
 			};
 

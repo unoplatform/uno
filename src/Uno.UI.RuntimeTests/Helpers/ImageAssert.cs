@@ -143,7 +143,7 @@ public static partial class ImageAssert
 		{
 			Assert.Fail(WithContext(builder: builder => builder
 				.AppendLine($"Color at ({x},{y}) is not expected")
-				.AppendLine($"excluded: {ToArgbCode(excludedColor)} {ColorHelper.ToDisplayName(excludedColor)}")
+				.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.ToString()}")
 				.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
 				.AppendLine($"tolerance: {tolerance}")
 				.AppendLine($"difference: {difference}")

@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 		{
 			this.InitializeComponent();
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			var loopingSelector = new LoopingSelector
 			{
 				ItemHeight = 30,

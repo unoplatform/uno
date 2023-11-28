@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 	public class ParserContextMarkupExtension : MarkupExtension
 	{
-#if HAS_UNO || !WINDOWS_UWP // Winui,UnoUwp,UnoWinui: yes, Uwp: not-supported
+#if HAS_UNO || !WINAPPSDK // Winui,UnoUwp,UnoWinui: yes, Uwp: not-supported
 		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
 		{
 			return serviceProvider;

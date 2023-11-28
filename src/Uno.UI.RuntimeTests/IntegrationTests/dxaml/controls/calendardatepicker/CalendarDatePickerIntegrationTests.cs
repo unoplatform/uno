@@ -53,13 +53,13 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				using var _ = new AssertionScope();
 
 				var cp = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
-				VERIFY_ARE_EQUAL(cp.FirstDayOfWeek, Windows.Globalization.DayOfWeek.Sunday);
+				VERIFY_ARE_EQUAL(cp.FirstDayOfWeek, global::Windows.Globalization.DayOfWeek.Sunday);
 				VERIFY_ARE_EQUAL(cp.DisplayMode, Microsoft.UI.Xaml.Controls.CalendarViewDisplayMode.Month);
 				VERIFY_ARE_EQUAL(cp.IsTodayHighlighted, true);
 				VERIFY_ARE_EQUAL(cp.IsOutOfScopeEnabled, true);
 				VERIFY_ARE_EQUAL(cp.IsGroupLabelVisible, false);
 
-				Windows.Globalization.Calendar calendar = new Windows.Globalization.Calendar();
+				global::Windows.Globalization.Calendar calendar = new global::Windows.Globalization.Calendar();
 				calendar.SetToNow();
 
 				calendar.AddYears(-100);
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !NETFX_CORE
+#if !__SKIA__ && !WINAPPSDK
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task CanOpenFlyoutByTapping()
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await helper.PrepareOpenedEvent();
 
 			TestServices.InputHelper.Tap(dateText
-#if NETFX_CORE
+#if WINAPPSDK
 				// On Windows, we might wait a bit after pressing for the popup to open
 				// UNO TODO: why do we need this wait?
 				, 600
@@ -195,7 +195,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #elif !__SKIA__
 		[Ignore("Fails")]
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !NETFX_CORE
+#if !__SKIA__ && !WINAPPSDK
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task CanCloseFlyoutBySelectingADate()
@@ -358,7 +358,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 			TestServices.InputHelper.Tap(dateText
-#if NETFX_CORE
+#if WINAPPSDK
 				// On Windows, we might wait a bit after pressing for the popup to open
 				// UNO TODO: why do we need this wait?
 				, 600
@@ -526,7 +526,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				cp.DateFormat = "{dayofweek.full}, {month.full} {day.integer}, {year.full}"; // equivalent to "longdate"
 				cp.UpdateLayout();
 
-				cp.CalendarIdentifier = Windows.Globalization.CalendarIdentifiers.Taiwan;
+				cp.CalendarIdentifier = global::Windows.Globalization.CalendarIdentifiers.Taiwan;
 
 				LOG_OUTPUT("actual text: %s.", dateText.Text);
 				VERIFY_ARE_EQUAL("Monday, January 1, 90", dateText.Text);
@@ -535,7 +535,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !NETFX_CORE
+#if !__SKIA__ && !WINAPPSDK
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task PressingDoesNotOpenMenuFlyout()
@@ -591,7 +591,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await helper.PrepareOpenedEvent();
 
 			TestServices.InputHelper.Tap(dateText
-#if NETFX_CORE
+#if WINAPPSDK
 				// On Windows, we might wait a bit after pressing for the popup to open
 				// UNO TODO: why do we need this wait?
 				, 600

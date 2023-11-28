@@ -75,7 +75,7 @@ namespace Uno.UI.Toolkit
 
 #if __IOS__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
@@ -158,7 +158,7 @@ namespace Uno.UI.Toolkit
 				var shadow = new ShadowState(dx, dy, sigmaX, sigmaY, shadowColor);
 				visual.ShadowState = shadow;
 			}
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 			if (element is UIElement uiElement)
 			{
 				var compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;

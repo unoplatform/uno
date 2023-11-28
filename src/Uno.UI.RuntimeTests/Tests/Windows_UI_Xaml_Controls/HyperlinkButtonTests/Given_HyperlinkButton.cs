@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HyperlinkButtonTest
 	[TestClass]
 	public class Given_HyperlinkButton
 	{
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_HyperlinkButton_With_Implicit_Content_Should_Be_Underlined()

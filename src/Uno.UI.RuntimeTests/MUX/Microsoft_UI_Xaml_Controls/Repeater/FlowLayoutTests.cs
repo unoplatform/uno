@@ -1364,7 +1364,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var layoutPanel = (LayoutPanel)XamlReader.Load(
 					@"<controls:LayoutPanel Width='800'  
 						xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-						xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls'>
+						xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
 						<controls:LayoutPanel.Layout>
 							<controls:FlowLayout  />
 						</controls:LayoutPanel.Layout>

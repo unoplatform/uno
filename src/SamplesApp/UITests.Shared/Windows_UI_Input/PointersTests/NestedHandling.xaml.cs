@@ -61,9 +61,9 @@ namespace UITests.Windows_UI_Input.PointersTests
 				PointerEnteredEvent,
 				new PointerEventHandler((snd, e) =>
 				{
-					if (e.OriginalSource == _sample2_nested
-						|| e.OriginalSource == _sample2_intermediate2
-						|| e.OriginalSource == _sample2_intermediate)
+					if (ReferenceEquals(e.OriginalSource, _sample2_nested)
+						|| ReferenceEquals(e.OriginalSource, _sample2_intermediate2)
+						|| ReferenceEquals(e.OriginalSource, _sample2_intermediate))
 					{
 						_enterResult.Text += "FAILED (container)";
 					}
@@ -87,9 +87,9 @@ namespace UITests.Windows_UI_Input.PointersTests
 				PointerExitedEvent,
 				new PointerEventHandler((snd, e) =>
 				{
-					if (e.OriginalSource == _sample2_nested
-						|| e.OriginalSource == _sample2_intermediate2
-						|| e.OriginalSource == _sample2_intermediate)
+					if (ReferenceEquals(e.OriginalSource, _sample2_nested)
+						|| ReferenceEquals(e.OriginalSource, _sample2_intermediate2)
+						|| ReferenceEquals(e.OriginalSource, _sample2_intermediate))
 					{
 						_exitResult.Text += "FAILED (container)";
 					}

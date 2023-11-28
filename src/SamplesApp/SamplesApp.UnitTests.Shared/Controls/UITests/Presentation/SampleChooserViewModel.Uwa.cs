@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE
+﻿#if WINAPPSDK
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Microsoft.UI.Xaml;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;

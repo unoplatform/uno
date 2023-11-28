@@ -333,8 +333,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var root = (Grid)XamlReader.Load(TestUtilities.ProcessTestXamlForRepo(
 					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
 							 xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-							 xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls' 
-							 xmlns:primitives='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives'> 
+							 xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls' 
+							 xmlns:primitives='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls.Primitives'> 
 						 <Grid.Resources>
 						   <controls:StackLayout x:Name='VerticalStackLayout' />
 						   <controls:RecyclingElementFactory x:Key='ElementFactory'>

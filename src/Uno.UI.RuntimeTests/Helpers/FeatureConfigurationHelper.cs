@@ -9,7 +9,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 {
 	public static class FeatureConfigurationHelper
 	{
-#if !NETFX_CORE
+#if !WINAPPSDK
 		private class MockProvider : FrameworkTemplatePoolDefaultPlatformProvider
 		{
 			public override bool CanUseMemoryManager => false;
@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseTemplatePooling()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
 			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;

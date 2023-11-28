@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			return _last = Disposable.Create(() =>
 			{
 				// On Windows, token is EventRegistrationToken, on Uno, token is null
-#if NETFX_CORE
+#if WINAPPSDK
 				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { token }));
 #else
 				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { handler }));

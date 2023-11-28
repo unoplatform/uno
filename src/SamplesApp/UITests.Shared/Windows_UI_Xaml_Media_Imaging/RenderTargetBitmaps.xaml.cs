@@ -89,7 +89,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 			using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
 			{
-#if WINDOWS_UWP || __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
+#if WINAPPSDK || __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
 				var pixels = await renderer.GetPixelsAsync();
 				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
 				encoder.SetPixelData(BitmapPixelFormat.Bgra8

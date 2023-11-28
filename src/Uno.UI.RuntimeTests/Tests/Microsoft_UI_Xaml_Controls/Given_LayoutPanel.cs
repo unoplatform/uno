@@ -16,6 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [TestClass]
 public partial class Given_LayoutPanel
 {
+#if !WINAPPSDK
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Padding_Set_In_SizeChanged()
@@ -51,4 +52,5 @@ public partial class Given_LayoutPanel
 
 		Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 	}
+#endif
 }

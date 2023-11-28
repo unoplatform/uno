@@ -106,7 +106,7 @@ namespace Uno.Foundation.Interop
 						var reportMethods = duplicateMethods
 							.Where(m =>
 								!m.DeclaringType.FullName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal) &&
-								!m.DeclaringType.FullName.StartsWith("Microsoft/* UWP don't rename */.UI.Xaml", StringComparison.Ordinal) &&
+								!m.DeclaringType.FullName.StartsWith("Microsoft" + /* UWP don't rename */ ".UI.Xaml", StringComparison.Ordinal) &&
 								!m.DeclaringType.FullName.StartsWith("Uno", StringComparison.Ordinal))
 							.Select(m => m.Name)
 							.Distinct();

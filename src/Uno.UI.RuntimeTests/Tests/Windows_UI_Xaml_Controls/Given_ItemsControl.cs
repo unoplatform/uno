@@ -12,7 +12,7 @@ using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -110,7 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
-#if !NETFX_CORE // This is an Uno implementation detail
+#if !WINAPPSDK // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
 #endif
 

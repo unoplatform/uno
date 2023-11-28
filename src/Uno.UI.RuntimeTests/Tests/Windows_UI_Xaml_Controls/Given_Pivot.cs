@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			items[1].Content.Should().Be(tbs2.ElementAt(0).Text);
 		}
 
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Check_Changing_Header_Affects_UI()

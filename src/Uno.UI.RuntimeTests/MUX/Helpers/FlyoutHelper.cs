@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 	{
 		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
 #else
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		public static void HideFlyout<T>(T flyoutControl)
 			where T : FlyoutBase
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			flyoutControl.Hide();
 #else
 			flyoutControl.Close();
@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 		internal static void OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
 			where T : FlyoutBase
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			flyoutControl.ShowAt(target);
 #else
 			flyoutControl.Open();

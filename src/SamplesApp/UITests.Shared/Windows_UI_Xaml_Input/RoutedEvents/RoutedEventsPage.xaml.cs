@@ -100,7 +100,7 @@ namespace SamplesApp.Samples.RoutedEvents
 			grid.KeyDown += (s, e) =>
 			{
 				textBlock.Text += ".K";
-				if (e.Key == Windows.System.VirtualKey.E)
+				if (e.Key == global::Windows.System.VirtualKey.E)
 				{
 					e.Handled = true;
 				}
@@ -109,7 +109,7 @@ namespace SamplesApp.Samples.RoutedEvents
 			grid.KeyUp += (s, e) =>
 			{
 				textBlock.Text += ".k";
-				if (e.Key == Windows.System.VirtualKey.E)
+				if (e.Key == global::Windows.System.VirtualKey.E)
 				{
 					e.Handled = true;
 				}
@@ -119,7 +119,7 @@ namespace SamplesApp.Samples.RoutedEvents
 		protected override void OnTapped(TappedRoutedEventArgs e)
 		{
 			base.OnTapped(e);
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			Console.WriteLine("Tapped!");
 #endif
 		}

@@ -50,7 +50,7 @@ namespace Private.Infrastructure
 
 			public static void Tap(UIElement element, uint waitBetweenPressRelease = 0)
 			{
-#if NETFX_CORE || __SKIA__
+#if WINAPPSDK || __SKIA__
 				Finger finger = null;
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{

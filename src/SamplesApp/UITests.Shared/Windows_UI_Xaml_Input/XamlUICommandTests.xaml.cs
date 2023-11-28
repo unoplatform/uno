@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Controls;
 #endif
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using Microsoft.UI.Input;
 #endif
 

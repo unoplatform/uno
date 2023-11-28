@@ -125,7 +125,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 			}
 			//OS has no preference or API not implemented, use light as default
 			return ApplicationTheme.Light;
-#elif WINDOWS_UWP
+#elif WINAPPSDK
 			var settings = new UISettings();
 			var systemBackground = settings.GetColorValue(UIColorType.Background);
 			var black = Color.FromArgb(255, 0, 0, 0);

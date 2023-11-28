@@ -19,7 +19,7 @@ namespace Uno.UI.Samples.Converters
 	{
 		public object Convert(object value, Type targetType, object parameter, string culture)
 		{
-#if NETFX_CORE || __ANDROID__ || __IOS__
+#if WINAPPSDK || __ANDROID__ || __IOS__
 			var currentCulture = string.IsNullOrWhiteSpace(culture) ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
 #else
 			var currentCulture = culture;

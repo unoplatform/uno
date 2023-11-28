@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 	[RunsOnUIThread]
 	public class Given_MarkupExtension
 	{
-#if HAS_UNO || !WINDOWS_UWP // the signatures are present from winui, uno\uwp and uno\winui, just not uwp
+#if HAS_UNO || !WINAPPSDK // the signatures are present from winui, uno\uwp and uno\winui, just not uwp
 		[TestMethod]
 		public void When_MarkupExtension_Default()
 		{

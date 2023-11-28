@@ -4,10 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Controls;
-#if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
-#endif
 using Common;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -18,7 +15,7 @@ using Microsoft.UI.Xaml;
 using Windows.UI;
 
 #if !HAS_UNO_WINUI
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls

@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			popup.IsOpen = false;
 		}
 
-#if !NETFX_CORE // Testing internal Uno methods
+#if !WINAPPSDK // Testing internal Uno methods
 		[TestMethod]
 		[RequiresFullWindow]
 #if __MACOS__

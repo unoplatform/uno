@@ -102,7 +102,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			=> (object sender, RoutedEventArgs args) =>
 			{
 				_eventLog.Add(new RoutedEventLogEntry(evt, eventName, sender, args, Validate(sender, evt, args)));
-				if (sender == TouchTarget && (handleEvent?.IsChecked ?? false))
+				if (ReferenceEquals(sender, TouchTarget) && (handleEvent?.IsChecked ?? false))
 				{
 					args.GetType().GetProperty("Handled")?.SetValue(args, true);
 				}
@@ -330,7 +330,9 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 							+ $"| frame={point.FrameId}"
 							+ $"| type={ptArgs.Pointer.PointerDeviceType} "
 							+ $"| position={F(point.Position)} "
+#if !WINAPPSDK
 							+ $"| rawPosition={F(point.RawPosition)} "
+#endif
 							+ $"| inContact={point.IsInContact} "
 							+ $"| props={F(point.Properties)} "
 							+ $"| intermediates={ptArgs.GetIntermediatePoints(Sender as UIElement)?.Count.ToString() ?? "null"} ";

@@ -91,7 +91,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 #endif
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_SetSource_Stream_Then_StreamClonedSynchronously()

@@ -31,14 +31,14 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 		{
 #if !__ANDROID__ && !__IOS__
 			Box.SelectionChanged -= HandleSelection;
-			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new global::Windows.UI.Core.CoreCursor(global::Windows.UI.Core.CoreCursorType.Arrow, 0);
 #endif
 		}
 
 		private void InitList()
 		{
 #if !__ANDROID__ && !__IOS__
-			var _enumval = Enum.GetValues(typeof(Windows.UI.Core.CoreCursorType));
+			var _enumval = Enum.GetValues(typeof(global::Windows.UI.Core.CoreCursorType));
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
 
@@ -52,7 +52,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 		{
 			Txt.Text = "Current selection : " + Box.SelectedItem.ToString();
 
-			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor((Windows.UI.Core.CoreCursorType)Box.SelectedItem, 0);
+			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new global::Windows.UI.Core.CoreCursor((global::Windows.UI.Core.CoreCursorType)Box.SelectedItem, 0);
 		}
 
 		private void ResetTapped(object sender, TappedRoutedEventArgs e)
@@ -60,7 +60,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 #if !__ANDROID__ && !__IOS__
 			Txt.Text = "";
 
-			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+			Microsoft.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new global::Windows.UI.Core.CoreCursor(global::Windows.UI.Core.CoreCursorType.Arrow, 0);
 #endif
 		}
 	}

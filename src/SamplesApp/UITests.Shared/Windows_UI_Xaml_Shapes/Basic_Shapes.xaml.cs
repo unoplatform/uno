@@ -26,7 +26,7 @@ using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using Uno.UI.Controls.Legacy;
 #endif
 
@@ -608,7 +608,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 	// This is a clone of src\Uno.UI\UI\Xaml\Controls\Grid\GridExtensions.cs,
 	// but we prefer to not multi target this to not conflict with other efforts for fluent declaration
 	internal static class GridExtensions

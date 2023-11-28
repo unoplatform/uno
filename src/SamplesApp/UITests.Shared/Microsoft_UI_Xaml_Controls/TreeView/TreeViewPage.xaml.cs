@@ -103,7 +103,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 
 		protected
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			internal
 #endif
 			override void OnNavigatedFrom(NavigationEventArgs e)
@@ -1067,7 +1067,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		#region Uno specific
 		public int GetItemsCount(TreeViewList listControl)
 		{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			return listControl.GetItems().Count();
 #else
 			return listControl.Items.Count;

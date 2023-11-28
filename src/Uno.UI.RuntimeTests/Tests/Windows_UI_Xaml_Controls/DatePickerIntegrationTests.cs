@@ -287,7 +287,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			// This forces the app to use the specified language/locale:
 			this.Log().InfoFormat("VerifyDayMonthYearOrder: Setting ApplicationLanguages.PrimaryLanguageOverride to {0}", locale);
-			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
+			global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
 
 			var datePicker = await SetupDatePickerTest();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -745,7 +745,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-#if NETFX_CORE
+#if WINAPPSDK
 				var flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current)[0];
 #else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];

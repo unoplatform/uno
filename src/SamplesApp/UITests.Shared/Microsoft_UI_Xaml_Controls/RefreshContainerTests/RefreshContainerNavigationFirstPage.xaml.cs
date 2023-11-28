@@ -26,7 +26,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RefreshContainerTests
 				{
 					Text = "Hello " + i,
 					FontSize = 40,
-					Margin = ThicknessHelper.FromUniformLength(20)
+					Margin = new Thickness(20)
 				};
 				StackParent.Children.Add(textBlock);
 			}

@@ -192,7 +192,7 @@ namespace Uno.UI.Toolkit
 				((ViewGroup)this).Invalidate();
 #elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
-#elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
+#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 			}

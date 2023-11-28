@@ -51,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 		private void WriteLine(string line)
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			Debug.WriteLine(line);
 #else
 			Console.WriteLine(line);

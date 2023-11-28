@@ -65,7 +65,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					StrokeThickness = sst,
 				});
 
-#if NETFX_CORE
+#if WINAPPSDK
 			var geometry = XamlReader.Load("<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>M0,0L60,40 0,40 60,0Z</Geometry>") as Geometry;
 #else
 			var geometry = (Geometry)"M0,0L60,40 0,40 60,0Z";

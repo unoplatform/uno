@@ -707,7 +707,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
                     <DataTemplate
                         xmlns ='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls'>
+                        xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                         <controls:NavigationViewItem
                             Content='Item'>
                             <controls:NavigationViewItem.Icon>

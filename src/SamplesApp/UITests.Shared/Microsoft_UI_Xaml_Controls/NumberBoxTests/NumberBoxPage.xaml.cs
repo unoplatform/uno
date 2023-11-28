@@ -39,7 +39,9 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				var scope = new InputScope();
 				scope.Names.Add(scopeName);
 
+#if !WINAPPSDK
 				TestNumberBox.InputScope = scope;
+#endif
 
 				// Help testing by returning focus to the NumberBox to see the keyboard change
 				TestNumberBox.Focus(FocusState.Keyboard);
@@ -69,6 +71,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			if (TestNumberBox != null)
 			{
+#if !WINAPPSDK
 				if (TextAlignmentComboBox.SelectedIndex == 0)
 				{
 					TestNumberBox.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Left;
@@ -81,6 +84,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				{
 					TestNumberBox.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Right;
 				}
+#endif
 			}
 		}
 

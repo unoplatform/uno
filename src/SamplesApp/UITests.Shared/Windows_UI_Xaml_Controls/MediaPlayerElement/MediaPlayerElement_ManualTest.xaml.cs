@@ -28,19 +28,19 @@ public sealed partial class MediaPlayerElement_ManualTest : UserControl
 
 	private void Play_Click(object sender, RoutedEventArgs e)
 	{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		mpe.MediaPlayer.Play();
 #endif
 	}
 	private void Pause_Click(object sender, RoutedEventArgs e)
 	{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		mpe.MediaPlayer.Pause();
 #endif
 	}
 	private void Stop_Click(object sender, RoutedEventArgs e)
 	{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		mpe.MediaPlayer.Stop();
 #endif
 	}

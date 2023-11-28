@@ -1335,7 +1335,7 @@ public partial class NavigationView : ContentControl
 		// Certain items are disallowed in a NavigationView's items list. Check for them.
 		if (args.Element is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
 		{
-			throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem.");
+			throw new InvalidOperationException("MenuItems contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that the NavigationViewItems be of type Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.NavigationViewItem.");
 		}
 #endif
 

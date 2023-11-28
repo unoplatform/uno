@@ -100,7 +100,7 @@ namespace SampleControl.Presentation
 			// Disable all pooling so that controls get collected quickly.
 			Microsoft.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
-#if NETFX_CORE
+#if WINAPPSDK
 			UseFluentStyles = true;
 #endif
 			InitializeCommands();
@@ -658,7 +658,7 @@ namespace SampleControl.Presentation
 
 		private static Assembly[] GetAllAssembies()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			var assemblies = new List<Assembly>();
 
 			var files = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFilesAsync().AsTask().Result;

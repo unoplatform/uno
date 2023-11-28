@@ -59,7 +59,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			_loadingSubscription.Disposable = cd;
 			var ct = cd.Token;
 
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, SetImageVisible);
+			var t = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, SetImageVisible);
 
 			async void SetImageVisible()
 			{

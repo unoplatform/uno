@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusHelper.cs
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Threading.Tasks;
 using Common;

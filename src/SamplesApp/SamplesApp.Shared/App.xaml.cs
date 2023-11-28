@@ -57,6 +57,8 @@ namespace SamplesApp
 		private bool _wasActivated;
 		private bool _isSuspended;
 
+		public Window MainWindow { get; set; }
+
 		static App()
 		{
 			ConfigureLogging();
@@ -83,8 +85,11 @@ namespace SamplesApp
 			AssertApplicationData();
 
 			this.InitializeComponent();
+
+#if !WINAPPSDK
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
+#endif
 		}
 
 		/// <summary>
@@ -122,11 +127,14 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
+
+#if !WINAPPSDK
 			var n = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ =>
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
 				});
+#endif
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
@@ -135,6 +143,7 @@ namespace SamplesApp
 			}
 #endif
 			AssertInitialWindowSize();
+
 
 			InitializeFrame(e.Arguments);
 
@@ -210,6 +219,7 @@ namespace SamplesApp
 		}
 #endif
 
+#if !WINAPPSDK
 		protected
 #if HAS_UNO
 			internal
@@ -234,6 +244,7 @@ namespace SamplesApp
 				}
 			}
 		}
+#endif
 
 		private void ActivateMainWindow()
 		{
@@ -260,7 +271,17 @@ namespace SamplesApp
 
 		private void InitializeFrame(string arguments = null)
 		{
-			Frame rootFrame = Microsoft.UI.Xaml.Window.Current.Content as Frame;
+#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
+			MainWindow = new Window();
+#else
+			MainWindow = Microsoft.UI.Xaml.Window.Current;
+#endif
+
+#if DEBUG
+			MainWindow.EnableHotReload();
+#endif
+
+			Frame rootFrame = MainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
@@ -272,7 +293,7 @@ namespace SamplesApp
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
 				// Place the frame in the current Window
-				Microsoft.UI.Xaml.Window.Current.Content = rootFrame;
+				MainWindow.Content = rootFrame;
 			}
 
 			if (rootFrame.Content == null)

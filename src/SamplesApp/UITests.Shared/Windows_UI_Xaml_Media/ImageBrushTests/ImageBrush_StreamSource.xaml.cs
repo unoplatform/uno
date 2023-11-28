@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 				BitmapImage bitmapImage;
 				MySource = bitmapImage = new BitmapImage();
 
-#if NETFX_CORE
+#if WINAPPSDK
 				using var stream = new MemoryStream(data).AsRandomAccessStream();
 #else
 				using var stream = new MemoryStream(data);

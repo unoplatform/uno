@@ -55,7 +55,7 @@ public class Given_Panel
 		WindowHelper.WindowContent = grid;
 
 		await WindowHelper.WaitForLoaded(lv);
-		await WindowHelper.WaitFor(() => lv.Items.Select(item => ((ListViewItem)lv.ContainerFromItem(item)).DesiredSize.Width > 0).AllTrue());
+		await WindowHelper.WaitFor(() => lv.Items.Select(item => ((ListViewItem)lv.ContainerFromItem(item)).DesiredSize.Width > 0).All(b => b));
 		await WindowHelper.WaitForIdle();
 
 		var parent = (UIElement)VisualTreeHelper.GetParent(lv);

@@ -23,7 +23,13 @@ using _View = Microsoft.UI.Xaml.DependencyObject;
 
 namespace Uno.UI.Extensions;
 
-public static partial class ViewExtensions
+#if WINAPPSDK || WINDOWS_UWP
+internal
+#else
+public
+#endif
+
+static partial class ViewExtensions
 {
 	/// <summary>
 	/// Produces a text representation of the visual tree.

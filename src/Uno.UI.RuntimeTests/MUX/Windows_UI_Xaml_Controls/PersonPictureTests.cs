@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			PersonPicture personPicture = null;
 			TextBlock initialsTextBlock = null;
-#if WINDOWS_UWP
+#if WINAPPSDK
 			string symbolsFontName = "Segoe MDL2 Assets";
 #else
 			string symbolsFontName = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";

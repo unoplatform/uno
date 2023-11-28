@@ -12,7 +12,7 @@ using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;

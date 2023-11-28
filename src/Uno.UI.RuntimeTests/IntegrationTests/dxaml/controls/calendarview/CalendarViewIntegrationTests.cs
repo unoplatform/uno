@@ -99,27 +99,27 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 				var cv = new CalendarView();
 				VERIFY_ARE_EQUAL(cv.NumberOfWeeksInView, 6);
-				VERIFY_ARE_EQUAL(cv.FirstDayOfWeek, Windows.Globalization.DayOfWeek.Sunday);
+				VERIFY_ARE_EQUAL(cv.FirstDayOfWeek, global::Windows.Globalization.DayOfWeek.Sunday);
 				VERIFY_ARE_EQUAL(cv.SelectionMode, CalendarViewSelectionMode.Single);
 
 				VERIFY_ARE_EQUAL(cv.DisplayMode, CalendarViewDisplayMode.Month);
 				VERIFY_ARE_EQUAL(cv.IsTodayHighlighted, true);
 				VERIFY_ARE_EQUAL(cv.IsOutOfScopeEnabled, true);
 				VERIFY_ARE_EQUAL(cv.IsGroupLabelVisible, false);
-				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
 				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Microsoft.UI.Text.FontWeights.SemiBold.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontSize, 12.0);
-				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
 				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.MonthYearItemFontSize, 20.0);
-				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
 				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontSize, 12.0);
-				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, Windows.UI.Text.FontStyle.Normal);
+				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
 				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
 
-				Windows.Globalization.Calendar calendar = new Windows.Globalization.Calendar();
+				global::Windows.Globalization.Calendar calendar = new global::Windows.Globalization.Calendar();
 				calendar.SetToNow();
 
 				calendar.AddYears(-100);
@@ -504,7 +504,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			// on desktop, move the mouse away to avoid hover state.
 			LOG_OUTPUT("Moving mouse to prevent hover state on phone.");
-			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
+			TestServices.InputHelper.MoveMouse(new global::Windows.Foundation.Point(0, 0));
 
 			await WindowHelper.WaitForIdle();
 			LOG_OUTPUT("Release successful.");
@@ -1518,8 +1518,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			// the first day item is on Saturday, when we change FirstDayOfWeek from Sunday (0) to Saturday (6), the col of first item will be from 6 to 0
 			for (int i = 0; i < 7; i++)
 			{
-				Windows.Globalization.DayOfWeek dayofWeek =
-					(Windows.Globalization.DayOfWeek)((int)(Windows.Globalization.DayOfWeek.Sunday) + i);
+				global::Windows.Globalization.DayOfWeek dayofWeek =
+					(global::Windows.Globalization.DayOfWeek)((int)(global::Windows.Globalization.DayOfWeek.Sunday) + i);
 
 				await RunOnUIThread(() =>
 				{
@@ -2569,7 +2569,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 						await RunOnUIThread(() =>
 						{
 							var distance = scrollViewer.TransformToVisual(calendarPanel)
-								.TransformPoint(new Windows.Foundation.Point(0, 0));
+								.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 							distance.Y -= (float)(itemTopMargin);
 							LOG_OUTPUT("actual position %f, expected %f", distance.Y,
 								itemHeight * testData.snapPoints[i]);
@@ -3144,7 +3144,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				cv.SelectedForeground = new SolidColorBrush(Microsoft.UI.Colors.Red);
-				cv.BorderThickness = ThicknessHelper.FromUniformLength(3);
+				cv.BorderThickness = new Thickness(3);
 				cv.HorizontalDayItemAlignment = HorizontalAlignment.Left;
 				cv.HorizontalFirstOfMonthLabelAlignment = HorizontalAlignment.Right;
 				cv.CalendarItemBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow);
@@ -3311,7 +3311,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			var helper = new CalendarHelper.CalendarViewHelper();
 			CalendarView cv = await helper.GetCalendarView();
 			rootPanel = await CalendarHelper.CreateTestResources();
-			var defaultCalendar = new Windows.Globalization.Calendar();
+			var defaultCalendar = new global::Windows.Globalization.Calendar();
 			var today = defaultCalendar.GetDateTime();
 
 			//TestServices.WindowHelper.SetWindowSizeOverride(wf.Count(400, 400));
@@ -3324,7 +3324,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				rootPanel.Children.Add(cv);
 				// set MinDate/MaxDate to the maximium range that calendar can support.
 				cv.CalendarIdentifier = cid;
-				var cal = new Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
+				var cal = new global::Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
 					defaultCalendar.GetClock());
 				cal.SetToMin();
 				cv.MinDate = cal.GetDateTime();
@@ -3768,7 +3768,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				VERIFY_ARE_VERY_CLOSE(distance.Y, 0, 1.0, "distance.Y 1");
 			});
 
@@ -3783,7 +3783,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var distance = scrollViewer.TransformToVisual(calendarPanel)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				var itemHeight = firstItem.ActualHeight;
 				var itemMargin = firstItem.Margin;
 				itemHeight += itemMargin.Top + itemMargin.Bottom;
@@ -3876,7 +3876,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 						"Tapped on the first yearitem Jan/2000, we should go back to month mode and dayitem 1/20/2000 should be focused.");
 					CalendarHelper.CheckFocusedItem();
 					var distance = monthScrollViewer.TransformToVisual(monthPanel)
-						.TransformPoint(new Windows.Foundation.Point(0, 0));
+						.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 					var itemHeight = firstItem.ActualHeight;
 					var itemMargin = firstItem.Margin;
 					itemHeight += itemMargin.Top + itemMargin.Bottom;
@@ -3931,7 +3931,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 				cv.DayItemFontFamily = new Media.FontFamily("Segoe UI Symbol");
 				cv.DayItemFontSize = 50;
-				cv.DayItemFontStyle = Windows.UI.Text.FontStyle.Italic;
+				cv.DayItemFontStyle = global::Windows.UI.Text.FontStyle.Italic;
 				cv.DayItemFontWeight = Microsoft.UI.Text.FontWeights.ExtraBold;
 				cv.UpdateLayout();
 
@@ -4049,7 +4049,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				var scrollViewer = ScrollViewer(helper.GetTemplateChild("MonthViewScrollViewer"));
-				Windows.Foundation.Point origin = new Point(0, 0);
+				global::Windows.Foundation.Point origin = new Point(0, 0);
 				var itemPos = firstVisibleItem.TransformToVisual(scrollViewer).TransformPoint(origin);
 				LOG_OUTPUT("actual position of display date is (%f, %f)., expected (1, 1)", itemPos.X, itemPos.Y);
 
@@ -4175,7 +4175,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				cv.DayItemFontSize = 25;
 				cv.FirstOfMonthLabelFontSize = 20;
 				cv.IsGroupLabelVisible = true;
-				cv.FirstDayOfWeek = Windows.Globalization.DayOfWeek.Thursday;
+				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Thursday;
 				cv.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
 				cv.CalendarItemBackground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
 				cv.SelectedBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.White);
@@ -4280,7 +4280,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				var yearScrollViewer = ScrollViewer(helper.GetTemplateChild("YearViewScrollViewer"));
 				var headerButton = Button(helper.GetTemplateChild("HeaderButton"));
 				var offset = yearPanel.TransformToVisual(yearScrollViewer)
-					.TransformPoint(new Windows.Foundation.Point(0, 0));
+					.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				var headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
 				//VERIFY_ARE_EQUAL(headText, "\u200e2050");
@@ -4294,7 +4294,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				cv.UpdateLayout();
 				cv.DisplayMode = CalendarViewDisplayMode.Year;
 				cv.UpdateLayout();
-				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new Windows.Foundation.Point(0, 0));
+				offset = yearPanel.TransformToVisual(yearScrollViewer).TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				headText = String(headerButton.Content);
 				LOG_OUTPUT("yearpanel offset is %f, header text is %s", offset.Y, headText);
 				//VERIFY_ARE_EQUAL(headText, "\u200e2000");
@@ -4602,7 +4602,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_ARE_EQUAL(focusedElement, itemJan30);
 
 				var scrollViewer = ScrollViewer(helper.GetTemplateChild("MonthViewScrollViewer"));
-				Windows.Foundation.Point origin = new Point(0, 0);
+				global::Windows.Foundation.Point origin = new Point(0, 0);
 				var itemPos = focusedElement.TransformToVisual(scrollViewer).TransformPoint(origin);
 
 				var itemHeight = FrameworkElement(focusedElement).ActualHeight;
@@ -4611,7 +4611,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 				itemHeight += margin.Top + margin.Bottom;
 
-				Windows.Foundation.Point expectedPos = new Point((float)(margin.Left), (float)(itemHeight * 5 + margin.Top));
+				global::Windows.Foundation.Point expectedPos = new Point((float)(margin.Left), (float)(itemHeight * 5 + margin.Top));
 				LOG_OUTPUT("actual position of Jan30 is (%f, %f)., expected (%f, %f)", itemPos.X, itemPos.Y,
 					expectedPos.X, expectedPos.Y);
 
@@ -4769,7 +4769,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				await RunOnUIThread(() =>
 				{
 					CalendarViewDayItem lastItem;
-					Windows.Foundation.Rect layoutSlot;
+					global::Windows.Foundation.Rect layoutSlot;
 					int lastIndex = monthPanel.Children.Count;
 
 					// find the last realized item. The realized item's layout slot will
@@ -4823,7 +4823,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				rootPanel.Children.Add(cv);
 				cv.MinDate = ConvertToDateTime(1, 2011, 12, 31); // Saturday
 				cv.MaxDate = ConvertToDateTime(1, 2012, 1, 2); // Monday
-				cv.FirstDayOfWeek = Windows.Globalization.DayOfWeek.Saturday;
+				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Saturday;
 			});
 
 			await WindowHelper.WaitForIdle();
@@ -4913,7 +4913,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "5"); //Today+Hover
 																										 // move mouse away to avoid any unexpected hover state.
-			TestServices.InputHelper.MoveMouse(new Windows.Foundation.Point(0, 0));
+			TestServices.InputHelper.MoveMouse(new global::Windows.Foundation.Point(0, 0));
 
 			TestServices.InputHelper.DynamicPressCenter(todayItem, 0, 0, PointerFinger.Finger1);
 
@@ -5131,7 +5131,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 			var helper = new CalendarHelper.CalendarViewHelper();
-			Windows.UI.Color newColor = Microsoft.UI.Colors.Red;
+			global::Windows.UI.Color newColor = Microsoft.UI.Colors.Red;
 
 			Button flyoutButton = null;
 			Flyout flyout = null;
@@ -5227,7 +5227,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
-			var defaultCalendar = new Windows.Globalization.Calendar();
+			var defaultCalendar = new global::Windows.Globalization.Calendar();
 
 			(CalendarViewDisplayMode displayMode, string panelName, string scrollViewerName)[] modes = {
 				(
@@ -5273,7 +5273,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 					// set the limits from current calendaridentifier on CalendarView.
 					cv.CalendarIdentifier = cid;
-					var cal = new Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
+					var cal = new global::Windows.Globalization.Calendar(defaultCalendar.Languages, cid,
 						defaultCalendar.GetClock());
 
 					cal.SetToMin();
@@ -5787,8 +5787,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			stopCollection.Add(stop2);
 
 			LinearGradientBrush brush = new LinearGradientBrush();
-			brush.StartPoint = new Windows.Foundation.Point(startX, 0);
-			brush.EndPoint = new Windows.Foundation.Point(endX, 0);
+			brush.StartPoint = new global::Windows.Foundation.Point(startX, 0);
+			brush.EndPoint = new global::Windows.Foundation.Point(endX, 0);
 			brush.GradientStops = stopCollection;
 			return brush;
 		}

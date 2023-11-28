@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;

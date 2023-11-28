@@ -17,7 +17,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 public class Given_CalendarView

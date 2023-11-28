@@ -73,7 +73,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 		// we are explicitly checking for this scenario here and throw a helpful error message so that they can quickly fix their app.
 		if (newContent is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
 		{
-			throw new InvalidOperationException("A NavigationView instance contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that its NavigationViewItems be of type Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem.");
+			throw new InvalidOperationException("A NavigationView instance contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that its NavigationViewItems be of type Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.NavigationViewItem.");
 		}
 #endif
 

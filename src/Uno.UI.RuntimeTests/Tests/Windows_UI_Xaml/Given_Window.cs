@@ -9,7 +9,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_Window
 	{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_CreateNewWindow()

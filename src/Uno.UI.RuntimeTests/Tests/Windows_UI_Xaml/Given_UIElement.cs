@@ -590,7 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				// copied from FrameworkElement.MeasureOverride and modified to compile on Windows
 				var child = Children.Count > 0 ? Children[0] : null;
-#if NETFX_CORE
+#if WINAPPSDK
 				if (child != null)
 				{
 					child.Measure(availableSize);
@@ -612,7 +612,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				if (child != null)
 				{
-#if NETFX_CORE
+#if WINAPPSDK
 					child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 					ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));

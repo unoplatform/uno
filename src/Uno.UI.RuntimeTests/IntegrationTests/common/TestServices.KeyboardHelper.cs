@@ -122,7 +122,7 @@ namespace Private.Infrastructure
 
 			public static async void PressKeySequence(string keys, UIElement element = null)
 			{
-#if !NETFX_CORE
+#if !WINAPPSDK
 				if (string.IsNullOrEmpty(keys))
 				{
 					return;

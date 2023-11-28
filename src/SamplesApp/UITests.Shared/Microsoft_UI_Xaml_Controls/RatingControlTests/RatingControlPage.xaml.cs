@@ -120,7 +120,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 
 
 		protected
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 			internal
 #endif
 			override void OnNavigatingFrom(NavigatingCancelEventArgs e)

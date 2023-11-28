@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				// Set a custom ItemTemplate which is already a BreadcrumbBarItem. No wrapping should be performed.
 				var itemTemplate2 = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-                            xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls'>
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                             <controls:BreadcrumbBarItem Foreground='Blue'>
                               <TextBlock Text = '{Binding}'/>
                             </controls:BreadcrumbBarItem>
@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls'
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
                             xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 					var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls'
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
                             xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>
@@ -430,7 +430,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var itemTemplate = (DataTemplate)XamlReader.Load(
 						@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                             xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                            xmlns:controls='using:Microsoft/* UWP don't rename */.UI.Xaml.Controls'
+                            xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'
                             xmlns:local='using:Microsoft.UI.Xaml.Tests.MUXControls.ApiTests'>
                             <controls:BreadcrumbBarItem Content='{Binding}'>
                                 <controls:BreadcrumbBarItem.ContentTemplate>

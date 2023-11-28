@@ -2,8 +2,8 @@ parameters:
   poolName: ''
 
 jobs:
-- job: winui_convert_tree
-  displayName: 'WinUI Converted Tree Generation'
+- job: uwp_convert_tree
+  displayName: 'UWP Converted Tree Generation'
 
   pool: ${{ parameters.poolName }}
 
@@ -14,7 +14,7 @@ jobs:
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
 
-    UNO_UWP_BUILD: false
+    UNO_UWP_BUILD: true
     XAML_FLAVOR_BUILD: WinUI
 
     # Only build for NetPrevious
@@ -37,11 +37,12 @@ jobs:
         cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
         dotnet run "$(build.sourcesdirectory)"
 
-    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
-    displayName: Convert source tree to WinUI 3 structure
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'true'))
+    displayName: 'Convert source tree to UWP structure (Pass 1)'
 
   # Required to build on net5 because of uwp compatibility (until 16.10 gets published)
   - task: MSBuild@1
+    displayName: 'Convert source tree to UWP structure (Pass 2)'
     inputs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
@@ -65,7 +66,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: $(build.sourcesdirectory)
-      artifactName: winui-converted-tree
+      artifactName: uwp-converted-tree
 
   - task: PublishBuildArtifacts@1
     condition: always()
