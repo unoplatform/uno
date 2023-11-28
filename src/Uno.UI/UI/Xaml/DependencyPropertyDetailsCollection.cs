@@ -12,6 +12,7 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
+		private bool disposed;
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
@@ -50,6 +51,7 @@ namespace Windows.UI.Xaml
 
 		public void Dispose()
 		{
+			disposed = true;
 			var entries = _entries;
 
 			var entriesLength = entries.Length;
@@ -86,6 +88,11 @@ namespace Windows.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			if (disposed)
+			{
+				throw new InvalidOperationException("Accessing after disposed!!");
+			}
+
 			if (forceCreate)
 			{
 				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
