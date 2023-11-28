@@ -18,14 +18,14 @@ Run the following commands
 > [!NOTE]
 > This documentation is based on [.NET iOS profiling documentation](https://github.com/xamarin/xamarin-macios/wiki/Profiling).
 
-Profiling iOS apps needs to be done on a mac machine/
+Profiling iOS apps needs to be done on a mac machine.
 
 First, create an alias to mlaunch:
 ```bash
 alias mlaunch=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mlaunch
 ```
 
-### Profiling on a iOS Simulator
+### Profiling on an iOS Simulator
 
 1. The first step is to launch the tool that provides a connection between the app and the .NET tracing tools:
 
@@ -68,14 +68,14 @@ Launch the tool that bridges the app and the .NET tracing tools:
 $ dotnet-dsrouter server-client -ipcs ~/my-dev-port -tcpc 127.0.0.1:9001 --forward-port iOS
 ```
 
-Install & launch the app and make it suspend upon launch:
+Install & launch the app and make it suspended upon launch:
 
 ```bash
 $ mlaunch --installdev bin/Debug/net*/*/*.app --devname ... 
 $ mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9001,suspend,listen'
 ```
 
-At this point it's necessary to wait until the following line shows up in the terminal:
+At this point, it's necessary to wait until the following line shows up in the terminal:
 
 ```
 The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
