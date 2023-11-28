@@ -8,10 +8,10 @@ public partial class ValuePatternIdentifiers
 	/// <summary>
 	/// Identifies the IsReadOnly property.
 	/// </summary>
-	public static AutomationProperty IsReadOnlyProperty { get; } = new AutomationProperty();
+	public static AutomationProperty IsReadOnlyProperty { get; } = new();
 
 	/// <summary>
 	/// Identifies the Value automation property.
 	/// </summary>
-	public static AutomationProperty ValueProperty { get; } = new AutomationProperty();
+	public static AutomationProperty ValueProperty { get; } = new();
 }
