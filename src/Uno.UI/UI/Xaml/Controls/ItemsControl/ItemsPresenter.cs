@@ -31,10 +31,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
-		// TODO: support for Header/Footer when inside a ListView
+		// TODO: support for Header/Footer when inside a ListViewBase
 		private bool HeaderFooterEnabled =>
 #if __ANDROID__ || __IOS__
-		TemplatedParent is not ListView
+		TemplatedParent is not ListViewBase
 #else
 		true
 #endif
