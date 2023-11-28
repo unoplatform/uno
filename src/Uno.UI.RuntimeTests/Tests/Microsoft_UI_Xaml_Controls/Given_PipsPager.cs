@@ -1,0 +1,50 @@
+using System.Linq;
+using System.Threading.Tasks;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
+#endif
+
+namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
+
+[TestClass]
+public partial class Given_PipsPager
+{
+	// <PipsPager>
+	// <PipsPager.NormalPipStyle>
+	// <Style TargetType="Ellipse">
+	// <Setter Property="Fill" Value="Red"/>
+	// </Style>
+	// </PipsPager.NormalPipStyle>
+	// </PipsPager>
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages()
+	{
+		var SUT = new PipsPager
+		{
+			NumberOfPages = 7,
+			MaxVisiblePips = 5
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var initialScreenshot = await UITestHelper.ScreenShot(SUT);
+
+		ImageAssert.HasColorAt(initialScreenshot, initialScreenshot.Width - 5, initialScreenshot.Height / 2, Color.FromArgb(0x3F, 0, 0, 0));
+
+		SUT.SelectedPageIndex = 3;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
+		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width - 5, scrolledScreenshot.Height / 2, Color.FromArgb(0x3F, 0, 0, 0));
+	}
+}
