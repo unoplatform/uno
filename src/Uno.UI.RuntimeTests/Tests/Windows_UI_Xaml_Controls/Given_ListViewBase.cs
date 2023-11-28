@@ -41,6 +41,10 @@ using Uno.UI;
 using static Private.Infrastructure.TestServices;
 using Point = Windows.Foundation.Point;
 
+#if HAS_UNO
+using static Uno.UI.Extensions.ViewExtensions;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase // resources
@@ -4003,13 +4007,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("String 1", (string)added3.Single());
 		}
 
-		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
-		{
-			public bool Equals(AlwaysEqualClass obj) => true;
-			public override bool Equals(object obj) => true;
-			public override int GetHashCode() => 0;
-		}
-
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_ListView() => await When_Items_Are_Equal_But_Different_References_Common(new ListView());
 
@@ -4022,7 +4019,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
 
-		public record When_Header_DataContext_Model(string MyText);
+		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
+		{
+			var obj1 = new AlwaysEqualClass();
+			var obj2 = new AlwaysEqualClass();
+			var items = new ObservableCollection<AlwaysEqualClass>(new[]
+			{
+				obj1, obj2
+			});
+			sut.ItemsSource = items;
+			var list = new List<SelectionChangedEventArgs>();
+			sut.SelectionChanged += (_, e) => list.Add(e);
+			sut.SelectedIndex = 1;
+			Assert.AreEqual(1, sut.SelectedIndex);
+			Assert.AreSame(obj2, sut.SelectedItem);
+			sut.SelectedIndex = 0;
+			Assert.AreEqual(0, sut.SelectedIndex);
+			Assert.AreSame(obj1, sut.SelectedItem);
+
+			Assert.AreEqual(2, list.Count);
+			var removed1 = list[0].RemovedItems;
+			var removed2 = list[1].RemovedItems;
+
+			var added1 = list[0].AddedItems;
+			var added2 = list[1].AddedItems;
+
+			if (sut is FlipView)
+			{
+				Assert.AreSame(obj1, removed1.Single());
+			}
+			else
+			{
+				Assert.AreEqual(0, removed1.Count);
+			}
+			Assert.AreSame(obj2, added1.Single());
+
+			Assert.AreSame(obj2, removed2.Single());
+			Assert.AreSame(obj1, added2.Single());
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -4216,44 +4250,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HeaderDataContext_Cleared_FromNavigation()
 		{
-			var obj1 = new AlwaysEqualClass();
-			var obj2 = new AlwaysEqualClass();
-			var items = new ObservableCollection<AlwaysEqualClass>(new[]
+			var frame = new Frame();
+
+			WindowHelper.WindowContent = frame;
+			await WindowHelper.WaitFor(() => frame.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			frame.Navigate(typeof(When_HeaderDataContext_Cleared_FromNavigation_Page));
+			await WindowHelper.WaitForIdle();
+
+			var page = (When_HeaderDataContext_Cleared_FromNavigation_Page)frame.Content;
+			var sut = frame.FindFirstDescendant<ListView>();
+			var panel = (NativeListViewBase)sut.InternalItemsPanelRoot;
+
+			page.LvHeaderDcChanged += (s, e) => { /* for debugging */ };
+			Assert.IsNotNull(page.DataContext);
+
+			for (var i = 0; i < 3; i++) // may not always trigger, but 3 times is usually more than enough
 			{
-				obj1, obj2
-			});
-			sut.ItemsSource = items;
-			var list = new List<SelectionChangedEventArgs>();
-			sut.SelectionChanged += (_, e) => list.Add(e);
-			sut.SelectedIndex = 1;
-			Assert.AreEqual(1, sut.SelectedIndex);
-			Assert.AreSame(obj2, sut.SelectedItem);
-			sut.SelectedIndex = 0;
-			Assert.AreEqual(0, sut.SelectedIndex);
-			Assert.AreSame(obj1, sut.SelectedItem);
+				// scroll header out of viewport and back in
+				ScrollTo(sut, 100000);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+				ScrollTo(sut, 0);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
 
-			Assert.AreEqual(2, list.Count);
-			var removed1 = list[0].RemovedItems;
-			var removed2 = list[1].RemovedItems;
+				// frame navigate away and back
+				frame.Navigate(typeof(BackNavigationPage));
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+				frame.GoBack();
+				await WindowHelper.WaitForIdle();
 
-			var added1 = list[0].AddedItems;
-			var added2 = list[1].AddedItems;
-
-			if (sut is FlipView)
-			{
-				Assert.AreSame(obj1, removed1.Single());
+				// check if data-context is still set
+				Assert.AreEqual(GetListViewHeader()?.DataContext, page.DataContext);
 			}
-			else
-			{
-				Assert.AreEqual(0, removed1.Count);
-			}
-			Assert.AreSame(obj2, added1.Single());
 
-			Assert.AreSame(obj2, removed2.Single());
-			Assert.AreSame(obj1, added2.Single());
+			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -4520,6 +4561,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
 			protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
+		}
+
+		public record When_Header_DataContext_Model(string MyText);
+
+		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
+		{
+			public bool Equals(AlwaysEqualClass obj) => true;
+			public override bool Equals(object obj) => true;
+			public override int GetHashCode() => 0;
+		}
+
+#if HAS_UNO
+		public partial class When_HeaderDataContext_Cleared_FromNavigation_Page : Page
+		{
+			public event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> LvHeaderDcChanged;
+
+			public When_HeaderDataContext_Cleared_FromNavigation_Page()
+			{
+				DataContext = "MainVM";
+				Content = new Grid
+				{
+					RowDefinitions =
+					{
+						new() { Height = new GridLength(1, GridUnitType.Auto) },
+						new() { Height = new GridLength(1, GridUnitType.Star) },
+					},
+					Children =
+					{
+						new Button { Content = "Next" }.Apply(x =>
+						{
+							Grid.SetRow(x, 0);
+							x.Click += (s, e) => Frame.Navigate(typeof(BackNavigationPage));
+						}),
+						new ListView
+						{
+							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
+							HeaderTemplate = new DataTemplate(() => new StackPanel
+							{
+								new TextBlock() { Text = "header" },
+								new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+							}.Apply(x => x.DataContextChanged += (s, e) => LvHeaderDcChanged?.Invoke(s, e))),
+						}.Apply(x => Grid.SetRow(x, 1)),
+					},
+				};
+			}
+		}
+#endif
+
+		public partial class BackNavigationPage : Page
+		{
+			public BackNavigationPage()
+			{
+				Content = new Button().Apply(x => x.Click += (s, e) => Frame.GoBack());
+			}
 		}
 	}
 
