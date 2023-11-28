@@ -39,6 +39,10 @@
         href: xref:Uno.UI.CommonIssues.Skia
       - name: iOS/mac Catalyst
         href: xref:Uno.UI.CommonIssues.IosCatalyst
+      - name: Troubleshooting build errors
+        href: uno-builds-troubleshooting.md
+      - name: Build error codes
+        href: xref:Build.Solution.error-codes
 
 - name: Samples & Tutorials
   items:
@@ -73,12 +77,8 @@
       items:
         - name: Hot Reload
           href: xref:Uno.Features.HotReload
-        - name: Troubleshooting build errors
-          href: uno-builds-troubleshooting.md
         - name: How to create a repro sample
           href: uno-howto-create-a-repro.md
-        - name: Build error codes
-          href: uno-build-error-codes.md
         - name: 'Debugging C# on WASM'
           href: debugging-wasm.md
         - name: VS Code Advanced Mobile Debugging
@@ -86,12 +86,16 @@
 
     - name: Performance
       items:
+        - name: Improving Build Times
+          href: xref:Build.Solution.TargetFramework-override
         - name: Performance tips
           href: Uno-UI-Performance.md
         - name: How to profile applications
           href: guides/profiling-applications.md
+        - name: IL Linker for WebAssembly
+          href: xref:uno.articles.features.illinker
 
-    - name: Contributing to Uno Platform
+    - name: Contributing
       items:
       - name: Overview
         href: uno-development/contributing-intro.md
@@ -505,8 +509,6 @@
               href: logging.md
             - name: AppManifest (WebAssembly)
               href: wasm-appmanifest.md
-            - name: IL Linker for WebAssembly
-              href: features/using-il-linker-webassembly.md
             - name: Build telemetry
               href: uno-toolchain-telemetry.md
             - name: Adding native views for mobile
@@ -533,12 +535,8 @@
                 href: updating-to-winui3.md
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
-            - name: Faster Single Target App Builds
-              href: guides/solution-building-single-targetframework.md
             - name: Hosting a WebAssembly app
-              href: how-to-host-a-webassembly-app.md
-            - name: Additional VS Code Topics
-              href: additional-vscode-topics.md
+              href: xref:Uno.Development.HostWebAssemblyApp
 
             - name: Migration
               items:
@@ -608,3 +606,5 @@
       href: external/uno.resizetizer/doc/toc.yml
     - name: Uno.UITest
       href: external/uno.uitest/doc/toc.yml
+    - name: Visual Studio Code Extension
+      href: xref:Uno.vscode.additional
