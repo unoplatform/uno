@@ -8,8 +8,8 @@ You will find below resources provided by our team, the community and Microsoft.
 
 ## Uno Platform provided Worshops / Step-by-step Tutorials (Free)
 
-- [Simple Calculator Workshop](external/workshops/simple-calc/README.md). A level 100 workshop you can complete in 1 hour. It will guide you through the process of setting up your developer environment, learning essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
-- [Tube Player Workshop](external/workshops/simple-calc/README.md). A level 200 workshop you can complete in 2 hours. It will guide through the creation of an Uno Platform application that enables the user to search for and stream, YouTube videos. You will learn how to easily import Figma designs into your application.
+- [Simple Calculator Workshop](external/workshops/simple-calc/README.md). A level 100 workshop you can complete in 1 hour. It will guide you through the process of setting up your developer environment and learning essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
+- [Tube Player Workshop](external/workshops/simple-calc/README.md). A level 200 workshop you can complete in 2 hours. It will guide through the creation of a Uno Platform application that enables the user to search for and stream YouTube videos. You will learn how to easily import Figma designs into your application.
 
 ## Community Provided Learning Resources (Free and Paid)
 
@@ -21,9 +21,9 @@ Syncfusion published [Uno Platform Succinctly]( https://www.syncfusion.com/succi
 
 #### Pluralsight - Uno Platform Fundamentals (Paid)
 
-If you already have a subscription to Pluralsight, you can find our [Uno Platform Fundamentals course](https://www.pluralsight.com/courses/uno-platform-fundamentals). By the end of the course, you will have created your first Uno Platform solution in Visual Studio and you’ll have the skills and knowledge needed to build multi-platform apps with Uno Platform. 
+If you already have a subscription to Pluralsight, you can find our [Uno Platform Fundamentals course](https://www.pluralsight.com/courses/uno-platform-fundamentals). By the end of the course, you will have created your first Uno Platform solution in Visual Studio, and you’ll have the skills and knowledge needed to build multi-platform apps with Uno Platform. 
 
-The course covers how to build a user interface in XAML, how to apply the MVVM pattern, how to adapt your user interface to different screen sizes, how to write platform-specific code and how to connect your application to a data source. _If you’re not Pluralsight subscriber, you can still use the course it with a 30-day trial._
+The course covers how to build a user interface in XAML, how to apply the MVVM pattern, how to adapt your user interface to different screen sizes, how to write platform-specific code and how to connect your application to a data source. _If you’re not a Pluralsight subscriber, you can still use the course with a 30-day trial._
 
 #### Skye Hoefling – Getting Started with Uno Platform (Free)
 
@@ -50,7 +50,7 @@ Microsoft MVP Skye Hoefling put together [Uno Platform: Getting Started Series](
 
 #### Building a Todo App with Uno Platform (Free)
 
-[Steven Giesel](https://github.com/linkdotnet). explored the in’s and out of Uno Platform and in turn documented his experience with a great blog series that dives further into What is Uno Platform and how to build a multi-platform Todo App.
+[Steven Giesel](https://github.com/linkdotnet) recently explored the ins and outs of Uno Platform and in turn, documented his experience with a great blog series that dives further into What is Uno Platform and how to build a multi-platform Todo App.
 
    - [Part 1 –  Introduction and Environment set up](https://steven-giesel.com/blogPost/b2234ada-0978-4c7b-841e-ca6a255247b0)
    - [Part 2 – Requirements & First Features]( https://steven-giesel.com/blogPost/85814db0-3495-492c-8ce1-5c83d708590b)
@@ -79,7 +79,7 @@ Any UWP/WinUI/XAML material is a great starting point as all we do is take that 
 ## Microsoft docs and blogs on Uno Platform (Free) 
 
 - WinUI Documentation - Basic (2 posts) [Build a Hello World app using C# and WinUI 3 / Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/how-tos/hello-world-winui3) leads you through setup of a very basic WinUI Application. The second blog post [How to target multiple platforms with your WinUI 3 app](https://learn.microsoft.com/en-us/windows/apps/how-tos/hello-world-winui3) walks you through taking that same Hello World application cross-platform using Uno PLatform.
-- WinUI Documentation - Advanced (2 posts) [Tutorial: Create a simple photo viewer with WinUI 3](https://learn.microsoft.com/en-us/windows/apps/get-started/simple-photo-viewer-winui3?tabs=cs) leads you through creation of a  WinUI-based Photo Viewing Application. The second blog post [Tutorial: Build a simple photo viewer that targets multiple platforms](https://learn.microsoft.com/en-us/windows/apps/get-started/uno-simple-photo-viewer) walks you through taking the Photi Viewing application cross-platform using Uno PLatform.
+- WinUI Documentation - Advanced (2 posts) [Tutorial: Create a simple photo viewer with WinUI 3](https://learn.microsoft.com/en-us/windows/apps/get-started/simple-photo-viewer-winui3?tabs=cs) leads you through creation of a  WinUI-based Photo Viewing Application. The second blog post [Tutorial: Build a simple photo viewer that targets multiple platforms](https://learn.microsoft.com/en-us/windows/apps/get-started/uno-simple-photo-viewer) walks you through taking the Photo Viewing application cross-platform using Uno PLatform.
 - WinUI Team Blog [Building cross-platform apps with WinUI and Uno]( https://blogs.windows.com/windowsdeveloper/2021/03/11/build-cross-platform-applications-with-winui-and-uno-platform/). This tutorial walks you through building a simple same-codebase app which uses WinUI InfoBar control and runs on Windows 10, WebAssembly and Android.
 - Here are two articles that will help developers [Getting started with the Surface Duo]( https://devblogs.microsoft.com/surface-duo/tag/uno-platform/).
 - The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, Linux, WebAssembly and Embedded Devices. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to learn, particularly if you've never used WinUI or XAML before.
