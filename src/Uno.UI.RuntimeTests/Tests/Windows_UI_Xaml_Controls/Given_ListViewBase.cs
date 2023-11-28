@@ -4146,6 +4146,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("GridView")]
+		[DataRow("ListView")]
+		public async Task When_Header_With_HeaderTemplate_Only_One_Header_Created(string listViewBaseType)
+		{
+			var SUT = (GridView)XamlReader.Load(
+				$"""
+				 <{listViewBaseType}
+				 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				 	mc:Ignorable="d"
+				 >
+				 	<{listViewBaseType}.HeaderTemplate>
+				 		<DataTemplate>
+				 """
+				+
+				"			<TextBlock Text=\"{Binding}\" />"
+				+
+				$"""
+						</DataTemplate>
+					</{listViewBaseType}.HeaderTemplate>
+				</{listViewBaseType}>
+				""");
+			SUT.Header = "Header";
+
+			await UITestHelper.Load(SUT);
+
+			var textBlocks = FindTextBlockChildren(SUT);
+
+			Assert.AreEqual(1, textBlocks.Where(tb => tb.Text == "Header").Count());
+
+			static List<TextBlock> FindTextBlockChildren(DependencyObject parent)
+			{
+				var textBlocks = new List<TextBlock>();
+
+				for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+				{
+					var child = VisualTreeHelper.GetChild(parent, i);
+
+					if (child is TextBlock textBlock)
+					{
+						textBlocks.Add(textBlock);
+					}
+
+					textBlocks.AddRange(FindTextBlockChildren(child));
+				}
+
+				return textBlocks;
+			}
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
@@ -4699,6 +4754,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				base.OnItemsChanged(e);
 				ItemsChangedAction?.Invoke();
+			}
+		}
+
+		public class ViewItem : List<string>
+		{
+			public string Name { get; set; }
+
+			public override string ToString()
+			{
+				return Name;
 			}
 		}
 	}
