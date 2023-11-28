@@ -29,9 +29,7 @@ public class Given_AttachedPropertyWithNoFuzzyMatching
 			</Page>
 			""");
 
-		var configOverride = new Dictionary<string, string> { { "build_property.UnoEnableXamlFuzzyMatching", "true" } };
-
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
