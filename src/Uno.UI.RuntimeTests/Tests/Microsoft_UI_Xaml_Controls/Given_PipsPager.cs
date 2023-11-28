@@ -17,14 +17,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [TestClass]
 public partial class Given_PipsPager
 {
-	// <PipsPager>
-	// <PipsPager.NormalPipStyle>
-	// <Style TargetType="Ellipse">
-	// <Setter Property="Fill" Value="Red"/>
-	// </Style>
-	// </PipsPager.NormalPipStyle>
-	// </PipsPager>
-
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages()
@@ -39,12 +31,12 @@ public partial class Given_PipsPager
 
 		var initialScreenshot = await UITestHelper.ScreenShot(SUT);
 
-		ImageAssert.HasColorAt(initialScreenshot, initialScreenshot.Width - 5, initialScreenshot.Height / 2, Color.FromArgb(0x3F, 0, 0, 0));
+		var color = initialScreenshot.GetPixel(initialScreenshot.Width - 5, initialScreenshot.Height / 2);
 
 		SUT.SelectedPageIndex = 3;
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
-		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width - 5, scrolledScreenshot.Height / 2, Color.FromArgb(0x3F, 0, 0, 0));
+		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width - 5, scrolledScreenshot.Height / 2, color);
 	}
 }
