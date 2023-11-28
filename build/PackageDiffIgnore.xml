@@ -1737,6 +1737,9 @@
 		<Properties>
 			<Member fullName="Windows.UI.Color Microsoft.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+		  	<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings::ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 		</Properties>
 
 		<Methods>
@@ -1755,7 +1758,9 @@
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2()" reason="Change to Container2AnimationStartPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationStartPosition2Property()" reason="Change to Container2AnimationStartPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2()" reason="Change to Container2AnimationEndPosition which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2Property() " reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />		
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.get_ContainerAnimationEndPosition2Property()" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />	
+      		<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressBarTemplateSettings.set_ContainerAnimationEndPosition2(System.Double value)" reason="Change to Container2AnimationEndPositionProperty which aligns the API with WinUI3 and TemplateSettings should only be used internally" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
