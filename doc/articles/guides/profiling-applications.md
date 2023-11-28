@@ -18,7 +18,7 @@ Run the following commands
 > [!NOTE]
 > This documentation is based on [.NET iOS profiling documentation](https://github.com/xamarin/xamarin-macios/wiki/Profiling).
 
-Profiling iOS apps needs to be done on a mac machine/
+Profiling iOS apps needs to be done on a mac machine.
 
 First, create an alias to mlaunch:
 ```bash
