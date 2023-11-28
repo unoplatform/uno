@@ -56,58 +56,57 @@
     - name: Simple Calc
       topicHref: external/workshops/simple-calc/README.md
       href: external/workshops/simple-calc/toc.yml
-    - name: Additional Resources
-      href: xref:Uno.GetStarted.NextSteps
     - name: Tutorials
       items:
-        - name: Overview
-          href: tutorials-intro.md
-        - name: How to deploy a WebAssembly app on Azure Static Web Apps
-          href: guides/azure-static-webapps.md
-        - name: How to integrate Uno.Material
-          href: external/uno.themes/doc/material-getting-started.md
-        - name: How to integrate Uno.Cupertino
-          href: external/uno.themes/doc/cupertino-getting-started.md
-        - name: How to use Windows Community Toolkit
-          href: uno-community-toolkit.md
-        - name: How to add a splash screen
-          href: splash-screen.md
-        - name: How to use native Frame navigation
-          href: guides/native-frame-nav-tutorial.md
-        - name: How to consume a web API
-          href: howto-consume-webservices.md
-        - name: How to localize text resources
-          href: guides/localization.md
-        - name: How to change app language at runtime
-          href: guides/hotswap-app-language.md
-        - name: How to integrate SignalR
-          href: signalr.md
-        - name: How to update StatusBar color based on dark/light theme
-          href: guides/status-bar-theme-color.md
-        - name: How to use MSAL for Azure Authentication
-          href: interop/MSAL.md
-        - name: How to authenticate with OpenID Connect
-          href: guides/open-id-connect.md
-        - name: Embed a JavaScript Component
-          topicHref: interop/wasm-javascript-1.md
-          items:
-            - name: Part 1
-              href: interop/wasm-javascript-1.md
-            - name: Part 2
-              href: interop/wasm-javascript-2.md
-            - name: Part 3
-              href: interop/wasm-javascript-3.md
-        - name: Deploy to Raspberry Pi
-          href: guides/raspberry-pi/raspberry-pi-intro.md
-        - name: (Wasm) Handling custom HTML events
-          href: wasm-custom-events.md
-        - name: Using Uno Platform Controls in Xamarin.Forms
-          href: howto-use-uno-in-xamarin-forms.md
-        - name: Samples
-          topicHref: uno-samples.md
-        - name: Community Tutorials
-          topicHref: guides/community-tutorials.md
-
+      - name: Overview
+        href: tutorials-intro.md
+      - name: How to deploy a WebAssembly app on Azure Static Web Apps
+        href: guides/azure-static-webapps.md
+      - name: How to integrate Uno.Material
+        href: external/uno.themes/doc/material-getting-started.md
+      - name: How to integrate Uno.Cupertino
+        href: external/uno.themes/doc/cupertino-getting-started.md
+      - name: How to use Windows Community Toolkit
+        href: uno-community-toolkit.md
+      - name: How to add a splash screen
+        href: splash-screen.md
+      - name: How to use native Frame navigation
+        href: guides/native-frame-nav-tutorial.md
+      - name: How to consume a web API
+        href: howto-consume-webservices.md
+      - name: How to localize text resources
+        href: guides/localization.md
+      - name: How to change app language at runtime
+        href: guides/hotswap-app-language.md
+      - name: How to integrate SignalR
+        href: signalr.md
+      - name: How to update StatusBar color based on dark/light theme
+        href: guides/status-bar-theme-color.md
+      - name: How to use MSAL for Azure Authentication
+        href: interop/MSAL.md
+      - name: How to authenticate with OpenID Connect
+        href: guides/open-id-connect.md
+      - name: Embed a JavaScript Component
+        topicHref: interop/wasm-javascript-1.md
+        items:
+          - name: Part 1
+            href: interop/wasm-javascript-1.md
+          - name: Part 2
+            href: interop/wasm-javascript-2.md
+          - name: Part 3
+            href: interop/wasm-javascript-3.md
+      - name: Deploy to Raspberry Pi
+        href: guides/raspberry-pi/raspberry-pi-intro.md
+      - name: (Wasm) Handling custom HTML events
+        href: wasm-custom-events.md
+      - name: Using Uno Platform Controls in Xamarin.Forms
+        href: howto-use-uno-in-xamarin-forms.md
+      - name: Community Tutorials
+        topicHref: guides/community-tutorials.md
+    - name: Samples
+      topicHref: uno-samples.md
+    - name: Additional Resources
+      href: xref:Uno.GetStarted.NextSteps
 
 - name: Overview
   topicHref: xref:Uno.Documentation.Intro
@@ -327,7 +326,6 @@
       href: xref:Uno.Development.FAQ
 
 - name: Reference
-  topicHref: what-is-uno.md
   items:
     - name: Overview
       href: using-uno-ui.md
@@ -401,9 +399,6 @@
             - name: Activities in Android
               href: android-activities.md
 
-        - name: 3rd-party libraries
-          href: supported-libraries.md
-
       - name: Features
         items:
         - name: Accessibility
@@ -444,7 +439,10 @@
           href: features/windows-ui-markup-extensions.md
         - name: Build telemetry
           href: uno-toolchain-telemetry.md
-    
+
+      - name: 3rd-party libraries
+        href: supported-libraries.md
+
     - name: Non-UI
       items:
       - name: Accelerometer
