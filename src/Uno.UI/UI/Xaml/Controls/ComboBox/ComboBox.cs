@@ -598,7 +598,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					p.IsOpen = false;
 				}
-				// Don't handle. Let RootVisual deal with focus management
+				// Don't handle. Let VisualTree.RootElement deal with focus management
 
 				if (dropDownWasOpen)
 				{
@@ -606,9 +606,9 @@ namespace Windows.UI.Xaml.Controls
 
 					// Set the focus on the next focusable element if Tab was pressed while the Popup is open.
 					// In this case, we got here through ComboBoxItem which is inside the Popup.
-					// Focus management would normally be dealt with at the RootVisual (UnoFocusInputManager), but because
+					// Focus management would normally be dealt with at the VisualTree.RootElement level (UnoFocusInputManager), but because
 					// the Popup collapsed, the PopupPanel was removed from the visual tree and event propagation won't go up that far.
-					// Alternatively, we handle the focus this.
+					// Alternatively, we handle the focus here.
 					focusManager?.TryMoveFocusInstance(
 						args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift) ?
 						FocusNavigationDirection.Previous :
