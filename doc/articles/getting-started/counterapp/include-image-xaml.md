@@ -1,6 +1,3 @@
----
-uid: Uno.GettingStarted.Counter.Include.Image.Xaml
----
 
 - Open the `MainPage.xaml` file in the `Counter` project
 - Replace the `TextBlock` with the following `Image` element

@@ -1,6 +1,4 @@
----
-uid: Uno.GettingStarted.Counter.Include.MainPage.Change.Layout
----
+
 
 - The `Width` and `Height` have been set on the `Image` to ensure the image is displayed at the correct size. The `Source` property has been set to the path of the image file inside the `Counter` project.
 
