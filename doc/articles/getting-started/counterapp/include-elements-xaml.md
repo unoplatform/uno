@@ -1,6 +1,4 @@
----
-uid: Uno.GettingStarted.Counter.Include.Elements.Xaml
----
+
 
 - Update the `StackPanel` to remove the `HorizontalAlignment` property, as we'll be centering each of the nested elements individually.
 

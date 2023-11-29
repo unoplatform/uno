@@ -1,6 +1,3 @@
----
-uid: Uno.GettingStarted.Counter.Include.Cli
----
 
 Before completing the wizard, take a look through each of the sections and see what other options are available. You can always come back and create a new project with different options later. For more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 

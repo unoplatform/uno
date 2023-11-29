@@ -1,6 +1,4 @@
----
-uid: Uno.GettingStarted.Counter.Include.Intro
----
+
 
 # Create a Counter App with Uno Platform
 

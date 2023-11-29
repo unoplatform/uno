@@ -1,6 +1,4 @@
----
-uid: Uno.GettingStarted.Counter.Include.MainPage.Layout
----
+
 
 This defines a page with a background set to the theme resource `ApplicationPageBackgroundThemeBrush`, meaning it will adapt to the theme (`Dark` or `Light`) of the application. 
 

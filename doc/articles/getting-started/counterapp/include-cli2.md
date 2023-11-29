@@ -1,6 +1,4 @@
----
-uid: Uno.GettingStarted.Counter.Include.Cli2
----
+
 
 This will create a new folder called `Counter` containing the new application.
 
