@@ -1,38 +1,33 @@
-TODO: Add MVUX section for creating Model
 
-<!-- 
 
 ## ViewModel
 
 So far all the elements we've added to the `MainPage` have had their content set directly. This is fine for static content, but for dynamic content, we need to use data binding. Data binding allows us to connect the UI to the application logic, so that when the application logic changes, the UI is automatically updated.
 
-As part of creating the application, we selected MVVM as the presentation framework. This added a reference to the [`CommunityToolkit.Mvvm`](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) package which provides a base class called `ObservableObject` which implements the `INotifyPropertyChanged` interface. This interface is used to notify the UI when a property has changed so that the UI can be updated.
+As part of creating the application, we selected MVUX as the presentation framework. This added a reference to the [`Uno.Extensions.Reactive`](https://aka.platform.uno/mvux) package which is responsible for dealing with our Models and generating the ViewModels.
 
-- Add a new class, `MainViewModel`, to the `Counter` project
-- Update the `MainViewModel` class to be a `partial` class and inherit from `ObservableObject`.
+- Add a new class, `MainModel`, to the `Counter` project.
+- Update the `MainModel` class to be a `partial record`.
 
     ```csharp
-    internal partial class MainViewModel : ObservableObject
+    internal partial record MainModel
     {
     }
     ```
 
-- Add fields, `_count` and `_step`, to the `MainViewModel` class. These fields both have the `ObservableProperty` attribute applied, which will generate matching properties, `Count` and `Step`, that will automatically raise the `PropertyChanged` event when their value is changed.
+- Add fields, `Count` and `Step`, to the `MainModel` class. These fields both must be of type `IState<int>` and to initialize them we use `=> State.Value(...)`.
 
     ```csharp
-    [ObservableProperty]
-    private int _count = 0;
+    public IState<int> Count => State.Value(this, () => 0);
 
-    [ObservableProperty]
-    private int _step = 1;
+    public IState<int> Step => State.Value(this, () => 1);
     ```
 
-- Add a method `Increment` to the `MainViewModel` that will increment the counter by the step size. The `RelayCommand` attribute will generate a matching `ICommand` property, `IncrementCommand`, that will call the `Increment` method when the `ICommand.Execute` method is called.
+- Add a method `IncrementCommand` to the `MainModel` that will increment the counter by the step size. The generated ViewModel of our MainModel will automatically re-expose as ICommand the `IncrementCommand` method.
 
     ```csharp
-    [RelayCommand]
-    private void Increment()
-        => Count += Step;
+    public ValueTask IncrementCommand(int Step)
+        => Count.Update(c => c + Step, CancellationToken.None);
     ```
 
 The final code for the `MainViewModel` class should look like this:
@@ -40,16 +35,13 @@ The final code for the `MainViewModel` class should look like this:
 ```csharp
 namespace Counter;
 
-internal partial class MainViewModel : ObservableObject
+internal partial record MainModel
 {
-    [ObservableProperty]
-    private int _count = 0;
+    public IState<int> Count => State.Value(this, () => 0);
 
-    [ObservableProperty]
-    private int _step = 1;
+    public IState<int> Step => State.Value(this, () => 1);
 
-    [RelayCommand]
-    private void Increment()
-        => Count += Step;
+    public ValueTask IncrementCommand(int Step)
+        => Count.Update(c => c + Step, CancellationToken.None);
 }
-``` -->
+```
