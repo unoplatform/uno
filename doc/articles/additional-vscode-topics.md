@@ -1,7 +1,9 @@
 ---
 uid: Uno.vscode.additional
 ---
-# Additional VS Code Topics
+# Visual Studio Code Extension
+
+To get started on using VS Code, [head over to our guides](xref:Uno.GetStarted.vscode).
 
 You'll find in this page other topics about VS Code support, such as code snippets or how to upgrade an existing app to use VS Code.
 
