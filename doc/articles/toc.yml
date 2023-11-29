@@ -23,6 +23,7 @@
 
     - name: Write your app
       topicHref: xref:Uno.GettingStarted.Explore
+      items:
       - name: App Structure
         href: xref:Uno.Development.AppStructure
       - name: Hot Reload
