@@ -2,7 +2,7 @@
 uid: Uno.GetStarted.NextSteps
 ---
 
-If you have already [completed the tutorial](getting-started-tutorial-1.md)? and you’re now ready to build your own app or library, or just want to learn more, these resources will help you on your way.
+If you have already [completed the tutorial](getting-started-tutorial-1.md) and you’re now ready to build your own app or library, or just want to learn more, these resources will help you on your way.
 
 The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, Mac Catalyst, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to start, particularly if you've never used WinUI or XAML before.
 
@@ -111,19 +111,14 @@ The [Uno Platform YouTube](https://www.youtube.com/c/UnoPlatform) channel is als
 
 - The [Uno Platform blog](http://platform.uno/blog) is frequently active, publishing articles weekly on a wide array of topics and varying complexity.
 Here are some highlighted articles from the Uno Blog:
-
 - [UnoConf 2021 “How-To” Series](https://platform.uno/blog/unoconf-2021-summary-and-recordings/)
-
 - [An Introduction to UI Testing](https://platform.uno/blog/an-introduction-to-unit-testing-for-uno-platform-applications/)
-
-- [How To Build a Single-Page Web App in XAML and C# with WASM]( https://platform.uno/blog/how-to-build-a-single-page-web-app-in-xaml-and-c-with-webassembly-using-uno-platform/)
+- [How To Build a Web App in XAML and/or C# with WASM]( https://platform.uno/blog/how-to-build-a-single-page-web-app-in-xaml-and-c-with-webassembly-using-uno-platform/)
 
 #### Check out some code examples
 - The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
 - For those who wish to learn from real-life code, you can use the [Ch9 sample app]( https://github.com/unoplatform/Uno.Ch9) (source code and real-world app) it uses the publicly available video feed from Microsoft's Channel 9 for content.
-
 - With [Uno Calculator](https://calculator.platform.uno/) we took Microsoft's open-sourced Windows 10 Calculator, ported it to C#, and put it on Android, iOS, WebAssembly, macOS, and Linux. [Check out all the code here.](https://github.com/unoplatform/calculator)
-
 - [Uno Azure DevOps (UADO)](https://github.com/unoplatform/uado) is our reference app, built from the ground up for Uno. [Uno Platform Workshop]( https://github.com/unoplatform/workshops) - In this workshop, you will learn by creating a real-world mobile & web app using Uno Platform. The workshop covers: The philosophy behind Uno development, Tooling, and component ecosystem, creating rich and responsive UI, and Interoperability with native code. And of course, we will show how to contribute to the Uno Platform itself.
 
 We're excited for you to join the Uno Platform community, if you're ready to contribute to Uno Platform, great! Check out our guides on [building Uno]( https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/debugging-uno-ui.md) and [creating UI samples]( https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/working-with-the-samples-apps.md). Knowledge of working with GitHub and Forks, Pull and Push requests is desirable.

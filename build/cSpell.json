@@ -89,6 +89,7 @@
   ],
   "ignoreWords": [
 	"ADAL",
+	"AEHD",
 	"appsettings",
 	"Authenticode",
 	"automagically",
@@ -133,7 +134,8 @@
 	"addin",
 	"Yowza",
 	"unpackaged",
-	"GNSS"
+	"GNSS",
+	"winappsdk"
   ],
   "patterns": [
 	{

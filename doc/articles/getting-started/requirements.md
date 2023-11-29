@@ -4,9 +4,19 @@ uid: Uno.GettingStarted.Requirements
 
 # Supported platforms
 
-Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [macOS](#macos), [Linux](#linux), Tizen, and [Windows](#windows). 
+Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [mac Catalyst](#catalyst), [Linux](#linux), Tizen, and [Windows](#windows). 
 
 See below for minimum supported versions for each platform.
+
+## WebAssembly
+
+Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, Edge Dev, Opera, Firefox and Safari. Desktop and mobile browser versions are supported. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
+
+## Windows
+
+Two paths are available:
+- Applications built with Uno.UI's [Skia.WPF](xref:Uno.Skia.Gtk) and [Skia.GTK](xref:Uno.Skia.Wpf) heads, which support run on Windows 7 and above.
+- Running apps built with WinAppSDK or WinUI run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041). Lower versions can be targeted.
 
 ## Android
 
@@ -18,20 +28,10 @@ At compile time, Uno typically supports two versions of the Android SDK, the lat
 
 Uno Platform apps run on iOS 8 and above.
 
-## WebAssembly
+## mac Catalyst
 
-Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, Edge Dev, Opera, Firefox and Safari. Desktop and mobile browser versions are supported. See the official WebAssembly site for [more details](https://webassembly.org/roadmap/).
-
-## macOS
-
-Uno Platform applications run on all macOS versions supported by Xamarin.Mac - currently macOS 10.13 and above.
+Uno Platform applications run on all macOS versions supported by Mac Catalyst - currently macOS 10.13 and above.
 
 ## Linux
 
-Uno Platform applications run on Linux distributions and versions where .NET 5 is supported, [listed here](https://docs.microsoft.com/en-ca/dotnet/core/install/linux).
-
-## Windows
-
-Applications built with UWP run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), but lower versions can be targeted.
-
-Applications built with Uno.UI's Skia.WPF support run on Windows 7 and above. 
+Uno Platform applications run on Linux distributions and versions where .NET 7 is supported, [listed here](https://docs.microsoft.com/en-ca/dotnet/core/install/linux).

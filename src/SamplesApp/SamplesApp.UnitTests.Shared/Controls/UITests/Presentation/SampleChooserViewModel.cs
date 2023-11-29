@@ -472,6 +472,20 @@ namespace SampleControl.Presentation
 			}
 
 			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			if (!Equals(SelectedLibrarySample, runtimeTests))
+			{
+				SelectedLibrarySample = null;
+			}
+
+			if (!Equals(SelectedRecentSample, runtimeTests))
+			{
+				SelectedRecentSample = null;
+			}
+
+			if (!Equals(SelectedFavoriteSample, runtimeTests))
+			{
+				SelectedFavoriteSample = null;
+			}
 			ContentPhone = content;
 		}
 
@@ -512,10 +526,9 @@ namespace SampleControl.Presentation
 						CoreDispatcherPriority.Normal,
 						async () =>
 						{
-							CurrentSelectedSample = newContent;
-
-							if (CurrentSelectedSample != null)
+							if (newContent != null)
 							{
+								CurrentSelectedSample = newContent;
 								ContentPhone = await UpdateContent(CancellationToken.None, newContent);
 							}
 						}

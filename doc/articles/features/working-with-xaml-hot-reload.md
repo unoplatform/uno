@@ -26,9 +26,6 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## How to use Hot Reload
 
-> [!IMPORTANT]
-> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
-
 # [**Visual Studio 2022**](#tab/vswin)
 - Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
 - Start your application (with or without the debugger, depending on the supported features below)
@@ -39,6 +36,9 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 - Start the application (with or without the debugger, depending on the supported features below)
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
 - Make changes to your XAML or C# code, then save your file
+
+> [!IMPORTANT]
+> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
 
 ***
 
@@ -117,6 +117,10 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
     ```
 
 ### Visual Studio 2022
+- Make sure that **C# Hot Reload** is not disabled in Visual studio
+  - Open Tools / Options
+  - Search for **.NET / C++ Hot Reload**
+  - Ensure that all three check boxes are checked (_**Enable hot reload when deugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_))
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
@@ -129,3 +133,4 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
+- When working on Skia+Gtk apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Skia.Gtk (Debug)` target selected.
