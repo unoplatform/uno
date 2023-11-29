@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.XAML.MVVM
+uid: Uno.GettingStarted.Counter.CSharp.MVUX
 ---
 
 [!INCLUDE [Intro](include-intro.md)]
@@ -7,11 +7,11 @@ uid: Uno.GettingStarted.Counter.XAML.MVVM
 In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the `dotnet new` command
-- Add elements to the XAML file to define the layout of the application
-- Add code to the C# file to implement the application logic using the Model-View-ViewModel (MVVM) pattern
+- Add elements to the C# file, using C# Markup, to define the layout of the application
+- Add code to the C# file to implement the application logic using the Model-View-Update-eXtended (MVUX) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. 
+To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#. 
 
 [!INCLUDE [VS](include-create.md)]
 
@@ -32,9 +32,9 @@ At this point you'll enter the `Uno Platform Template Wizard`, giving you option
 
 - Select `Blank` and click `Customize`
 
-- Select the `Presentation` tab and choose `MVVM`
+- Select the `Presentation` tab and choose `MVUX`
 
-- Select the `Markup` tab and choose `XAML`
+- Select the `Markup` tab and choose `C# Markup`
 
 Before completing the wizard, take a look through each of the sections and see what other options are available. You can always come back and create a new project with different options later. For more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 
@@ -51,7 +51,7 @@ The template will create a new solution with a number of projects. The main proj
 From the command line, run the following command:
 
 ```
-dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
+dotnet new unoapp -preset blank -presentation mvux -markup csharp -o Counter
 ```
 
 
@@ -72,36 +72,38 @@ Also, for more information on all the template options, see [Using the Uno Platf
 [!INCLUDE [Counter Solution](include-solution.md)]
 
 
-![Counter Solution](Assets/counter-solution-xaml.png) 
+![Counter Solution](Assets/counter-solution-csharp.png) 
 
 [!INCLUDE [Main Window](include-mainwindow.md)]
 
-[!INCLUDE [Main Page - XAML](include-mainpage-xaml.md)]
+[!INCLUDE [Main Page - C# Markup](include-mainpage-csharp.md)]
 
 [!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-mainpage-image-xaml.md)]
+[!INCLUDE [Main Page - Image](include-mainpage-image-csharp.md)]
 
 [!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-mainpage-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements](include-mainpage-elements-csharp.md)]
 
-[!INCLUDE [View Model](include-mvvm.md)]
+[!INCLUDE [View Model](include-mvux.md)]
 
 
 ## Data Binding
 
-Now that we have the `MainViewModel` class, we can update the `MainPage` to use data binding to connect the UI to the application logic.
+Now that we have the `BindableMainModel` class, we can update the `MainPage` to use data binding to connect the UI to the application logic.
 
-- Add a `DataContext` element to the `Page` element in the `MainPage.xaml` file.
+TODO: Replace commented section with C# Markup equivalent
+
+<!-- - Add a `DataContext` element to the `Page` element in the `MainPage.xaml` file.
 
     ```xml
     <Page.DataContext>
-        <local:MainViewModel />
+        <local:BindableMainModel />
     </Page.DataContext>
     ```
 
-- Update the `TextBlock` by removing the `Text` attribute, replacing it with two `Run` elements, and binding the `Text` property of the second `Run` element to the `Count` property of the `MainViewModel`.
+- Update the `TextBlock` by removing the `Text` attribute, replacing it with two `Run` elements, and binding the `Text` property of the second `Run` element to the `Count` property of the `BindableMainModel`.
 
     ```xml
     <TextBlock
@@ -111,7 +113,7 @@ Now that we have the `MainViewModel` class, we can update the `MainPage` to use 
         <Run Text="Counter: " /><Run Text="{Binding Count}" />
     </TextBlock>
     ```
-- Update the `TextBox` by binding the `Text` property to the `Step` property of the `MainViewModel`. The Mode of the binding is set to `TwoWay` so that the `Step` property is updated when the user changes the value in the `TextBox`.
+- Update the `TextBox` by binding the `Text` property to the `Step` property of the `BindableMainModel`. The Mode of the binding is set to `TwoWay` so that the `Step` property is updated when the user changes the value in the `TextBox`.
 
     ```xml
     <TextBox Margin="12"
@@ -121,7 +123,7 @@ Now that we have the `MainViewModel` class, we can update the `MainPage` to use 
             TextAlignment="Center" />
     ```
 
-- Update the `Button` to add a `Command` attribute that is bound to the `IncrementCommand` property of the `MainViewModel`.
+- Update the `Button` to add a `Command` attribute that is bound to the `IncrementCommand` property of the `BindableMainModel`.
 
     ```xml
     <Button Margin="12"
@@ -139,7 +141,7 @@ The final code for `MainPage.xaml` should look like this:
       xmlns:local="using:Counter"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
   <Page.DataContext>
-    <local:MainViewModel />
+    <local:BindableMainModel />
   </Page.DataContext>
   <StackPanel VerticalAlignment="Center">
     <Image Width="150"
@@ -166,7 +168,7 @@ The final code for `MainPage.xaml` should look like this:
             Content="Increment Counter by Step Size" />
   </StackPanel>
 </Page>
-```
+``` -->
 [!INCLUDE [View Model](include-wrap.md)]
 
 
