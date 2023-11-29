@@ -30,7 +30,7 @@ internal static class HotReloadHelper
 		await RemoteControlClient.Instance.SendMessage(message);
 
 
-		var reloadWaiter = TypeMappings.WaitForMappingsToResume();
+		var reloadWaiter = TypeMappings.WaitForResume();
 		if (!reloadWaiter.IsCompleted)
 		{
 			// Reloads are paused (ie task hasn't completed), so don't wait for any update
@@ -67,7 +67,7 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-		var reloadWaiter = TypeMappings.WaitForMappingsToResume();
+		var reloadWaiter = TypeMappings.WaitForResume();
 		if (!reloadWaiter.IsCompleted)
 		{
 			// Reloads are paused (ie task hasn't completed), so don't wait for any update
