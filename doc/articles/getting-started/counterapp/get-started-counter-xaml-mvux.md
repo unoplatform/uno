@@ -11,67 +11,26 @@ In this tutorial you will learn how to:
 - Add code to the C# file to implement the application logic using the Model-View-Update-eXtended (MVUX) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. However, if you're a more experienced developer, you may want to skip this tutorial and jump straight to either the [SimpleCalculator](xref:Workshop.SimpleCalc.Overview) or the [TubePlayer](xref:Workshop.TubePlayer.Overview) sample. Both are more complex and will give you a better idea of what Uno Platform can do.
+To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. 
 
-## Create the Application
+To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. 
 
-To get started, we're going to use the Uno Platform solution template with the simplest set of options selected. The solution template can be accessed using either Visual Studio's New Project wizard or the command line.
-
-# [Visual Studio](#tab/vs)
-
-> [!NOTE] 
-> If you don't have the `Uno Platform Extension for Visual Studio` installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
-
-- Launch `Visual Studio` and click on `Create new project` on the Start Window. Alternatively, if you're already in Visual Studio, click `New, Project` from the `File` menu.
-
-- Type `Uno Platform` in the search box
-
-- Click `Uno Platform App`, then `Next`
-
-- Name the project `Counter` and click `Create`
-
-At this point you'll enter the `Uno Platform Template Wizard`, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
-
-- Select `Blank` and click `Customize`
+[!INCLUDE [VS](xref:Uno.GettingStarted.Counter.Include.VS)]
 
 - Select the `Presentation` tab and choose `MVVM`
 
 - Select the `Markup` tab and choose `XAML`
 
-Before completing the wizard, take a look through each of the sections and see what other options are available. You can always come back and create a new project with different options later. For more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
-
-- Click `Create` to complete the wizard
-
-The template will create a new solution with a number of projects. The main project is a class library called `Counter` which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
-
-
-# [Command Line](#tab/cli)
-
-> [!NOTE] 
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
-
-From the command line, run the following command:
+[!INCLUDE [VS](xref:Uno.GettingStarted.Counter.Include.Cli)]
 
 ```
-dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
+dotnet new unoapp -preset blank -presentation mvux -markup xaml -o Counter
 ```
 
-This will create a new folder called `Counter` containing the new application.
-
-If you want to discover all the options available in the `unoapp` template, run the following command:
-
-```
-dotnet new unoapp -h
-```
-
-Also, for more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard)
+[!INCLUDE [VS](xref:Uno.GettingStarted.Counter.Include.Cli2)]
 
 
----
-
-At this point, the newly created application can be opened in Visual Studio or your preferred IDE. The following image shows the `Counter` class library that contains the layout (XAML) and business logic (C#) for the application. It also contains projects for each of the target platforms, and a Shared project that contains files, such as the application icon, that's used by all of the target platforms.
-
-![Counter Solution](Assets/counter-solution.png) 
+![Counter Solution](Assets/counter-solution-xaml.png) 
 
 Before proceeding you should select a target platform and run the application. Follow these links for more information on debugging an application for [Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022), [Visual Studio Code](xref:Uno.GettingStarted.CreateAnApp.VSCode) or [Rider](xref:Uno.GettingStarted.CreateAnApp.Rider).
 
