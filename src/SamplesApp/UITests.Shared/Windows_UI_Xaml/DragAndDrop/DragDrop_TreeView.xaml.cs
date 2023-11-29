@@ -124,6 +124,22 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 				});
 			};
 
+			tv.DragItemsCompleted += (s, e) =>
+			{
+				tb.Text = "DragItemsCompleted is triggered";
+			};
+
+			radio_disable.Checked += (s, e) =>
+			{
+				tb.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+			};
+
+			radio_enable.Checked += (s, e) =>
+			{
+				tb.Visibility = Windows.UI.Xaml.Visibility.Visible;
+			};
+
+			radio_disable.IsChecked = true;
 		}
 	}
 }

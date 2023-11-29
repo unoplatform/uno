@@ -5,6 +5,7 @@ using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using System.Linq;
 using System;
+using System.Threading.Tasks;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 {
@@ -25,6 +26,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var bt2 = _app.Marked("bt2");
 			var bt3 = _app.Marked("bt3");
 			var focusbt = _app.Marked("focusbt");
+			var radio_disable = _app.Marked("radio_disable");
+
+			_app.WaitForElement(radio_disable);
+			_app.Tap(radio_disable);
 
 			_app.WaitForElement(tv);
 			_app.Tap(bt1);
@@ -63,6 +68,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			_app.Tap(focusbt);
 			result = _app.Screenshot("result3");
 			ImageAssert.AreEqual(case3, result);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)]
+		public void When_OnDragItemsCompleted()
+		{
+			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_TreeView", skipInitialScreenshot: true);
+			var tv = _app.Marked("tv");
+			var bt0 = _app.Marked("bt0");
+			var radio_enable = _app.Marked("radio_enable");
+			var tb = _app.Marked("tb");
+
+			_app.WaitForElement(tv);
+
+			_app.WaitForElement(radio_enable);
+			_app.Tap(radio_enable);
+			_app.WaitForElement(bt0);
+			_app.Tap(bt0);
+
+			var tvBounds = _app.Query("tv").Single().Rect;
+			float fromX = tvBounds.X + 100;
+			float fromY = tvBounds.Y + _itemHeight * 3 + _offset;
+			float toX = tvBounds.X + 100;
+			float toY = tvBounds.Y + _offset;
+			_app.DragCoordinates(fromX, fromY, toX, toY);
+
+			string text = _app.GetText("tb").Trim();
+			Assert.AreEqual("DragItemsCompleted is triggered", text);
 		}
 	}
 }
