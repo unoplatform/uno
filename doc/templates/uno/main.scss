@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:500,600,700,800,400italic,700italic,400');
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css");
 @import "variables";
+@import "component/breakpoints";
+
 
 :target::before {
   content: '';
@@ -26,6 +28,9 @@ body {
 
   .toc {
     background-color: transparent;
+    padding: 24px;
+    padding-top: 12px;
+    margin: 0;
   }
 }
 
@@ -53,9 +58,10 @@ h1 {
   line-height: 48px;
   font-weight: 700;
   text-transform: none;
-  text-align: center;
+  text-align: left;
   color:$black;
   letter-spacing: -1.5px;
+  padding: 24px 0;
 }
 
 h2 {
@@ -144,19 +150,23 @@ h5 {
 }
 
 .sidefilter {
-  @media only screen and (min-width: 769px) {
-    width: 24%;
+  @media only screen {
+    @include media-breakpoint-up(md) {
+      width: 24%;
+    }
   }
-  @media (min-width: 769px) and (max-width: 991px){
+  @include media-breakpoint-between(md, tablet){
     width: 30%;
   }
 }
 
 .article.grid-right {
-  @media only screen and (min-width: 769px) {
-    margin-left: 26%;
+  @media only screen {
+    @include media-breakpoint-up(md) {
+      margin-left: 26%;
+    }
   }
-  @media (min-width: 769px) and (max-width: 991px){
+  @include media-breakpoint-between(md, tablet){
     margin-left: 32%;
   }
 }
@@ -164,11 +174,19 @@ h5 {
 .sidetoc {
   top: 180px;
   background-color: white !important;
-  @media only screen and (min-width: 769px) {
-    width: 24%;
+  @media only screen {
+    @include media-breakpoint-up(md) {
+      width: 24%;
+    }
   }
-  @media (min-width: 769px) and (max-width: 991px){
+  @include media-breakpoint-between(md, tablet) {
     width: 30%;  
+  }
+
+  @include media-breakpoint-between(md, mobile) {
+    border-left: 1px solid #e7e7e7;
+    border-right: 1px solid #e7e7e7;
+    position: fixed;
   }
 
   .nav > li {
@@ -176,7 +194,7 @@ h5 {
     
     a {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 400;
       text-transform: none;
       color:$black;
       letter-spacing: 0.1px;
@@ -199,24 +217,38 @@ h5 {
 
   .nav > li.active > a {
     color: $darkgray;
-    font-weight: bold;
+    font-weight: 600;
+    
+    &:last-child {
+      border-radius: 6px;
+      background-color: #F1F1F1;
+      width: 100%;
+    }
 
     &:hover {
       color: #000;
     }
   }
 
+  .toc .nav .in ul li {
+    margin-left: 9px;
+  }
+
   .toc .nav > li.filtered > ul, .toc .nav > li.in > ul {
     display: block;
-    @media only screen and (max-width: 768px) {
-      display: grid;
+    @media only screen {
+      @include media-breakpoint-down(md) {
+        display: grid;
+      }
     }
   }
 
   
   .toc li:after {
-    @media only screen and (max-width: 768px) {
-      display: none;
+    @media only screen {
+      @include media-breakpoint-down(md) {
+        display: none;
+      }
     }
   }
 
@@ -235,6 +267,19 @@ h5 {
       transform: rotate(90deg);
     }
 
+    .nav > li > .expand-stub + a {
+      margin-left: 15px;
+    }
+
+    .nav > li > a {
+      margin-left: 0;
+      padding-left: 5px;
+    }
+
+    .nav > li > .expand-stub {
+      left: 4px;
+    }
+
     ul ul > li > a:before {
       content: '';
     }
@@ -242,18 +287,17 @@ h5 {
     ul {
       padding-left: 5px;
       text-align: left;
-      @media only screen and (max-width: 768px) {
-        text-align: left;
-      }
-
-      li a {
-        padding-left: 5px;
+      @media only screen {
+        @include media-breakpoint-down(md) {
+          text-align: left;
+        }
       }
     }
 
-    @media only screen and (max-width: 768px) {
-      margin-left: 0;
-
+    @media only screen {
+      @include media-breakpoint-down(md) {
+        margin-left: 0;
+      }
       ul {
         margin: 0;
 
@@ -266,10 +310,31 @@ h5 {
 }
 
 .sidenav {
-  @media only screen and (max-width: 767px) {
-    position: fixed;
-    width: 100%;
-    z-index: 999;
+  background-color: #fff;
+  border-bottom: 1px solid #e7e7e7;
+
+  @media only screen {
+    @include media-breakpoint-down(md) {
+      position: fixed;
+      width: 100%;
+      z-index: 999;
+    }
+  }
+
+  @include media-breakpoint-between(md, mobile) {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: none;
+  }
+
+}
+
+.btn.toc-toggle.collapse {
+  color: $darkgray;
+  text-align: left;
+  @include media-breakpoint-between(md, mobile) {
+    display: none;
   }
 }
 
@@ -342,8 +407,10 @@ h5 {
 
   .intro {
     padding: 100px 15px 60px;
-    @media screen and (min-width: 768px) {
-      padding: 200px 15px 120px;
+    @media screen  {
+      @include media-breakpoint-up(md) {
+        padding: 200px 15px 120px;
+      }
     }
     text-align: center;
     font-size: 18px;
@@ -351,8 +418,10 @@ h5 {
 
     h1 {
       font-size: 36px;
-      @media screen and (min-width: 768px) {
-        font-size: 44px;
+      @media screen  {
+        @include media-breakpoint-up(md) {
+          font-size: 44px;
+        }
       }
 
       text-transform: none;
@@ -381,8 +450,10 @@ h5 {
     display: flex;
     flex-wrap: wrap;
     padding: 40px 15px;
-    @media screen and (min-width: 768px) {
-      padding: 80px 15px;
+    @media screen  {
+      @include media-breakpoint-up(md) {
+        padding: 80px 15px;
+      }
     }
 
     background-color: #f4f2f3;
