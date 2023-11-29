@@ -1,10 +1,11 @@
-TODO: Add C# Markup for adding image
-<!-- 
-- Open the `MainPage.xaml` file in the `Counter` project
+
+
+- Open the `MainPage.cs` file in the `Counter` project
 - Replace the `TextBlock` with the following `Image` element
 
-    ```xml
-    <Image Width="150"
-            Height="150"
-            Source="Assets/logo.png" />
-    ``` -->
+    ```csharp
+    new Image()
+        .Width(150)
+        .Height(150)
+        .Source("ms-appx:///Counter/Assets/logo.png")
+    ```

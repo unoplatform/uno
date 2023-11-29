@@ -80,11 +80,11 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-mainpage-image-csharp.md)]
+[!INCLUDE [Main Page - Image](include-image-csharp.md)]
 
 [!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-mainpage-elements-csharp.md)]
+[!INCLUDE [Main Page - Other Elements](include-elements-csharp.md)]
 
 [!INCLUDE [View Model](include-mvvm.md)]
 
@@ -93,82 +93,88 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 Now that we have the `MainViewModel` class, we can update the `MainPage` to use data binding to connect the UI to the application logic.
 
-TODO: Replace commented section with C# Markup equivalent
+ - Let's add the `DataContext` to our page. To do so, replace `this.` for `this.DataContext(new MainViewModel(), (page, vm) => page`. Remember to close the DataContext expression with a `)` at the end of the code. It should look similar to the code below:
 
-<!-- - Add a `DataContext` element to the `Page` element in the `MainPage.xaml` file.
-
-    ```xml
-    <Page.DataContext>
-        <local:MainViewModel />
-    </Page.DataContext>
+    ```csharp
+    this.DataContext(new MainViewModel(), (page, vm) => page
+        .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
+            ...
+        )));
     ```
 
-- Update the `TextBlock` by removing the `Text` attribute, replacing it with two `Run` elements, and binding the `Text` property of the second `Run` element to the `Count` property of the `MainViewModel`.
+ - Update the TextBlock by removing its current text content and replacing it with a binding expression for the `Count` property of the `MainViewModel`. Modify the existing Text property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
 
-    ```xml
-    <TextBlock
-        Margin="12"
-        HorizontalAlignment="Center"
-        TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
-    </TextBlock>
+    ```csharp
+    new TextBlock()
+        .Margin(12)
+        .HorizontalAlignment(HorizontalAlignment.Center)
+        .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
+        .Text(() => vm.Count, txt => $"Counter: {txt}")
     ```
-- Update the `TextBox` by binding the `Text` property to the `Step` property of the `MainViewModel`. The Mode of the binding is set to `TwoWay` so that the `Step` property is updated when the user changes the value in the `TextBox`.
+ - Update the `TextBox` by binding the `Text` property to the `Step` property of the `MainViewModel`. The Mode of the binding is set to `TwoWay` so that the `Step` property is updated when the user changes the value in the `TextBox`.
 
-    ```xml
-    <TextBox Margin="12"
-            HorizontalAlignment="Center"
-            PlaceholderText="Step Size"
-            Text="{Binding Step, Mode=TwoWay}"
-            TextAlignment="Center" />
-    ```
-
-- Update the `Button` to add a `Command` attribute that is bound to the `IncrementCommand` property of the `MainViewModel`.
-
-    ```xml
-    <Button Margin="12"
-            HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
-            Content="Increment Counter by Step Size" />
+    ```csharp
+    new TextBox()
+        .Margin(12)
+        .HorizontalAlignment(HorizontalAlignment.Center)
+        .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
+        .PlaceholderText("Step Size")
+        .Text(x => x.Bind(() => vm.Step).TwoWay())
     ```
 
-The final code for `MainPage.xaml` should look like this:
+ - Update the `Button` to add a `Command` property that is bound to the `IncrementCommand` property of the `MainViewModel`.
 
-```xml
-<Page x:Class="Counter.MainPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:Counter"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-  <Page.DataContext>
-    <local:MainViewModel />
-  </Page.DataContext>
-  <StackPanel VerticalAlignment="Center">
-    <Image Width="150"
-           Height="150"
-           Margin="12"
-           HorizontalAlignment="Center"
-           Source="Assets/logo.png" />
+    ```csharp
+    new Button()
+        .Margin(12)
+        .HorizontalAlignment(HorizontalAlignment.Center)
+        .Command(() => vm.IncrementCommand)
+        .Content("Increment Counter by Step Size")
+    ```
 
-    <TextBox Margin="12"
-             HorizontalAlignment="Center"
-             PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
-             TextAlignment="Center" />
+ - The final code for `MainPage.cs` should look like this:
+    ```csharp
+    namespace Counter;
 
-    <TextBlock Margin="12"
-               HorizontalAlignment="Center"
-               TextAlignment="Center">
-			<Run Text="Counter: " /><Run Text="{Binding Count}" />
-    </TextBlock>
+    public sealed partial class MainPage : Page
+    {
+        public MainPage()
+        {
+            this.DataContext(new MainViewModel(), (page, vm) => page
+                .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
+                .Content(
+                    new StackPanel()
+                        .VerticalAlignment(VerticalAlignment.Center)
+                        .Children(
+                            new Image()
+                                .Margin(12)
+                                .HorizontalAlignment(HorizontalAlignment.Center)
+                                .Width(150)
+                                .Height(150)
+                                .Source("ms-appx:///Counter/Assets/logo.png"),
+                            new TextBox()
+                                .Margin(12)
+                                .HorizontalAlignment(HorizontalAlignment.Center)
+                                .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
+                                .PlaceholderText("Step Size")
+                                .Text(x => x.Bind(() => vm.Step).TwoWay()),
+                            new TextBlock()
+                                .Margin(12)
+                                .HorizontalAlignment(HorizontalAlignment.Center)
+                                .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
+                                .Text(() => vm.Count, txt => $"Counter: {txt}"),
+                            new Button()
+                                .Margin(12)
+                                .HorizontalAlignment(HorizontalAlignment.Center)
+                                .Command(() => vm.IncrementCommand)
+                                .Content("Increment Counter by Step Size")
+                        )
+                )
+            );
+        }
+    }
+    ```
 
-    <Button Margin="12"
-            HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
-            Content="Increment Counter by Step Size" />
-  </StackPanel>
-</Page>
-``` -->
 [!INCLUDE [View Model](include-wrap.md)]
 
 
