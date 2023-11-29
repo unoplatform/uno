@@ -8,12 +8,11 @@ The layout for the `MainPage` is defined in the `MainPage.xaml` file. This file 
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:Counter"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-  <StackPanel
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center">
+  <StackPanel HorizontalAlignment="Center"
+              VerticalAlignment="Center">
     <TextBlock AutomationProperties.AutomationId="HelloTextBlock"
-          Text="Hello Uno Platform"
-          HorizontalAlignment="Center" />
+               Text="Hello Uno Platform"
+               HorizontalAlignment="Center" />
   </StackPanel>
 </Page>
 ```
