@@ -136,3 +136,4 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
+- When working on Skia+Gtk apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Skia.Gtk (Debug)` target selected.

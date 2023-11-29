@@ -43,9 +43,9 @@
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.5.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.5.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.5.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23251.2" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='true'" />

@@ -35,7 +35,7 @@ Android deployment requires a few considerations:
     - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/hardware-acceleration))
     - Try disabling `Fast Deployment` in your app configuration
         1. Open your project properties
-        1. In the android section searcg fors `Fast Deployment` 
+        1. In the android section search for `Fast Deployment` 
         1. uncheck all target platforms
 
 ## Legacy issues 
