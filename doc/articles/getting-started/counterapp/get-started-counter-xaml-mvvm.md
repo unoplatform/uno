@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter
+uid: Uno.GettingStarted.Counter.XAML.MVVM
 ---
 
 # Create a Counter App with Uno Platform
