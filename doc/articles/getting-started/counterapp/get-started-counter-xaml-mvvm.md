@@ -13,19 +13,63 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. 
 
-[!INCLUDE [VS](include-vs.md)]
+[!INCLUDE [VS](include-create.md)]
+
+# [Visual Studio](#tab/vs)
+
+> [!NOTE] 
+> If you don't have the `Uno Platform Extension for Visual Studio` installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
+
+- Launch `Visual Studio` and click on `Create new project` on the Start Window. Alternatively, if you're already in Visual Studio, click `New, Project` from the `File` menu.
+
+- Type `Uno Platform` in the search box
+
+- Click `Uno Platform App`, then `Next`
+
+- Name the project `Counter` and click `Create`
+
+At this point you'll enter the `Uno Platform Template Wizard`, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
+
+- Select `Blank` and click `Customize`
 
 - Select the `Presentation` tab and choose `MVVM`
 
 - Select the `Markup` tab and choose `XAML`
 
-[!INCLUDE [VS](include-cli.md)]
+Before completing the wizard, take a look through each of the sections and see what other options are available. You can always come back and create a new project with different options later. For more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
+
+- Click `Create` to complete the wizard
+
+The template will create a new solution with a number of projects. The main project is a class library called `Counter` which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+
+
+# [Command Line](#tab/cli)
+
+> [!NOTE] 
+> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
+
+From the command line, run the following command:
 
 ```
 dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
 ```
 
-[!INCLUDE [VS](include-cli2.md)]
+
+
+This will create a new folder called `Counter` containing the new application.
+
+If you want to discover all the options available in the `unoapp` template, run the following command:
+
+```
+dotnet new unoapp -h
+```
+
+Also, for more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard)
+
+
+---
+
+[!INCLUDE [Counter Solution](include-solution.md)]
 
 
 ![Counter Solution](Assets/counter-solution-xaml.png) 
