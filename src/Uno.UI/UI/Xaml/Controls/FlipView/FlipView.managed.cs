@@ -413,7 +413,7 @@ namespace Windows.UI.Xaml.Controls
 				m_tpScrollViewer.SizeChanged -= OnScrollingHostPartSizeChanged;
 
 #if !__WASM__
-					m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+				m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
 #endif
 			}
 
