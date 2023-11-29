@@ -22,7 +22,7 @@
         href: xref:Uno.GettingStarted.CreateAnApp.rider
 
     - name: Write your app
-      topicHref: xref:Uno.GettingStarted.Explore
+      topicHref: xref:Uno.GetStarted.Explore
       items:
       - name: App Structure
         href: xref:Uno.Development.AppStructure
