@@ -1,7 +1,7 @@
 const {dest, src, parallel, series, watch: gulpwatch} = require('gulp');
 const notify = require('gulp-notify');
 const autoprefixer = require('autoprefixer');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 const postcss = require('gulp-postcss');
