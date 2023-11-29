@@ -4,6 +4,6 @@
 
     ```xml
     <Image Width="150"
-            Height="150"
-            Source="Assets/logo.png" />
+           Height="150"
+           Source="Assets/logo.png" />
     ```

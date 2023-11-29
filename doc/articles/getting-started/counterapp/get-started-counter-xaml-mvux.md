@@ -78,11 +78,11 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-mainpage-image-xaml.md)]
+[!INCLUDE [Main Page - Image](include-image-xaml.md)]
 
 [!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-mainpage-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements](include-elements-xaml.md)]
 
 [!INCLUDE [View Model](include-mvux.md)]
 
@@ -102,10 +102,9 @@ Now that we have the `BindableMainModel` class, we can update the `MainPage` to 
 - Update the `TextBlock` by removing the `Text` attribute, replacing it with two `Run` elements, and binding the `Text` property of the second `Run` element to the `Count` property of the `BindableMainModel`.
 
     ```xml
-    <TextBlock
-        Margin="12"
-        HorizontalAlignment="Center"
-        TextAlignment="Center">
+    <TextBlock Margin="12"
+               HorizontalAlignment="Center"
+               TextAlignment="Center">
         <Run Text="Counter: " /><Run Text="{Binding Count}" />
     </TextBlock>
     ```
@@ -113,10 +112,10 @@ Now that we have the `BindableMainModel` class, we can update the `MainPage` to 
 
     ```xml
     <TextBox Margin="12"
-            HorizontalAlignment="Center"
-            PlaceholderText="Step Size"
-            Text="{Binding Step, Mode=TwoWay}"
-            TextAlignment="Center" />
+             HorizontalAlignment="Center"
+             PlaceholderText="Step Size"
+             Text="{Binding Step, Mode=TwoWay}"
+             TextAlignment="Center" />
     ```
 
 - Update the `Button` to add a `Command` attribute that is bound to the `IncrementCommand` property of the `BindableMainModel`.
