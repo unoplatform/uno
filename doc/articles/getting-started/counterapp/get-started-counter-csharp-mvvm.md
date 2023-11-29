@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.XAML.MVVM
+uid: Uno.GettingStarted.Counter.CSharp.MVVM
 ---
 
 [!INCLUDE [Intro](include-intro.md)]
@@ -7,11 +7,11 @@ uid: Uno.GettingStarted.Counter.XAML.MVVM
 In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the `dotnet new` command
-- Add elements to the XAML file to define the layout of the application
+- Add elements to the C# file, using C# Markup, to define the layout of the application
 - Add code to the C# file to implement the application logic using the Model-View-ViewModel (MVVM) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. 
+To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#. 
 
 [!INCLUDE [VS](include-create.md)]
 
@@ -34,7 +34,7 @@ At this point you'll enter the `Uno Platform Template Wizard`, giving you option
 
 - Select the `Presentation` tab and choose `MVVM`
 
-- Select the `Markup` tab and choose `XAML`
+- Select the `Markup` tab and choose `C# Markup`
 
 Before completing the wizard, take a look through each of the sections and see what other options are available. You can always come back and create a new project with different options later. For more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 
@@ -51,7 +51,7 @@ The template will create a new solution with a number of projects. The main proj
 From the command line, run the following command:
 
 ```
-dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
+dotnet new unoapp -preset blank -presentation mvvm -markup csharp -o Counter
 ```
 
 
@@ -72,19 +72,19 @@ Also, for more information on all the template options, see [Using the Uno Platf
 [!INCLUDE [Counter Solution](include-solution.md)]
 
 
-![Counter Solution](Assets/counter-solution-xaml.png) 
+![Counter Solution](Assets/counter-solution-csharp.png) 
 
 [!INCLUDE [Main Window](include-mainwindow.md)]
 
-[!INCLUDE [Main Page - XAML](include-mainpage-xaml.md)]
+[!INCLUDE [Main Page - C# Markup](include-mainpage-csharp.md)]
 
 [!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-mainpage-image-xaml.md)]
+[!INCLUDE [Main Page - Image](include-mainpage-image-csharp.md)]
 
 [!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-mainpage-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements](include-mainpage-elements-csharp.md)]
 
 [!INCLUDE [View Model](include-mvvm.md)]
 
@@ -93,7 +93,9 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 Now that we have the `MainViewModel` class, we can update the `MainPage` to use data binding to connect the UI to the application logic.
 
-- Add a `DataContext` element to the `Page` element in the `MainPage.xaml` file.
+TODO: Replace commented section with C# Markup equivalent
+
+<!-- - Add a `DataContext` element to the `Page` element in the `MainPage.xaml` file.
 
     ```xml
     <Page.DataContext>
@@ -166,7 +168,7 @@ The final code for `MainPage.xaml` should look like this:
             Content="Increment Counter by Step Size" />
   </StackPanel>
 </Page>
-```
+``` -->
 [!INCLUDE [View Model](include-wrap.md)]
 
 
