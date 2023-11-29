@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.CreateAnApp.vscode
+uid: Uno.GettingStarted.CreateAnApp.VSCode
 ---
 # Creating an app with VS Code
 
