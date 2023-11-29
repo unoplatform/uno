@@ -6,7 +6,7 @@ If you have already [completed the initial getting started tutorial](ref:Uno.Get
 
 You will find below resources provided by our team, the community and Microsoft. 
 
-## Uno Platform provided Worshops / Step-by-step Tutorials (Free)
+## Uno Platform provided Workshops / Step-by-step Tutorials (Free)
 
 - [Simple Calculator Workshop](external/workshops/simple-calc/README.md). A level 100 workshop you can complete in 1 hour. It will guide you through the process of setting up your developer environment and learning essential tools, libraries, and patterns to help you develop your apps with Uno Platform.
 - [Tube Player Workshop](external/workshops/simple-calc/README.md). A level 200 workshop you can complete in 2 hours. It will guide through the creation of a Uno Platform application that enables the user to search for and stream YouTube videos. You will learn how to easily import Figma designs into your application.
@@ -66,7 +66,7 @@ Microsoft MVP Skye Hoefling put together [Uno Platform: Getting Started Series](
 
 #### Book - Getting Started with the Uno Platform and WinUI 3: Hands-On Building of Cross-Platform Desktop, Mobile, and Web Applications That Can Run Anywhere (Apress, Paid)
 
-[Getting Started with the Uno Platform and WinUI 3: Hands-On Building of Cross-Platform Desktop, Mobile, and Web Applications That Can Run Anywhere](https://www.amazon.com/Getting-Started-Platform-WinUI-Hands-ebook/dp/B0BGZCD32H?ref_=ast_author_mpb) book by Skye Hoffeling is written for the developer who has zero experience building apps with Xamarin, UWP, WinUI, or the Uno Platform. This book deconstructs those complex concepts into tangible building blocks so that productivity gains are immediately recognized.
+[Getting Started with the Uno Platform and WinUI 3: Hands-On Building of Cross-Platform Desktop, Mobile, and Web Applications That Can Run Anywhere](https://www.amazon.com/Getting-Started-Platform-WinUI-Hands-ebook/dp/B0BGZCD32H?ref_=ast_author_mpb) book by Skye Hoefling is written for the developer who has zero experience building apps with Xamarin, UWP, WinUI, or the Uno Platform. This book deconstructs those complex concepts into tangible building blocks so that productivity gains are immediately recognized.
 
 #### Raspberry Pi Applications with Uno Platform (Free) 
 
