@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.XAML.MVVM
+uid: Uno.GettingStarted.Counter.XAML.MVUX
 ---
 
 [!INCLUDE [Intro](xref:Uno.GettingStarted.Counter.Include.Intro)]
@@ -8,7 +8,7 @@ In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the `dotnet new` command
 - Add elements to the XAML file to define the layout of the application
-- Add code to the C# file to implement the application logic using the Model-View-ViewModel (MVVM) pattern
+- Add code to the C# file to implement the application logic using the Model-View-Update-eXtended (MVUX) pattern
 - Use data binding to connect the UI to the application logic
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. However, if you're a more experienced developer, you may want to skip this tutorial and jump straight to either the [SimpleCalculator](xref:Workshop.SimpleCalc.Overview) or the [TubePlayer](xref:Workshop.TubePlayer.Overview) sample. Both are more complex and will give you a better idea of what Uno Platform can do.
