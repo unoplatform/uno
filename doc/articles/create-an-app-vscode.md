@@ -20,7 +20,7 @@ dotnet new unoapp -o MyApp --preset=blank -platforms android ios maccatalyst was
 This will create a blank template app that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
 
 > [!IMPORTANT]
-> Mobile targets cannot be built under Linux. If you are using Linux, you'll need to remove `android ios maccatalyst` from the `platforms` list. The previous command would become `dotnet new unoapp -o MyApp -preset=blank -platforms wasm gtk --vscode`.
+> Apple targets cannot be built under Linux. If you are using Linux, you'll need to remove `ios` and `maccatalyst` from the `platforms` list. The previous command would become `dotnet new unoapp -o MyApp -preset=blank -platforms wasm gtk android --vscode`.
 
 Next, open the project using Visual Studio Code:
 * In the terminal type the following:
@@ -72,7 +72,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 - In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
   ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
-- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-android | Debug`
+- To the right of `MyApp.Mobile`, click on the target framework to select `net8.0-android | Debug`
 
   ![android target framework](Assets/quick-start/vs-code-debug-tf-android.png)
 - Then, to the right of the target framework, select the device to debug with. You will need to connect an android device, or create an Android simulator.
@@ -89,7 +89,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 - In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
   ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
-- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-ios | Debug`
+- To the right of `MyApp.Mobile`, click on the target framework to select `net8.0-ios | Debug`
 
   ![ios target framework](Assets/quick-start/vs-code-debug-tf-ios.png)
 - Then, to the right of the target framework, select the device to debug with. You will need to connect an iOS device, or use an existing iOS simulator.
@@ -109,7 +109,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 - In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
   ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
-- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-maccatalyst | Debug`
+- To the right of `MyApp.Mobile`, click on the target framework to select `net8.0-maccatalyst | Debug`
 
   ![catalyst target framework](Assets/quick-start/vs-code-debug-tf-catalyst.png)
 - Finally, in the debugger side menu, select the `Uno t Mobile` profile
@@ -123,18 +123,4 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Explore
 
-### Hot Reload
-
-Make sure to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload) to enhance your development experience.
-
-### App Solution Architecture
-
-Next, explore the [Uno Platform App solution structure](xref:Uno.Development.AppStructure) to understand how to navigate the projects of your new app.
-
-## Troubleshoot Issues
-
-You may encounter issues while developing your app. Please see the [troubleshooting](xref:Uno.UI.CommonIssues) section.
-
-## Next Steps
-
-Now that you have built your first application, you can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
+Next, explore [Uno Platform features and architecture](xref:Uno.GetStarted.Explore).
