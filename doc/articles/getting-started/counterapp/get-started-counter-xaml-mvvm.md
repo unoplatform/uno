@@ -173,6 +173,6 @@ The final code for **MainPage.xaml** should look like this:
 ```
 [!INCLUDE [View Model](include-wrap.md)]
 
-
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM)
 
 

@@ -4,7 +4,7 @@
 
     ```csharp
     new StackPanel()
-        .HorizontalAlignment(HorizontalAlignment.Center)
+        .VerticalAlignment(VerticalAlignment.Center)
     ```
 
 - Update the **Image** element to center it horizontally and add a margin.
