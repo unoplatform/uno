@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.XAML.MVVM
+uid: Workshop.Counter.XAML.MVVM
 ---
 
 # Counter App using XAML and MVVM

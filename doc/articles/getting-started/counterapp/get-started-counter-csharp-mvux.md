@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.CSharp.MVUX
+uid: Workshop.Counter.CSharp.MVUX
 ---
 
 # Counter App using C# Markup and MVUX

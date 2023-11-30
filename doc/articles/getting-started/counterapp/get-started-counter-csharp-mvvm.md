@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.CSharp.MVVM
+uid: Workshop.Counter.CSharp.MVVM
 ---
 
 # Counter App using C# Markup and MVVM

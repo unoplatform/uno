@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter
+uid: Workshop.Counter
 ---
 
 # Create a Counter App with Uno Platform
