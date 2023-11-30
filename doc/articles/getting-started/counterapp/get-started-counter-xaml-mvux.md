@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.Counter.XAML.MVUX
+uid: Workshop.Counter.XAML.MVUX
 ---
 
 # Counter App using XAML and MVUX
