@@ -99,13 +99,15 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 Now that we have the **MainViewModel** class, we can update the **MainPage** to use data binding to connect the UI to the application logic.
 
- - Let's add the **DataContext** to our page. To do so, replace `this.` for `this.DataContext(new MainViewModel(), (page, vm) => page`. Remember to close the DataContext expression with a `)` at the end of the code. It should look similar to the code below:
+ - Let's add the **DataContext** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the DataContext expression with a `)` at the end of the code. It should look similar to the code below:
 
     ```csharp
     this.DataContext(new MainViewModel(), (page, vm) => page
         .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
+        .Content(
             ...
-        )));
+        )
+    );
     ```
 
  - Update the TextBlock by removing its current text content and replacing it with a binding expression for the **Count** property of the **MainViewModel**. Modify the existing Text property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
@@ -139,6 +141,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
     ```
 
  - The final code for **MainPage.cs** should look like this:
+
     ```csharp
     namespace Counter;
 
