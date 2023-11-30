@@ -56,14 +56,14 @@
       items:
       - name: Counter App
         href: xref:Workshop.Counter
-      - name: XAML + MVVM
-        href: xref:Workshop.Counter.XAML.MVVM
       - name: XAML + MVUX
         href: xref:Workshop.Counter.XAML.MVUX
-      - name: C# Markup + MVVM
-        href: xref:Workshop.Counter.CSharp.MVVM
+      - name: XAML + MVVM
+        href: xref:Workshop.Counter.XAML.MVVM
       - name: C# Markup + MVUX
         href: xref:Workshop.Counter.CSharp.MVUX
+      - name: C# Markup + MVVM
+        href: xref:Workshop.Counter.CSharp.MVVM
     - name: Simple Calc
       topicHref: external/workshops/simple-calc/README.md
       href: external/workshops/simple-calc/toc.yml
