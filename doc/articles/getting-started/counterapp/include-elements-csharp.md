@@ -26,7 +26,7 @@
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .PlaceholderText("Step Size")
-        ..Text("1")
+        .Text("1")
     ```
 
 - Add a **TextBlock** to display the current counter value.
