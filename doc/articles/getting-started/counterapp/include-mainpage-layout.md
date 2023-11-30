@@ -9,7 +9,7 @@ The page contains a **StackPanel**, which will lay out controls in a vertical st
 We're going to replace the existing **TextBlock** with an **Image** but before we can do this, we need to add the image file to the application. Download [this SVG image](Assets/logo.svg) and add it to the **Assets** folder inside the **Counter** project. At this point, you should rebuild the application in order for the image to be included in the application package.
 
 > [!NOTE] 
-> If you're working in Visual Studio, select the newly added logo.svg file in the **Solution Explorer**, open the **Properties** tool window, and make sure the **Build Action** property is set to **UnoImage**. For other IDEs, no further action is required as the **unoapp** template automatically sets the **Build Action** to **UnoImage** for all files in the **Assets** folder.
+> If you're working in Visual Studio, select the newly added logo.svg file in the **Solution Explorer**, open the **Properties** tool window, and make sure the **Build Action** property is set to **UnoImage**. For other IDEs, no further action is required as the template automatically sets the **Build Action** to **UnoImage** for all files in the **Assets** folder.
 
 Including SVG files with the **UnoImage** build action will use **Uno.Resizetizer** to convert the SVG file to a PNG file for each platform. The generated PNG files will be included in the application package and used at runtime. For more information on using **Uno.Resizetizer** in Uno Platform, see [Get Started with Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted). 
 
