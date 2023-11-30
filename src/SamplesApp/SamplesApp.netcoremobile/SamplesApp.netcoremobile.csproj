@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -7,7 +7,7 @@
 
 	<PropertyGroup>
 		<SingleProject>true</SingleProject>
-
+			<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.1</SupportedOSPlatformVersion>
 		<OutputType>Exe</OutputType>
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
@@ -55,7 +55,7 @@
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>11.0</SupportedOSPlatformVersion>
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
@@ -119,7 +119,7 @@
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>11.0</SupportedOSPlatformVersion>
 				<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 			</PropertyGroup>
 
@@ -215,14 +215,10 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
-			Condition="'$(GITVERSION_InformationalVersion)'!=''">
+	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec Command="git rev-list --count HEAD"
-              ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput"
-                      PropertyName="_VersionCode" />
+		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
 		</Exec>
 
 		<PropertyGroup>
@@ -235,7 +231,7 @@
 
 	</Target>
 
-	<PropertyGroup >
+	<PropertyGroup>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
