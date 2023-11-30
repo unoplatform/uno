@@ -7,7 +7,7 @@ uid: Uno.Workshop.Counter
 The Counter tutorial will walk you through creating a simple counter application with Uno Platform. 
 
 <p align="center">
-  <img src="Assets/counter-app.png" alt="Screenshot of an Uno Platfor app showing a counter" />
+  <img src="Assets/counter-app.png" alt="Screenshot of an Uno Platform app showing a counter" />
 </p>
 
 There are four variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX). 
