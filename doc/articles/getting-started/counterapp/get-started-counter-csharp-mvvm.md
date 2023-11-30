@@ -13,7 +13,7 @@ uid: Workshop.Counter.CSharp.MVVM
 In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the **dotnet new** command
-- Add elements to the C# file, using C# Markup, to define the layout of the application
+- Add elements to the C# file, using [C# Markup](Overview.Markup.Overview), to define the layout of the application
 - Add code to the C# file to implement the application logic using the Model-View-ViewModel (MVVM) pattern
 - Use data binding to connect the UI to the application logic
 
@@ -186,6 +186,6 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
 
 [!INCLUDE [View Model](include-wrap.md)]
 
-
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM)
 
 
