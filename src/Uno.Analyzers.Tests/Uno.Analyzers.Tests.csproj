@@ -8,7 +8,7 @@
 		<IsPackable>false</IsPackable>
 		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>
 
-		<CodeAnalysisVersionForAnalyzersTests>3.8.0</CodeAnalysisVersionForAnalyzersTests>
+		<CodeAnalysisVersionForAnalyzersTests>4.0.0</CodeAnalysisVersionForAnalyzersTests>
 	</PropertyGroup>
 
 	<ItemGroup>
