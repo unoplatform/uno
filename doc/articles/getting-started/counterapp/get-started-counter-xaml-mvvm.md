@@ -161,7 +161,7 @@ The final code for **MainPage.xaml** should look like this:
     <TextBlock Margin="12"
                HorizontalAlignment="Center"
                TextAlignment="Center">
-			<Run Text="Counter: " /><Run Text="{Binding Count}" />
+        <Run Text="Counter: " /><Run Text="{Binding Count}" />
     </TextBlock>
 
     <Button Margin="12"
