@@ -2,7 +2,11 @@
 uid: Uno.GetStarted.NextSteps
 ---
 
+<<<<<<< HEAD
 If you have already [completed the initial getting started tutorial](xref:Uno.GettingStarted.Tutorial1) and you’re now ready to learn more, these resources will help you on your way. 
+=======
+If you have already [completed the initial getting started tutorial](ref:Uno.Workshop.Counter) and you’re now ready to learn more, these resources will help you on your way. 
+>>>>>>> c0e2c99aba (docs: Misc updates for review)
 
 You will find below resources provided by our team, the community and Microsoft. 
 

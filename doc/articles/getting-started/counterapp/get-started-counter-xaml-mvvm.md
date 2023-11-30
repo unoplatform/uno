@@ -1,5 +1,5 @@
 ---
-uid: Workshop.Counter.XAML.MVVM
+uid: Uno.Workshop.Counter.XAML.MVVM
 ---
 
 # Counter App using XAML and MVVM
@@ -59,8 +59,6 @@ From the command line, run the following command:
 dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
 ```
 
-
-
 This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
@@ -75,7 +73,6 @@ Also, for more information on all the template options, see [Using the Uno Platf
 ---
 
 [!INCLUDE [Counter Solution](include-solution.md)]
-
 
 ![Counter Solution](Assets/counter-solution-xaml.png) 
 
@@ -93,12 +90,11 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [View Model](include-mvvm.md)]
 
-
 ## Data Binding
 
-Now that we have the **MainViewModel** class, we can update the **MainPage** to use data binding to connect the UI to the application logic.
+Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
-- Add a **DataContext** element to the **Page** element in the **MainPage.xaml** file.
+- Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file.
 
     ```xml
     <Page.DataContext>
@@ -106,7 +102,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
     </Page.DataContext>
     ```
 
-- Update the **TextBlock** by removing the **Text** attribute, replacing it with two **Run** elements, and binding the **Text** property of the second **Run** element to the **Count** property of the **MainViewModel**.
+- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Count`** property of the **`MainViewModel`**.
 
     ```xml
     <TextBlock Margin="12"
@@ -115,7 +111,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
         <Run Text="Counter: " /><Run Text="{Binding Count}" />
     </TextBlock>
     ```
-- Update the **TextBox** by binding the **Text** property to the **Step** property of the **MainViewModel**. The Mode of the binding is set to **TwoWay** so that the **Step** property is updated when the user changes the value in the **TextBox**.
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **MainViewModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```xml
     <TextBox Margin="12"
@@ -125,7 +121,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
              TextAlignment="Center" />
     ```
 
-- Update the **Button** to add a **Command** attribute that is bound to the **IncrementCommand** property of the **MainViewModel**.
+- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
 
     ```xml
     <Button Margin="12"

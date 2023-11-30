@@ -1,5 +1,5 @@
 ---
-uid: Workshop.Counter.CSharp.MVUX
+uid: Uno.Workshop.Counter.CSharp.MVUX
 ---
 
 # Counter App using C# Markup and MVUX
@@ -75,7 +75,6 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Counter Solution](include-solution.md)]
 
-
 ![Counter Solution](Assets/counter-solution-csharp.png) 
 
 [!INCLUDE [Main Window](include-mainwindow.md)]
@@ -95,9 +94,9 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the **BindableMainModel** class, we can update the **MainPage** to use data binding to connect the UI to the application logic.
+Now that we have the **`BindableMainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
- - Let's add the **DataContext** to our page. To do so, add `.DataContext(new BindableMainModel(), (page, vm) => page` before `.Background(...)`. Remember to close the DataContext expression with a `)` at the end of the code. It should look similar to the code below:
+ - Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new BindableMainModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
 
     ```csharp
     this.DataContext(new BindableMainModel(), (page, vm) => page
@@ -108,7 +107,7 @@ Now that we have the **BindableMainModel** class, we can update the **MainPage**
     );
     ```
 
- - Update the TextBlock by removing its current text content and replacing it with a binding expression for the **Count** property of the **BindableMainModel**. Modify the existing Text property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
+ - Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Count`** property of the **`BindableMainModel`**. Modify the existing **`Text`** property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
 
     ```csharp
     new TextBlock()
@@ -118,7 +117,7 @@ Now that we have the **BindableMainModel** class, we can update the **MainPage**
         .Text(() => vm.Count, txt => $"Counter: {txt}")
     ```
 
- - Update the **TextBox** by binding the **Text** property to the **Step** property of the **BindableMainModel**. The Mode of the binding is set to **TwoWay** so that the **Step** property is updated when the user changes the value in the **TextBox**.
+ - Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```csharp
     new TextBox()
@@ -129,7 +128,7 @@ Now that we have the **BindableMainModel** class, we can update the **MainPage**
         .Text(x => x.Bind(() => vm.Step).TwoWay())
     ```
 
- - Update the **Button** to add a **Command** property that is bound to the **IncrementCommand** property of the **BindableMainModel**.
+ - Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`BindableMainModel`**.
 
     ```csharp
     new Button()
