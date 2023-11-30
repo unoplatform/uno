@@ -51,16 +51,25 @@
 
 - name: Samples & Tutorials
   items:
-    - name: Tutorial 1
-      href: getting-started-tutorial-1.md
-    - name: Tutorial 2
-      href: getting-started-tutorial-2.md
-    - name: Tube Player
-      topicHref: external/workshops/tube-player/README.md
-      href: external/workshops/tube-player/toc.yml
+    - name: Counter
+      href: xref:Uno.GettingStarted.Counter
+      items:
+      - name: Counter App
+        href: xref:Uno.GettingStarted.Counter
+      - name: XAML + MVVM
+        href: xref:Uno.GettingStarted.Counter.XAML.MVVM
+      - name: XAML + MVUX
+        href: xref:Uno.GettingStarted.Counter.XAML.MVUX
+      - name: C# Markup + MVVM
+        href: xref:Uno.GettingStarted.Counter.CSharp.MVVM
+      - name: C# Markup + MVUX
+        href: xref:Uno.GettingStarted.Counter.CSharp.MVUX
     - name: Simple Calc
       topicHref: external/workshops/simple-calc/README.md
       href: external/workshops/simple-calc/toc.yml
+    - name: Tube Player
+      topicHref: external/workshops/tube-player/README.md
+      href: external/workshops/tube-player/toc.yml
     - name: Tutorials
       items:
       - name: Overview
