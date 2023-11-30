@@ -1,13 +1,13 @@
 
 
-- Update the `StackPanel` to remove the `HorizontalAlignment` property, as we'll be centering each of the nested elements individually.
+- Update the **StackPanel** to remove the **HorizontalAlignment** property, as we'll be centering each of the nested elements individually.
 
     ```csharp
     new StackPanel()
         .HorizontalAlignment(HorizontalAlignment.Center)
     ```
 
-- Update the `Image` element to center it horizontally and add a margin.
+- Update the **Image** element to center it horizontally and add a margin.
 
     ```csharp
     new Image()
@@ -18,7 +18,7 @@
         .Source("ms-appx:///Counter/Assets/logo.png")
     ```
 
-- Add a `TextBox` to allow the user to enter the step size.
+- Add a **TextBox** to allow the user to enter the step size.
 
     ```csharp
     new TextBox()
@@ -29,7 +29,7 @@
         ..Text("1")
     ```
 
-- Add a `TextBlock` to display the current counter value.
+- Add a **TextBlock** to display the current counter value.
 
     ```csharp
     new TextBlock()
@@ -39,7 +39,7 @@
         .Text("Counter: 1"),
     ```
 
-- Add a `Button` to increment the counter.
+- Add a **Button** to increment the counter.
 
     ```csharp
     new Button()
