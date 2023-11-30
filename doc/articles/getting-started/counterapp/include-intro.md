@@ -1,9 +1,3 @@
-
-
-# Create a Counter App with Uno Platform
-
-[Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter)  
-
 > [!NOTE] 
 > Estimated time to complete: 10 minutes
 
