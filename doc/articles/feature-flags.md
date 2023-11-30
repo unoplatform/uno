@@ -102,3 +102,9 @@ It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfigur
 ## `ApplicationData`
 
 On GTK and WPF it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information see [related docs here](/articles/features/applicationdata.md#data-location-on-gtk-and-wpf)
+
+## Deprecated NSObjectExtensions.ValidateDispose for iOS
+
+The method `NSObjectExtensions.ValidateDispose` is deprecated in Uno 5.x and will be removed in the next major release.
+
+In order for calls to fail on uses of this method, set the `Uno.UI.FeatureConfiguration.UIElement.FailOnNSObjectExtensionsValidateDispose` flag to `true`.

@@ -655,6 +655,11 @@ namespace Uno.UI
 			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
 			/// </summary>
 			public static bool DisablePointersSpecificEventPrevention { get; set; }
+
+			/// <summary>
+			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
+			/// </summary>
+			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
 		public static class VisualState
