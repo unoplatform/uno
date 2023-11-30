@@ -74,6 +74,64 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(page!);
 			return SharedHelpers.FindInVisualTreeByType<CommandBar>(page);
 		}
+
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+
+		public async Task Can_Navigate_Forward_And_Backwards()
+		{
+			var frame = new Frame() { Width = 400, Height = 400 };
+			var content = new Grid { Children = { frame } };
+
+			WindowHelper.WindowContent = content;
+			await WindowHelper.WaitForIdle();
+
+			var firstNavBar = await frame.NavigateAndGetNavBar<CommandBarFirstPage>();
+
+			await WindowHelper.WaitForLoaded(firstNavBar);
+
+			var secondNavBar = await frame.NavigateAndGetNavBar<CommandBarSecondPage>();
+
+			await WindowHelper.WaitForLoaded(secondNavBar);
+
+			await Task.Delay(1000);
+
+			frame.GoBack();
+
+			await WindowHelper.WaitForLoaded(firstNavBar);
+		}
+#endif
 	}
+<<<<<<< HEAD
+=======
+
+#if __IOS__
+	public static class NavigationBarTestHelper
+	{
+		public static UINavigationBar GetNativeNavBar(this CommandBar navBar) => navBar
+			?.TryGetNative<CommandBar, CommandBarRenderer, UINavigationBar>(out var native) ?? false ? native : null;
+
+		public static UINavigationItem GetNativeNavItem(this CommandBar navBar) => navBar
+			?.TryGetNative<CommandBar, CommandBarNavigationItemRenderer, UINavigationItem>(out var native) ?? false ? native : null;
+
+
+		public static Task<CommandBar> NavigateAndGetNavBar<TPage>(this Frame frame) where TPage : Page
+		{
+			return frame.NavigateAndGetNavBar(typeof(TPage));
+		}
+
+		public static async Task<CommandBar> NavigateAndGetNavBar(this Frame frame, Type pageType)
+		{
+			frame.Navigate(pageType);
+			await WindowHelper.WaitForIdle();
+
+			var page = frame.Content as Page;
+			await WindowHelper.WaitForLoaded(page!);
+			return SharedHelpers.FindInVisualTreeByType<CommandBar>(page);
+		}
+	}
+>>>>>>> 2f532afa40 (fix: avoid creating disconnected native commandbars on load)
 #endif
 }
