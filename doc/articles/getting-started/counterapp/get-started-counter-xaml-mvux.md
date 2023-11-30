@@ -11,7 +11,7 @@ uid: Uno.GettingStarted.Counter.XAML.MVUX
 
 In this tutorial you will learn how to:
 
-- Create a new Project with Uno Platform using Visual Studio Template Wizard or the `dotnet new` command
+- Create a new Project with Uno Platform using Visual Studio Template Wizard or the **dotnet new** command
 - Add elements to the XAML file to define the layout of the application
 - Add code to the C# file to implement the application logic using the Model-View-Update-eXtended (MVUX) pattern
 - Use data binding to connect the UI to the application logic
@@ -23,29 +23,29 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 # [Visual Studio](#tab/vs)
 
 > [!NOTE] 
-> If you don't have the `Uno Platform Extension for Visual Studio` installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
+> If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
 
-- Launch `Visual Studio` and click on `Create new project` on the Start Window. Alternatively, if you're already in Visual Studio, click `New, Project` from the `File` menu.
+- Launch **Visual Studio** and click on **Create new project** on the Start Window. Alternatively, if you're already in Visual Studio, click **New, Project** from the **File** menu.
 
 - Type `Uno Platform` in the search box
 
-- Click `Uno Platform App`, then `Next`
+- Click **Uno Platform App**, then **Next**
 
-- Name the project `Counter` and click `Create`
+- Name the project `Counter` and click **Create**
 
-At this point you'll enter the `Uno Platform Template Wizard`, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
+At this point you'll enter the **Uno Platform Template Wizard**, giving you options to customize the generated application. For this tutorial, we're only going to configure the markup language and the presentation framework.
 
-- Select `Blank` and click `Customize`
+- Select **Blank** and click **Customize**
 
-- Select the `Presentation` tab and choose `MVUX`
+- Select the **Presentation** tab and choose **MVUX**
 
-- Select the `Markup` tab and choose `XAML`
+- Select the **Markup** tab and choose **XAML**
 
 Before completing the wizard, take a look through each of the sections and see what other options are available. You can always come back and create a new project with different options later. For more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 
-- Click `Create` to complete the wizard
+- Click **Create** to complete the wizard
 
-The template will create a new solution with a number of projects. The main project is a class library called `Counter` which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
+The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
 
 # [Command Line](#tab/cli)
@@ -59,9 +59,9 @@ From the command line, run the following command:
 dotnet new unoapp -preset blank -presentation mvux -markup xaml -o Counter
 ```
 
-This will create a new folder called `Counter` containing the new application.
+This will create a new folder called **Counter** containing the new application.
 
-If you want to discover all the options available in the `unoapp` template, run the following command:
+If you want to discover all the options available in the **unoapp** template, run the following command:
 
 ```
 dotnet new unoapp -h
@@ -94,9 +94,9 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the `BindableMainModel` class, we can update the `MainPage` to use data binding to connect the UI to the application logic.
+Now that we have the **BindableMainModel** class, we can update the **MainPage** to use data binding to connect the UI to the application logic.
 
-- Add a `DataContext` element to the `Page` element in the `MainPage.xaml` file.
+- Add a **DataContext** element to the **Page** element in the **MainPage.xaml** file.
 
     ```xml
     <Page.DataContext>
@@ -104,7 +104,7 @@ Now that we have the `BindableMainModel` class, we can update the `MainPage` to 
     </Page.DataContext>
     ```
 
-- Update the `TextBlock` by removing the `Text` attribute, replacing it with two `Run` elements, and binding the `Text` property of the second `Run` element to the `Count` property of the `BindableMainModel`.
+- Update the **TextBlock** by removing the **Text** attribute, replacing it with two **Run** elements, and binding the **Text** property of the second **Run** element to the **Count** property of the **BindableMainModel**.
 
     ```xml
     <TextBlock Margin="12"
@@ -113,7 +113,7 @@ Now that we have the `BindableMainModel` class, we can update the `MainPage` to 
         <Run Text="Counter: " /><Run Text="{Binding Count}" />
     </TextBlock>
     ```
-- Update the `TextBox` by binding the `Text` property to the `Step` property of the `BindableMainModel`. The Mode of the binding is set to `TwoWay` so that the `Step` property is updated when the user changes the value in the `TextBox`.
+- Update the **TextBox** by binding the **Text** property to the **Step** property of the **BindableMainModel**. The Mode of the binding is set to **TwoWay** so that the **Step** property is updated when the user changes the value in the **TextBox**.
 
     ```xml
     <TextBox Margin="12"
@@ -123,7 +123,7 @@ Now that we have the `BindableMainModel` class, we can update the `MainPage` to 
              TextAlignment="Center" />
     ```
 
-- Update the `Button` to add a `Command` attribute that is bound to the `IncrementCommand` property of the `BindableMainModel`.
+- Update the **Button** to add a **Command** attribute that is bound to the **IncrementCommand** property of the **BindableMainModel**.
 
     ```xml
     <Button Margin="12"
@@ -132,7 +132,7 @@ Now that we have the `BindableMainModel` class, we can update the `MainPage` to 
             Content="Increment Counter by Step Size" />
     ```
 
-The final code for `MainPage.xaml` should look like this:
+The final code for **MainPage.xaml** should look like this:
 
 ```xml
 <Page x:Class="Counter.MainPage"

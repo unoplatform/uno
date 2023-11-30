@@ -2,12 +2,12 @@
 
 ## ViewModel
 
-So far all the elements we've added to the `MainPage` have had their content set directly. This is fine for static content, but for dynamic content, we need to use data binding. Data binding allows us to connect the UI to the application logic, so that when the application logic changes, the UI is automatically updated.
+So far all the elements we've added to the **MainPage** have had their content set directly. This is fine for static content, but for dynamic content, we need to use data binding. Data binding allows us to connect the UI to the application logic, so that when the application logic changes, the UI is automatically updated.
 
-As part of creating the application, we selected MVUX as the presentation framework. This added a reference to the [`Uno.Extensions.Reactive`](https://aka.platform.uno/mvux) package which is responsible for dealing with our Models and generating the ViewModels.
+As part of creating the application, we selected MVUX as the presentation framework. This added a reference to the [**Uno.Extensions.Reactive**](https://aka.platform.uno/mvux) package which is responsible for dealing with our Models and generating the ViewModels.
 
-- Add a new class, `MainModel`, to the `Counter` project.
-- Update the `MainModel` class to be a `partial record`.
+- Add a new class, `MainModel`, to the **Counter** project.
+- Update the **MainModel** class to be a `partial record`.
 
     ```csharp
     internal partial record MainModel
@@ -15,7 +15,7 @@ As part of creating the application, we selected MVUX as the presentation framew
     }
     ```
 
-- Add fields, `Count` and `Step`, to the `MainModel` class. These fields both must be of type `IState<int>` and to initialize them we use `=> State.Value(...)`.
+- Add fields, `Count` and `Step`, to the **MainModel** class. These fields both must be of type `IState<int>` and to initialize them we use `=> State.Value(...)`.
 
     ```csharp
     public IState<int> Count => State.Value(this, () => 0);
@@ -23,14 +23,14 @@ As part of creating the application, we selected MVUX as the presentation framew
     public IState<int> Step => State.Value(this, () => 1);
     ```
 
-- Add a method `IncrementCommand` to the `MainModel` that will increment the counter by the step size. The generated ViewModel of our MainModel will automatically re-expose as ICommand the `IncrementCommand` method.
+- Add a method `IncrementCommand` to the **MainModel** that will increment the counter by the step size. The generated ViewModel of our MainModel will automatically re-expose as ICommand the **IncrementCommand** method.
 
     ```csharp
     public ValueTask IncrementCommand(int Step)
         => Count.Update(c => c + Step, CancellationToken.None);
     ```
 
-The final code for the `MainViewModel` class should look like this:
+The final code for the **MainViewModel** class should look like this:
 
 ```csharp
 namespace Counter;
