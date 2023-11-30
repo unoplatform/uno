@@ -71,4 +71,4 @@ You may need to follow additional directions, depending on your development envi
 ***
 
 ## Next Steps
-You're all set! You can now [create your first app](xref:Uno.GettingStarted.CreateAnApp.vscode) with Uno Platform.
+You're all set! You can now [create your first app](xref:Uno.GettingStarted.CreateAnApp.VSCode) with Uno Platform.

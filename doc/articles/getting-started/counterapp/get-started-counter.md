@@ -1,12 +1,14 @@
 ---
-uid: Workshop.Counter
+uid: Uno.Workshop.Counter
 ---
 
 # Create a Counter App with Uno Platform
 
 The Counter tutorial will walk you through creating a simple counter application with Uno Platform. 
 
-![Counter App](Assets/counter-app.png) 
+<p align="center">
+  <img src="Assets/counter-app.png" alt="Screenshot of an Uno Platfor app showing a counter" />
+</p>
 
 There are four variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX). 
 
@@ -19,7 +21,7 @@ There are four variants of the Counter tutorial, combining markup language (XAML
 
 #### XAML + MVUX
 
-Use XAML for layout and MVUX for state management.
+Use XAML for layout and MVUX for state management
 
 </div>
 </a>
@@ -31,7 +33,7 @@ Use XAML for layout and MVUX for state management.
 
 #### XAML + MVVM
 
-Use XAML for layout and MVVM for state management.
+Use XAML for layout and MVVM for state management
 
 </div>
 </a>
@@ -43,7 +45,7 @@ Use XAML for layout and MVVM for state management.
 
 #### C# Markup + MVUX
 
-Use C# Markup for layout and MVUX for state management.
+Use C# Markup for layout and MVUX for state management
 
 </div>
 </a>
@@ -55,7 +57,7 @@ Use C# Markup for layout and MVUX for state management.
 
 #### C# Markup + MVVM
 
-Use C# Markup for layout and MVVM for state management.
+Use C# Markup for layout and MVVM for state management
 
 </div>
 </a>

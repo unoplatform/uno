@@ -1,12 +1,12 @@
 
 
-- Update the **StackPanel** to remove the **HorizontalAlignment** property, as we'll be centering each of the nested elements individually.
+- Update the **`StackPanel`** to remove the **`HorizontalAlignment`** property, as we'll be centering each of the nested elements individually.
 
     ```xml
     <StackPanel VerticalAlignment="Center">
     ```
 
-- Update the **Image** element to center it horizontally and add a margin.
+- Update the **`Image`** element to center it horizontally and add a margin.
 
     ```xml
     <Image Width="150"
@@ -16,7 +16,7 @@
            Source="Assets/logo.png" />
     ```
 
-- Add a **TextBox** to allow the user to enter the step size.
+- Add a **`TextBox`** to allow the user to enter the step size.
 
     ```xml
     <TextBox Margin="12"
@@ -26,7 +26,7 @@
              TextAlignment="Center" />
     ```
 
-- Add a **TextBlock** to display the current counter value.
+- Add a **`TextBlock`** to display the current counter value.
 
     ```xml
     <TextBlock Margin="12"
@@ -35,7 +35,7 @@
                Text="Counter: 1" />
     ```
 
-- Add a **Button** to increment the counter.
+- Add a **`Button`** to increment the counter.
 
     ```xml
     <Button Margin="12"

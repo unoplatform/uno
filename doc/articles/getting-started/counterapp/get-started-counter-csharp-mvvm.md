@@ -1,12 +1,10 @@
 ---
-uid: Workshop.Counter.CSharp.MVVM
+uid: Uno.Workshop.Counter.CSharp.MVVM
 ---
 
 # Counter App using C# Markup and MVVM
 
 [Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM)  
-
-
 
 [!INCLUDE [Intro](include-intro.md)]
 
@@ -60,8 +58,6 @@ From the command line, run the following command:
 dotnet new unoapp -preset blank -presentation mvvm -markup csharp -o Counter
 ```
 
-
-
 This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
@@ -97,9 +93,9 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the **MainViewModel** class, we can update the **MainPage** to use data binding to connect the UI to the application logic.
+Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
- - Let's add the **DataContext** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the DataContext expression with a `)` at the end of the code. It should look similar to the code below:
+ - Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
 
     ```csharp
     this.DataContext(new MainViewModel(), (page, vm) => page
@@ -110,7 +106,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
     );
     ```
 
- - Update the TextBlock by removing its current text content and replacing it with a binding expression for the **Count** property of the **MainViewModel**. Modify the existing Text property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
+ - Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Count`** property of the **`MainViewModel`**. Modify the existing **`Text`** property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
 
     ```csharp
     new TextBlock()
@@ -119,7 +115,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .Text(() => vm.Count, txt => $"Counter: {txt}")
     ```
- - Update the **TextBox** by binding the **Text** property to the **Step** property of the **MainViewModel**. The Mode of the binding is set to **TwoWay** so that the **Step** property is updated when the user changes the value in the **TextBox**.
+ - Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **`MainViewModel`**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```csharp
     new TextBox()
@@ -130,7 +126,7 @@ Now that we have the **MainViewModel** class, we can update the **MainPage** to 
         .Text(x => x.Bind(() => vm.Step).TwoWay())
     ```
 
- - Update the **Button** to add a **Command** property that is bound to the **IncrementCommand** property of the **MainViewModel**.
+ - Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
 
     ```csharp
     new Button()
