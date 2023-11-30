@@ -65,7 +65,7 @@
       - name: C# Markup + MVVM
         href: xref:Workshop.Counter.CSharp.MVVM
     - name: Simple Calc
-      topicHref: external/workshops/simple-calc/README.md
+      topicHref: xref:Workshop.SimpleCalc.Overview
       href: external/workshops/simple-calc/toc.yml
     - name: Tube Player
       topicHref: external/workshops/tube-player/README.md
