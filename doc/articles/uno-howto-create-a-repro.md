@@ -29,7 +29,7 @@ Some steps and questions to answer:
       - `<TextBlock Text="{Binding MyProperty}" />`
       - `<TextBlock Text="{Binding Command, ElementName=MyButton}" />`
    - Add an event handler to `DataContextChanged` in the code behind to see if and when the `DataContext` changed.
-- Analyze device and app logs for clues about the control's behavior. 
+- Analyze device and app logs for clues about the control's behavior.
    - You may enable [the controls debug logs](https://github.com/unoplatform/uno/blob/master/doc/articles/logging.md), if any. 
    - To validate that logs are enabled and in Debug, those starting with `Windows`, `Microsoft` or `Uno` should be visible in the apps output. If not, make sure to [setup the logging properly](https://platform.uno/docs/articles/migrating-from-previous-releases.html).
    - Logs on iOS may need to have the [OSLog logger](https://github.com/unoplatform/uno.extensions.logging) enabled when running on production devices.
@@ -49,7 +49,7 @@ You can usually reduce this by performing `Build > Clean Solution` before zippin
 
 However, sometimes that still may not be enough. In such case, you can leverage the `git` tool and a `.gitignore` file to further reduce the size of the solution.
 
-# [**Windows**](#tab/windows)
+# [**Windows (Visual Studio)**](#tab/windows-vs)
 If you're inside of Visual Studio 2022:
 - Open the solution
 - At the bottom of the IDE window, click the **Add to Source Control** button, then **git**
@@ -59,6 +59,18 @@ If you're inside of Visual Studio 2022:
 - Open a command line prompt in your solution folder and type `git clean -fdx`
 
 Once done, you can zip the folder and send it to github in your issue or discussion.
+
+# [**Windows (Console)**](#tab/windows-console)
+Using the command prompt:
+- Navigate to your sample's root folder
+- Type `dotnet new gitignore`
+- Type `git init`
+- Type `git add .`
+- Type `git commit -m "Initial sample commit"`
+- Type `git archive HEAD --format zip --output sample.zip`
+- Type `explorer /select,sample.zip`
+
+Once done, you can send the `sample.zip` to github in your issue or discussion.
 
 # [**macOS / Linux**](#tab/nix)
 
