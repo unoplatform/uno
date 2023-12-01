@@ -60,7 +60,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
-				(DataContext as SampleChooserViewModel).TryOpenSample();
+				((SampleChooserViewModel)DataContext).TryOpenSample();
 			}
 		}
 	}
