@@ -20,8 +20,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_CommandBar
 	{
-		[TestMethod]
-		[RunsOnUIThread]
 #if __IOS__
 		[TestMethod]
 		[RunsOnUIThread]
