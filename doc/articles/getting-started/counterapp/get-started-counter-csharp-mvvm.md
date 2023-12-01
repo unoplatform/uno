@@ -66,7 +66,7 @@ If you want to discover all the options available in the **unoapp** template, ru
 dotnet new unoapp -h
 ```
 
-Also, for more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard)
+Also, for more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 
 
 ---
@@ -182,6 +182,6 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
 
 [!INCLUDE [View Model](include-wrap.md)]
 
-If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM)
+If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM).
 
 
