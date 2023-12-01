@@ -3823,8 +3823,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
 		}
 
-		public record When_Header_DataContext_Model(string MyText);
-
 		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
 		{
 			public bool Equals(AlwaysEqualClass obj) => true;
