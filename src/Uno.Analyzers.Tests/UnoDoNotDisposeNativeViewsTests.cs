@@ -15,10 +15,10 @@ namespace Uno.Analyzers.Tests
 			"""
 			namespace UIKit
 			{
-					public class UIView : IDisposable
+					public class UIView : System.IDisposable
 					{ 
-						public void Dispose() { }
-						public void Dispose(bool disposing) { }
+						public virtual void Dispose() { }
+						public virtual void Dispose(bool disposing) { }
 					}
 			}
 			""";
@@ -156,6 +156,61 @@ namespace Uno.Analyzers.Tests
 							using(MyInherited [|b|] = new MyInherited(), [|b2|] =  new MyInherited())
 							{
 							}
+						}
+					}
+				}
+				""" + UnoUIViewClass;
+
+			await Verify.VerifyAnalyzerAsync(test);
+		}
+
+		[TestMethod]
+		public async Task When_InheritedCallsBaseFromDispose()
+		{
+			var test =
+				"""
+				using System;
+				using System.Collections.Generic;
+				using System.Linq;
+				using System.Text;
+				using System.Threading.Tasks;
+				using System.Diagnostics;
+
+				namespace ConsoleApplication1
+				{
+					public class MyInherited : UIKit.UIView 
+					{ 
+						public override void Dispose()
+						{
+							base.Dispose();
+						}
+					}
+				}
+				""" + UnoUIViewClass;
+
+			await Verify.VerifyAnalyzerAsync(test);
+		}
+
+
+		[TestMethod]
+		public async Task When_InheritedCallsBaseNotInDispose()
+		{
+			var test =
+				"""
+				using System;
+				using System.Collections.Generic;
+				using System.Linq;
+				using System.Text;
+				using System.Threading.Tasks;
+				using System.Diagnostics;
+
+				namespace ConsoleApplication1
+				{
+					public class MyInherited : UIKit.UIView 
+					{ 
+						public void Test()
+						{
+							[|base.Dispose()|];
 						}
 					}
 				}

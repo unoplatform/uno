@@ -69,13 +69,22 @@ namespace Uno.Analyzers
 							invocationOperation.TargetMethod.Parameters.Length == 1
 							&& invocationOperation.TargetMethod.Parameters[0].Type.SpecialType == SpecialType.System_Boolean)))
 				{
-					var diagnostic = Diagnostic.Create(
-						Rule,
-						context.Operation.Syntax.GetLocation(),
-						invocationOperation.TargetMethod.ToDisplayString()
-					);
+					// We allow base.Dispose to be called from the Dispose method, as it means
+					// it's the runtime that has called Dispose first for the current instance.
+					var overridesDispose = context.ContainingSymbol is IMethodSymbol methodSymbol
+						&& methodSymbol.Name == "Dispose"
+						&& methodSymbol.IsOverride;
 
-					context.ReportDiagnostic(diagnostic);
+					if (!overridesDispose)
+					{
+						var diagnostic = Diagnostic.Create(
+							Rule,
+							context.Operation.Syntax.GetLocation(),
+							invocationOperation.TargetMethod.ToDisplayString()
+						);
+
+						context.ReportDiagnostic(diagnostic);
+					}
 				}
 			}
 			else if (context.Operation is IUsingOperation usingOperation)
