@@ -2899,6 +2899,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Have_Duplicates_FlipView() => await When_Items_Have_Duplicates_Common(new FlipView());
 
+#pragma warning disable 1998
 		private async Task When_Items_Have_Duplicates_Common(Selector sut)
 		{
 			var items = new ObservableCollection<string>(new[]
@@ -2958,6 +2959,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("String 1", (string)removed3.Single());
 			Assert.AreEqual("String 1", (string)added3.Single());
 		}
+#pragma warning restore 1998
 
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_ListView() => await When_Items_Are_Equal_But_Different_References_Common(new ListView());
@@ -2971,6 +2973,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
 
+#pragma warning disable 1998
 		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
 		{
 			var obj1 = new AlwaysEqualClass();
@@ -3009,6 +3012,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreSame(obj2, removed2.Single());
 			Assert.AreSame(obj1, added2.Single());
 		}
+#pragma warning restore 1998
 
 		[TestMethod]
 		[RunsOnUIThread]
