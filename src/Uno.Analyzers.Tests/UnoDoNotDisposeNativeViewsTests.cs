@@ -13,12 +13,20 @@ namespace Uno.Analyzers.Tests
 	{
 		private static string UnoUIViewClass =
 			"""
-			namespace UIKit
+			namespace Foundation
 			{
-					public class UIView : System.IDisposable
+					public class NSObject : System.IDisposable
 					{ 
 						public virtual void Dispose() { }
 						public virtual void Dispose(bool disposing) { }
+					}
+			}
+
+			namespace UIKit
+			{
+					public class UIView : Foundation.NSObject
+					{ 
+						public override void Dispose(bool disposing) { }
 					}
 			}
 			""";
@@ -165,6 +173,42 @@ namespace Uno.Analyzers.Tests
 		}
 
 		[TestMethod]
+		public async Task When_InheritedDisposeCallsFromOutside()
+		{
+			var test =
+				"""
+				using System;
+				using System.Collections.Generic;
+				using System.Linq;
+				using System.Text;
+				using System.Threading.Tasks;
+				using System.Diagnostics;
+
+				namespace ConsoleApplication1
+				{
+					public class MyInherited : UIKit.UIView 
+					{ 
+						public override void Dispose()
+						{
+							base.Dispose();
+						}
+					}
+
+					public class Test
+					{
+						public void Run()
+						{
+							var b = new MyInherited();
+							[|b.Dispose()|];
+						}
+					}
+				}
+				""" + UnoUIViewClass;
+
+			await Verify.VerifyAnalyzerAsync(test);
+		}
+
+		[TestMethod]
 		public async Task When_InheritedCallsBaseFromDispose()
 		{
 			var test =
@@ -204,7 +248,7 @@ namespace Uno.Analyzers.Tests
 				using System.Threading.Tasks;
 				using System.Diagnostics;
 
-				namespace ConsoleApplication1
+				namespace ConsoleApplication1	
 				{
 					public class MyInherited : UIKit.UIView 
 					{ 

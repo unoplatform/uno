@@ -37,19 +37,22 @@ namespace Uno.Analyzers
 
 		public override void Initialize(AnalysisContext context)
 		{
+			// Debugger.Launch();
+
 			context.EnableConcurrentExecution();
 			context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
 			context.RegisterCompilationStartAction(context =>
 			{
 				var uiViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
-				if (uiViewSymbol is null)
+				var nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
+				if (uiViewSymbol is null || nsObjectSymbol is null)
 				{
 					return;
 				}
 
 				context.RegisterOperationAction(
-					c => AnalyzeOperation(c, uiViewSymbol)
+					c => AnalyzeOperation(c, uiViewSymbol, nsObjectSymbol)
 					, OperationKind.Invocation
 					, OperationKind.Using
 					, OperationKind.UsingDeclaration
@@ -57,12 +60,12 @@ namespace Uno.Analyzers
 			});
 		}
 
-		private void AnalyzeOperation(OperationAnalysisContext context, INamedTypeSymbol uiViewSymbol)
+		private void AnalyzeOperation(OperationAnalysisContext context, INamedTypeSymbol uiViewSymbol, INamedTypeSymbol nsObjectSymbol)
 		{
 			if (context.Operation is IInvocationOperation invocationOperation)
 			{
 				if (invocationOperation.TargetMethod.Name == "Dispose"
-					&& IsType(invocationOperation.TargetMethod.ContainingType, uiViewSymbol)
+					&& IsType(invocationOperation.Instance?.Type, uiViewSymbol)
 					&& (
 						invocationOperation.TargetMethod.Parameters.Length == 0
 						|| (
@@ -80,7 +83,7 @@ namespace Uno.Analyzers
 						var diagnostic = Diagnostic.Create(
 							Rule,
 							context.Operation.Syntax.GetLocation(),
-							invocationOperation.TargetMethod.ToDisplayString()
+							invocationOperation.Instance?.Type?.ToDisplayString()
 						);
 
 						context.ReportDiagnostic(diagnostic);
