@@ -2884,9 +2884,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-<<<<<<< HEAD
+
 		public record When_Header_DataContext_Model(string MyText);
-=======
+
 		[TestMethod]
 		public async Task When_Items_Have_Duplicates_ListView() => await When_Items_Have_Duplicates_Common(new ListView());
 
@@ -3009,7 +3009,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreSame(obj2, removed2.Single());
 			Assert.AreSame(obj1, added2.Single());
 		}
->>>>>>> 868c3ad3a8 (fix(listview): header losing datacontext on ios between frame navigation)
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -3147,8 +3146,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("test value", header.Text);
 		}
 #endif
-<<<<<<< HEAD
-=======
 
 #if __IOS__
 		[TestMethod]
@@ -3195,7 +3192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
 #endif
->>>>>>> 868c3ad3a8 (fix(listview): header losing datacontext on ios between frame navigation)
+
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
