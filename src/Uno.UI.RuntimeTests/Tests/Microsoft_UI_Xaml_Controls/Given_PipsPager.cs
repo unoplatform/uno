@@ -19,6 +19,9 @@ public partial class Given_PipsPager
 {
 	[TestMethod]
 	[RunsOnUIThread]
+#if __WASM__
+	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
+#endif
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages()
 	{
 		var SUT = new PipsPager
