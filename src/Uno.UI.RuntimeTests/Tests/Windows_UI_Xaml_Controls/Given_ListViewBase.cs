@@ -4153,7 +4153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ListView")]
 		public async Task When_Header_With_HeaderTemplate_Only_One_Header_Created(string listViewBaseType)
 		{
-			var SUT = (GridView)XamlReader.Load(
+			var SUT = (ListViewBase)XamlReader.Load(
 				$"""
 				 <{listViewBaseType}
 				 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
