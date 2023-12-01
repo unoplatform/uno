@@ -381,23 +381,9 @@ namespace Windows.UI.Xaml
 		{
 			NativeDispatcher.Main.Enqueue(() =>
 			{
-				if (this.GetParent() is UIElement originalParent)
+				for (var i = 0; i < _children.Count; i++)
 				{
-					originalParent.RemoveChild(this);
-				}
-
-				if (this is Panel panel)
-				{
-					panel.Children.Clear();
-				}
-				else
-				{
-					for (var i = 0; i < _children.Count; i++)
-					{
-						_children[i].SetParent(null);
-					}
-
-					_children.Clear();
+					_children[i].SetParent(null);
 				}
 			}, NativeDispatcherPriority.Idle);
 		}
