@@ -100,9 +100,12 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine("Couldn't get ScanCode from WPF KeyEventArgs.");
-			Console.WriteLine(e);
-			return 0;
+			if (typeof(WpfKeyboardInputSource).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(WpfKeyboardInputSource).Log().LogError("Couldn't get ScanCode from WPF KeyEventArgs.", e);
+			}
+
+			throw;
 		}
 	}
 
