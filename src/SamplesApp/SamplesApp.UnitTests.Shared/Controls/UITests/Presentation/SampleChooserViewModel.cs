@@ -936,21 +936,25 @@ namespace SampleControl.Presentation
 
 			FrameworkElement container = null;
 
-			var frameRequested =
-				newContent.UsesFrame &&
-				typeof(Page).IsAssignableFrom(newContent.ControlType);
-			if (frameRequested)
+			if (newContent.UsesFrame &&
+				typeof(Page).IsAssignableFrom(newContent.ControlType))
 			{
-				var frame = new Frame();
-				frame.Navigate(newContent.ControlType);
-				container = frame;
+				// Creating a new Frame with dynamically instantiated content based on newContent.ControlType
+				// and encapsulating it within a SampleControl along with a description
+				var frame = new Frame { Content = Activator.CreateInstance(newContent.ControlType) };
+				container = new Uno.UI.Samples.Controls.SampleControl
+				{
+					Content = frame,
+					SampleDescription = newContent.Description
+				};
 			}
 			else
 			{
-				//Activator is used here in order to generate the view and bind it directly with the proper view model
+				// Activator is used here in order to generate the view and bind it directly with the proper view model
 				var control = Activator.CreateInstance(newContent.ControlType);
 
-				if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
+				if (control is ContentControl controlAsContentControl
+					&& controlAsContentControl.Content is not Uno.UI.Samples.Controls.SampleControl)
 				{
 					control = new Uno.UI.Samples.Controls.SampleControl
 					{
