@@ -6,17 +6,16 @@ namespace Windows.UI.Xaml.Automation;
 public enum ScrollAmount
 {
 	/// <summary>
-	/// Specifies that scrolling is performed in large decrements, which is equivalent 
-	/// to pressing the PAGE UP key or to clicking a blank part of a scrollbar. 
-	/// If the distance represented by the PAGE UP key is not a relevant amount 
-	/// for the control, or if no scrollbar exists, the value represents an amount equal 
-	/// to the size of the currently visible window.
+	/// Specifies that scrolling is performed in large decrements, which is equivalent to pressing the PAGE UP key 
+	/// or to clicking a blank part of a scrollbar. If the distance represented by the PAGE UP key is not a relevant 
+	/// amount for the control, or if no scrollbar exists, the value represents an amount equal to the size of the 
+	/// currently visible window.
 	/// </summary>
 	LargeDecrement,
 
 	/// <summary>
-	/// Specifies that scrolling is performed in small decrements, which is equivalent 
-	/// to pressing an arrow key or to clicking the arrow button on a scrollbar.
+	/// Specifies that scrolling is performed in small decrements, which is equivalent to pressing an arrow key or to
+	/// clicking the arrow button on a scrollbar.
 	/// </summary>
 	SmallDecrement,
 
@@ -26,17 +25,14 @@ public enum ScrollAmount
 	NoAmount,
 
 	/// <summary>
-	/// Specifies that scrolling is performed in large increments, which is equivalent 
-	/// to pressing the PAGE DOWN key or to clicking a blank part of a scrollbar. 
-	/// If the distance represented by the PAGE DOWN key is not a relevant amount 
-	/// for the control, or if no scrollbar exists, the value represents an amount equal 
-	/// to the size of the currently visible region.
+	/// Specifies that scrolling is performed in small decrements, which is equivalent to pressing an arrow key or to
+	/// clicking the arrow button on a scrollbar.
 	/// </summary>
 	LargeIncrement,
 
 	/// <summary>
-	/// Specifies that scrolling is performed in small increments, which is equivalent 
-	/// to pressing an arrow key or to clicking the arrow button on a scrollbar.
+	/// Specifies that scrolling is performed in small increments, which is equivalent to pressing an arrow key or to 
+	/// clicking the arrow button on a scrollbar.
 	/// </summary>
 	SmallIncrement
 }

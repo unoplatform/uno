@@ -1286,6 +1286,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_Space_Or_Enter()
+		{
+			var SUT = new ListView
+			{
+				ItemsSource = "012345"
+			};
+
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT
+				}
+			};
+
+			var handled = false;
+			grid.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, args) => handled = args.Handled), true);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+
+			var lvi1 = (ListViewItem)SUT.ContainerFromIndex(0);
+			lvi1.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.Space();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(lvi1.IsSelected);
+			Assert.IsTrue(handled);
+
+			handled = false;
+
+			SUT.SelectedIndex = -1;
+
+			KeyboardHelper.Enter();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(handled);
+		}
+
+		[TestMethod]
 		public async Task When_IsItsOwnItemContainer_Recycling()
 		{
 			var SUT = new ListView()

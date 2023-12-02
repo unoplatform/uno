@@ -27,12 +27,6 @@ What kind of change does this PR introduce?
 
 <!-- Please describe the new behavior after your modifications. -->
 
-## Copilot Summary
-
-<!-- This allows GitHub Copilot to provide a summary for your PR -->
-<!-- Please do not touch the next line, it will be replaced with the generated summary -->
-copilot:summary
-
 ## PR Checklist
 
 Please check if your PR fulfills the following requirements:
