@@ -2,32 +2,40 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: TabViewItem.h, commit 27052f7
 
+#nullable enable
+
 using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class TabViewItem
 {
-	public partial class TabViewItem
-	{
-		private Button m_closeButton = null;
-		private ToolTip m_toolTip = null;
-		private ContentPresenter m_headerContentPresenter = null;
-		private TabViewWidthMode m_tabViewWidthMode = TabViewWidthMode.Equal;
-		private TabViewCloseButtonOverlayMode m_closeButtonOverlayMode = TabViewCloseButtonOverlayMode.Auto;
+	internal Button? GetCloseButton() => m_closeButton;
 
-		private bool m_firstTimeSettingToolTip = true;
+	private bool m_hasPointerCapture = false;
+	private bool m_isMiddlePointerButtonPressed = false;
+	private bool m_isDragging = false;
+	private bool m_isPointerOver = false;
+	private bool m_firstTimeSettingToolTip = true;
 
-		//private readonly SerialDisposable m_closeButtonClickRevoker = new SerialDisposable();
-		//private readonly SerialDisposable m_tabDragStartingRevoker = new SerialDisposable();
-		//private readonly SerialDisposable m_tabDragCompletedRevoker = new SerialDisposable();
+	private Path? m_selectedBackgroundPath;
+	private Button? m_closeButton;
+	private ToolTip? m_toolTip;
+	private ContentPresenter? m_headerContentPresenter;
+	private TabViewWidthMode m_tabViewWidthMode = TabViewWidthMode.Equal;
+	private TabViewCloseButtonOverlayMode m_closeButtonOverlayMode = TabViewCloseButtonOverlayMode.Auto;
 
-		private bool m_hasPointerCapture = false;
-		private bool m_isMiddlePointerButtonPressed = false;
-		private bool m_isDragging = false;
-		private bool m_isPointerOver = false;
+	private readonly SerialDisposable m_selectedBackgroundPathSizeChangedRevoker = new();
+	private readonly SerialDisposable m_closeButtonClickRevoker = new();
+	private readonly SerialDisposable m_tabDragStartingRevoker = new();
+	private readonly SerialDisposable m_tabDragCompletedRevoker = new();
 
-		private object m_shadow = null;
+	private object? m_shadow;
 
-		private TabView m_parentTabView = null;
-	}
+	private TabView? m_parentTabView;
+
+	private DispatcherHelper m_dispatcherHelper;
 }

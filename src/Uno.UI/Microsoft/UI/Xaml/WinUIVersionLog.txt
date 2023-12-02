@@ -18,3 +18,4 @@
 \Controls\RatingControl  : 3c73749
 \Controls\NavigationView : 263622f
 \Controls\PipsPager      : 737b6ab
+\Controls\TabView        : 5f52761
