@@ -25,6 +25,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private protected bool _changingSelectedIndex;
 		private protected bool _isUpdatingSelection;
 
+		// The order at which the XAML properties are set on Selector should not matter.
+		// SelectedItem might be set before ItemsSource is set, in which case the SelectedItem
+		// value in m_itemPendingSelection until ItemsSource is set.
+		private protected object m_itemPendingSelection;
+
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
 		private protected int m_iFocusedIndex;
@@ -125,6 +130,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else
 				{
+					if (ItemsSource is null)
+					{
+						m_itemPendingSelection = selectedItem;
+					}
+
 					var selectionToReset = items?.Contains(oldSelectedItem) ?? false ?
 						oldSelectedItem
 						// Note: in this scenario (previous SelectedItem no longer in collection either), Windows still leaves it at the
@@ -422,6 +432,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnItemsSourceChanged(e);
 			TrySubscribeToCurrentChanged();
 			Refresh();
+
+			if (e.NewValue is { } && m_itemPendingSelection is { })
+			{
+				bool itemFound;
+
+				var items = GetItems();
+
+				// Check if we're trying to restore a value that's not in the collection.
+				itemFound = items.IndexOf(m_itemPendingSelection) != -1;
+				if (itemFound)
+				{
+					SelectedItem = m_itemPendingSelection;
+				}
+
+				m_itemPendingSelection = null;
+			}
 		}
 
 		private void TrySubscribeToCurrentChanged()
