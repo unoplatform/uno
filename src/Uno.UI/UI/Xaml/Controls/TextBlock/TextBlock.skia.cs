@@ -88,7 +88,11 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual.Size = new Vector2((float)arrangedSizeWithoutPadding.Width, (float)arrangedSizeWithoutPadding.Height);
 			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
 			ApplyFlowDirection((float)finalSize.Width);
-			return base.ArrangeOverride(finalSize);
+
+			var result = base.ArrangeOverride(finalSize);
+			UpdateIsTextTrimmed();
+
+			return result;
 		}
 
 		/// <summary>
@@ -168,6 +172,14 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnLineStackingStrategyChangedPartial()
 		{
 			Inlines.InvalidateMeasure();
+		}
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				(_textVisual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
+				(_textVisual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
+			);
 		}
 	}
 }

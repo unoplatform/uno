@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+using System.Collections.Generic;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -367,5 +368,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				previousOrigin = textBlockOrigin;
 			}
 		}
+
+#if !__MACOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming()
+		{
+			var sut = new TextBlock
+			{
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				TextTrimming = TextTrimming.Clip,
+			};
+			var container = new Border
+			{
+				BorderThickness = new Thickness(1),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				Width = 100,
+				Child = sut,
+			};
+
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
+
+			Assert.IsTrue(sut.IsTextTrimmed, "IsTextTrimmed should be trimmed.");
+			Assert.IsTrue(states.Count == 1 && states[0] == true, $"IsTextTrimmedChanged should only proc once for IsTextTrimmed=true. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimmingNone()
+		{
+			var sut = new TextBlock
+			{
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				TextTrimming = TextTrimming.None,
+			};
+			var container = new Border
+			{
+				BorderThickness = new Thickness(1),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				Width = 100,
+				Child = sut,
+			};
+
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
+
+			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
+			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+		}
+#endif
 	}
 }
