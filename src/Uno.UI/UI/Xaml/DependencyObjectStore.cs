@@ -1857,7 +1857,8 @@ namespace Microsoft.UI.Xaml
 					// Uno TODO: What should we do here for non-UIElements (if anything is needed)?
 					if (actualInstanceAlias is UIElement elt)
 					{
-						Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
+						var visual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt);
+						visual.Compositor.InvalidateRender(visual);
 					}
 				}
 
