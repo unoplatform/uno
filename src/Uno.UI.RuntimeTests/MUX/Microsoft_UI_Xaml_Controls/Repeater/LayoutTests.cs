@@ -25,6 +25,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
+using UniformGridLayoutItemsJustification = Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification;
 using FlowLayoutLineAlignment = Microsoft.UI.Xaml.Controls.FlowLayoutLineAlignment;
 using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
 using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
@@ -32,10 +33,13 @@ using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
 using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
 using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
 using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
+using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
 using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
 using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
 using ElementRealizationOptions = Microsoft.UI.Xaml.Controls.ElementRealizationOptions;
 using LayoutContext = Microsoft.UI.Xaml.Controls.LayoutContext;
+using LayoutPanel = Microsoft.UI.Xaml.Controls.LayoutPanel;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -44,7 +48,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateMappingAndAutoRecycling()
 		{
 			ItemsRepeater repeater = null;
@@ -98,9 +101,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __IOS__ || __ANDROID__ || __MACOS__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void ValidateNonVirtualLayoutWithItemsRepeater()
 		{
 			RunOnUIThread.Execute(() =>
@@ -110,8 +110,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.ItemsSource = Enumerable.Range(0, 10);
 				repeater.ItemTemplate = (DataTemplate)XamlReader.Load(
 					@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-						 <Button Content='{Binding}' Height='100' />
-					</DataTemplate>");
+                         <Button Content='{Binding}' Height='100' />
+                    </DataTemplate>");
 
 				Content = repeater;
 				Content.UpdateLayout();
@@ -130,7 +130,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateNonVirtualLayoutDoesNotGetMeasuredForViewportChanges()
 		{
 			RunOnUIThread.Execute(() =>
@@ -158,8 +157,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.ItemsSource = Enumerable.Range(0, 10);
 				repeater.ItemTemplate = (DataTemplate)XamlReader.Load(
 					@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-						 <Button Content='{Binding}' Height='100' />
-					</DataTemplate>");
+                         <Button Content='{Binding}' Height='100' />
+                    </DataTemplate>");
 
 				Content = new ScrollViewer()
 				{
@@ -197,7 +196,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 		public void ValidateStackLayoutDoesNotRetainIncorrectMinorWidth()
 		{
 			RunOnUIThread.Execute(() =>
@@ -229,12 +227,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __IOS__
-		[Ignore("UNO: Test does not pass yet with Uno (causes infinite layout cycle) https://github.com/unoplatform/uno/issues/4529")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void ValidateStackLayoutDisabledVirtualizationWithItemsRepeater()
 		{
 			RunOnUIThread.Execute(() =>
@@ -246,8 +238,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.ItemsSource = Enumerable.Range(0, 10);
 				repeater.ItemTemplate = (DataTemplate)XamlReader.Load(
 					@"<DataTemplate  xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-						 <Button Content='{Binding}' Height='100' />
-					</DataTemplate>");
+                         <Button Content='{Binding}' Height='100' />
+                    </DataTemplate>");
 
 				var scrollViewer = new ScrollViewer()
 				{
@@ -263,6 +255,53 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					Verify.IsNotNull(child);
 				}
 			});
+		}
+
+		[TestMethod]
+		public void VerifyUniformGridLayoutDoesntCrashWhenTryingToScrollToEnd()
+		{
+
+			ItemsRepeater repeater = null;
+			ScrollViewer scrollViewer = null;
+			RunOnUIThread.Execute(() =>
+			{
+				repeater = new ItemsRepeater
+				{
+					ItemsSource = Enumerable.Range(0, 1000).Select(i => new Border
+					{
+						Background = new SolidColorBrush(Colors.Blue),
+						Child = new TextBlock { Text = "#" + i }
+					}).ToArray(),
+					Layout = new UniformGridLayout
+					{
+						MinItemWidth = 100,
+						MinItemHeight = 40,
+						MinRowSpacing = 10,
+						MinColumnSpacing = 10
+					}
+				};
+				scrollViewer = new ScrollViewer { Content = repeater };
+				Content = scrollViewer;
+			});
+
+			IdleSynchronizer.Wait();
+
+			RunOnUIThread.Execute(() =>
+			{
+				scrollViewer.ChangeView(0, repeater.ActualHeight, null);
+			});
+
+			IdleSynchronizer.Wait();
+
+			RunOnUIThread.Execute(() =>
+			{
+				scrollViewer.ChangeView(0, 0, null);
+			});
+
+			IdleSynchronizer.Wait();
+
+			// The test guards against an app crash, so this is enough to verify
+			Verify.IsTrue(true);
 		}
 
 		private ItemsRepeaterScrollHost CreateAndInitializeRepeater(
@@ -298,9 +337,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		{
 			return (DataTemplate)XamlReader.Load(
 					   string.Format(@"<DataTemplate  
-							xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-						   {0}
-						</DataTemplate>", content));
+                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                           {0}
+                        </DataTemplate>", content));
 		}
 	}
 }
