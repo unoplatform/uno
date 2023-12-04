@@ -41,16 +41,14 @@ namespace Uno.UI.Controls
 				_commandBar = new WeakReference<CommandBar?>(commandBar);
 			}
 
-			if (commandBar?.TryGetRenderer<CommandBar, CommandBarRenderer>() is { } commandBarRenderer)
+			if ((commandBar?.TryGetNative<CommandBar, CommandBarRenderer, UINavigationBar>(out var nativeBar) ?? false)
+				&& nativeBar is { })
 			{
-				if (commandBarRenderer.Native is { } nativeBar)
-				{
-					LayoutNativeBar(nativeBar);
-				}
+				LayoutNativeBar(nativeBar);
 			}
 			else if (commandBar is { } && FeatureConfiguration.CommandBar.AllowNativePresenterContent)
 			{
-				commandBarRenderer = new CommandBarRenderer(commandBar);
+				var commandBarRenderer = new CommandBarRenderer(commandBar);
 				commandBar.SetRenderer(commandBarRenderer);
 
 
@@ -58,13 +56,13 @@ namespace Uno.UI.Controls
 				commandBar.SetRenderer(commandBarItemRenderer);
 
 				var navigationItem = new UINavigationItem();
-				var nativeBar = new UINavigationBar();
-				nativeBar.PushNavigationItem(navigationItem, false);
+				var navBar = new UINavigationBar();
+				navBar.PushNavigationItem(navigationItem, false);
 
 				commandBarItemRenderer.Native = navigationItem;
-				commandBarRenderer.Native = nativeBar;
+				commandBarRenderer.Native = navBar;
 
-				LayoutNativeBar(nativeBar);
+				LayoutNativeBar(navBar);
 			}
 		}
 
