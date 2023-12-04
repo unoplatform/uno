@@ -293,7 +293,7 @@
 		<Compile Remove="XamlCodeGeneratorTests\Given_AttachedPropertyWithNoFuzzyMatching.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_Binding.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_Grid.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_Given_HotReloadEnabledInBuild.cs" />
+		<Compile Remove="XamlCodeGeneratorTests\Given_HotReloadEnabledInBuild.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_MvvmGeneratedMembers.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_Parser.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_ResourceDictionary.cs" />
