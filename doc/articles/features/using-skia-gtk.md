@@ -17,15 +17,17 @@ Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode), [Vis
 ### Additional setup
 # [**Windows**](#tab/windows)
 
-[!include[windows-setup](additional-windows-setup-inline.md)]
+[!include[windows-setup](../additional-windows-setup-inline.md)]
 
 # [**Linux**](#tab/linux)
 
-[!include[linux-setup](additional-linux-setup-inline.md)]
+[!include[linux-setup](../additional-linux-setup-inline.md)]
 
 # [**macOS**](#tab/macos)
 
-[!include[macos-setup](additional-macos-setup-inline.md)]
+[!include[macos-setup](../additional-macos-setup-inline.md)]
+
+***
 
 Once done, you can create a new app with [`dotnet new`](xref:Uno.GetStarted.dotnet-new) using:
 
