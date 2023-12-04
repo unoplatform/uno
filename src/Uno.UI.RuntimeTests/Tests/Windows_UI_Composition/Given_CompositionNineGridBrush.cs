@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Uno.UI.Dispatching;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Media;
+
+#if HAS_UNO
+using Uno.UI.Dispatching;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -19,9 +22,11 @@ public class Given_CompositionNineGridBrush
 	[RunsOnUIThread]
 	public async Task When_Source_Changes()
 	{
+#if HAS_UNO
 		var expectedThreadId = -1;
 		NativeDispatcher.Main.Enqueue(() => expectedThreadId = Environment.CurrentManagedThreadId, NativeDispatcherPriority.High);
 		await TestServices.WindowHelper.WaitFor(() => expectedThreadId != -1);
+#endif
 
 		var compositor = Window.Current.Compositor;
 
@@ -61,10 +66,12 @@ public class Given_CompositionNineGridBrush
 		bool loadCompleted = false;
 		surface.LoadCompleted += async (s, o) =>
 		{
+#if HAS_UNO
 			if (Environment.CurrentManagedThreadId != expectedThreadId)
 			{
 				Assert.Fail("LoadCompleted event is run on thread pool incorrectly");
 			}
+#endif
 
 			if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
 			{
