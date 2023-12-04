@@ -37,6 +37,10 @@ using Uno.UI;
 
 using static Private.Infrastructure.TestServices;
 
+#if HAS_UNO
+using static Uno.UI.Extensions.ViewExtensions;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase // resources
@@ -3382,6 +3386,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("test value", header.Text);
 		}
 #endif
+
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HeaderDataContext_Cleared_FromNavigation()
+		{
+			var frame = new Frame();
+
+			WindowHelper.WindowContent = frame;
+			await WindowHelper.WaitFor(() => frame.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			frame.Navigate(typeof(When_HeaderDataContext_Cleared_FromNavigation_Page));
+			await WindowHelper.WaitForIdle();
+
+			var page = (When_HeaderDataContext_Cleared_FromNavigation_Page)frame.Content;
+			var sut = frame.FindFirstDescendant<ListView>();
+			var panel = (NativeListViewBase)sut.InternalItemsPanelRoot;
+
+			page.LvHeaderDcChanged += (s, e) => { /* for debugging */ };
+			Assert.IsNotNull(page.DataContext);
+
+			for (var i = 0; i < 3; i++) // may not always trigger, but 3 times is usually more than enough
+			{
+				// scroll header out of viewport and back in
+				ScrollTo(sut, 100000);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+				ScrollTo(sut, 0);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+
+				// frame navigate away and back
+				frame.Navigate(typeof(BackNavigationPage));
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+				frame.GoBack();
+				await WindowHelper.WaitForIdle();
+
+				// check if data-context is still set
+				Assert.AreEqual(GetListViewHeader()?.DataContext, page.DataContext);
+			}
+
+			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
+		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -3648,6 +3698,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
 			protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
+		}
+
+		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
+		{
+			public bool Equals(AlwaysEqualClass obj) => true;
+			public override bool Equals(object obj) => true;
+			public override int GetHashCode() => 0;
+		}
+
+#if HAS_UNO
+		public partial class When_HeaderDataContext_Cleared_FromNavigation_Page : Page
+		{
+			public event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> LvHeaderDcChanged;
+
+			public When_HeaderDataContext_Cleared_FromNavigation_Page()
+			{
+				DataContext = "MainVM";
+				Content = new Grid
+				{
+					RowDefinitions =
+					{
+						new() { Height = new GridLength(1, GridUnitType.Auto) },
+						new() { Height = new GridLength(1, GridUnitType.Star) },
+					},
+					Children =
+					{
+						new Button { Content = "Next" }.Apply(x =>
+						{
+							Grid.SetRow(x, 0);
+							x.Click += (s, e) => Frame.Navigate(typeof(BackNavigationPage));
+						}),
+						new ListView
+						{
+							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
+							HeaderTemplate = new DataTemplate(() => new StackPanel
+							{
+								new TextBlock() { Text = "header" },
+								new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+							}.Apply(x => x.DataContextChanged += (s, e) => LvHeaderDcChanged?.Invoke(s, e))),
+						}.Apply(x => Grid.SetRow(x, 1)),
+					},
+				};
+			}
+		}
+#endif
+
+		public partial class BackNavigationPage : Page
+		{
+			public BackNavigationPage()
+			{
+				Content = new Button().Apply(x => x.Click += (s, e) => Frame.GoBack());
+			}
 		}
 	}
 
