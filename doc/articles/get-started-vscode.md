@@ -36,18 +36,18 @@ No other extensions are needed to complete this guide.
 
 ## C# Dev Kit Compatibility
 
-At this time, the preview version of the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit` is not compatible with the Uno Platform extension. It requires a preview version of the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` that contains major breaking changes.
+At this time, the current version of the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit` is not compatible with the Uno Platform extension. It requires a version of the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` that contains major breaking changes.
 
 You can use both the Uno Platform and C# Dev Kit extensions but not simultaneously. The easiest way to accomplish this is to [create profiles](https://code.visualstudio.com/docs/editor/profiles) inside VSCode. Using this method, you can:
 
 1. Create one profile for **Uno Platform**
 2. Disable, if installed, C# Dev Kit extension
-3. Enable `useOmnisharp` inside the configuration
+3. Open the VS Code Settings using `Ctrl` + `,` (or `⌘` + `,` on a Mac), then search for `useOmnisharp` and enable it (checkbox)
 ![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
 
 4. Create another profile for **C# Dev Kit**
 5. Enable (or install) the C# Dev Kit extension
-6. Ensure that `useOmnisharp` is disabled inside the configuration
+6. Ensure that `useOmnisharp` is disabled inside the the VS Code Settings for this profile
 7. Disable the Uno Platform extension
 
 You can then switch between both profiles according to the type of dotnet project you are developing.
