@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
+using Uno.UI.Dispatching;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -18,6 +19,10 @@ public class Given_CompositionNineGridBrush
 	[RunsOnUIThread]
 	public async Task When_Source_Changes()
 	{
+		var expectedThreadId = -1;
+		NativeDispatcher.Main.Enqueue(() => expectedThreadId = Environment.CurrentManagedThreadId, NativeDispatcherPriority.High);
+		await TestServices.WindowHelper.WaitFor(() => expectedThreadId != -1);
+
 		var compositor = Window.Current.Compositor;
 
 		var onlineSource = new Image
@@ -56,6 +61,11 @@ public class Given_CompositionNineGridBrush
 		bool loadCompleted = false;
 		surface.LoadCompleted += async (s, o) =>
 		{
+			if (Environment.CurrentManagedThreadId != expectedThreadId)
+			{
+				Assert.Fail("LoadCompleted event is run on thread pool incorrectly");
+			}
+
 			if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
 			{
 				var offlineBrush = compositor.CreateSurfaceBrush(surface);
