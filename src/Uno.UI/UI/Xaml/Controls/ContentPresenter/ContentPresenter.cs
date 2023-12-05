@@ -6,6 +6,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
@@ -580,6 +581,85 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			// Applying the template will not delete existing visuals. This will be done conditionally
+		    // when the template is invalidated.
+			// if (GetChildren().Count == 0) // Uno specific: since we don't call this early enough, we have to comment out the condition
+			{
+				ContentControl pTemplatedParent = TemplatedParent as ContentControl;
+
+				// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
+				// two content related properties.
+				if (pTemplatedParent != null)
+				{
+					// bool needsRefresh = false;
+					DependencyProperty pdpTarget;
+
+					// By default Content and ContentTemplate are template are bound.
+					// If no template binding exists already then hook them up now
+					// pdpTarget = GetPropertyByIndexInline(KnownPropertyIndex::ContentPresenter_SelectedContentTemplate);
+					// IFCEXPECT(pdpTarget);
+					// if (IsPropertyDefault(pdpTarget) && !IsPropertyTemplateBound(pdpTarget))
+					// {
+					// 	const CDependencyProperty* pdpSource = pTemplatedParent->GetPropertyByIndexInline(KnownPropertyIndex::ContentControl_SelectedContentTemplate);
+					// 	IFCEXPECT(pdpSource);
+					//
+					// 	IFC(SetTemplateBinding(pdpTarget, pdpSource));
+					// 	needsRefresh = true;
+					// }
+
+					// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
+					pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
+					Debug.Assert(pdpTarget is { });
+					var store = ((IDependencyObjectStoreProvider)this).Store;
+					if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
+						!store.IsPropertyTemplateBound(pdpTarget))
+					{
+						DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
+						Debug.Assert(pdpSource is { });
+
+						store.SetTemplateBinding(pdpTarget, pdpSource);
+						// needsRefresh = true;
+					}
+
+					pdpTarget = ContentPresenter.ContentTemplateProperty;
+					Debug.Assert(pdpTarget is { });
+					if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
+						!store.IsPropertyTemplateBound(pdpTarget))
+					{
+						DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
+						Debug.Assert(pdpSource is { });
+
+						store.SetTemplateBinding(pdpTarget, pdpSource);
+						// needsRefresh = true;
+					}
+
+					pdpTarget = ContentPresenter.ContentProperty;
+					Debug.Assert(pdpTarget is { });
+					if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
+						!store.IsPropertyTemplateBound(pdpTarget))
+					{
+						DependencyProperty pdpSource = ContentControl.ContentProperty;
+						Debug.Assert(pdpSource is { });
+
+						store.SetTemplateBinding(pdpTarget, pdpSource);
+						// needsRefresh = true;
+					}
+
+					// Uno specific: uno bindings don't work this way
+					// Setting up the binding doesn't get you the values.  We need to call refresh to get the latest value
+					// for m_pContentTemplate, SelectedContentTemplate and/or m_pContent for the tests below.
+					// if (needsRefresh)
+					// {
+					// 	IFC(pTemplatedParent->RefreshTemplateBindings(TemplateBindingsRefreshType::All));
+					// }
+				}
+			}
+		}
+
 		protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
 			OnForegroundColorChangedPartial(oldValue, newValue);
@@ -798,6 +878,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				dependencyObject.SetParent(null);
 			}
+		}
+
+		private protected override void OnLoading()
+		{
+			OnApplyTemplate(); // UNO Specific: in Uno, OnApplyTemplate is only called for Controls, not FrameworkElements
 		}
 
 		private protected override void OnLoaded()
