@@ -1,5 +1,5 @@
 ---
-uid: Uno.GettingStarted.CreateAnApp.rider
+uid: Uno.GettingStarted.CreateAnApp.Rider
 ---
 
 # Create an app with Rider
