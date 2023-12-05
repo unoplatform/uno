@@ -10,6 +10,7 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml;
 
 using Uno.UI.Extensions;
@@ -182,7 +183,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 			RestoreScroll();
-			RegisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+			RegisterEventHandler("scroll", (RoutedEventHandlerWithHandled)OnScroll, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+
+			// a workaround to make scrolling cancelable on WASM
+			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged), true);
+		}
+
+		private void OnPointerWheelChanged(object _, PointerRoutedEventArgs args)
+		{
+			// On other Uno targets, handling PointerWheelChanged cancels the scrolling (which makes sense, but doesn't necessarily
+			// match WinUI). So, to make the behaviour uniform, we also prevent native scrolling here.
+			// Unlike KeyDown, we can't wait until OnScroll to prevent the scrolling. We have to cancel it right here.
+			if (args.Handled)
+			{
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+			}
 		}
 
 		private void RestoreScroll()
@@ -202,7 +217,9 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			UnregisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+			UnregisterEventHandler("scroll", new RoutedEventHandlerWithHandled(OnScroll), GenericEventHandlers.RaiseEventHandler);
+
+			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged));
 
 			if (_rootEltUsedToProcessScrollTo is { } rootElt)
 			{
@@ -319,8 +336,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnScroll(object sender, EventArgs args)
+		private bool OnScroll(object sender, RoutedEventArgs routedEventArgs)
 		{
+			if (Scroller?.CancelNextNativeScroll ?? false)
+			{
+				return true;
+			}
 			// We don't have any information from the DOM 'scroll' event about the intermediate vs. final state.
 			// We could try to rely on the IsPointerPressed state to detect when the user is scrolling and use it.
 			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
@@ -345,7 +366,7 @@ namespace Windows.UI.Xaml.Controls
 				// When the native element of the SCP is becoming "valid" with a non 0 offset, it will raise a scroll event.
 				// But if we have a manual scroll request pending, we need to mute it and wait for the next layout updated.
 
-				return;
+				return false;
 			}
 
 			_pendingScrollTo = default;
@@ -357,6 +378,8 @@ namespace Windows.UI.Xaml.Controls
 
 			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
 			InvalidateViewport();
+
+			return false;
 		}
 
 		private double GetNativeHorizontalOffset()

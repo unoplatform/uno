@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using DirectUI;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Resources;
@@ -331,7 +332,7 @@ namespace Windows.UI.Xaml.Controls
 
 				string strAutomationName;
 				string strParentAutomationName;
-				// string strComboAutomationName;
+				string strComboAutomationName;
 
 				//Clean up existing parts
 				if (m_tpDayPicker != null)
@@ -448,8 +449,7 @@ namespace Windows.UI.Xaml.Controls
 					spHeaderAsInspectable = Header;
 					if (spHeaderAsInspectable != null)
 					{
-						// UNO TODO
-						// (FrameworkElement.GetStringFromObject(spHeaderAsInspectable, strParentAutomationName));
+						strParentAutomationName = FrameworkElement.GetStringFromObject(spHeaderAsInspectable);
 					}
 				}
 				// Hook up the selection changed events for selectors, we will be reacting to these events.
@@ -462,10 +462,9 @@ namespace Windows.UI.Xaml.Controls
 					strAutomationName = AutomationProperties.GetName(m_tpDayPicker);
 					if (strAutomationName == null)
 					{
-						// UNO TODO
-						//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_DAY, strAutomationName));
-						//strAutomationName += strParentAutomationName + strComboAutomationName;
-						//AutomationProperties.SetName(m_tpDayPicker as ComboBox, strComboAutomationName);
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_DAY");
+						strComboAutomationName = strAutomationName + strParentAutomationName;
+						AutomationProperties.SetName(m_tpDayPicker as ComboBox, strComboAutomationName);
 					}
 				}
 				if (m_tpMonthPicker != null)
@@ -477,10 +476,9 @@ namespace Windows.UI.Xaml.Controls
 					strAutomationName = AutomationProperties.GetName(m_tpMonthPicker as ComboBox);
 					if (strAutomationName == null)
 					{
-						// UNO TODO
-						//(DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_MONTH, strAutomationName));
-						//strAutomationName += strParentAutomationName + strComboAutomationName;
-						//AutomationProperties.SetName(m_tpMonthPicker as ComboBox, strComboAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_MONTH");
+						strComboAutomationName = strAutomationName + strParentAutomationName;
+						AutomationProperties.SetName(m_tpMonthPicker as ComboBox, strComboAutomationName);
 					}
 				}
 				if (m_tpYearPicker != null)
@@ -492,10 +490,9 @@ namespace Windows.UI.Xaml.Controls
 					strAutomationName = AutomationProperties.GetName(m_tpYearPicker as ComboBox);
 					if (strAutomationName == null)
 					{
-						// UNO TODO
-						//DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_DATEPICKER_YEAR, strAutomationName);
-						//strAutomationName += strParentAutomationName + strComboAutomationName;
-						//AutomationProperties.SetName(m_tpYearPicker as ComboBox, strComboAutomationName);
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_DATEPICKER_YEAR");
+						strComboAutomationName = strAutomationName + strParentAutomationName;
+						AutomationProperties.SetName(m_tpYearPicker as ComboBox, strComboAutomationName);
 					}
 				}
 

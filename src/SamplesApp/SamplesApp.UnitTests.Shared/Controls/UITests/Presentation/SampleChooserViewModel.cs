@@ -620,6 +620,13 @@ namespace SampleControl.Presentation
 			return starts.Concat(contains).ToList();
 		}
 
+		public void TryOpenSample()
+		{
+			if (FilteredSamples.Count is 1)
+			{
+				SelectedSearchSample = FilteredSamples[0];
+			}
+		}
 
 		/// <summary>
 		/// This method is used to get the list of samplechoosercontent that is present in the settings.

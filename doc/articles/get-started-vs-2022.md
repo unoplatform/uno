@@ -52,7 +52,15 @@ To setup your environment for WSL:
 
 ## Additional Setup for Skia+GTK projects
 
+# [**Windows**](#tab/windows)
+
 [!include[windows-setup](additional-windows-setup-inline.md)]
+
+# [**WSL**](#tab/linux)
+
+[!include[linux-setup](additional-linux-setup-inline.md)]
+
+*** 
 
 ## Next Steps
 

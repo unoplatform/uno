@@ -185,6 +185,25 @@ public partial class PipsPager : Control
 		return new Size(0.0, 0.0);
 	}
 
+	// UNO TODO: this is a workaround for the case when MaxVisiblePips is less than NumberOfPages.
+	// Our current implementation of ScrollContentPresenter  doesn't calculate CanHorizontallyScroll correctly,
+	// and therefore sends an incorrect availableSize to children during the layout cycle.
+	// so we temporarily force it to be scrollable in order to layout correctly and then set it back so that
+	// it's still not scrollable with a pointer, etc.
+	protected override Size MeasureOverride(Size availableSize)
+	{
+		if (m_pipsPagerScrollViewer?.Presenter is { } presenter)
+		{
+			var canHorizontallyScroll = presenter.CanHorizontallyScroll;
+			presenter.CanHorizontallyScroll = true;
+			var result = base.MeasureOverride(availableSize);
+			presenter.CanHorizontallyScroll = canHorizontallyScroll;
+			return result;
+		}
+
+		return base.MeasureOverride(availableSize);
+	}
+
 	protected override void OnKeyDown(KeyRoutedEventArgs args)
 	{
 		FocusNavigationDirection previousPipDirection;
