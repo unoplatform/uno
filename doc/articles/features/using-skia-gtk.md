@@ -11,16 +11,26 @@ Depending on the target platform, the UI rendering may be using OpenGL or softwa
 Note that for Linux, the [framebuffer rendering](using-linux-framebuffer.md) head is also available.
 
 ## Get started with the Skia+GTK head
-Follow the getting started guide [for Linux](xref:Uno.GetStarted.Linux), [Windows](xref:Uno.GetStarted.vs2022) or [VS Ccode for macOS](xref:Uno.GetStarted.vscode).
+Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode), [Visual Studio 2022](xref:Uno.GetStarted.vs2022).
 
-Additionally:
-- If you're using Windows, you will need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
-- If you're using macOS, you will need to make sure to install `gtk+3` package using the following command line:
-   ```bash
-   brew install gtk+3
-   ```
+
+### Additional setup
+# [**Windows**](#tab/windows)
+
+[!include[windows-setup](../additional-windows-setup-inline.md)]
+
+# [**Linux**](#tab/linux)
+
+[!include[linux-setup](../additional-linux-setup-inline.md)]
+
+# [**macOS**](#tab/macos)
+
+[!include[macos-setup](../additional-macos-setup-inline.md)]
+
+***
 
 Once done, you can create a new app with [`dotnet new`](xref:Uno.GetStarted.dotnet-new) using:
+
 ```
 dotnet new unoapp --preset=blank -o MyApp
 ```
