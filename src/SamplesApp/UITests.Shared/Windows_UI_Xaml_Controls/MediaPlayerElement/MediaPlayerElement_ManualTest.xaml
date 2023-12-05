@@ -31,7 +31,7 @@
 		<MediaPlayerElement Grid.Row="3"
 					x:Name="mpe"
 					Stretch="UniformToFill"
-					Source="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4"
+					Source="https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4"
 					AreTransportControlsEnabled="True"
 					AutoPlay="False">
 			<MediaPlayerElement.TransportControls>
