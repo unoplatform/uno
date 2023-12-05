@@ -15,12 +15,13 @@
 // adapting to different screen sizes, for use in media queries.
 
 $grid-breakpoints: (xs: 0,
-        sm: 576px,
-        mobile: 767px,
+        sm: 375px,
         md: 768px,
-        lg: 980px,
-        tablet: 1024px,
-        xl: 1200px) !default;
+        mobile: 769px,
+        tablet: 991px,
+        lg: 1024px,
+        navbar: 1180px,
+        xl: 1440px) !default;
 
 // Name of the next breakpoint, or null for the last breakpoint.
 //
@@ -81,6 +82,21 @@ $grid-breakpoints: (xs: 0,
 
   @if $max {
     @media (max-width: $max) {
+      @content;
+    }
+  }
+
+  @else {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($lower, $breakpoints);
+  $max: breakpoint-max($upper, $breakpoints);
+
+  @if $min and $max {
+    @media (min-width: $min) and (max-width: $max) {
       @content;
     }
   }
