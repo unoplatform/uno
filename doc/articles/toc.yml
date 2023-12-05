@@ -17,9 +17,9 @@
       - name: Visual Studio 2022 for Windows
         href: xref:Uno.GettingStarted.CreateAnApp.VS2022
       - name: VS Code
-        href: xref:Uno.GettingStarted.CreateAnApp.vscode
+        href: xref:Uno.GettingStarted.CreateAnApp.VSCode
       - name: Rider
-        href: xref:Uno.GettingStarted.CreateAnApp.rider
+        href: xref:Uno.GettingStarted.CreateAnApp.Rider
 
     - name: Write your app
       topicHref: xref:Uno.GetStarted.Explore
@@ -51,16 +51,25 @@
 
 - name: Samples & Tutorials
   items:
-    - name: Tutorial 1
-      href: getting-started-tutorial-1.md
-    - name: Tutorial 2
-      href: getting-started-tutorial-2.md
-    - name: Tube Player
-      topicHref: external/workshops/tube-player/README.md
-      href: external/workshops/tube-player/toc.yml
+    - name: Counter
+      href: xref:Uno.Workshop.Counter
+      items:
+      - name: Counter App
+        href: xref:Uno.Workshop.Counter
+      - name: XAML + MVUX
+        href: xref:Uno.Workshop.Counter.XAML.MVUX
+      - name: XAML + MVVM
+        href: xref:Uno.Workshop.Counter.XAML.MVVM
+      - name: C# Markup + MVUX
+        href: xref:Uno.Workshop.Counter.CSharp.MVUX
+      - name: C# Markup + MVVM
+        href: xref:Uno.Workshop.Counter.CSharp.MVVM
     - name: Simple Calc
-      topicHref: external/workshops/simple-calc/README.md
+      topicHref: xref:Workshop.SimpleCalc.Overview
       href: external/workshops/simple-calc/toc.yml
+    - name: Tube Player
+      topicHref: xref:Workshop.TubePlayer.Overview
+      href: external/workshops/tube-player/toc.yml
     - name: Tutorials
       items:
       - name: Overview
