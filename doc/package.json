@@ -22,14 +22,9 @@
 		"gulp-strip-import-export": "^1.0.0",
 		"gulp-uglify": "^3.0.2",
 		"gulp-watch": "^5.0.1",
-<<<<<<< HEAD
-		"postcss": "^8.3.6",
-		"prettier": "^2.3.2"
-=======
 		"postcss": "^8.4.31",
 		"prettier": "^2.3.2",
 		"sass": "^1.69.5"
->>>>>>> 9258a874e9 (docs: fix new styling)
 	},
 	"description": "nventive gulp automation",
 	"main": "gulpfile.js",
