@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		// TODO: support for Header/Footer when inside a ListViewBase
 		private bool HeaderFooterEnabled =>
-#if __ANDROID__ || __IOS__
+#if __ANDROID__
 		TemplatedParent is not ListViewBase
 #else
 		true
