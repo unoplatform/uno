@@ -962,7 +962,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_isHotReloadEnabled)
 			{
-				//writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__rootInstance, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{CurrentScope.Location.LineNumber}:{CurrentScope.Location.LinePosition}\");");
 				writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{lineNumber}:{linePosition}\");");
 			}
 		}
