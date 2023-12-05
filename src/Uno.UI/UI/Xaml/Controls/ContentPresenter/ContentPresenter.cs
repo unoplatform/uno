@@ -586,8 +586,9 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			// Applying the template will not delete existing visuals. This will be done conditionally
-		    // when the template is invalidated.
-			// if (GetChildren().Count == 0) // Uno specific: since we don't call this early enough, we have to comment out the condition
+			// when the template is invalidated.
+			// Uno specific: since we don't call this early enough, we have to comment out the condition
+			// if (GetChildren().Count == 0)
 			{
 				ContentControl pTemplatedParent = TemplatedParent as ContentControl;
 
@@ -613,37 +614,37 @@ namespace Microsoft.UI.Xaml.Controls
 
 					// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
 					pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
-					Debug.Assert(pdpTarget is { });
+					global::System.Diagnostics.Debug.Assert(pdpTarget is { });
 					var store = ((IDependencyObjectStoreProvider)this).Store;
 					if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 						!store.IsPropertyTemplateBound(pdpTarget))
 					{
 						DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
-						Debug.Assert(pdpSource is { });
+						global::System.Diagnostics.Debug.Assert(pdpSource is { });
 
 						store.SetTemplateBinding(pdpTarget, pdpSource);
 						// needsRefresh = true;
 					}
 
 					pdpTarget = ContentPresenter.ContentTemplateProperty;
-					Debug.Assert(pdpTarget is { });
+					global::System.Diagnostics.Debug.Assert(pdpTarget is { });
 					if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 						!store.IsPropertyTemplateBound(pdpTarget))
 					{
 						DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
-						Debug.Assert(pdpSource is { });
+						global::System.Diagnostics.Debug.Assert(pdpSource is { });
 
 						store.SetTemplateBinding(pdpTarget, pdpSource);
 						// needsRefresh = true;
 					}
 
 					pdpTarget = ContentPresenter.ContentProperty;
-					Debug.Assert(pdpTarget is { });
+					global::System.Diagnostics.Debug.Assert(pdpTarget is { });
 					if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 						!store.IsPropertyTemplateBound(pdpTarget))
 					{
 						DependencyProperty pdpSource = ContentControl.ContentProperty;
-						Debug.Assert(pdpSource is { });
+						global::System.Diagnostics.Debug.Assert(pdpSource is { });
 
 						store.SetTemplateBinding(pdpTarget, pdpSource);
 						// needsRefresh = true;
@@ -880,7 +881,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoading()
+#if IS_UNIT_TESTS
+		protected
+#elif __CROSSRUNTIME__
+		private protected
+#else
+		internal
+#endif
+			override void OnLoading()
 		{
 			OnApplyTemplate(); // UNO Specific: in Uno, OnApplyTemplate is only called for Controls, not FrameworkElements
 		}
