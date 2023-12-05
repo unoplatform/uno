@@ -2,7 +2,7 @@
 uid: Uno.Development.FAQ
 ---
 
-# FAQ
+# FAQ: General
 
 ## About Uno Platform
 

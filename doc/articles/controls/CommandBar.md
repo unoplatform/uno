@@ -451,7 +451,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 - Can't put your CommandBar inside templates (i.e., AVP).
 - Can't cancel a back navigation using BackRequestedEventArgs.Handled.
 
-# FAQ
+# FAQ: CommandBar
 
 - > Why is my content underneath the `CommandBar` for iOS and the `CommandBar` underneath the StatusBar/Notch for Android ?
 
