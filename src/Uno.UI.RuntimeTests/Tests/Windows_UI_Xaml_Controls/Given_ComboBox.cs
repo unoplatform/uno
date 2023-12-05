@@ -396,6 +396,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_SelectedItem_Set_Before_ItemsSource()
+		{
+			var SUT = new ComboBox();
+			var items = Enumerable.Range(0, 10);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+
+			SUT.ItemsSource = items;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectedItem);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedItem_Set_Then_SelectedIndex_Then_ItemsSource()
+		{
+			var SUT = new ComboBox();
+			var items = Enumerable.Range(0, 10);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 3;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.ItemsSource = items;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectedItem);
+			Assert.AreEqual(5, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
 		public async Task When_Tabbed()
 		{
 			var SUT = new ComboBox
