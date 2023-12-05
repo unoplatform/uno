@@ -82,33 +82,33 @@ The `_app.WaitForText("ElementName", "ExpectedText")` method waits until the `Te
 Finally, we take another screenshot, and then use the `ImageAssert` class to verify that the onscreen display has changed as expected.
 
 ```csharp
-	[TestFixture]
-	public class LinearGradientBrush_Tests : SampleControlUITestBase
+[TestFixture]
+public class LinearGradientBrush_Tests : SampleControlUITestBase
+{
+	[Test]
+	[AutoRetry]
+	[ActivePlatforms(Platform.Android, Platform.iOS)] // This should be enabled for WASM once it no longer uses the LEGACY_SHAPE_MEASURE code path - https://github.com/unoplatform/uno/issues/2983
+	public void When_GradientStops_Changed()
 	{
-		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // This should be enabled for WASM once it no longer uses the LEGACY_SHAPE_MEASURE code path - https://github.com/unoplatform/uno/issues/2983
-		public void When_GradientStops_Changed()
-		{
-			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Change_Stops");
+		Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Change_Stops");
 
-			var rectangle = _app.Marked("GradientBrushRectangle");
+		var rectangle = _app.Marked("GradientBrushRectangle");
 
-			_app.WaitForElement(rectangle);
+		_app.WaitForElement(rectangle);
 
-			var screenRect = _app.GetRect(rectangle);
+		var screenRect = _app.GetRect(rectangle);
 
-			var before = TakeScreenshot("Before");
+		var before = TakeScreenshot("Before");
 
-			_app.FastTap("ChangeBrushButton");
+		_app.FastTap("ChangeBrushButton");
 
-			_app.WaitForText("StatusTextBlock", "Changed");
+		_app.WaitForText("StatusTextBlock", "Changed");
 
-			var after = TakeScreenshot("After");
+		var after = TakeScreenshot("After");
 
-			ImageAssert.AreNotEqual(before, after, screenRect);
-		}
+		ImageAssert.AreNotEqual(before, after, screenRect);
 	}
+}
 ```
 
 ## Running iOS UI Tests in a Simulator on macOS
@@ -116,7 +116,7 @@ Finally, we take another screenshot, and then use the `ImageAssert` class to ver
 Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build and run the tests from the command line. Editing the Uno.UI solution is not a particularly stable experience yet.
 
 In a terminal, run the following:
-``` bash
+```bash
 cd build
 ./test-scripts/local-ios-uitest-run.sh
 ```
