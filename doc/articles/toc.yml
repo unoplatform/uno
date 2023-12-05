@@ -335,7 +335,7 @@
       items:
       - name: Features List
         href: supported-features.md
-      - name: Feature flags
+      - name: Feature Flags
         href: feature-flags.md
       - name: WinUI Compatibility
         items:
