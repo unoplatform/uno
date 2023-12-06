@@ -11,6 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_TabView
 {
+#if HAS_UNO
 	[TestMethod]
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
@@ -48,4 +49,5 @@ public class Given_TabView
 		Assert.IsFalse(((TabViewItem)SUT.TabItems[0]).IsSelected);
 		Assert.IsTrue(((TabViewItem)SUT.TabItems[1]).IsSelected);
 	}
+#endif
 }
