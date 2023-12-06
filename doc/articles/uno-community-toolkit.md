@@ -139,7 +139,7 @@ This control will create an easily organized grid that will allow you to create 
 
 The Uno Platform build of the Windows Community toolkit is not needed when running on WinAppSDK or UWP, which is why you'll need to make some small changes to the project.
 
-Adding the Uno version of the community toolkit to a Uno Platform cross-targeted library can cause build errors like this one:
+Adding the Uno version of the community toolkit to an Uno Platform cross-targeted library can cause build errors like this one:
 
 ```
 Controls\TextBox\Themes\Generic.xaml : Xaml Internal Error error WMC9999: 
