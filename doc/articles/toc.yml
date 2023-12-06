@@ -125,6 +125,9 @@
 - name: Overview
   topicHref: xref:Uno.Documentation.Intro
   items:
+    - name: Frequently Asked Questions
+      href: xref:Uno.Development.FAQ
+
     - name: Architecture
       topicHref: xref:Uno.Development.About
       items:
@@ -333,9 +336,6 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
-
-    - name: FAQ
-      href: xref:Uno.Development.FAQ
 
 - name: Reference
   items:
