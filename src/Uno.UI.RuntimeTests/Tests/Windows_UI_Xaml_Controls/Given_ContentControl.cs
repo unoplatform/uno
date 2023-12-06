@@ -187,6 +187,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(comboBox.SelectedIndex == -1);
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FindName_ContentControl_Without_ContentTemplate()
+		{
+			var sut = new ContentControl
+			{
+				Width = 100,
+				Height = 100,
+				Content = new TextBox()
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+
+			Assert.IsNotNull(sut.FindName("ContentElement"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FindName_ContentControl_With_ContentTemplate()
+		{
+			var sut = new ContentControl
+			{
+				Width = 100,
+				Height = 100,
+				Content = new TextBox(),
+				ContentTemplate = new DataTemplate(() => new TextBlock())
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+
+			Assert.IsNull(sut.FindName("ContentElement"));
+		}
+
 		private class SignInViewModel
 		{
 			public string UserName { get; set; } = "Steve";
