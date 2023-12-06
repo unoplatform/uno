@@ -941,7 +941,9 @@ namespace SampleControl.Presentation
 			{
 				// Creating a new Frame with dynamically instantiated content based on newContent.ControlType
 				// and encapsulating it within a SampleControl along with a description
-				var frame = new Frame { Content = Activator.CreateInstance(newContent.ControlType) };
+				var frame = new Frame();
+				frame.Navigate(newContent.ControlType);
+
 				container = new Uno.UI.Samples.Controls.SampleControl
 				{
 					Content = frame,
