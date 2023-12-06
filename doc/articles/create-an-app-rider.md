@@ -67,6 +67,15 @@ Select the Skia.WPF project, then Run.
 
 ***
 
-## Explore
+## Next Steps
 
-Next, explore [Uno Platform features and architecture](xref:Uno.GetStarted.Explore).
+Now that you're Created and Debug the App.
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Hot Reload feature](xref:Uno.Features.HotReload)
+ - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - [How-tos and Tutorials](xref:Uno.GettingStarted.Tutorial1) See real-world examples with working code.
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
