@@ -35,3 +35,13 @@ Dependencies (ie NuGet Package References) should be added to the  **Application
 See additional guides on handling platform-specific [C# code](platform-specific-csharp.md) and [XAML markup](platform-specific-xaml.md) in an Uno Platform project.
 
 The Uno Platform solution also [can be further optimized](xref:Build.Solution.TargetFramework-override) to build larger projects with Visual Studio 2022.
+
+## Next Steps
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Hot Reload feature](xref:Uno.Features.HotReload)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
+ - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
