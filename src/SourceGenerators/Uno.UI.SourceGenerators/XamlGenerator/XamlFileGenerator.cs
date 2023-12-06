@@ -355,6 +355,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (topLevelControl.Type.Name == "ResourceDictionary")
 			{
 				_isTopLevelDictionary = true;
+				_xClassName = FindClassName(topLevelControl);
 
 				using (TrySetDefaultBindMode(topLevelControl))
 				{
