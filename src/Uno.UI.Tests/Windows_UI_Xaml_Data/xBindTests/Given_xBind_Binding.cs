@@ -1461,6 +1461,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("Updated2", SUT.tbDict2.Text);
 		}
 
+		[TestMethod]
+		public void When_XBind_In_ResourceDictionary()
+		{
+			var SUT = new XBind_ResourceDictionary_Control();
+			SUT.ForceLoaded();
+
+			Assert.IsTrue(SUT.ElementLoadedInvoked);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);
