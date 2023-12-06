@@ -655,8 +655,8 @@ namespace Microsoft.UI.Xaml
 		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
 		{
 #if SUPPORTS_RTL
-			if (this is FrameworkElement fe 
-				&& VisualTreeHelper.GetParent(this) is FrameworkElement parent 
+			if (this is FrameworkElement fe
+				&& VisualTreeHelper.GetParent(this) is FrameworkElement parent
 				&& fe.FlowDirection != parent.FlowDirection)
 			{
 				matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f, new Vector2(.5f, 0f));
