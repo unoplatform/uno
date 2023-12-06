@@ -94,6 +94,9 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
@@ -122,6 +125,9 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
@@ -156,6 +162,9 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
@@ -258,12 +267,17 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+
+		sut.AreTransportControlsEnabled = false;
 
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
