@@ -16,17 +16,17 @@
 
 		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
-
-		<!-- Disable automatic documentation generation as the step is executed explicitly through GenerateDoc -->
-		<BuildDocFx>false</BuildDocFx>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\src\Directory.Build.targets" Link="Directory.Build.targets" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<DocfxVersion>2.74.1</DocfxVersion>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.59.3" GeneratePathProperty="true" />
 		<PackageReference Include="MSBuildTasks" Version="1.5.0.235" />
 		<PackageReference Include="NUnit.Runners" Version="3.12.0" />
 	</ItemGroup>
@@ -249,7 +249,6 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
-
 		<MSBuild Properties="Configuration=Debug"
 				 Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
 				 Targets="Restore;Build"
@@ -258,7 +257,8 @@
 
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="powershell .\import_external_docs.ps1" WorkingDirectory="..\doc" />
-		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
+		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools docfx --version $(DocfxVersion)" Condition="!exists('$(MSBuildThisFileDirectory)\tools\docfx.exe')" />
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
