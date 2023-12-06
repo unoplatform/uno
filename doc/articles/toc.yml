@@ -578,9 +578,9 @@
   topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
   
-- name: Figma
-  topicHref: external/figma-docs/overview/getting-started-uno-figma.md
-  href: external/figma-docs/toc.yml
+# - name: Figma
+#   topicHref: external/figma-docs/overview/getting-started-uno-figma.md
+#   href: external/figma-docs/toc.yml
 
 - name: Tooling
   items:
