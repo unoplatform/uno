@@ -259,7 +259,25 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+<<<<<<< HEAD
 			foreach (var frameworkElement in frameworkElements)
+=======
+			// If element is a ContentControl with a view as Content, include the view and its children in the search,
+			// to better match Windows behaviour
+			IFrameworkElement content = null;
+			if (e is ContentControl contentControl &&
+				contentControl.Content is IFrameworkElement innerContent &&
+				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
+			{
+				content = innerContent;
+			}
+			else if (e is Controls.Primitives.Popup popup)
+			{
+				content = popup.Child as IFrameworkElement;
+			}
+
+			if (content != null)
+>>>>>>> 09e3a0ff14 (fix: Avoid propagating FindName to Content if ContentTemplate is used)
 			{
 				if (string.Equals(frameworkElement.Name, name, StringComparison.Ordinal))
 				{
