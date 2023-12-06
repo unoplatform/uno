@@ -96,13 +96,20 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			return (uint)((int)(typeof(KeyEventArgs).GetProperty("ScanCode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(args) ?? 0));
+			if (typeof(KeyEventArgs).GetProperty("ScanCode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) is { } propertyInfo)
+			{
+				return (uint)(int)propertyInfo.GetValue(args)!;
+			}
+			else
+			{
+				throw new PlatformNotSupportedException("Unable to get the ScanCode property from WPF. This likely means this WPF version is not compatible with Uno Platform, contact the developers for more information.");
+			}
 		}
 		catch (Exception e)
 		{
 			if (typeof(WpfKeyboardInputSource).Log().IsEnabled(LogLevel.Error))
 			{
-				typeof(WpfKeyboardInputSource).Log().LogError("Couldn't get ScanCode from WPF KeyEventArgs.", e);
+				typeof(WpfKeyboardInputSource).Log().LogError("Unable to get ScanCode from WPF KeyEventArgs.", e);
 			}
 
 			throw;
