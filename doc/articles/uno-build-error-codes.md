@@ -20,8 +20,6 @@ This error code means that a WinAppSDK project is referencing a project in your 
 This can happen if a project contains only a `net7.0` TargetFramework and has a NuGet reference to `Uno.WinUI`.
 
 To fix this, it is best to start from a `Cross Platform Library` project template provided by the Uno Platform [visual studio extension](xref:Guide.HowTo.Create-Control-Library), or using [`dotnet new`](xref:Uno.GetStarted.dotnet-new).
-<<<<<<< HEAD
-=======
 
 ### UNOB0003: Ignoring resource XX, could not determine the language
 
@@ -42,4 +40,3 @@ A member is not implemented, see [this page](xref:Uno.Development.NotImplemented
 On iOS and Catalyst, calling `Dispose()` or `Dispose(bool)` on a type inheriting directly from `UIKit.UIView` can lead to unstable results. It is not needed to call `Dispose` as the runtime will do so automatically during garbage collection.
 
 Invocations to `Dispose` can cause the application to crash in `__NSObject_Disposer drain`, cause `ObjectDisposedException` exception to be thrown. More information can be found in [xamarin/xamarin-macios#19493](https://github.com/xamarin/xamarin-macios/issues/19493).
->>>>>>> 4df839e2d4 (feat: Add UIView.Dispose detection analyzer)

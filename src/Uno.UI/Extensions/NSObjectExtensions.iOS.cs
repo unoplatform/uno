@@ -2,20 +2,17 @@
 using System;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
+using Uno.UI;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
-<<<<<<< HEAD
 #elif XAMARIN_IOS
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
 #endif
-=======
-using Uno.UI;
->>>>>>> 1359637848 (fix: Provide the ability to break on invalid calls to `NSObjectExtensions.ValidateDispose`)
 
 namespace Foundation
 {

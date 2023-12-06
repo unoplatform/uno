@@ -647,20 +647,11 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
-<<<<<<< HEAD
-=======
-
-			/// <summary>
-			/// For non-holding pointer events, use CompleteGesture when bubbling gesture events.
-			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
-			/// </summary>
-			public static bool DisablePointersSpecificEventPrevention { get; set; }
 
 			/// <summary>
 			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
 			/// </summary>
 			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
->>>>>>> 1359637848 (fix: Provide the ability to break on invalid calls to `NSObjectExtensions.ValidateDispose`)
 		}
 
 		public static class VisualState
