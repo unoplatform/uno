@@ -255,9 +255,17 @@ namespace Windows.UI.Xaml
 
 			// If element is a ContentControl with a view as Content, include the view and its children in the search,
 			// to better match Windows behaviour
-			var content =
-				(e as ContentControl)?.Content as IFrameworkElement ??
-				(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
+			IFrameworkElement content = null;
+			if (e is ContentControl contentControl &&
+				contentControl.Content is IFrameworkElement innerContent &&
+				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
+			{
+				content = innerContent;
+			}
+			else if (e is Controls.Primitives.Popup popup)
+			{
+				content = popup.Child as IFrameworkElement;
+			}
 
 			if (content != null)
 			{
