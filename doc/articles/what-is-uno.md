@@ -4,7 +4,7 @@ uid: Uno.Development.About
 
 # About the Uno Platform
 
-Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md).
+Uno Platform lets you write an application once with C# and XAML, and deploy it to [any target platform](getting-started/requirements.md).
 
 Uno Platform also provides optional components to increase developer productivity:
 - [C# Markup](xref:Reference.Markup.GettingStarted), to write UI using C# instead of XAML

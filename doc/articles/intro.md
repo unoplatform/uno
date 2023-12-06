@@ -4,6 +4,8 @@ uid: Uno.Documentation.Intro
 
 # Uno Platform documentation
 
+**Uno Platform is a .NET framework that lets you write an application once with C# and XAML, and run it on Windows, Android, iOS, macOS, Linux and even the web via WebAssembly.**
+
 <div class="row">
 
 <div class="col-md-6 col-xs-12 ">
@@ -55,16 +57,6 @@ Browse the set of available controls and their properties.
 </div>
 
 </div>
-
-<br/>
-
-Uno Platform lets you write an application once in XAML and/or C#.
-
-<br/>
-<br/>
-
-***
-
 
 ## Top questions about Uno Platform
 
