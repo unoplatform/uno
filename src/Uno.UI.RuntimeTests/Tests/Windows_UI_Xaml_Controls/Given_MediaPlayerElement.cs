@@ -135,7 +135,7 @@ public partial class Given_MediaPlayerElement
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
 
-		sut.AreTransportControlsEnabled = false;
+		sut.MediaPlayer.Play();
 
 		try
 		{
@@ -154,6 +154,7 @@ public partial class Given_MediaPlayerElement
 		finally
 		{
 			sut.IsFullWindow = false;
+			sut.MediaPlayer.Stop();
 		}
 	}
 
