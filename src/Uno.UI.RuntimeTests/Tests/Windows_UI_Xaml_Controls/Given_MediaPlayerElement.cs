@@ -135,6 +135,8 @@ public partial class Given_MediaPlayerElement
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
 
+		sut.AreTransportControlsEnabled = false;
+
 		try
 		{
 			var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
