@@ -187,7 +187,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(comboBox.SelectedIndex == -1);
 		}
 
-
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_FindName_ContentControl_Without_ContentTemplate()
@@ -222,6 +222,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsNull(sut.FindName("ContentElement"));
 		}
+#endif
 
 		private class SignInViewModel
 		{
