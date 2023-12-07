@@ -157,7 +157,7 @@ public partial class Given_MediaPlayerElement
 		finally
 		{
 			sut.IsFullWindow = false;
-#if !HAS_UNO
+#if HAS_UNO
 			sut.MediaPlayer.Stop();
 #endif
 		}
