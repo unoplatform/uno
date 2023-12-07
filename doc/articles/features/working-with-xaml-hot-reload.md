@@ -137,3 +137,13 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
 - When working on Skia+Gtk apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Skia.Gtk (Debug)` target selected.
+
+## Next Steps
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
+ - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.

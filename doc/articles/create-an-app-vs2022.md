@@ -120,6 +120,17 @@ You're all set!
 > [!IMPORTANT]
 > Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
-## Explore
 
-Next, explore [Uno Platform features and architecture](xref:Uno.GetStarted.Explore).
+
+## Next Steps
+
+Now that you're Created and Debug the App.
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Hot Reload feature](xref:Uno.Features.HotReload)
+ - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - [How-tos and Tutorials](xref:Uno.GettingStarted.Tutorial1) See real-world examples with working code.
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
