@@ -32,7 +32,7 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 1. Install the **C#** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **C#** and click the **Install** button.
 1. Install the **Uno Platform** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **Uno Platform** and click the **Install** button.
 1. Open the VS Code Settings using `Ctrl` + `,` (or `⌘` + `,` on a Mac), then search for `useOmnisharp` and enable it (checkbox)
-![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
+    ![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
 
 No other extensions are needed to complete this guide.
 
