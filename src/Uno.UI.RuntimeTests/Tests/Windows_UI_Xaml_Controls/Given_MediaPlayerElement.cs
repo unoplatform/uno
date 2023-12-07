@@ -118,6 +118,9 @@ public partial class Given_MediaPlayerElement
 	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
 #endif
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/14735")]
+#endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
