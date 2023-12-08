@@ -7,7 +7,9 @@ uid: Uno.GettingStarted.CreateAnApp.VS2022
 > Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.vs2022).
 
 ## Create the App
+
 To create an Uno Platform app:
+
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**, then click the **Next** button
 
     ![Visual Studio - Get started - Selecting `create a new project` option](Assets/tutorial01/newproject1.PNG)  
@@ -119,8 +121,6 @@ You're all set!
 
 > [!IMPORTANT]
 > Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
-
-
 
 ## Next Steps
 
