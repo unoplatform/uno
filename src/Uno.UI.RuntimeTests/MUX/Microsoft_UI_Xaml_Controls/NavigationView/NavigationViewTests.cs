@@ -45,7 +45,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
-	[RunsOnUIThread]
 	public partial class NavigationViewTests : MUXApiTestBase
 	{
 		private async Task<NavigationView> SetupNavigationView(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto, bool wrapInScrollViewer = false)
@@ -1193,6 +1192,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+#if __SKIA__ || __WASM__
+		[Ignore("Fails on UWP SamplesApp as well as Skia/Wasm")]
+#endif
 		public async Task VerifyNavigationViewItemToolTipCreation()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))

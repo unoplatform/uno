@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private ShapeVisual _visual;
+		private protected ShapeVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
 
@@ -90,16 +90,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
-		partial void OnLoading()
-		{
-			if (_visual is not null)
-			{
-				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
-			}
-		}
-#endif
-
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -126,7 +116,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			child.SetParent(this);
-			OnAddingChild(child);
 
 			if (index is { } actualIndex && actualIndex != _children.Count)
 			{
@@ -139,6 +128,9 @@ namespace Microsoft.UI.Xaml
 				_children.Add(child);
 				Visual.Children.InsertAtTop(child.Visual);
 			}
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 

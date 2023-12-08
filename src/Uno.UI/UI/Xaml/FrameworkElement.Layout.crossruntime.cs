@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 using Uno.UI;
+using Uno.UI.Xaml;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Microsoft.UI.Xaml.Controls;
@@ -26,6 +27,8 @@ namespace Microsoft.UI.Xaml
 		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
 		/// </summary>
 		private Size _unclippedDesiredSize;
+
+		private bool m_firedLoadingEvent;
 
 		private const double SIZE_EPSILON = 0.05d;
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
@@ -44,6 +47,91 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
+
+		partial void OnLoading();
+
+		private void OnFwEltLoading()
+		{
+			// TODO: **IMPORTANT BEFORE MERGE** See where to handle WasmUseManagedLoadedUnloaded. Previously, it was checked in ContentManager.wasm.cs in LoadRootElementPlatform
+			// OR; we might not actually consider native loading at all and always use managed loading as Loading is now aligned with WinUI?
+			IsLoading = true;
+
+			OnLoading();
+			OnLoadingPartial();
+
+			void InvokeLoading()
+			{
+				_loading?.Invoke(this, new RoutedEventArgs(this));
+			}
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
+			{
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeLoadingWithTry()
+				{
+					try
+					{
+						InvokeLoading();
+					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementLoading failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeLoadingWithTry();
+			}
+			else
+			{
+				InvokeLoading();
+			}
+		}
+
+		private protected sealed override void OnFwEltLoaded()
+		{
+			OnLoadedPartial();
+
+			void InvokeLoaded()
+			{
+				// Raise event before invoking base in order to raise them top to bottom
+				OnLoaded();
+				_loaded?.Invoke(this, new RoutedEventArgs(this));
+			}
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
+			{
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeLoadedWithTry()
+				{
+					try
+					{
+						InvokeLoaded();
+					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementLoaded failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeLoadedWithTry();
+			}
+			else
+			{
+				InvokeLoaded();
+			}
+		}
+
+		partial void OnLoadedPartial();
 
 		internal sealed override void MeasureCore(Size availableSize)
 		{
@@ -99,12 +187,23 @@ namespace Microsoft.UI.Xaml
 
 			//bool bTemplateApplied = false;
 
-			//RaiseLoadingEventIfNeeded();
+			RaiseLoadingEventIfNeeded();
 
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
 				//bTemplateApplied = InvokeApplyTemplate();
+
+				// TODO: BEGIN Uno specific
+				if (this is Control thisAsControl)
+				{
+					thisAsControl.TryCallOnApplyTemplate();
+
+					// Update bindings to ensure resources defined
+					// in visual parents get applied.
+					this.UpdateResourceBindings();
+				}
+				// TODO: END Uno specific
 
 				// Subtract the margins from the available size
 				var margin = Margin;
@@ -257,6 +356,31 @@ namespace Microsoft.UI.Xaml
 			LayoutInformation.SetDesiredSize(this, desiredSize);
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
+		}
+
+		private void RaiseLoadingEventIfNeeded()
+		{
+			if (!m_firedLoadingEvent //&&
+				/*ShouldRaiseEvent(_loading)*/ /*Uno TODO: Should we skip this or not? */)
+			{
+				//CEventManager* pEventManager = GetContext()->GetEventManager();
+				//ASSERT(pEventManager);
+
+				//TraceFrameworkElementLoadingBegin();
+
+				// Uno specific: WinUI only raises Loading event here.
+				OnFwEltLoading();
+				//pEventManager->Raise(
+				//	EventHandle(KnownEventIndex::FrameworkElement_Loading),
+				//	FALSE /* bRefire */,
+				//	this /* pSender */,
+				//	NULL /* pArgs */,
+				//	TRUE /* fRaiseSync */);
+
+				//TraceFrameworkElementLoadingEnd();
+
+				m_firedLoadingEvent = true;
+			}
 		}
 
 		private string FormatDebugName()
@@ -760,6 +884,55 @@ namespace Microsoft.UI.Xaml
 
 			ArrangeVisual(newRect, clipRect);
 #endif
+		}
+
+		internal override void Enter(EnterParams @params, int depth)
+		{
+			// The way this works on WinUI is that when an element enters the visual tree, all values
+			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
+			// are entered as well.
+			// The property we currently know it has an effect is Resources
+			if (Resources is not null)
+			{
+				foreach (var resource in resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsUIElement)
+					{
+						resourceAsUIElement.XamlRoot = XamlRoot;
+						resourceAsUIElement.Enter(@params, int.MinValue);
+					}
+				}
+			}
+
+			base.Enter(@params, depth);
+
+			if (@params.IsLive)
+			{
+				// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
+				this.ApplyStyles();
+			}
+
+			m_firedLoadingEvent = false;
+		}
+
+		internal override void Leave(LeaveParams @params)
+		{
+			// The way this works on WinUI is that when an element enters the visual tree, all values
+			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
+			// are entered as well.
+			// The property we currently know it has an effect is Resources
+			if (Resources is not null)
+			{
+				foreach (var resource in resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsUIElement)
+					{
+						resourceAsUIElement.Leave(@params);
+					}
+				}
+			}
+
+			base.Leave(@params);
 		}
 	}
 }

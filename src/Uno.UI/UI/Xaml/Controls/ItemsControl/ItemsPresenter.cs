@@ -168,21 +168,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnTemplatedParentChanged(e);
 
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
+			if (TemplatedParent is ItemsControl itemsControl)
 			{
 				itemsControl.SetItemsPresenter(this);
 			}
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
-			{
-				itemsControl.SetItemsPresenter(this);
-			}
-		}
 
 		public ItemsPresenter()
 		{

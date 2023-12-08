@@ -57,12 +57,29 @@ internal partial class Given_HotReloadWorkspace
 	[Filters]
 	public async Task When_HotReloadScenario(string filters)
 	{
+		var cts = new CancellationTokenSource(50 * 60 * 1000);
+		var tcs = new TaskCompletionSource<string>();
+		cts.Token.Register(() => tcs.TrySetException(new TimeoutException()));
+
 		// Remove this class and this method from the filters
+		typeof(Given_HotReloadWorkspace).Log().Debug("Starting When_HotReloadScenario test.");
 		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(x => x == nameof(Given_HotReloadWorkspace) || x == nameof(When_HotReloadScenario)));
-		var resultFile = await RunTestApp(filters, CancellationToken.None);
+		var completedTask = await Task.WhenAny(RunTestApp(filters, CancellationToken.None), tcs.Task);
+
+		if (completedTask == tcs.Task)
+		{
+			Assert.Fail("Timed out.");
+			return;
+		}
+
+		var resultFile = completedTask.Result;
+
+		typeof(Given_HotReloadWorkspace).Log().Debug("RunTestApp done.");
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
+
+		typeof(Given_HotReloadWorkspace).Log().Debug($"GetTests done. Count: {tests.Length}");
 
 		StringBuilder sb = new();
 
@@ -120,6 +137,7 @@ internal partial class Given_HotReloadWorkspace
 		var hrAppPath = GetHotReloadAppPath();
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
+		typeof(Given_HotReloadWorkspace).Log().Debug("Running dotnet.");
 		var p = await ProcessHelpers.RunProcess(
 			ct,
 			"dotnet",
@@ -145,6 +163,8 @@ internal partial class Given_HotReloadWorkspace
 			// Required when running in CI, as VS sets it automatically in debug
 			new() { ["DOTNET_MODIFIABLE_ASSEMBLIES"] = "debug" }
 		);
+
+		typeof(Given_HotReloadWorkspace).Log().Debug($"dotnet finished with exit code: {p.ExitCode}");
 
 		_testAppProcess = p;
 

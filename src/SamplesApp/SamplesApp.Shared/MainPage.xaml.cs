@@ -14,5 +14,20 @@ namespace SamplesApp
 
 			sampleControl.DataContext = new SampleChooserViewModel(sampleControl);
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || !HAS_UNO
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnNavigatedTo(NavigationEventArgs e)
+		{
+			if (this.IsLoaded)
+			{
+				// https://github.com/unoplatform/uno/issues/1478
+				throw new System.Exception("OnNavigatedTo should happen before Loaded.");
+			}
+		}
+#endif
 	}
 }

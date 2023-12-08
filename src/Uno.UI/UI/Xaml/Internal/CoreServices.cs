@@ -5,6 +5,8 @@
 #nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
+using Uno.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,10 +19,39 @@ namespace Uno.UI.Xaml.Core
 
 		private VisualTree? _mainVisualTree;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		public EventManager EventManager { get; private set; }
+#endif
+
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			EventManager = EventManager.Create();
+			NativeDispatcher.Main.Enqueue(() => OnTick(), NativeDispatcherPriority.Idle);
+#endif
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private static void OnTick()
+		{
+			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
+			NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
+
+			if (CoreServices.Instance.MainVisualTree?.RootElement is { } root &&
+				CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is { } windowContentRoot && windowContentRoot.GetOwnerWindow() is { } window &&
+				window.Bounds.Size is { Width: not 0, Height: not 0 } windowSize)
+			{
+				root.UpdateLayout();
+
+				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				{
+					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					root.UpdateLayout();
+				}
+			}
+		}
+#endif
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
@@ -50,7 +81,7 @@ namespace Uno.UI.Xaml.Core
 
 		public VisualTree? MainVisualTree => _mainVisualTree;
 
-		public DependencyObject? VisualRoot => _mainVisualTree?.PublicRootVisual;
+		public UIElement? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
 		internal void InitCoreWindowContentRoot()
 		{
@@ -83,5 +114,12 @@ namespace Uno.UI.Xaml.Core
 		internal void UIARaiseFocusChangedEventOnUIAWindow(DependencyObject sender)
 		{
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal void RaisePendingLoadedRequests()
+		{
+			EventManager.RequestRaiseLoadedEventOnNextTick();
+		}
+#endif
 	}
 }

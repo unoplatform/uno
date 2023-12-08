@@ -45,7 +45,7 @@ public class Given_Frame
 	}
 
 	[TestMethod]
-#if HAS_UNO
+#if __ANDROID__ || __IOS__ || __MACOS__
 	[Ignore("This test fails on Uno Platform targets. See https://github.com/unoplatform/uno/issues/14300")]
 #endif
 	public Task When_Page_Loaded_Navigates_Without_Yield() =>

@@ -90,6 +90,21 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
+		/// Projects the specified readonly collection to another array.
+		/// </summary>
+		public static TResult[] SelectToArray<TSource, TResult>(this IReadOnlyList<TSource> source, Func<TSource, TResult> selector)
+		{
+			var output = new TResult[source.Count];
+
+			for (int i = 0; i < output.Length; i++)
+			{
+				output[i] = selector(source[i]);
+			}
+
+			return output;
+		}
+
+		/// <summary>
 		/// Projects the specified collection to an array.
 		/// </summary>
 		public static TResult[] SelectToArray<TSource, TResult>(this ICollection<TSource> source, Func<TSource, TResult> selector)

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using DirectUI;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -613,5 +614,69 @@ namespace Microsoft.UI.Xaml
 		{
 			return new Rect();
 		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// Doesn't exactly match WinUI code.
+		internal virtual void Enter(EnterParams @params, int depth)
+		{
+			Depth = depth;
+
+			if (@params.IsLive)
+			{
+				IsActiveInVisualTree = true;
+			}
+
+			foreach (var child in _children)
+			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
+				child.Enter(@params, depth + 1);
+			}
+
+			if (@params.IsLive)
+			{
+				var core = this.GetContext();
+				core.EventManager.AddRequestsInOrder(this);
+			}
+
+			// Make sure that we propagate OnDirtyPath bits to the new parent.
+			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+		}
+
+		internal virtual void Leave(LeaveParams @params)
+		{
+			foreach (var child in _children)
+			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
+				child.Leave(@params);
+			}
+
+			if (IsActiveInVisualTree)
+			{
+				// TODO: Is Unloaded fired synchronously?
+				OnElementUnloaded();
+
+				var eventManager = this.GetContext().EventManager;
+				eventManager.RemoveRequest(this);
+			}
+		}
+#endif
 	}
 }

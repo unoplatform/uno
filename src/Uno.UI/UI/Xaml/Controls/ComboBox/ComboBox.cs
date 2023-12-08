@@ -191,12 +191,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Opened -= OnPopupOpened;
 			}
 
-			if (XamlRoot is null)
+			if (XamlRoot is not null)
 			{
-				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+				XamlRoot.Changed -= OnXamlRootChanged;
 			}
-
-			XamlRoot.Changed -= OnXamlRootChanged;
 		}
 
 		protected virtual void OnDropDownClosed(object e)

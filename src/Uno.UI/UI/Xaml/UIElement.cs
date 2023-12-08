@@ -810,7 +810,7 @@ namespace Microsoft.UI.Xaml
 					return;
 				}
 			}
-#else
+#elif !__NETSTD_REFERENCE__
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
@@ -820,7 +820,16 @@ namespace Microsoft.UI.Xaml
 				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
+#if !IS_UNIT_TESTS
+					root.XamlRoot.RaiseInvalidateRender();
+#endif
 				}
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				else if (root.GetContext().EventManager.HasPendingViewportChangedEvents)
+				{
+					root.GetContext().EventManager.RaiseEffectiveViewportChangedEvents();
+				}
+#endif
 				else
 				{
 					return;

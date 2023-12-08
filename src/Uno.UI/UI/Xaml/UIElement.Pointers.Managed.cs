@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -88,19 +89,6 @@ namespace Microsoft.UI.Xaml
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
 			return HitTestability.Visible;
-		}
-
-		internal void SetHitTestVisibilityForRoot()
-		{
-			// Root element must be visible to hit testing, regardless of the other properties values.
-			// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
-			// Collapsed.
-			HitTestVisibility = HitTestability.Visible;
-		}
-
-		internal void ClearHitTestVisibilityForRoot()
-		{
-			this.ClearValue(HitTestVisibilityProperty);
 		}
 	}
 }

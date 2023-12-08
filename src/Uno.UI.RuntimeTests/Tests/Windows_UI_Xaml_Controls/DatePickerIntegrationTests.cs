@@ -16,6 +16,8 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+using System.Threading;
+
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -127,6 +129,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			var datePicker = await SetupDatePickerTest();
 
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => datePickerValueChangedEvent.TrySetException(new TimeoutException()));
+
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var calendarNow = new Calendar();
@@ -215,6 +220,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			var dateChangedEvent = new TaskCompletionSource<object>();
 
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
 
 			datePicker.DateChanged += OnDatePickerOnDateChanged;
 
@@ -244,6 +251,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			DatePicker datePicker = null;
 
 			var loadedEvent = new TaskCompletionSource<object>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => loadedEvent.TrySetException(new TimeoutException()));
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -442,6 +452,10 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			var datePicker = await SetupDatePickerTest();
 
 			var dateChangedEvent = new TaskCompletionSource<object>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
+
 			var dateChangedRegistration = CreateSafeEventRegistration(DatePicker, DateChanged);
 			dateChangedRegistration.Attach(datePicker, [&]() {
 				dateChangedEvent.Set();
@@ -794,6 +808,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			calendar.Period = 1;
 
 			var dateChangedEvent = new TaskCompletionSource<object>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => dateChangedEvent.TrySetException(new TimeoutException()));
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{

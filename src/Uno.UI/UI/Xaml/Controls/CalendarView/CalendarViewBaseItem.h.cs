@@ -27,7 +27,9 @@ namespace Microsoft.UI.Xaml.Controls
 			this.Loaded += (_, _) =>
 			{
 				_borderRenderer ??= new(this);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				EnterImpl();
+#endif
 			};
 		}
 

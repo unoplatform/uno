@@ -433,19 +433,6 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	internal void SetHitTestVisibilityForRoot()
-	{
-		// Root element must be visible to hit testing, regardless of the other properties values.
-		// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
-		// Collapsed.
-		HitTestVisibility = HitTestability.Visible;
-	}
-
-	internal void ClearHitTestVisibilityForRoot()
-	{
-		this.ClearValue(HitTestVisibilityProperty);
-	}
-
 	#endregion
 
 	[TSInteropMessage(Marshaller = CodeGeneration.Disabled, UnMarshaller = CodeGeneration.Enabled)]

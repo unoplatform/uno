@@ -1110,6 +1110,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			var result = new TaskCompletionSource<object?>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => result.TrySetException(new TimeoutException()));
+
 			var allowDetach = false;
 			sut.EffectiveViewportChanged += OnSutEVPChanged;
 

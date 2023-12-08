@@ -74,37 +74,14 @@ public sealed partial class DateTimeFormatter
 	{
 		Template = formatTemplate ?? throw new ArgumentNullException(nameof(formatTemplate));
 
-		var languagesArray = languages?.Distinct().ToArray();
-
-		if (languagesArray == null || languagesArray.Length == 0)
+		if (languages != null)
 		{
-			var currentUiLanguage = CultureInfo.CurrentUICulture.Name;
-			var currentLanguage = CultureInfo.CurrentCulture.Name;
-
-			if (currentUiLanguage != currentLanguage)
-			{
-				Languages = languagesArray = new[]
-				{
-					currentUiLanguage,
-					currentLanguage
-				};
-			}
-			else
-			{
-				Languages = languagesArray = new[]
-				{
-					currentUiLanguage
-				};
-			}
-		}
-		else
-		{
-			Languages = languagesArray;
+			Languages = languages.Distinct().ToArray();
 		}
 
-		_firstCulture = new CultureInfo(languagesArray[0]);
+		_firstCulture = new CultureInfo(Languages[0]);
 
-		_maps = languagesArray.SelectToArray(BuildLookup);
+		_maps = Languages.SelectToArray(BuildLookup);
 
 		Patterns = BuildPatterns().ToArray();
 

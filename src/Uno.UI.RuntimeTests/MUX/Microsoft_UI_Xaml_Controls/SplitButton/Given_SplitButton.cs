@@ -24,6 +24,7 @@ public class Given_SplitButton
 		{
 			var splitButton = new SplitButton();
 			TestServices.WindowHelper.WindowContent = splitButton;
+			await TestServices.WindowHelper.WaitForIdle();
 
 			var secondayButton = splitButton.GetTemplateChild("SecondaryButton");
 			var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
