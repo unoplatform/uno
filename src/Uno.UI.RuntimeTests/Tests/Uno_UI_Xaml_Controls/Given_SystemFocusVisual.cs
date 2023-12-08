@@ -132,5 +132,47 @@ public class Given_SystemFocusVisual
 			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rectangle(0, screenShot.Height - 30, 5, 30), ((SolidColorBrush)buttons[2].FocusVisualPrimaryBrush).Color);
 		}
 	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_Focused_Element_Transformed()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive($"Not supported under XAML islands");
+		}
+		var button = new Button()
+		{
+			Content = "Transform Test",
+			FocusVisualPrimaryThickness = ThicknessHelper.FromUniformLength(10),
+			FocusVisualSecondaryThickness = ThicknessHelper.FromUniformLength(10),
+			RenderTransform = new RotateTransform
+			{
+				Angle = -45
+			},
+			RenderTransformOrigin = new Windows.Foundation.Point(1, 1),
+		};
+		TestServices.WindowHelper.WindowContent = button;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		button.Focus(FocusState.Keyboard);
+		await TestServices.WindowHelper.WaitForIdle();
+		var visualTree = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.VisualTree;
+		var focusVisualLayer = visualTree?.FocusVisualRoot;
+
+		Assert.IsNotNull(focusVisualLayer);
+		Assert.AreEqual(1, focusVisualLayer.Children.Count);
+
+		var focusVisual = focusVisualLayer.Children.First();
+
+		var focusTransform = focusVisual.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var focusPoint = focusTransform.TransformPoint(default);
+
+		var buttonTransform = button.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var buttonPoint = buttonTransform.TransformPoint(default);
+
+		Assert.AreEqual(focusPoint.X, buttonPoint.X);
+		Assert.AreEqual(focusPoint.Y, buttonPoint.Y);
+	}
 }
 #endif
