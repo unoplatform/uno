@@ -2836,6 +2836,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								BuildChild(writer, null, resource);
 							}
+
+							if (resource.Members.FirstOrDefault(m => m.Member.Name == "Name") is { } nameMember
+								&& nameMember.Value?.ToString() is { } nameValue
+								&& !string.IsNullOrEmpty(nameValue)
+
+								// Skip generating namescope if the resource is declared directly
+								// inside a top level dictionary (there's no __nameScope available there).
+								&& resource.Owner?.Owner != null)
+							{
+								using (var blockWriter = CreateApplyBlock(writer, null, out var closureName))
+								{
+									// The weak initializer must be registered to be found through
+									// Control.GetTemplateChild.
+									blockWriter.AppendLineInvariantIndented($"__nameScope.RegisterName(\"{nameValue}\", {closureName});");
+								}
+							}
 						}
 					}
 

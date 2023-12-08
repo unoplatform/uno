@@ -5,6 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml
@@ -42,7 +43,8 @@ namespace Windows.UI.Xaml
 
 		public void RegisterName(string name, object scopedElement)
 		{
-			if (_names.ContainsKey(name))
+			if (_names.TryGetValue(name, out var instanceRef)
+				&& instanceRef?.Target is not WeakResourceInitializer)
 			{
 				this.Log().Warn($"The name [{name}] already exists in the current XAML scope");
 			}

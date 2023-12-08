@@ -9,6 +9,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 {
@@ -149,6 +150,39 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 			Assert.IsNotNull(SUT.testAnimation);
 			Assert.IsNotNull(SUT.testKeyFrame);
 			Assert.AreEqual("0", SUT.testKeyFrame.Value);
+		}
+
+		[TestMethod]
+		public async Task When_VisualStateManager_xName_DataTemplate()
+		{
+			var SUT = new When_VisualStateManager_xName_DataTemplate();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			await WaitForIdle();
+
+			var sb = SUT.rootTemplatedControl.GetTemplateChild("storyboard01") as Storyboard;
+
+			Assert.IsNotNull(sb);
+		}
+
+		[TestMethod]
+		public async Task When_VisualStateManager_xName_DataTemplate_From_Dictionary()
+		{
+			var SUT = new When_VisualStateManager_xName_DataTemplate_From_Dictionary();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(SUT);
+
+			await WaitForIdle();
+
+			var storyboardFromChildTemplate = SUT.rootTemplatedControl.GetTemplateChild("storyboard01") as Storyboard;
+
+			Assert.IsNotNull(storyboardFromChildTemplate);
+
+			var rootGrid = SUT.FindName("root") as Grid;
+			var storyboardFromDictionary = rootGrid.Resources["storyboard01"] as Storyboard;
+
+			Assert.AreSame(storyboardFromDictionary, storyboardFromChildTemplate);
 		}
 
 		private static void ShowDialog(MyContentDialog dialog)
