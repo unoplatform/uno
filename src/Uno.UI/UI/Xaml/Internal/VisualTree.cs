@@ -228,7 +228,7 @@ namespace Uno.UI.Xaml.Core
 					AddRoot(PublicRootVisual);
 				}
 
-				//_pCoreNoRef.RaisePendingLoadedRequests();
+				_coreServices.RaisePendingLoadedRequests();
 			}
 
 			// Re-enter the roots with the new public root's namescope.
@@ -409,10 +409,21 @@ namespace Uno.UI.Xaml.Core
 			if (root != null)
 			{
 				//TODO Uno: The logic here is more complex in WinUI,
-				//setting the namespace owner. Not needed currently.
+				//setting the namescope owner. Not needed currently.
 
 				MUX_ASSERT(RootElement != null);
 				RootElement!.AddChild(root);
+
+#if __CROSSRUNTIME__
+				EnterParams enterParams = new(
+					isLive: true
+				);
+
+				if (IsMainVisualTree())
+				{
+					root.Enter(enterParams);
+				}
+#endif
 			}
 		}
 
@@ -790,5 +801,10 @@ namespace Uno.UI.Xaml.Core
 				typeof(VisualTree).Log().LogDebug("Visual Tree was not found.");
 			}
 		}
+
+#if __CROSSRUNTIME__
+		private bool IsMainVisualTree()
+			=> RootVisual != null;
+#endif
 	}
 }

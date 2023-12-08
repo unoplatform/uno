@@ -668,6 +668,14 @@ namespace Windows.UI.Xaml.Controls
 			return base.MeasureOverride(availableSize);
 		}
 
+		internal override void OnLayoutUpdated()
+		{
+			base.OnLayoutUpdated();
+
+			UpdateDimensionProperties();
+			UpdateZoomedContentAlignment();
+		}
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			ViewportArrangeSize = finalSize;
@@ -679,14 +687,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void TrimOverscroll(Orientation orientation);
-
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-
-			UpdateDimensionProperties();
-			UpdateZoomedContentAlignment();
-		}
 
 		private double LayoutRoundIfNeeded(FrameworkElement fe, double value)
 		{
@@ -889,7 +889,6 @@ namespace Windows.UI.Xaml.Controls
 		private static Visibility ComputeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility)
 		{
 			// Note: The ScrollMode DOES NOT impact the visibility of the ScrollBar, but just it's hit testability!
-
 			switch (visibility)
 			{
 				case ScrollBarVisibility.Auto when scrollable > 0:

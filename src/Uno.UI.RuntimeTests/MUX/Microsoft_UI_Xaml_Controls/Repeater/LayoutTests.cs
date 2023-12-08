@@ -40,7 +40,6 @@ using LayoutContext = Microsoft.UI.Xaml.Controls.LayoutContext;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]

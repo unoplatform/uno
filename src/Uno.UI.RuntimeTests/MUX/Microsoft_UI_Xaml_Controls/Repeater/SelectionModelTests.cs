@@ -30,7 +30,6 @@ using SelectionModelChildrenRequestedEventArgs = Microsoft.UI.Xaml.Controls.Sele
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class SelectionModelTests : MUXApiTestBase
 	{
 		[TestMethod]

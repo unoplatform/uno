@@ -37,9 +37,5 @@ namespace Windows.UI.Xaml
 		internal void ClearChildren() => throw new NotSupportedException("Reference assembly");
 
 		internal void UpdateHitTest() => throw new NotSupportedException("Reference assembly");
-
-		internal void SetHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
-
-		internal void ClearHitTestVisibilityForRoot() => throw new NotSupportedException("Reference assembly");
 	}
 }

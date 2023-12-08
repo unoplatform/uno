@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using DirectUI;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -590,5 +591,82 @@ namespace Windows.UI.Xaml
 		/// <param name="uiElement">UIElement.</param>
 		/// <returns>True if the element is a ScrollViewer.</returns>
 		internal bool IsScroller() => this is ScrollViewer;
+
+#if __CROSSRUNTIME__
+		private List<Request> _eventList = new();
+
+		// Doesn't exactly match WinUI code.
+		internal virtual void Enter(EnterParams @params)
+		{
+			if (@params.IsLive)
+			{
+				IsActiveInVisualTree = true;
+			}
+
+			foreach (var child in _children)
+			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
+				child.Enter(@params);
+			}
+
+			if (@params.IsLive)
+			{
+				if (_eventList is not null)
+				{
+					var core = this.GetContext();
+					core.EventManager.AddRequestsInOrder(this, _eventList);
+				}
+			}
+
+			// Make sure that we propagate OnDirtyPath bits to the new parent.
+			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+		}
+
+		internal virtual void Leave(LeaveParams @params)
+		{
+			foreach (var child in _children)
+			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
+				child.Leave(@params);
+			}
+
+			// TODO: **IMPORTANT BEFORE MERGE** if the element was added to loaded list, and Loaded not yet fired, it should be removed from the list.
+
+			if (IsActiveInVisualTree)
+			{
+				// TODO: Is Unloaded fired synchronously?
+				OnElementUnloaded();
+
+				var eventManager = this.GetContext().EventManager;
+				foreach (var request in _eventList)
+				{
+					eventManager.RemoveRequest(this, request);
+				}
+			}
+		}
+
+		internal void AddEventListener(bool handledEventsToo)
+		{
+			EventManager.AddEventListener(this, _eventList, handledEventsToo);
+		}
+#endif
 	}
 }

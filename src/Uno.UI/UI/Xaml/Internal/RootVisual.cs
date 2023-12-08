@@ -39,6 +39,8 @@ internal partial class RootVisual : Panel, IRootElement
 	{
 		_coreServices = coreServices ?? throw new System.ArgumentNullException(nameof(coreServices));
 		_rootElementLogic = new(this);
+		((UIElement)this).IsLoaded = true;
+		HitTestVisibility = HitTestability.Visible;
 	}
 
 	void IRootElement.NotifyFocusChanged() => _rootElementLogic.NotifyFocusChanged();

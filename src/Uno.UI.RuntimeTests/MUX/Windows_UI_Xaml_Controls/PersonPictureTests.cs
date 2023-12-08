@@ -165,6 +165,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			var sizeChangedEvent = new TaskCompletionSource<bool>();
 
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => sizeChangedEvent.TrySetException(new TimeoutException()));
+
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture.SizeChanged += (sender, args) => sizeChangedEvent.TrySetResult(true);

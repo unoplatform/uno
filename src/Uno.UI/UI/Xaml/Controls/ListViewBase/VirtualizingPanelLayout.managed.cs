@@ -216,6 +216,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// This case is for an ItemsPresenter hosted in a Popup
 				ItemsControl = popupItemsControl;
+
+				// If measure has already happened when ItemsControl was null, it should be invalidated.
+				OwnerPanel?.InvalidateMeasure();
 			}
 		}
 

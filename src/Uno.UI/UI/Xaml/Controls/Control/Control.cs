@@ -303,18 +303,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked;
 
-		private protected override void OnPostLoading()
-		{
-			base.OnPostLoading();
-
-			TryCallOnApplyTemplate();
-
-			// Update bindings to ensure resources defined
-			// in visual parents get applied.
-			this.UpdateResourceBindings();
-		}
-
-		private void TryCallOnApplyTemplate()
+		internal void TryCallOnApplyTemplate()
 		{
 			if (_applyTemplateShouldBeInvoked)
 			{

@@ -19,8 +19,6 @@ namespace Windows.UI.Xaml
 
 		internal void UpdateHitTest() { }
 
-		private protected virtual void OnPostLoading() { }
-
 		partial void OnLoadingPartial();
 
 		public T AddChild<T>(T child) where T : View
@@ -106,7 +104,6 @@ namespace Windows.UI.Xaml
 			if (IsLoaded)
 			{
 				OnLoading();
-				OnPostLoading();
 				OnLoaded();
 
 				foreach (var child in _children.OfType<FrameworkElement>().ToArray())

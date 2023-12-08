@@ -8,6 +8,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = System.DateTimeOffset;
+using Uno.UI.Xaml;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -154,12 +156,10 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
-		private void EnterImpl()
+		internal override void Enter(EnterParams @params)
 		{
-			//TODO:Uno Specific: This should be called by the base class each time the element enters the visual tree.
-			//For now we call it on Loaded.
-
 			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
+			base.Enter(@params);
 
 			// In case any of the TextBlock properties have been updated while
 			// we were out of the visual tree, we should update them in order to ensure

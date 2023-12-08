@@ -24,15 +24,9 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
-			this.Loaded += (_, _) =>
-			{
 #if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-				_borderRenderer ??= new();
-#endif
-				EnterImpl();
-			};
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-			this.Unloaded += (_, _) => _borderRenderer.Clear();
+			this.Loaded += (_, _) => _borderRenderer ??= new();
+			this.Unloaded += (_, _) => _borderRenderer?.Clear();
 #endif
 		}
 

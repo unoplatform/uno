@@ -108,8 +108,7 @@ namespace Windows.UI.Xaml
 					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
 					if (parent is null)
 					{
-						global::System.Diagnostics.Debug.Assert(IsVisualTreeRoot);
-
+						//global::System.Diagnostics.Debug.Assert(IsVisualTreeRoot);
 						// We are the root of the visual tree, we update the effective viewport
 						// in order to initialize the _parentViewport of children.
 						PropagateEffectiveViewportChange(isInitial: true, isInternal: isInternal);

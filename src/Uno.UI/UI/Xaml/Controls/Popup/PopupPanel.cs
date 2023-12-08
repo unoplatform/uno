@@ -238,7 +238,10 @@ internal partial class PopupPanel : Panel
 		base.OnUnloaded();
 		this.SetLogicalParent(null);
 
-		this.XamlRoot.Changed -= XamlRootChanged;
+		if (XamlRoot is { } xamlRoot)
+		{
+			xamlRoot.Changed -= XamlRootChanged;
+		}
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we

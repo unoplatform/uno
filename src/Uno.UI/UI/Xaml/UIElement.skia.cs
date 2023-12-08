@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private ShapeVisual _visual;
+		private protected ShapeVisual _visual;
 		private Rect _currentFinalRect;
 		private Rect? _currentClippedFrame;
 
@@ -91,16 +91,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
-		partial void OnLoading()
-		{
-			if (_visual is not null)
-			{
-				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
-			}
-		}
-#endif
-
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		internal void AddChild(UIElement child, int? index = null)
@@ -129,7 +119,6 @@ namespace Windows.UI.Xaml
 			}
 
 			child.SetParent(this);
-			OnAddingChild(child);
 
 			if (index is { } actualIndex && actualIndex != _children.Count)
 			{
@@ -142,6 +131,10 @@ namespace Windows.UI.Xaml
 				_children.Add(child);
 				Visual.Children.InsertAtTop(child.Visual);
 			}
+
+			// TODO: **IMPORTANT BEFORE MERGE** Wasm needs a similar change
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 

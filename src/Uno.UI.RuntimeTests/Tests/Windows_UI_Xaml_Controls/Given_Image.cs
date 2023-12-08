@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -33,6 +34,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Fixed_Height_And_Stretch_Uniform()
 		{
 			var imageLoaded = new TaskCompletionSource<bool>();
+
+			var cts = new CancellationTokenSource(1000);
+			cts.Token.Register(() => imageLoaded.TrySetException(new TimeoutException()));
 
 			var image = new Image { Height = 30, Stretch = Stretch.Uniform, Source = new BitmapImage(new Uri("ms-appx:///Assets/storelogo.png")) };
 			image.Loaded += (s, e) => imageLoaded.TrySetResult(true);

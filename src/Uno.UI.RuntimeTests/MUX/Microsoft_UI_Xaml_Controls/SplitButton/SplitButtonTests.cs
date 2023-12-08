@@ -93,12 +93,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public void VerifyFontFamilyForChevron()
+		public async Task VerifyFontFamilyForChevron()
 		{
 			using (StyleHelper.UseFluentStyles())
 			{
 				var splitButton = new SplitButton();
 				TestServices.WindowHelper.WindowContent = splitButton;
+				await TestServices.WindowHelper.WaitForIdle();
 
 				var secondayButton = splitButton.GetTemplateChild("SecondaryButton");
 				var font = ((secondayButton as Button).Content as TextBlock).FontFamily;

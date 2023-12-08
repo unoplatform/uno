@@ -178,6 +178,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 #if HAS_UNO //WinUI uses COMException here, we use InvalidOperationException instead.
 				catch (InvalidOperationException e)
+#else
+				catch (COMException e)
 #endif
 				{
 					errorMessage = e.Message;

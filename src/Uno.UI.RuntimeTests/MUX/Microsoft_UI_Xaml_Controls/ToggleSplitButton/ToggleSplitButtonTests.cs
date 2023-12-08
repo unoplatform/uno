@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Common;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -18,13 +19,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		[RunsOnUIThread]
-		public void VerifyFontFamilyForChevron()
+		public async Task VerifyFontFamilyForChevron()
 		{
 			Microsoft.UI.Xaml.Controls.ToggleSplitButton toggleSplitButton = null;
 			using (StyleHelper.UseFluentStyles())
 			{
 				toggleSplitButton = new Microsoft.UI.Xaml.Controls.ToggleSplitButton();
 				TestServices.WindowHelper.WindowContent = toggleSplitButton;
+				await TestServices.WindowHelper.WaitForIdle();
 
 				var secondayButton = toggleSplitButton.GetTemplateChild("SecondaryButton");
 				var font = ((secondayButton as Button).Content as TextBlock).FontFamily;

@@ -800,9 +800,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoaded()
+		internal override void Enter(EnterParams @params)
 		{
-			base.OnLoaded();
+			base.Enter(@params);
 
 			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 			{

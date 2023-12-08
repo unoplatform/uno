@@ -5,7 +5,8 @@
 #nullable enable
 
 using System;
-using Windows.UI;
+using System.Runtime.CompilerServices;
+using Uno.UI.Dispatching;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,10 +19,47 @@ namespace Uno.UI.Xaml.Core
 
 		private VisualTree? _mainVisualTree;
 
+#if __CROSSRUNTIME__
+		public EventManager EventManager { get; private set; }
+#endif
+
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
+#if __CROSSRUNTIME__
+			EventManager = EventManager.Create();
+			NativeDispatcher.Main.Enqueue(() => OnTick(), NativeDispatcherPriority.Idle);
+#endif
 		}
+
+#if __CROSSRUNTIME__
+		private static void OnTick()
+		{
+			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
+			NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
+
+			if (CoreServices.Instance.MainVisualTree?.RootElement is { } root &&
+				CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is { } windowContentRoot && windowContentRoot.GetOwnerWindow() is { } window &&
+				window.Bounds.Size is { Width: not 0, Height: not 0 } windowSize)
+			{
+				if (root.IsMeasureDirtyOrMeasureDirtyPath)
+				{
+					root.Measure(windowSize);
+				}
+
+				if (root.IsArrangeDirtyOrArrangeDirtyPath)
+				{
+					root.Arrange(window.Bounds);
+				}
+
+				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
+				{
+					CoreServices.Instance.EventManager.RaiseLoadedEvent();
+					// UpdateLayout()
+				}
+			}
+		}
+#endif
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
@@ -51,7 +89,7 @@ namespace Uno.UI.Xaml.Core
 
 		public VisualTree? MainVisualTree => _mainVisualTree;
 
-		public DependencyObject? VisualRoot => _mainVisualTree?.PublicRootVisual;
+		public UIElement? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
 		internal void InitCoreWindowContentRoot()
 		{
@@ -78,5 +116,12 @@ namespace Uno.UI.Xaml.Core
 		internal void UIARaiseFocusChangedEventOnUIAWindow(DependencyObject sender)
 		{
 		}
+
+#if __CROSSRUNTIME__
+		internal void RaisePendingLoadedRequests()
+		{
+			EventManager.RequestRaiseLoadedEventOnNextTick();
+		}
+#endif
 	}
 }

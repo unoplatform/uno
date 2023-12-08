@@ -31,7 +31,6 @@ using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class SwipeControlTests : MUXApiTestBase
 	{
 		[TestMethod]

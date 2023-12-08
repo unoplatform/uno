@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
+		internal bool IsActiveInVisualTree { get; private set; }
+
 		private static protected readonly Logger _log = typeof(UIElement).Log();
 		private static protected readonly Logger _logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		private static protected readonly Logger _logTrace = _log.IsEnabled(LogLevel.Trace) ? _log : null;
@@ -32,20 +34,12 @@ namespace Windows.UI.Xaml
 
 		// Even if this a concept of FrameworkElement, the loaded state is handled by the UIElement in order to avoid
 		// to cast to FrameworkElement each time a child is added or removed.
-#if __WASM__
-		internal bool IsLoaded { get; private protected set; } // protected for the native loading support
-#else
-		internal bool IsLoaded { get; private set; }
-#endif
+		internal bool IsLoaded { get; set; }
 
 		/// <summary>
 		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
 		/// </summary>
-#if __WASM__
-		internal bool IsLoading { get; private protected set; } // protected for the native loading support
-#else
-		internal bool IsLoading { get; private set; }
-#endif
+		internal bool IsLoading { get; private protected set; }
 
 		/// <summary>
 		/// Gets the element depth in the visual tree.
@@ -53,66 +47,21 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal int Depth { get; private set; } = int.MinValue;
 
-		internal static void LoadingRootElement(UIElement visualTreeRoot)
-			=> visualTreeRoot.OnElementLoading(1);
-
-		internal static void RootElementLoaded(UIElement visualTreeRoot)
-		{
-			visualTreeRoot.SetHitTestVisibilityForRoot();
-			visualTreeRoot.OnElementLoaded();
-		}
-
-		internal static void RootElementUnloaded(UIElement visualTreeRoot)
-		{
-			visualTreeRoot.ClearHitTestVisibilityForRoot();
-			visualTreeRoot.OnElementUnloaded();
-		}
-
-		partial void OnLoading();
-
-		// Overloads for the FrameworkElement to raise the events
-		// (Load/Unload is actually a concept of the FwElement, but it's easier to handle it directly from the UIElement)
-		private protected virtual void OnFwEltLoading() { }
-		private protected virtual void OnFwEltLoaded() { }
-		private protected virtual void OnFwEltUnloaded() { }
-
-		private void OnElementLoading(int depth)
-		{
-			if (IsLoading || IsLoaded)
-			{
-				// Note: If child is added while in parent's Laoding handler, we might get a double Loading!
-				return;
-			}
-
-			IsLoading = true;
-			Depth = depth;
-
-			OnLoading();
-			OnFwEltLoading();
-
-			// Explicit propagation of the loading even must be performed
-			// after the compiled bindings are applied (cf. OnLoading), as there may be altered
-			// properties that affect the visual tree.
-
-			// Get a materialized copy for Wasm to avoid the use of iterators
-			// where try/finally has a high cost.
-			var children = _children.Materialized;
-			for (int i = 0; i < children.Count; i++)
-			{
-				children[i].OnElementLoading(depth + 1);
-			}
-		}
-
-		private void OnElementLoaded()
+		internal void RaiseLoaded()
 		{
 			if (IsLoaded)
 			{
 				return;
 			}
 
+			// TODO: Per https://github.com/unoplatform/uno/issues/2895#issuecomment-694212130
+			// This logging doesn't seem correct in that particular case.
+			// There is also another case when the element is collapsed. In this case, WinUI fires Loaded, but doesn't fire Loading.
 			if (!IsLoading && _log.IsEnabled(LogLevel.Error))
 			{
-				_log.Error($"Element {this} is being loaded while not in loading state");
+				// TODO: **IMPORTANT BEFORE MERGE** Make sure all cases that hits this code path matches WinUI behavior.
+				// Then, this condition can be deleted then.
+				//_log.Error($"Element {this} is being loaded while not in loading state");
 			}
 
 			IsLoading = false;
@@ -120,54 +69,30 @@ namespace Windows.UI.Xaml
 
 			OnFwEltLoaded();
 			UpdateHitTest();
-
-			// Get a materialized copy for Wasm to avoid the use of iterators
-			// where try/finally has a high cost.
-			var children = _children.Materialized;
-			for (int i = 0; i < children.Count; i++)
-			{
-				children[i].OnElementLoaded();
-			}
 		}
+
+		// Overloads for the FrameworkElement to raise the events
+		// (Load/Unload is actually a concept of the FwElement, but it's easier to handle it directly from the UIElement)
+		private protected virtual void OnFwEltLoaded() { }
+		private protected virtual void OnFwEltUnloaded() { }
 
 		private void OnElementUnloaded()
 		{
-			if (!IsLoaded)
-			{
-				return;
-			}
-
 			IsLoaded = false;
+			IsActiveInVisualTree = false;
 			Depth = int.MinValue;
-
-			// Get a materialized copy for Wasm to avoid the use of iterators
-			// where try/finally has a high cost.
-			var children = _children.Materialized;
-			for (int i = 0; i < children.Count; i++)
-			{
-				children[i].OnElementUnloaded();
-			}
 
 			OnFwEltUnloaded();
 			UpdateHitTest();
 		}
 
-		private void OnAddingChild(UIElement child)
-		{
-			if (IsLoading || IsLoaded)
-			{
-				child.OnElementLoading(Depth + 1);
-			}
-		}
-
 		private void OnChildAdded(UIElement child)
 		{
-			if (
+			if (!child._isFrameworkElement
 #if __WASM__
-				!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded ||
+				|| !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
 #endif
-				!IsLoaded
-				|| !child._isFrameworkElement)
+				)
 			{
 				return;
 			}
@@ -179,40 +104,40 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"{this.GetDebugName()}: Inconsistent state: child {child} is already loaded (OnChildAdded). Common cause for this is an exception during Unloaded handling.");
 				}
 			}
-			else
+			else if (child.IsActiveInVisualTree)
 			{
-				child.OnElementLoaded();
+				var context = this.GetContext();
+				var eventManager = context.EventManager;
+				eventManager.RequestRaiseLoadedEventOnNextTick();
 			}
 		}
 
 		private void OnChildRemoved(UIElement child)
 		{
-			if (
+			if (!child._isFrameworkElement
 #if __WASM__
-				!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded ||
+				|| !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
 #endif
-				!IsLoaded
-				|| !child._isFrameworkElement)
+				)
 			{
 				return;
 			}
 
-			if (child.IsLoaded)
-			{
-				child.OnElementUnloaded();
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"{this.GetDebugName()}: Inconsistent state: child {child} is not loaded (OnChildRemoved). Common cause for this is an exception during Loaded handling.");
-				}
-			}
+			var leaveParams = new LeaveParams(IsActiveInVisualTree);
+			child.Leave(leaveParams);
 		}
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
+		private void ChildEnter(UIElement child, EnterParams @params)
+		{
+			// Uno TODO: WinUI has much more complex logic than this.
+			if (@params.IsLive)
+			{
+				child.Enter(@params);
+			}
+		}
 #if DEBUG
 
 		/// <summary>

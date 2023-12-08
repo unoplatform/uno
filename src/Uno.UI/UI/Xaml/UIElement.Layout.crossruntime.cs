@@ -3,7 +3,9 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
@@ -133,22 +135,14 @@ namespace Windows.UI.Xaml
 				return; // Only FrameworkElements are measurable
 			}
 
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
-			if (Visibility == Visibility.Collapsed)
-			{
-				if (availableSize == LastAvailableSize)
-				{
-					return;
-				}
-
-				SetLayoutFlags(LayoutFlag.MeasureDirty);
-
-				return;
-			}
+			// Visibility should not be checked here. Consider the following scenario:
+			// 1. A collapsed element is measured before it enters the visual tree
+			// 2. Visibility changes to Visible after it enters the visual tree, which will call InvalidateMeasure
+			// In this case, we want step 1 to clear the dirty flag.
+			// If the flag isn't cleared in step 1, then InvalidateMeasure call in step 2 will do nothing because the
+			// element is already dirty, which means the dirtiness isn't propagated up to RootVisual.
+			// So, we want to go into DoMeasure, which will clear the flag.
+			// Then, DoMeasure is going to early return if Visibility is collapsed.
 
 			if (IsVisualTreeRoot)
 			{
@@ -211,6 +205,12 @@ namespace Windows.UI.Xaml
 				if (isDirty)
 				{
 					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
+					// TODO: This doesn't actually follow WinUI. It looks like in WinUI, the method
+					// CUIElement::MeasureInternal is doing SetIsMeasureDirty(FALSE); at the end.
+					// If we were able to align this to WinUI, we should remember clearing
+					// the flag in the Visibility == Visibility.Collapsed case as well.
+					// The Visibility condition is similar to the GetIsLayoutSuspended check in
+					// WinUI, which does goto Cleanup and will call SetIsMeasureDirty(FALSE);
 					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
 
 					// The dirty flag is explicitly set on this element
@@ -218,6 +218,13 @@ namespace Windows.UI.Xaml
 					try
 #endif
 					{
+						if (this.Visibility == Visibility.Collapsed)
+						{
+							LayoutInformation.SetDesiredSize(this, default);
+							RecursivelyApplyTemplateWorkaround();
+							return;
+						}
+
 						MeasureCore(availableSize);
 						InvalidateArrange();
 					}
@@ -278,6 +285,30 @@ namespace Windows.UI.Xaml
 		{
 			throw new NotSupportedException("UIElement doesn't implement MeasureCore. Inherit from FrameworkElement, which properly implements MeasureCore.");
 		}
+
+		private void RecursivelyApplyTemplateWorkaround()
+		{
+			// Uno workaround. The template should NOT be applied here.
+			// But, without this workaround, VerifyVisibilityChangeUpdatesCommandBarVisualState test will fail.
+			// The real root cause for the test failure is that FindParentCommandBarForElement will
+			// return null, that is because Uno doesn't yet properly have a "logical parent" concept.
+			// We eagerly apply the template so that FindParentCommandBarForElement will
+			// find the command bar through TemplatedParent
+			if (this is Control thisAsControl)
+			{
+				thisAsControl.TryCallOnApplyTemplate();
+
+				// Update bindings to ensure resources defined
+				// in visual parents get applied.
+				this.UpdateResourceBindings();
+			}
+
+			foreach (var child in _children)
+			{
+				child.RecursivelyApplyTemplateWorkaround();
+			}
+		}
+
 
 		public void Arrange(Rect finalRect)
 		{
