@@ -386,7 +386,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						BuildBaseUri(writer);
 
-						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
+						using (Scope(_xClassName.Namespace, _xClassName.ClassName, topLevelControl))
 						{
 							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
 							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
@@ -877,10 +877,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var className = kvp.Key;
 					var contentOwner = kvp.Value.ContentOwner;
+					var contentLocation = kvp.Value.Location;
 
 					using (TrySetDefaultBindMode(contentOwner.Owner, kvp.Value.DefaultBindMode))
 					{
-						using (Scope(ns, className))
+						using (Scope(ns, className, contentLocation))
 						{
 							var hrInterfaceName = _isHotReloadEnabled ? $"I{className}" : "";
 							var hrInterfaceImpl = _isHotReloadEnabled ? $": {hrInterfaceName}" : "";
@@ -931,6 +932,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
 										}
 
+										if (CurrentScope.Location is not null && _isHotReloadEnabled)
+										{
+											TrySetOriginalSourceLocation(writer, "__rootInstance", CurrentScope.Location.LineNumber, CurrentScope.Location.LinePosition);
+										}
+
 										writer.AppendLineIndented("return __rootInstance;");
 									}
 								}
@@ -948,6 +954,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// The "OriginalSourceLocation" can be used like DebugParseContext (set via SetBaseUri) but for elements that aren't FrameworkElements
+		/// </summary>
+		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, int lineNumber, int linePosition)
+		{
+			if (_isHotReloadEnabled)
+			{
+				writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{lineNumber}:{linePosition}\");");
 			}
 		}
 
@@ -1786,6 +1803,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 					}
+				}
+			}
+
+			if (_isHotReloadEnabled)
+			{
+				using (var applyWriter = CreateApplyBlock(writer, Generation.StyleSymbol.Value, out string closure))
+				{
+					TrySetOriginalSourceLocation(applyWriter, $"{closure}", style.LineNumber, style.LinePosition);
 				}
 			}
 		}
@@ -2755,15 +2780,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (key != null)
 				{
-					// Some resources (such as material colors) are initialized upon creation and so can't be tracked this way,
-					//  as can't add the `SetElementProperty` call in a getter.
-					if (!isInInitializer && _isHotReloadEnabled)
-					{
-						// Track source location of resources by key as they may be lazily initialized.
-						// Attach the values to the named string for similarity with other places where this information is stored.
-						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"ResourceSourceLocations\", \"{key}\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\"){closingPunctuation}");
-					}
-
 					var wrappedKey = key;
 					if (!key.StartsWith("typeof(", StringComparison.InvariantCulture))
 					{
@@ -3620,7 +3636,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isHotReloadEnabled)
 					{
-						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{objectDefinition.LineNumber}:{objectDefinition.LinePosition}\");");
+						TrySetOriginalSourceLocation(writer, $"{closureName}", objectDefinition.LineNumber, objectDefinition.LinePosition);
 					}
 
 					if (_isUiAutomationMappingEnabled)
@@ -4100,9 +4116,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			CurrentScope.BackingFields.Add(new BackingFieldDefinition(globalizedType, name, accessibility));
 		}
 
-		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
+		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType, IXamlLocation? location)
 		{
-			CurrentScope.Subclasses[name] = new Subclass(owner, returnType, GetDefaultBindMode());
+			CurrentScope.Subclasses[name] = new Subclass(owner, returnType, GetDefaultBindMode(), location);
 		}
 
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true, ComponentDefinition? componentDefinition = null)
@@ -5921,7 +5937,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(");
 
+					// The unknown content is what's inside the DataTemplate element, but for the location we want the position of the "DataTemplate" element.
 					var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
+					var contentLocation = (IXamlLocation)xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key") ?? xamlObjectDefinition;
 
 					if (contentOwner != null)
 					{
@@ -5932,7 +5950,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
-						BuildChildThroughSubclass(writer, contentOwner, returnType);
+						BuildChildThroughSubclass(writer, contentOwner, contentLocation, returnType);
 
 						writer.AppendIndented(")");
 					}
@@ -6544,7 +6562,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
+		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, IXamlLocation contentLocation, string returnType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
@@ -6554,7 +6572,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
-			RegisterChildSubclass(subclassName, contentOwner, returnType);
+			RegisterChildSubclass(subclassName, contentOwner, returnType, contentLocation);
 
 			var activator = _isHotReloadEnabled
 				? $"(({namespacePrefix}I{subclassName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{namespacePrefix}{subclassName}>())"
@@ -6743,9 +6761,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private NameScope CurrentScope
 			=> _scopeStack.Peek();
 
-		private IDisposable Scope(string? @namespace, string className)
+		private IDisposable Scope(string? @namespace, string className, IXamlLocation? location = null)
 		{
-			_scopeStack.Push(new NameScope(@namespace, className));
+			_scopeStack.Push(new NameScope(@namespace, className, location));
 
 			return new DisposableAction(() => _scopeStack.Pop());
 		}
