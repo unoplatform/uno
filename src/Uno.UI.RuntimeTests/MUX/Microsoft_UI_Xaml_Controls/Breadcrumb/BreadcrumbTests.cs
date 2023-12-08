@@ -30,7 +30,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
-	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public class BreadcrumbTests : MUXApiTestBase
 	{
@@ -330,10 +329,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			}
 			finally
 			{
+#if HAS_UNO
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
+#endif
 			}
 		}
 
@@ -412,10 +413,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			}
 			finally
 			{
+#if HAS_UNO
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
+#endif
 			}
 		}
 

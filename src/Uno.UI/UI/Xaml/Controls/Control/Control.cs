@@ -301,6 +301,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked;
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
@@ -311,8 +312,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// in visual parents get applied.
 			this.UpdateResourceBindings();
 		}
+#endif
 
-		private void TryCallOnApplyTemplate()
+		internal void TryCallOnApplyTemplate()
 		{
 			if (_applyTemplateShouldBeInvoked)
 			{

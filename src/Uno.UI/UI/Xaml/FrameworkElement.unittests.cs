@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml
 
 		internal void UpdateHitTest() { }
 
-		private protected virtual void OnPostLoading() { }
-
 		partial void OnLoadingPartial();
 
 		private partial void ReconfigureViewportPropagationPartial();
@@ -103,7 +101,6 @@ namespace Microsoft.UI.Xaml
 			if (IsLoaded)
 			{
 				OnLoading();
-				OnPostLoading();
 				OnLoaded();
 
 				foreach (var child in _children.OfType<FrameworkElement>().ToArray())

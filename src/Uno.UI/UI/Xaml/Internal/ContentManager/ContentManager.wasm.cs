@@ -33,17 +33,7 @@ partial class ContentManager
 
 	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement)
 	{
-		if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-		{
-			UIElement.LoadingRootElement(rootElement);
-		}
-
 		xamlRoot.InvalidateMeasure();
 		xamlRoot.InvalidateArrange();
-
-		if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-		{
-			UIElement.RootElementLoaded(rootElement);
-		}
 	}
 }

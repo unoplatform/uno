@@ -913,7 +913,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		public void When_SelectedItem_TwoWay_Binding()
+		public async Task When_SelectedItem_TwoWay_Binding()
 		{
 			var itemsControl = new ItemsControl()
 			{
@@ -939,6 +939,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = itemsControl;
 
 			itemsControl.ItemsSource = test;
+
+			await WindowHelper.WaitForIdle();
 
 			var comboBox = itemsControl.FindName("combo") as ComboBox;
 

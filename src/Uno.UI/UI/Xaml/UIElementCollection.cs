@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Collections;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {

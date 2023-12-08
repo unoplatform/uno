@@ -446,8 +446,6 @@ namespace Microsoft.UI.Xaml
 
 			child.SetParent(this);
 
-			OnAddingChild(child);
-
 			if (index is { } i)
 			{
 				_children.Insert(i, child);
@@ -458,6 +456,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 

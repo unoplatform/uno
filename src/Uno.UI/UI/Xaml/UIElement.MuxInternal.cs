@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml
 	partial class UIElement
 	{
 #if __CROSSRUNTIME__
-		internal bool IsInLiveTree => IsLoading || IsLoaded;
+		internal bool IsInLiveTree => IsActiveInVisualTree;
 #elif __ANDROID__
 		internal bool IsInLiveTree => base.IsAttachedToWindow;
 #elif __IOS__ || __MACOS__

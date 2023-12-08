@@ -13,7 +13,6 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls
 {
-	[RunsOnUIThread]
 	[TestClass]
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282! epic")]

@@ -57,7 +57,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public partial class ViewportTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -77,11 +76,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = repeater;
 				Content.UpdateLayout();
 
-				// TODO: Uno specific: In our case only one Measure loop occurs
-				// possibly because of a different parent tree of the test.
-				Verify.AreEqual(1, realizationRects.Count);
-				//Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
-				realizationRects.Insert(0, default);
+				Verify.AreEqual(2, realizationRects.Count);
+				Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
 
 				if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
 				{

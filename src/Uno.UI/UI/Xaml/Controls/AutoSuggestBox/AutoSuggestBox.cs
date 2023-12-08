@@ -145,8 +145,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					IsSuggestionListOpen = true;
 					_suggestionsList.ItemsSource = GetItems();
-
-					LayoutPopup();
 				}
 			}
 		}
@@ -282,6 +280,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_popup != null)
 			{
 				_popup.Closed += OnPopupClosed;
+				_popup.Opened += OnPopupOpened;
 			}
 		}
 
@@ -305,6 +304,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_popup != null)
 			{
 				_popup.Closed -= OnPopupClosed;
+				_popup.Opened -= OnPopupOpened;
 			}
 		}
 
@@ -316,6 +316,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnPopupClosed(object sender, object e)
 		{
 			IsSuggestionListOpen = false;
+		}
+
+		private void OnPopupOpened(object sender, object e)
+		{
+			LayoutPopup();
 		}
 
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)

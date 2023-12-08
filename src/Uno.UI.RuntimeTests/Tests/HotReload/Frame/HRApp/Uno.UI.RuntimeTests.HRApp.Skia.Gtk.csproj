@@ -38,7 +38,7 @@
 		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.HarfBuzz" Version="2.88.7" />
-		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.15.0-dev.56" />
+		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.35.0-dev.122" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />

@@ -57,6 +57,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			PivotItem pi = null;
 			await WindowHelper.WaitFor(() => (pi = SUT.ContainerFromItem(items[0]) as PivotItem) != null);
 
+			// This requires two calls to WaitForIdle, even in Windows.
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
 			var tbs = pi.GetAllChildren(null, false).OfType<TextBlock>().Cast<TextBlock>();
 
 			tbs.Should().NotBeNull();
@@ -65,9 +69,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => (pi = SUT.ContainerFromItem(items[1]) as PivotItem) != null);
 
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
 			var tbs2 = pi.GetAllChildren(null, false).OfType<TextBlock>().Cast<TextBlock>();
 
 			tbs2.Should().NotBeNull();
+
+			// For some reason, the count is 0 in Windows. So this doesn't currently match Windows.
 			tbs2.Should().HaveCount(1);
 			items[1].Content.Should().Be(tbs2.ElementAt(0).Text);
 		}

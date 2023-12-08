@@ -13,7 +13,6 @@ using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public partial class ColorPickerTests : MUXApiTestBase
 	{
 		[TestMethod]
