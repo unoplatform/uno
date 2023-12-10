@@ -18,6 +18,10 @@ using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml.Input;
 using Uno.Extensions;
+using MUXControlsTestApp.Utilities;
+using Windows.UI.Xaml.Controls.Primitives;
+
+
 
 
 #if NETFX_CORE
@@ -47,6 +51,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
+
+		private Style ComboBoxItemContainerStyle => _testsResources["ComboBoxItemContainerStyle"] as Style;
 
 		private Style ComboBoxWithSeparatorStyle => _testsResources["ComboBoxWithSeparatorStyle"] as Style;
 
@@ -887,6 +893,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, comboBox.SelectedItem);
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_SelectedItem_Active_VisualState()
+		{
+			var source = Enumerable.Range(0, 10).ToArray();
+			var SUT = new ComboBox
+			{
+				ItemsSource = source,
+				ItemContainerStyle = ComboBoxItemContainerStyle,
+				ItemTemplate = CounterItemTemplate
+			};
+
+			SUT.SelectedItem = 2;
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			var containerForTwo = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+			Assert.IsNotNull(containerForTwo);
+			var h = VisualStateHelper.GetCurrentVisualStateName(containerForTwo);
+			Assert.IsTrue(h.Contains("Selected"));
+
+			SUT.SelectedItem = 6;
+			await WindowHelper.WaitForIdle();
+
+			var containerForSix = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+			Assert.IsNotNull(containerForSix);
+
+			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForTwo).Contains("Normal"));
+			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForSix).Contains("Selected"));
+		}
 
 #if HAS_UNO
 		[TestMethod]
