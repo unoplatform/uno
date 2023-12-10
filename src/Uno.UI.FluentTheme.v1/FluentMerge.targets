@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <PropertyGroup>
-	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
+	<PageExclusions>$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\**\*.xaml</PageExclusions>
   </PropertyGroup>
 
   <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
@@ -9,18 +9,18 @@
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
   <Target Name="GenerateThemeResourceV1File" BeforeTargets="BeforeBuild" Outputs="themeresources_v1.xaml" Condition="'$(Configuration)'=='Debug'">
 	<ItemGroup>
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
-      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager.xaml" />
-      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\PipsPager_themeresources.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\ScrollViewer_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\TeachingTip.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\TeachingTip_themeresources.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\PipsPager.xaml" />
+      <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\PipsPager_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\ScrollViewer.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\ScrollViewer_themeresources.xaml" />
 	  <!-- UNO TODO Fails to display correctly for multiple reasons, including https://github.com/unoplatform/uno/issues/325 but also undiagnosed issues -->
-	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)Resources\Version1\PriorityDefault\SplitView_themeresources.xaml" />
+	  <ExcludedTemplates Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\PriorityDefault\SplitView_themeresources.xaml" />
 	  <!-- The excluded files can be restored as the types are made available in Uno. -->
 	  <WinUIStylePage
-		  Include="$(MSBuildThisFileDirectory)Resources\Version1\**\*.xaml" />
+		  Include="$(MSBuildThisFileDirectory)..\Uno.UI.FluentTheme.v2\Resources\Version1\**\*.xaml" />
 	  <WinUIStylePage
 		  Remove="@(ExcludedTemplates)" />
 	</ItemGroup>
