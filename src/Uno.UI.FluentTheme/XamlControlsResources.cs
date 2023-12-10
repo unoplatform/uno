@@ -41,25 +41,14 @@ namespace Microsoft.UI.Xaml.Controls
 				requestedVersion = MaxSupportedResourcesVersion;
 			}
 
-			switch (requestedVersion)
-			{
-				case ControlsResourcesVersion.Version1:
-#if !__NETSTD_REFERENCE__
-					Uno.UI.FluentTheme.v1.GlobalStaticResources.Initialize();
-					Uno.UI.FluentTheme.v1.GlobalStaticResources.RegisterDefaultStyles();
-					Uno.UI.FluentTheme.v1.GlobalStaticResources.RegisterResourceDictionariesBySource();
-#endif
-					break;
+			// Version 1 resources are no longer supported, fallforward to latest version.
+			requestedVersion = MaxSupportedResourcesVersion;
 
-				case ControlsResourcesVersion.Version2:
 #if !__NETSTD_REFERENCE__
-					Uno.UI.FluentTheme.v2.GlobalStaticResources.Initialize();
-					Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterDefaultStyles();
-					Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
+			Uno.UI.FluentTheme.v2.GlobalStaticResources.Initialize();
+			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterDefaultStyles();
+			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
 #endif
-					break;
-			}
-
 
 			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl((int)requestedVersion));
 
