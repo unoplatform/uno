@@ -894,7 +894,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_SelectedItem_Active_VisualState()
 		{
 			var source = Enumerable.Range(0, 10).ToArray();
@@ -924,6 +926,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForTwo).Contains("Normal"));
 			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForSix).Contains("Selected"));
 		}
+#endif
 
 #if HAS_UNO
 		[TestMethod]
