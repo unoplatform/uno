@@ -1,0 +1,14 @@
+- name: Overview
+  href: overview.md
+- name: Uno Platform for Xamarin.Forms developers
+  href: intro.md
+- name: Migrating Custom Controls
+  href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
+- name: Migrating Custom-Drawn Controls
+  href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
+- name: Migrating Animations
+  href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
+- name: Migrating Renderers
+  href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
+# - name: Migrating Third Party Controls
+#   href: guides/xf-migration/third-party-controls.md
