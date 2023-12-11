@@ -16,7 +16,7 @@ The rest of this article discusses how the Uno.UI tooling allows WinUI-compatibl
 
 The [`Uno.WinUI` NuGet package](https://www.nuget.org/packages/Uno.WinUI/) completely reproduces the WinUI API surface: all namespaces (`Microsoft.UI.Xaml`, `Windows.Foundation`, `Windows.Storage`, etc), all classes, all class members. Insofar as possible, the same look and behavior as on Windows are replicated on all other platforms.
 
-Note that, as the API surface is very large, some parts of it are included but not implemented. These features are marked with the `Uno.NotImplementedAttribute` attribute, and a code analyzer included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
+Note that, as the API surface is very large, some parts are included but not implemented. These features are marked with the `Uno.NotImplementedAttribute` attribute, and a code analyzer is included with the Uno.WinUI package will generate a warning for any such features that are referenced. You can see a complete list of supported APIs [here](implemented-views.md).
 
 ## How the UI is rendered
 
@@ -54,7 +54,7 @@ The codebase of an Uno Platform application is a mix of XAML markup, C# code, im
 
 ### Binaries
 
-The C# code is the easy part - [.NET runs pretty much everywhere](https://docs.microsoft.com/en-us/dotnet/core/introduction). On iOS, Android, macOS, and Mac Catalyst, Uno.WinUI is using .NET for Mobile (previously known as [Xamarin Native](https://dotnet.microsoft.com/apps/xamarin), and is not Xamarin.Forms or MAUI). On the web, it's using .NET running in [WebAssembly](https://webassembly.org/), and on Linux it's running under .NET 7 or later.
+The C# code is the easy part - [.NET runs pretty much everywhere](https://docs.microsoft.com/en-us/dotnet/core/introduction). On iOS, Android, macOS, and Mac Catalyst, Uno.WinUI is using .NET for Mobile (previously known as [Xamarin Native](https://dotnet.microsoft.com/apps/xamarin), and is not Xamarin.Forms or MAUI). On the web, it uses .NET running in [WebAssembly](https://webassembly.org/), and on Linux, it's running under .NET 7 or later.
 
 The compiled binaries also include the output of the XAML parser, as described in the next section.
 
