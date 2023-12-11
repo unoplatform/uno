@@ -140,6 +140,18 @@ namespace Uno.UWPSyncGenerator
 									_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 								}
 
+								var galleryLink = GetGalleryLink(viewName);
+								if (galleryLink != null)
+								{
+									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can use the Gallery {Hyperlink("here", galleryLink)}.");
+								}
+
+								var playgroundLink = GetPlaygroundLink(viewName);
+								if (playgroundLink != null)
+								{
+									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can use the Gallery {Hyperlink("here", playgroundLink)}.");
+								}
+
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
 								var methods = view.UAPSymbol
 									.GetMembers()
@@ -416,6 +428,71 @@ namespace Uno.UWPSyncGenerator
 			["controls/commandbar.md"] = new[] { "CommandBar" },
 			["controls/MenuFlyout.md"] = new[] { "MenuFlyout" },
 			["features/shapes-and-brushes.md"] = new[] { "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rectangle", "ArbitraryShapeBase" },
+		};
+
+
+		private static string GetGalleryLink(string shortTypeName)
+		{
+			var galleryDocMapping = GalleryDocMapping.FirstOrDefault(kvp => kvp.Value.Contains(shortTypeName)).Key;
+			return galleryDocMapping != null ?
+				$"https://gallery.platform.uno/#{galleryDocMapping}" :
+				null;
+		}
+
+		private static readonly Dictionary<string, string[]> GalleryDocMapping = new Dictionary<string, string[]>
+		{
+			["ListView"] = new[] { "ListView", "ListViewItem" },
+			["ComboBox"] = new[] { "ComboBox" },
+		};
+
+		private static string GetPlaygroundLink(string shortTypeName)
+		{
+			var playgroundDocMapping = PlaygroundDocMapping.FirstOrDefault(kvp => kvp.Value.Contains(shortTypeName)).Key;
+			return playgroundDocMapping != null ?
+				$"https://playground.platform.uno/#{playgroundDocMapping}" :
+				null;
+		}
+
+		private static readonly Dictionary<string, string[]> PlaygroundDocMapping = new Dictionary<string, string[]>
+		{
+			//List of existing references in the Playground
+			["cards"] = new[] { "ListView", "ListViewItem" },
+			["combobox"] = new[] { "ComboBox" },
+			["animation-simple"] = new[] { "Animations" },
+			["borders"] = new[] { "Border" },
+			["button"] = new[] { "Button" },
+			["canvas"] = new[] { "Canvas" },
+			["checkbox"] = new[] { "CheckBox" },
+			["date-and-time"] = new[] { "DatePicker", "CalendarDatePicker", "CalendarView" },
+			["grid"] = new[] { "Grid" },
+			["hello-world"] = new[] { "TextBlock" },
+			["hyperlinkbutton"] = new[] { "HyperlinkButton" },
+			["image"] = new[] { "Image" },
+			["info-bar"] = new[] { "InfoBar" },
+			["menubar"] = new[] { "MenuBar", "MenuBarItem", "MenuFlyoutSubItem", "MenuFlyoutItem" },
+			["menuflyout"] = new[] { "Flyout", "MenuFlyoutItem", "MenuFlyoutSeparator" },
+			["numberbox"] = new[] { "NumberBox" },
+			["relativepanel"] = new[] { "RelativePanel" },
+			["panels"] = new[] { "Canvas", "Grid" },
+			["passwordbox"] = new[] { "PasswordBox" },
+			["path"] = new[] { "Path" },
+			["person-picture"] = new[] { "PersonPicture" },
+			["progressbar"] = new[] { "ProgressBar" },
+			["radiobutton"] = new[] { "RadioButton" },
+			["shapes"] = new[] { "Ellipse", "Rectangle", "Polygon" },
+			["slider"] = new[] { "Slider" },
+			["stackpanel"] = new[] { "StackPanel" },
+			["tabview"] = new[] { "TabView", "TabViewItem" },
+			["textblock"] = new[] { "TextBlock" },
+			["textbox"] = new[] { "TextBox" },
+			["toggle-button"] = new[] { "ToggleButton" },
+			["toggleswitch"] = new[] { "ToggleSwitch" },
+			["transforms"] = new[] { "FrameworkElement" },
+			["treeview"] = new[] { "TreeView", "TreeViewNode" },
+			["viewbox"] = new[] { "Viewbox" },
+
+			//New example creations
+			["fe7ad367"] = new[] { "Pivot" },
 		};
 	}
 }
