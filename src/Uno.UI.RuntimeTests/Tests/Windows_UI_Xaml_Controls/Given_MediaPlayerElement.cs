@@ -94,6 +94,9 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
@@ -115,6 +118,9 @@ public partial class Given_MediaPlayerElement
 	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
 #endif
+#if __SKIA__
+	[Ignore("https://github.com/unoplatform/uno/issues/14735")]
+#endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
@@ -122,12 +128,17 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+
+		sut.MediaPlayer.Play();
 
 		try
 		{
@@ -146,6 +157,9 @@ public partial class Given_MediaPlayerElement
 		finally
 		{
 			sut.IsFullWindow = false;
+#if HAS_UNO
+			sut.MediaPlayer.Stop();
+#endif
 		}
 	}
 
@@ -156,6 +170,9 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
@@ -258,12 +275,17 @@ public partial class Given_MediaPlayerElement
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
+
+			// Workaround to get the control loaded https://github.com/unoplatform/uno/issues/14735
+			AreTransportControlsEnabled = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut, timeoutMS: 6000);
+
+		sut.AreTransportControlsEnabled = false;
 
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
