@@ -4,7 +4,7 @@ uid: Uno.Workshop.Counter
 
 # Create a Counter App with Uno Platform
 
-The Counter tutorial will walk you through creating a simple counter application with Uno Platform. 
+The Counter tutorial will walk you through creating a simple cross-platform counter application with Uno Platform. 
 
 <p align="center">
   <img src="Assets/counter-app.png" alt="Screenshot of an Uno Platform app showing a counter" />
