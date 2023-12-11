@@ -27,7 +27,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 > Uno Platform 5.0 [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 ## Check your environment
-[!include[getting-help](use-uno-check-inline-windows-noheader.md)]
+[!include[getting-help](xref:Uno.Development.UnoCheckWindows.noheader)]
 
 ## Install the Uno Platform Extension
 
