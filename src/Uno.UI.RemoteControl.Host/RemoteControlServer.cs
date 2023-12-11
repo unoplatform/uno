@@ -131,6 +131,7 @@ namespace Uno.UI.RemoteControl.Host
 					if (frame.Name == ProcessorsDiscovery.Name)
 					{
 						ProcessDiscoveryFrame(frame);
+						continue;
 					}
 
 					if (frame.Name == KeepAliveMessage.Name)
@@ -141,6 +142,7 @@ namespace Uno.UI.RemoteControl.Host
 						}
 
 						await SendFrame(new KeepAliveMessage());
+						continue;
 					}
 				}
 
@@ -148,7 +150,7 @@ namespace Uno.UI.RemoteControl.Host
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Received Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						this.Log().LogDebug("Received Frame [{Scope} / {Name}] to be processed by {processor}", frame.Scope, frame.Name, processor);
 					}
 
 					await processor.ProcessFrame(frame);

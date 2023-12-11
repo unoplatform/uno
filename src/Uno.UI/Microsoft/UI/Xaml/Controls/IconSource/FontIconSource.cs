@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference FontIconSource.cpp, commit 083796a
+
+// MUX Reference FontIconSource_Partial.cpp, tag winui3/release/1.4.2
 
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -96,11 +97,6 @@ public partial class FontIconSource : IconSource
 			fontIcon.FontFamily = FontFamily;
 		}
 
-		if (Foreground != null)
-		{
-			fontIcon.Foreground = Foreground;
-		}
-
 		return fontIcon;
 	}
 
@@ -137,7 +133,9 @@ public partial class FontIconSource : IconSource
 		{
 			return FontIcon.MirroredWhenRightToLeftProperty;
 		}
-
-		return base.GetIconElementPropertyCore(iconSourceProperty);
+		else
+		{
+			return base.GetIconElementPropertyCore(iconSourceProperty);
+		}
 	}
 }

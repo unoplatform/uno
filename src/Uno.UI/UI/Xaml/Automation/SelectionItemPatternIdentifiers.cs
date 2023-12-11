@@ -1,13 +1,17 @@
-﻿using Uno;
+﻿namespace Windows.UI.Xaml.Automation;
 
-namespace Windows.UI.Xaml.Automation
+/// <summary>
+/// Contains values used as identifiers by ISelectionItemProvider.
+/// </summary>
+public partial class SelectionItemPatternIdentifiers
 {
-	public partial class SelectionItemPatternIdentifiers
-	{
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static AutomationProperty IsSelectedProperty => new AutomationProperty();
+	/// <summary>
+	/// Identifies the IsSelected automation property.
+	/// </summary>
+	public static AutomationProperty IsSelectedProperty { get; } = new();
 
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static AutomationProperty SelectionContainerProperty => new AutomationProperty();
-	}
+	/// <summary>
+	/// Identifies the SelectionContainer automation property.
+	/// </summary>
+	public static AutomationProperty SelectionContainerProperty { get; } = new();
 }

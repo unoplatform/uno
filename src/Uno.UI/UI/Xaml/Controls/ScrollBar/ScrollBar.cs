@@ -7,6 +7,8 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using DirectUI;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -196,7 +198,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEINCREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
 					}
 				}
@@ -208,7 +210,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALSMALLINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLINCREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalSmallIncrease, strAutomationName);
 
 					}
@@ -221,7 +223,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALLARGEDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEDECREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalLargeDecrease, strAutomationName);
 
 					}
@@ -234,7 +236,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALSMALLDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLDECREASE");
 						AutomationProperties.SetName(m_tpElementHorizontalSmallDecrease, strAutomationName);
 
 					}
@@ -247,7 +249,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_HORIZONTALTHUMB, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALTHUMB");
 						AutomationProperties.SetName(m_tpElementHorizontalThumb, strAutomationName);
 
 					}
@@ -267,7 +269,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALALLARGEINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALALLARGEINCREASE");
 						AutomationProperties.SetName(m_tpElementVerticalLargeIncrease, strAutomationName);
 
 					}
@@ -281,7 +283,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALSMALLINCREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLINCREASE");
 						AutomationProperties.SetName(m_tpElementVerticalSmallIncrease, strAutomationName);
 
 					}
@@ -294,7 +296,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALLARGEDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALLARGEDECREASE");
 						AutomationProperties.SetName(m_tpElementVerticalLargeDecrease, strAutomationName);
 
 					}
@@ -307,7 +309,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALSMALLDECREASE, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLDECREASE");
 						AutomationProperties.SetName(m_tpElementVerticalSmallDecrease, strAutomationName);
 
 					}
@@ -320,7 +322,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 					if (strAutomationName == null)
 					{
-						// (DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_SCROLLBAR_VERTICALTHUMB, strAutomationName));
+						strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALTHUMB");
 						AutomationProperties.SetName(m_tpElementVerticalThumb as Thumb, strAutomationName);
 
 					}

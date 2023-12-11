@@ -304,7 +304,7 @@ namespace Uno.UI.DataBinding
 						// In some cases, there are multiple indexers, in which case GetIndexerInfo fails due to multiple matches when not given an explicit parameter type.
 						// If we know this parses as an integer, then use typeof(int) to reduce the cases of failure.
 						Type? indexerParameterType = null;
-						if (int.TryParse(property.Substring(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
+						if (int.TryParse(property.AsSpan().Slice(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
 						{
 							indexerParameterType = typeof(int);
 						}
@@ -501,11 +501,11 @@ namespace Uno.UI.DataBinding
 			// - "TypeName.PropertyName"
 			// - "Windows.UI.Xaml.Controls:UIElement.Opacity" (fully qualified)
 
-			if (property.Contains("."))
+			if (property.Contains('.'))
 			{
 				var parts = property
 					.Replace(":", ".") // ':' is sometimes used to separate namespace from type
-					.Split(new[] { '.' })
+					.Split('.')
 					.Reverse()
 					.Take(2) // type name + property name
 					.Reverse()

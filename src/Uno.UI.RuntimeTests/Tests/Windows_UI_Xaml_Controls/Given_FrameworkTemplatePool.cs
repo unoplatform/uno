@@ -13,6 +13,8 @@ using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -28,6 +30,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 internal class Given_FrameworkTemplatePool
 {
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+#if __ANDROID__
+	[Ignore("https://github.com/unoplatform/uno/issues/13969")]
+#endif
+	public async Task When_Recycle()
+	{
+		using (FeatureConfigurationHelper.UseTemplatePooling())
+		{
+			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
+
+			async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
+			{
+				var content = new Button();
+				WindowHelper.WindowContent = content;
+				await WindowHelper.WaitForLoaded(content);
+				var templatedRoot = content.TemplatedRoot;
+
+				WindowHelper.WindowContent = null;
+
+				return (
+					new WeakReference(content),
+					new WeakReference(templatedRoot));
+			}
+
+			var (targetInstance, targetTemplateRoot) = await CreateAndRelease();
+
+			var timeout = Stopwatch.StartNew();
+			while (targetInstance.IsAlive && timeout.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(50);
+			}
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
+			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
+
+			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
+
+			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
+
+			var timeout2 = Stopwatch.StartNew();
+			while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(50);
+			}
+
+			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
+		}
+	}
+#endif
+
 	[TestMethod]
 	public async Task TestCheckBox()
 	{

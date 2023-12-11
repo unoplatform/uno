@@ -81,7 +81,7 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">Accelerometer Y</param>
 		/// <param name="z">Accelerometer Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
-		public static int DispatchReading(float x, float y, float z)
+		internal static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance == null)
 			{

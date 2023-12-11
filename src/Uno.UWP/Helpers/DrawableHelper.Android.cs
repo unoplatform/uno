@@ -92,7 +92,7 @@ namespace Uno.Helpers
 				return null;
 			}
 
-			var id = FindResourceIdFromPath(uri.PathAndQuery.TrimStart(new[] { '/' }));
+			var id = FindResourceIdFromPath(uri.PathAndQuery.TrimStart('/'));
 			var drawable = id.HasValue
 				? ContextCompat.GetDrawable(ContextHelper.Current, id.Value)
 				: null;

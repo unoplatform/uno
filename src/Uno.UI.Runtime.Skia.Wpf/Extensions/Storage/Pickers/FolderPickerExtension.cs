@@ -73,7 +73,9 @@ internal partial class FolderPickerExtension : IFolderPickerExtension
 		internal static string? SHGetKnownFolderPath(Guid rfid, uint dwFlags = 0, IntPtr hToken = default(IntPtr))
 		{
 			IntPtr pszPath;
+#pragma warning disable CA1806 // Do not ignore method results
 			SHGetKnownFolderPath(rfid, dwFlags, hToken, out pszPath);
+#pragma warning restore CA1806 // Do not ignore method results
 
 			try
 			{

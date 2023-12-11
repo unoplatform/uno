@@ -119,13 +119,6 @@ namespace Windows.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-
-		protected override void OnApplyTemplate()
-		{
-			// Call base class implementation
-			base.OnApplyTemplate();
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -735,12 +728,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ResetButtonsFadeOutTimer();
 			}
-		}
-
-		protected override bool IsItemItsOwnContainerOverride(object item)
-		{
-			// Require containers be of type IFlipViewItem
-			return item is FlipViewItem;
 		}
 
 		// Creates or identifies the element that is used to display the given item.
@@ -1683,29 +1670,6 @@ namespace Windows.UI.Xaml.Controls
 			HideButtonsImmediately();
 		}
 
-		public (ButtonBase ppPreviousButton, ButtonBase ppNextButton) GetPreviousAndNextButtons()
-		{
-			ButtonBase ppPreviousButton;
-			ButtonBase ppNextButton;
-
-			Orientation physicalOrientation = Orientation.Vertical;
-
-			// Determine the correct button/previous/next
-			(physicalOrientation, _) = GetItemsHostOrientations();
-
-			if (physicalOrientation == Orientation.Vertical)
-			{
-				ppPreviousButton = m_tpPreviousButtonVerticalPart;
-				ppNextButton = m_tpNextButtonVerticalPart;
-			}
-			else
-			{
-				ppPreviousButton = m_tpPreviousButtonHorizontalPart;
-				ppNextButton = m_tpNextButtonHorizontalPart;
-			}
-
-			return (ppPreviousButton, ppNextButton);
-		}
 		private void GetTemplatePart<T>(string name, out T element) where T : class
 		{
 			element = GetTemplateChild(name) as T;

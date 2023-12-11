@@ -5,7 +5,7 @@ uid: Uno.Features.Compass
 # Compass
 
 > [!TIP]
-> This article covers Uno-specific information for `Compass`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.Compass
+> This article covers Uno-specific information for `Compass`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.devices.sensors.Compass
 
  * The `Windows.Devices.Sensors.Compass` class returns a heading with respect to Magnetic North and, possibly, True North.
 

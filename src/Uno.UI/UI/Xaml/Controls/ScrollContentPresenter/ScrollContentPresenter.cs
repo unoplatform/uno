@@ -54,6 +54,20 @@ namespace Windows.UI.Xaml.Controls
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
+			nameof(SizesContentToTemplatedParent),
+			typeof(bool),
+			typeof(ScrollContentPresenter),
+			new FrameworkPropertyMetadata(false));
+
+		public bool SizesContentToTemplatedParent
+		{
+			get => (bool)GetValue(SizesContentToTemplatedParentProperty);
+			set => SetValue(SizesContentToTemplatedParentProperty, value);
+		}
+#endif
+
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
 			// Simulate a BringIntoView request
@@ -136,13 +150,30 @@ namespace Windows.UI.Xaml.Controls
 					.AtMost(maxSize)
 					.AtLeast(minSize);
 
+				bool sizesContentToTemplatedParent = SizesContentToTemplatedParent;
+
+				if (ScrollOwner is ScrollViewer scrollViewer)
+				{
+					if (sizesContentToTemplatedParent)
+					{
+						slotSize = scrollViewer.ViewportMeasureSize;
+					}
+				}
+
+
 				if (CanVerticallyScroll)
 				{
-					slotSize.Height = double.PositiveInfinity;
+					if (!sizesContentToTemplatedParent)
+					{
+						slotSize.Height = double.PositiveInfinity;
+					}
 				}
 				if (CanHorizontallyScroll)
 				{
-					slotSize.Width = double.PositiveInfinity;
+					if (!sizesContentToTemplatedParent)
+					{
+						slotSize.Width = double.PositiveInfinity;
+					}
 				}
 
 				child.Measure(slotSize);
@@ -202,6 +233,8 @@ namespace Windows.UI.Xaml.Controls
 					? -properties.MouseWheelDelta
 					: properties.MouseWheelDelta;
 
+				var success = false;
+
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
 					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
@@ -214,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 					var horizontalOffset = HorizontalOffset;
 #endif
 
-					Set(
+					success = Set(
 						horizontalOffset: horizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
 				}
@@ -226,10 +259,16 @@ namespace Windows.UI.Xaml.Controls
 					var verticalOffset = VerticalOffset;
 #endif
 
-					Set(
+					success = Set(
 						verticalOffset: verticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 						disableAnimation: false);
 				}
+
+				// This is not similar to what WinUI is doing, since we already differ quite a bit from
+				// the way WinUI does SCP scrolling. On WinUI, ScrollViewer is the PointerWheelChanged receiver
+				// and is the one that decides when to mark as handled. However, this alternative is visually
+				// close (even though not identical)
+				e.Handled = success;
 			}
 		}
 
@@ -269,6 +308,10 @@ namespace Windows.UI.Xaml.Controls
 
 			return result;
 		}
+#endif
+
+#if __WASM__ || __NETSTD_REFERENCE__
+		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
 #endif
 	}
 }

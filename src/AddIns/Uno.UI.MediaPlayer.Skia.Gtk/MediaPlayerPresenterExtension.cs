@@ -39,6 +39,9 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		_owner = presenter;
 		_player = new GtkMediaPlayer(_owner);
 		var contentView = new ContentControl();
+
+		contentView.EffectiveViewportChanged += (_, _) => _player.UpdateVideoLayout();
+
 		contentView.Content = _player;
 		contentView.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
 		contentView.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;

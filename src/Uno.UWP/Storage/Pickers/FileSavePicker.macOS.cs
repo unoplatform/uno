@@ -56,6 +56,6 @@ namespace Windows.Storage.Pickers
 			return (urls.Length == 0) ? NSFileManager.HomeDirectory : urls[0].AbsoluteString!;
 		}
 
-		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart(new[] { '.' }))).ToArray();
+		private string[] GetFileTypes() => FileTypeChoices.SelectMany(x => x.Value.Select(val => val.TrimStart('.'))).ToArray();
 	}
 }

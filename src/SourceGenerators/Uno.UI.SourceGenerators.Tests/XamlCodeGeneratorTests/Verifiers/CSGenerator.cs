@@ -60,6 +60,10 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName)) // We use only upper-cased char to reduce length of filename push to git)
 			{
 			}
+			public Test(XamlFile xamlFile, Dictionary<string, string> globalConfigOverride, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName), globalConfigOverride) // We use only upper-cased char to reduce length of filename push to git)
+			{
+			}
 
 			public Test(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 				: base(xamlFiles, testFilePath, ShortName(testMethodName))
@@ -80,25 +84,51 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			public bool DisableBuildReferences { get; set; }
 			public string? XamlIncludedNamespaces { get; set; }
 
-			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
-				: this(new[] { xamlFile }, testFilePath, testMethodName)
+			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "", Dictionary<string, string>? globalConfigOverride = null)
+				: this(new[] { xamlFile }, testFilePath, testMethodName, globalConfigOverride)
 			{
 			}
 
 			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName)
+				: this(xamlFiles, testFilePath, testMethodName, null)
+			{ }
+
+			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName, Dictionary<string, string>? globalConfigOverride)
 			{
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
-				// For now, there is no need to customize these for each test.
-				var globalConfigBuilder = new StringBuilder("""
-					is_global = true
-					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
-					build_property.RootNamespace = MyProject
-					build_property.UnoForceHotReloadCodeGen = false
-					build_property.UnoEnableXamlFuzzyMatching = false
-					build_property.IncludeXamlNamespacesProperty = android
-					""").AppendLine();
+				var defaultConfig = new Dictionary<string, string>
+				{
+					{ "is_global", "true" },
+					{ "build_property.MSBuildProjectFullPath", "C:\\Project\\Project.csproj" },
+					{ "build_property.RootNamespace", "MyProject" },
+					{ "build_property.UnoForceHotReloadCodeGen", "false" },
+					{ "build_property.UnoEnableXamlFuzzyMatching", "false" },
+					{ "build_property.IncludeXamlNamespacesProperty", "android" },
+				};
+
+				if (globalConfigOverride is null)
+				{
+					globalConfigOverride = new Dictionary<string, string>();
+				}
+
+				var globalConfigBuilder = new StringBuilder();
+
+				foreach (var (key, value) in defaultConfig)
+				{
+					if (!globalConfigOverride.ContainsKey(key))
+					{
+						globalConfigBuilder.AppendLine($"{key} = {value}");
+					}
+				}
+
+				foreach (var (key, value) in globalConfigOverride)
+				{
+					globalConfigBuilder.AppendLine($"{key} = {value}");
+				}
+
+				globalConfigBuilder.AppendLine();
 
 				foreach (var xamlFile in xamlFiles)
 				{

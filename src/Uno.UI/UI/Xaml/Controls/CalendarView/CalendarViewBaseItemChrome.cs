@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Media;
 using DirectUI;
 using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = System.DateTimeOffset;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -241,6 +242,25 @@ namespace Windows.UI.Xaml.Controls
 			// Uno workaround
 			Uno_MeasureChrome(availableSize);
 
+			// TODO UNO
+			//if (IsRoundedCalendarViewBaseItemChromeEnabled())
+			//{
+			//	if (m_outerBorder)
+			//	{
+			//		IFC_RETURN(m_outerBorder->Measure(availableSize));
+			//	}
+
+			//	if (m_innerBorder)
+			//	{
+			//		IFC_RETURN(m_innerBorder->Measure(availableSize));
+			//	}
+
+			//	if (m_strikethroughLine)
+			//	{
+			//		IFC_RETURN(m_strikethroughLine->Measure(availableSize));
+			//	}
+			//}
+
 			if (m_pMainTextBlock is { })
 			{
 				m_pMainTextBlock.Measure(availableSize);
@@ -275,8 +295,30 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size ArrangeOverride(
 			Size finalSize)
 		{
-			Size newFinalSize = default;
 			Rect finalBounds = new Rect(0.0f, 0.0f, finalSize.Width, finalSize.Height);
+
+			// TODO UNO
+			//if (m_outerBorder)
+			//{
+			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+
+			//	IFC_RETURN(m_outerBorder->Arrange(finalBounds));
+			//}
+
+			//if (m_innerBorder)
+			//{
+			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+
+			//	IFC_RETURN(m_innerBorder->Arrange(finalBounds));
+			//}
+
+			//if (m_strikethroughLine)
+			//{
+			//	ASSERT(IsRoundedCalendarViewBaseItemChromeEnabled());
+
+			//	IFC_RETURN(m_strikethroughLine->Arrange(finalBounds));
+			//}
+
 			Thickness borderThickness = GetItemBorderThickness();
 			Thickness padding = Padding;
 
@@ -316,9 +358,7 @@ namespace Windows.UI.Xaml.Controls
 				pChildNoRef.Arrange(finalBounds);
 			}
 
-			newFinalSize = finalSize;
-
-			return newFinalSize;
+			return finalSize;
 		}
 
 		private void CreateTextBlock(
@@ -451,12 +491,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool ShouldUseLayoutRounding()
 		{
-			// TODO UNO
-			//// Similar to what Borders do, but we don't care about corner radius (ours is always 0).
-			//var scale = RootScale.GetRasterizationScaleForElement(this);
-			//return (scale != 1.0f) && GetUseLayoutRounding();
-
-			return false;
+			// Similar to what Borders do, but we don't care about corner radius (ours is always 0).
+			var scale = RootScale.GetRasterizationScaleForElement(this);
+			return (scale != 1.0f) && GetUseLayoutRounding();
 		}
 
 #if false

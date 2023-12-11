@@ -331,20 +331,6 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsStandardUICommandAvailable_isAvailable.Value;
 		}
 
-		static bool? s_IsDispatcherQueueAvailable_isAvailable;
-		public static bool IsDispatcherQueueAvailable()
-		{
-			if (s_IsDispatcherQueueAvailable_isAvailable == null)
-			{
-				s_IsDispatcherQueueAvailable_isAvailable =
-					IsSystemDll() ||
-					IsRS4OrHigher() ||
-					ApiInformation.IsTypePresent("Windows.System.DispatcherQueue");
-			}
-
-			return s_IsDispatcherQueueAvailable_isAvailable.Value;
-		}
-
 		static bool? s_IsXamlRootAvailable;
 		public static bool IsXamlRootAvailable()
 		{
@@ -543,16 +529,18 @@ namespace Uno.UI.Helpers.WinUI
 			Action action,
 			uint millisecondWait)
 		{
-			// The callback that is given to CreateTimer is called off of the UI thread.
-			// In order to make this useful by making it so we can interact with XAML objects,
-			// we'll use the dispatcher to first post our work to the UI thread before executing it.
-			ThreadPoolTimer.CreateTimer(t =>
+			if (DispatcherQueue.GetForCurrentThread() is { } dispatcherQueue)
+			{
+				// The callback that is given to CreateTimer is called off of the UI thread.
+				// In order to make this useful by making it so we can interact with XAML objects,
+				// we'll use the dispatcher to first post our work to the UI thread before executing it.
+				ThreadPoolTimer.CreateTimer(t =>
 				{
-					new DispatcherHelper().RunAsync(action);
+					dispatcherQueue.TryEnqueue(new DispatcherQueueHandler(action));
 				},
 				TimeSpan.FromMilliseconds(millisecondWait));
+			}
 		}
-
 
 		// Stream helpers
 		//InMemoryRandomAccessStream CreateStreamFromBytes(const array_view<const byte>& bytes)

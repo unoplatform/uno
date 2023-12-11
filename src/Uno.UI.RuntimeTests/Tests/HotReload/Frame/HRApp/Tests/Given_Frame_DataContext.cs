@@ -23,6 +23,10 @@ public class Given_Frame_DataContext : BaseTestClass
 {
 	private const string SimpleTextChange = " (changed)";
 	private const string VMText = " VM Text";
+
+	private const string FrameTextBlockOriginalText = "Frame";
+	private const string FrameVMText = FrameTextBlockOriginalText + VMText;
+
 	private const string FirstPageTextBlockOriginalText = "First page";
 	private const string FirstPageTextBlockChangedText = FirstPageTextBlockOriginalText + SimpleTextChange;
 	private const string FirstPageVMText = FirstPageTextBlockOriginalText + VMText;
@@ -155,6 +159,36 @@ public class Given_Frame_DataContext : BaseTestClass
 			ct);
 
 		// Check that after the test has executed, the xaml is back to the original text
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
+	}
+
+
+	[TestMethod]
+	public async Task Check_Can_Change_Page1_With_Inherited_DataContext()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+
+		var frame = new Windows.UI.Xaml.Controls.Frame();
+		UnitTestsUIContentHelper.Content = frame;
+
+		frame.Navigate(typeof(HR_Frame_Pages_Page1));
+
+		var frame_vm = new HR_Frame_VM(FrameVMText);
+		frame.DataContext = frame_vm;
+		var vm = new HR_Frame_Pages_Page1_VM(FirstPageVMText);
+		(frame.Content as Page).DataContext = vm;
+
+		// Check the initial text of the TextBlock
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
+
+		// Check the text of the TextBlock doesn't change
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+			FirstPageTextBlockOriginalText,
+			FirstPageTextBlockChangedText,
+			() => frame.ValidateTextOnChildTextBlock(vm.TitleText, 1),
+			ct);
+
+		// Check that the text is still the original value
 		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 	}
 }

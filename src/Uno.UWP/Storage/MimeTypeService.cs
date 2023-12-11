@@ -8,7 +8,7 @@ namespace Windows.Storage
 	{
 		public static string GetFromExtension(string? fileExtension)
 		{
-			if (WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping.TryGetValue(fileExtension, out var customMimeType))
+			if (fileExtension is not null && WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping.TryGetValue(fileExtension, out var customMimeType))
 			{
 				return customMimeType;
 			}

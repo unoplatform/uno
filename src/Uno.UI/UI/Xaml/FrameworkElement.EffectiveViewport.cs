@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml
 			return parentViewport;
 		}
 
-		private ViewportInfo GetParentViewport()
+		internal ViewportInfo GetParentViewport()
 			// As the conversion form parent to local coordinates of the viewport is impacted by LayoutSlot and RenderTransforms,
 			// we do have to keep it in parent coordinates spaces, and convert it to local coordinate space on each use.
 			//

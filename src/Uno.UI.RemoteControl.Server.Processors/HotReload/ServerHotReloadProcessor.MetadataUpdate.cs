@@ -40,9 +40,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
+			_useRoslynHotReload = _useRoslynHotReload || configureServer.EnableMetadataUpdates;
+
 			if (_useRoslynHotReload)
 			{
-				CompilationWorkspaceProvider.InitializeRoslyn();
+				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
 				InitializeInner(configureServer);
 			}
@@ -217,7 +219,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 				else
 				{
-					Console.WriteLine($"Got {diagnostics.Length} errors");
+					_reporter.Output($"Got {diagnostics.Length} errors");
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);

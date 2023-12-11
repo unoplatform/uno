@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		[JSExport]
-		public static void ReceiveFocusNative(int handle)
+		internal static void ReceiveFocusNative(int handle)
 		{
 			if (_isCallingFocusNative)
 			{

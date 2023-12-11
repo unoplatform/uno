@@ -20,6 +20,7 @@ namespace Windows.Storage.Pickers
 	public partial class FileOpenPicker
 	{
 		private static bool? _fileSystemAccessApiSupported;
+		private static readonly string[] _asteriskArray = new[] { "*" };
 
 		internal static bool IsNativePickerSupported()
 		{
@@ -84,7 +85,7 @@ namespace Windows.Storage.Pickers
 
 		private NativeFilePickerAcceptType[] BuildFileTypesMap()
 		{
-			var allExtensions = FileTypeFilter.Except(new[] { "*" });
+			var allExtensions = FileTypeFilter.Except(_asteriskArray);
 
 			var acceptTypes = allExtensions
 				.Select(fileType => BuildNativeFilePickerAcceptType(fileType))
@@ -163,10 +164,7 @@ namespace Windows.Storage.Pickers
 				}
 
 				var mimeType = MimeTypeService.GetFromExtension(fileExtension);
-				if (!mimeTypes.Contains(mimeType))
-				{
-					mimeTypes.Add(mimeType);
-				}
+				mimeTypes.Add(mimeType);
 			}
 
 			if (mimeTypes.Count == 0)

@@ -2,29 +2,46 @@
 uid: Uno.Development.AppStructure
 ---
 
-# Uno Platform app solution structure
+# Solution Structure
 
-This guide briefly explains the structure of an app created with the default [Uno Platform app template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022). It's particularly aimed at developers who have not worked with cross-platform codebases before. 
+This guide briefly explains the structure of an app created with either the [`dotnet new unoapp` template](xref:Uno.GetStarted.dotnet-new) or the [Uno Platform Template Wizard](xref:Uno.GettingStarted.UsingWizard). It's particularly aimed at developers who have not worked with cross-platform codebases before. 
 
 ## The project files in an Uno Platform app
 
-After creating a new solution with the [Uno Platform App Template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) called `HelloWorld`, it will contain the following projects:
-
-1. A `HelloWorld.[Platform].csproj` file for each platform that Uno Platform supports: Windows, Mobile (iOS/Android/Catalyst), Skia.Gtk, Skia.Wpf, Skia.Framebuffer, Server, and WebAssembly. These projects are known as **heads** for their respective platform. Those contain typical information like settings, metadata, dependencies, and also a list of files included in the project. The platform *head* builds and packages executable binaries for that platform. Each of these projects takes a reference from the project below.
-
-2. A `HelloWorld.csproj` file. This **Class Library Project** generally contains most of the code for the application, such as the XAML files or business logic. Bootstrapping code, packaging settings, and platform-specific code goes in the corresponding platform head. [String resources](features/working-with-strings.md) normally go in the app's **Class Library Project** project. [Image assets](features/working-with-assets.md) may go either in the app's **Class Library Project** or under each project head. [Font assets](features/custom-fonts.md) can also be placed in this project.
+After creating a new solution called `MyApp`, it will contain the following projects:
 
 ![Uno Platform solution structure](Assets/solution-structure.png)
 
+1. A `MyApp.[Platform].csproj` file for each platform that Uno Platform supports: Mobile (iOS/Android/MacCatalyst), Skia.Gtk, Wasm and Windows. These projects are known as **heads** for their respective platform. 
+
+    Head projects typically contain information like settings, metadata, dependencies, and also a list of files included in the project. Each of the head projects has a reference to the main class library of the application.
+
+    The head projects are the projects that generate the executable binaries for the platform. They are also the projects that are used to debug the application on the platform. Right-click on the project in the **Solution Explorer** tool window and select `Set as Startup Project` to debug the application on the platform.
+
+2. The `MyApp.csproj` file is the **Application Class Library** for the application and contains most of the code for the application. 
+3. The `MyApp.Shared.csproj` is a placeholder project used to edit the `AppHead.xaml` and `base.props` files. These files are automatically included in all other heads. This project is present to support the `.Windows` head and WinAppSDK. This project is not intended to be built and produces no output.
+    The **Application Class Library** will contain most of the classes, XAML files, [String resources](features/working-with-strings.md) and assets ([images](features/working-with-assets.md), [fonts](features/custom-fonts.md) etc) for the application.
+
+
 > [!NOTE]
-> The `App.xaml` and `App.xaml.cs` in an Uno Platform solution template are named `AppResources.xaml` and `App.cs`, respectively. Both are automatically included as part of each head's `App.xaml` and `App.xaml.cs` in order to create a cross-platform experience. It is recommended to use `AppResources.xaml` and `App.cs` for editing the application's startup.
+> In an Uno Platform solution, the commonly known `App.xaml` and `App.xaml.cs` files are named `AppResources.xaml` and `App.cs`, respectively. Both are automatically included as part of each head's `AppHead.xaml` and `AppHead.xaml.cs` in order to create a cross-platform experience. It is recommended to use `AppResources.xaml` and `App.cs` for editing the application's startup.
 
 ## Handling dependencies
 
-Dependencies in Uno solutions can be added preferably in the app's **Class Library Project**, but can also be added per platform at the project heads level.
+Dependencies (ie NuGet Package References) should be added to the  **Application Class Library**. This ensures that the dependencies are available to all the heads of the application. Platform-specific dependencies can be conditionally included in the **Application Class Library** by setting an appropriate `Condition` on the `PackageReference` element in the project file.
 
 ## Further information
 
 See additional guides on handling platform-specific [C# code](platform-specific-csharp.md) and [XAML markup](platform-specific-xaml.md) in an Uno Platform project.
 
 The Uno Platform solution also [can be further optimized](xref:Build.Solution.TargetFramework-override) to build larger projects with Visual Studio 2022.
+
+## Next Steps
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Hot Reload feature](xref:Uno.Features.HotReload)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
+ - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.

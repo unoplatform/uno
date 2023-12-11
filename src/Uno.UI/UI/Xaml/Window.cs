@@ -56,6 +56,10 @@ namespace Windows.UI.Xaml
 			InitializeCommon();
 		}
 
+#if !__ANDROID__ && !__SKIA__ && !__IOS__ && !__MACOS__
+		internal object NativeWindow => null;
+#endif
+
 		partial void InitPlatform();
 
 #pragma warning disable 67
@@ -63,11 +67,6 @@ namespace Windows.UI.Xaml
 		/// Occurs when the window has successfully been activated.
 		/// </summary>
 		public event WindowActivatedEventHandler Activated;
-
-		/// <summary>
-		/// Occurs when the window has closed.
-		/// </summary>
-		public event WindowClosedEventHandler Closed;
 
 		/// <summary>
 		/// Occurs when the app window has first rendered or has changed its rendering size.

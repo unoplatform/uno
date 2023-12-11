@@ -115,7 +115,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			return false;
 		}
 
+#pragma warning disable CA1806 // Do not ignore method results
 		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		var version = NativeMethods.GetOpenGLVersion();
 
@@ -125,7 +127,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 
+#pragma warning disable CA1806 // Do not ignore method results
 		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		return TryCreateGRGLContext(out _grContext);
 	}
@@ -167,7 +171,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			height = (int)(_hostControl.ActualHeight * dpiScaleY);
 		}
 
+#pragma warning disable CA1806 // Do not ignore method results
 		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		if (_renderTarget == null || _surface == null || _renderTarget.Width != width || _renderTarget.Height != height)
 		{
@@ -273,8 +279,10 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private void Release()
 	{
 		// Cleanup resources
+#pragma warning disable CA1806 // Do not ignore method results
 		NativeMethods.wglDeleteContext(_glContext);
 		NativeMethods.ReleaseDC(_hwnd, _hdc);
+#pragma warning restore CA1806 // Do not ignore method results
 
 		_glContext = 0;
 		_hwnd = 0;

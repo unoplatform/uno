@@ -14,7 +14,7 @@ The key questions to ask are:
 
 ## Controls and framework APIs
 
-The controls supported by Uno and those currently unsupported are [listed here](implemented-views.md). You can see supported non-UI APIs under the 'Features and Controls' section of the docs. Note that API coverage varies by target platform.
+The controls supported by Uno and those currently unsupported are [listed here](implemented-views.md). You can see supported non-UI APIs under the 'Features and Controls' section of the docs. Note that API coverage varies by the target platform.
 
 Once you migrate your code to Uno, unsupported API usages will be highlighted with a warning by Uno's included Roslyn analyzer.
 
@@ -37,7 +37,7 @@ These include dependencies that may be calling platform-specific functionality (
 
 You can check if there is a version of the package for your target platform by visiting the package page on nuget.org and opening the 'Dependencies' expander. Typically you'll see `UAP 10.0.x` listed as a target. If you want to target Android and iOS with Uno, you should check that `MonoAndroid` and `Xamarin.iOS` are listed as supported targets. If you want to target macOS, check that `Xamarin.Mac` is listed.
 
-Unfortunately it's less easy to check if a platform-dependent package supports WebAssembly or Linux. Uno builds .NETStandard binaries for these targets, but the fact that a .NETStandard version exists for any given dependency doesn't guarantee that it will function as expected on those platforms, if platform-specific APIs are involved. You'll generally have to do some additional research.
+Unfortunately, it's less easy to check if a platform-dependent package supports WebAssembly or Linux. Uno builds .NETStandard binaries for these targets, but the fact that a .NETStandard version exists for any given dependency doesn't guarantee that it will function as expected on those platforms, if platform-specific APIs are involved. You'll generally have to do some additional research.
 
 ### Depends on UWP
 
@@ -49,7 +49,7 @@ On certain target platforms, support for some .NET functionality is limited or u
 
 ### iOS
 
-.NET code must be Ahead-Of-Time (AOT) compiled to run on iOS, as a fundamental platform limitation. As a result, certain APIs that require runtime code generation (eg `System.Reflection.Emit`) will not work. This includes code that uses the `dynamic` keyword. See the [Xamarin.iOS documentation](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations) for more detail.
+.NET code must be Ahead-Of-Time (AOT) compiled to run on iOS, as a fundamental platform limitation. As a result, certain APIs that require runtime code generation (eg `System.Reflection.Emit`) will not work. This includes code that uses the `dynamic` keyword. See the [Xamarin.iOS documentation](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations) for more details.
 
 ### WASM
 

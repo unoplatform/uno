@@ -46,7 +46,7 @@
     float: right;
     list-style: none;
 
-    @include media-breakpoint-down(lg) {
+    @media (max-width: 1023px) {
       width: 100%;
       // 70vh is a magic value found by trial and error.
       max-height: 70vh;
@@ -89,7 +89,7 @@
       margin-top: 3px;
     }
 
-    @media (max-width: 979px) {
+    @media (max-width: 1023px) {
       display: block !important;
     }
   }
@@ -127,9 +127,13 @@
     & > ul > li {
 
       @include media-breakpoint-up(lg) {
-        margin: 0 16px;
+        margin: 0 4px;
         align-self: center;
         min-width: max-content;
+      }
+
+      @include media-breakpoint-up(navbar) {
+        margin: 0 16px;
       }
 
       /**
@@ -140,7 +144,6 @@
         position: relative;
 
         & > a {
-
 
           &::after {
             display: inline-block;
@@ -173,7 +176,6 @@
 
             flex-direction: column;
 
-            //border-radius: 4px;
             box-shadow: 0 0 20px 2px rgba(36, 36, 36, 0.2);
             background-color: $white;
           }
@@ -290,7 +292,7 @@
 }
 
 #navbar {
-  @media (max-width: 979px) {
+  @media (max-width: 1023px) {
 
     overflow: auto !important;
 

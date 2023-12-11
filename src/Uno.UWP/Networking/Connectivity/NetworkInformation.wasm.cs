@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		}
 
 		[JSExport]
-		public static int DispatchStatusChanged()
+		internal static int DispatchStatusChanged()
 		{
 			OnNetworkStatusChanged();
 			return 0;

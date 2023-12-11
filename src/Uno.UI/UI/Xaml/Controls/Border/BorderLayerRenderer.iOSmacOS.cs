@@ -471,6 +471,9 @@ namespace Windows.UI.Xaml.Shapes
 			return path;
 		}
 
+		private static readonly int[] _8624Array = new[] { 8, 6, 2, 4 };
+		private static readonly int[] _2684Array = new[] { 2, 6, 8, 4 };
+
 		/// <summary>
 		/// Get the inner/outer contours of the rounded border.
 		/// </summary>
@@ -509,8 +512,8 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					var pCorner = GetCorner(cornerBbox, corner);
 					var pNextMid = GetRelativePoint(cornerBbox, numpadDirection: (!inner
-						? new[] { 8, 6, 2, 4 }
-						: new[] { 2, 6, 8, 4 }
+						? _8624Array
+						: _2684Array
 					)[i]);
 
 					// given that AddArcToPoint can only draw arc of a circle (with equal width, height, and diameter),

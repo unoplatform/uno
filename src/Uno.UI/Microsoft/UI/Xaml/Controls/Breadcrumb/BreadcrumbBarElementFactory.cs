@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarElementFactory.cpp, commit 085fbf9
+// MUX Reference BreadcrumbBarElementFactory.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -18,14 +19,17 @@ internal partial class BreadcrumbElementFactory : ElementFactory
 
 	internal void UserElementFactory(object? newValue)
 	{
-		m_itemTemplateWrapper = newValue as IElementFactoryShim;
-		if (m_itemTemplateWrapper == null)
+		if (newValue is DataTemplate dataTemplate)
 		{
-			// ItemTemplate set does not implement IElementFactoryShim. We also want to support DataTemplate.
-			if (newValue is DataTemplate dataTemplate)
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-			}
+			m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
+		}
+		else if (newValue is DataTemplateSelector selector)
+		{
+			m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+		}
+		else if (newValue is IElementFactory customElementFactory)
+		{
+			m_itemTemplateWrapper = (IElementFactoryShim?)customElementFactory;
 		}
 	}
 
