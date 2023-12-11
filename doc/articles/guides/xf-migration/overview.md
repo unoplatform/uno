@@ -17,4 +17,5 @@ With each article, we offer thoughtful insights that will aid adoption of Uno Pl
 ## What's covered
 
 * [Uno Platform for Xamarin.Forms developers](xref:Uno.XamarinFormsMigration.Intro)
-* [Controls](xref:Uno.XamarinFormsMigration.Controls)
+<!-- * [Controls](xref:Uno.XamarinFormsMigration.Controls)
+* [Animations](xref:Uno.XamarinFormsMigration.Animations) -->
