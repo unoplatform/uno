@@ -69,9 +69,7 @@ Select the Skia.WPF project, then Run.
 
 ## Next Steps
 
-Now that you're Created and Debug the App.
-
-Learn more about:
+Now that you've created and debugged the App, learn more about:
 
  - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
  - [Hot Reload feature](xref:Uno.Features.HotReload)
