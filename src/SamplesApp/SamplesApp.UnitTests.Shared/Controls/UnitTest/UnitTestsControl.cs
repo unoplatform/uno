@@ -820,7 +820,13 @@ namespace Uno.UI.Samples.Tests
 											await initializeReturnTask;
 										}
 
+										var methodParameters = test.Method.GetParameters();
+										if (methodParameters.Length > methodArguments.Length)
+										{
+											methodArguments = ExpandArgumentsWithDefaultValues(methodArguments, methodParameters);
+										}
 										returnValue = test.Method.Invoke(instance, methodArguments);
+
 										sw.Stop();
 
 										cts.TrySetResult(true);
@@ -975,6 +981,30 @@ namespace Uno.UI.Samples.Tests
 					Run();
 				}
 			}
+		}
+
+		private static object[] ExpandArgumentsWithDefaultValues(object[] methodArguments, ParameterInfo[] methodParameters)
+		{
+			var expandedArguments = new List<object>(methodParameters.Length);
+			for (int i = 0; i < methodArguments.Length; i++)
+			{
+				expandedArguments.Add(methodArguments[i]);
+			}
+			// Try to get default values for the rest
+			for (int i = 0; i < methodParameters.Length - methodArguments.Length; i++)
+			{
+				var parameter = methodParameters[methodArguments.Length + i];
+				if (!parameter.HasDefaultValue)
+				{
+					throw new InvalidOperationException("Missing parameter does not have default value");
+				}
+				else
+				{
+					expandedArguments.Add(parameter.DefaultValue);
+				}
+			}
+
+			return expandedArguments.ToArray();
 		}
 
 		private TimeSpan GetTestTimeout(UnitTestMethodInfo test)

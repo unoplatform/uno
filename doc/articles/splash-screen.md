@@ -4,7 +4,7 @@ uid: Uno.Development.Splashscreen
 
 # How to add a Splash Screen
 
-This article covers how to add a splash screen to your application.
+This article covers how to add a splash screen to your application if you don't want to use Uno.Resizetizer to handle your Splash Screen.
 
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [SplashScreenSample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample)
@@ -31,16 +31,6 @@ This article covers how to add a splash screen to your application.
 
     > Use `dotnet --version` from the terminal to get the version installed.
 
-# [Visual Studio for Mac](#tab/tabid-vsmac)
-
-* [**Visual Studio for Mac 8.8**](https://visualstudio.microsoft.com/vs/mac/)
-* [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 10.0 or higher
-* An [**Apple ID**](https://support.apple.com/en-us/HT204316)
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
-* [**GTK+3**](https://formulae.brew.sh/formula/gtk+3) for running the Skia/GTK projects
-
 # [JetBrains Rider](#tab/tabid-rider)
 
 * [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
@@ -52,6 +42,9 @@ This article covers how to add a splash screen to your application.
 
 > [!Tip]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](./get-started.md).
+
+> [!INFO]
+> If you're using the Uno Platform 4.8 or later you already have the `Uno.Resizetizer` package installed for you and it can handle the Splash screen in a more automated way. See [this article](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html?tabs=classlib%2CAndroid) for more information.
 
 ## Step 1 - Shared splash Screen image resources
 

@@ -136,11 +136,16 @@ namespace Windows.UI.Xaml.Media
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.Count() ?? 0;
+				.Count ?? 0;
 #endif
 		}
 
-		internal static int GetViewGroupChildrenCount(_ViewGroup reference) => reference.GetChildren().Count();
+		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+			=> reference.GetChildren().Count;
+#else
+			=> reference.GetChildren().Count();
+#endif
 
 		internal static void AddView(_ViewGroup parent, _View child, int index)
 		{

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.Disposables;
 using System.Text;
 using Windows.UI.Xaml;
 
@@ -14,7 +13,23 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public static IEnumerable<UIElement> GetChildren(this UIElement group) => (IEnumerable<UIElement>)(group as FrameworkElement)?._children ?? Array.Empty<UIElement>();
+		public static List<UIElement> GetChildren(this UIElement group) => (group as FrameworkElement)?._children ?? new List<UIElement>();
+
+		internal static TResult FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult> selector)
+			where TResult : class
+		{
+			var children = group.GetChildren();
+			for (int i = children.Count - 1; i >= 0; i--)
+			{
+				var result = selector(children[i], param);
+				if (result is not null)
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
 
 		public static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
 

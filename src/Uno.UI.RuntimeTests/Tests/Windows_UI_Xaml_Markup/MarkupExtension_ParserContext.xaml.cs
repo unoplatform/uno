@@ -38,4 +38,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 #endif
 	}
+
+	public class HorOrientationExtension : MarkupExtension
+	{
+		protected override object ProvideValue()
+		{
+			return Orientation.Horizontal;
+		}
+	}
+
+	public class VerOrientationExtension : MarkupExtension
+	{
+		protected override object ProvideValue()
+		{
+			return Orientation.Vertical;
+		}
+	}
 }

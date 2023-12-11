@@ -13,7 +13,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public static IEnumerable<object> GetChildren(this object group)
+		internal static IEnumerable<object> GetChildren(this object group)
 		{
 			return Array.Empty<object>();
 		}

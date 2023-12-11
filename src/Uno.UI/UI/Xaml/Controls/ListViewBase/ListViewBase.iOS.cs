@@ -232,5 +232,20 @@ namespace Windows.UI.Xaml.Controls
 				InvalidateMeasure();
 			}
 		}
+
+		public override void MovedToWindow()
+		{
+			base.MovedToWindow();
+
+			// Uno#13172: The header container can sometimes lose its data-context between/after frame navigation,
+			// especially so when the header has been scrolled out of viewport (far enough to be recycled) once.
+			if (Window is { })
+			{
+				if (InternalItemsPanelRoot is NativeListViewBase panel)
+				{
+					panel.UpdateHeaderAndFooter();
+				}
+			}
+		}
 	}
 }

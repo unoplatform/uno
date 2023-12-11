@@ -1,11 +1,10 @@
 const {dest, src, parallel, series, watch: gulpwatch} = require('gulp');
 const notify = require('gulp-notify');
 const autoprefixer = require('autoprefixer');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 const postcss = require('gulp-postcss');
-const gulpif = require('gulp-if');
 const del = require('del');
 const sourcemaps = require('gulp-sourcemaps');
 const stripImportExport = require('gulp-strip-import-export');
@@ -14,17 +13,16 @@ const exec = require('child_process').exec;
 
 const assets = 'templates/uno';
 
-let isDebug = false;
 let isStrict = false;
 
 function styles(done) {
-    const output = isDebug ? 'nested' : 'compressed';
+    const output = 'compressed';
 
     src([`${assets}/vendor/*.css`])
         .pipe(dest(`${assets}/styles/`));
 
     src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
-        .pipe(gulpif(isDebug, sourcemaps.init()))
+        .pipe(sourcemaps.init())
         .pipe(
             sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
                 'error',
@@ -32,11 +30,11 @@ function styles(done) {
             )
         )
         .pipe(postcss([autoprefixer]))
-        .pipe(gulpif(isDebug, sourcemaps.mapSources(function (sourcePath) {
+        .pipe(sourcemaps.mapSources(function (sourcePath) {
             return '../' + sourcePath;
-        })))
+        }))
         .pipe(concat('main.css'))
-        .pipe(gulpif(isDebug, sourcemaps.write()))
+        .pipe(sourcemaps.write('.'))
         .pipe(dest(`${assets}/styles/`))
         .pipe(notify({message: 'CSS complete'}));
 
@@ -61,7 +59,9 @@ function docfx(done) {
 
 function scripts(done) {
     src([`${assets}/main.js`])
-        .pipe(gulpif(!isDebug, uglify()))
+        .pipe(sourcemaps.init())
+        .pipe(uglify())
+        .pipe(sourcemaps.write('.'))
         .pipe(stripImportExport())
         .pipe(dest(`${assets}/styles/`));
 
@@ -73,10 +73,10 @@ function scripts(done) {
         `!${assets}/conceptual.html.primary.js`,
         `!${assets}/main.js`,
         `!${assets}/vendor/*.js`])
-        .pipe(gulpif(isDebug, sourcemaps.init()))
+        .pipe(sourcemaps.init())
+        .pipe(uglify())
         .pipe(concat('docfx.js'))
-        .pipe(gulpif(isDebug, sourcemaps.write()))
-        .pipe(gulpif(!isDebug, uglify()))
+        .pipe(sourcemaps.write('.'))
         .pipe(dest(`${assets}/styles/`));
 
     done();
@@ -114,11 +114,6 @@ async function clean(done) {
     done();
 }
 
-function useDebug(done) {
-    isDebug = true;
-    done();
-}
-
 function useStrict(done) {
     isStrict = true;
     done();
@@ -133,6 +128,6 @@ exports.default = series(build, run);
 
 exports.clean = series(clean);
 
-exports.debug = series(useDebug, build, run);
+exports.debug = series(build, run);
 
-exports.strict = series(useDebug, useStrict, build, run);
+exports.strict = series(useStrict, build, run);

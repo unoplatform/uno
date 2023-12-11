@@ -78,10 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnKeyDown(args);
 
-			if (!args.Handled)
-			{
-				args.Handled = TryHandleKeyDown(args);
-			}
+			args.Handled = TryHandleKeyDown(args);
 		}
 
 		internal bool TryHandleKeyDown(KeyRoutedEventArgs args)
@@ -104,6 +101,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
+				return true;
 			}
 			else
 			{
@@ -119,9 +117,10 @@ namespace Windows.UI.Xaml.Controls
 						return TryMoveKeyboardFocusAndSelection(+1, args.KeyboardModifiers);
 					case VirtualKey.Left when orientation == Orientation.Horizontal:
 						return TryMoveKeyboardFocusAndSelection(-1, args.KeyboardModifiers);
+					default:
+						return false;
 				}
 			}
-			return false;
 		}
 
 		private bool TryMoveKeyboardFocusAndSelection(int offset, VirtualKeyModifiers modifiers)
@@ -702,21 +701,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void FlipSelectionInMultipleSelection(object item, SelectorItem container)
 		{
-			if (!SelectedItems.Contains(item))
+			bool wasSelected = SelectedItems.Remove(item);
+			if (!wasSelected)
 			{
 				SelectedItems.Add(item);
-				if (container is { })
-				{
-					container.IsSelected = true;
-				}
 			}
-			else
+
+			if (container is { })
 			{
-				SelectedItems.Remove(item);
-				if (container is { })
-				{
-					container.IsSelected = false;
-				}
+				container.IsSelected = !wasSelected;
 			}
 		}
 
@@ -734,9 +727,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UnselectInMultipleSelection(object item, SelectorItem container)
 		{
-			if (SelectedItems.Contains(item))
+			if (SelectedItems.Remove(item))
 			{
-				SelectedItems.Remove(item);
 				if (container is { } selectorItem)
 				{
 					selectorItem.IsSelected = false;

@@ -11,22 +11,37 @@ Depending on the target platform, the UI rendering may be using OpenGL or softwa
 Note that for Linux, the [framebuffer rendering](using-linux-framebuffer.md) head is also available.
 
 ## Get started with the Skia+GTK head
-Follow the getting started guide [for Linux](../get-started-with-linux.md) or [Windows](../get-started-vs-2022.md)
+Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode), [Visual Studio 2022](xref:Uno.GetStarted.vs2022).
 
-You will also need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) to run a GTK+3 based app on Windows.
 
-Once done, you can create a new app using:
+### Additional setup
+# [**Windows**](#tab/windows)
+
+[!include[windows-setup](../additional-windows-setup-inline.md)]
+
+# [**Linux**](#tab/linux)
+
+[!include[linux-setup](../additional-linux-setup-inline.md)]
+
+# [**macOS**](#tab/macos)
+
+[!include[macos-setup](../additional-macos-setup-inline.md)]
+
+***
+
+Once done, you can create a new app with [`dotnet new`](xref:Uno.GetStarted.dotnet-new) using:
+
 ```
-dotnet new unoapp -o MyApp
+dotnet new unoapp --preset=blank -o MyApp
 ```
 
-or by using the Visual Studio "project new" templates.
+or by using the Visual Studio ["project new" templates](xref:Uno.GetStarted.vs2022).
 
 ## Changing the rendering target
 
 It may be required, depending on the environment, to use software rendering.
 
-To do so, immediately before the line `host.Run()` in you `main.cs` file, add the following:
+To do so, immediately before the line `host.Run()` in you `Program.cs` file, add the following:
 ```
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```
@@ -35,7 +50,7 @@ host.RenderSurfaceType = RenderSurfaceType.Software;
 
 Hosting native GTK controls is supported through `ContentPresenter` and `ContentControl`.
 
-See this documentation about [embedding native controls](using-skia-embed-native-controls.md).
+See this documentation about [embedding native controls](xref:Uno.Skia.Embedding.Native).
 
 ### Linux considerations
 When running under Linux, GTK can use OpenGL for the UI rendering but some restrictions can apply depending on the environment and available hardware.

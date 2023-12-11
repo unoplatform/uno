@@ -8,8 +8,10 @@
 .sidefilter {
 
   background-color: transparent;
-  height: 60px;
-  padding: 10px;
+  padding: 24px;
+  height: auto;
+  border: 1px solid #e7e7e7;
+  border-top: 0;
 
   .DocSearch-Button {
     background: transparent;

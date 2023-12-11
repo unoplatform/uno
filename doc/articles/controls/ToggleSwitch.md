@@ -107,40 +107,40 @@ Based on the UISwitch.
 If you need the simple native style :
 
 ```xml
-	<ios:Style x:Key="NativeDefaultToggleSwitch"
-			   TargetType="ToggleSwitch">
-		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
-		<Setter Property="ClipsToBounds"
-				Value="False" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ToggleSwitch">
-					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
-									  Enabled="{TemplateBinding IsEnabled}" />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</ios:Style>
+<ios:Style x:Key="NativeDefaultToggleSwitch"
+		   TargetType="ToggleSwitch">
+	<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
+	<Setter Property="ClipsToBounds"
+			Value="False" />
+	<Setter Property="Template">
+		<Setter.Value>
+			<ControlTemplate TargetType="ToggleSwitch">
+				<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+								  Enabled="{TemplateBinding IsEnabled}" />
+			</ControlTemplate>
+		</Setter.Value>
+	</Setter>
+</ios:Style>
 ```
 
 If you need the native style but you want to change the Tint, OnTinT and ThumbTint colors :
 
 ```xml
-	<ios:Style x:Key="NativeDefaultToggleSwitch"
-			   TargetType="ToggleSwitch">
-		<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
-		<Setter Property="ClipsToBounds"
-				Value="False" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ToggleSwitch">
-					<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
-									  Enabled="{TemplateBinding IsEnabled}"
-									  TintColorBrush="{TemplateBinding BorderBrush}"
-									  OnTintColorBrush="{TemplateBinding Background}"
-									  ThumbTintColorBrush="{TemplateBinding Foreground}" />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</ios:Style>
+<ios:Style x:Key="NativeDefaultToggleSwitch"
+		   TargetType="ToggleSwitch">
+	<!-- Ensures the UISwitch's shadow doesn't get clipped. -->
+	<Setter Property="ClipsToBounds"
+			Value="False" />
+	<Setter Property="Template">
+		<Setter.Value>
+			<ControlTemplate TargetType="ToggleSwitch">
+				<BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
+								  Enabled="{TemplateBinding IsEnabled}"
+								  TintColorBrush="{TemplateBinding BorderBrush}"
+								  OnTintColorBrush="{TemplateBinding Background}"
+								  ThumbTintColorBrush="{TemplateBinding Foreground}" />
+			</ControlTemplate>
+		</Setter.Value>
+	</Setter>
+</ios:Style>
 ```

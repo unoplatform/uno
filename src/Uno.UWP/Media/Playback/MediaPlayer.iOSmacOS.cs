@@ -274,12 +274,12 @@ namespace Windows.Media.Playback
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
-				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(new char[] { '/' }));
+				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart('/'));
 			}
 
 			if (uri.IsLocalResource())
 			{
-				var filePath = uri.PathAndQuery.TrimStart(new[] { '/' })
+				var filePath = uri.PathAndQuery.TrimStart('/')
 				// UWP supports backward slash in path for directory separators
 				.Replace("\\", "/");
 				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);

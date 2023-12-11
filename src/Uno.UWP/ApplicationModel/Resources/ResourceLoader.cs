@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.Resources
 			// "/[file]/[name]" format support
 			if (resource.ElementAtOrDefault(0) == '/')
 			{
-				var separatorIndex = resource.IndexOf("/", 1, StringComparison.Ordinal);
+				var separatorIndex = resource.IndexOf('/', 1);
 				if (separatorIndex < 1)
 				{
 					return "";

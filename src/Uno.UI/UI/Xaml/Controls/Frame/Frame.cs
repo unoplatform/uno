@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Helpers;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -286,8 +287,21 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool InnerNavigate(PageStackEntry entry, NavigationMode mode)
 		{
+			if (_isNavigating)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning(
+						"Frame is already navigating, ignoring the navigation request." +
+						"Please delay the navigation with await Task.Yield().");
+				}
+				return false;
+			}
+
 			try
 			{
+				_isNavigating = true;
+
 				return InnerNavigateUnsafe(entry, mode);
 			}
 			catch (Exception exception)
@@ -315,8 +329,6 @@ namespace Windows.UI.Xaml.Controls
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool InnerNavigateUnsafe(PageStackEntry entry, NavigationMode mode)
 		{
-			_isNavigating = true;
-
 			// Navigating
 			var navigatingFromArgs = new NavigatingCancelEventArgs(
 				mode,

@@ -65,7 +65,7 @@ internal class DpiHelper
 		}
 	}
 
-	private float GetNativeDpi()
+	internal float GetNativeDpi()
 	{
 		if (GetWindow().Window == null)
 		{

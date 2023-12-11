@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else if ((theEvent.ModifierFlags & NSEventModifierMask.DeviceIndependentModifierFlagsMask) == (NSEventModifierMask.CommandKeyMask | NSEventModifierMask.ShiftKeyMask))
 				{
-					if (theEvent.CharactersIgnoringModifiers.ToLowerInvariant() == "z")
+					if (theEvent.CharactersIgnoringModifiers.Equals("z", StringComparison.OrdinalIgnoreCase))
 					{
 						if (NSApplication.SharedApplication.SendAction(new ObjCRuntime.Selector("redo:"), null, this))
 						{

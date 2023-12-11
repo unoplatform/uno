@@ -25,6 +25,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 	private void GtkDisplayInformationExtension_MainWindowShown(object? sender, EventArgs e)
 	{
 		_dpiHelper.DpiChanged += OnDpiChanged;
+		OnDpiChanged(null, EventArgs.Empty);
 	}
 
 	private Window GetWindow()
@@ -54,7 +55,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 				var nativeWindow = window.Window;
 				if (nativeWindow is not null)
 				{
-					_dpi = window.Display.GetMonitorAtWindow(nativeWindow).ScaleFactor * DisplayInformation.BaseDpi;
+					_dpi = GetNativeDpi();
 				}
 			}
 
@@ -71,7 +72,24 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	private void OnDpiChanged(object? sender, EventArgs args)
 	{
-		_dpi = GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).ScaleFactor * DisplayInformation.BaseDpi;
+		_dpi = GetNativeDpi();
 		_displayInformation.NotifyDpiChanged();
+	}
+
+	private float GetNativeDpi()
+	{
+		var dpi = _dpiHelper.GetNativeDpi();
+
+		if (GtkHost.Current?.RenderSurfaceType == RenderSurfaceType.Software)
+		{
+			// Software rendering is not affected by fractional DPI.
+			return dpi;
+		}
+
+		// We need to make sure that in case of fractional DPI, we use the nearest whole DPI instead,
+		// otherwise we get GuardBand related rendering issues.
+		var fractionalDpi = dpi / DisplayInformation.BaseDpi;
+		var wholeDpi = Math.Max(1.0f, float.Floor(fractionalDpi));
+		return wholeDpi * DisplayInformation.BaseDpi;
 	}
 }

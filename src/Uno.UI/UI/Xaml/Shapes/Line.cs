@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -78,5 +75,10 @@ namespace Windows.UI.Xaml.Shapes
 			)
 		);
 		#endregion
+
+#if __NETSTD_REFERENCE__
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
+#endif
 	}
 }

@@ -1104,16 +1104,6 @@ namespace Windows.UI.Xaml.Controls
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
 
-#if __WASM__ || __SKIA__
-		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
-#elif __NETSTD_REFERENCE__
-		private static Point GetRelativePosition(FrameworkElement child) => throw new NotSupportedException();
-#elif __MACOS__ || __IOS__
-		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
-#elif __ANDROID__
-		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
-#endif
-
 		private (double offset, double extent, object item, Uno.UI.IndexPath? index)? _pendingReorder;
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
 		{

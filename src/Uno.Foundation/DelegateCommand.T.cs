@@ -18,6 +18,11 @@ internal class DelegateCommand<T> : ICommand
 
 	public void Execute(object parameter)
 	{
+		if (!CanExecuteEnabled)
+		{
+			return;
+		}
+
 		if (parameter is T t)
 		{
 			_action?.Invoke(t);

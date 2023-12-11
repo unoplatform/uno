@@ -3,63 +3,63 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Provider
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface ITextRangeProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider Clone();
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		bool Compare(global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider textRangeProvider);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		int CompareEndpoints(global::Windows.UI.Xaml.Automation.Text.TextPatternRangeEndpoint endpoint, global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider textRangeProvider, global::Windows.UI.Xaml.Automation.Text.TextPatternRangeEndpoint targetEndpoint);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void ExpandToEnclosingUnit(global::Windows.UI.Xaml.Automation.Text.TextUnit unit);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider FindAttribute(int attributeId, object value, bool backward);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider FindText(string text, bool backward, bool ignoreCase);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		object GetAttributeValue(int attributeId);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void GetBoundingRectangles(out double[] returnValue);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple GetEnclosingElement();
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		string GetText(int maxLength);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		int Move(global::Windows.UI.Xaml.Automation.Text.TextUnit unit, int count);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		int MoveEndpointByUnit(global::Windows.UI.Xaml.Automation.Text.TextPatternRangeEndpoint endpoint, global::Windows.UI.Xaml.Automation.Text.TextUnit unit, int count);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void MoveEndpointByRange(global::Windows.UI.Xaml.Automation.Text.TextPatternRangeEndpoint endpoint, global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider textRangeProvider, global::Windows.UI.Xaml.Automation.Text.TextPatternRangeEndpoint targetEndpoint);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void Select();
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void AddToSelection();
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void RemoveFromSelection();
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		void ScrollIntoView(bool alignToTop);
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple[] GetChildren();
 #endif
 	}

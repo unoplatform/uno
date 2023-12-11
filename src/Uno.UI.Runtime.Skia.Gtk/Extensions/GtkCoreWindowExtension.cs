@@ -10,16 +10,19 @@ using Windows.System;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
 	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly CoreWindow _owner;
+		private readonly DisplayInformation _displayInformation;
 
 		public GtkCoreWindowExtension(object owner)
 		{
 			_owner = (CoreWindow)owner;
+			_displayInformation = DisplayInformation.GetForCurrentView();
 		}
 
 		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
@@ -80,7 +83,13 @@ namespace Uno.UI.Runtime.Skia.Gtk
 					this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
 				}
 
-				widget.SizeAllocate(new((int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height));
+				var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
+				widget.SizeAllocate(
+					new(
+						(int)(arrangeRect.X * scaleAdjustment),
+						(int)(arrangeRect.Y * scaleAdjustment),
+						(int)(arrangeRect.Width * scaleAdjustment),
+						(int)(arrangeRect.Height * scaleAdjustment)));
 			}
 			else
 			{
@@ -104,7 +113,8 @@ namespace Uno.UI.Runtime.Skia.Gtk
 					this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
 				}
 
-				return new(naturalSize.Width, naturalSize.Height);
+				var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
+				return new(naturalSize.Width / scaleAdjustment, naturalSize.Height / scaleAdjustment);
 			}
 			else
 			{

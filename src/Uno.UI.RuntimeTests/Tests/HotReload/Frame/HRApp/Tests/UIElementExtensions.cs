@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame;
 
@@ -40,5 +42,24 @@ internal static class UIElementExtensions
 			Assert.IsNotNull(selectedElement);
 			await validation(selectedElement);
 		}
+	}
+
+	public static async Task<(double VerticalOffset, double HorizontalOffset)> ScrollOffset(this UIElement element, int index = 0)
+	{
+		if (element is FrameworkElement fe)
+		{
+			await UnitTestsUIContentHelper.WaitForLoaded(fe);
+			await UnitTestsUIContentHelper.WaitForIdle();
+
+			var selectedElement = element
+				.EnumerateDescendants()
+				.OfType<ScrollViewer>()
+				.Skip(index)
+				.FirstOrDefault();
+
+			Assert.IsNotNull(selectedElement);
+			return (selectedElement.VerticalOffset, selectedElement.HorizontalOffset);
+		}
+		return default;
 	}
 }

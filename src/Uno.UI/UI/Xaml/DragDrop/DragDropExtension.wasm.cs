@@ -43,6 +43,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
 
 		private static readonly Logger _log = typeof(DragDropExtension).Log();
+		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
 		private static DragDropExtension? _current;
 
@@ -305,8 +306,8 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
-						.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-						.Where(line => !line.StartsWith("#", StringComparison.Ordinal))
+						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
+						.Where(line => !line.StartsWith('#'))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
 				"text/html" => (StandardDataFormats.Html, async ct => await RetrieveText(ct, id)),

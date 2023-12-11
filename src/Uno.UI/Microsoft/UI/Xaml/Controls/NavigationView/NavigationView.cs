@@ -2225,10 +2225,12 @@ public partial class NavigationView : ContentControl
 		return null;
 	}
 
+#if !HAS_UNO
 	private readonly Vector2 c_frame1point1 = new Vector2(0.9f, 0.1f);
 	private readonly Vector2 c_frame1point2 = new Vector2(1.0f, 0.2f);
 	private readonly Vector2 c_frame2point1 = new Vector2(0.1f, 0.9f);
 	private readonly Vector2 c_frame2point2 = new Vector2(0.2f, 1.0f);
+#endif
 
 	private void AnimateSelectionChangedToItem(object selectedItem)
 	{

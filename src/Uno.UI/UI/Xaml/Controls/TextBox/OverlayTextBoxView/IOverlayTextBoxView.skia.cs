@@ -8,6 +8,8 @@ namespace Uno.UI.Xaml.Controls.Extensions;
 
 internal interface IOverlayTextBoxView
 {
+	event TextControlPasteEventHandler? Paste;
+
 	bool IsDisplayed { get; }
 
 	string Text { get; set; }

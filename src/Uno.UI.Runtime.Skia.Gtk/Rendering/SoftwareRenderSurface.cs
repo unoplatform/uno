@@ -35,6 +35,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	{
 		_displayInformation = DisplayInformation.GetForCurrentView();
 		_displayInformation.DpiChanged += OnDpiChanged;
+		UpdateDpi();
 
 		_colorType = SKImageInfo.PlatformColorType;
 		// R and B channels are inverted on macOS running on arm64 CPU and this is not detected by Skia
@@ -103,7 +104,6 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 		_gtkSurface!.MarkDirty();
 		cr.Save();
-		cr.Scale(1 / _dpi, 1 / _dpi);
 		cr.SetSourceSurface(_gtkSurface, 0, 0);
 		cr.Paint();
 		cr.Restore();

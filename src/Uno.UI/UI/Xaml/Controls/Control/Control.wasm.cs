@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public Control() : this("div") { }
 
-		public Control(string htmlTag) : base(htmlTag)
+		internal Control(string htmlTag) : base(htmlTag)
 		{
 			InitializeControl();
 		}
@@ -52,6 +52,6 @@ namespace Windows.UI.Xaml.Controls
 			SetAttribute("tabindex", isFocusable ? "0" : "-1");
 		}
 
-		protected virtual bool IsDelegatingFocusToTemplateChild() => false;
+		private protected virtual bool IsDelegatingFocusToTemplateChild() => false;
 	}
 }

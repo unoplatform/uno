@@ -44,8 +44,8 @@ namespace MyProject
 		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
-			private static ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 __that;
-			internal static ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 Instance
+			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
+			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{
 				get
 				{
@@ -58,9 +58,10 @@ namespace MyProject
 				}
 			}
 
-			internal global::Uno.UI.Xaml.XamlParseContext __ParseContext_ {get; }
+			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57)Instance).__ParseContext_;
 
-			private ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57()
+			public ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
@@ -104,7 +105,7 @@ namespace MyProject
 			global::Windows.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
 		}
 
-		internal static global::Windows.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
+		internal static global::Windows.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources

@@ -7,7 +7,7 @@
 
 		}
 
-		public Span(string htmlTag) : base(htmlTag)
+		internal Span(string htmlTag) : base(htmlTag)
 		{
 			Inlines = new InlineCollection(this);
 		}

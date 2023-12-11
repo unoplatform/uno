@@ -31,6 +31,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{
+			private static readonly char[] _commaArray = new[] { ',' };
+
 			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _dependencyObjectSymbol;
 			private readonly INamedTypeSymbol? _unoViewgroupSymbol;
@@ -64,7 +66,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
 				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
-				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -567,9 +569,21 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 					[SuppressMessage(
 						""Microsoft.Usage"",
 						""CA2215:DisposeMethodsShouldCallBaseClassDispose"",
-						Justification = ""The dispose is re-scheduled using the ValidateDispose method"")]
+						Justification = ""The dispose is re-scheduled in order to properly remove children from their parent"")]
 					protected sealed override void Dispose(bool disposing)
 					{{
+						// This method is present in order to ensure for faster collection of a disposed visual tree
+						// as well as ensure that instances can be properly returned to the FrameworkTemplatePool.
+						//
+						// This method can be called by the finalizer, in which case the object is re-registered 
+						// for finalization, and the Dispose method is invoked explicitly during a idle dispatch.
+						// 
+						// This operation can fail if Dispose() is called by user code on UIView instances.
+						// The Roslyn analyzer UnoDoNotDisposeNativeViews will warn the developer if this is the case.
+						// 
+						// For native exceptions that may be raised if Disposed is called incorrectly, see 
+						// https://github.com/xamarin/xamarin-macios/issues/19493.
+
 						if(_isDisposed)
 						{{
 							base.Dispose(disposing);

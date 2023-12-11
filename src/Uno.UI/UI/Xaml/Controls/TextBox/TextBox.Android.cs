@@ -87,12 +87,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			SetupTextBoxView();
-		}
-
 		partial void InitializePropertiesPartial()
 		{
 			OnImeOptionsChanged(ImeOptions);
@@ -555,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 			//We need to force a keypress event on editor action.
 			//the key press event is not triggered if we press the enter key depending on the ime.options
 			var modifiers = e is not null ? VirtualKeyHelper.FromModifiers(e.Modifiers) : VirtualKeyModifiers.None;
-			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
+			RaiseEvent(KeyDownEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
 			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.

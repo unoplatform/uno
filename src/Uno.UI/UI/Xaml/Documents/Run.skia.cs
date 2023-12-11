@@ -249,8 +249,8 @@ namespace Windows.UI.Xaml.Documents
 			static List<TextFormatting.GlyphInfo> GetGlyphs(HarfBuzzSharp.Buffer buffer, int clusterStart, float textSizeX, float textSizeY)
 			{
 				int length = buffer.Length;
-				var hbGlyphs = buffer.GlyphInfos;
-				var hbPositions = buffer.GlyphPositions;
+				var hbGlyphs = buffer.GetGlyphInfoSpan();
+				var hbPositions = buffer.GetGlyphPositionSpan();
 
 				List<TextFormatting.GlyphInfo> glyphs = new(length);
 

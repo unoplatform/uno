@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var matchLength = match.Groups[0].Length;
 				var parsedNum = ApiInformation.IsTypePresent(numberParser?.GetType().FullName)
 					? numberParser.ParseDouble(input.Substring(0, matchLength))
-					: double.TryParse(input.Substring(0, matchLength), out var d)
+					: double.TryParse(input.AsSpan().Slice(0, matchLength), out var d)
 						? (double?)d
 						: null;
 

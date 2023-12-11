@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.Helpers;
-using System.Diagnostics;
 using Uno.Extensions;
 using Uno.Roslyn;
 
@@ -37,7 +36,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			private readonly INamedTypeSymbol? _androidViewSymbol;
 			private readonly INamedTypeSymbol? _intPtrSymbol;
 			private readonly INamedTypeSymbol? _jniHandleOwnershipSymbol;
-			private readonly INamedTypeSymbol?[]? _javaCtorParams;
+			private readonly INamedTypeSymbol?[] _javaCtorParams;
 			private readonly string _configuration;
 			private readonly bool _isDebug;
 			private readonly bool _isHotReloadEnabled;
@@ -129,7 +128,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 				if (isAndroidView)
 				{
-					Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(_javaCtorParams ?? Array.Empty<ITypeSymbol?>());
+					Func<IMethodSymbol, bool> predicate = m => m.Parameters.Select(p => p.Type).SequenceEqual(_javaCtorParams);
 					var nativeCtor = GetNativeCtor(typeSymbol, predicate, considerAllBaseTypes: false);
 
 					if (nativeCtor == null && GetNativeCtor(typeSymbol.BaseType, predicate, considerAllBaseTypes: true) != null)
@@ -164,7 +163,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						// generated at runtime
 
 						var registerParamApple = _isHotReloadEnabled
-							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "_")}\""
+							? $"\"{typeSymbol.GetFullMetadataName(forRegisterAttributeDotReplacement: '_')}\""
 							: "";
 
 						builder.AppendLineIndented($"[global::Foundation.Register({registerParamApple})]");
@@ -175,7 +174,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						{
 							builder.AppendLineIndented("#if __ANDROID__");
 
-							var registerParamAndroid = $"\"{typeSymbol.GetFullMetadataName().Replace(".", "/")}\"";
+							var registerParamAndroid = $"\"{typeSymbol.GetFullMetadataName(forRegisterAttributeDotReplacement: '/')}\"";
 
 							builder.AppendLineIndented($"[global::Android.Runtime.Register({registerParamAndroid})]");
 
