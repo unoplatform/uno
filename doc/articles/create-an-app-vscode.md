@@ -123,7 +123,7 @@ You can also find [additional VS Code topics](xref:Uno.vscode.additional), such 
 
 ## Next Steps
 
-Now that you've created and debugged the App, learn more about:
+Now that you've created and debugged the app, learn more about:
 
  - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
  - [Hot Reload feature](xref:Uno.Features.HotReload)
