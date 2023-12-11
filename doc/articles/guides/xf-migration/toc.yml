@@ -10,5 +10,3 @@
   href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
 - name: Migrating Renderers
   href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
-# - name: Migrating Third Party Controls
-#   href: guides/xf-migration/third-party-controls.md
