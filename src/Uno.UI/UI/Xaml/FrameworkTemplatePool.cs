@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if UNO_REFERENCE_API
+#if UNO_REFERENCE_API || __ANDROID__
 #define USE_HARD_REFERENCES
 #endif
 
