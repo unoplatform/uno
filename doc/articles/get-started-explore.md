@@ -18,7 +18,7 @@ You may encounter issues while developing your app. Please see the [troubleshoot
 
 ## Next Steps
 
-Now that you have built your first application and explored the Uno Platform, learn more about:
+Now that you've built your first app and explored the Uno Platform, learn more about:
 
  - You can head to [our tutorials](xref:Uno.Workshop.Counter) on how to work on your Uno Platform app.
  - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
