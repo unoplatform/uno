@@ -2,6 +2,7 @@
 //#define TRACE_NATIVE_POINTER_EVENTS
 
 using System.Linq;
+using Windows.Foundation;
 using Gtk;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
@@ -11,6 +12,9 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk;
 using Windows.Graphics.Display;
+using Windows.UI.Xaml.Controls;
+using GtkApplication = Gtk.Application;
+using Button = Gtk.Button;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -66,30 +70,98 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 		}
 
+		public object CreateSampleComponent(string text)
+		{
+			var vbox = new VBox(false, 5);
+
+			var label = new Label(text);
+			vbox.PackStart(label, false, false, 0);
+
+			var hbox = new HBox(true, 3);
+
+			var button1 = new Button("Button 1");
+			var button2 = new Button("Button 2");
+			hbox.Add(button1);
+			hbox.Add(button2);
+
+			vbox.PackStart(hbox, false, false, 0);
+
+			return vbox;
+		}
+
 		public bool IsNativeElementAttached(object owner, object nativeElement) =>
 			nativeElement is Widget widget
 				&& owner is XamlRoot xamlRoot
 				&& GetOverlayLayer(xamlRoot) is { } overlay
 				&& widget.Parent == overlay;
 
-		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
+		public void ChangeNativeElementVisiblity(object owner, object content, bool visible)
+		{
+			if (content is Widget widget)
+			{
+				widget.Visible = visible;
+			}
+		}
+
+		public void ChangeNativeElementOpacity(object owner, object content, double opacity)
+		{
+			if (content is Widget widget)
+			{
+				widget.Opacity = opacity;
+			}
+		}
+
+		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect, Rect? clipRect)
 		{
 			if (content is Widget widget
 				&& owner is XamlRoot xamlRoot
 				&& GetOverlayLayer(xamlRoot) is { } overlay)
 			{
+				if (!widget.Visible)
+				{
+					return;
+				}
+
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
 					this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
 				}
 
 				var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
-				widget.SizeAllocate(
-					new(
-						(int)(arrangeRect.X * scaleAdjustment),
-						(int)(arrangeRect.Y * scaleAdjustment),
-						(int)(arrangeRect.Width * scaleAdjustment),
-						(int)(arrangeRect.Height * scaleAdjustment)));
+				var rect = new Gdk.Rectangle(
+					(int)(arrangeRect.X * scaleAdjustment),
+					(int)(arrangeRect.Y * scaleAdjustment),
+					(int)(arrangeRect.Width * scaleAdjustment),
+					(int)(arrangeRect.Height * scaleAdjustment));
+
+				if (clipRect is { } c)
+				{
+					if (ContentPresenter.NativeRenderDisposables.TryGetValue(widget, out var disposable))
+					{
+						disposable.Dispose();
+					}
+					var id = widget.AddTickCallback((_, _) =>
+					{
+						// This seems to be the only way to get clipping to work on the initial loading.
+						// It appears that there's something else moving/changing the widget, which causes the clipping
+						// to reset. Also, if the window loses focus and is then refocused, the clipping will be reset unless
+						// the callback is continuously called inside TickCallback
+						// TODO: find out what's going on
+
+						widget.SizeAllocate(rect);
+						if (widget.Visible) // gtk screams if you attempt to SetClip when the widget isn't visible.
+						{
+							widget.SetClip(new Gdk.Rectangle(
+								rect.X + (int)(c.X * scaleAdjustment),
+								rect.Y + (int)(c.Y * scaleAdjustment),
+								(int)(c.Width * scaleAdjustment),
+								(int)(c.Height * scaleAdjustment)));
+						}
+						overlay.Move(widget, rect.X, rect.Y);
+						return true;
+					});
+					ContentPresenter.NativeRenderDisposables[widget] = new DisposableAction(() => widget.RemoveTickCallback(id));
+				}
 			}
 			else
 			{
@@ -100,7 +172,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 		}
 
-		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
+		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Size childMeasuredSize, Size availableSize)
 		{
 			if (content is Widget widget
 				&& owner is XamlRoot xamlRoot

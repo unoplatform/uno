@@ -31,11 +31,19 @@ namespace Windows.UI.Core
 		internal void DetachNativeElement(object owner, object content)
 			=> _coreWindowExtension.DetachNativeElement(owner, content);
 
-		internal void ArrangeNativeElement(object owner, object content, Rect arrangeRect)
-			=> _coreWindowExtension.ArrangeNativeElement(owner, content, arrangeRect);
+		internal void ArrangeNativeElement(object owner, object content, Rect arrangeRect, Rect? clipRect)
+			=> _coreWindowExtension.ArrangeNativeElement(owner, content, arrangeRect, clipRect);
 
-		internal Size MeasureNativeElement(object owner, object content, Size size)
-			=> _coreWindowExtension.MeasureNativeElement(owner, content, size);
+		internal Size MeasureNativeElement(object owner, object content, Size childMeasuredSize, Size availableSize)
+			=> _coreWindowExtension.MeasureNativeElement(owner, content, childMeasuredSize, availableSize);
+
+		internal void ChangeNativeElementVisiblity(object owner, object content, bool visible)
+			=> _coreWindowExtension.ChangeNativeElementVisiblity(owner, content, visible);
+
+		internal void ChangeNativeElementOpacity(object owner, object content, double opacity)
+			=> _coreWindowExtension.ChangeNativeElementOpacity(owner, content, opacity);
+
+		internal object? CreateSampleComponent(string text) => _coreWindowExtension.CreateSampleComponent(text);
 
 		internal bool IsNativeElementAttached(object owner, object nativeElement)
 			=> _coreWindowExtension.IsNativeElementAttached(owner, nativeElement);

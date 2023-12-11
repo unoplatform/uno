@@ -1142,7 +1142,7 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 
 #if UNO_SUPPORTS_NATIVEHOST
-			measuredSize = MeasureNativeElement(measuredSize);
+			measuredSize = MeasureNativeElement(measuredSize, size);
 #endif
 
 			return new Size(
