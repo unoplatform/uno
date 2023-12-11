@@ -2,7 +2,7 @@
 uid: Uno.Features.WSPower
 ---
 
-# Windows.System.Power APIs
+# Battery Information
 
 > [!TIP]
 > This article covers Uno-specific information for `Windows.System.Power` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system.power

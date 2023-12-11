@@ -493,6 +493,8 @@
         href: features/windows-ui-notifications.md
       - name: Barometer
         href: features/barometer.md
+      - name: Battery Information
+        href: features/windows-system-power.md
       - name: Bluetooth
         href: features/bluetoothdevice.md
       - name: Clipboard
@@ -537,12 +539,8 @@
         href: features/orientation-sensor.md
       - name: Package Information
         href: features/windows-applicationmodel.md
-      - name: Personalization
-        href: features/windows-system-userprofile.md
       - name: Phone Calls
         href: features/windows-applicationmodel-calls.md
-      - name: PowerManager
-        href: features/windows-system-power.md
       - name: Proximity Sensor
         href: features/proximity-sensor.md
       - name: Sharing
@@ -561,6 +559,8 @@
         href: features/windows-system.md
       - name: Vibration
         href: features/windows-phone-devices-notification-vibrationdevice.md
+      - name: Wallpaper and Lock Screen
+        href: features/windows-system-userprofile.md
       - name: Web Authentication Broker
         href: features/web-authentication-broker.md
       - name: Working with cookies
