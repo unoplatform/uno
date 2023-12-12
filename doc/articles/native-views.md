@@ -12,7 +12,7 @@ On WebAssembly, [Read this guide](xref:Uno.Interop.WasmJavaScript1) to learn how
 
 ## Adding native views in Skia
 
-On WebAssembly, integrating native JavaScript views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
+On Skia, integrating native views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
 
 ## Native Views for iOS/Android/Catalyst
 

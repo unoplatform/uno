@@ -176,11 +176,11 @@
 
     - name: Embedding
       items:
-      - name: Uno Islands
+      - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Adding native views for mobile
+      - name: Natie Views with Mobile
         href: native-views.md
-      - name: Embedding Native Views for Skia
+      - name: Native Views with Skia 
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading
