@@ -44,7 +44,7 @@ This article covers how to add a splash screen to your application if you don't 
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](./get-started.md).
 
 > [!Tip]
-> If you're using the Uno Platform 4.8 or later you already have the `Uno.Resizetizer` package installed for you and it can handle the Splash screen in a more automated way. See [this article](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html?tabs=classlib%2CAndroid) for more information.
+> If you're using the Uno Platform 4.8 or later, you already have the `Uno.Resizetizer` package installed for you and it can handle the Splash screen in a more automated way. See [this article](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html?tabs=classlib%2CAndroid) for more information.
 
 ## Step 1 - Shared splash Screen image resources
 
