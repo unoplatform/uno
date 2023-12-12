@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PackageId>Uno.WinUI.Sdk</PackageId>
+		<PackageId Condition="'$(IsUnoUI)' == 'true'">Uno.UI.Sdk</PackageId>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+		<PackageType>MSBuildSdk</PackageType>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SdkFile Include="Sdk\*" />
+	</ItemGroup>
+
+	<Target Name="CopySdkFiles" BeforeTargets="Pack">
+		<Copy SourceFiles="@(SdkFile)" DestinationFolder="$(IntermediateOutputPath)Sdk" SkipUnchangedFiles="true" />
+	</Target>
+
+	<Target Name="ReplacePackageVersion" AfterTargets="CopySdkFiles">
+		<ItemGroup>
+			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
+		</ItemGroup>
+
+		<ReplaceFileText
+			Filename="%(_IntermediateSdkFile.Identity)"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
+		<ItemGroup>
+			<None Include="%(SdkFile.Identity)" Pack="true" PackagePath="Sdk\%(SdkFile.Filename)%(SdkFile.Extension)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Using Regex Replace prevents XmlPoke from replacing Tabs with Spaces -->
+	<UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<Filename ParameterType="System.String" Required="true" />
+			<MatchExpression ParameterType="System.String" Required="true" />
+			<ReplacementText ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+					File.WriteAllText(
+						Filename,
+						Regex.Replace(File.ReadAllText(Filename), MatchExpression, ReplacementText)
+						);
+				]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+</Project>

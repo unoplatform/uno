@@ -1,0 +1,85 @@
+<!--
+***********************************************************************************************
+WARNING:
+DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+created a backup copy. Incorrect changes to this file will make it
+impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Uno Platform Inc. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Sdk="Microsoft.NET.Sdk" Condition=" '$(UsingMicrosoftNETSdk)' != 'true' " />
+
+	<PropertyGroup>
+		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
+		<IncludeSourceRevisionInInformationalVersion Condition="'$(Configuration)'=='Debug'">false</IncludeSourceRevisionInInformationalVersion>
+
+		<_UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</_UnoImportMicrosoftNETSdkTargets>
+
+		<IsAndroid>false</IsAndroid>
+		<IsIOS>false</IsIOS>
+		<IsMac>false</IsMac>
+		<IsMacCatalyst>false</IsMacCatalyst>
+		<IsWinAppSdk>false</IsWinAppSdk>
+		<UnoVersion>DefaultUnoVersion</UnoVersion>
+	</PropertyGroup>
+
+	 <Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<PropertyGroup>
+				<IsAndroid>true</IsAndroid>
+				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
+				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'AndroidManifest.xml'))') ">Android\AndroidManifest.xml</AndroidManifest>
+				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'AndroidManifest.xml'))') ">Platforms\Android\AndroidManifest.xml</AndroidManifest>
+			</PropertyGroup>
+
+			<ItemGroup>
+				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'environment.conf'))') " Include="Android\environment.conf" />
+				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'environment.conf'))') " Include="Platforms\Android\environment.conf" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<PropertyGroup>
+				<IsIOS>true</IsIOS>
+				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+			<PropertyGroup>
+				<IsMac>true</IsMac>
+				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.14</SupportedOSPlatformVersion>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+			<PropertyGroup>
+				<IsMacCatalyst>true</IsMacCatalyst>
+				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
+			</PropertyGroup>
+		</When>
+		<When Condition="$(TargetFramework.Contains('windows10'))">
+			<PropertyGroup>
+				<IsWinAppSdk>true</IsWinAppSdk>
+				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.0.18362.0</SupportedOSPlatformVersion>
+				<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">$(SupportedOSPlatformVersion)</TargetPlatformMinVersion>
+				<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+				<EnableCoreMrtTooling Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
+			</PropertyGroup>
+		</When>
+	</Choose>
+
+	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
+	<!-- SingleProject-specific features -->
+	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
+		<ProjectCapability Include="Msix" />
+		<ProjectCapability Include="MauiSingleProject" />
+		<ProjectCapability Include="LaunchProfiles" />
+		<!-- If VS is older than Dev17 -->
+		<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
+		<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
+		<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
+		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
+	</ItemGroup>
+
+</Project>
