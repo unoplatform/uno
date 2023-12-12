@@ -1,0 +1,99 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<local:TestPage
+    x:Class="MUXControlsTestApp.MenuBarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MUXControlsTestApp"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="contentRoot" Grid.Row="0">
+            <Button x:Name="FirstButton" AutomationProperties.Name="FirstButton" Content="Element to test that focus moves correctly"/>
+
+            <TextBlock Text="Sample controls" Style="{ThemeResource StandardGroupHeader}"/>
+            <TextBlock Text="Sample menu bar"/>
+            <muxc:MenuBar x:Name="menuBar">
+                <muxc:MenuBarItem x:Name="FileItem" AutomationProperties.Name="FileItem" Title="File">
+                    <MenuFlyoutItem x:Name="NewItem" AutomationProperties.Name="NewItem" Text="New" Click="NewItem_Click"/>
+                    <MenuFlyoutItem Text="Open..."/>
+                    <MenuFlyoutItem Text="Save"/>
+                    <MenuFlyoutItem Text="Save As..."/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Text="Page Setup..."/>
+                    <MenuFlyoutItem Text="Print..."/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem Text="Exit"/>
+                </muxc:MenuBarItem>
+
+                <muxc:MenuBarItem x:Name="EditItem" AutomationProperties.Name="EditItem" Title="Edit">
+                    <MenuFlyoutItem x:Name="UndoItem" AutomationProperties.Name="UndoItem" Text="Undo"/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutItem x:Name="CutItem" AutomationProperties.Name="CutItem" Text="Cut"/>
+                    <MenuFlyoutItem Text="Copy"/>
+                    <MenuFlyoutItem Text="Paste"/>
+                    <MenuFlyoutItem Text="Delete"/>
+                    <MenuFlyoutSeparator/>
+                    <MenuFlyoutSubItem Text="Sub menu">
+                        <MenuFlyoutItem x:Name="Item1" Text="Item 1"/>
+                        <MenuFlyoutItem x:Name="Item2" Text="Item 2"/>
+                        <MenuFlyoutItem x:Name="Item3" Text="Item 3"/>
+                    </MenuFlyoutSubItem>
+                </muxc:MenuBarItem>
+
+                <muxc:MenuBarItem x:Name="NoChildrenFlyoutMenuBarItem" Title="No children" AutomationProperties.Name="NoChildrenFlyout"/>
+                <muxc:MenuBarItem x:Name="OneChildrenFlyoutMenuBarItem" Title="One children" AutomationProperties.Name="OneChildrenFlyout">
+                    <MenuFlyoutItem Text="Sometext"/>
+                </muxc:MenuBarItem>
+
+                <muxc:MenuBarItem x:Name="FormatItem" Title="Format">
+	                <MenuFlyoutItem x:Name="WordWrapItem" AutomationProperties.Name="WordWrapItem" Text="Word Wrap"/>
+	                <MenuFlyoutItem Text="Font..."/>
+                </muxc:MenuBarItem>
+
+            </muxc:MenuBar>
+
+            <TextBlock Text="Custom sized menu bar" Margin="0,6,0,0"/>
+            <muxc:MenuBar x:Name="SizedMenuBar" AutomationProperties.Name="SizedMenuBar" Height="24">
+                <muxc:MenuBarItem x:Name="SizedMenuBarItem" AutomationProperties.Name="SizedMenuBarItem" Title="Size"/>
+            </muxc:MenuBar>
+
+            <TextBlock Text="Initially empty menubar" Margin="0,6,0,0"/>
+            <muxc:MenuBar x:Name="EmptyMenuBar"></muxc:MenuBar>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Text="Options" Style="{ThemeResource StandardGroupHeader}"/>
+        <StackPanel Margin="0,20,0,20" VerticalAlignment="Top"  Grid.Row="2" Orientation="Vertical">
+            <StackPanel.Resources>
+                <Style TargetType="Control">
+                    <Setter Property="Margin" Value="2"/>
+                    <Setter Property="FontSize" Value="10"/>
+                </Style>
+            </StackPanel.Resources>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox x:Name="TestFrameCheckbox" AutomationProperties.Name="TestFrameCheckbox" Content="Show Test Frame" Checked="TestFrameCheckbox_Checked" Unchecked="TestFrameCheckbox_Unchecked" IsChecked="True"  Margin="5"/>
+                <Button x:Name="AddMenuBarItemButton" AutomationProperties.Name="AddMenuBarItemButton" Click="AddMenuBarItem_Click" Content="Add Menu Bar Item"/>
+                <Button x:Name="RemoveMenuBarItemButton" AutomationProperties.Name="RemoveMenuBarItemButton" Click="RemoveMenuBarItem_Click" Content="Remove Menu Bar Item"/>
+                <Button x:Name="AddFlyoutItemButton" AutomationProperties.Name="AddFlyoutItemButton" Click="AddFlyoutItem_Click" Content="Add Flyout Item"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="RemoveFlyoutItemButton" AutomationProperties.Name="RemoveFlyoutItemButton" Click="RemoveFlyoutItem_Click" Content="Remove Flyout Item"/>
+                <Button x:Name="AddItemsToEmptyMenuBar" AutomationProperties.Name="AddItemsToEmptyMenuBar" Click="AddMenuBarToEmptyMenuBarItem_Click" Content="Add a menu item to the empty menu bar"/>
+                <Button x:Name="RemoveItemsFromOneChildrenItem" AutomationProperties.Name="RemoveItemsFromOneChildrenItem" Click="RemoveItemsFromOneChildrenItem_Click" Content="Remove items from One Children item"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Test output" Style="{ThemeResource StandardGroupHeader}"/>
+            <TextBlock x:Name="TextOutput"/>
+        </StackPanel>
+    </Grid>
+</local:TestPage>
