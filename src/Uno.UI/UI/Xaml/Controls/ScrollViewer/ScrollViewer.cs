@@ -1652,7 +1652,11 @@ namespace Windows.UI.Xaml.Controls
 				args.Handled |= key is VirtualKey.PageUp or VirtualKey.Down;
 			}
 
-			int GetDelta(double l)
+			// This gets the delta that should be applied when arrow keys are pressed as a function of the
+			// ScrollViewer length in the scrolling direction. WinUI's logic is not quite clear, I just
+			// reverse-engineered the numbers until they matched precisely. I think the original code just
+			// has some weird rounding somewhere that makes the numbers weird to calculate.
+			static int GetDelta(double l)
 			{
 				var length = (int)Math.Max(0, Math.Round(l) - 16);
 				var result = 2 + length / 20 * 3;
