@@ -7,17 +7,18 @@
 		<NoWarn>$(NoWarn);NU5128</NoWarn>
 		<PackageType>MSBuildSdk</PackageType>
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+		<Description>Provides a base SDK for Uno Platform projects.</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<SdkFile Include="Sdk\*" />
+		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
 	</ItemGroup>
 
-	<Target Name="CopySdkFiles" BeforeTargets="Pack">
+	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
 		<Copy SourceFiles="@(SdkFile)" DestinationFolder="$(IntermediateOutputPath)Sdk" SkipUnchangedFiles="true" />
 	</Target>
 
-	<Target Name="ReplacePackageVersion" AfterTargets="CopySdkFiles">
+	<Target Name="ReplacePackageVersion" BeforeTargets="Pack;_IntermediatePack" AfterTargets="CopySdkFiles">
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
 		</ItemGroup>
@@ -28,7 +29,7 @@
 			ReplacementText="$(PackageVersion)" />
 
 		<ItemGroup>
-			<None Include="%(SdkFile.Identity)" Pack="true" PackagePath="Sdk\%(SdkFile.Filename)%(SdkFile.Extension)" />
+			<None Include="%(_IntermediateSdkFile.Identity)" Pack="true" PackagePath="Sdk\%(_IntermediateSdkFile.Filename)%(_IntermediateSdkFile.Extension)" />
 		</ItemGroup>
 	</Target>
 
