@@ -64,8 +64,4 @@ To setup your environment for WSL:
 
 ## Next Steps
 
-You're all set! Now that you're done with setting up your environment.
-
-Learn more about:
-
- - [Create first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VS2022) with Uno Platform.
+You're all set! You can create your [first Uno Platform app](xref:Uno.GettingStarted.CreateAnApp.VS2022).
