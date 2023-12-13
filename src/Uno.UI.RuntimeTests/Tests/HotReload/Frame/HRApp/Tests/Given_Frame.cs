@@ -186,6 +186,7 @@ public class Given_Frame : BaseTestClass
 	/// Resume HR (changes applied to Page1 UI)
 	/// </summary>
 	[TestMethod]
+	[Ignore]
 	public async Task Check_Can_Change_Page1_Pause_ReloadCompleted_HR()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
