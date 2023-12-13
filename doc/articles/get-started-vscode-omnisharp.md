@@ -25,7 +25,7 @@ The **C# extension** can only work on the legacy OmniSharp mode when the **C# De
 
 ### Reload the window
 
-The **C# extension** should detect the change and ask you it you want to reload the window. Please do so.
+The **C# extension** should detect the change and ask you to reload the window. Please do so.
 
 If not asked then press `F1` and select `Developer: Reload Window`. VS Code will reload itself and restart its extensions.
 
