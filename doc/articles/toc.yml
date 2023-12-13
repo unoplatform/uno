@@ -123,11 +123,12 @@
       href: xref:Uno.GetStarted.NextSteps
 
 - name: Overview
-  topicHref: xref:Uno.Documentation.Intro
   items:
     - name: Architecture
       topicHref: xref:Uno.Development.About
       items:
+        - name: Intro
+          href: xref:Uno.Documentation.Intro
         - name: Supported Platforms
           href: getting-started/requirements.md
           items:
