@@ -21,8 +21,9 @@ namespace DirectUI
 
 		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
-		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
+		private BuildTreeService? _buildTreeService;
+		private FlyoutMetadata? _flyoutMetadata;
 
 		// UNO: This should **NOT** create the singleton!
 		//		_but_ if we do return a 'null' the 'OnApplyTemplate' of the `CalendarView` will fail.
@@ -50,11 +51,13 @@ namespace DirectUI
 		public string GetLocalizedResourceString(string key)
 			=> ResourceAccessor.GetLocalizedStringResource(key);
 
-		public BuildTreeService GetBuildTreeService()
-			=> _buildTreeService ??= new BuildTreeService();
-
 		public BudgetManager GetBudgetManager()
 			=> _budgetManager ??= new BudgetManager();
+
+		public FlyoutMetadata FlyoutMetadata => _flyoutMetadata ??= new FlyoutMetadata();
+
+		public BuildTreeService GetBuildTreeService()
+			=> _buildTreeService ??= new BuildTreeService();
 
 		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> ElementSoundPlayerService.Instance;

@@ -1397,7 +1397,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="pParent">Parent.</param>
 		/// <returns>True if a focusable child exists.</returns>
-		private bool CanHaveFocusableChildren(DependencyObject? pParent) =>
+		internal bool CanHaveFocusableChildren(DependencyObject? pParent) =>
 			FocusProperties.CanHaveFocusableChildren(pParent);
 
 		/// <summary>
@@ -1445,7 +1445,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns>True if focusable.</returns>
-		private bool IsFocusable(DependencyObject? dependencyObject) => FocusProperties.IsFocusable(dependencyObject);
+		internal bool IsFocusable(DependencyObject? dependencyObject) => FocusProperties.IsFocusable(dependencyObject);
 
 		/// <summary>
 		/// Return the object that should be considered the parent for the purposes
