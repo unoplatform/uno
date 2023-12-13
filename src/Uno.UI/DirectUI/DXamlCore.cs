@@ -11,9 +11,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Xaml.Core.Scaling;
-using Windows.Devices.Input;
+using Windows.UI.Xaml.Controls;
 
 namespace DirectUI
 {
@@ -23,9 +21,9 @@ namespace DirectUI
 
 		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
 
-		private KeyboardCapabilities? _keyboardCapabilities;
-		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
+		private BuildTreeService? _buildTreeService;
+		private FlyoutMetadata? _flyoutMetadata;
 
 		// UNO: This should **NOT** create the singleton!
 		//		_but_ if we do return a 'null' the 'OnApplyTemplate' of the `CalendarView` will fail.
@@ -47,27 +45,19 @@ namespace DirectUI
 			return physicalRect;
 		}
 
-		public Microsoft.UI.Xaml.Window? GetAssociatedWindow(Microsoft.UI.Xaml.UIElement element)
-		{
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			return element.XamlRoot?.HostWindow;
-		}
-
 		// TODO Uno: Application-wide bar is not supported yet.
 		public ApplicationBarService? TryGetApplicationBarService() => null;
 
 		public string GetLocalizedResourceString(string key)
 			=> ResourceAccessor.GetLocalizedStringResource(key);
 
-		public BuildTreeService GetBuildTreeService()
-			=> _buildTreeService ??= new BuildTreeService();
-
 		public BudgetManager GetBudgetManager()
 			=> _budgetManager ??= new BudgetManager();
+
+		public FlyoutMetadata FlyoutMetadata => _flyoutMetadata ??= new FlyoutMetadata();
+
+		public BuildTreeService GetBuildTreeService()
+			=> _buildTreeService ??= new BuildTreeService();
 
 		public ElementSoundPlayerService GetElementSoundPlayerServiceNoRef()
 			=> ElementSoundPlayerService.Instance;
@@ -80,40 +70,6 @@ namespace DirectUI
 			}
 
 			return _radioButtonGroupsByName;
-		}
-
-		internal void OnCompositionContentStateChangedForUWP()
-		{
-			var contentRootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
-			var root = contentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
-			if (root is null)
-			{
-				// The CoreWindow is not initialized, ignore the content state change.
-				return;
-			}
-
-			var rootScale = RootScale.GetRootScaleForContentRoot(root);
-			if (rootScale is null) // Check that we still have an active tree
-			{
-				return;
-			}
-			rootScale.UpdateSystemScale();
-
-			// TODO Uno: Adjusting for visibility changes on CoreWindow is not supported yet.
-			root?.AddPendingXamlRootChangedEvent(default);
-			root?.RaisePendingXamlRootChangedEventIfNeeded(false);
-
-			// TODO Uno: Not needed now.
-			// OnUWPWindowSizeChanged();
-		}
-
-		internal bool IsKeyboardPresent
-		{
-			get
-			{
-				_keyboardCapabilities ??= new KeyboardCapabilities();
-				return _keyboardCapabilities.KeyboardPresent != 0;
-			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify whether the area outside of a light-dismiss UI is darkened.
@@ -6,7 +6,8 @@
 public enum LightDismissOverlayMode
 {
 	/// <summary>
-	/// The device-family the app is running on determines whether the area outside of a light-dismiss UI is darkened.
+	/// The device-family the app is running on determines whether
+	/// the area outside of a light-dismiss UI is darkened.
 	/// </summary>
 	Auto,
 

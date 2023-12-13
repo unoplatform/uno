@@ -503,6 +503,7 @@ namespace Microsoft.UI.Xaml
 
 		internal DependencyObject? GetRootOfPopupSubTree()
 		{
+			// TODO:MZ: Verify this works
 			DependencyObject? pParent = this.GetParentInternal(false);
 			DependencyObject pChild = this;
 
