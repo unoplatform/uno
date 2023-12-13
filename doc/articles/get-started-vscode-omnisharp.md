@@ -10,7 +10,7 @@ The **C# extension** can only work on the legacy OmniSharp mode when the **C# De
 
 * Press `Ctrl` + `Shift` + `X` (or `Shift` + `⌘` + `X` on a Mac) to bring the **Extensions** side bar.
 * Search for `C# DevKit`
-* Select it and click on the **Unistall** button
+* Select it and click on the **Uninstall** button
 
 > [!TIP]
 > You might have to uninstall other extensions (e.g. MAUI) that depends on C# DevKit before being able to uninstall it.
