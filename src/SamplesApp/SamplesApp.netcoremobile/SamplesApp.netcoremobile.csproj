@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -44,6 +44,12 @@
 		<ProjectCapability Include="DiagnoseCapabilities" />
 	</ItemGroup>
 
+	<Target Name="AdjustCalabash" BeforeTargets="BeforeBuild">
+		<!-- Needs to be run as a target, as RuntimeIdentifier is set after the csproj is parsed -->
+		<PropertyGroup Condition="!$(RuntimeIdentifier.Contains('arm64'))">
+			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
+		</PropertyGroup>
+	</Target>
 	
 	<Choose>
 
@@ -51,11 +57,14 @@
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 				<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
-				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true'" />
+				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true' and !$(RuntimeIdentifier.Contains('arm64'))" />
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+				
+				<!-- iOS 17 compatibility -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
@@ -67,6 +76,10 @@
 				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
 			</PropertyGroup>
 			
+			<PropertyGroup>
+				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
+			</PropertyGroup>
+		
 			<ItemGroup>
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
