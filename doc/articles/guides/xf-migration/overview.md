@@ -16,6 +16,20 @@ With each article, we offer thoughtful insights that will aid adoption of Uno Pl
 
 ## What's covered
 
-* [Uno Platform for Xamarin.Forms developers](xref:Uno.XamarinFormsMigration.Intro)
-<!-- * [Controls](xref:Uno.XamarinFormsMigration.Controls)
-* [Animations](xref:Uno.XamarinFormsMigration.Animations) -->
+* [Animations](https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/)
+* [Custom Controls](https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/)
+* [Custom-Drawn Controls](https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/)
+* [Data Binding](https://platform.uno/blog/xamarin-forms-migration-to-uno-platform-data-binding-techniques/)
+* [Effects](https://platform.uno/blog/xamarin-forms-migration-to-uno-platform-effects-and-alternative-approaches/)
+* [Navigation](https://platform.uno/blog/migrating-page-navigation-apps-from-xamarin-forms/)
+* [Renderers](https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/)
+
+<!-- * [Animations](xref:Uno.XamarinFormsMigration.Animations)
+* [Controls](xref:Uno.XamarinFormsMigration.Controls)
+* [Data binding](xref:Uno.XamarinFormsMigration.DataBinding)
+* [Effects](xref:Uno.XamarinFormsMigration.Effects)
+* [Navigation](xref:Uno.XamarinFormsMigration.Navigation)
+* [Renderers](xref:Uno.XamarinFormsMigration.Renderers) -->
+
+## Get started
+[![button](assets/NextButton.png)](xref:Uno.XamarinFormsMigration.Intro)
