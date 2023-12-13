@@ -41,8 +41,8 @@ New versions of the **Uno Platform extension** works with the [C# extension](htt
 
 Note: Microsoft has [not completed nor formalized](https://github.com/dotnet/vscode-csharp/issues/5805) the APIs required for integration with C# DevKit. As such our support is, like the APIs, **experimental** and might break if/when breaking changes are introduced in the Microsoft extensions.
 
-- [How to switch to C# DevKit Mode](doc/articles/get-started-vscode-devkit.md)
-- [How to switch to OmniSharp Mode](doc/articles/get-started-vscode-omnisharp.md)
+- [How to switch to C# DevKit Mode](xref:Uno.GetStarted.vscode.DevKit)
+- [How to switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
 
 ### Detecting the current mode of operation
 
