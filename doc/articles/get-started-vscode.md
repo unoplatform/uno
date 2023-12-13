@@ -37,7 +37,7 @@ No other extensions are needed to complete this guide.
 
 ## C# Dev Kit (Experimental) or OmniSharp (Legacy) Modes
 
-New versions of the **Uno Platform extension** works with the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` (with OmniSharp enabled) **or** the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`. Depending on your configuration some manual changes might be needed.
+Starting from 0.12.0 of the **Uno Platform extension** supports the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` (with OmniSharp enabled) **or** the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`. Depending on your configuration some manual changes might be needed.
 
 Note: Microsoft has [not completed nor formalized](https://github.com/dotnet/vscode-csharp/issues/5805) the APIs required for integration with C# DevKit. As such our support is, like the APIs, **experimental** and might break if/when breaking changes are introduced in the Microsoft extensions.
 
