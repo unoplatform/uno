@@ -73,7 +73,7 @@ if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
 > [!NOTE]
 > [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
 
-WebAssembly is currently a `net7.0` target, and cannot yet be discriminated at compile time until a new TargetFramework for Wasm is included. This was [proposed](https://github.com/dotnet/designs/pull/289) as `net8.0-browser` in .NET 8, but it didn't yet happen.
+WebAssembly is currently a `net7.0` target, and cannot yet be discriminated at compile time until a new TargetFramework for WebAssembly is included. This was [proposed](https://github.com/dotnet/designs/pull/289) as `net8.0-browser` in .NET 8, but it didn't yet happen.
 
 ## Type aliases
 
