@@ -22,9 +22,9 @@ The creation of Uno Platform was driven by the aspiration to make pixel-perfect 
 
 ## Architectural differences
 
-Xamarin.Forms works under the hood by abstracting a set of analogous features and components from each supported platform, yet the customization options for shared UI elements are limited for the sake of consistency. Your Uno Platform views also map to native controls, but do so at a lower level. Despite these apparent differences, the markup language flavor used by Xamarin.Forms is similar enough to Uno Platform's that migrating your team's existing investment is a largely straightforward process with familiar aspects.
+Xamarin.Forms works under the hood by abstracting a set of analogous features and components from each supported platform, yet the customization options for shared UI elements are limited for the sake of consistency. Your Uno Platform views also map to native controls but do so at a lower level. Despite these apparent differences, the markup language flavor used by Xamarin.Forms is similar enough to Uno Platform's that migrating your team's existing investment is a largely straightforward process with familiar aspects.
 
-Still, it is not a one-to-one mapping. Adjustments to your app will be needed to benefit from over a decade of investment in responsive design, customization, accessibility and more. The following sections will help your team migrate key aspects of your existing Xamarin.Forms app including controls, animations, and navigation.
+Still, it is not a one-to-one mapping. Adjustments to your app will be needed to benefit from over a decade of investment in responsive design, customization, accessibility, and more. The following sections will help your team migrate key aspects of your existing Xamarin.Forms app including controls, animations, and navigation.
 
 > [!TIP]
 > Before moving on, we recommend setting up your development environment. See [Get Started](xref:Uno.GetStarted) for the steps to install the prerequisites to build and run Uno Platform projects throughout your migration process.
