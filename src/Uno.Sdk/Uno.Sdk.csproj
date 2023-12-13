@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>Uno.WinUI.Sdk</PackageId>
-		<PackageId Condition="'$(IsUnoUI)' == 'true'">Uno.UI.Sdk</PackageId>
+		<PackageId Condition="'$(XAML_FLAVOR_BUILD)' == 'UWP'">Uno.UI.Sdk</PackageId>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);NU5128</NoWarn>
 		<PackageType>MSBuildSdk</PackageType>
