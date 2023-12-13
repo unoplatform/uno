@@ -33,18 +33,14 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
 {
-	internal PointerManager Pointers { get; private set; } = default!;
-
-	partial void ConstructPointerManager()
+	partial void ConstructPointerManager_Managed()
 	{
-		Pointers = new PointerManager(this);
-
 		// Injector supports only pointers for now, so configure only in by managed pointer
 		// (should be moved to the InputManager ctor once the injector supports other input types)
 		InputInjector.SetTargetForCurrentThread(this);
 	}
 
-	partial void InitializeManagedPointers(object host)
+	partial void InitializePointers_Managed(object host)
 		=> Pointers.Init(host);
 
 	partial void InjectPointerAdded(PointerEventArgs args)
@@ -58,21 +54,12 @@ internal partial class InputManager
 
 	internal partial class PointerManager
 	{
-		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
-		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
-
 		// TODO: Use pointer ID for the predicates
 		private static readonly StalePredicate _isOver = new(e => e.IsPointerOver, "IsPointerOver");
 
 		private readonly Dictionary<Pointer, UIElement> _pressedElements = new();
 
-		private readonly InputManager _inputManager;
 		private IUnoCorePointerInputSource? _source;
-
-		public PointerManager(InputManager inputManager)
-		{
-			_inputManager = inputManager;
-		}
 
 		// ONLY USE THIS FOR TESTING PURPOSES
 		internal IUnoCorePointerInputSource? PointerInputSourceForTestingOnly => _source;
@@ -525,28 +512,6 @@ internal partial class InputManager
 			ClearPressedState(routedArgs);
 		}
 
-		/// <summary>
-		/// Re-route the given event args (cf. <see cref="FlyoutBase.OverlayInputPassThroughElement"/>).
-		/// </summary>
-		public void ReRoute(PointerRoutedEventArgs routedArgs, UIElement from, UIElement to)
-		{
-			if (Current != routedArgs)
-			{
-				throw new InvalidOperationException("Cannot reroute a pointer event args that is not currently being dispatched.");
-			}
-
-			if (_reRouted is not null)
-			{
-				throw new InvalidOperationException("Pointer event args can be re-routed only once per bubbling.");
-			}
-
-			_reRouted = new ReRouted(routedArgs, from, to);
-		}
-
-		private ReRouted? _reRouted;
-
-		private readonly record struct ReRouted(PointerRoutedEventArgs Args, UIElement From, UIElement To);
-
 		#region Captures
 		internal void SetPointerCapture(PointerIdentifier uniqueId)
 		{
@@ -556,17 +521,6 @@ internal partial class InputManager
 		internal void ReleasePointerCapture(PointerIdentifier uniqueId)
 		{
 			_source?.ReleasePointerCapture(uniqueId);
-		}
-
-		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
-		{
-			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
-			{
-				foreach (var target in capture.Targets.ToList())
-				{
-					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
-				}
-			}
 		}
 		#endregion
 

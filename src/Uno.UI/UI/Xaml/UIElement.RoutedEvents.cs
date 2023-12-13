@@ -678,6 +678,12 @@ namespace Microsoft.UI.Xaml
 				parent ??= this.FindFirstParent<UIElement>();
 #endif
 			}
+			else
+			{
+				// Make sure that the visual tree root element still get notified that the event as reach the top of the tree
+				// This is important to ensure to clear any relevant global state, e.g. for pointers to clear capture on pointer up (cf. InputManager).
+				parent = this.XamlRoot?.VisualTree.RootElement;
+			}
 
 			// [11] A parent is defined?
 			if (parent is null)

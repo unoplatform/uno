@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests;
 [TestFixture]
 partial class Flyout_Tests : SampleControlUITestBase
 #else
+[TestFixture]
 partial class Flyout_Tests : PopupUITestBase
 #endif
 {
@@ -40,16 +41,16 @@ partial class Flyout_Tests : PopupUITestBase
 		var blocking = App.GetLogicalRect("BlockingLayer");
 		var page = App.GetLogicalRect("PageRoot");
 
-		// When tap on pink
+		// When tap on pink border
 		AssertDoesNotContains(await RunTest(testCase, blocking.X - 10, pink.CenterY), "PinkBorder");
 
-		// When tap on orange
-		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, orange.CenterY), "OrangeButton");
+		// When tap on orange button
+		AssertDoesNotContains(await RunTest(testCase, blocking.X - 10, orange.CenterY), "OrangeButton");
 
-		// When tap on blocking at border level
-		AssertDoesNotContains(await RunTest(testCase, blocking.X - 10, pink.CenterY), "PinkBorder");
+		// When tap on blocking at pink border level
+		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, pink.CenterY), "PinkBorder");
 
-		// When tap on blocking at button level
+		// When tap on blocking at orange button level
 		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, orange.CenterY), "OrangeButton");
 
 		// When tap out of the InputPassThroughElement
@@ -78,16 +79,16 @@ partial class Flyout_Tests : PopupUITestBase
 		var blocking = App.GetLogicalRect("BlockingLayer");
 		var page = App.GetLogicalRect("PageRoot");
 
-		// When tap on pink
+		// When tap on pink border
 		AssertContains(await RunTest(testCase, blocking.X - 10, pink.CenterY), "PinkBorder");
 
-		// When tap on orange
-		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, orange.CenterY), "OrangeButton");
+		// When tap on orange button
+		AssertContains(await RunTest(testCase, blocking.X - 10, orange.CenterY), "OrangeButton");
 
-		// When tap on blocking at border level
-		AssertContains(await RunTest(testCase, blocking.X - 10, pink.CenterY), "PinkBorder");
+		// When tap on blocking at pink border level
+		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, pink.CenterY), "PinkBorder");
 
-		// When tap on blocking at button level
+		// When tap on blocking at orange button level
 		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, orange.CenterY), "OrangeButton");
 
 		// When tap out of the InputPassThroughElement

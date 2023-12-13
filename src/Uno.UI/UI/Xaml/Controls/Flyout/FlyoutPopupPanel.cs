@@ -1,101 +1,85 @@
 ﻿#if !__UWP__
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Uno.UI;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// PopupPanel implementation for <see cref="FlyoutBase"/>.
+/// </summary>
+/// <remarks>
+/// This panel is *NOT* used by types derived from <see cref="PickerFlyoutBase"/>. Pickers use a plain
+/// <see cref="PopupPanel"/> (see <see cref="PickerFlyoutBase.InitializePopupPanel()"/>).
+/// </remarks>
+internal partial class FlyoutBasePopupPanel : PopupPanel
 {
-	/// <summary>
-	/// PopupPanel implementation for <see cref="FlyoutBase"/>.
-	/// </summary>
-	/// <remarks>
-	/// This panel is *NOT* used by types derived from <see cref="PickerFlyoutBase"/>. Pickers use a plain
-	/// <see cref="PopupPanel"/> (see <see cref="PickerFlyoutBase.InitializePopupPanel()"/>).
-	/// </remarks>
-	internal partial class FlyoutBasePopupPanel : PopupPanel
+	private readonly FlyoutBase _flyout;
+
+	public FlyoutBasePopupPanel(FlyoutBase flyout) : base(flyout._popup)
 	{
-		private readonly FlyoutBase _flyout;
+		_flyout = flyout;
+		_flyout._popup.AssociatedFlyout = flyout;
+		// Required for the dismiss handling
+		// This should however be customized depending of the Popup.DismissMode
+		Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+	}
 
-		public FlyoutBasePopupPanel(FlyoutBase flyout) : base(flyout._popup)
+	protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
+
+	internal override FlyoutBase Flyout => _flyout;
+
+	protected override int PopupPlacementTargetMargin => 5;
+
+	private protected override void OnPointerPressedDismissed(PointerRoutedEventArgs args)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug)) this.Log().Debug($"{this.GetDebugName()} Dismissing flyout (OverlayInputPassThroughElement:{Flyout.OverlayInputPassThroughElement.GetDebugIdentifier()}).");
+
+		if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement)
 		{
-			_flyout = flyout;
-			_flyout._popup.AssociatedFlyout = flyout;
-			// Required for the dismiss handling
-			// This should however be customized depending of the Popup.DismissMode
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+			return;
 		}
 
-		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;
-
-		internal override FlyoutBase Flyout => _flyout;
-
-		protected override int PopupPlacementTargetMargin => 5;
-
-		private protected override void OnPointerPressedDismissed(PointerRoutedEventArgs args)
+		if (!Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug)) this.Log().Debug($"{this.GetDebugName()} Dismissing flyout (OverlayInputPassThroughElement:{Flyout.OverlayInputPassThroughElement.GetDebugIdentifier()}).");
+			// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
 
-			if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement)
-			{
-				return;
-			}
+			if (this.Log().IsEnabled(LogLevel.Debug))
+				this.Log().Debug($"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
+					+ $" is not a parent of the Flyout ({Flyout.GetAllParents().Select(elt => elt.GetDebugName()).Reverse().JoinBy(">")}).");
 
-			if (!Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
-			{
-				// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-					this.Log().Debug($"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
-						+ $" is not a parent of the Flyout ({Flyout.GetAllParents().Select(elt => elt.GetDebugName()).Reverse().JoinBy(">")}).");
-
-				return;
-			}
-
-			var point = args.GetCurrentPoint(null);
-			var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
-			var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot, hitTestIgnoringThis);
-
-			if (elementHitUnderOverlay is null)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-					this.Log().Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element is null.");
-
-				return;
-			}
-
-			if (!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-					this.Log()
-						.Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
-							+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
-
-				// The element found by the HitTest is not a child of the pass-through element.
-				return;
-			}
-
-#if UNO_HAS_MANAGED_POINTERS
-			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
-#else
-			XamlRoot?.VisualTree.RootVisual.ReRoutePointerDownEvent(args, from: this, to: elementHitUnderOverlay);
-#if __IOS__
-			// On iOS, the FlyoutPopupPanel does not have nay parent (cf. https://github.com/unoplatform/uno/issues/14405), so we are forcefully causing the ProcessPointerDown here.
-			XamlRoot?.VisualTree.RootVisual.ProcessPointerDown(args);
-#endif
-#endif
+			return;
 		}
+
+		var point = args.GetCurrentPoint(null);
+		var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
+		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot, hitTestIgnoringThis);
+
+		if (elementHitUnderOverlay is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+				this.Log().Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element is null.");
+
+			return;
+		}
+
+		if (!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+				this.Log()
+					.Debug($"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
+						+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
+
+			// The element found by the HitTest is not a child of the pass-through element.
+			return;
+		}
+
+		XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
 	}
 }
 #endif
