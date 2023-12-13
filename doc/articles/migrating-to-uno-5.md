@@ -49,6 +49,17 @@ Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is n
 
 Note that Hot Reload has changed to be based on C#, which means that changes done XAML files will need the use of C# Hot Reload feature to be applied to the running app. See [this documentation](xref:Uno.Features.HotReload) for more details.
 
+#### Migrating Shared Class Libraries from net7.0 to net8.0
+
+- If you building on windows and experience the compilation error NETSDK1083 when retargetting your library from net7.0 to net8.0, add the following to the `csproj`:
+    ```xml
+    <PropertyGroup>
+        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+    </PropertyGroup>
+    ```
+
+
+
 #### Migrating from Xamarin to net7.0-* targets
 
 If your current project is built on Xamarin.* targets, you can upgrade by [following this guide](xref:Uno.Development.MigratingFromXamarinToNet6).
