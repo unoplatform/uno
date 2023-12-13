@@ -4,7 +4,7 @@ uid: Uno.XamarinFormsMigration.Controls
 
 # Controls
 
-Your apps commonly leverage the framework's native controls to create a third-party view of the same building blocks. This pattern improves coherency, allowing for easy reuse of intricate layouts between multiple pages like a calendar, charts, or the elements of data list. Likewise, third-party controls may instead use a graphics library to render drawings from scratch and uniquely respond to behaviors. While this category of **custom-drawn** controls isn't as common compared to its native alternative, it often desirable when your team is striving for greater visual fidelity than included controls can provide.
+Your apps commonly leverage the framework's native controls to create a third-party view of the same building blocks. This pattern improves coherency, allowing for easy reuse of intricate layouts between multiple pages like a calendar, charts, or the elements of a data list. Likewise, third-party controls may instead use a graphics library to render drawings from scratch and uniquely respond to behaviors. While this category of **custom-drawn** controls isn't as common compared to its native alternative, it is often desirable when your team is striving for greater visual fidelity than included controls can provide.
 
 Both types of third-party controls enable your team to achieve a coherent app experience without the need to define complex UI elements from scratch multiple times. In fact, this pattern of defining a control's appearance in XAML and its behavior in C# is conceptually identical between Xamarin.Forms and Uno. The types used to do so are different. For that reason, some third-party controls defined in your Xamarin.Forms project are not directly compatible with Uno.
 
