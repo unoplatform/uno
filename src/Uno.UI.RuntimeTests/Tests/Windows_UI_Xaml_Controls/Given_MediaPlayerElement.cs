@@ -113,7 +113,7 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
-#if __IOS__ || !HAS_UNO
+#if __IOS__ || __ANDROID__ || !HAS_UNO
 	// [Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
 	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
