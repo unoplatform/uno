@@ -149,7 +149,7 @@ namespace Uno.UWPSyncGenerator
 								var playgroundLink = GetPlaygroundLink(viewName);
 								if (playgroundLink != null)
 								{
-									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can use the Gallery {Hyperlink("here", playgroundLink)}.");
+									_sb.AppendParagraph($"Or run your own tests on {formattedViewName} {Hyperlink("here", playgroundLink)} on {Hyperlink("Playground", playgroundLink)}.");
 								}
 
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
