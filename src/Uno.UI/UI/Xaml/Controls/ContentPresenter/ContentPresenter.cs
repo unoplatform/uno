@@ -1073,7 +1073,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 				ArrangeElement(child, arrangeRect);
 
-				ArrangeNativeElement(arrangeRect);
+				if (IsNativeHost)
+				{
+					ArrangeNativeElement(arrangeRect);
+				}
 			}
 
 			return finalSize;
@@ -1142,7 +1145,10 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 
 #if UNO_SUPPORTS_NATIVEHOST
-			measuredSize = MeasureNativeElement(measuredSize, size);
+			if (IsNativeHost)
+			{
+				measuredSize = MeasureNativeElement(measuredSize, size);
+			}
 #endif
 
 			return new Size(

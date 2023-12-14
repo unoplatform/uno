@@ -1,7 +1,7 @@
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {

@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _nativeHostRegistered;
 
 		// TODO: do we have a cleaner way to do this?
-		public static Dictionary<object, IDisposable> NativeRenderDisposables { get; } = new();
+		internal static Dictionary<object, IDisposable> NativeRenderDisposables { get; } = new();
 
 		public ContentPresenter()
 		{
@@ -39,7 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Loaded += (s, e) => RegisterNativeHostSupport();
 			Unloaded += (s, e) => UnregisterNativeHostSupport();
 			LayoutUpdated += (s, e) => UpdateBorder();
-			EffectiveViewportChanged += OnEffectiveViewportChanged;
 		}
 
 		private void SetUpdateTemplate()
@@ -86,6 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsNativeHost && XamlRoot is not null)
 			{
 				XamlRoot.InvalidateRender += UpdateNativeElementPosition;
+				EffectiveViewportChanged += OnEffectiveViewportChanged;
 				_nativeHostRegistered = true;
 			}
 		}
@@ -95,6 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_nativeHostRegistered)
 			{
 				XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
+				EffectiveViewportChanged -= OnEffectiveViewportChanged;
 				_nativeHostRegistered = false;
 
 				NativeRenderDisposables.Remove(Content, out var disposable);
@@ -202,7 +203,8 @@ namespace Microsoft.UI.Xaml.Controls
 				if (ev.IsEmpty)
 				{
 					_clipRect = new Rect(0, 0, 0, 0);
-				} else if (ev.IsInfinite)
+				}
+				else if (ev.IsInfinite)
 				{
 					_clipRect = null;
 				}

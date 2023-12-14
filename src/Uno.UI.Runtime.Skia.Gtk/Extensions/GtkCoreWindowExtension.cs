@@ -1,18 +1,13 @@
 ﻿#nullable enable
 //#define TRACE_NATIVE_POINTER_EVENTS
 
-using System.Linq;
 using Windows.Foundation;
 using Gtk;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
-using Windows.System;
-using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Gtk.Hosting;
-using Uno.UI.Runtime.Skia.Gtk;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using GtkApplication = Gtk.Application;
 using Button = Gtk.Button;
 
