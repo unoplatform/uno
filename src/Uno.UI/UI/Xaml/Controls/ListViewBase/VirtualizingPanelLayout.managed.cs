@@ -196,6 +196,8 @@ namespace Windows.UI.Xaml.Controls
 				else if (parent is ItemsControl itemsControl)
 				{
 					ItemsControl = itemsControl;
+
+					OwnerPanel.InvalidateMeasure();
 					break;
 				}
 			}
@@ -218,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 				ItemsControl = popupItemsControl;
 
 				// If measure has already happened when ItemsControl was null, it should be invalidated.
-				OwnerPanel?.InvalidateMeasure();
+				OwnerPanel.InvalidateMeasure();
 			}
 		}
 
