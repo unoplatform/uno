@@ -358,14 +358,14 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	private PointerEventArgs? AsPointerArgs(object o, EventTouch evt)
 	{
 		var (windowX, windowY) = GetWindowCoordinates(o);
-		evt.X = evt.XRoot - windowX;
-		evt.Y = evt.YRoot - windowY;
+		var x = evt.XRoot - windowX;
+		var y = evt.YRoot - windowY;
 
 		return AsPointerArgs(
 			evt.Device, PointerDeviceType.Touch, (uint?)evt.Sequence?.Handle ?? 1u,
 			evt.Type, evt.Time,
 			evt.XRoot, evt.YRoot,
-			evt.X, evt.Y,
+			x, y,
 			(ModifierType)evt.State,
 			evt: null);
 	}
