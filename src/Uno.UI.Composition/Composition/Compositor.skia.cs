@@ -17,7 +17,6 @@ public partial class Compositor
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
-		Console.WriteLine($"Rendering root visual {rootVisual.GetHashCode()}");
 		rootVisual.RenderRootVisual(surface);
 	}
 
