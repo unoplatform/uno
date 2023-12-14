@@ -92,10 +92,10 @@ namespace Windows.UI.Xaml
 		{
 			const string caller = "--unavailable--";
 #endif
-			if (IsLoaded && IsEffectiveViewportEnabled)
+			if (IsInLiveTree && IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
-				if (IsLoaded)
+				if (IsInLiveTree)
 				{
 					_isLayouted = true;
 				}
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 #if CHECK_LAYOUTED
-				if (!IsLoaded)
+				if (!IsActiveInVisualTree)
 				{
 					_isLayouted = false;
 				}
@@ -230,7 +230,10 @@ namespace Windows.UI.Xaml
 			// except for element flagged as ScrollHost!
 			// For now we are using the LayoutSlot + ScrollOffsets (which is internal only!), but we should use that 'viewport'.
 
+#if CHECK_LAYOUTED
 			_isLayouted = true;
+#endif
+
 			PropagateEffectiveViewportChange();
 		}
 
@@ -364,7 +367,7 @@ namespace Windows.UI.Xaml
 
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
-				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
 			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
@@ -385,6 +388,8 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		internal void RaiseEffectiveViewportChanged(EffectiveViewportChangedEventArgs args) => _effectiveViewportChanged?.Invoke(this, args);
 
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]
 		private void TRACE_EFFECTIVE_VIEWPORT(string text)

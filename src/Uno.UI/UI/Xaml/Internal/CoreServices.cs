@@ -42,20 +42,12 @@ namespace Uno.UI.Xaml.Core
 				CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is { } windowContentRoot && windowContentRoot.GetOwnerWindow() is { } window &&
 				window.Bounds.Size is { Width: not 0, Height: not 0 } windowSize)
 			{
-				if (root.IsMeasureDirtyOrMeasureDirtyPath)
-				{
-					root.Measure(windowSize);
-				}
-
-				if (root.IsArrangeDirtyOrArrangeDirtyPath)
-				{
-					root.Arrange(window.Bounds);
-				}
+				root.UpdateLayout();
 
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
 				{
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
-					// UpdateLayout()
+					root.UpdateLayout();
 				}
 			}
 		}

@@ -787,6 +787,10 @@ namespace Windows.UI.Xaml
 				{
 					root.Arrange(bounds);
 				}
+				else if (root.GetContext().EventManager.HasPendingViewportChangedEvents)
+				{
+					root.GetContext().EventManager.RaiseEffectiveViewportChangedEvents();
+				}
 				else
 				{
 					return;

@@ -631,9 +631,7 @@ namespace Microsoft.UI.Xaml.Controls
 		void TryInvalidateMeasure()
 		{
 			// Don't invalidate measure if we have an invalid window.
-			if (m_visibleWindow != new Rect()
-				// Uno workaround: [Perf] Do not invalidate measure if nothing to render!
-				&& m_owner.ItemsSourceView?.Count > 0)
+			if (m_visibleWindow != new Rect())
 			{
 				// We invalidate measure instead of just invalidating arrange because
 				// we don't invalidate measure in UpdateViewport if the view is changing to

@@ -13,10 +13,44 @@ namespace Uno.UI.Xaml.Core;
 internal sealed class EventManager
 {
 	private List<DependencyObject?>? _loadedEventList;
+	private List<(FrameworkElement Element, EffectiveViewportChangedEventArgs Args)>? _effectiveViewportChangedQueue;
+
 	internal bool ShouldRaiseLoadedEvent { get; private set; }
+
+	internal bool HasPendingViewportChangedEvents => _effectiveViewportChangedQueue is { Count: > 0 };
 
 	private EventManager()
 	{
+	}
+
+	internal void EnqueueForEffectiveViewportChanged(FrameworkElement element, EffectiveViewportChangedEventArgs args)
+	{
+		if (_effectiveViewportChangedQueue is null)
+		{
+			_effectiveViewportChangedQueue = new();
+		}
+
+		_effectiveViewportChangedQueue.Add((element, args));
+	}
+
+	internal void RaiseEffectiveViewportChangedEvents()
+	{
+		if (_effectiveViewportChangedQueue is null)
+		{
+			return;
+		}
+
+		for (int i = 0; i < _effectiveViewportChangedQueue.Count; i++)
+		{
+			var (fe, args) = _effectiveViewportChangedQueue[i];
+
+			_effectiveViewportChangedQueue[i] = default;
+
+			fe.RaiseEffectiveViewportChanged(args);
+		}
+
+		_effectiveViewportChangedQueue.Clear();
+
 	}
 
 	private void AddToLoadedEventList(DependencyObject element)
