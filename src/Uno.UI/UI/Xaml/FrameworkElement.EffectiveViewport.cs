@@ -41,7 +41,6 @@ namespace Windows.UI.Xaml
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
-		private bool _hasNewHandler;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
 		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
@@ -55,7 +54,6 @@ namespace Windows.UI.Xaml
 		{
 			add
 			{
-				_hasNewHandler = true;
 				_effectiveViewportChanged += value;
 				ReconfigureViewportPropagation(isInternal: true);
 			}
@@ -357,14 +355,8 @@ namespace Windows.UI.Xaml
 				+ $"| reason: {caller} "
 				+ $"| children: {_childrenInterestedInViewportUpdates?.Count ?? 0}");
 
-			if (viewportUpdated
-				&& (
-					!isInternal // We don't want to raise the event when we are only initializing the tree due to a new event handler somewhere in sub tree
-					|| _hasNewHandler // but if we have a new local handler, we do need to raise the event!
-				))
+			if (viewportUpdated)
 			{
-				_hasNewHandler = false;
-
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
 				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
