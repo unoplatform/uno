@@ -118,6 +118,12 @@ xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
 echo "Shutdown simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
+echo "Installing idb"
+# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
+brew tap facebook/fb
+brew install idb-companion
+pip3 install fb-idb
+
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
