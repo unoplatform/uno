@@ -18,24 +18,26 @@ Legend
   - 💬 Partially supported (see below for more details)
   - ✖ Not supported
 
-| Picker         | UWP   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| FileOpenPicker | ✔   | ✔  (1)     | ✔     | ✔    | ✔   | ✔  | ✔  |
-| FileSavePicker | ✔   | ✔  (1)     | ✔     | ✔    | ✔   | ✔  | ✔  |
-| FolderPicker   | ✔   | ✔          | ✔     | 💬 (2)| ✔   | ✖  | ✔  |
+| Picker         | UWP   | WebAssembly | Android | iOS    | macOS | WPF | GTK |
+|----------------|-------|-------------|---------|--------|-------|-----|-----|
+| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
+| FileSavePicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
+| FolderPicker   | ✔    | ✔           | ✔      | 💬 (2) | ✔    | ✖   | ✔  |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file picking experience by utilizing additional properties:
 
-| Feature                 | UWP  | WebAssembly | Android | iOS | macOS | WPF | GTK |
-|-------------------------|------|-------------|---------|-----|-------|-----|-----|
-| SuggestedFileName       | ✔   | ✔         | ✖      | ✖ | ✔   | ✔  | ✔ |
-| SuggestedStartLocation  | ✔   | ✔  (1)    | ✖      | ✖ | ✔   | ✔  | ✔ |
-| SettingsIdentifier      | ✔   | ✔  (1)    | ✔      | ✖ | ✖   | ✖  | ✖ |
+| Feature                 | UWP  | WebAssembly | Android | iOS   | macOS | WPF | GTK |
+|-------------------------|------|-------------|---------|-------|-------|-----|-----|
+| SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔    | ✔   | ✔  |
+| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬     | ✔ (3) | ✔    | ✔   | ✔  |
+| SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✖    | ✖   | ✖  |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*
+*(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used apply `image/*` and `video/*` filters*
+*(3) - PicturesLibrary opens the picture library with the image picker controller*
 
 On platforms where the additional features are not supported yet, setting them will not have any effect.
 
@@ -148,7 +150,7 @@ else
 }
 ```
 
-**Notes**: While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, it must be set, otherwise the dialog crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
+**Notes**: `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 
 ### FileSavePicker
 
