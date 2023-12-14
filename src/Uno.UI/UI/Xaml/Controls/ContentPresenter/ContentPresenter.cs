@@ -818,6 +818,15 @@ namespace Windows.UI.Xaml.Controls
 			TryAttachNativeElement();
 		}
 
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			// When the control is loaded, set the TemplatedParent
+			// as it may have been reset during the last unload.
+			SynchronizeContentTemplatedParent();
+		}
+
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
