@@ -68,9 +68,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable m_effectiveViewportChangedRevoker;
 		private IDisposable m_layoutUpdatedRevoker;
 		private IDisposable m_renderingToken;
-
-		private Rect _uno_viewportUsedInLastMeasure;
-
 		private bool HasScroller => m_scroller != null;
 
 		public ViewportManagerWithPlatformFeatures(ItemsRepeater owner)
@@ -269,9 +266,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_effectiveViewportChangedRevoker?.Dispose();
 			}
-			else if (m_effectiveViewportChangedRevoker == null
-				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
-				&& m_owner.ItemsSourceView?.Count > 0)
+			else if (m_effectiveViewportChangedRevoker == null)
 			{
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
@@ -303,9 +298,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// fire if you register during arrange.
 			// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 			EnsureScroller();
-
-			// Uno workaround: Perf
-			_uno_viewportUsedInLastMeasure = m_visibleWindow;
 		}
 
 		public override void OnOwnerArranged()
@@ -508,12 +500,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ResetScrollers();
 
-				// Uno workaround: [Perf] Do not listen for viewport update if nothing to render!
-				if (m_owner.ItemsSourceView?.Count <= 0)
-				{
-					return;
-				}
-
 				var parent = CachedVisualTreeHelpers.GetParent(m_owner);
 				while (parent != null)
 				{
@@ -582,14 +568,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_visibleWindow = currentVisibleWindow;
 			}
 
-			// Uno workaround [BEGIN]: For perf considerations, do not invalidate the tree on each viewport update
-			// (Viewport updates are quite frequent, this would cause lot of unnecessary layout pass which would impact scroll perf, especially on Android).
-			if (m_owner.Layout is VirtualizingLayout vl // If not a VirtualizingLayout, we actually don't have to re-measure items!
-				&& vl.IsSignificantViewportChange(_uno_viewportUsedInLastMeasure, m_visibleWindow))
-			// Uno workaround [END]
-			{
-				TryInvalidateMeasure();
-			}
+			TryInvalidateMeasure();
 		}
 
 		void ResetCacheBuffer()
