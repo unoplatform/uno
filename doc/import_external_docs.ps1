@@ -15,7 +15,7 @@ $external_docs = @{
     "figma-docs"         = "1fb802a63fdb337657147dfb679537ebf568f47f"
     "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
-    "uno.extensions"     = "918a38d45cd74d426564525bbab920f6dd9239d4"
+    "uno.extensions"     = "6e285df86e011efd5e1f78f8e98f3d3ffebbcd38"
     "workshops"          = "89f1d0678d01ca3225453afadc41150263abe54d"
 }
 
