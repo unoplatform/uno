@@ -51,7 +51,7 @@ namespace Uno.UI.Dispatching
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		internal static Action<Action> DispatchOverride;
 
-		partial void EnqueueNative()
+		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
 			if (typeof(NativeDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -77,7 +77,7 @@ namespace Uno.UI.Dispatching
 			}
 			else
 			{
-				DispatchOverride(() => DispatchItems());
+				DispatchOverride(() => DispatchItems(), priority);
 			}
 		}
 
