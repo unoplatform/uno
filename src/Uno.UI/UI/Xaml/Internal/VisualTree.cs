@@ -421,6 +421,10 @@ namespace Uno.UI.Xaml.Core
 
 				if (IsMainVisualTree())
 				{
+					UIElement rootVisual = RootVisual!;
+					rootVisual.IsLoaded = true;
+					rootVisual.HitTestVisibility = HitTestability.Visible;
+
 					root.Enter(enterParams);
 				}
 #endif
