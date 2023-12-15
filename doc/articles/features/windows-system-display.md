@@ -2,7 +2,7 @@
 uid: Uno.Features.WSDisplay
 ---
 
-# Windows.System.Display APIs
+# Keeping Screen On
 
 > [!TIP]
 > This article covers Uno-specific information for `Windows.System.Display` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system.display

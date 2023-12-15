@@ -26,9 +26,6 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## How to use Hot Reload
 
-> [!IMPORTANT]
-> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
-
 # [**Visual Studio 2022**](#tab/vswin)
 - Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
 - Start your application (with or without the debugger, depending on the supported features below)
@@ -39,8 +36,10 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 - Start the application (with or without the debugger, depending on the supported features below)
 - Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
 - Make changes to your XAML or C# code, then save your file
-
 ***
+
+> [!IMPORTANT]
+> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
 
 ## Supported features
 
@@ -59,11 +58,13 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
 - In Visual Studio Code:
   - Both C# and XAML Hot Reload are fully supported
   - Adding new C# or XAML files to the project is not yet supported
+  - Hot Reload is not supported when using the debugger
 - In Visual Studio for Windows:
   - Hot Reload is sensitive to Web Workers caching, which can cause errors like [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228), with a `BrowserConnectionException` error. In order to fix this:
     - Update to Uno.Wasm.Bootstrap 8.0.3 or later
     - Unregister any Web Worker associated to your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
+  - Hot Reload is not supported when using the debugger
 
 # [**iOS, Android Catalyst**](#tab/mobile)
 
@@ -117,6 +118,11 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
     ```
 
 ### Visual Studio 2022
+- Make sure that **C# Hot Reload** is not disabled in Visual studio
+  - Open Tools / Options
+  - Search for **.NET / C++ Hot Reload**
+  - Ensure that all three check boxes are checked (_**Enable hot reload when deugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_))
+- Hot Reload for WebAssembly is not supported when using the debugger. Start your app using `Ctrl+F5`.
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
@@ -126,6 +132,18 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 
 ### VS Code
 - The output window in Code has an output named "Uno Platform - Hot Reload" in its drop down. Diagnostics messages from the extension appear there.
+- Hot Reload for WebAssembly and Skia+GTK/WPF is not supported when using the debugger. Start your app using `Ctrl+F5`.
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
+- When working on Skia+Gtk apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Skia.Gtk (Debug)` target selected.
+
+## Next Steps
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
+ - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.

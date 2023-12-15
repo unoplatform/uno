@@ -12,7 +12,7 @@ You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/
 
 ## Publishing Uno Platform WebAssembly app on Azure
 Here is how to publish an app from GitHub, using Uno Platform:
--	In a new repository, create a Uno Platform app using the following command:
+-	In a new repository, create an Uno Platform app using the following command:
     ```
     cd <repository-name>
     dotnet new -i Uno.Templates

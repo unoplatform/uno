@@ -313,8 +313,8 @@ namespace Uno.UI.DataBinding
 							indexerParameterType = typeof(string);
 						}
 
-						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: false);
-						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: false);
+						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: allowPrivateMembers);
+						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: allowPrivateMembers);
 
 						if (indexerInfo != null)
 						{
@@ -327,7 +327,7 @@ namespace Uno.UI.DataBinding
 						}
 					}
 
-					var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: false);
+					var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: allowPrivateMembers);
 
 					if (propertyInfo != null)
 					{

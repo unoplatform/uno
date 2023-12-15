@@ -15,14 +15,14 @@ public static class TypeMappings
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
 	/// </summary>
-	private static IDictionary<Type, Type> AllMappedTypeToOrignalTypeMapings { get; } = new Dictionary<Type, Type>();
+	private static IDictionary<Type, Type> AllMappedTypeToOriginalTypeMappings { get; } = new Dictionary<Type, Type>();
 
 	/// <summary>
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
-	/// Similiar to AllMappedTypeToOrignalTypeMapings but doesn't update whilst hot reload is paused
+	/// Similiar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
 	/// </summary>
-	private static IDictionary<Type, Type> MappedTypeToOrignalTypeMapings { get; set; } = new Dictionary<Type, Type>();
+	private static IDictionary<Type, Type> MappedTypeToOriginalTypeMappings { get; set; } = new Dictionary<Type, Type>();
 
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
@@ -72,7 +72,7 @@ public static class TypeMappings
 		OriginalTypeToMappedType.TryGetValue(originalType, out var mappedType) ? mappedType : default;
 
 	internal static Type GetOriginalType(this Type mappedType) =>
-		MappedTypeToOrignalTypeMapings.TryGetValue(mappedType, out var originalType) ? originalType : default;
+		MappedTypeToOriginalTypeMappings.TryGetValue(mappedType, out var originalType) ? originalType : default;
 
 	internal static bool IsReplacedBy(this Type sourceType, Type mappedType)
 	{
@@ -90,11 +90,11 @@ public static class TypeMappings
 
 	internal static void RegisterMapping(Type mappedType, Type originalType)
 	{
-		AllMappedTypeToOrignalTypeMapings[mappedType] = originalType;
+		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
 		AllOriginalTypeToMappedType[originalType] = mappedType;
 		if (_mappingsPaused is null)
 		{
-			MappedTypeToOrignalTypeMapings[mappedType] = originalType;
+			MappedTypeToOriginalTypeMappings[mappedType] = originalType;
 			OriginalTypeToMappedType[originalType] = mappedType;
 		}
 	}
@@ -106,9 +106,9 @@ public static class TypeMappings
 	/// </summary>
 	internal static void ClearMappings()
 	{
-		MappedTypeToOrignalTypeMapings.Clear();
+		MappedTypeToOriginalTypeMappings.Clear();
 		OriginalTypeToMappedType.Clear();
-		AllMappedTypeToOrignalTypeMapings.Clear();
+		AllMappedTypeToOriginalTypeMappings.Clear();
 		AllOriginalTypeToMappedType.Clear();
 	}
 
@@ -121,9 +121,23 @@ public static class TypeMappings
 	/// </summary>
 	/// <returns>A task that will complete when type mapping collection
 	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active</returns>
+	/// is currently active.</returns>
+	[Obsolete("Use WaitForResume instead")]
 	public static Task WaitForMappingsToResume()
-		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.CompletedTask;
+		=> WaitForResume();
+
+	/// <summary>
+	/// Gets a Task that can be awaited to ensure type mappings
+	/// are being applied. This is useful particularly for testing 
+	/// HR the pause/resume function of type mappings
+	/// </summary>
+	/// <returns>A task that will complete when type mapping collection
+	/// has resumed. Returns a completed task if type mapping collection
+	/// is currently active
+	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
+	public static Task<bool> WaitForResume()
+		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
+
 
 	/// <summary>
 	/// Pause the collection of type mappings.
@@ -137,17 +151,27 @@ public static class TypeMappings
 	/// Resumes the collection of type mappings
 	/// If new types have been created whilst type mapping
 	/// was paused, those new mappings will be applied before
-	/// the WaitForMappingsToResume task completes
+	/// the WaitForResume task completes
 	/// </summary>
 	public static void Resume()
+		=> Resume(true);
+
+	/// <summary>
+	/// Resumes the collection of type mappings
+	/// If new types have been created whilst type mapping
+	/// was paused, those new mappings will be applied before
+	/// the WaitForResume task completes
+	/// </summary>
+	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
+	public static void Resume(bool updateLayout)
 	{
 		var completion = _mappingsPaused;
 		_mappingsPaused = null;
 		if (completion is not null)
 		{
-			MappedTypeToOrignalTypeMapings = AllMappedTypeToOrignalTypeMapings.ToDictionary(x => x.Key, x => x.Value);
+			MappedTypeToOriginalTypeMappings = AllMappedTypeToOriginalTypeMappings.ToDictionary(x => x.Key, x => x.Value);
 			OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
-			completion.TrySetResult(true);
+			completion.TrySetResult(updateLayout);
 		}
 	}
 }

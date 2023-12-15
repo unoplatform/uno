@@ -21,7 +21,7 @@ The SamplesApp from latest master branch for WebAssembly is available online: ht
 
 To run the SamplesApp locally:
 
-1. Ensure [your environment is configured](../get-started-vs.md) for the platform you want to run on.
+1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
 3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
 4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.

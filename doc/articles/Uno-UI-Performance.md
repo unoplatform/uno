@@ -4,22 +4,24 @@ uid: Uno.Development.Performance
 
 # Uno.UI - Performance
 
-This article lists a number of performance tips to optimize your Uno Platform application.
+This article lists various performance tips to optimize your Uno Platform application.
 
 Here's what to look for:
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
-- Force the size of images anywhere possible.
-- Collapsed elements are not considered when measuring and arranging the visual tree, which makes them almost costless. Consider `x:Load`` below for further optimizations.
-- When binding or animating (via visual state setters) the visibility property, make sure to enable lazy loading:
+- Force the size of images anywhere possible, using explicit `Width` and `Height` properties.
+- `Collapsed` elements are not considered when measuring and arranging the visual tree, which makes them almost costless. Consider `x:Load` below for further optimizations.
+- When binding or animating (via `VisualState.Setters`) the `Visibility` property, make sure to enable lazy loading:
 	`x:Load="False"`.
-- Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling to from true false effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
-- ListView and GridView
-	- Don't use template selectors inside the ItemTemplate, prefer using the ItemTemplateSelector on ListView/GridView.
-	- The default [ListViewItem and GridViewItem styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
-	- If items content frequently change (e.g. live data in TextBlock) on iOS and Android, ListView items rendering can require the use of the `not_win:AreDimensionsConstrained="True"` [uno-specific property](https://github.com/unoplatform/uno/blob/7355d66f77777b57c660133d5ec011caaa810e29/src/Uno.UI/UI/Xaml/FrameworkElement.cs#L86). This attribute prevents items in a list from requesting their parent to be re-measured when their properties change. It's safe to use the `AreDimensionsConstrained` property when items always have the same size regardless of bound data, and the items and list are stretched in the non-scrolling direction. If item sizes can change when the bound data changes (eg, if they contain bound text that can wrap over multiple lines, images of undetermined size, etc), or if the list is wrapped to the items, then you shouldn't set `AreDimensionsConstrained` because the list does need to remeasure itself when item data changes in that case.
+- Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling from `true` to `false` effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
+- `ListView` and `GridView`
+	- Don't use template selectors inside the ItemTemplate, prefer using the `ItemTemplateSelector` on `ListView`/`GridView`.
+	- The default [`ListViewItem` and `GridViewItem` styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature-rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
+	- If items content frequently change (e.g. live data in TextBlock) on iOS and Android, ListView items rendering can require the use of the `not_win:AreDimensionsConstrained="True"` [uno-specific property](https://github.com/unoplatform/uno/blob/7355d66f77777b57c660133d5ec011caaa810e29/src/Uno.UI/UI/Xaml/FrameworkElement.cs#L86). 
+		
+		This attribute prevents items in a list from requesting their parent to be re-measured when their properties change. It's safe to use the `AreDimensionsConstrained` property when items always have the same size regardless of bound data, and the items and list are stretched in the non-scrolling direction. If item sizes can change when the bound data changes (eg, if they contain bound text that can wrap over multiple lines, images of undetermined size, etc), or if the list is wrapped to the items, then you shouldn't set `AreDimensionsConstrained` because the list does need to remeasure itself when item data changes in that case.
 
-	  You'll need to set the property on the top-level element of your item templates, as follows:
+		You'll need to set the property on the top-level element of your item templates, as follows:
 		```xml
 		<ResourceDictionary xmlns:xamarin="http://uno.ui/xamarin" mc:Ignorable="d xamarin" ...>
 			<DataTemplate x:Key="MyTemplate">
@@ -57,9 +59,9 @@ Here's what to look for:
 	- Using `x:Bind` is generally faster as it involves less or no reflection.
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
-	- As of Uno 3.9, adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overridden to something else, ensure to set the DataContext before adding the control to its parent. This will avoid having bindings be refreshed twice needlessly.
+	- Adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overridden to something else, ensure to set the DataContext before adding the control to its parent. This will avoid having bindings be refreshed twice needlessly.
 	- Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
-		- When data binding to classes not inheriting from DependencyObject, in Debug configuration only, the following message may appear:
+		- When data binding to classes not inheriting from `DependencyObject`, in Debug configuration only, the following message may appear:
 			```
 			The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider.
 			Reflection was used instead of the binding engine and generated static metadata. Add the Bindable 	attribute to prevent this message and performance issues.
@@ -85,25 +87,42 @@ Here's what to look for:
     - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level `AppResources.xaml` or `App.xaml` resource dictionaries
 
 ## WebAssembly specifics
-- Building your application in Release configuration is critical to get the best performance.
+- Building your application in **Release** configuration is critical to get the best performance.
 - Make sure to use the latest stable release of [Uno.Wasm.Bootstrap packages](https://www.nuget.org/packages/Uno.Wasm.Bootstrap)
-- Enable [AOT or PG-AOT](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/runtime-execution-modes.html) to get the best performance.
-- When [recording a PG-AOT profile](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/runtime-execution-modes.html#profile-guided-aot), make sure to run through most of your application because saving the profile.
+- Enable [AOT or PG-AOT](xref:Uno.Wasm.Bootstrap.Runtime.Execution) to get the best performance.
+- Consider enabling the [`Jiterpreter`](xref:Uno.Wasm.Bootstrap.Runtime.Execution#jiterpreter-mode) mode for faster performance.
+- When [recording a PG-AOT profile](xref:Uno.Wasm.Bootstrap.Runtime.Execution#profile-guided-aot), make sure to run through most of your application before saving the profile.
 - Adjusting the GC configuration may be useful to limit the collection runs on large allocations. Add the following to your `csproj` file:
    	```xml
 	<ItemGroup>
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 	</ItemGroup>
    	```
-	You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics.
+	You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/en-us/xamarin/android/internals/garbage-collection#configuration) for more details.
 - The size of the application can be reduced by:
 	- Enabling the [IL Linker](features/using-il-linker-webassembly.md)
 	- Enabling [XAML Resources Trimming](features/resources-trimming.md)
 
+## Android specifics
+- Adjust the [GC configuration](https://learn.microsoft.com/en-us/xamarin/android/internals/garbage-collection#configuration) by modifying the `environment.conf` file with parameters matching your application
+- [Enable Startup Tracing](https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/#record-a-custom-aot-profile) by running the following:
+	```bash
+	dotnet add package Mono.AotProfiler.Android
+	dotnet build -t:BuildAndStartAotProfiling
+	# Wait until the app launches, then navigate around the most common screens
+	dotnet build -t:FinishAotProfiling
+	```
+	This will produce a `custom.aprof` in your project directory. Move the file to the `Android` folder and add the following to your `csproj`:
+	```
+	<ItemGroup>
+		<AndroidAotProfile Include="Android/custom.aprof" />
+	</ItemGroup>
+	```
+
 ## Advanced performance Tracing
 
 ### Profiling applications
-A profiling guide for Uno Platform apps is [available here](guides/profiling-applications.md).
+A profiling guide for Uno Platform apps is [available here](ref:Uno.Tutorials.ProfilingApplications).
 
 ### FrameworkTemplatePool
 The framework template pool manages the pooling of ControlTemplates and DataTemplates, and in most cases, the recycling of controls should be high.

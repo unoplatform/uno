@@ -220,13 +220,13 @@ namespace Windows.UI.Xaml.Controls
 			var core = DXamlCore.Current;
 			if (dependencyProperty == OnContentProperty)
 			{
-				var onString = core.GetLocalizedResourceString("ToggleSwitchOnContent");
+				var onString = core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_ON");
 				value = onString;
 				return true;
 			}
 			else if (dependencyProperty == OffContentProperty)
 			{
-				var offString = core.GetLocalizedResourceString("ToggleSwitchOffContent");
+				var offString = core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_OFF");
 				value = offString;
 				return true;
 			}

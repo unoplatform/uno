@@ -12,10 +12,10 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	[RunsOnUIThread]
 	public class Given_RadioButton
 	{
 		[TestMethod]
+		[RunsOnUIThread]
 		public void When_GroupName_Default_Property_Value()
 		{
 			var radioButton = new RadioButton();
@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void When_GroupName_Default_Dependency_Property_Value()
 		{
 			var radioButton = new RadioButton();
@@ -31,6 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void When_GroupName_Set_Null()
 		{
 			var radioButton = new RadioButton();
@@ -39,6 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_GroupName_Custom()
 		{
 			var radioButtonA1 = new RadioButton()
@@ -92,6 +95,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_GroupName_Custom_Two_Containers()
 		{
 			var radioButtonA1 = new RadioButton()
@@ -140,6 +144,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_GroupName_Empty()
 		{
 			var radioButtonA = new RadioButton()
@@ -195,6 +200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_GroupName_Empty_Two_Containers()
 		{
 			var radioButtonEmpty1 = new RadioButton()
@@ -243,6 +249,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_GroupName_Default()
 		{
 			var radioButtonA = new RadioButton()
@@ -295,6 +302,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_GroupName_Default_Two_Containers()
 		{
 			var radioButtonNull1 = new RadioButton();
@@ -349,38 +357,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_AutomationPeer_Toggle()
 		{
-			var radioButton = new RadioButton();
-
-			WindowHelper.WindowContent = radioButton;
+			RadioButton radioButton = null;
+			await RunOnUIThread(() =>
+			{
+				radioButton = new RadioButton();
+				WindowHelper.WindowContent = radioButton;
+			});
 
 			await WindowHelper.WaitForIdle();
 
+			// EventTester shouldn't run on UI thread as it will end up calling `this.CaptureScreenAsync("Before").Wait(this.Timeout)`
+			// If EventTester is run on UI thread, the Wait call is going to block the UI thread, but CaptureScreenAsync needs the UI thread to complete.
+			// So, it's going to timeout. Note that when the debugger is attached, Timeout is infinite.
 			using (var clickEvent = new EventTester<RadioButton, RoutedEventArgs>(radioButton, "Click"))
 			{
-				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton) as RadioButtonAutomationPeer;
-				peer.Toggle();
+				await RunOnUIThread(async () =>
+				{
+					var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton) as RadioButtonAutomationPeer;
+					peer.Toggle();
 
-				Assert.IsTrue(await clickEvent.WaitAsync(TimeSpan.FromSeconds(3)));
+					Assert.IsTrue(await clickEvent.WaitAsync(TimeSpan.FromSeconds(3)));
+				});
 			}
 		}
 
 		[TestMethod]
 		public async Task When_AutomationPeer_Toggle_With_Command()
 		{
-			var radioButton = new RadioButton();
-			var command = new TestCommand();
-			radioButton.Command = command;
-
-			WindowHelper.WindowContent = radioButton;
+			RadioButton radioButton = null;
+			TestCommand command = null;
+			await RunOnUIThread(() =>
+			{
+				radioButton = new RadioButton();
+				command = new TestCommand();
+				radioButton.Command = command;
+				WindowHelper.WindowContent = radioButton;
+			});
 
 			await WindowHelper.WaitForIdle();
 
+			// EventTester shouldn't run on UI thread as it will end up calling `this.CaptureScreenAsync("Before").Wait(this.Timeout)`
+			// If EventTester is run on UI thread, the Wait call is going to block the UI thread, but CaptureScreenAsync needs the UI thread to complete.
+			// So, it's going to timeout. Note that when the debugger is attached, Timeout is infinite.
 			using (var commandFired = new EventTester<TestCommand, EventArgs>(command, "CommandFired"))
 			{
-				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton) as RadioButtonAutomationPeer;
-				peer.Toggle();
+				await RunOnUIThread(async () =>
+				{
+					var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton) as RadioButtonAutomationPeer;
+					peer.Toggle();
 
-				Assert.IsTrue(await commandFired.WaitAsync(TimeSpan.FromSeconds(3)));
+					Assert.IsTrue(await commandFired.WaitAsync(TimeSpan.FromSeconds(3)));
+				});
 			}
 		}
 	}

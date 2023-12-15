@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 
 
@@ -392,6 +393,126 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_SelectedItem_Set_Before_ItemsSource()
+		{
+			var SUT = new ComboBox();
+			var items = Enumerable.Range(0, 10);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+
+			SUT.ItemsSource = items;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectedItem);
+		}
+
+		[TestMethod]
+		public async Task When_SelectedItem_Set_Then_SelectedIndex_Then_ItemsSource()
+		{
+			var SUT = new ComboBox();
+			var items = Enumerable.Range(0, 10);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 3;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.ItemsSource = items;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(5, SUT.SelectedItem);
+			Assert.AreEqual(5, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		public async Task When_Tabbed()
+		{
+			var SUT = new ComboBox
+			{
+				Items =
+				{
+					new ComboBoxItem { Content = new TextBox { Text = "item1" } },
+					new ComboBoxItem { Content = new TextBox { Text = "item2" } }
+				}
+			};
+			var btn = new Button();
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT,
+					btn
+				}
+			};
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
+		}
+
+		[TestMethod]
+		public async Task When_Popup_Open_Tabbed()
+		{
+			var SUT = new ComboBox
+			{
+				Items =
+				{
+					new ComboBoxItem { Content = new TextBox { Text = "item1" } },
+					new ComboBoxItem { Content = new TextBox { Text = "item2" } }
+				}
+			};
+			var btn = new Button();
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT,
+					btn
+				}
+			};
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			KeyboardHelper.Space();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.IsDropDownOpen);
+			Assert.IsTrue(FocusManager.GetFocusedElement(SUT.XamlRoot) is ComboBoxItem);
+
+			KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsDropDownOpen);
+			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
 		}
 
 		[TestMethod]

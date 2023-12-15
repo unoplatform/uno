@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
 
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Controls;
@@ -272,7 +272,14 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
+#if __ANDROID__ || __IOS__ || __MACOS__
+			var child = this.FindFirstChild();
+			return child is not null && child is not UIElement
+				? MeasureElement(child, availableSize)
+				: new Size(0, 0);
+#else
 			return default;
+#endif
 		}
 
 		/// <summary>
@@ -282,6 +289,13 @@ namespace Windows.UI.Xaml
 		/// <returns>The actual size that is used after the element is arranged in layout.</returns>
 		protected virtual Size ArrangeOverride(Size finalSize)
 		{
+#if __ANDROID__ || __IOS__ || __MACOS__
+			var child = this.FindFirstChild();
+			if (child is not null && child is not UIElement)
+			{
+				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+			}
+#endif
 			return finalSize;
 		}
 

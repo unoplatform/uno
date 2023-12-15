@@ -483,6 +483,20 @@ namespace SampleControl.Presentation
 			}
 
 			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			if (!Equals(SelectedLibrarySample, runtimeTests))
+			{
+				SelectedLibrarySample = null;
+			}
+
+			if (!Equals(SelectedRecentSample, runtimeTests))
+			{
+				SelectedRecentSample = null;
+			}
+
+			if (!Equals(SelectedFavoriteSample, runtimeTests))
+			{
+				SelectedFavoriteSample = null;
+			}
 			ContentPhone = content;
 		}
 
@@ -522,10 +536,9 @@ namespace SampleControl.Presentation
 					_ = RunOnUIThreadAsync(
 						async () =>
 						{
-							CurrentSelectedSample = newContent;
-
-							if (CurrentSelectedSample != null)
+							if (newContent != null)
 							{
+								CurrentSelectedSample = newContent;
 								ContentPhone = await UpdateContent(CancellationToken.None, newContent);
 							}
 						}
@@ -617,6 +630,13 @@ namespace SampleControl.Presentation
 			return starts.Concat(contains).ToList();
 		}
 
+		public void TryOpenSample()
+		{
+			if (FilteredSamples.Count is 1)
+			{
+				SelectedSearchSample = FilteredSamples[0];
+			}
+		}
 
 		/// <summary>
 		/// This method is used to get the list of samplechoosercontent that is present in the settings.

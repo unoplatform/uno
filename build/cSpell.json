@@ -89,6 +89,7 @@
   ],
   "ignoreWords": [
 	"ADAL",
+	"AEHD",
 	"appsettings",
 	"Authenticode",
 	"automagically",
@@ -108,10 +109,12 @@
 	"Krueger",
 	"libgtk",
 	"Liu's",
+	"macios",
 	"Matteo",
 	"McCaffrey",
 	"mdpi",
 	"Mergify",
+	"mlaunch",
 	"netstd",
 	"nventive",
 	"odel",
@@ -133,7 +136,8 @@
 	"addin",
 	"Yowza",
 	"unpackaged",
-	"GNSS"
+	"GNSS",
+	"winappsdk"
   ],
   "patterns": [
 	{

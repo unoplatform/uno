@@ -332,7 +332,7 @@ public partial class UIElement : DependencyObject
 
 	partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 	{
-		if (newMode is ManipulationModes.None or ManipulationModes.System)
+		if (newMode == ManipulationModes.System)
 		{
 			ResetStyle("touch-action");
 		}

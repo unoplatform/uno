@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -12,16 +10,49 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
+
+#if __SKIA__
+using SkiaSharp;
+using Windows.UI.Xaml.Documents.TextFormatting;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+#if __SKIA__
 		[TestMethod]
-		[RunsOnUIThread]
+		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
+		[Ignore("Fails on CI")]
+		public async Task Check_FontFallback()
+		{
+			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStyle).SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
+
+			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
+
+			await UITestHelper.Load(SUT);
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
+			var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
+			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
+
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
+		}
+#endif
+
+		[TestMethod]
 		public async Task Check_TextDecorations_Binding()
 		{
 			var SUT = new TextDecorationsBinding();
@@ -36,7 +67,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure()
 		{
 			var SUT = new TextBlock { Text = "Some text" };
@@ -53,7 +83,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure_Collapsed()
 		{
 			var SUT = new TextBlock { Text = "Some text", Visibility = Visibility.Collapsed };
@@ -67,7 +96,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void Check_Text_When_Having_Inline_Text_In_Span()
 		{
 			var SUT = new InlineTextInSpan();
@@ -81,7 +109,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_Null_FontFamily()
 		{
 			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
@@ -90,7 +117,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
 #if __MACOS__
@@ -119,7 +145,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[Ignore("Fails")]
 		public async Task When_Text_Ends_In_Return()
 		{
@@ -141,7 +166,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_Inlines_XamlRoot()
 		{
 			var SUT = new InlineTextInSpan();
@@ -156,7 +180,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -191,7 +214,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -226,7 +248,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
 #endif
@@ -259,7 +280,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -284,7 +304,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
 		{
 			var container = new Grid()
@@ -306,7 +325,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__IOS__ // Line height is not supported on iOS
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
 		{
 			var container = new Grid()
@@ -328,7 +346,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Empty_TextBlocks_Stacked()
 		{
 			var container = new StackPanel();

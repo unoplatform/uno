@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.System;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 
 #if __ANDROID__
 using Android.Views;
@@ -488,14 +489,18 @@ namespace Windows.UI.Xaml.Controls
 				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
+
+				var index = SelectedIndex;
+				index = index == -1 ? 0 : index;
+				if (ContainerFromIndex(index) is ComboBoxItem container)
+				{
+					container.Focus(FocusState.Programmatic);
+				}
 			}
 			else
 			{
 				OnDropDownClosed(args);
 				UpdateContentPresenter();
-
-				// Focus moves to ComboBox after item is selected.
-				Focus(FocusState.Programmatic);
 			}
 
 			UpdateDropDownState();
@@ -594,6 +599,31 @@ namespace Windows.UI.Xaml.Controls
 						SelectedIndex = SelectedIndex - 1;
 						return true;
 					}
+				}
+			}
+			else if (args.Key == VirtualKey.Tab)
+			{
+				var dropDownWasOpen = IsDropDownOpen;
+				if (_popup is { } p)
+				{
+					p.IsOpen = false;
+				}
+				// Don't handle. Let VisualTree.RootElement deal with focus management
+
+				if (dropDownWasOpen)
+				{
+					var focusManager = VisualTree.GetFocusManagerForElement(this);
+
+					// Set the focus on the next focusable element if Tab was pressed while the Popup is open.
+					// In this case, we got here through ComboBoxItem which is inside the Popup.
+					// Focus management would normally be dealt with at the VisualTree.RootElement level (UnoFocusInputManager), but because
+					// the Popup collapsed, the PopupPanel was removed from the visual tree and event propagation won't go up that far.
+					// Alternatively, we handle the focus here.
+					focusManager?.TryMoveFocusInstance(
+						args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift) ?
+						FocusNavigationDirection.Previous :
+						FocusNavigationDirection.Next
+					);
 				}
 			}
 			return false;

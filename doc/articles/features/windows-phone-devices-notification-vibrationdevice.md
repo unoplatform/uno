@@ -2,7 +2,7 @@
 uid: Uno.Features.WPDNotification
 ---
 
-# Windows.Phone.Devices.Notification APIs
+# Vibration
 
 > [!TIP]
 > This article covers Uno-specific information for `Windows.Phone.Devices.Notification` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.phone.devices.notification

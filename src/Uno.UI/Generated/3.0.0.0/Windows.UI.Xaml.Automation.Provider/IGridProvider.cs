@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Provider
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IGridProvider
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		int ColumnCount
 		{
 			get;
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		int RowCount
 		{
 			get;
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IGridProvider.ColumnCount.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IGridProvider.RowCount.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple GetItem(int row, int column);
 #endif
 	}

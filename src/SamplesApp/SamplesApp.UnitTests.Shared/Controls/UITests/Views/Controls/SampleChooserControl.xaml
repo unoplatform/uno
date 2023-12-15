@@ -183,6 +183,7 @@
 
 					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 							 Style="{StaticResource SearchTextBoxStyle}"
+							 KeyDown="OnSearchEnterKey_KeyDown"
 							 PlaceholderText="Search"
 							 Margin="8" />
 
