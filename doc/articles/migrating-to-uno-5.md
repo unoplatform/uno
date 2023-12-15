@@ -54,7 +54,7 @@ Note that Hot Reload has changed to be based on C#, which means that changes don
 - If you are building on windows and experience the compilation error NETSDK1083 when retargetting your library from net7.0 to net8.0, add the following to the `csproj`:
     ```xml
     <PropertyGroup>
-        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
     </PropertyGroup>
     ```
 
