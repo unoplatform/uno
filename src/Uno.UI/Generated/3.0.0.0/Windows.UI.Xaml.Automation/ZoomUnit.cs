@@ -3,22 +3,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	public enum ZoomUnit
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		NoAmount = 0,
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		LargeDecrement = 1,
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		SmallDecrement = 2,
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		LargeIncrement = 3,
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		SmallIncrement = 4,
 #endif
 	}

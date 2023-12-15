@@ -75,10 +75,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 
-		// Determines if the source generator will skip the inclusion of UseControls in the
-		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private readonly bool _skipUserControlsInVisualTree;
-
 		/// <summary>
 		/// Exists for compatibility only. This option should be removed in Uno 6 and fuzzy matching should be disabled.
 		/// </summary>
@@ -131,7 +127,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> FontWeightsSymbol { get; }
 		internal Lazy<INamedTypeSymbol> SolidColorBrushHelperSymbol { get; }
 		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
-		internal Lazy<INamedTypeSymbol> UserControlSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> NativePageSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ApplicationSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
@@ -191,11 +186,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 
 			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoSkipUserControlsInVisualTree"), out var skipUserControlsInVisualTree))
-			{
-				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
-			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out _shouldWriteErrorOnInvalidXaml))
 			{
@@ -301,7 +291,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
 			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
-			UserControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UserControl);
 			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
 			ApplicationSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Application);
 			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
@@ -454,7 +443,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						isHotReloadEnabled: _isHotReloadEnabled,
 						isInsideMainAssembly: isInsideMainAssembly,
 						isDesignTimeBuild: _isDesignTimeBuild,
-						skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 						shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
 						isUnoAssembly: IsUnoAssembly,
 						isUnoFluentAssembly: IsUnoFluentAssembly,

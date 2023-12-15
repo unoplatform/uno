@@ -7,12 +7,13 @@ using SampleControl.Presentation;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml.Input;
+
 #if NETFX_CORE
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 #elif XAMARIN || UNO_REFERENCE_API
@@ -52,6 +53,14 @@ namespace Uno.UI.Samples.Controls
 				Assert.Fail("Initial Arrange should not be called with empty size");
 			}
 			return base.ArrangeOverride(availableSize);
+		}
+
+		private void OnSearchEnterKey_KeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			if (e.Key == Windows.System.VirtualKey.Enter)
+			{
+				((SampleChooserViewModel)DataContext).TryOpenSample();
+			}
 		}
 	}
 }

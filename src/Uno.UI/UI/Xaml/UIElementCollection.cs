@@ -57,10 +57,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Add(UIElement item)
 		{
-			if (item is IDependencyObjectStoreProvider provider)
-			{
-				item.SetParent(_owner);
-			}
+			item.SetParent(_owner);
 
 			AddCore(item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));

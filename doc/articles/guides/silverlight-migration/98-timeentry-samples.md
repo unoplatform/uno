@@ -88,11 +88,11 @@ The **TimeEntryRia** sample is a Visual Studio 2015 solution and is, of course, 
 1. Scroll to the bottom of the **Web.Config** file to locate the connection string. Update as required.
 
 ```xml
-    <connectionStrings>
-        <add name="TimeEntryEntities"
-             connectionString="metadata=res://*/TimeEntryModel.csdl|res://*/TimeEntryModel.ssdl|res://*/TimeEntryModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=.\SQLEXPRESS;initial catalog=TimeEntry;integrated security=True;multipleactiveresultsets=True;App=EntityFramework&quot;"
-             providerName="System.Data.EntityClient" />
-    </connectionStrings>
+<connectionStrings>
+    <add name="TimeEntryEntities"
+         connectionString="metadata=res://*/TimeEntryModel.csdl|res://*/TimeEntryModel.ssdl|res://*/TimeEntryModel.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=.\SQLEXPRESS;initial catalog=TimeEntry;integrated security=True;multipleactiveresultsets=True;App=EntityFramework&quot;"
+         providerName="System.Data.EntityClient" />
+</connectionStrings>
 ```
 
 ### Running the Silverlight sample

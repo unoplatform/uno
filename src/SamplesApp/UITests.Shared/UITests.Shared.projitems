@@ -614,6 +614,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePicker_DuplicateFile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FolderPickerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -779,6 +783,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\ScrollHandled.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Pointer_Coordinates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1279,6 +1287,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Foreground.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4442,6 +4454,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Canvas_DependentAnimation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimationUsingKeyFrames_Fill.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5676,6 +5692,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePickerTests.xaml.cs">
       <DependentUpon>FileSavePickerTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FileSavePicker_DuplicateFile.xaml.cs">
+      <DependentUpon>FileSavePicker_DuplicateFile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Storage\Pickers\FolderPickerTests.xaml.cs">
       <DependentUpon>FolderPickerTests.xaml</DependentUpon>
     </Compile>
@@ -5793,6 +5812,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\ScrollHandled.xaml.cs">
       <DependentUpon>ScrollHandled.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\Pointer_Coordinates.xaml.cs">
+      <DependentUpon>Pointer_Coordinates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\ScrollViewer_PointerMoved.xaml.cs">
       <DependentUpon>ScrollViewer_PointerMoved.xaml</DependentUpon>
     </Compile>
@@ -5851,6 +5873,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElement_Clipping.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_SoftKeboard.xaml.cs">
       <DependentUpon>AutoSuggestBox_SoftKeboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Foreground.xaml.cs">
+      <DependentUpon>BitmapIcon_Foreground.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Monochromatic.xaml.cs">
       <DependentUpon>BitmapIcon_Monochromatic.xaml</DependentUpon>
@@ -7852,6 +7877,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations.xaml.cs">
       <DependentUpon>BeginTime_MultipleAnimations.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\Canvas_DependentAnimation.xaml.cs">
+      <DependentUpon>Canvas_DependentAnimation.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimationUsingKeyFrames_Fill.xaml.cs">
       <DependentUpon>ColorAnimationUsingKeyFrames_Fill.xaml</DependentUpon>

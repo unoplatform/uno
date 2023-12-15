@@ -9,6 +9,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 using System.Diagnostics;
 using System.Globalization;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -399,10 +400,12 @@ namespace Windows.UI.Xaml.Media.Animation
 				if (boundProperty != null)
 				{
 					//https://msdn.microsoft.com/en-uS/office/office365/jj819807.aspx#dependent
-					//TODO Projection, Clip, Canvas.Left or Canvas.Top
+					//TODO Projection, Clip
 
 					if (boundProperty.PropertyName.EndsWith("Opacity", StringComparison.Ordinal)
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
+						|| boundProperty.PropertyName.Equals("Windows.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
+						|| boundProperty.PropertyName.Equals("Windows.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
 						|| (boundProperty.DataContext is Transform transform && transform.View != null)
 					)
 					{

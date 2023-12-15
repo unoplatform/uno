@@ -32,7 +32,6 @@ public static class UITestHelper
 	{
 		TestServices.WindowHelper.WindowContent = element;
 		await TestServices.WindowHelper.WaitForLoaded(element);
-		element.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return element.GetAbsoluteBounds();

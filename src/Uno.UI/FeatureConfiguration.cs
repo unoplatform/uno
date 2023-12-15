@@ -160,11 +160,6 @@ namespace Uno.UI
 			/// instead of weak references for some highly used fields, in common cases to improve the
 			/// overall performance.
 			/// </summary>
-			/// <remarks>
-			/// This feature is disabled on WebAssembly as it reveals or creates a memory corruption issue
-			/// in the garbage collector. This can be revisited when upgrading tests to .NET 5+.
-			/// See https://github.com/unoplatform/uno/issues/4730 for details.
-			/// </remarks>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
 				= true;
 		}
@@ -661,6 +656,11 @@ namespace Uno.UI
 			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
 			/// </summary>
 			public static bool DisablePointersSpecificEventPrevention { get; set; }
+
+			/// <summary>
+			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
+			/// </summary>
+			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
 		public static class VisualState

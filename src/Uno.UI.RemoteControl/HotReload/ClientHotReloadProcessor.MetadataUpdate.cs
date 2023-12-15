@@ -57,29 +57,35 @@ partial class ClientHotReloadProcessor
 		}
 		try
 		{
-			await TypeMappings.WaitForMappingsToResume();
+			var waiter = TypeMappings.WaitForResume();
+			if (!waiter.IsCompleted)
+			{
+				return false;
+			}
+			return await waiter;
 		}
 		finally
 		{
 			Interlocked.Exchange(ref _isReloading, 0);
 		}
-		return true;
 	}
 
 	internal static Window? CurrentWindow { get; set; }
 
 	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
 	{
-		if (!await ShouldReload())
-		{
-			return;
-		}
+		var handlerActions = ElementAgent?.ElementHandlerActions;
 
+		var uiUpdating = true;
 		try
 		{
-			UpdateGlobalResources(updatedTypes);
+			if (!await ShouldReload())
+			{
+				uiUpdating = false;
+				return;
+			}
 
-			var handlerActions = ElementAgent?.ElementHandlerActions;
+			UpdateGlobalResources(updatedTypes);
 
 			// Action: BeforeVisualTreeUpdate
 			// This is called before the visual tree is updated
@@ -179,7 +185,13 @@ partial class ClientHotReloadProcessor
 			{
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
 			}
+			uiUpdating = false;
 			throw;
+		}
+		finally
+		{
+			// Action: ReloadCompleted
+			_ = handlerActions?.Do(h => h.Value.ReloadCompleted(updatedTypes, uiUpdating)).ToArray();
 		}
 	}
 

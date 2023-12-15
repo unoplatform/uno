@@ -13,7 +13,7 @@ Despite the last version of Silverlight 5 being released back in 2011, the platf
 * Silverlight plugin runs in Internet Explorer 10 and 11 only
 * No macOS browser support
 
-If you maintain one of these Silverlight applications, it is time to consider migrating to a supported platform. For those that wish to continue with XAML and C#, the Uno Platform is a natural choice for continuing the delivery of such applications on Windows, iOS, Android, and WebAssembly.
+If you maintain one of these Silverlight applications, it is time to consider migrating to a supported platform. For those that wish to continue with XAML and/or C#, the Uno Platform is a natural choice for continuing the delivery of such applications on Windows, iOS, Android, and WebAssembly.
 
 > [!TIP]
 > You can learn more about the Uno Platform [here](https://platform.uno/docs/articles/intro.html).

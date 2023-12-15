@@ -78,7 +78,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			internal void SetWeakDataContext(ManagedWeakReference? weakDataContext, bool transferReferenceOwnership = false)
+			internal void SetWeakDataContext(ManagedWeakReference? weakDataContext)
 			{
 				var previousStorage = _dataContextWeakStorage;
 

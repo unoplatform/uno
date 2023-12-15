@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AutomationElementIdentifiers
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		internal AutomationElementIdentifiers()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty BoundingRectangleProperty
 		{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty HasKeyboardFocusProperty
 		{
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty HelpTextProperty
 		{
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsContentElementProperty
 		{
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsControlElementProperty
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsEnabledProperty
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsKeyboardFocusableProperty
 		{
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsOffscreenProperty
 		{
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsPasswordProperty
 		{
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsRequiredForFormProperty
 		{
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty ItemStatusProperty
 		{
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty ItemTypeProperty
 		{
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty LabeledByProperty
 		{
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty LiveSettingProperty
 		{
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty LocalizedControlTypeProperty
 		{
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty NameProperty
 		{
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty AcceleratorKeyProperty
 		{
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty AccessKeyProperty
 		{
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty AutomationIdProperty
 		{
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty OrientationProperty
 		{
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty ClassNameProperty
 		{
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty ClickablePointProperty
 		{
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty ControlTypeProperty
 		{
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty ControlledPeersProperty
 		{
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty AnnotationsProperty
 		{
@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty LevelProperty
 		{
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty PositionInSetProperty
 		{
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty SizeOfSetProperty
 		{
@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty LandmarkTypeProperty
 		{
@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty LocalizedLandmarkTypeProperty
 		{
@@ -313,7 +313,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty DescribedByProperty
 		{
@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty FlowsFromProperty
 		{
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty FlowsToProperty
 		{
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty FullDescriptionProperty
 		{
@@ -353,7 +353,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsDataValidForFormProperty
 		{
@@ -363,7 +363,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsPeripheralProperty
 		{
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty CultureProperty
 		{
@@ -383,7 +383,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty HeadingLevelProperty
 		{
@@ -393,7 +393,7 @@ namespace Windows.UI.Xaml.Automation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty IsDialogProperty
 		{

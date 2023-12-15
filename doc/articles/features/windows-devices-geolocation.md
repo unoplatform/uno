@@ -2,7 +2,12 @@
 uid: Uno.Features.WDGeolocation
 ---
 
-# Uno Support for Windows.Devices.Geolocation
+# Geolocation
+
+> [!TIP]
+> This article covers Uno-specific information for Geolocation. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.devices.geolocation
+
+* The `Windows.Devices.Geolocation.Geolocator` provides APIs for getting the current location or tracking the device's location over time. Location information may come from estimating a position from beacons like Wi-Fi access points and cell towers, from the device's IP address, or may come from other sources such as a GNSS or GPS device.
 
 ## `Geolocator`
 

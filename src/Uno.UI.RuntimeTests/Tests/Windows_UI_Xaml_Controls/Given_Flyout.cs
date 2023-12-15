@@ -1562,6 +1562,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Unbound_FullFlyout()
+		{
+			var host = new Button
+			{
+				Content = "Asd",
+				Flyout = new Flyout
+				{
+					Placement = FlyoutPlacementMode.Full,
+					FlyoutPresenterStyle = new Style
+					{
+						TargetType = typeof(FlyoutPresenter),
+						Setters =
+						{
+							// style reset
+							new Setter(FlyoutPresenter.MarginProperty, new Thickness(0)),
+							new Setter(FlyoutPresenter.PaddingProperty, new Thickness(0)),
+							new Setter(FlyoutPresenter.BorderThicknessProperty, new Thickness(0)),
+
+							// remove limit from default style
+							new Setter(FlyoutPresenter.MaxWidthProperty, double.NaN),
+							new Setter(FlyoutPresenter.MaxHeightProperty, double.NaN),
+
+							// full stretch
+							new Setter(FlyoutPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch),
+							new Setter(FlyoutPresenter.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch),
+							new Setter(FlyoutPresenter.VerticalAlignmentProperty, VerticalAlignment.Stretch),
+							new Setter(FlyoutPresenter.VerticalContentAlignmentProperty, VerticalAlignment.Stretch),
+						}
+					},
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.SkyBlue),
+						Child = new TextBlock { Text = "Asd" },
+					},
+				},
+			};
+
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			try
+			{
+				host.Flyout.ShowAt(host);
+
+				bool AnyPopupIsOpen() => VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).Any();
+				await TestServices.WindowHelper.WaitFor(AnyPopupIsOpen, message: "Timeout waiting on flyout to open");
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).LastOrDefault();
+				var presenter = popup.Child as FlyoutPresenter;
+				await TestServices.WindowHelper.WaitForLoaded(presenter);
+
+				var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+				Assert.IsTrue(
+					presenter.ActualWidth >= bounds.Width && presenter.ActualHeight >= bounds.Height,
+					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, VisibleBounds={bounds.Width}x{bounds.Height}");
+			}
+			finally
+			{
+				host.Flyout.Hide();
+			}
+		}
+
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();

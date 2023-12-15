@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ExpanderAutomationPeer.cpp, tag winui3/release/1.4.2
+
+using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
@@ -14,6 +19,8 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider
 {
+	private const string s_ExpanderToggleButtonName = "ExpanderToggleButton";
+
 	/// <summary>
 	/// Initializes a new instance of the ExpanderAutomationPeer class.
 	/// </summary>
@@ -40,24 +47,45 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Group;
 
-	protected override bool HasKeyboardFocusCore()
+	private AutomationPeer GetExpanderToggleButtonPeer()
 	{
 		// We are not going to call the overriden one because that one doesn't have the toggle button.
 		var childrenPeers = base.GetChildrenCore();
+		// 	auto childrenPeers = GetInner().as<winrt::IAutomationPeerOverrides>().GetChildrenCore();
 
 		foreach (var peer in childrenPeers)
 		{
-			if (peer.GetAutomationId() == "ExpanderToggleButton")
+			if (peer.GetAutomationId() == s_ExpanderToggleButtonName)
 			{
-				// Since the EventsSource of the toggle button
-				// is the same as the expander's, we need to
-				// redirect the focus of the expander and base it on the toggle button's.
-				return peer.HasKeyboardFocus();
+				return peer;
 			}
+		}
+
+		return null;
+	}
+
+	protected override bool HasKeyboardFocusCore()
+	{
+		if (GetExpanderToggleButtonPeer() is { } toggleButtonPeer)
+		{
+			// Since the EventsSource of the toggle button
+			// is the same as the expander's, we need to
+			// redirect the focus of the expander and base it on the toggle button's.
+			return toggleButtonPeer.HasKeyboardFocus();
 		}
 
 		// If the toggle button doesn't have the current focus, then
 		// the expander's not focused.
+		return false;
+	}
+
+	protected override bool IsKeyboardFocusableCore()
+	{
+		if (GetExpanderToggleButtonPeer() is { } toggleButtonPeer)
+		{
+			return toggleButtonPeer.IsKeyboardFocusable();
+		}
+
 		return false;
 	}
 
@@ -68,18 +96,15 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 	{
 		var childrenPeers = base.GetChildrenCore();
 
-		foreach (var peer in childrenPeers)
+		if (GetExpanderToggleButtonPeer() is { } toggleButtonPeer)
 		{
-			if (peer.GetAutomationId() == "ExpanderToggleButton")
-			{
-				var frameworkElementPeer = peer as FrameworkElementAutomationPeer;
-				var toggleButton = frameworkElementPeer.Owner as ToggleButton;
-				toggleButton?.Focus(FocusState.Programmatic);
-				return peer;
-			}
+			var frameworkElementPeer = toggleButtonPeer as FrameworkElementAutomationPeer;
+			var toggleButton = frameworkElementPeer?.Owner as ToggleButton;
+			toggleButton?.Focus(FocusState.Programmatic);
+			return toggleButtonPeer;
 		}
 
-		return base.GetPeerFromPointCore(point);
+		return GetPeerFromPointCore(point);
 	}
 
 	// We are going to take out the toggle button off the children, because we are setting
@@ -91,7 +116,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 		var peers = new List<AutomationPeer>(childrenPeers.Count - 1);
 		foreach (var peer in childrenPeers)
 		{
-			if (peer.GetAutomationId() != "ExpanderToggleButton")
+			if (peer.GetAutomationId() != s_ExpanderToggleButtonName)
 			{
 				peers.Add(peer);
 			}
@@ -111,6 +136,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 
 	// IExpandCollapseProvider
 
+	//Uno Doc:
 	/// <summary>
 	/// Gets the value of the Expander.IsExpanded property and returns
 	/// whether the Expander is currently expanded or collapsed.
@@ -159,21 +185,19 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 	internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
 	{
 		// Uno Doc: AutomationEvents not currently implemented so added an API check
+		// if (winrt::AutomationPeer::ListenerExists(winrt::AutomationEvents::PropertyChanged))
 		if (ApiInformation.IsEnumNamedValuePresent(
 			"Windows.UI.Xaml.Automation.Peers.AutomationEvents",
-			nameof(AutomationEvents.PropertyChanged)))
+			nameof(AutomationEvents.PropertyChanged)) && ListenerExists(AutomationEvents.PropertyChanged))
 		{
-			if (ListenerExists(AutomationEvents.PropertyChanged))
-			{
-				ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?
-					ExpandCollapseState.Collapsed :
-					ExpandCollapseState.Expanded;
+			ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?
+				ExpandCollapseState.Collapsed :
+				ExpandCollapseState.Expanded;
 
-				// if box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator unbox it.
-				RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
-					oldState,
-					newState);
-			}
+			// if box_value(oldState) doesn't work here, use ReferenceWithABIRuntimeClassName to make Narrator unbox it.
+			RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
+				oldState,
+				newState);
 		}
 	}
 }

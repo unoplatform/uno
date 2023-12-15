@@ -7661,37 +7661,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeView.xaml-->
-  <DataTemplate x:Key="TreeViewItemDataTemplate">
-    <Grid Height="44">
-      <TextBlock Text="{Binding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
-    </Grid>
-  </DataTemplate>
-  <Style TargetType="controls:TreeView" BasedOn="{StaticResource DefaultTreeViewStyle}" />
-  <Style x:Key="DefaultTreeViewStyle" TargetType="controls:TreeView">
-    <Setter Property="IsTabStop" Value="False" />
-    <Setter Property="CanDragItems" Value="True" />
-    <Setter Property="CanReorderItems" Value="True" />
-    <Setter Property="AllowDrop" Value="True" />
-    <Setter Property="ItemContainerTransitions">
-      <Setter.Value>
-        <TransitionCollection>
-          <ContentThemeTransition />
-          <ReorderThemeTransition />
-          <EntranceThemeTransition IsStaggeringEnabled="False" />
-        </TransitionCollection>
-      </Setter.Value>
-    </Setter>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="controls:TreeView">
-          <controls:TreeViewList x:Name="ListControl" Background="{TemplateBinding Background}" ItemTemplate="{TemplateBinding ItemTemplate}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}" ItemContainerTransitions="{TemplateBinding ItemContainerTransitions}" CanDragItems="{TemplateBinding CanDragItems}" AllowDrop="{TemplateBinding AllowDrop}" CanReorderItems="{TemplateBinding CanReorderItems}" />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
-  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeViewItem.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeViewItem_v1.xaml-->
   <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource ListViewItemExpanded}" x:Key="MUX_TreeViewItemStyle">
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}" />
@@ -7816,7 +7786,37 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeView_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeView_themeresources_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\TreeView\TreeView_v1.xaml-->
+  <DataTemplate x:Key="TreeViewItemDataTemplate">
+    <Grid Height="44">
+      <TextBlock Text="{Binding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
+    </Grid>
+  </DataTemplate>
+  <Style TargetType="controls:TreeView" BasedOn="{StaticResource DefaultTreeViewStyle}" />
+  <Style x:Key="DefaultTreeViewStyle" TargetType="controls:TreeView">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="CanDragItems" Value="True" />
+    <Setter Property="CanReorderItems" Value="True" />
+    <Setter Property="AllowDrop" Value="True" />
+    <Setter Property="ItemContainerTransitions">
+      <Setter.Value>
+        <TransitionCollection>
+          <ContentThemeTransition />
+          <ReorderThemeTransition />
+          <EntranceThemeTransition IsStaggeringEnabled="False" />
+        </TransitionCollection>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:TreeView">
+          <controls:TreeViewList x:Name="ListControl" Background="{TemplateBinding Background}" ItemTemplate="{TemplateBinding ItemTemplate}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}" ItemContainerTransitions="{TemplateBinding ItemContainerTransitions}" CanDragItems="{TemplateBinding CanDragItems}" AllowDrop="{TemplateBinding AllowDrop}" CanReorderItems="{TemplateBinding CanReorderItems}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
   <!--origin: Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml-->
   <!--origin: Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_v1.xaml-->
   <Style x:Key="DefaultTwoPaneViewStyle" TargetType="controls:TwoPaneView">

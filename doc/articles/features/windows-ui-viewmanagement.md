@@ -2,7 +2,13 @@
 uid: Uno.Features.WinUIViewManagement
 ---
 
-# Uno Support for Windows.UI.ViewManagement
+# View Management
+
+> [!TIP]
+> This article covers Uno-specific information for `Windows.UI.ViewManagement` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.ui.viewmanagement
+
+ * The `Windows.UI.ViewManagement.ApplicationViewTitleBar` class allows working with the title bar of the application window.
+ * The `Windows.UI.ViewManagement.UISettings` class allows retrieving the current system visual settings.
 
 ## `ApplicationViewTitleBar`
 
@@ -16,8 +22,6 @@ This functionality is currently supported in Chrome, Edge (Chromium) and Opera w
 ![Red title bar](../Assets/features/applicationviewtitlebar/red.png)
 
 ## `UISettings`
-
-The `UISettings` class can be used to retrieve the current system visual settings.
 
 Using the `GetColorValue` method, you can retrieve the system `Background` and `Foreground` color, which is useful to check if the system is currently using dark or light theme. To get notified about the color scheme changes, subscribe to the `ColorValuesChanged` event. Similarly to UWP, make sure to keep a reference to the `UISettings` instance, otherwise the instance will be collected and the event will not be raised.
 

@@ -46,11 +46,6 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 		}
 
-		~UIElement()
-		{
-			Cleanup();
-		}
-
 		public bool UseLayoutRounding
 		{
 			get => (bool)this.GetValue(UseLayoutRoundingProperty);
@@ -375,31 +370,6 @@ namespace Windows.UI.Xaml
 			=> Visual.IsVisible = false;
 
 		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
-
-		private void Cleanup()
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				if (this.GetParent() is UIElement originalParent)
-				{
-					originalParent.RemoveChild(this);
-				}
-
-				if (this is Panel panel)
-				{
-					panel.Children.Clear();
-				}
-				else
-				{
-					for (var i = 0; i < _children.Count; i++)
-					{
-						_children[i].SetParent(null);
-					}
-
-					_children.Clear();
-				}
-			}, NativeDispatcherPriority.Idle);
-		}
 
 #if DEBUG
 		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);

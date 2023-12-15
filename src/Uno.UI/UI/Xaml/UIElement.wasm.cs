@@ -87,8 +87,6 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
 				}
 
-				Cleanup();
-
 				Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 			}
 			catch (Exception e)
@@ -513,28 +511,6 @@ namespace Windows.UI.Xaml
 			if (childParent != null)
 			{
 				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
-			}
-		}
-
-		private void Cleanup()
-		{
-			if (this.GetParent() is UIElement originalParent)
-			{
-				originalParent.RemoveChild(this);
-			}
-
-			if (this is Windows.UI.Xaml.Controls.Panel panel)
-			{
-				panel.Children.Clear();
-			}
-			else
-			{
-				for (var i = 0; i < _children.Count; i++)
-				{
-					RemoveNativeView(_children[i]);
-				}
-
-				_children.Clear();
 			}
 		}
 

@@ -19,8 +19,6 @@ namespace Windows.UI.Xaml.Data
 
 		public ResourceUpdateReason UpdateReason { get; }
 
-		public bool IsThemeResourceExtension { get; }
-
 		public bool IsPersistent => UpdateReason != ResourceUpdateReason.StaticResourceLoading;
 
 		public object? ParseContext { get; }

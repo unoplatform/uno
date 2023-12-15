@@ -4,17 +4,104 @@ uid: Uno.Tutorials.ProfilingApplications
 
 # Profiling Uno Platform Applications
 
-## Profiling .NET 6 Android applications
+## Profiling .NET Android/iOS applications
 
-As of Preview 7, .NET 6 provides the ability to do CPU profiling through [`dotnet-trace`](https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for android applications.
-
-
-## Profiling Xamarin.Android and Xamarin.iOS applications
+.NET 7 and later provides the ability to do CPU profiling through [`dotnet-trace`](https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for android applications.
 
 ### Pre-requisites
 Run the following commands
 - `dotnet tool update -g dotnet-dsrouter --add-source=https://aka.ms/dotnet-tools/index.json`
 - `dotnet tool update -g dotnet-trace --add-source=https://aka.ms/dotnet-tools/index.json`
+
+## Profiling .NET iOS applications
+
+> [!NOTE]
+> This documentation is based on [.NET iOS profiling documentation](https://github.com/xamarin/xamarin-macios/wiki/Profiling).
+
+Profiling iOS apps needs to be done on a mac machine.
+
+First, create an alias to mlaunch:
+```bash
+alias mlaunch=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mlaunch
+```
+
+### Profiling on an iOS Simulator
+
+1. The first step is to launch the tool that provides a connection between the app and the .NET tracing tools:
+
+    ```bash
+    $ dotnet-dsrouter client-server -ipcc ~/my-sim-port -tcps 127.0.0.1:9000
+    ```
+
+2. Launch the app and make it suspend upon launch (waiting for the .NET tooling to connect):
+
+    ```bash
+    $ mlaunch --launchsim bin/Debug/net*/*/*.app --device :v2:runtime=com.apple.CoreSimulator.SimRuntime.iOS-15-4,devicetype=com.CoreSimulator.SimDeviceType.iPhone-11 --wait-for-exit --stdout=$(tty) --stderr=$(tty) --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend'
+    ```
+
+3. At this point it's necessary to wait until the following line shows up in the terminal:
+
+    ```
+    The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
+    ```
+4. Once that's printed, go ahead and start profiling:
+
+    ```bash
+    $ dotnet-trace collect --diagnostic-port ~/my-sim-port --format speedscope
+    ```
+
+To find which device to use, use:
+```bash
+$ xcrun simctl list devices
+```
+
+Then reference the UDID of the simulator in the mlaunch command:
+```
+$ mlaunch ... --device :v2:udid=50BCC90D-7E56-4AFB-89C5-3688BF345998 ...
+```
+
+### Profiling on a physical iOS device
+
+Launch the tool that bridges the app and the .NET tracing tools:
+
+```bash
+$ dotnet-dsrouter server-client -ipcs ~/my-dev-port -tcpc 127.0.0.1:9001 --forward-port iOS
+```
+
+Install & launch the app and make it suspended upon launch:
+
+```bash
+$ mlaunch --installdev bin/Debug/net*/*/*.app --devname ... 
+$ mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9001,suspend,listen'
+```
+
+At this point, it's necessary to wait until the following line shows up in the terminal:
+
+```
+The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
+```
+Once that's printed, go ahead and start profiling:
+
+```bash
+$ dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
+```
+
+## Profiling Catalyst apps
+
+1. Launch the executable, passing the `DOTNET_DiagnosticPorts` variable directly:
+    ```bash
+    $ DOTNET_DiagnosticPorts=~/my-desktop-port,suspend ./bin/Debug/net6.0-*/*/MyTestApp.app/Contents/MacOS/MyTestApp
+    ```
+2. At this point it's necessary to wait until the following line shows up in the terminal:
+    ```bash
+    The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
+    ```
+3. Once that's printed, go ahead and start profiling:
+    ```bash
+    $ dotnet-trace collect --diagnostic-port ~/my-desktop-port --format speedscope
+    ```
+
+## Profiling .NET Android applications
 
 ### Adjust your application to enable profiling
 
