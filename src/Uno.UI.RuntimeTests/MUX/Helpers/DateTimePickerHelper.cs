@@ -2,12 +2,13 @@
 using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
 	internal static class DateTimePickerHelper
 	{
-		internal static async Task OpenDateTimePicker(DatePicker dateTimePicker)
+		internal static async Task OpenDateTimePicker(FrameworkElement dateTimePicker)
 		{
 			Button button = default;
 
