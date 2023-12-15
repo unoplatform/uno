@@ -6,7 +6,7 @@ uid: Uno.GetStarted.vscode.DevKit
 
 Note: Due to the [unavailability](https://github.com/microsoft/vscode-dotnettools/issues/765) of the **C# DevKit extension** on [OpenVSX](https://open-vsx.org) users of VSCodium, Gitpod... are always on the OmniSharp mode.
 
-### Ensure you are using either .NET 8 (or later) or Uno vFIXME (or later)
+### Ensure you are using either .NET 8 (or later) or Uno.WinUI 5.0.116 (or later)
 
 To support C# DevKit the Uno Platform extension needs to run on .NET 8 (or later) or use Uno vFIXME (or later).
 
@@ -22,17 +22,17 @@ If the version listed is older than `8.0.100` then, inside VS Code, press `F1` a
 
 If you have version `8.0.100` (or later) then there's no need to update your version of .NET or Uno.
 
-#### Uno vFIXME
+#### Uno.WinUI 5.0.116 or later
 
 The latest versions of Uno ships with an additional msbuild task so running .NET 8 is not required.
 
 To see which version of Uno you're currently using open the `Directory.Packages.props` file at the root of your project and look for `Uno.WinUI`, e.g.
 
 ```xml
-<PackageVersion Include="Uno.WinUI" Version="5.0.48" />
+<PackageVersion Include="Uno.WinUI" Version="5.0.116" />
 ```
 
-If you have version FIXME (or later) then there's no need to update your version of .NET or Uno.
+If you have version 5.0.116 (or later) then there's no need to update your version of .NET or Uno.
 
 If you need to update you can use a tool like [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated) to update your dependencies to the latest available. Also see [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases]) for additional information about updating your project(s).
 
