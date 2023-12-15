@@ -63,7 +63,7 @@ public class WpfHost : IWpfApplicationHost
 
 	private void InitializeDispatcher()
 	{
-		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d);
+		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d, DispatcherPriority.SystemIdle);
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
 	}
 
