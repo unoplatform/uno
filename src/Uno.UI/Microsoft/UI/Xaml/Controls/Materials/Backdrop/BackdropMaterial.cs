@@ -55,13 +55,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Or if we're disconnecting the last one, clean up the shared MicaController.
 			if (_connectedBrushCount.Value > 0 && _micaController.Value == null)
 			{
-				// TODO Uno: Adjust this based on updated WinUI3 sources
-				var currentWindow = Window.CurrentSafe;
 				_micaController.Value = new MicaController();
-				if (!_micaController.Value.SetTarget(currentWindow))
-				{
-					_micaController.Value = null;
-				}
+				// TODO Uno specific: Actual Mica is not yet supported on any target, we skip the application for now,
+				// it will be superseeded by SystemBackdrop in https://github.com/unoplatform/uno/issues/14853.
+				//if (!_micaController.Value.SetTarget(currentWindow))
+				//{
+				//	_micaController.Value = null;
+				//}
 			}
 			else if (_connectedBrushCount.Value == 0 && _micaController.Value != null)
 			{
