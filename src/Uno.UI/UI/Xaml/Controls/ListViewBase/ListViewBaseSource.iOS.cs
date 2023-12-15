@@ -114,21 +114,42 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override nint GetItemsCount(UICollectionView collectionView, nint section)
 		{
-			int count;
-			if (Owner.XamlParent.IsGrouping)
+			try
 			{
-				count = GetGroupedItemsCount(section);
+				if (Owner?.XamlParent is { } parent)
+				{
+					int count;
+
+					if (parent.IsGrouping)
+					{
+						count = GetGroupedItemsCount(section);
+					}
+					else
+					{
+						count = GetUngroupedItemsCount(section);
+					}
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Count requested for section {section}, returning {count}");
+					}
+
+					return count;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+					{
+						this.Log().Debug($"Failed to find parent for ListViewBaseSource (Collected instance?)");
+					}
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				count = GetUngroupedItemsCount(section);
+				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Count requested for section {section}, returning {count}");
-			}
-			return count;
+			return 0;
 		}
 
 		private int GetUngroupedItemsCount(nint section)
