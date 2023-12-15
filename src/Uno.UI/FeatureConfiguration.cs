@@ -117,7 +117,7 @@ namespace Uno.UI
 		public static class Control
 		{
 			/// <summary>
-			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Stretch instead of Center
+			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Top/Left instead of Center/Center
 			/// </summary>
 			public static bool UseLegacyContentAlignment { get; set; }
 
