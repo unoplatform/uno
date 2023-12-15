@@ -232,7 +232,7 @@ public partial class Given_MediaPlayerElement
 
 	}
 
-#if __SKIA__
+#if __SKIA__ || __ANDROID__
 	[Ignore("Test not work properly on CI, the player do not have time to pause, doe the video do not auto play.  [https://github.com/unoplatform/uno/issues/12692]")]
 #endif
 	[TestMethod]
