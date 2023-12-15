@@ -13,9 +13,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<Import Sdk="Microsoft.NET.Sdk" Condition=" '$(UsingMicrosoftNETSdk)' != 'true' " />
 
 	<PropertyGroup>
-		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
-		<IncludeSourceRevisionInInformationalVersion Condition="'$(Configuration)'=='Debug'">false</IncludeSourceRevisionInInformationalVersion>
-
 		<_UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</_UnoImportMicrosoftNETSdkTargets>
 
 		<IsAndroid>false</IsAndroid>
@@ -61,10 +58,11 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<When Condition="$(TargetFramework.Contains('windows10'))">
 			<PropertyGroup>
 				<IsWinAppSdk>true</IsWinAppSdk>
+				<UseRidGraph Condition=" '$(UseRidGraph)' == '' ">true</UseRidGraph>
 				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.0.18362.0</SupportedOSPlatformVersion>
 				<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">$(SupportedOSPlatformVersion)</TargetPlatformMinVersion>
 				<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-				<EnableCoreMrtTooling Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
 			</PropertyGroup>
 		</When>
 	</Choose>

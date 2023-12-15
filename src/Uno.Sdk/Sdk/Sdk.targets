@@ -9,12 +9,24 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 ***********************************************************************************************
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Sdk="Microsoft.NET.Sdk" Condition=" '$(_UnoImportMicrosoftNETSdkTargets)' == 'true' " />
+	<Import Sdk="Microsoft.NET.Sdk" Condition=" '$(_UnoImportMicrosoftNETSdkTargets)' == 'true' " />
 
-  <!-- <Import Project="Uno.CrossTargetting.targets" Condition=" '$(EnableUnoCrossTargetting)' == 'true' " /> -->
+	<!-- <Import Project="Uno.CrossTargetting.targets" Condition=" '$(EnableUnoCrossTargetting)' == 'true' " /> -->+
 
-  <ItemGroup>
-    <!-- Removes native usings to avoid Ambiguous reference -->
-    <Using Remove="@(Using->HasMetadata('Platform'))" />
-  </ItemGroup>
+	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+		<DebugType>portable</DebugType>
+		<DebugSymbols>True</DebugSymbols>
+
+		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Removes native usings to avoid Ambiguous reference -->
+		<Using Remove="@(Using->HasMetadata('Platform'))" />
+	</ItemGroup>
 </Project>
