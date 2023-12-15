@@ -163,6 +163,9 @@ public partial class Given_MediaPlayerElement
 		}
 	}
 
+#if __ANDROID__
+	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
+#endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
