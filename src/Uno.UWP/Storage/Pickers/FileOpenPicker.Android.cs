@@ -21,7 +21,7 @@ namespace Windows.Storage.Pickers
 		private const string StorageIdentifierFormatString = "Uno.FileOpenPicker.{0}";
 		private const string AnyWildcard = "*/*";
 		private const string ImageWildcard = "image/*";
-		private const string VideoWildcard = "image/*";
+		private const string VideoWildcard = "video/*";
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
