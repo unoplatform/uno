@@ -54,8 +54,8 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			var isProjectConfigEnabled = IsMSBuildPropertyTrue("UnoDevServer_IncludeProjectConfiguration");
-			var isServerProcessorsConfigEnabled = IsMSBuildPropertyTrue("UnoDevServer_IncludeServerProcessorsConfiguration");
+			var isProjectConfigEnabled = IsMSBuildPropertyTrue("UnoForceIncludeProjectConfiguration");
+			var isServerProcessorsConfigEnabled = IsMSBuildPropertyTrue("UnoForceIncludeServerProcessorsConfiguration");
 
 			if (!DesignTimeHelper.IsDesignTime(context)
 				&& context.GetMSBuildPropertyValue("Configuration") == "Debug")
@@ -235,7 +235,10 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 					.GetMSBuildItemsWithAdditionalFiles(s)
 					.Select(v => Path.IsPathRooted(v.Identity) ? v.Identity : Path.Combine(msBuildProjectDirectory, v.Identity));
 
-			var xamlPaths = from item in sources.SelectMany(BuildSearchPath)
+			IEnumerable<string> BuildCompilePaths()
+				=> context.Compilation.SyntaxTrees.Select(s => s.FilePath);
+
+			var xamlPaths = from item in sources.SelectMany(BuildSearchPath).Concat(BuildCompilePaths())
 							select Path.GetDirectoryName(item);
 
 			return xamlPaths.Distinct().Where(x => !string.IsNullOrEmpty(x));

@@ -2,17 +2,24 @@
 uid: Uno.Features.WS
 ---
 
-# Uno Support for Windows.System APIs
+# URI Launcher
 
-## `Launcher`
+> [!TIP]
+> This article covers Uno-specific information for `Windows.System` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system
 
-### `LaunchUriAsync` 
+* The `Windows.System.Launcher` class provides functionality for launching URIs and apps.
+
+## `LaunchUriAsync` 
 
 This API is supported on iOS, Android, WASM and macOS.
 
 On iOS, Android and macOS the `ms-settings:` special URI is supported. 
 
-In case of iOS, any such URI opens the main page of system settings (there is no settings deep-linking available on iOS).
+### Platform-specifics
+
+On iOS, launching the special URI opens the main page of system settings because deep-linking to specific settings is not available.
+
+For WASM, launching the special URI will work properly only when opening the website on Windows. The method will return `true` even if the user cancels the application launch, as there is currently no way to detect if the app was successfully launched.
 
 In case of Android, we support the following nested URIs.
 
@@ -96,20 +103,20 @@ In case of macOS, Uno supports the following nested URIs, mapped to Preference P
 | `ms-settings:backup` | `TimeMachine` |
 | `ms-settings:easeofaccess` | `UniversalAccessPref` |
 
-#### Exceptions
+### Exceptions
 
 - When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
 - When the method is called from non-UI thread `InvalidOperationException` is thrown.
 
 Exceptions are in line with UWP.
 
-### `QueryUriSupportAsync` 
+## `QueryUriSupportAsync` 
 
 This API is supported on iOS, Android and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
 
-#### Platform-specific requirements
+### Platform-specific requirements
 
-##### Android
+#### Android
 
 When targeting Android 11 (API 30) or newer, you may notice the `QueryUriSupportAsync` returning false. To avoid this, make sure to add any URL schemes passed to it as `<queries>` entries in your `AndroidManifest.xml`:
 
@@ -129,7 +136,7 @@ When targeting Android 11 (API 30) or newer, you may notice the `QueryUriSupport
 </queries>
 ```
 
-##### iOS
+#### iOS
 
 Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSchemes` entries in your `Info.plist` file, otherwise, it will return false:
 
@@ -141,7 +148,7 @@ Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSch
 </array>
 ```
 
-#### Exceptions
+### Exceptions
 
 - When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.
 

@@ -121,14 +121,6 @@ public partial class Popup : FrameworkElement, IPopup
 					_lastFocusedElement = null;
 				}
 			}
-
-			if (FocusManager.GetFocusedElement() == this &&
-				VisualTree.GetFocusManagerForElement(this) is { } focusManager &&
-				VisualTree.GetRootForElement(this) is { } root &&
-				focusManager.GetLastFocusableElement(root) is UIElement elementToFocus)
-			{
-				elementToFocus.Focus(FocusState.Programmatic);
-			}
 		}
 	}
 

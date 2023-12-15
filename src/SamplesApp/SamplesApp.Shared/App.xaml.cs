@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
@@ -17,6 +18,9 @@ using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using Uno;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using Uno.UI;
 
 #if !HAS_UNO
@@ -73,6 +77,7 @@ namespace SamplesApp
 #endif
 
 			ConfigureFeatureFlags();
+			ParseCommandLineFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
 			AssertApplicationData();
@@ -454,6 +459,65 @@ namespace SamplesApp
 #endif
 #if __SKIA__
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+#endif
+		}
+
+		/// <summary>
+		/// a simple best-effort parsing of CLI args as feature flags
+		/// </summary>
+		static void ParseCommandLineFeatureFlags()
+		{
+#if HAS_UNO
+			var commandLineArgs = Environment.GetCommandLineArgs();
+			if (commandLineArgs.Length == 1)
+			{
+				return;
+			}
+
+			var availableFlags = new Dictionary<string, PropertyInfo>();
+
+			foreach (var featureClass in typeof(FeatureConfiguration).GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
+			{
+				foreach (var featureProperty in featureClass.GetProperties(BindingFlags.Public | BindingFlags.Static))
+				{
+					availableFlags[$"{featureClass.Name}.{featureProperty.Name}"] = featureProperty;
+				}
+			}
+
+			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
+			foreach (var arg in commandLineArgs.Skip(1))
+			{
+				var match = regex.Match(arg);
+				if (match.Success)
+				{
+					var flag = match.Groups[1].Value;
+					var value = match.Groups[2].Value;
+
+					if (availableFlags.TryGetValue(flag, out var property))
+					{
+						try
+						{
+							property.SetValue(null, Convert.ChangeType(value, property.PropertyType));
+						}
+						catch (Exception)
+						{
+							Console.WriteLine($"Couldn't convert the value {value} of the flag {flag} to {property.PropertyType.Name}");
+						}
+					}
+					else
+					{
+						Console.WriteLine($"Couldn't find the flag {flag}");
+					}
+				}
+				else if (arg.StartsWith("--FeatureConfiguration"))
+				{
+					Console.WriteLine($"Failed to parse the CLI argument {arg}");
+				}
+				else
+				{
+					Console.WriteLine($"Ignored the CLI argument {arg} for the purposes of FeatureConfiguration.");
+				}
+			}
 #endif
 		}
 

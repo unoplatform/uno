@@ -187,5 +187,20 @@ namespace Windows.UI.Xaml.Controls
 				_textBoxView.SelectionEnd = _textBoxView.SelectionStart + value;
 			}
 		}
+
+		protected override void OnPointerMoved(PointerRoutedEventArgs e)
+		{
+			base.OnPointerMoved(e);
+		}
+
+		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			base.OnDoubleTapped(e);
+		}
+
+		protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+		{
+			base.OnRightTapped(e);
+		}
 	}
 }

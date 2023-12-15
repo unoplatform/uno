@@ -5,6 +5,7 @@ using Uno.UI.Helpers;
 using Uno.Xaml;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 {
@@ -268,6 +269,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
 			ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
 			Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
+		}
+
+		[TestMethod]
+		public void When_Input_Namespace()
+		{
+			var xamlString =
+"""
+<StandardUICommand 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Kind="Copy" />
+""";
+			var xaml = Windows.UI.Xaml.Markup.XamlReader.Load(xamlString);
+			Assert.IsInstanceOfType(xaml, typeof(StandardUICommand));
 		}
 	}
 

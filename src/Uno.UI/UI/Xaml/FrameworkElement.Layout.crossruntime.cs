@@ -13,6 +13,7 @@ using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {
@@ -79,53 +80,182 @@ namespace Windows.UI.Xaml
 
 		private void InnerMeasureCore(Size availableSize)
 		{
-			var (minSize, maxSize) = this.GetMinMax();
-			var marginSize = this.GetMarginSize();
+			// Uno TODO
+			//CLayoutManager* pLayoutManager = VisualTree::GetLayoutManagerForElement(this);
+			//bool bInLayoutTransition = pLayoutManager ? pLayoutManager->GetTransitioningElement() == this : false;
 
-			// NaN values are accepted as input here, particularly when coming from
-			// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
-			// below for the clipping value.
-			availableSize = availableSize
-				.NumberOrDefault(MaxSize);
+			Size frameworkAvailableSize = default;
+			double minWidth = 0.0f;
+			double maxWidth = 0.0f;
+			double minHeight = 0.0f;
+			double maxHeight = 0.0f;
 
-			var frameworkAvailableSize = availableSize
-				.Subtract(marginSize)
-				.AtLeastZero()
-				.AtMost(maxSize)
-				.AtLeast(minSize);
+			double clippedDesiredWidth;
+			double clippedDesiredHeight;
+
+			double marginWidth = 0.0f;
+			double marginHeight = 0.0f;
+
+			//bool bTemplateApplied = false;
+
+			//RaiseLoadingEventIfNeeded();
+
+			//if (!bInLayoutTransition)
+			{
+				// Templates should be applied here.
+				//bTemplateApplied = InvokeApplyTemplate();
+
+				// Subtract the margins from the available size
+				var margin = Margin;
+				marginWidth = margin.Left + margin.Right;
+				marginHeight = margin.Top + margin.Bottom;
+
+				// We check to see if availableSize.width and availableSize.height are finite since that will
+				// also protect against NaN getting in.
+				frameworkAvailableSize.Width = double.IsFinite(availableSize.Width) ? Math.Max(availableSize.Width - marginWidth, 0) : double.PositiveInfinity;
+				frameworkAvailableSize.Height = double.IsFinite(availableSize.Height) ? Math.Max(availableSize.Height - marginHeight, 0) : double.PositiveInfinity;
+
+				// Layout transforms would get processed here.
+
+				// Adjust available size by Min/Max Width/Height
+
+				var (minSize, maxSize) = this.GetMinMax();
+				minWidth = minSize.Width;
+				minHeight = minSize.Height;
+				maxWidth = maxSize.Width;
+				maxHeight = maxSize.Height;
+
+				frameworkAvailableSize.Width = Math.Max(minWidth, Math.Min(frameworkAvailableSize.Width, maxWidth));
+				frameworkAvailableSize.Height = Math.Max(minHeight, Math.Min(frameworkAvailableSize.Height, maxHeight));
+			}
+			//else
+			//{
+			//	// when in a transition, just take the passed in constraint without considering the above
+			//	frameworkAvailableSize = availableSize;
+			//}
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
-
-			if (
-				double.IsNaN(desiredSize.Width)
-				|| double.IsNaN(desiredSize.Height)
-				|| double.IsInfinity(desiredSize.Width)
-				|| double.IsInfinity(desiredSize.Height)
-			)
+			// We need to round now since we save the values off, and use them to determine
+			// if a layout clip will be applied.
+			if (GetUseLayoutRounding())
 			{
-				throw new InvalidOperationException($"{FormatDebugName()}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
+				desiredSize.Width = LayoutRound(desiredSize.Width);
+				desiredSize.Height = LayoutRound(desiredSize.Height);
+
 			}
 
-			desiredSize = desiredSize
-				.AtLeast(minSize)
-				.AtLeastZero();
+			//if (!bInLayoutTransition)
+			{
+				// Maximize desired size with user provided min size. It's also possible that MeasureOverride returned NaN for either
+				// width or height, in which case we should use the min size as well.
+				desiredSize.Width = Math.Max(desiredSize.Width, minWidth);
+				if (double.IsNaN(desiredSize.Width))
+				{
+					desiredSize.Width = minWidth;
+				}
+				desiredSize.Height = Math.Max(desiredSize.Height, minHeight);
+				if (double.IsNaN(desiredSize.Height))
+				{
+					desiredSize.Height = minHeight;
+				}
 
-			_unclippedDesiredSize = desiredSize;
+				// We need to round now since we save the values off, and use them to determine
+				// if a layout clip will be applied.
 
-			var clippedDesiredSize = desiredSize
-				.AtMost(maxSize)
-				.Add(marginSize)
-				// Making sure after adding margins that clipped DesiredSize is not bigger than the AvailableSize
-				.AtMost(availableSize)
-				// Margin may be negative
-				.AtLeastZero();
+				if (GetUseLayoutRounding())
+				{
+					desiredSize.Width = LayoutRound(desiredSize.Width);
+					desiredSize.Height = LayoutRound(desiredSize.Height);
+				}
+
+				// Here is the "true minimum" desired size - the one that is
+				// for sure enough for the control to render its content.
+				// EnsureLayoutStorage();
+				_unclippedDesiredSize = desiredSize;
+
+				// More layout transforms processing here.
+
+				if (desiredSize.Width > maxWidth)
+				{
+					desiredSize.Width = maxWidth;
+				}
+
+				if (desiredSize.Height > maxHeight)
+				{
+					desiredSize.Height = maxHeight;
+				}
+
+				// Transform desired size to layout slot space (placeholder for when we do layout transforms)
+
+				// Layout round the margins too. This corresponds to the behavior in ArrangeCore, where we check the unclipped desired
+				// size against available space minus the rounded margin. This also prevents a bug where MeasureCore adds the unrounded
+				// margin (e.g. 14) to the desired size (e.g. 55.56) and rounds the final result (69.56 rounded to 69.33 under 2.25x scale),
+				// then ArrangeCore takes that rounded result (i.e. 69.33), subtracts the unrounded margin (i.e. 14) and ends up with a
+				// size smaller than the desired size (69.33 - 14 = 55.33 < 55.56). This ends up putting a layout clip on an element that
+				// doesn't need one, and causes big problems if the element is the scrollable extent of a carousel panel.
+				double roundedMarginWidth = marginWidth;
+				double roundedMarginHeight = marginHeight;
+				if (GetUseLayoutRounding())
+				{
+					roundedMarginWidth = LayoutRound(marginWidth);
+					roundedMarginHeight = LayoutRound(marginHeight);
+				}
+
+				//  Because of negative margins, clipped desired size may be negative.
+				//  Need to keep it as XFLOATS for that reason and maximize with 0 at the
+				//  very last point - before returning desired size to the parent.
+				clippedDesiredWidth = desiredSize.Width + roundedMarginWidth;
+				clippedDesiredHeight = desiredSize.Height + roundedMarginHeight;
+
+				// only clip and constrain if the tree wants that.
+				// currently only listviewitems do not want clipping
+				// UNO TODO
+
+				//if (!pLayoutManager->GetIsInNonClippingTree())
+				{
+					// In overconstrained scenario, parent wins and measured size of the child,
+					// including any sizes set or computed, can not be larger then
+					// available size. We will clip the guy later.
+					if (clippedDesiredWidth > availableSize.Width)
+					{
+						clippedDesiredWidth = availableSize.Width;
+					}
+
+					if (clippedDesiredHeight > availableSize.Height)
+					{
+						clippedDesiredHeight = availableSize.Height;
+					}
+				}
+
+				//  Note: unclippedDesiredSize is needed in ArrangeCore,
+				//  because due to the layout protocol, arrange should be called
+				//  with constraints greater or equal to child's desired size
+				//  returned from MeasureOverride. But in most circumstances
+				//  it is possible to reconstruct original unclipped desired size.
+
+				desiredSize.Width = Math.Max(0, clippedDesiredWidth);
+				desiredSize.Height = Math.Max(0, clippedDesiredHeight);
+			}
+			//else
+			//{
+			//	// in LT, need to take precautions
+			//	desiredSize.Width = Math.Max(desiredSize.Width, 0.0f);
+			//	desiredSize.Height = Math.Max(desiredSize.Height, 0.0f);
+			//}
+
+			// We need to round again in case the desired size has been modified since we originally
+			// rounded it.
+			if (GetUseLayoutRounding())
+			{
+				desiredSize.Width = LayoutRound(desiredSize.Width);
+				desiredSize.Height = LayoutRound(desiredSize.Height);
+			}
 
 			// DesiredSize must include margins
-			LayoutInformation.SetDesiredSize(this, clippedDesiredSize);
+			LayoutInformation.SetDesiredSize(this, desiredSize);
 
-			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {clippedDesiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
+			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
 		}
 
 		private string FormatDebugName()
@@ -165,106 +295,282 @@ namespace Windows.UI.Xaml
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect})");
+
+			// Uno TODO:
+			//CLayoutManager* pLayoutManager = VisualTree::GetLayoutManagerForElement(this);
+			//bool bInLayoutTransition = pLayoutManager ? pLayoutManager->GetTransitioningElement() == this : false;
+
+			bool needsClipBounds = false;
+
 			var arrangeSize = finalRect.Size;
 
-			var (_, maxSize) = this.GetMinMax();
-			var marginSize = this.GetMarginSize();
+			var margin = Margin;
+			var marginWidth = margin.Left + margin.Right;
+			var marginHeight = margin.Top + margin.Bottom;
 
-			arrangeSize = arrangeSize
-				.Subtract(marginSize)
-				.AtLeastZero();
+			var ha = HorizontalAlignment;
+			var va = VerticalAlignment;
 
-			var needsClipToSlot = false;
+			Size unclippedDesiredSize = default;
+			double minWidth = 0, maxWidth = 0, minHeight = 0, maxHeight = 0;
+			double effectiveMaxWidth = 0, effectiveMaxHeight = 0;
 
-			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect}), arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+			Size oldRenderSize = default;
+			Size innerInkSize = default;
+			Size clippedInkSize = default;
+			Size clientSize = default;
+			double offsetX = 0, offsetY = 0;
 
-			if (!needsClipToSlot)
+			// Uno TODO:
+			//IFC_RETURN(EnsureLayoutStorage());
+
+			unclippedDesiredSize = _unclippedDesiredSize;
+			oldRenderSize = RenderSize;
+
+			//if (!bInLayoutTransition)
 			{
-				if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
+				Size arrangeSizeWithoutMargin = new Size(
+					Math.Max(arrangeSize.Width - marginWidth, 0),
+					Math.Max(arrangeSize.Height - marginHeight, 0)
+				);
+
+				var roundedMarginWidth = marginWidth;
+				var roundedMarginHeight = marginHeight;
+
+				if (GetUseLayoutRounding())
 				{
-					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
-					needsClipToSlot = true;
-					arrangeSize.Width = _unclippedDesiredSize.Width;
+					roundedMarginWidth = LayoutRound(marginWidth);
+					roundedMarginHeight = LayoutRound(marginHeight);
 				}
 
-				if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
+				// We handle layout rounding inconsistently across our code, this change is restricted to using layout
+				// rounding for margin only on certain scenarios to avoid introducing unexpected problems.
+				// If further rounding issues appear we should consider opening this behaviour to more scenarios.
+				if (roundedMarginWidth != marginWidth && arrangeSizeWithoutMargin.Width != unclippedDesiredSize.Width)
 				{
-					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
-					needsClipToSlot = true;
-					arrangeSize.Height = _unclippedDesiredSize.Height;
+					double arrangeWidthWithoutRoundedMargin = Math.Max(arrangeSize.Width - roundedMarginWidth, 0);
+					if (arrangeWidthWithoutRoundedMargin == unclippedDesiredSize.Width)
+					{
+						// The rounding difference between arrangeSizeWithoutMargin.width and unclippedDesiredSize.width
+						// comes from the horizontal margin. The rounded value of that margin must be used so that this
+						// FrameworkElement's ActualWidth does not return an incorrect value.
+						marginWidth = roundedMarginWidth;
+						arrangeSize.Width = arrangeWidthWithoutRoundedMargin;
+					}
+					else
+					{
+						arrangeSize.Width = arrangeSizeWithoutMargin.Width;
+					}
+				}
+				else
+				{
+					arrangeSize.Width = arrangeSizeWithoutMargin.Width;
+				}
+
+				if (roundedMarginHeight != marginHeight && arrangeSizeWithoutMargin.Height != unclippedDesiredSize.Height)
+				{
+					double arrangeHeightWithoutRoundedMargin = Math.Max(arrangeSize.Height - roundedMarginHeight, 0);
+					if (arrangeHeightWithoutRoundedMargin == unclippedDesiredSize.Height)
+					{
+						// The rounding difference between arrangeSizeWithoutMargin.height and unclippedDesiredSize.height
+						// comes from the vertical margin. The rounded value of that margin must be used so that this
+						// FrameworkElement's ActualHeight does not return an incorrect value.
+						marginHeight = roundedMarginHeight;
+						arrangeSize.Height = arrangeHeightWithoutRoundedMargin;
+					}
+					else
+					{
+						arrangeSize.Height = arrangeSizeWithoutMargin.Height;
+					}
+				}
+				else
+				{
+					arrangeSize.Height = arrangeSizeWithoutMargin.Height;
+				}
+
+				if (IsLessThanAndNotCloseTo(arrangeSize.Width, unclippedDesiredSize.Width))
+				{
+					needsClipBounds = true;
+					arrangeSize.Width = unclippedDesiredSize.Width;
+				}
+
+				if (IsLessThanAndNotCloseTo(arrangeSize.Height, unclippedDesiredSize.Height))
+				{
+					needsClipBounds = true;
+					arrangeSize.Height = unclippedDesiredSize.Height;
+				}
+
+				// Alignment==Stretch --> arrange at the slot size minus margins
+				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
+				if (ha != HorizontalAlignment.Stretch)
+				{
+					arrangeSize.Width = unclippedDesiredSize.Width;
+				}
+
+				if (va != VerticalAlignment.Stretch)
+				{
+					arrangeSize.Height = unclippedDesiredSize.Height;
+				}
+
+				var (minSize, maxSize) = this.GetMinMax();
+				minWidth = minSize.Width;
+				maxWidth = maxSize.Width;
+				minHeight = minSize.Height;
+				maxHeight = maxSize.Height;
+
+				// Layout transforms processed here
+
+				// We have to choose max between UnclippedDesiredSize and Max here, because
+				// otherwise setting of max property could cause arrange at less then unclippedDS.
+				// Clipping by Max is needed to limit stretch here
+
+				effectiveMaxWidth = Math.Max(unclippedDesiredSize.Width, maxWidth);
+				if (IsLessThanAndNotCloseTo(effectiveMaxWidth, arrangeSize.Width))
+				{
+					needsClipBounds = true;
+					arrangeSize.Width = effectiveMaxWidth;
+				}
+
+				effectiveMaxHeight = Math.Max(unclippedDesiredSize.Height, maxHeight);
+				if (IsLessThanAndNotCloseTo(effectiveMaxHeight, arrangeSize.Height))
+				{
+					needsClipBounds = true;
+					arrangeSize.Height = effectiveMaxHeight;
 				}
 			}
 
-			if (HorizontalAlignment != HorizontalAlignment.Stretch)
+			innerInkSize = ArrangeOverride(arrangeSize);
+
+			// Here we use un-clipped InkSize because element does not know that it is
+			// clipped by layout system and it shoudl have as much space to render as
+			// it returned from its own ArrangeOverride
+			// Inner ink size is not guaranteed to be rounded, but should be.
+			// TODO: inner ink size currently only rounded if plateau > 1 to minimize impact in RC,
+			// but should be consistently rounded in all plateaus.
+			var scale = RootScale.GetRasterizationScaleForElement(this);
+			if ((scale != 1.0f) && GetUseLayoutRounding())
 			{
-				arrangeSize.Width = _unclippedDesiredSize.Width;
+				innerInkSize.Width = LayoutRound(innerInkSize.Width);
+				innerInkSize.Height = LayoutRound(innerInkSize.Height);
 			}
-
-			if (VerticalAlignment != VerticalAlignment.Stretch)
-			{
-				arrangeSize.Height = _unclippedDesiredSize.Height;
-			}
-
-			// We have to choose max between _unclippedDesiredSize and maxSize here, because
-			// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
-			// Clipping by Max is needed to limit stretch here
-			var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-
-			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect}) - effectiveMaxSize={effectiveMaxSize}, maxSize={maxSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
-
-			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
-			{
-				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
-				needsClipToSlot = true;
-				arrangeSize.Width = effectiveMaxSize.Width;
-			}
-			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
-			{
-				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
-				needsClipToSlot = true;
-				arrangeSize.Height = effectiveMaxSize.Height;
-			}
-
-			var oldRenderSize = RenderSize;
-			var innerInkSize = ArrangeOverride(arrangeSize);
-
-			var clippedInkSize = innerInkSize.AtMost(maxSize);
-
 			RenderSize = innerInkSize;
 
-			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
+			//if (!IsSameSize(oldRenderSize, innerInkSize))
+			//{
+			//	OnActualSizeChanged();
+			//}
 
-			var clientSize = finalRect.Size
-				.Subtract(marginSize)
-				.AtLeastZero();
+			//if (!IsSameSize(oldRenderSize, innerInkSize))
+			//{
+			//	VisualTree.GetLayoutManagerForElement(this).EnqueueForSizeChanged(this, oldRenderSize);
+			//}
 
-			// Give opportunity to element to alter arranged size
-			clippedInkSize = AdjustArrange(clippedInkSize);
-
-			if (IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
-				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height))
+			//if (!bInLayoutTransition)
 			{
-				needsClipToSlot = true;
+				// ClippedInkSize differs from InkSize only what MaxWidth/Height explicitly clip the
+				// otherwise good arrangement. For ex, DS<clientSize but DS>MaxWidth - in this
+				// case we should initiate clip at MaxWidth and only show Top-Left portion
+				// of the element limited by Max properties. It is Top-left because in case when we
+				// are clipped by container we also degrade to Top-Left, so we are consistent.
+				clippedInkSize.Width = Math.Min(innerInkSize.Width, maxWidth);
+				clippedInkSize.Height = Math.Min(innerInkSize.Height, maxHeight);
+
+				// remember we have to clip if Max properties limit the inkSize
+				needsClipBounds |=
+					IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width)
+					|| IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height);
+
+				// Transform stuff here
+
+				// Note that inkSize now can be bigger then layoutSlotSize-margin (because of layout
+				// squeeze by the parent or LayoutConstrained=true, which clips desired size in Measure).
+
+				// The client size is the size of layout slot decreased by margins.
+				// This is the "window" through which we see the content of the child.
+				// Alignments position ink of the child in this "window".
+				// Max with 0 is necessary because layout slot may be smaller then unclipped desired size.
+				clientSize.Width = Math.Max(0, finalRect.Width - marginWidth);
+				clientSize.Height = Math.Max(0, finalRect.Height - marginHeight);
+
+				// Remember we have to clip if clientSize limits the inkSize
+				needsClipBounds |=
+					IsLessThanAndNotCloseTo(clientSize.Width, clippedInkSize.Width)
+					|| IsLessThanAndNotCloseTo(clientSize.Height, clippedInkSize.Height);
+
+				//bool isAlignedByDirectManipulation = IsAlignedByDirectManipulation();
+
+				//if (isAlignedByDirectManipulation)
+				//{
+				//	// Skip the layout engine's contribution to the element's offsets when it is already aligned by DirectManipulation.
+
+				//	if (m_pLayoutProperties.m_horizontalAlignment == HorizontalAlignment.Stretch)
+				//	{
+				//		// Check if the Stretch alignment needs to be overridden with a Left alignment.
+				//		// The "IsStretchHorizontalAlignmentTreatedAsLeft" case corresponds to CFrameworkElement::ComputeAlignmentOffset's "degenerate Stretch to Top-Left" branch.
+				//		// The "IsFinalArrangeSizeMaximized()" case is for text controls CTextBlock, CRichTextBlock and CRichTextBlockOverflow which stretch their desired width to the finalSize argument in their ArrangeOverride method.
+				//		// The "(clippedInkSize.width == clientSize.width && unclippedDesiredSize.width < clientSize.width)" case is for 3rd party controls that stretch their desired width to the final arrange width too.
+				//		bool isStretchAlignmentTreatedAsNear_New =
+				//			IsStretchHorizontalAlignmentTreatedAsLeft(HorizontalAlignment.Stretch, clientSize, clippedInkSize) ||
+				//			(clippedInkSize.Width == clientSize.Width && unclippedDesiredSize.Width < clientSize.Width) ||
+				//			IsFinalArrangeSizeMaximized();
+
+				//		// Check if the overriding needs are changing by accessing the current status from the owning ScrollViewer control.
+				//		bool isStretchAlignmentTreatedAsNear_Old = IsStretchAlignmentTreatedAsNear(true /*isForHorizontalAlignment*/);
+				//		if (isStretchAlignmentTreatedAsNear_New != isStretchAlignmentTreatedAsNear_Old)
+				//		{
+				//			// The overriding needs are changing - push the new status to the owning ScrollViewer control.
+				//			OnAlignmentChanged(true /*fIsForHorizontalAlignment*/, true/*fIsForStretchAlignment*/, isStretchAlignmentTreatedAsNear_New);
+				//		}
+				//	}
+
+				//	if (m_pLayoutProperties.m_verticalAlignment == VerticalAlignment.Stretch)
+				//	{
+				//		// Check if the Stretch alignment needs to be overridden with a Top alignment.
+				//		// The "IsStretchVerticalAlignmentTreatedAsTop" case corresponds to CFrameworkElement::ComputeAlignmentOffset's "degenerate Stretch to Top-Left" branch.
+				//		// The "IsFinalArrangeSizeMaximized()" case is for text controls CTextBlock, CRichTextBlock and CRichTextBlockOverflow which stretch their desired height to the finalSize argument in their ArrangeOverride method.
+				//		// The "(clippedInkSize.height == clientSize.height && unclippedDesiredSize.height < clientSize.height)" case is for 3rd party controls that stretch their desired height to the final arrange height too.
+				//		bool isStretchAlignmentTreatedAsNear_New =
+				//			IsStretchVerticalAlignmentTreatedAsTop(VerticalAlignment.Stretch, clientSize, clippedInkSize) ||
+				//			(clippedInkSize.Height == clientSize.Height && unclippedDesiredSize.Height < clientSize.Height) ||
+				//			IsFinalArrangeSizeMaximized();
+
+				//		// Check if the overriding needs are changing by accessing the current status from the owning ScrollViewer control.
+				//		bool isStretchAlignmentTreatedAsNear_Old = IsStretchAlignmentTreatedAsNear(false /*isForHorizontalAlignment*/);
+				//		if (isStretchAlignmentTreatedAsNear_New != isStretchAlignmentTreatedAsNear_Old)
+				//		{
+				//			// The overriding needs are changing - push the new status to the owning ScrollViewer control.
+				//			OnAlignmentChanged(false /*fIsForHorizontalAlignment*/, true /*fIsForStretchAlignment*/, isStretchAlignmentTreatedAsNear_New);
+				//		}
+				//	}
+				//}
+				//else
+				{
+					var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
+					offsetX = offset.X;
+					offsetY = offset.Y;
+				}
+
+				//oldOffset = VisualOffset;
+
+				//VisualOffset.x = offsetX + finalRect.X + m_pLayoutProperties->m_margin.left;
+				//VisualOffset.y = offsetY + finalRect.Y + m_pLayoutProperties->m_margin.top;
+
+				offsetX = offsetX + finalRect.X + margin.Left;
+				offsetY = offsetY + finalRect.Y + margin.Top;
+
+				if (GetUseLayoutRounding())
+				{
+					offsetX = LayoutRound(offsetX);
+					offsetY = LayoutRound(offsetY);
+				}
 			}
+			//else
+			//{
+			//	offsetX = finalRect.X;
+			//	offsetY = finalRect.Y;
+			//}
 
-			if (IsLessThanAndNotCloseTo(clientSize.Width, clippedInkSize.Width) ||
-				IsLessThanAndNotCloseTo(clientSize.Height, clippedInkSize.Height))
-			{
-				needsClipToSlot = true;
-			}
-
-			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
-			var margin = Margin;
-
-			offset = new Point(
-				offset.X + finalRect.X + margin.Left,
-				offset.Y + finalRect.Y + margin.Top
-			);
-
-			_logDebug?.Debug(
-				$"{DepthIndentation}[{FormatDebugName()}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
-
-			NeedsClipToSlot = needsClipToSlot;
+			NeedsClipToSlot = needsClipBounds;
 
 #if __WASM__
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
@@ -273,14 +579,14 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			var clippedFrame = GetClipRect(needsClipToSlot, finalRect, maxSize, margin);
+			var clippedFrame = GetClipRect(needsClipBounds, finalRect, new Size(maxWidth, maxHeight), margin);
 			if (clippedFrame is null)
 			{
-				ArrangeNative(offset, false);
+				ArrangeNative(new Point(offsetX, offsetY), false);
 			}
 			else
 			{
-				ArrangeNative(offset, true, clippedFrame.Value);
+				ArrangeNative(new Point(offsetX, offsetY), true, clippedFrame.Value);
 			}
 
 			OnLayoutUpdated();
@@ -291,43 +597,116 @@ namespace Windows.UI.Xaml
 		{
 			if (needsClipToSlot)
 			{
-				Rect clippedFrame = default;
+				Rect clipRect = default;
+
+				// TODO: Clip rect currently only rounded in plateau > 1 to minimize impact, but should be consistently rounded in all plateaus.
+				var scale = RootScale.GetRasterizationScaleForElement(this);
+				var roundClipRect = (scale != 1.0f) && GetUseLayoutRounding();
+
+				var maxWidth = maxSize.Width;
+				var maxHeight = maxSize.Height;
+
+				// this is in element's local rendering coord system
 				var inkSize = RenderSize;
+				var layoutSlotSize = finalRect.Size;
 
-				var maxClip = maxSize.FiniteOrDefault(inkSize);
+				var maxWidthClip = maxSize.Width.FiniteOrDefault(inkSize.Width);
+				var maxHeightClip = maxSize.Height.FiniteOrDefault(inkSize.Height);
 
-				//need to clip because the computed sizes exceed MaxWidth/MaxHeight/Width/Height
-				bool needToClipLocally = IsLessThanAndNotCloseTo(maxClip.Width, inkSize.Width) || IsLessThanAndNotCloseTo(maxClip.Height, inkSize.Height);
+				bool needToClipLocally;
 
-				inkSize = inkSize.AtMost(maxSize);
+				Size clippingSize = default;
 
-				var marginSize = new Size(margin.Left + margin.Right, margin.Top + margin.Bottom);
-				Size clippingSize = finalRect.Size.Subtract(marginSize).AtLeastZero();
-				bool needToClipSlot = IsLessThanAndNotCloseTo(clippingSize.Width, inkSize.Width) || IsLessThanAndNotCloseTo(clippingSize.Height, inkSize.Height);
+				// EnsureLayoutStorage();
+
+				// If clipping is forced, ensure the clip is at least as small as the RenderSize.
+				//if (forceClipToRenderSize)
+				//{
+				//	maxWidthClip = MIN(inkSize.width, maxWidthClip);
+				//	maxHeightClip = MIN(inkSize.height, maxHeightClip);
+				//	needToClipLocally = TRUE;
+				//}
+				//else
+				{
+					// need to clip if the computed sizes exceed MaxWidth/MaxHeight/Width/Height
+					needToClipLocally = IsLessThanAndNotCloseTo(maxWidthClip, inkSize.Width)
+									 || IsLessThanAndNotCloseTo(maxHeightClip, inkSize.Height);
+				}
+
+				// now lets say we already clipped by MaxWidth/MaxHeight, lets see if further clipping is needed
+				inkSize.Width = Math.Min(inkSize.Width, maxWidth);
+				inkSize.Height = Math.Min(inkSize.Height, maxHeight);
+
+				// now lets say we already clipped by MaxWidth/MaxHeight, lets see if further clipping is needed
+				inkSize.Width = Math.Min(inkSize.Width, maxWidth);
+				inkSize.Height = Math.Min(inkSize.Height, maxHeight);
+
+				//now see if layout slot should clip the element
+				var marginWidth = margin.Left + margin.Right;
+				var marginHeight = margin.Top + margin.Bottom;
+
+				clippingSize.Width = Math.Max(0, layoutSlotSize.Width - marginWidth);
+				clippingSize.Height = Math.Max(0, layoutSlotSize.Height - marginHeight);
+
+				// With layout rounding, MinMax and RenderSize are rounded. Clip size should be rounded as well.
+				if (roundClipRect)
+				{
+					clippingSize.Width = LayoutRound(clippingSize.Width);
+					clippingSize.Height = LayoutRound(clippingSize.Height);
+				}
+
+				bool needToClipSlot = IsLessThanAndNotCloseTo(clippingSize.Width, inkSize.Width)
+					|| IsLessThanAndNotCloseTo(clippingSize.Height, inkSize.Height);
+
 
 				if (needToClipSlot)
 				{
+					// The layout clip is created from the slot size determined in the parent's coordinate space,
+					// but is set on the child, meaning it's affected by the child's transform/offset and is applied in
+					// the child's coordinate space.  The inverse of the offset is applied to the clip to prevent the clip's
+					// position from shifting as a result of the change in coordinates.
 					var offset = LayoutHelper.GetAlignmentOffset(this, clippingSize, inkSize);
-					clippedFrame = new Rect(-offset.X, -offset.Y, clippingSize.Width, clippingSize.Height);
+					var offsetX = offset.X;
+					var offsetY = offset.Y;
+					if (roundClipRect)
+					{
+						offsetX = LayoutRound(offsetX);
+						offsetY = LayoutRound(offsetY);
+					}
+
+					clipRect = new Rect(-offsetX, -offsetY, clippingSize.Width, clippingSize.Height);
 					if (needToClipLocally)
 					{
-						clippedFrame = clippedFrame.IntersectWith(new Rect(default, maxClip)) ?? Rect.Empty;
+						clipRect = clipRect.IntersectWith(new Rect(0, 0, maxWidthClip, maxHeightClip)) ?? Rect.Empty;
 					}
 				}
 				else if (needToClipLocally)
 				{
-					clippedFrame = new Rect(default, maxClip);
+					// In this case clipRect starts at 0, 0 and max width/height clips are rounded due
+					// to RenderSize and MinMax being rounded. So clipRect is already rounded.
+					clipRect.Width = maxWidthClip;
+					clipRect.Height = maxHeightClip;
 				}
+
+				// if we have difference between child and parent FlowDirection
+				// then we have to change origin of Clipping rectangle
+				// which allows us to visually keep it at the same place
+				// UNO TODO
+				//pParent = GetUIElementAdjustedParentInternal(FALSE /*fPublicParentsOnly*/);
+				//if (pParent && pParent->IsRightToLeft() != IsRightToLeft())
+				//{
+				//	clipRect.X = RenderSize.width - (clipRect.X + clipRect.Width);
+				//}
 
 				if (needToClipSlot || needToClipLocally)
 				{
 					if (this is Panel && RenderTransform is { } renderTransform)
 					{
-						clippedFrame.X -= renderTransform.MatrixCore.M31;
-						clippedFrame.Y -= renderTransform.MatrixCore.M32;
+						clipRect.X -= renderTransform.MatrixCore.M31;
+						clipRect.Y -= renderTransform.MatrixCore.M32;
 					}
 
-					return clippedFrame;
+					return clipRect;
 				}
 			}
 

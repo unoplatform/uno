@@ -1182,7 +1182,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private double LayoutRound(double value, double scaleFactor)
+		private static double LayoutRound(double value, double scaleFactor)
 		{
 			double returnValue = value;
 
@@ -1213,7 +1213,7 @@ namespace Windows.UI.Xaml
 			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / DisplayInformation.BaseDpi; // 100%
 		}
 
-		double XcpRound(double x)
+		private static double XcpRound(double x)
 		{
 			return Math.Round(x);
 		}

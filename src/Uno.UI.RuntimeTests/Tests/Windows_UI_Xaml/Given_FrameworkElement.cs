@@ -19,6 +19,8 @@ using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Automation;
 using Uno.Extensions;
+
+
 #if __IOS__
 using UIKit;
 #endif
@@ -330,6 +332,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
 			});
 #endif
+
+		public partial class MyGrid : Grid
+		{
+			public Size AvailableSizeUsedForMeasure { get; private set; }
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				AvailableSizeUsedForMeasure = availableSize;
+				return base.MeasureOverride(availableSize);
+			}
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -694,6 +706,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				sut.BaseUri);
 		}
 
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HasNativeChildren_Should_Measure_And_Arrange()
+		{
+			var sut = new MyNativeContainer() { Width = 100, Height = 100 };
+			var nativeView = new UILabel() { Text = "Hello Uno Platform" };
+
+			sut.AddChild(nativeView);
+
+			var hostPanel = new Grid { Children = { sut } };
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, sut.Subviews.Length);
+
+			Assert.AreEqual(100, nativeView.Frame.Width);
+			Assert.AreEqual(100, nativeView.Frame.Height);
+
+			Assert.AreEqual(0, nativeView.Frame.X);
+			Assert.AreEqual(0, nativeView.Frame.Y);
+		}
+#endif
+
 #if UNO_REFERENCE_API
 		// Those tests only validate the current behavior which should be reviewed by https://github.com/unoplatform/uno/issues/2895
 		// (cf. notes in the tests)
@@ -765,16 +802,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	}
 
-	public partial class MyGrid : Grid
-	{
-		public Size AvailableSizeUsedForMeasure { get; private set; }
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			AvailableSizeUsedForMeasure = availableSize;
-			return base.MeasureOverride(availableSize);
-		}
-	}
-
 	public partial class MyControl01 : FrameworkElement
 	{
 		public List<Size> MeasureOverrides { get; } = new List<Size>();
@@ -800,6 +827,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
 		}
 	}
+
+	public partial class MyNativeContainer : FrameworkElement { }
 
 	public partial class AspectRatioView : FrameworkElement
 	{

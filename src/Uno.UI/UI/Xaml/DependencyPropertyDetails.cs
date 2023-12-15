@@ -22,20 +22,23 @@ namespace Windows.UI.Xaml
 		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
-		private static readonly ArrayPool<object?> _pool = ArrayPool<object?>.Shared;
 		private object?[]? _stack;
 		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
 		private Flags _flags;
 		private DependencyPropertyCallbackManager? _callbackManager;
 
-		private const int MaxIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
-		private const int _stackLength = MaxIndex + 1;
+		private const int DefaultValueIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
+		private const int StackSize = DefaultValueIndex + 1;
+
+		private static readonly LinearArrayPool<object?> _pool = LinearArrayPool<object?>.CreateAutomaticallyManaged(StackSize, 1);
+
 		private static readonly object[] _unsetStack;
+
 		static DependencyPropertyDetails()
 		{
-			_unsetStack = new object[_stackLength];
-			for (var i = 0; i < _stackLength; i++)
+			_unsetStack = new object[StackSize];
+			for (var i = 0; i < StackSize; i++)
 			{
 				_unsetStack[i] = DependencyProperty.UnsetValue;
 			}
@@ -102,7 +105,7 @@ namespace Windows.UI.Xaml
 			hasInherits = false;
 		}
 
-		private object? GetDefaultValue()
+		internal object? GetDefaultValue()
 		{
 			if (!HasDefaultValueSet)
 			{
@@ -387,13 +390,12 @@ namespace Windows.UI.Xaml
 			{
 				if (_stack == null)
 				{
-					_stack = _pool.Rent(_stackLength);
+					_stack = _pool.Rent(StackSize);
 
-					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), _stackLength).CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, _stackLength));
+					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), StackSize)
+						.CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, StackSize));
 
-					var defaultValue = GetDefaultValue();
-
-					_stack[MaxIndex] = defaultValue;
+					_stack[DefaultValueIndex] = GetDefaultValue();
 
 					if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
 					{

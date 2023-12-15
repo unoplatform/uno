@@ -2,14 +2,26 @@
 uid: Uno.GettingStarted.UsingWizard.CIPipeline
 ---
 
-- **None**  
-    No CI pipeline will be created.
+### CI Pipeline
 
-- **Azure Pipelines**  
+- #### None
+    No CI pipeline will be created. This is the default option for both the blank and recommended presets.
+
+    ```
+    dotnet new unoapp -ci none
+    ```
+
+- #### Azure Pipelines
     Adds a YAML file that can be used to create a CI pipeline in Azure Pipelines.     
 
-- **GitHub Action**  
+    ```
+    dotnet new unoapp -ci azure
+    ```
+
+- #### GitHub Action  
     Adds a YAML file that can be used to create a CI pipeline in GitHub Actions.
 
+    ```
+    dotnet new unoapp -ci github
+    ```
 
-![CI Pipeline tab in the wizard](assets/cipipeline.jpg)

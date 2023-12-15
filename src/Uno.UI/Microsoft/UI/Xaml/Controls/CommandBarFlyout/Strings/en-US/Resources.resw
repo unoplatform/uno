@@ -223,4 +223,76 @@
   <data name="TextCommandLabelUndo" xml:space="preserve">
     <value>Undo</value>
   </data>
+  <data name="TextCommandDescriptionBackward" xml:space="preserve">
+    <value>Go to the previous item</value>
+  </data>
+  <data name="TextCommandDescriptionClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="TextCommandDescriptionDelete" xml:space="preserve">
+    <value>Delete the selected content</value>
+  </data>
+  <data name="TextCommandDescriptionForward" xml:space="preserve">
+    <value>Go to the next item</value>
+  </data>
+  <data name="TextCommandDescriptionOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="TextCommandDescriptionPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="TextCommandDescriptionPlay" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="TextCommandDescriptionSave" xml:space="preserve">
+    <value>Save your changes</value>
+  </data>
+  <data name="TextCommandDescriptionShare" xml:space="preserve">
+    <value>Share the selected content</value>
+  </data>
+  <data name="TextCommandDescriptionStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="TextCommandLabelBackward" xml:space="preserve">
+    <value>Backward</value>
+  </data>
+  <data name="TextCommandLabelClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="TextCommandLabelDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="TextCommandLabelForward" xml:space="preserve">
+    <value>Forward</value>
+  </data>
+  <data name="TextCommandLabelOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="TextCommandLabelPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="TextCommandLabelPlay" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="TextCommandLabelSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="TextCommandLabelShare" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="TextCommandLabelStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="TextCommandKeyboardAcceleratorKeyClose" xml:space="preserve">
+    <value>W</value>
+    <comment>{ValidChars="A-Z"}{MinLength=source}{MaxLength=source}Keyboard accelerator key for closing - Ctrl+W. Must be unique with respect to every other keyboard accelerator in this file.</comment>
+  </data>
+  <data name="TextCommandKeyboardAcceleratorKeyOpen" xml:space="preserve">
+    <value>O</value>
+    <comment>{ValidChars="A-Z"}{MinLength=source}{MaxLength=source}Keyboard accelerator key for opening - Ctrl+O. Must be unique with respect to every other keyboard accelerator in this file.</comment>
+  </data>
+  <data name="TextCommandKeyboardAcceleratorKeySave" xml:space="preserve">
+    <value>S</value>
+    <comment>{ValidChars="A-Z"}{MinLength=source}{MaxLength=source}Keyboard accelerator key for undoing - Ctrl+S. Must be unique with respect to every other keyboard accelerator in this file.</comment>
+  </data>
 </root>

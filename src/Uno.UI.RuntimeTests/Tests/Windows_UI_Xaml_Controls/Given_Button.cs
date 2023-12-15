@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -9,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -110,6 +112,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The button cannot be refocused
 			Assert.IsFalse(firstButton.Focus(FocusState.Programmatic));
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Tapped_PointerPressed_Is_Not_Raised()
+		{
+			var SUT = new Button()
+			{
+				Content = "text"
+			};
+
+			bool pressedInvoked = false;
+			SUT.PointerPressed += (_, _) => pressedInvoked = true;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+			finger.Press(SUT.GetAbsoluteBounds().GetCenter());
+			finger.Release();
+
+			Assert.IsFalse(pressedInvoked);
+		}
+#endif
 
 #if HAS_UNO && !__MACOS__
 		[TestMethod]

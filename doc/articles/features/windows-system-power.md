@@ -2,29 +2,31 @@
 uid: Uno.Features.WSPower
 ---
 
-# Uno Support for Windows.System.Power APIs
+# Battery Information
+
+> [!TIP]
+> This article covers Uno-specific information for `Windows.System.Power` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system.power
+
+ * You can use the `Windows.System.Power.PowerManager` class to query the battery and charging status of the device and subscribe to the related events when these change.
 
 ## `PowerManager`
 
-You can use the `Windows.System.Power.PowerManager` class to query the battery and charging status of the device and subscribe to the related events when these change.
-
 **Legend**
-  - ✔️  Supported
-  - 💬 Partially supported (see below for more details)
-  - ❌ Not supported
+  - ✔  Supported
+  - ✖ Not supported
 
 | Picker         | UWP/WinUI   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|-------|-------|-----|-----|
-| `BatteryStatus` | ✔️   | ✔️  | ✔️     | ✔️    |❌ ️   | ❌ | ❌ ️  |
-| `EnergySaverStatus` | ✔️   |  ❌ | ✔️     | ✔️    |❌ ️   | ❌ | ❌ ️  |
-| `PowerSupplyStatus` | ✔️   | ✔️  | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingChargePercent` | ✔️   | ✔️ | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingDischargeTime` | ✔️   | ✔️ |  ❌    | ❌ |❌ ️   | ❌ | ❌ ️  |
-| `BatteryStatusChanged` | ✔️   | ✔️  | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `EnergySaverStatusChanged` | ✔️   |  ❌ | ✔️     | ✔️    |❌ ️   | ❌ | ❌ ️  |
-| `PowerSupplyStatusChanged` | ✔️   | ✔️  | ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingChargePercentChanged` | ✔️   | ✔️| ✔️     | ✔️   |❌ ️   | ❌ | ❌ ️  |
-| `RemainingDischargeTimeChanged` | ✔️   | ✔️     |  ❌     |  ❌  |❌ ️   | ❌ | ❌ ️  |
+| `BatteryStatus` | ✔   | ✔  | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
+| `EnergySaverStatus` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
+| `PowerSupplyStatus` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingChargePercent` | ✔   | ✔ | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingDischargeTime` | ✔   | ✔ |  ✖    | ✖ |✖ ️   | ✖ | ✖ ️  |
+| `BatteryStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `EnergySaverStatusChanged` | ✔   |  ✖ | ✔     | ✔    |✖ ️   | ✖ | ✖ ️  |
+| `PowerSupplyStatusChanged` | ✔   | ✔  | ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingChargePercentChanged` | ✔   | ✔| ✔     | ✔   |✖ ️   | ✖ | ✖ ️  |
+| `RemainingDischargeTimeChanged` | ✔   | ✔     |  ✖     |  ✖  |✖ ️   | ✖ | ✖ ️  |
 
 ### Usage
 

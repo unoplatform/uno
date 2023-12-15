@@ -3,6 +3,8 @@
 using SkiaSharp;
 using Uno.UI.Composition;
 
+using Color = global::Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
+
 namespace Windows.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
@@ -21,6 +23,20 @@ namespace Windows.UI.Composition
 		private void UpdatePaint()
 		{
 			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+		}
+
+		/// <param name="color">color to set SKPaint to, null to reset</param>
+		internal void SetPaintColor(Color? color)
+		{
+			if (color is { } c)
+			{
+				_paint.Color = c;
+			}
+			else
+			{
+				_paint.Color = SKColors.Black; // resets to default, equivalent to `_paint.Color = new SKPaint().Color`
+			}
+			UpdatePaint();
 		}
 
 		internal override void Draw(in DrawingSession session)

@@ -6,7 +6,7 @@ uid: Uno.Development.SupportedFeatures
 
 ## Development Flow
 
-- Uno Platform's UWP XAML
+- Uno Platform's WinUI/UWP XAML
     - **Windows-first development**
     - **Faster compilation** for most of the development cycle, including UI code. iOS, Android, WebAssembly, macOS and Linux can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
@@ -15,8 +15,8 @@ uid: Uno.Development.SupportedFeatures
 - Conditional platform features access
     - All XAML controls have **access to native properties** through conditional XAML
     - Ability to **add native controls in XAML**
-- Full UWP availability at compile time
-  - Allows for the **compilation of open-source libraries** that depend only on UWP and multi-targeted nuget packages
+- Full WinUI/UWP availability at compile time
+  - Allows for the **compilation of open-source libraries** that depend only on WinUI/UWP and multi-targeted nuget packages
     - **XamlBehaviors library** support
 - macOS Compilation
 
@@ -50,6 +50,7 @@ uid: Uno.Development.SupportedFeatures
 - RelativeSource.Self
 
 ### Design Fidelity
+
 - Text Inlines Binding
 - Text Independent trimming and wrapping
 - Text Character Spacing
@@ -77,7 +78,7 @@ uid: Uno.Development.SupportedFeatures
 - Binding suspension and restoration
 - Expando Binding
 - DynamicObject Binding
-- DataTemplate and ControlTemplate reuse, pooling and prefetching
+- DataTemplate and ControlTemplate reuse, pooling, and prefetching
 
 ### ListView
 
@@ -94,7 +95,7 @@ uid: Uno.Development.SupportedFeatures
 
 ### Command Bar
 
-- UWP Command bar support
+- WinUI/UWP Command bar support
 - Native Command bar support (Image, title, back, Opacity, ...)
 - Global back button support
 
@@ -160,6 +161,7 @@ uid: Uno.Development.SupportedFeatures
 - ScrollBar
 
 ## WinUI Specific Controls (Pre 3.0)
+
 - [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
 

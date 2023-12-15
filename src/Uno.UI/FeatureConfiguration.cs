@@ -160,11 +160,6 @@ namespace Uno.UI
 			/// instead of weak references for some highly used fields, in common cases to improve the
 			/// overall performance.
 			/// </summary>
-			/// <remarks>
-			/// This feature is disabled on WebAssembly as it reveals or creates a memory corruption issue
-			/// in the garbage collector. This can be revisited when upgrading tests to .NET 5+.
-			/// See https://github.com/unoplatform/uno/issues/4730 for details.
-			/// </remarks>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
 				= true;
 		}
@@ -503,6 +498,12 @@ namespace Uno.UI
 			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
 			public static bool HideCaret { get; set; }
 
+			/// <summary>
+			/// Determines if a native (Gtk/Wpf) TextBox overlay should be used on the skia targets instead of the
+			/// Uno skia-based TextBox implementation.
+			/// </summary>
+			public static bool UseOverlayOnSkia { get; set; } = true;
+
 #if __ANDROID__
 			/// <summary>
 			/// The legacy <see cref="Windows.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
@@ -655,6 +656,11 @@ namespace Uno.UI
 			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
 			/// </summary>
 			public static bool DisablePointersSpecificEventPrevention { get; set; }
+
+			/// <summary>
+			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
+			/// </summary>
+			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
 		public static class VisualState

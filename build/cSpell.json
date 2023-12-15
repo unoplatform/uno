@@ -84,10 +84,12 @@
 	"UWP's",
 	"VSIX",
 	"walkthrough",
-	"WEBASSEMBLY"
+	"WEBASSEMBLY",
+	"Haptics"
   ],
   "ignoreWords": [
 	"ADAL",
+	"AEHD",
 	"appsettings",
 	"Authenticode",
 	"automagically",
@@ -107,10 +109,12 @@
 	"Krueger",
 	"libgtk",
 	"Liu's",
+	"macios",
 	"Matteo",
 	"McCaffrey",
 	"mdpi",
 	"Mergify",
+	"mlaunch",
 	"netstd",
 	"nventive",
 	"odel",
@@ -131,7 +135,9 @@
 	"Logpoints",
 	"addin",
 	"Yowza",
-	"unpackaged"
+	"unpackaged",
+	"GNSS",
+	"winappsdk"
   ],
   "patterns": [
 	{

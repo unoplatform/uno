@@ -66,6 +66,8 @@
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
 		<CompilerVisibleProperty Include="UnoForceHotReloadCodeGen" />
+		<CompilerVisibleProperty Include="UnoForceIncludeProjectConfiguration" />
+		<CompilerVisibleProperty Include="UnoForceIncludeServerProcessorsConfiguration" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
@@ -91,7 +93,6 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="UnoEnCLogPath" />
-		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
 		<CompilerVisibleProperty Include="UnoDisableBindableTypeProvidersGeneration" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
 		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />

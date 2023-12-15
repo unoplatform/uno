@@ -486,7 +486,7 @@ public class RemoteControlClient : IRemoteControlClient
 
 	private async Task InitializeServerProcessors()
 	{
-		if (AppType.Assembly.GetCustomAttributes(typeof(ServerProcessorsConfigurationAttribute), false) is ServerProcessorsConfigurationAttribute[] configs)
+		if (AppType.Assembly.GetCustomAttributes(typeof(ServerProcessorsConfigurationAttribute), false) is ServerProcessorsConfigurationAttribute[] { Length: > 0 } configs)
 		{
 			var config = configs.First();
 

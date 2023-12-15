@@ -254,7 +254,13 @@ namespace Uno.UI.Controls
 			scalableViews.ForEach(v => v.RefreshFont());
 		}
 
-		public override UIView HitTest(CGPoint point, UIEvent? uievent)
+		public override
+#if NET8_0_OR_GREATER
+			UIView?
+#else
+			UIView
+#endif
+			HitTest(CGPoint point, UIEvent? uievent)
 		{
 			if (!BypassCheckToCloseKeyboard && uievent is { Type: UIEventType.Touches })
 			{
@@ -469,7 +475,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private static bool GetNeedsKeyboard(UIView view)
+		private static bool GetNeedsKeyboard(UIView? view)
 		{
 			if (view == null)
 			{
@@ -481,7 +487,7 @@ namespace Uno.UI.Controls
 			return superViews.Any(superView => _attachedProperties.GetValue(superView, NeedsKeyboardAttachedPropertyKey, () => default(bool?)).GetValueOrDefault());
 		}
 
-		private static bool NeedsKeyboard(UIView view)
+		private static bool NeedsKeyboard(UIView? view)
 		{
 			return view is UISearchBar
 				|| view is UITextView
@@ -498,7 +504,7 @@ namespace Uno.UI.Controls
 				view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
 		}
 
-		private bool IsFocusable(UIView view)
+		private bool IsFocusable(UIView? view)
 		{
 			// Basic IsFocusable support that only works with buttons.
 			// This prevent the keyboard from being dismissed when tapping on a button that doesn't want focus.

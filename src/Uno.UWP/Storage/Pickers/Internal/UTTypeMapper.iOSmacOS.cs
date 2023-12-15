@@ -41,7 +41,7 @@ namespace Uno.Storage.Pickers.Internal
 		/// <returns>UTType identifier.</returns>
 		private static string GetFromExtension(string? fileExtension)
 		{
-			if (WinRTFeatureConfiguration.FileTypes.FileTypeToUTTypeMapping.TryGetValue(fileExtension, out var customUTType))
+			if (fileExtension is not null && WinRTFeatureConfiguration.FileTypes.FileTypeToUTTypeMapping.TryGetValue(fileExtension, out var customUTType))
 			{
 				return customUTType;
 			}

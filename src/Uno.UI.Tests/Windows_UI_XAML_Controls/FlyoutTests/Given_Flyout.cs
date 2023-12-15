@@ -49,6 +49,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			SUT.Arrange(new Rect(0, 0, 20, 20));
 
 			//button.Click;
+			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
 			Assert.AreEqual(button.LayoutSlot.X, flyout._popup.LayoutSlot.X);
@@ -174,6 +175,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			};
 
 			//button.Click;
+			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
 			var presenter = flyout.GetPresenter();
@@ -215,6 +217,7 @@ namespace Uno.UI.Tests.FlyoutTests
 			};
 
 			//button.Click;
+			button.Focus(FocusState.Programmatic);
 			flyout.ShowAt(button);
 
 			var presenter = flyout.GetPresenter();

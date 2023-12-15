@@ -42,7 +42,7 @@ root.Content = host;
 
 Hosting native WPF controls is supported through `ContentPresenter` and `ContentControl`.
 
-See this documentation about [embedding native controls](using-skia-embed-native-controls.md).
+See this documentation about [embedding native controls](xref:Uno.Skia.Embedding.Native).
 
 ## Upgrading to a later version of SkiaSharp
 

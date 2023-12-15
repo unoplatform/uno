@@ -52,6 +52,21 @@ namespace Uno.UI
 				.AtMost(maxSize)
 				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 
+			if (e is UIElement uiElement && uiElement.GetUseLayoutRounding())
+			{
+				// It is possible for max vars to be INF so be don't want to round those.
+
+				minSize.Width = uiElement.LayoutRound(minSize.Width);
+
+				if (double.IsFinite(maxSize.Width))
+					maxSize.Width = uiElement.LayoutRound(maxSize.Width);
+
+				minSize.Height = uiElement.LayoutRound(minSize.Height);
+
+				if (double.IsFinite(maxSize.Height))
+					maxSize.Height = uiElement.LayoutRound(maxSize.Height);
+			}
+
 			return (minSize, maxSize);
 		}
 
@@ -173,6 +188,20 @@ namespace Uno.UI
 			return new Size(
 				left.Width + right.Left + right.Right,
 				left.Height + right.Top + right.Bottom
+			);
+		}
+
+		[Pure]
+		internal static Size Subtract(this Size size, double width, double height)
+		{
+			if (width == default && height == default)
+			{
+				return size;
+			}
+
+			return new Size(
+				size.Width - width,
+				size.Height - height
 			);
 		}
 
