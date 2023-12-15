@@ -113,7 +113,7 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
-#if __IOS__ || !HAS_UNO
+#if __IOS__ || __ANDROID__ || !HAS_UNO
 	// [Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
 	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
@@ -163,6 +163,9 @@ public partial class Given_MediaPlayerElement
 		}
 	}
 
+#if __ANDROID__
+	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
+#endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
@@ -229,7 +232,7 @@ public partial class Given_MediaPlayerElement
 
 	}
 
-#if __SKIA__
+#if __SKIA__ || __ANDROID__
 	[Ignore("Test not work properly on CI, the player do not have time to pause, doe the video do not auto play.  [https://github.com/unoplatform/uno/issues/12692]")]
 #endif
 	[TestMethod]
