@@ -22,7 +22,7 @@ public partial class Given_PipsPager
 #if __WASM__
 	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
 #endif
-	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages()
+	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Horizontal()
 	{
 		var SUT = new PipsPager
 		{
@@ -41,5 +41,31 @@ public partial class Given_PipsPager
 
 		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
 		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width - 5, scrolledScreenshot.Height / 2, color);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+#if __WASM__
+	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
+#endif
+	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Vertical()
+	{
+		var SUT = new PipsPager
+		{
+			NumberOfPages = 7,
+			MaxVisiblePips = 5
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var initialScreenshot = await UITestHelper.ScreenShot(SUT);
+
+		var color = initialScreenshot.GetPixel(initialScreenshot.Width / 2, initialScreenshot.Height - 5);
+
+		SUT.SelectedPageIndex = 3;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
+		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width / 2, scrolledScreenshot.Height - 5, color);
 	}
 }

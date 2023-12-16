@@ -158,6 +158,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Markup
 			public const string MarkupHelper = "Uno.UI.Helpers.MarkupHelper";
+			public const string MarkupXamlBindingHelper = Markup + ".XamlBindingHelper";
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
 		}

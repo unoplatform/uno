@@ -13,6 +13,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter
 	{
+		internal uint NaturalVideoWidth => MediaPlayer?.NaturalVideoWidth ?? 0;
+		internal uint NaturalVideoHeight => MediaPlayer?.NaturalVideoHeight ?? 0;
+
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
 			Add(videoSurface as _View);

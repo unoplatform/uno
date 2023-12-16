@@ -194,10 +194,29 @@ public partial class PipsPager : Control
 	{
 		if (m_pipsPagerScrollViewer?.Presenter is { } presenter)
 		{
-			var canHorizontallyScroll = presenter.CanHorizontallyScroll;
-			presenter.CanHorizontallyScroll = true;
+			bool canScroll;
+			if (Orientation is Orientation.Horizontal)
+			{
+				canScroll = presenter.CanHorizontallyScroll;
+				presenter.CanHorizontallyScroll = true;
+			}
+			else
+			{
+				canScroll = presenter.CanVerticallyScroll;
+				presenter.CanVerticallyScroll = true;
+			}
+
 			var result = base.MeasureOverride(availableSize);
-			presenter.CanHorizontallyScroll = canHorizontallyScroll;
+
+			if (Orientation is Orientation.Horizontal)
+			{
+				presenter.CanHorizontallyScroll = canScroll;
+			}
+			else
+			{
+				presenter.CanVerticallyScroll = canScroll;
+			}
+
 			return result;
 		}
 
