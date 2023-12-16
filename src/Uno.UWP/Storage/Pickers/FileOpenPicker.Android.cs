@@ -19,6 +19,9 @@ namespace Windows.Storage.Pickers
 		private static TaskCompletionSource<Intent?>? _currentFileOpenPickerRequest;
 
 		private const string StorageIdentifierFormatString = "Uno.FileOpenPicker.{0}";
+		private const string AnyWildcard = "*/*";
+		private const string ImageWildcard = "image/*";
+		private const string VideoWildcard = "video/*";
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
@@ -72,10 +75,15 @@ namespace Windows.Storage.Pickers
 				intent.PutExtra(Android.Provider.DocumentsContract.ExtraInitialUri, uri);
 			}
 
-			intent.SetType("*/*");
-
-			var mimeTypes = GetMimeTypes();
-			intent.PutExtra(Intent.ExtraMimeTypes, mimeTypes);
+			intent.SetType(GetMimeType());
+			// We have already set the intent type based on the SuggestedStartLocation from above,
+			// which constraints to the broad category of any-file, any-image or any-video.
+			// To preserve the picture or video ones, we must not include any extra mime type,
+			// that is less restrictive than what is suggested by SuggestedStartLocation.
+			if (GetExtraMimeTypes() is { } extraMimeTypes)
+			{
+				intent.PutExtra(Intent.ExtraMimeTypes, extraMimeTypes);
+			}
 
 			_currentFileOpenPickerRequest = new TaskCompletionSource<Intent?>();
 
@@ -122,11 +130,22 @@ namespace Windows.Storage.Pickers
 			return FilePickerSelectedFilesArray.Empty;
 		}
 
-		private string[] GetMimeTypes()
+		private string GetMimeType()
+		{
+			return SuggestedStartLocation switch
+			{
+				PickerLocationId.PicturesLibrary => ImageWildcard,
+				PickerLocationId.VideosLibrary => VideoWildcard,
+
+				_ => AnyWildcard,
+			};
+		}
+
+		private string[]? GetExtraMimeTypes()
 		{
 			if (FileTypeFilter.Contains("*"))
 			{
-				return new[] { "*/*" };
+				return null;
 			}
 
 			List<string> mimeTypes = new List<string>();
@@ -135,7 +154,7 @@ namespace Windows.Storage.Pickers
 			if (mimeTypeMap is null)
 			{
 				// when map is unavailable (probably never happens, but Singleton returns nullable)
-				return new[] { "*/*" };
+				return null;
 			}
 
 			foreach (string oneExtensionForLoop in FileTypeFilter)
@@ -181,7 +200,7 @@ namespace Windows.Storage.Pickers
 
 					if (!mimeTypesFromUno.Any())
 					{
-						return new[] { "*/*" };
+						return null;
 					}
 
 					foreach (var oneUnoMimeType in mimeTypesFromUno)
@@ -191,11 +210,8 @@ namespace Windows.Storage.Pickers
 							mimeTypes.Add(oneUnoMimeType);
 						}
 					}
-
 				}
-
 			}
-
 
 			return mimeTypes.ToArray();
 		}
