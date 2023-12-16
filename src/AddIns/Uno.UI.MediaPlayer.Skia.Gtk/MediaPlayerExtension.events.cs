@@ -133,14 +133,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player?.SetVolume(volume);
 	}
 
-	private void OnVideoRatioChanged(object? sender, object? e)
+	private void OnNaturalVideoDimensionChanged()
 	{
 		if (_player is not null
 			&& _player.IsVideo
 			&& Events is not null)
 		{
 			IsVideo = _player.IsVideo;
-			Events?.RaiseVideoRatioChanged(Math.Max(1, (double)_player.VideoRatio));
+			Events?.RaiseNaturalVideoDimensionChanged();
 		}
 	}
 

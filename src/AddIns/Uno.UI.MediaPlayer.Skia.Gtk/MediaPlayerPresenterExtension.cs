@@ -30,6 +30,10 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
 	private MediaPlayerPresenter? _owner;
 	private GtkMediaPlayer _player;
+
+	public uint NaturalVideoHeight => _player.NaturalVideoHeight;
+	public uint NaturalVideoWidth => _player.NaturalVideoWidth;
+
 	public MediaPlayerPresenterExtension(object owner)
 	{
 		if (owner is not MediaPlayerPresenter presenter)
