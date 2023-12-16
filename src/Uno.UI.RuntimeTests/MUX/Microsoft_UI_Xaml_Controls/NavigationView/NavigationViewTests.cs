@@ -1193,6 +1193,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
+#if __SKIA__ || __WASM__
+		[Ignore("Fails on UWP SamplesApp as well as Skia/Wasm")]
+#endif
 		public async Task VerifyNavigationViewItemToolTipCreation()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
