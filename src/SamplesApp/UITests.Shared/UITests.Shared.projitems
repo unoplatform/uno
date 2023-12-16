@@ -2542,6 +2542,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlock\RichTextBlock_Paragraph.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\WASM_Multiline.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7010,6 +7014,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Wrapping.xaml.cs">
       <DependentUpon>TextBox_Wrapping.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RichTextBlock\RichTextBlock_Paragraph.xaml.cs">
+      <DependentUpon>RichTextBlock_Paragraph.xaml</DependentUpon>
+    </Compile>	
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\WASM_Multiline.xaml.cs">
       <DependentUpon>WASM_Multiline.xaml</DependentUpon>
     </Compile>

@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlock.RichTextBlock_Paragraph" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+
+		<TextBlock Grid.Column="0" Text="RichTextBlock" TextDecorations="Underline"/>
+
+		<RichTextBlock x:Name="TestRichTextBlock" Grid.Column="0" Margin="0,50,0,0"
+					   TextIndent="20" Style="{StaticResource BodyRichTextBlockStyle}">
+			<Paragraph>
+				<Bold FontSize="28">Is this the right control?</Bold>
+				<LineBreak FontSize="14"/>
+			</Paragraph>
+			<Paragraph>
+				<Run>Use a</Run>
+				<Bold>RichTextBlock</Bold>
+				<Run>
+					when you need support for multiple paragraphs, multi-column or other complex text layouts, or inline UI elements like images.
+				</Run>
+				<LineBreak/>
+			</Paragraph>
+			<Paragraph>
+				<Run>Use a</Run>
+				<Bold>TextBlock</Bold>
+				<Run>
+					to display most read-only text in your app. You can use it to display single-line or multi-line text, inline hyperlinks, and text with formatting like bold, italic, or underlined. TextBlock provides a simpler content model, so it's typically easier to use, and it can provide better text rendering performance than RichTextBlock. It's preferred for most app UI text. Although you can put line breaks in the text, TextBlock is designed to display a single paragraph and doesn't support text indentation.
+				</Run>
+				<LineBreak/>
+			</Paragraph>
+			<Paragraph>
+				<Run>For more info about choosing the right text control, see the</Run>
+				<Hyperlink Foreground="OrangeRed" NavigateUri="https://learn.microsoft.com/en-us/windows/apps/design/controls/text-controls">
+					Text controls
+				</Hyperlink>
+				<Run>article.</Run>
+			</Paragraph>
+		</RichTextBlock>
+
+		<Button x:Name="Button0" Grid.Column="0" Content="Add Paragraph" Click="Button_Click0"
+				HorizontalAlignment="Right"/>
+
+		<TextBlock Grid.Column="1" Text="TextBlock" TextDecorations="Underline"/>
+		
+		<TextBlock x:Name="TestTextBlock" Grid.Column="1" TextWrapping="Wrap"
+				   Margin="0,50,0,0">
+			<Span>
+				<Bold FontSize="28">Is this the right control?</Bold>
+				<LineBreak/>
+				<LineBreak/>
+			</Span>
+			<Span>
+				<Run>Use a</Run>
+				<Bold>RichTextBlock</Bold>
+				<Run>
+					when you need support for multiple paragraphs, multi-column or other complex text layouts, or inline UI elements like images.
+				</Run>
+				<LineBreak/>
+				<LineBreak/>
+			</Span>
+			<Span>
+				<Run>Use a</Run>
+				<Bold>TextBlock</Bold>
+				<Run>
+					to display most read-only text in your app. You can use it to display single-line or multi-line text, inline hyperlinks, and text with formatting like bold, italic, or underlined. TextBlock provides a simpler content model, so it's typically easier to use, and it can provide better text rendering performance than RichTextBlock. It's preferred for most app UI text. Although you can put line breaks in the text, TextBlock is designed to display a single paragraph and doesn't support text indentation.
+				</Run>
+				<LineBreak/>
+				<LineBreak/>
+			</Span>
+			<Span>
+				<Run>For more info about choosing the right text control, see the</Run>
+				<Hyperlink Foreground="OrangeRed" NavigateUri="https://learn.microsoft.com/en-us/windows/apps/design/controls/text-controls">
+					Text controls
+				</Hyperlink>
+				<Run>article.</Run>
+			</Span>
+		</TextBlock>
+
+		<Button x:Name="Button1" Grid.Column="1" Content="Add Span" Click="Button_Click1"
+				HorizontalAlignment="Right"/>
+
+	</Grid>
+</UserControl>
