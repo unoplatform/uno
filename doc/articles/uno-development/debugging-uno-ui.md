@@ -5,15 +5,16 @@ uid: Uno.Contributing.DebuggingUno
 # Debugging Uno.UI
 
 > [!Note]
-> [Find instructions for building the Uno.UI solution here.](building-uno-ui.md) 
+> [Find instructions for building the Uno.UI solution here.](xref:Uno.Contributing.BuildingUno) 
 
 ## Debugging Uno.UI samples
 
-To debug the SamplesApp in the Uno.UI solution, which includes an extensive set of samples and test cases for the controls supported by Uno.UI, as well as non-UI features:
+To debug the **SamplesApp** in the Uno.UI solution, which includes an extensive set of samples and test cases for the controls supported by Uno.UI, as well as non-UI features:
 
 1. Clone the repo, and ensure using a short target path, e.g. _D:\uno_ etc.  
-This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
-2. Open the solution filter in Visual Studio for the target platform you wish to run on, [as detailed here](building-uno-ui.md).
+   > [!NOTE] 
+   > This is required to avoid path length limitations in the .NET framework being used by Visual Studio.
+2. Open the solution filter in Visual Studio for the target platform you wish to run on, [as detailed here](xref:Uno.Contributing.BuildingUno).
 3. Set `SamplesApp.[TargetPlatform]` as the selected Startup Project.
 4. Launch the samples app from Visual Studio.
 
@@ -21,23 +22,23 @@ See [this article](working-with-the-samples-apps.md) for more information on wor
 
 ## Debugging Uno in another application
 
-It's also easy to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
+It is also possible to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
 
-This is useful if you're debugging a problem that can't easily be reproduced outside the context of the app where it was discovered. 
+This is useful when debugging a problem that can't easily be reproduced outside the context of the app where it was discovered. 
 
 It can even speed up your development loop when working on a new feature or fixing a bug with a standalone repro, because a small 'Hello World' app builds considerably faster than the full SamplesApp.
 
-First, you'll need to install, in the app you want to debug with, a published Uno package version which is close to your branch's code, preferably a `-dev.xxx` version. Make sure update all `Uno.UI.*` packages to the same version.
+First, you'll need to install, in the app you want to debug with, a published Uno package version which is close to your branch's code, preferably a `-dev.xxx` version. Make sure update all `Uno.WinUI.*` packages to the same version.
 
-Then, here are the steps to use a local build of Uno.UI in another application:
+Then, here are the steps to use a local build of Uno.WinUI in another application:
 
-1. Configure Uno.UI to build for the target platform you wish to debug, [as detailed here](building-uno-ui.md).
-1. By default the Uno.UI solution on the master branch is building using the UWP API set. If you want to build against the WinUI 3 API set, you can checkout the `generated/master/winui-autoconvert` branch. See [this section](winui-conversion.md) for details on this branch.
+1. Configure the Uno.UI solution to build for the target platform you wish to debug, [as detailed here](xref:Uno.Contributing.BuildingUno).
+1. By default the Uno.UI solution on the master branch is building using the WinUI API set. If you want to build against the UWP API set, you can checkout the `generated/master/uwp-autoconvert` branch. See [this section](xref:Uno.Contributing.UWPConversion) for details on this branch.
 2. Close any instances of Visual Studio with the Uno.UI solution opened.
 3. Open the solution containing the application you wish to debug to ensure the package is restored & cached.
-4. Note the NuGet version of Uno.UI (or Uno.UI.WebAssembly/Uno.UI.Skia) being used by the application (eg `3.10.0-dev.432`).
+4. Note the NuGet version of Uno.WinUI (or Uno.WinUI.WebAssembly/Uno.WinUI.Skia) being used by the application (eg `5.1.0-dev.432`).
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
-5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->`.
+5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` as well as the `UnoTargetFrameworkOverride` to match your app's debugging target.
 6. Replace the version number with the version being used by the application you wish to debug.
 7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). 
 
@@ -73,7 +74,7 @@ If this is the case:
 - Make sure to build the app once to populate the nuget cache
 - Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia**) to replace the binaries with your debug ones
 - Rebuild your app and debug your again
-- Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the WinUI flavor [using this conversion tool](winui-conversion.md).
+- Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the UWP flavor [using this conversion tool](xref:no.Contributing.UWPConversion).
 
 ## Microsoft Source Link support
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to
