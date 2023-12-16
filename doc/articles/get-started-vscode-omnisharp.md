@@ -13,7 +13,7 @@ The **C# extension** can only work on the legacy OmniSharp mode when the **C# De
 * Select it and click on the **Uninstall** button
 
 > [!TIP]
-> You might have to uninstall other extensions (e.g. MAUI) that depends on C# DevKit before being able to uninstall it.
+> You might have to uninstall other extensions (e.g. MAUI) that depend on C# DevKit before being able to uninstall it.
 
 ### Enable OmniSharp mode
 
