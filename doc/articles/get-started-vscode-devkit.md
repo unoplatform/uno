@@ -9,7 +9,7 @@ uid: Uno.GetStarted.vscode.DevKit
 
 ## Ensure you are using either .NET 8 (or later) or Uno.WinUI 5.0.116 (or later)
 
-To support C# DevKit the Uno Platform extension needs to run on .NET 8 (or later) or use Uno 5.0.116 (or later).
+C# DevKit requires Uno Platform extension 0.12 or later, and the projects need .NET 8 (or later) or use Uno Platform 5.0.116 (or later).
 
 ### .NET 8
 

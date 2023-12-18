@@ -19,9 +19,11 @@ The **C# extension** can only work on the legacy OmniSharp mode when the **C# De
 
 * Open the VS Code Settings using `Ctrl` + `,` (or `⌘` + `,` on a Mac)
 * Search for `useOmnisharp`
+    ![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
 * Enable it (checkbox)
-
-![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
+* Search for `preferCSharpExtension`
+    ![preferCSharpExtension](Assets/quick-start/vs-code-preferCSharpExtension.png)
+* Enable it (checkbox)
 
 ### Reload the window
 
