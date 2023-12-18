@@ -94,11 +94,8 @@ grep -r "net::ERR_INSUFFICIENT_RESOURCES" $UNO_UITEST_SCREENSHOT_PATH && (echo "
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
-if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-	dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
-else
-	dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS || true
-fi
+## Fail the build when no test results could be read
+dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS || true
 
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 popd
