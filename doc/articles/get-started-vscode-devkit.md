@@ -2,15 +2,16 @@
 uid: Uno.GetStarted.vscode.DevKit
 ---
 
-## How to switch to C# DevKit Mode
+# How to switch to C# DevKit Mode
 
-Note: Due to the [unavailability](https://github.com/microsoft/vscode-dotnettools/issues/765) of the **C# DevKit extension** on [OpenVSX](https://open-vsx.org), users of VSCodium, Gitpod... are always on the OmniSharp mode.
+> [!NOTE]
+> Due to the [unavailability](https://github.com/microsoft/vscode-dotnettools/issues/765) of the **C# DevKit extension** on [OpenVSX](https://open-vsx.org), users of VSCodium, Gitpod... are always on the OmniSharp mode. Visit [this guide](xref:Uno.GetStarted.vscode.OmniSharp) on how to use Omnisharp.
 
-### Ensure you are using either .NET 8 (or later) or Uno.WinUI 5.0.116 (or later)
+## Ensure you are using either .NET 8 (or later) or Uno.WinUI 5.0.116 (or later)
 
 To support C# DevKit the Uno Platform extension needs to run on .NET 8 (or later) or use Uno 5.0.116 (or later).
 
-#### .NET 8
+### .NET 8
 
 From a terminal (external or inside VS Code) type:
 
@@ -22,7 +23,7 @@ If the version listed is older than `8.0.100` then, inside VS Code, press `F1` a
 
 If you have version `8.0.100` (or later) then there's no need to update your version of .NET or Uno.
 
-#### Uno.WinUI 5.0.116 or later
+### Uno.WinUI 5.0.116 or later
 
 The latest versions of Uno ships with an additional MSBuild task, so running .NET 8 is not required.
 
@@ -36,17 +37,10 @@ If you have version 5.0.116 (or later), then there's no need to update your vers
 
 If you need to update you can use a tool like [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated) to update your dependencies to the latest available. Also see [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases]) for additional information about updating your project(s).
 
-### Install the **C# DevKit** extension
-
-Press `F1`, select `Extensions: Install Extensions`, search the marketplace for **C# DevKit** and click the **Install** button.
-
-> [!TIP]
-> There is no need to disable `useOmniSharp` inside the settings. It is ignored when the **C# DevKit** extension is loaded by VS Code.
-
-### Reload the window
+## Reload the window
 
 Press `F1`, select `Developer: Reload Window` and select it. VS Code will reload itself and restart its extensions.
 
-### Validation
+## Validation
 
 You can verify that the **Uno Platform** extension is working by looking at the **Uno Platform** logs inside the **Output** pane by using `Ctrl` + `Shift` + `U` (`Shift` + `⌘` + `,` on a Mac). After reloading the window you should see a line with `[Info] Running in DevKit mode` inside the logs.

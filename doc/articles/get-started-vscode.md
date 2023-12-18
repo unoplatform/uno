@@ -30,23 +30,16 @@ If you are new to VS Code or to developing C# applications with VS Code take the
 1. If this is not a new installation then try to update it. Press `F1` and type `Code: Check for Updates...` and select it. A notification will tell you if an update is available.
 1. Configure VS Code to start from the command-line using the `code` command. This can be configured by following [these instructions](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
 1. Install the **Uno Platform** extension. Press `F1` and type `Extensions: Install Extensions`, search the marketplace for **Uno Platform** and click the **Install** button.
-1. Open the VS Code Settings using `Ctrl` + `,` (or `⌘` + `,` on a Mac), then search for `useOmnisharp` and enable it (checkbox)
-    ![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
 
-No other extensions are needed to complete this guide.
+## OmniSharp Legacy Mode
 
-## C# Dev Kit (Experimental) or OmniSharp (Legacy) Modes
+Starting **Uno Platform extension** version 0.12, running in VS Code automatically uses the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`. 
 
-Starting from 0.12 of the **Uno Platform extension** supports the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` (with OmniSharp enabled) **or** the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit`. Depending on your configuration some manual changes might be needed.
+If you are using GitPod or any [Open VSX environment](https://open-vsx.org), you will be automatically using the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` with OmniSharp enabled.
 
-Note: Microsoft has [not completed nor formalized](https://github.com/dotnet/vscode-csharp/issues/5805) the APIs required for integration with C# DevKit. As such our support is, like the APIs, **experimental** and might break if/when breaking changes are introduced in the Microsoft extensions.
-
-- [How to switch to C# DevKit Mode](xref:Uno.GetStarted.vscode.DevKit)
-- [How to switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
-
-### Detecting the current mode of operation
-
-Inside the **Output** pane using `Ctrl` + `Shift` + `U` (`Shift` + `⌘` + `,` on a Mac), select the **Uno Platform** logs from the combobox. Near the top of the logs you should see a line with either `[Info] Running in OmniSharp mode` or `[Info] Running in DevKit mode`.
+To switch between C# Dev Kit and OmniSharp:
+- [Switch to C# DevKit Mode](xref:Uno.GetStarted.vscode.DevKit)
+- [Switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
 
 ## Platform specific setup
 
