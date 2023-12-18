@@ -37,7 +37,7 @@ While the new templates simplify adding a splash screen, this article covers how
     > [!NOTE]
     > Regardless if you provide a single image or multiple images, you would always refer to this image as `SplashScreen.png`.
 
-* Add these images under the `Assets\` folder of the `MyApp` Class Library project, right-click on each image, go to `Properties` and set their build action as `Content`.
+* Add these images under the `Assets\` folder of the `MyApp` Class Library project, right-click on each image, go to `Properties`, and set their build action as `Content`.
 
 
 ### 2. Windows
@@ -83,9 +83,9 @@ While the new templates simplify adding a splash screen, this article covers how
     > Before Uno.UI 4.5, the `@drawable/assets_splashscreen` source should be `@drawable/splashscreen`. 
     > See the [breaking changes](https://github.com/unoplatform/uno/releases/tag/4.5.9) section of that release.
 
-* Make sure `splash.xml` is added as an `AndroidResource` in the Droid project file : `[Project-name].Droid.csproj`.
+* Make sure `splash.xml` is added as an `AndroidResource` in the Droid project file: `[Project-name].Droid.csproj`.
 
-    * This is not always done automatically, and may occur if `splash.xml` was created and added outside the IDE.
+    * This is not always done automatically and may occur if `splash.xml` was created and added outside the IDE.
         ```xml
         <ItemGroup>
             <AndroidResource Include="Resources\drawable\splash.xml" />
@@ -170,7 +170,7 @@ While the new templates simplify adding a splash screen, this article covers how
         ```
 
     > [!NOTE]
-    > The section below contains properties that are optional. If nothing is assigned to them, the value of `splashScreenColor` will be used under both themes as the background color.
+    > The section below contains optional properties. If nothing is assigned to them, the value of `splashScreenColor` will be used under both themes as the background color.
 
 
     > [!TIP]
