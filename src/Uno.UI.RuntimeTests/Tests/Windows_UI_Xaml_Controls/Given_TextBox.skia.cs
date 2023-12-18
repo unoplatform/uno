@@ -1943,12 +1943,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Text_Cleared_No_Paint()
 		{
-			if (System.Reflection.Assembly.GetEntryAssembly().FullName.Contains("SamplesApp.Skia.Wpf", StringComparison.Ordinal))
-			{
-				// The test fails on WPF, but the selection seems to work correctly.
-				return;
-			}
-
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox

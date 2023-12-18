@@ -786,6 +786,7 @@ namespace Windows.UI.Xaml
 				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
 				{
 					root.Arrange(bounds);
+					root.XamlRoot.RaiseInvalidateRender();
 				}
 				else if (root.GetContext().EventManager.HasPendingViewportChangedEvents)
 				{

@@ -14,6 +14,11 @@ public sealed partial class XamlRoot
 
 	internal void InvalidateArrange() => VisualTree.RootElement.InvalidateArrange();
 
+	internal void RaiseInvalidateRender()
+	{
+		InvalidateRender();
+	}
+
 	internal void QueueInvalidateRender()
 	{
 		if (!_renderQueued)
