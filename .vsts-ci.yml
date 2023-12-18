@@ -44,6 +44,7 @@ resources:
   containers:
   - container: nv-bionic-wasm
     image: unoplatform/wasm-build:3.0
+    options: "--shm-size=2gb"
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
