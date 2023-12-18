@@ -462,7 +462,7 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
-        - name: WinUI 2 controls
+        - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
         - name: x:Bind
           href: features/windows-ui-xaml-xbind.md
