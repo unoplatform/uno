@@ -95,7 +95,7 @@ pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 ## Fail the build when no test results could be read
-dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS || true
+dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 popd
