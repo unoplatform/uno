@@ -200,6 +200,10 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
