@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+#if HAS_UNO_WINUI
+using Microsoft.UI.Windowing;
+#endif
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {
@@ -29,12 +20,81 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 			this.InitializeComponent();
 		}
 
-		private void SetColor_Click(object sender, RoutedEventArgs e)
+		private void SetAppViewTitleBarBackgroundColor_Click(object sender, RoutedEventArgs e)
 		{
 			try
 			{
 				var colorString = StringToColor(BackgroundColorTextBox.Text);
 				ApplicationView.GetForCurrentView().TitleBar.BackgroundColor = colorString;
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage.Text = ex.Message;
+			}
+		}
+
+		private void SetAppViewTitleBarForegroundColor_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				var colorString = StringToColor(ForegroundColorTextBox.Text);
+				ApplicationView.GetForCurrentView().TitleBar.ForegroundColor = colorString;
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage.Text = ex.Message;
+			}
+		}
+
+		private void SetAppWindowTitleBarBackgroundColor_Click(object sender, RoutedEventArgs e)
+		{
+#if HAS_UNO_WINUI
+			try
+			{
+				var colorString = StringToColor(BackgroundColorTextBox.Text);
+				AppWindow.GetFromWindowId(default).TitleBar.BackgroundColor = colorString;
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage.Text = ex.Message;
+			}
+#endif
+		}
+
+		private void SetAppWindowTitleBarForegroundColor_Click(object sender, RoutedEventArgs e)
+		{
+#if HAS_UNO_WINUI
+			try
+			{
+				var colorString = StringToColor(ForegroundColorTextBox.Text);
+				AppWindow.GetFromWindowId(default).TitleBar.ForegroundColor = colorString;
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage.Text = ex.Message;
+			}
+#endif
+		}
+
+		private void SetStatusBarBackgroundColor_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				var colorString = StringToColor(BackgroundColorTextBox.Text);
+				Windows.UI.ViewManagement.StatusBar.GetForCurrentView().BackgroundColor = colorString;
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage.Text = ex.Message;
+			}
+		}
+
+		private void SetStatusBarForegroundColor_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				var colorString = StringToColor(ForegroundColorTextBox.Text);
+				Windows.UI.ViewManagement.StatusBar.GetForCurrentView().ForegroundColor = colorString;
 			}
 			catch (Exception ex)
 			{

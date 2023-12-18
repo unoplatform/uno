@@ -96,7 +96,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-#if !__WASM__
+#if !__WASM__ && !__ANDROID__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Color? BackgroundColor
 		{
@@ -141,7 +141,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-
+#if !__ANDROID__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Color? ForegroundColor
 		{
@@ -155,7 +155,7 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ForegroundColor");
 			}
 		}
-
+#endif
 
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Color? ButtonPressedForegroundColor

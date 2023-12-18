@@ -9,12 +9,20 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <StackPanel>
-		<TextBox x:Name="BackgroundColorTextBox" Header="Color" Text="#FF0000" />
-		<StackPanel Orientation="Horizontal">
-			<Button Click="SetColor_Click">Set color</Button>
-			<Button Margin="4,0,0,0" Click="ResetDefault_Click">Reset default</Button>
+	<ScrollViewer>
+		<StackPanel Spacing="8">
+			<TextBox x:Name="BackgroundColorTextBox" Header="Background color" Text="#FF0000" />
+			<TextBox x:Name="ForegroundColorTextBox" Header="Foreground color" Text="#FF0000" />
+			<StackPanel Orientation="Vertical" Spacing="8">
+				<Button Click="SetAppViewTitleBarBackgroundColor_Click">Set AppView title bar background color</Button>
+				<Button Click="SetAppViewTitleBarForegroundColor_Click">Set AppView title bar foreground color</Button>
+				<Button Click="SetAppWindowTitleBarBackgroundColor_Click">Set AppWindow title bar background color</Button>
+				<Button Click="SetAppWindowTitleBarForegroundColor_Click">Set AppWindow title bar foreground color</Button>
+				<Button Click="SetStatusBarBackgroundColor_Click">Set status bar background color</Button>
+				<Button Click="SetStatusBarForegroundColor_Click">Set status bar foreground color</Button>
+				<Button Margin="4,0,0,0" Click="ResetDefault_Click">Reset default</Button>
+			</StackPanel>
+			<TextBlock Text="" x:Name="ErrorMessage" Foreground="Red" />
 		</StackPanel>
-		<TextBlock Text="" x:Name="ErrorMessage" Foreground="Red" />
-	</StackPanel>
+	</ScrollViewer>
 </UserControl>

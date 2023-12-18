@@ -1,8 +1,7 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-
-namespace __Windows.UI.ViewManagement
+﻿
+namespace __Uno.UI.ViewManagement.Helpers
 {
-	internal partial class ApplicationViewTitleBar
+	internal partial class TitleBarHelper
 	{
 		internal static partial class NativeMethods
 		{
