@@ -36,9 +36,14 @@ namespace Uno.ReferenceImplComparer
 
 			var allNodes = doc.SelectNodes("//test-case");
 
-			Console.WriteLine(@"The test results file {inputFile} does not contain any results");
+			var isEmpty = allNodes?.Count == 0;
 
-			return allNodes?.Count == 0 ? 1 : 0;
+			if (isEmpty)
+			{
+				Console.WriteLine($"The test results file {inputFile} does not contain any results");
+			}
+
+			return isEmpty ? 1 : 0;
 		}
 
 		private static int ListFailedTests(string inputFile, string outputFile)
