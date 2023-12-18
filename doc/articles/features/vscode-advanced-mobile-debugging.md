@@ -12,7 +12,7 @@ Starting from Uno 4.8.26, the Uno Platform solution templates contains the appro
 
 Both [Source Link](https://github.com/dotnet/designs/blob/main/accepted/2020/diagnostics/source-link.md) and "Sources embedded inside PDB" features are used by Uno Platform and are supported by the extension.
 
-However only Android includes the `.pdb` of the referenced assemblies inside debug builds for net6.0. This makes the features unusable for iOS, macOS and MacCatalyst, see [issue](https://github.com/xamarin/xamarin-macios/issues/11879#issuecomment-1279452073).
+However only Android includes the `.pdb` of the referenced assemblies inside debug builds for net6.0. This makes the features unusable for iOS, macOS and Mac Catalyst, see [issue](https://github.com/xamarin/xamarin-macios/issues/11879#issuecomment-1279452073).
 
 This situation [should be](https://github.com/dotnet/sdk/issues/1458#issuecomment-1244736464) fixed with net7.0. A workaround for net6 mobile projects is to install [Cymbal](https://github.com/SimonCropp/Cymbal).
 

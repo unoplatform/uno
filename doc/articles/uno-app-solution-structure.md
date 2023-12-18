@@ -12,7 +12,7 @@ After creating a new solution called `MyApp`, it will contain the following proj
 
 ![Uno Platform solution structure](Assets/solution-structure.png)
 
-1. A `MyApp.[Platform].csproj` file for each platform that Uno Platform supports: Mobile (iOS/Android/MacCatalyst), Skia.Gtk, Wasm and Windows. These projects are known as **heads** for their respective platform. 
+1. A `MyApp.[Platform].csproj` file for each platform that Uno Platform supports: Mobile (iOS/Android/Mac Catalyst), Skia.Gtk, Wasm and Windows. These projects are known as **heads** for their respective platform.
 
     Head projects typically contain information like settings, metadata, dependencies, and also a list of files included in the project. Each of the head projects has a reference to the main class library of the application.
 
