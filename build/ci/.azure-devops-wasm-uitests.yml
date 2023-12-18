@@ -139,9 +139,9 @@ jobs:
         UITEST_TEST_TIMEOUT: '120s'
 
       net7_benchmarks:
-        SITE_SUFFIX: 'net7.0-UWP'
+        SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
-        UITEST_TEST_TIMEOUT: '120s'
+        UITEST_TEST_TIMEOUT: '1800s'
 
       net7_uwp_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-UWP'
