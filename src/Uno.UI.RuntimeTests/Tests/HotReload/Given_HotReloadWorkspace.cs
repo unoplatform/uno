@@ -56,7 +56,7 @@ internal partial class Given_HotReloadWorkspace
 	[Timeout(5 * 60 * 1000)]
 	[Filters]
 	// TODO: **IMPORTANT BEFORE MERGE** UNSKIP.
-	[Ignore("This is currently not working on WinUI branch!")]
+	//[Ignore("This is currently not working on WinUI branch!")]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
