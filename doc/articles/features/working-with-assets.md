@@ -8,7 +8,7 @@ Uno Platform automatically processes assets from your app's **Class Library Proj
 
 Support for automatic generation of assets multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
-Platform specific assets such as [`BundleResource`](https://learn.microsoft.com/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
+Platform-specific assets such as [`BundleResource`](https://learn.microsoft.com/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
 
 ## Supported asset types
 
@@ -52,7 +52,7 @@ You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsy
 
 ## Qualify an asset
 
-When developing Windows apps, developers can to load different assets at runtime based on attributes which qualify their visibility in the app UX. This allows you to tailor your app to different contexts to better suit users' hardware or language preferences.
+When developing Windows apps, developers can load different assets at runtime based on attributes that qualify their visibility in the app UX. This allows you to tailor your app to different contexts to better suit users' hardware or language preferences.
 
 For instance, such **qualifiers** can selectively load different assets depending on scale, language, theme preferences, etc. This feature is notably useful when supporting high DPI screens or the norms of differing regions.
 
