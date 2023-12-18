@@ -82,8 +82,8 @@
         href: external/uno.themes/doc/cupertino-getting-started.md
       - name: How to use Windows Community Toolkit
         href: uno-community-toolkit.md
-      - name: How to add a splash screen
-        href: splash-screen.md
+      - name: How to manually add a splash screen
+        href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
         href: guides/native-frame-nav-tutorial.md
       - name: How to consume a web API

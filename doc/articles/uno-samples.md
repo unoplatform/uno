@@ -115,12 +115,13 @@ An example of the Uno implementation of SkiaSharp creating a basic canvas with t
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SkiaSharpTest)
 
-### Splash Screen Sample
-An example showing how to set the splash/launch screen in Uno.  
+### Splash screen sample
+
+An example showing how to manually customize the splash screen for Uno Platform apps.
+
+[Follow the tutorial](xref:Uno.Development.SplashScreen)
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample)
-
-[Follow the tutorial](https://platform.uno/docs/articles/splash-screen.html)
 
 ### StatusBar Theme Color
 An example showing how to adjust the `StatusBar` and `CommandBar` dynamically based on the current light/dark theme.  
