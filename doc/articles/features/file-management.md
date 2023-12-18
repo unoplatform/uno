@@ -4,10 +4,10 @@ uid: Uno.Features.FileManagement
 
 # File Management
 
-> [!TIP]
-> This article covers Uno-specific information for file management. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/windows/uwp/files/
+File management allows shared reading and writing of files across all Uno Platform targets. This includes the ability to read files from the application package, as well as the ability to read and write files from the file system.
 
- * File management allows shared reading and writing of files across all Uno Platform targets
+> [!TIP]
+> This article covers Uno-specific information for file management. For a full description of the feature and instructions on using it, consult Microsoft's [section](https://learn.microsoft.com/windows/uwp/files/) on the topic.
 
 ## Supported features
 
@@ -52,26 +52,31 @@ Note that you can view the content of the **IndexedDB** in the Application tab o
 
 ## Support for `StorageFile.GetFileFromApplicationUriAsync`
 
-Uno Platform supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync`](https://docs.microsoft.com/en-us/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync).
+Uno Platform supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync(Uri)`](https://learn.microsoft.com/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync) method.
 
 Support per platform may vary:
-- On non-WebAssembly targets, the file is available directly as it is a part of the installed package.
-- On WebAssembly, the requested file is part of the application package on the remote server and is downloaded on demand to avoid increasing the initial application payload size. After it is requested for the first time, the file is then stored in the browser IndexedDB.
+- On WebAssembly targets, the requested file is part of the application package on the remote server and is downloaded on demand to avoid increasing the initial application payload size. After it is requested for the first time, the file is then stored in the browser IndexedDB.
+- Otherwise, the file is available directly as it is a part of the installed package.
 
-Here's how to use it:
+### General usage instructions
 
-```csharp
-var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyPackageFile.xml"));
-var content = await FileIO.ReadTextAsync(file);
-```
-Given than in the project there's the following declaration:
+Ensure that a declaration exists in your project file like the following:
+
 ```xml
 <ItemGroup>
     <Content Include="MyPackageFile.xml" />
 </ItemGroup>
 ```
 
+A URI with the `ms-appx:///` scheme can then be used to read a file's content:
+
+```csharp
+var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyPackageFile.xml"));
+var content = await FileIO.ReadTextAsync(file);
+```
+
 ### Support for Library provided assets
+
 Since Uno Platform 4.6, the `GetFileFromApplicationUriAsync` method supports reading assets provided by `ProjectReference` or `PackageReference` libraries, using the following syntax:
 
 Given a library or package named `MyLibrary01`, the following format can be used to read assets:
@@ -92,6 +97,6 @@ Make sure the server that hosts the file is configured accordingly.
 
 ## Support for `CachedFileManager`
 
-For all targets except for UWP/WinUI and WebAssembly, the `CachedFileManager` does not provide any functionality and its methods immediately return. This allows us to easily write code that requires deferring updates on UWP and sharing it across all targets.
+For all targets except WinUI/UWP and WebAssembly, the `CachedFileManager` does not provide any functionality and its methods immediately return. This allows us to easily write code that requires deferring updates on Windows but is shared across all targets.
 
-In the case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described in detail in [file pickers documentation](windows-storage-pickers.md#webassembly).
+In the case of WebAssembly, the behavior of `CachedFileManager` depends on whether the app uses the **File System Access API** or **Download picker**. This is described extensively within the [documentation](xref:Uno.Features.WSPickers#webassembly) for storage pickers.
