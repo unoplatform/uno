@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.OldValue, (Brush)e.NewValue)
 			)
 		);
@@ -104,6 +104,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
 				defaultValue: 1.0d,
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
 			)
 		);

@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
-				options: FrameworkPropertyMetadataOptions.AffectsArrange
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
 
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
-				options: FrameworkPropertyMetadataOptions.AffectsArrange
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
 

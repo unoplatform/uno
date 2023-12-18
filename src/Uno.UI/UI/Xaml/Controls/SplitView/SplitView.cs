@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
 					false,
-
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged(e)
 				)
 			);
@@ -240,6 +240,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
 					SplitViewPanePlacement.Left,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnPanePlacementChanged(e)
 				)
 			);

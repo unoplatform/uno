@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 					// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
 					// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 					// a different inheritance hierarchy, as is done for some controls with native styles.
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
 				)
 			);
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Padding DependencyProperty
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		public Thickness Padding
@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 		#region BorderThickness DependencyProperty
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		public Thickness BorderThickness

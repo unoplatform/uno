@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.None,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 				)
 			);
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 				)
 			);
@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					FontWeights.Normal,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
 				)
 			);
@@ -248,7 +248,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					14.0,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
 			);
@@ -270,7 +270,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					FontFamily.Default,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
 				)
 			);
@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					FontStyle.Normal,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 				)
 			);
@@ -340,6 +340,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 				)
 			);
@@ -515,7 +516,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);

@@ -1,9 +1,9 @@
 using System;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
-using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -53,7 +53,10 @@ namespace Windows.UI.Xaml.Controls
 				nameof(MediaPlayer),
 				typeof(Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(
+					default(Windows.Media.Playback.MediaPlayer),
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -102,7 +105,10 @@ namespace Windows.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(Stretch.Uniform, (s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
+				new FrameworkPropertyMetadata(
+					Stretch.Uniform,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) => ((MediaPlayerPresenter)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		#endregion
 
@@ -119,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(PosterSource),
 				typeof(ImageSource),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(ImageSource), OnPosterSourceChanged));
+				new FrameworkPropertyMetadata(default(ImageSource), FrameworkPropertyMetadataOptions.AffectsMeasure, OnPosterSourceChanged));
 
 		private static void OnPosterSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false, OnIsFullWindowChanged));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
 
 
 		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(MediaPlayer),
 				typeof(Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(default(Windows.Media.Playback.MediaPlayer), FrameworkPropertyMetadataOptions.AffectsMeasure, OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -272,7 +272,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 
@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(Stretch),
 				typeof(Stretch),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(Stretch.Uniform));
+				new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

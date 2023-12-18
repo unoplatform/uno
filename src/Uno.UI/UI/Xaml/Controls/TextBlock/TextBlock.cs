@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontStyle.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontStyleChanged()
 				)
 			);
@@ -173,6 +173,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextWrappingChanged()
 				)
 			);
@@ -202,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontWeights.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontWeightChanged()
 				)
 			);
@@ -237,6 +238,7 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
 					coerceValueCallback: CoerceText,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) =>
 						((TextBlock)s).OnTextChanged((string)e.OldValue, (string)e.NewValue)
 				)
@@ -279,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontFamily.Default,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontFamilyChanged()
 				)
 			);
@@ -309,7 +311,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 14.0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
 				)
 			);
@@ -339,6 +341,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
 			);
@@ -368,6 +371,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextTrimming.None,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextTrimmingChanged()
 				)
 			);
@@ -497,6 +501,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextAlignment.Left,
+					FrameworkPropertyMetadataOptions.AffectsArrange,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextAlignmentChanged()
 				)
 			);
@@ -527,6 +532,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextAlignment.Left,
+					FrameworkPropertyMetadataOptions.AffectsArrange,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnHorizontalTextAlignmentChanged()
 				)
 			);
@@ -547,9 +553,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
-			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(0d,
-				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
-			);
+			DependencyProperty.Register(
+				nameof(LineHeight),
+				typeof(double),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					0d,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged()));
 
 		private void OnLineHeightChanged()
 		{
@@ -570,10 +581,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineStackingStrategyProperty { get; } =
-			DependencyProperty.Register("LineStackingStrategy", typeof(LineStackingStrategy), typeof(TextBlock),
-				new FrameworkPropertyMetadata(LineStackingStrategy.MaxHeight,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged())
-			);
+			DependencyProperty.Register(
+				nameof(LineStackingStrategy),
+				typeof(LineStackingStrategy),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					LineStackingStrategy.MaxHeight,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineStackingStrategyChanged()));
 
 		private void OnLineStackingStrategyChanged()
 		{
@@ -595,12 +610,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty PaddingProperty { get; } =
 			DependencyProperty.Register(
-				"Padding",
+				nameof(Padding),
 				typeof(Thickness),
 				typeof(TextBlock),
-				new FrameworkPropertyMetadata((Thickness)Thickness.Empty,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged())
-			);
+				new FrameworkPropertyMetadata(
+					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnPaddingChanged()));
 
 		private void OnPaddingChanged()
 		{
@@ -627,7 +643,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)
 			);
@@ -657,7 +673,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
-					options: FrameworkPropertyMetadataOptions.Inherits,
+					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextDecorationsChanged()
 				)
 			);
