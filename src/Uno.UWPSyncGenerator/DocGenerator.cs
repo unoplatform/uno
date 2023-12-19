@@ -140,30 +140,24 @@ namespace Uno.UWPSyncGenerator
 									_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
 								}
 
-								var galleryLink = GetGalleryLink(viewName);
-								if (galleryLink != null)
+								List<string> options = new List<string>();
+								void AddOption(string text, string linkText, string link)
 								{
-									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can use the Gallery {Hyperlink("here", galleryLink)}.");
+									if (link is not null)
+									{
+										options.Add($"{text} {Hyperlink(linkText, link)}");
+									}
 								}
 
 								var galleryLink = GetGalleryLink(viewName);
 								var playgroundLink = GetPlaygroundLink(viewName);
-								
-								if (galleryLink is not null or playgroundLink is not null)
+
+								AddOption("use the", "Uno Gallery", galleryLink);
+								AddOption($"run your own tests on the", "Uno Playground", playgroundLink);
+
+								if (options.Count > 0)
 								{
-								    Lists<string> options = new();
-								    
-								    if(galleryLink is not null)
-								    {
-								       options .Add($"use the Uno Gallery {Hyperlink("here", galleryLink)}");
-								    }			
-								    	    
-								    if(playgroundLink is not null)
-								    {
-								       options .Add($"run your own tests on {formattedViewName} {Hyperlink("here", playgroundLink)} on {Hyperlink("Uno Playground", playgroundLink)}");
-								    }
-								    
-								    _sb.AppendParagraph($"To better understand how {formattedViewName} works, you can" + string.Join("or", options) + ".");
+									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can {string.Join(" or ", options)}.");
 								}
 
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
