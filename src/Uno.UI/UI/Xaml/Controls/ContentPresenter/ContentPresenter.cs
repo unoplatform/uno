@@ -801,9 +801,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		internal override void Enter(EnterParams @params)
+		internal override void Enter(EnterParams @params, int depth)
 		{
-			base.Enter(@params);
+			base.Enter(@params, depth);
 
 			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 			{

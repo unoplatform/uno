@@ -595,8 +595,10 @@ namespace Windows.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 
 		// Doesn't exactly match WinUI code.
-		internal virtual void Enter(EnterParams @params)
+		internal virtual void Enter(EnterParams @params, int depth)
 		{
+			Depth = depth;
+
 			if (@params.IsLive)
 			{
 				IsActiveInVisualTree = true;
@@ -614,7 +616,7 @@ namespace Windows.UI.Xaml
 					continue;
 				}
 
-				child.Enter(@params);
+				child.Enter(@params, depth + 1);
 			}
 
 			if (@params.IsLive)

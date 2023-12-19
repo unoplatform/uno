@@ -40,7 +40,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_FrameworkElement_And_Leak
 	{
 		[TestMethod]
-		[Ignore("TEMPORARILY IGNORED. UNO TODO **IMPORTANT BEFORE MERGE** UN-IGNORE.")]
 		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
 		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]

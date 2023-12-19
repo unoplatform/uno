@@ -427,7 +427,7 @@ namespace Uno.UI.Xaml.Core
 					rootVisual.IsLoaded = true;
 					rootVisual.HitTestVisibility = HitTestability.Visible;
 
-					root.Enter(enterParams);
+					root.Enter(enterParams, 0);
 				}
 #endif
 			}

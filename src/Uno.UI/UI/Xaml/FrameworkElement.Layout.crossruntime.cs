@@ -54,7 +54,6 @@ namespace Windows.UI.Xaml
 			// TODO: **IMPORTANT BEFORE MERGE** See where to handle WasmUseManagedLoadedUnloaded. Previously, it was checked in ContentManager.wasm.cs in LoadRootElementPlatform
 			// OR; we might not actually consider native loading at all and always use managed loading as Loading is now aligned with WinUI?
 			IsLoading = true;
-			//Depth = depth; // TODO: **IMPORTANT BEFORE MERGE** See how to handle Depth properly.
 
 			OnLoading();
 			OnLoadingPartial();
@@ -867,9 +866,9 @@ namespace Windows.UI.Xaml
 			ArrangeVisual(newRect, clipRect);
 		}
 
-		internal override void Enter(EnterParams @params)
+		internal override void Enter(EnterParams @params, int depth)
 		{
-			base.Enter(@params);
+			base.Enter(@params, depth);
 
 			if (@params.IsLive)
 			{
