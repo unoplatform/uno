@@ -123,9 +123,9 @@ public sealed partial class XamlRoot
 	public UIContext UIContext { get; } = new UIContext();
 #endif
 
-	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
+	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerXamlWindow();
 
-	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
+	internal void RaiseChangedEvent() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
 
 	internal static XamlRoot? GetForElement(DependencyObject element)
 	{

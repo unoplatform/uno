@@ -54,12 +54,12 @@ namespace Uno.UI.Controls
 			// Dismiss on device rotation: this reproduces the windows behavior
 			UIApplication.Notifications
 				.ObserveDidChangeStatusBarOrientation((sender, args) =>
-					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot.XamlRoot));
 
 			// Dismiss when the app is entering background
 			UIApplication.Notifications
 				.ObserveWillResignActive((sender, args) =>
-					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot.XamlRoot));
 		}
 
 		// This will handle when the status bar is showed / hidden by the system on iPhones

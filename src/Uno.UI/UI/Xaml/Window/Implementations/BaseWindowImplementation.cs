@@ -116,7 +116,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 #if __SKIA__ || __WASM__
 		XamlRoot?.InvalidateMeasure(); //TODO:MZ: Should notify before or after?
 #endif
-		XamlRoot?.NotifyChanged();
+		XamlRoot?.RaiseChangedEvent();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 #if HAS_UNO_WINUI
 		// There are two "versions" of WindowSizeChangedEventArgs in Uno currently

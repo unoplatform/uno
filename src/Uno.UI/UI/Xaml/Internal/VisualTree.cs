@@ -370,7 +370,7 @@ namespace Uno.UI.Xaml.Core
 				return contentRoot.FocusManager;
 			}
 
-			if (dependencyObject?.GetContext().ContentRootCoordinator.CoreWindowContentRoot is ContentRoot coreWindowContentRoot)
+			if (dependencyObject?.GetContext().ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot is ContentRoot coreWindowContentRoot)
 			{
 				return coreWindowContentRoot.FocusManager;
 			}
@@ -385,7 +385,7 @@ namespace Uno.UI.Xaml.Core
 				return visualTree.ContentRoot;
 			}
 
-			if (dependencyObject?.GetContext().ContentRootCoordinator.CoreWindowContentRoot is ContentRoot contentRoot)
+			if (dependencyObject?.GetContext().ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot is ContentRoot contentRoot)
 			{
 				return contentRoot;
 			}
