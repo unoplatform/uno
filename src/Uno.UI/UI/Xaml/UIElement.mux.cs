@@ -593,7 +593,6 @@ namespace Windows.UI.Xaml
 		internal bool IsScroller() => this is ScrollViewer;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		private List<Request> _eventList = new();
 
 		// Doesn't exactly match WinUI code.
 		internal virtual void Enter(EnterParams @params)
@@ -620,11 +619,8 @@ namespace Windows.UI.Xaml
 
 			if (@params.IsLive)
 			{
-				if (_eventList is not null)
-				{
-					var core = this.GetContext();
-					core.EventManager.AddRequestsInOrder(this, _eventList);
-				}
+				var core = this.GetContext();
+				core.EventManager.AddRequestsInOrder(this);
 			}
 
 			// Make sure that we propagate OnDirtyPath bits to the new parent.
@@ -656,16 +652,8 @@ namespace Windows.UI.Xaml
 				OnElementUnloaded();
 
 				var eventManager = this.GetContext().EventManager;
-				foreach (var request in _eventList)
-				{
-					eventManager.RemoveRequest(this, request);
-				}
+				eventManager.RemoveRequest(this);
 			}
-		}
-
-		internal void AddEventListener(bool handledEventsToo)
-		{
-			EventManager.AddEventListener(this, _eventList, handledEventsToo);
 		}
 #endif
 	}

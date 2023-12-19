@@ -130,6 +130,7 @@ namespace Windows.UI.Xaml
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		private void ChildEnter(UIElement child, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
@@ -138,6 +139,8 @@ namespace Windows.UI.Xaml
 				child.Enter(@params);
 			}
 		}
+#endif
+
 #if DEBUG
 
 		/// <summary>

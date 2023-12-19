@@ -119,19 +119,26 @@ internal sealed class EventManager
 		return new EventManager();
 	}
 
-	internal void AddRequestsInOrder(UIElement @object, List<Request> eventList)
+	/// <summary>
+	/// Uno docs: Currently, AddRequestsInOrder is ONLY used for Loaded event, and only adds a single request.
+	/// WinUI does MUCH more than this.
+	/// </summary>
+	/// <param name="object"></param>
+	internal void AddRequestsInOrder(UIElement @object/*, List<Request> eventList*/)
 	{
-		for (int i = eventList.Count - 1; i >= 0; i--)
-		{
-			var request = eventList[i];
-			if (!request.Added)
-			{
-				this.AddRequest(@object, request);
-			}
-		}
+		//for (int i = eventList.Count - 1; i >= 0; i--)
+		//{
+		//	var request = eventList[i];
+		//	if (!request.Added)
+		//	{
+		//		this.AddRequest(@object, request);
+		//	}
+		//}
+
+		this.AddRequest(@object);
 	}
 
-	private void AddRequest(UIElement @object, Request request)
+	private void AddRequest(UIElement @object/*, Request request*/)
 	{
 		//if (IsLoadedEvent(request.Event))
 		{
@@ -139,25 +146,12 @@ internal sealed class EventManager
 		}
 	}
 
-	internal void RemoveRequest(UIElement @object, Request request)
+	internal void RemoveRequest(UIElement @object/*, Request request*/)
 	{
 		//if (IsLoadedEvent(request.Event))
 		{
 			RemoveFromLoadedEventList(@object);
 		}
-	}
-
-	private static Request CreateRequest(bool handledEventsToo)
-	{
-		var request = new Request();
-		request.HandledEventsToo = handledEventsToo;
-		return request;
-	}
-
-	internal static void AddEventListener(DependencyObject @do, List<Request> eventList, bool handledEventsToo)
-	{
-		var request = CreateRequest(handledEventsToo);
-		eventList.Add(request);
 	}
 }
 

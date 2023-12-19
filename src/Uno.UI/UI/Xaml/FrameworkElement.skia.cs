@@ -241,12 +241,7 @@ namespace Windows.UI.Xaml
 		{
 			add
 			{
-				var isFirstSubscriber = _loaded == null;
 				_loaded += value;
-				if (isFirstSubscriber)
-				{
-					AddEventListener(handledEventsToo: true);
-				}
 			}
 			remove
 			{
