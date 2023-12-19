@@ -1,0 +1,27 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX Reference TreeView.xaml, commit tag winui3/release/1.4.2 -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<!-- <StaticResource x:Key="TextControlHighlighterForeground" ResourceKey="SystemControlForegroundAltHighBrush" /> -->
+	<!-- <SolidColorBrush x:Key="TextControlHighlighterBackground" Color="#FFFFFF00" /> -->
+	
+	<!-- <StaticResource x:Key="TextControlHighlighterForeground" ResourceKey="SystemControlHighlightAltBaseHighBrush" /> -->
+	<!-- <StaticResource x:Key="TextControlHighlighterBackground" ResourceKey="SystemControlHyperlinkTextBrush" /> -->
+	
+	<!-- <StaticResource x:Key="TextControlHighlighterForeground" ResourceKey="SystemControlForegroundBaseHighBrush" /> -->
+	<!-- <SolidColorBrush x:Key="TextControlHighlighterBackground" Color="#FFFFFF00" /> -->
+	
+    <Style x:Key="BaseRichTextBlockStyle" TargetType="RichTextBlock">
+        <Setter Property="FontFamily" Value="XamlAutoFontFamily" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextTrimming" Value="None" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="LineStackingStrategy" Value="MaxHeight" />
+        <Setter Property="TextLineBounds" Value="Full" />
+        <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
+    </Style>
+	
+	<Style x:Key="BodyRichTextBlockStyle" TargetType="RichTextBlock" BasedOn="{StaticResource BaseRichTextBlockStyle}">
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+</ResourceDictionary>

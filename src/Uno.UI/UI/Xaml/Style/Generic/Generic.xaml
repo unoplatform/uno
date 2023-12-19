@@ -7653,6 +7653,31 @@
 		</Setter>
 	</not_netstdref:Style>
 
+
+
+
+	<skia:Style x:Key="BaseRichTextBlockStyle" TargetType="RichTextBlock">
+		<Setter Property="FontFamily" Value="XamlAutoFontFamily" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="FontSize" Value="14" />
+		<Setter Property="TextTrimming" Value="None" />
+		<Setter Property="TextWrapping" Value="Wrap" />
+		<Setter Property="LineStackingStrategy" Value="MaxHeight" />
+		<Setter Property="TextLineBounds" Value="Full" />
+		<Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
+	</skia:Style>
+
+	<skia:Style x:Key="BodyRichTextBlockStyle" TargetType="RichTextBlock" BasedOn="{StaticResource BaseRichTextBlockStyle}">
+		<Setter Property="FontWeight" Value="Normal" />
+	</skia:Style>
+
+
+
+
+
+
+
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
 		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
