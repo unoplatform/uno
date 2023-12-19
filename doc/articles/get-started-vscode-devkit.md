@@ -2,14 +2,14 @@
 uid: Uno.GetStarted.vscode.DevKit
 ---
 
-# How to switch to C# DevKit Mode
+# How to switch to C# Dev Kit Mode
 
 > [!NOTE]
-> Due to the [unavailability](https://github.com/microsoft/vscode-dotnettools/issues/765) of the **C# DevKit extension** on [OpenVSX](https://open-vsx.org), users of VSCodium, Gitpod... are always on the OmniSharp mode. Visit [this guide](xref:Uno.GetStarted.vscode.OmniSharp) on how to use Omnisharp.
+> Due to the [unavailability](https://github.com/microsoft/vscode-dotnettools/issues/765) of the **C# Dev Kit extension** on [OpenVSX](https://open-vsx.org), users of VSCodium, Gitpod... are always on the OmniSharp mode. Visit [this guide](xref:Uno.GetStarted.vscode.OmniSharp) if you need to use Omnisharp with VSCode.
 
 ## Ensure you are using either .NET 8 (or later) or Uno.WinUI 5.0.116 (or later)
 
-C# DevKit requires Uno Platform extension 0.12 or later, and the projects need .NET 8 (or later) or use Uno Platform 5.0.116 (or later).
+C# Dev Kit requires Uno Platform extension 0.12 or later. The extension itself need .NET 8 (or later) or your projects need to use Uno Platform 5.0.116 (or later).
 
 ### .NET 8
 
