@@ -31,5 +31,6 @@ With each article, we offer thoughtful insights that will aid adoption of Uno Pl
 * [Navigation](xref:Uno.XamarinFormsMigration.Navigation)
 * [Renderers](xref:Uno.XamarinFormsMigration.Renderers) -->
 
-## Get started
-[![button](assets/NextButton.png)](xref:Uno.XamarinFormsMigration.Intro)
+## Next step
+
+- [Getting Started](xref:Uno.XamarinFormsMigration.Intro)
