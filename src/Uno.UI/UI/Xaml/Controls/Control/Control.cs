@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __MACOS__
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
