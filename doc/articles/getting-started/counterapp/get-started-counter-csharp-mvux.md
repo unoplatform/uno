@@ -11,8 +11,8 @@ uid: Uno.Workshop.Counter.CSharp.MVUX
 In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the **dotnet new** command
-- Add elements to the C# file, using [C# Markup](Overview.Markup.Overview), to define the layout of the application
-- Add code to the C# file to implement the application logic using the [Model-View-Update-eXtended (MVUX)](xref:Overview.Mvux.Overview) pattern
+- Add elements to the C# file, using [C# Markup](Uno.Extensions.Markup.Overview), to define the layout of the application
+- Add code to the C# file to implement the application logic using the [Model-View-Update-eXtended (MVUX)](xref:Uno.Extensions.Mvux.Overview) pattern
 - Use data binding to connect the UI to the application logic
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#. 
