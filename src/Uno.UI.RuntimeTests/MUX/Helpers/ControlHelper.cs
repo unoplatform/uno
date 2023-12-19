@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -165,6 +166,24 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				}
 			}
 			return group;
+		}
+
+		internal static async Task<Point> GetCenterOfElementAsync(FrameworkElement element)
+		{
+			Point offsetFromCenter = default;
+
+			return await GetOffsetCenterOfElementAsync(element, offsetFromCenter);
+		}
+
+		static async Task<Point> GetOffsetCenterOfElementAsync(FrameworkElement element, Point offsetFromCenter)
+		{
+			Point result = default;
+			await RunOnUIThread(() =>
+			{
+				var offsetCenterLocal = new Point((element.ActualWidth / 2) + offsetFromCenter.X, (element.ActualHeight / 2) + offsetFromCenter.Y);
+				result = element.TransformToVisual(null).TransformPoint(offsetCenterLocal);
+			});
+			return result;
 		}
 	}
 }

@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 
-// TODO Uno: Missing ValidateUIElementTree test
+// TODO Uno: Missing ValidateUIElementTree, CanOpenAndCloseUsingKeyboard tests
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -130,37 +130,6 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
-	public void CanOpenAndCloseUsingKeyboard()
-	{
-		KeyboardInjectionIgnoreEventWaitOverride keyboardEventsOverride = new KeyboardInjectionIgnoreEventWaitOverride(KeyboardWaitKind.None);
-
-		var timePicker = SetupTimePickerTest();
-
-		var timeChangedEvent = new Event();
-		var timeChangedRegistration = CreateSafeEventRegistration(typeof(TimePicker), "TimeChanged");
-		timeChangedRegistration.Attach(timePicker, () =>
-		{
-			LOG_OUTPUT("TimePicker.TimeChanged event fired");
-			timeChangedEvent.Set();
-		});
-
-		LOG_OUTPUT("Ensuring timePicker has focus.");
-		FocusTestHelper.EnsureFocus(timePicker, FocusState.Keyboard);
-
-		LOG_OUTPUT("Try to open and close TimePicker using space key press");
-		DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard(" ", " ", timeChangedEvent);
-
-		LOG_OUTPUT("Try to open and close TimePicker using enter");
-		DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_enter#$u$_enter", "$d$_enter#$u$_enter", timeChangedEvent);
-
-		LOG_OUTPUT("Try to open and close TimePicker using Alt+Down");
-		DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_alt#$d$_down#$u$_down#$u$_alt", "$d$_alt#$d$_down#$u$_down#$u$_alt", timeChangedEvent);
-
-		LOG_OUTPUT("Try to open and close TimePicker using Alt+Up");
-		DateTimePickerHelper.OpenAndCloseDateTimePickerUsingKeyboard("$d$_alt#$d$_up#$u$_up#$u$_alt", "$d$_alt#$d$_up#$u$_up#$u$_alt", timeChangedEvent);
-	}
-
-	[TestMethod]
 	public async Task ValidateFootprint()
 	{
 		TestServices.WindowHelper.SetWindowSizeOverride(new Size(500, 600));
@@ -240,18 +209,19 @@ public class TimePickerIntegrationTests
 		await VerifyHasPlaceholder(timePicker);
 	}
 
-	async Task SelectingTimeSetsSelectedTimeAsync()
+	[TestMethod]
+	public async Task SelectingTimeSetsSelectedTimeAsync()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
 		var targetTime = CreateTimeSpan(4, 30, 2);
 		targetTime.Second = 0;
 
 		LOG_OUTPUT("Selecting 4:30 PM.");
-		DateTimePickerHelper.OpenDateTimePicker(timePicker);
-		TestServices.WindowHelper.WaitForIdle();
+		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+		await TestServices.WindowHelper.WaitForIdle();
 
 		DateTimePickerHelper.SelectTimeInOpenTimePickerFlyout(targetTime, LoopingSelectorHelper.SelectionMode.Keyboard);
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread(() =>
 		{
@@ -268,15 +238,15 @@ public class TimePickerIntegrationTests
 	{
 		await RunOnUIThread(() =>
 		{
-			var hourTextBlock = safe_cast < xaml_controls::TextBlock ^> (TreeHelper::GetVisualChildByName(timePicker, L"HourTextBlock"));
-			var minuteTextBlock = safe_cast < xaml_controls::TextBlock ^> (TreeHelper::GetVisualChildByName(timePicker, L"MinuteTextBlock"));
-			var periodTextBlock = safe_cast < xaml_controls::TextBlock ^> (TreeHelper::GetVisualChildByName(timePicker, L"PeriodTextBlock"));
+			var hourTextBlock = (TextBlock) (TreeHelper::GetVisualChildByName(timePicker, "HourTextBlock"));
+			var minuteTextBlock = (TextBlock) (TreeHelper::GetVisualChildByName(timePicker, "MinuteTextBlock"));
+			var periodTextBlock = (TextBlock) (TreeHelper::GetVisualChildByName(timePicker, "PeriodTextBlock"));
 
-			var validatePlaceholder = [](xaml_controls::TextBlock ^ textBlock, Platform::String ^ placeholder)
+			var validatePlaceholder = [](TextBlock ^ textBlock, Platform::String ^ placeholder)
 
 			{
-				LOG_OUTPUT(L"Expected placeholder: \"%s\"", placeholder->Data());
-				LOG_OUTPUT(L"Actual text: \"%s\"", textBlock->Text->Data());
+				LOG_OUTPUT("Expected placeholder: \"%s\"", placeholder->Data());
+				LOG_OUTPUT("Actual text: \"%s\"", textBlock->Text->Data());
 
 				VERIFY_IS_TRUE(Platform::String::CompareOrdinal(placeholder, textBlock->Text) == 0);
 			};
