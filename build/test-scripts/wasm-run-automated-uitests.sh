@@ -83,6 +83,9 @@ dotnet test \
 	-v m \
 	|| true
 
+## terminate dotnet serve
+kill %%
+
 ## Copy the results file to the results folder
 cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
 
@@ -90,15 +93,17 @@ cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
 ## If found, show an error message then exit with code 1
 grep -r "net::ERR_INSUFFICIENT_RESOURCES" $UNO_UITEST_SCREENSHOT_PATH && (echo "Found net::ERR_INSUFFICIENT_RESOURCES in the test results, failing the build" && exit 1) || true
 
+# Copy dump files, if any
+mkdir $UNO_UITEST_SCREENSHOT_PATH/dumps || true
+cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.dmp $UNO_UITEST_SCREENSHOT_PATH/dumps || true
+cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.xml $UNO_UITEST_SCREENSHOT_PATH/dumps || true
+
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
+dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+
 ## Fail the build when no test results could be read
 dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
-
-dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 popd
-
-## terminate dotnet serve
-kill %%
