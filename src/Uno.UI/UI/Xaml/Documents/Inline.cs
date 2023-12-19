@@ -3,24 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents.TextFormatting;
 
 namespace Windows.UI.Xaml.Documents
 {
 	public abstract partial class Inline : TextElement
 	{
-		internal void InvalidateInlines(bool updateText)
+		internal void InvalidateSegments()
 		{
 #if !IS_UNIT_TESTS
-			switch (this.GetParent())
+			var containingFrameworkElement = GetContainingFrameworkElement();
+			if (containingFrameworkElement is ISegmentsElement segmentsElement)
 			{
-				case Span span:
-					span.InvalidateInlines(updateText);
-					break;
-				case TextBlock textBlock:
-					textBlock.InvalidateInlines(updateText);
-					break;
-				default:
-					break;
+				segmentsElement.InvalidateSegments();
+			}
+#endif
+		}
+
+		internal void InvalidateElement()
+		{
+#if !IS_UNIT_TESTS
+			var containingFrameworkElement = GetContainingFrameworkElement();
+			if (containingFrameworkElement is ISegmentsElement segmentsElement)
+			{
+				segmentsElement.InvalidateElement();
 			}
 #endif
 		}

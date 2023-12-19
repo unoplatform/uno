@@ -20,7 +20,7 @@ using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class TextBlock : FrameworkElement, IBlock
+	partial class TextBlock : FrameworkElement
 	{
 		private readonly TextVisual _textVisual;
 
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 			Inlines.InvalidateMeasure();
 		}
 
-		// Invalidate Inlines measure when any IBlock properties used during measuring change:
+		// Invalidate Inlines measure when any ITextVisualElement properties used during measuring change:
 
 		partial void OnMaxLinesChangedPartial()
 		{

@@ -25,6 +25,7 @@ using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
+using Windows.UI.Xaml.Documents.TextFormatting;
 
 #if __IOS__
 using UIKit;
@@ -33,7 +34,7 @@ using UIKit;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
-	public partial class TextBlock : DependencyObject
+	public partial class TextBlock : DependencyObject, ISegmentsElement
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
@@ -76,6 +77,22 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
+		#region ITextVisualElement implementation
+
+		void ISegmentsElement.InvalidateSegments()
+			=> InvalidateSegments();
+
+		void ISegmentsElement.InvalidateElement()
+			=> InvalidateElement();
+
+		internal void InvalidateSegments()
+			=> InvalidateText();
+
+		internal void InvalidateElement()
+			=> OnInlinesChanged();
+
+		#endregion
+
 		#region Inlines
 
 		/// <summary>
@@ -99,10 +116,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void InvalidateInlines(bool updateText)
+		/// <summary>
+		/// Sets the state of text as invalid.
+		/// </summary>
+		/// <remarks>
+		/// Used when an element has only one text segment (<see cref="Run"/>).
+		/// </remarks>
+		private void InvalidateText()
 		{
-			if (updateText)
-			{
 				if (Inlines.Count == 1 && Inlines[0] is Run run)
 				{
 					_inlinesText = run.Text;
@@ -118,8 +139,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				UpdateHyperlinks();
+			OnInlinesChanged();
 			}
 
+		private void OnInlinesChanged()
+		{
 			OnInlinesChangedPartial();
 			InvalidateTextBlock();
 		}
@@ -250,9 +274,7 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnTextChanged(string oldValue, string newValue)
 		{
 			UpdateInlines(newValue);
-
-			OnTextChangedPartial();
-			InvalidateTextBlock();
+			OnInlinesChanged();
 		}
 
 		partial void OnTextChangedPartial();
@@ -711,6 +733,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
+
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)
