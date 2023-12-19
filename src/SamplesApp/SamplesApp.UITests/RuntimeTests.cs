@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Runtime
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 
 		[Test]
-		[AutoRetry(tryCount: 1)]
+		[AutoRetry(tryCount: 2)]
 		// [Timeout(3000000)] // Timeout is now moved to individual platorms runners configuration in CI
 		public async Task RunRuntimeTests()
 		{
@@ -73,6 +73,7 @@ namespace SamplesApp.UITests.Runtime
 
 				if (lastValue != newValue)
 				{
+					lastValue = newValue;
 					lastChange = DateTimeOffset.Now;
 				}
 

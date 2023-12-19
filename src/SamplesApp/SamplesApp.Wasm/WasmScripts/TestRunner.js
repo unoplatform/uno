@@ -38,5 +38,9 @@
     static GetDisplayScreenScaling(displayId) {
         SampleRunner.init();
         return this._getDisplayScreenScaling(displayId);
+    }
+
+    static RefreshBrowser(unused) {
+        window.location.reload();
     } 
 }
