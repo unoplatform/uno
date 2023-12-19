@@ -2,7 +2,7 @@
   "profiles": {
     "Uno.UWPSyncGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "doc"
+      "commandLineArgs": "sync"
     }
   }
 }
