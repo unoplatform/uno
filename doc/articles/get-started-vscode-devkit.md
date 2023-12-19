@@ -43,4 +43,4 @@ Press `F1`, select `Developer: Reload Window` and select it. VS Code will reload
 
 ## Validation
 
-You can verify that the **Uno Platform** extension is working by looking at the **Uno Platform** logs inside the **Output** pane by using `Ctrl` + `Shift` + `U` (`Shift` + `⌘` + `,` on a Mac). After reloading the window you should see a line with `[Info] Running in DevKit mode` inside the logs.
+You can verify that the **Uno Platform** extension is working by looking at the **Uno Platform** logs inside the **Output** pane by using `Ctrl` + `Shift` + `U` (`Shift` + `⌘` + `,` on a Mac). After reloading the window you should see a line with `[Info] Running in Dev Kit mode` inside the logs.
