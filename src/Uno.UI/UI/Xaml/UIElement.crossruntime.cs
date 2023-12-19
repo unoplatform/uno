@@ -104,12 +104,14 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"{this.GetDebugName()}: Inconsistent state: child {child} is already loaded (OnChildAdded). Common cause for this is an exception during Unloaded handling.");
 				}
 			}
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			else if (child.IsActiveInVisualTree)
 			{
 				var context = this.GetContext();
 				var eventManager = context.EventManager;
 				eventManager.RequestRaiseLoadedEventOnNextTick();
 			}
+#endif
 		}
 
 		private void OnChildRemoved(UIElement child)
@@ -123,8 +125,10 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
 			child.Leave(leaveParams);
+#endif
 		}
 
 		internal Point GetPosition(Point position, UIElement relativeTo)

@@ -776,7 +776,7 @@ namespace Windows.UI.Xaml
 					return;
 				}
 			}
-#else
+#elif !__NETSTD_REFERENCE__
 			for (var i = MaxLayoutIterations; i > 0; i--)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)

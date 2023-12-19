@@ -156,6 +156,8 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
+#if !__NETSTD_REFERENCE__
+
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void Enter(EnterParams @params)
 		{
@@ -179,6 +181,7 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateRender();
 		}
 
+#endif
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected CCalendarViewBaseItemChrome GetHandle() => this;
 
