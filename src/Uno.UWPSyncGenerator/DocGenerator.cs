@@ -146,10 +146,24 @@ namespace Uno.UWPSyncGenerator
 									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can use the Gallery {Hyperlink("here", galleryLink)}.");
 								}
 
+								var galleryLink = GetGalleryLink(viewName);
 								var playgroundLink = GetPlaygroundLink(viewName);
-								if (playgroundLink != null)
+								
+								if (galleryLink is not null or playgroundLink is not null)
 								{
-									_sb.AppendParagraph($"Or run your own tests on {formattedViewName} {Hyperlink("here", playgroundLink)} on {Hyperlink("Playground", playgroundLink)}.");
+								    Lists<string> options = new();
+								    
+								    if(galleryLink is not null)
+								    {
+								       options .Add($"use the Uno Gallery {Hyperlink("here", galleryLink)}");
+								    }			
+								    	    
+								    if(playgroundLink is not null)
+								    {
+								       options .Add($"run your own tests on {formattedViewName} {Hyperlink("here", playgroundLink)} on {Hyperlink("Uno Playground", playgroundLink)}");
+								    }
+								    
+								    _sb.AppendParagraph($"To better understand how {formattedViewName} works, you can" + string.Join("or", options) + ".");
 								}
 
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
