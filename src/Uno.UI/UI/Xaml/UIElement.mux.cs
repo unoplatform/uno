@@ -646,8 +646,6 @@ namespace Windows.UI.Xaml
 				child.Leave(@params);
 			}
 
-			// TODO: **IMPORTANT BEFORE MERGE** if the element was added to loaded list, and Loaded not yet fired, it should be removed from the list.
-
 			if (IsActiveInVisualTree)
 			{
 				// TODO: Is Unloaded fired synchronously?

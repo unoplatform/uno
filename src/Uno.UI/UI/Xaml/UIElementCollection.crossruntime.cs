@@ -22,7 +22,6 @@ namespace Windows.UI.Xaml.Controls
 			_owner.AddChild(item);
 		}
 
-		// UNO TODO: **IMPORTANT BEFORE MERGE** Should this call "Leave" on all children?
 		private IEnumerable<View> ClearCore()
 		{
 			var deleted = _owner._children.ToArray();
@@ -50,7 +49,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private int IndexOfCore(View item) => _owner._children.IndexOf(item);
 
-		// UNO TODO: **IMPORTANT BEFORE MERGE** Should this call "Enter"?
 		private void InsertCore(int index, View item)
 		{
 			_owner.AddChild(item, index);
@@ -61,7 +59,6 @@ namespace Windows.UI.Xaml.Controls
 			_owner.MoveChildTo((int)oldIndex, (int)newIndex);
 		}
 
-		// UNO TODO: **IMPORTANT BEFORE MERGE** Should this call "Leave"?
 		private View RemoveAtCore(int index)
 		{
 			var item = _owner._children.ElementAtOrDefault(index);
@@ -69,11 +66,9 @@ namespace Windows.UI.Xaml.Controls
 			return item;
 		}
 
-		// UNO TODO: **IMPORTANT BEFORE MERGE** Should this call "Leave"?
 		private bool RemoveCore(View item)
 			=> _owner.RemoveChild(item);
 
-		// UNO TODO: **IMPORTANT BEFORE MERGE** Should this call "Leave" on the old child, and "Enter" on the new one?
 		private View SetAtIndexCore(int index, View value)
 			=> _owner.ReplaceChild(index, value);
 	}
