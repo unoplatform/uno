@@ -459,6 +459,9 @@ namespace Windows.UI.Xaml
 
 			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
 
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
+
 			OnChildAdded(child);
 
 			child.ResetLayoutFlags();

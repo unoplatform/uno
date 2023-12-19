@@ -132,7 +132,6 @@ namespace Windows.UI.Xaml
 				Visual.Children.InsertAtTop(child.Visual);
 			}
 
-			// TODO: **IMPORTANT BEFORE MERGE** Wasm needs a similar change
 			var enterParams = new EnterParams(IsActiveInVisualTree);
 			ChildEnter(child, enterParams);
 
