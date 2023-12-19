@@ -12,7 +12,7 @@ Notwithstanding the [announced](https://dotnet.microsoft.com/platform/support/po
 
 Fortunately, the commonalities with Xamarin.Forms make Uno Platform a natural choice for teams looking to modernize their existing investment. This straightforward series of articles will outline how to migrate key aspects of the app to unlock the benefits of Uno Platform; meaning compatibility with a multitude of powerful controls, productivity gains from recent .NET features, and a demonstrated commitment to punctuality with support for work done upstream.
 
-With each article, we offer thoughtful insights that will aid adoption of Uno Platform as the path forward for existing your existing Xamarin.Forms investment.
+With each article, we offer thoughtful insights that will aid the adoption of Uno Platform as the path forward for existing your existing Xamarin.Forms investment.
 
 ## What's covered
 

@@ -16,7 +16,7 @@ In the Xamarin.Forms space, it would be difficult to miss the differing behavior
 
 When platforms, albeit in their infancy, invested in a robust set of first-party controls for app developers, it proved to be vital for acclimating users to their devices' unfamiliar interaction paradigms. This strategy to catalyze the adoption of mobile devices influenced traditional platforms to prioritize a similar endeavor. 
 
-Microsoft significantly evolved the visual layer for Windows devices by launching WinRT XAML in 2012, and has expanded the compatibility of its modern UI framework with the launch of WinUI 3 in 2021. 
+Microsoft significantly evolved the visual layer for Windows devices by launching WinRT XAML in 2012 and has expanded the compatibility of its modern UI framework with the launch of WinUI 3 in 2021. 
 
 The creation of Uno Platform was driven by the aspiration to make pixel-perfect apps possible across platforms. This is achieved by implementing the same controls, panels, and other constructs as WinUI.
 
