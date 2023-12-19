@@ -1,13 +1,35 @@
 using System.Collections.Generic;
+using Windows.UI.Xaml.Documents.TextFormatting;
 
 namespace Windows.UI.Xaml.Documents
 {
-	public partial class BlockCollection : DependencyObjectCollection<Block>, IList<Block>, IEnumerable<Block>
+	/// <summary>
+	/// Represents a collection of Block elements.
+	/// </summary>
+	public partial class BlockCollection : SegmentsCollection<Block>, IList<Block>, IEnumerable<Block>
 	{
-		/// <remarks>For backward compatibility</remarks>
-		public new void Add(Block block)
+		internal BlockCollection(DependencyObject parent)
+			: base(parent)
 		{
-			base.Add(block);
+
+		}
+
+		private protected override void OnCollectionChanged()
+		{
+#if !IS_UNIT_TESTS
+			base.OnCollectionChanged();
+			switch (this.GetParent())
+			{
+				case ISegmentsElement textVisualElement:
+					textVisualElement.InvalidateSegments();
+					break;
+				case Block inline:
+					inline.InvalidateSegments();
+					break;
+				default:
+					break;
+			}
+#endif
 		}
 	}
 }
