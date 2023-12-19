@@ -31,7 +31,7 @@ internal partial class ContentManager
 
 	internal Microsoft.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
 
-	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.NotifyChanged();
+	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.RaiseChangedEvent();
 
 	private void SetContent(UIElement? newContent)
 	{
