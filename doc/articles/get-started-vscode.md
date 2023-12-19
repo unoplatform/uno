@@ -38,7 +38,7 @@ Starting **Uno Platform extension** version 0.12, running in VS Code automatical
 If you are using GitPod, any [Open VSX environment](https://open-vsx.org) or earlier versions of the Uno Platform extension, you will be automatically using the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` with OmniSharp enabled.
 
 To switch between C# Dev Kit and OmniSharp:
-- [Switch to C# DevKit Mode](xref:Uno.GetStarted.vscode.DevKit)
+- [Switch to C# Dev Kit Mode](xref:Uno.GetStarted.vscode.DevKit)
 - [Switch to OmniSharp Mode](xref:Uno.GetStarted.vscode.OmniSharp)
 
 ## Platform specific setup
