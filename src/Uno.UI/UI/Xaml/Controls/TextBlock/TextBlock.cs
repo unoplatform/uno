@@ -992,7 +992,7 @@ namespace Windows.UI.Xaml.Controls
 			_hyperlinks.Clear();
 
 			var start = 0;
-			foreach (var inline in Inlines.PreorderTree)
+			foreach (Inline inline in Inlines.PreorderTree)
 			{
 				switch (inline)
 				{
