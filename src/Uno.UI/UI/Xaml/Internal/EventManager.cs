@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
 using System.Collections.Generic;

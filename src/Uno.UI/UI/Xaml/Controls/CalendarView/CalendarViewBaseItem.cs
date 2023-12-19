@@ -156,11 +156,15 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void Enter(EnterParams @params)
 		{
 			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
 			base.Enter(@params);
-
+#else
+		private void EnterImpl()
+		{
+#endif
 			// In case any of the TextBlock properties have been updated while
 			// we were out of the visual tree, we should update them in order to ensure
 			// that we always have the most up-to-date values.

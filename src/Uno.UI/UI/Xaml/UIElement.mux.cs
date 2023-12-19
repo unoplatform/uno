@@ -592,7 +592,7 @@ namespace Windows.UI.Xaml
 		/// <returns>True if the element is a ScrollViewer.</returns>
 		internal bool IsScroller() => this is ScrollViewer;
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		private List<Request> _eventList = new();
 
 		// Doesn't exactly match WinUI code.

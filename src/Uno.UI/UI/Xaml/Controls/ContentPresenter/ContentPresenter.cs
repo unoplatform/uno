@@ -800,6 +800,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void Enter(EnterParams @params)
 		{
 			base.Enter(@params);
@@ -817,14 +818,27 @@ namespace Windows.UI.Xaml.Controls
 
 			TryAttachNativeElement();
 		}
+#endif
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+			{
+				SetUpdateTemplate();
+			}
+#endif
+
 			// When the control is loaded, set the TemplatedParent
 			// as it may have been reset during the last unload.
 			SynchronizeContentTemplatedParent();
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			UpdateBorder();
+			TryAttachNativeElement();
+#endif
 		}
 
 		private protected override void OnUnloaded()

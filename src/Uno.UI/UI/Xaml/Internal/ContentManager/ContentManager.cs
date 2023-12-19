@@ -52,7 +52,7 @@ internal partial class ContentManager
 			// TODO: Add RootScrollViewer everywhere
 			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			WinUICoreServices.Instance.RaisePendingLoadedRequests();
 #endif
 

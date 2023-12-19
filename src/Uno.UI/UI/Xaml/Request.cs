@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNO_HAS_ENHANCED_LIFECYCLE
+using System;
 
 namespace Windows.UI.Xaml;
 
@@ -13,3 +14,4 @@ internal struct Request
 	public bool Added;
 	public bool HandledEventsToo;
 }
+#endif

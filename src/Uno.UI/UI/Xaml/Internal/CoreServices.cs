@@ -19,20 +19,20 @@ namespace Uno.UI.Xaml.Core
 
 		private VisualTree? _mainVisualTree;
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		public EventManager EventManager { get; private set; }
 #endif
 
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
 			NativeDispatcher.Main.Enqueue(() => OnTick(), NativeDispatcherPriority.Idle);
 #endif
 		}
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		private static void OnTick()
 		{
 			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
@@ -109,7 +109,7 @@ namespace Uno.UI.Xaml.Core
 		{
 		}
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal void RaisePendingLoadedRequests()
 		{
 			EventManager.RequestRaiseLoadedEventOnNextTick();

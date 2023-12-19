@@ -1,4 +1,5 @@
-﻿namespace Uno.UI.Xaml;
+﻿#if UNO_HAS_ENHANCED_LIFECYCLE
+namespace Uno.UI.Xaml;
 
 internal struct EnterParams
 {
@@ -14,3 +15,4 @@ internal struct EnterParams
 		IsLive = isLive;
 	}
 }
+#endif

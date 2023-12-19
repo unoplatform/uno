@@ -414,7 +414,7 @@ namespace Uno.UI.Xaml.Core
 				MUX_ASSERT(RootElement != null);
 				RootElement!.AddChild(root);
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				EnterParams enterParams = new(
 					isLive: true
 				);
@@ -806,7 +806,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-#if __CROSSRUNTIME__
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		private bool IsMainVisualTree()
 			=> RootVisual != null;
 #endif

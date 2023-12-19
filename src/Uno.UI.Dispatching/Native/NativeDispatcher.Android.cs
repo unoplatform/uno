@@ -37,7 +37,7 @@ namespace Uno.UI.Dispatching
 			_animationImplementor = new FrameCallbackImplementor(DispatchItemsToChoreographer);
 		}
 
-		partial void EnqueueNative()
+		partial void EnqueueNative(NativeDispatcherPriority priority)
 		{
 			_handler.Post(_implementor);
 		}

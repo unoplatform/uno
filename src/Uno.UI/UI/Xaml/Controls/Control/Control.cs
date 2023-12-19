@@ -303,6 +303,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked;
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void OnPostLoading()
+		{
+			base.OnPostLoading();
+
+			TryCallOnApplyTemplate();
+
+			// Update bindings to ensure resources defined
+			// in visual parents get applied.
+			this.UpdateResourceBindings();
+		}
+#endif
+
 		internal void TryCallOnApplyTemplate()
 		{
 			if (_applyTemplateShouldBeInvoked)
