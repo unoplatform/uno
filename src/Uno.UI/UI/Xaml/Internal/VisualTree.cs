@@ -228,7 +228,9 @@ namespace Uno.UI.Xaml.Core
 					AddRoot(PublicRootVisual);
 				}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				_coreServices.RaisePendingLoadedRequests();
+#endif
 			}
 
 			// Re-enter the roots with the new public root's namescope.

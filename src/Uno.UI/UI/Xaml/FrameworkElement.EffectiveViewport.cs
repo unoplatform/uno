@@ -90,10 +90,10 @@ namespace Windows.UI.Xaml
 		{
 			const string caller = "--unavailable--";
 #endif
-			if (IsInLiveTree && IsEffectiveViewportEnabled)
+			if (IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
-				if (IsInLiveTree)
+				if (IsLoaded)
 				{
 					_isLayouted = true;
 				}
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 #if CHECK_LAYOUTED
-				if (!IsActiveInVisualTree)
+				if (!IsLoaded)
 				{
 					_isLayouted = false;
 				}
@@ -359,7 +359,11 @@ namespace Windows.UI.Xaml
 			{
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#else
+				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
+#endif
 			}
 
 			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
