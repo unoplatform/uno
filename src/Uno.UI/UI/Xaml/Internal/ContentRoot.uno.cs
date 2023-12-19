@@ -26,4 +26,14 @@ internal partial class ContentRoot
 	}
 
 	internal CoreDispatcher Dispatcher => CoreDispatcher.Main; //TODO:MZ: set dispatcher per content root (from SetHost?)
+
+	internal Windows.UI.Xaml.Window? GetOwnerXamlWindow()
+	{
+		return Type switch
+		{
+			ContentRootType.CoreWindow => Windows.UI.Xaml.Window.CurrentSafe,
+			ContentRootType.XamlIsland when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
+			_ => null
+		};
+	}
 }
