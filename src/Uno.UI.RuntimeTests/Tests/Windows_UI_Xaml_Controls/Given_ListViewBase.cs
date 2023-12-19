@@ -4234,7 +4234,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using (ThemeHelper.UseDarkTheme())
 			{
-				ScrollTo(SUT, NumberOfItemsShownAtATime * ItemHeight * 2 /* Go twice past then viewport */);
+#if __WASM__
+				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight * 2 /* Go twice past then viewport */;
+#else
+				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
+#endif
+
+				ScrollTo(SUT, scrollPosition);
 				await WindowHelper.WaitForIdle();
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
@@ -4341,7 +4347,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
 #endif
-	}
+			}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
 	{
