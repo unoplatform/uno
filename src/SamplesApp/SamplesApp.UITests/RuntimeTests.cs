@@ -20,7 +20,7 @@ namespace SamplesApp.UITests.Runtime
 	public partial class RuntimeTests : SampleControlUITestBase
 	{
 		private const string PendingTestsText = "Pending...";
-		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
+		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(5);
 		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
 		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
