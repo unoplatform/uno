@@ -4347,7 +4347,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
 #endif
-			}
+	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
 	{
