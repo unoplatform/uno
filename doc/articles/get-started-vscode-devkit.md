@@ -37,6 +37,18 @@ If you have version 5.0.116 (or later), then there's no need to update your vers
 
 If you need to update you can use a tool like [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated) to update your dependencies to the latest available. Also see [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases]) for additional information about updating your project(s).
 
+## Disable OmniSharp
+
+If you used the OmniSharp mode then you need to disable the `preferCSharpExtension` setting.
+
+* Open the VS Code Settings using `Ctrl` + `,` (or `⌘` + `,` on a Mac)
+* Search for `preferCSharpExtension`
+    ![preferCSharpExtension](Assets/quick-start/vs-code-preferCSharpExtension.png)
+* Disable it (checkbox)
+
+> [!NOTE]
+> You do not have to disable `useOmnisharp` as C# Dev Kit will ignore it if `preferCSharpExtension` is not set.
+
 ## Reload the window
 
 Press `F1`, select `Developer: Reload Window` and select it. VS Code will reload itself and restart its extensions.
