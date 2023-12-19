@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI;
@@ -38,16 +39,31 @@ internal partial class XamlIsland
 	/// <returns>Desired size.</returns>
 	protected override Size MeasureOverride(Size availableSize)
 	{
-		foreach (var child in Children)
+		Size desiredSize = default;
+		var children = Children;
+		for (var i = 0; i < children.Count; i++)
 		{
+			var child = children[i];
 			if (child != null)
 			{
 				// Measure child to the plugin size
 				child.Measure(availableSize);
+
+				// The first child is the content, which is what we want the desired size to be
+				if (i == 0)
+				{
+					desiredSize = child.DesiredSize;
+				}
 			}
 		}
 
-		return new Size();
+		// TODO: Uno specific - implement composition content.
+		// Notify the comp content of a new desired/requested size
+		//if (auto compContent = GetCompositionContent())
+		//{
+		//	IFC_RETURN(compContent->put_RequestedSize({ desiredSize.width, desiredSize.height }));
+		//}
+		return desiredSize;
 	}
 
 	/// <summary>
@@ -59,26 +75,30 @@ internal partial class XamlIsland
 	/// <returns>Final size.</returns>
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		foreach (var child in Children)
+		var children = Children;
+		for (var i = 0; i < children.Count; i++)
 		{
+			var child = children[i];
+
 			if (child == null)
 			{
 				continue;
 			}
 
-			var x = child.GetOffsetX();
-			var y = child.GetOffsetY();
-
-			if (true)//child.GetIsArrangeDirty() || child.GetIsOnArrangeDirtyPath())
-			{
-				//child.EnsureLayoutStorage();
-
-				var childRect = new Rect(x, y, finalSize.Width, finalSize.Height);
-
-				child.Arrange(childRect);
-			}
+			var childDesiredSize = child.DesiredSize;
+			var childRect = new Rect(
+				0,
+				0,
+				Math.Max(finalSize.Width, childDesiredSize.Width),
+				Math.Max(finalSize.Height, childDesiredSize.Height));
+			child.Arrange(childRect);
 		}
 
+		// TODO: Uno implement this
+		//// Notify the XAML render walk the content has changed size
+		//GetContext()->UpdateXamlIslandRootTargetSize(this);
 		return finalSize;
 	}
+
+	public Size GetSize() => new Size(ActualWidth, ActualHeight);
 }
