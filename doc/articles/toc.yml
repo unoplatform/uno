@@ -598,7 +598,7 @@
       items:
       - name: Visual Studio Code Extension
         href: xref:Uno.vscode.additional
-      - name: C# DevKit Support
+      - name: C# Dev Kit Support
         href: xref:Uno.GetStarted.vscode.DevKit
       - name: Omnisharp Support
         href: xref:Uno.GetStarted.vscode.OmniSharp
