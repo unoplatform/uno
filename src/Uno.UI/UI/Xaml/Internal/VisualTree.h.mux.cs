@@ -39,15 +39,15 @@ partial class VisualTree
 
 	internal UIElement? PublicRootVisual => _publicRootVisual;
 
-	private CoreServices? _core;
-	private ContentRoot? _coreContentRoot;
+	private readonly CoreServices _core;
+	private readonly ContentRoot _coreContentRoot;
 
 	private readonly UIElement _rootElement;
 	private RootVisual? _rootVisual;
 	private PopupRoot? _popupRoot;
 	private Grid? _visualDiagnosticsRoot;
 	private UIElement? _publicRootVisual;
-	//ScrollContentControl m_rootScrollViewer;
+	private ScrollViewer? _rootScrollViewer;
 	private ContentPresenter? _rootContentPresenter;
 	//PrintRoot m_printRoot;
 	//TransitionRoot m_transitionRoot;
@@ -60,7 +60,7 @@ partial class VisualTree
 
 	// This is effectively the public API wrapper for this type
 	private object? _xamlRoot;
-	
+
 	//std::shared_ptr<QualifierContext> m_pQualifierContext { nullptr };
 
 	bool IsMainVisualTree => _rootVisual is not null;
