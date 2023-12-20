@@ -65,7 +65,7 @@ namespace Private.Infrastructure
 			await asyncAction();
 #else
 			var tsc = new TaskCompletionSource<bool>();
-			
+
 			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
 			{
 				try
@@ -73,7 +73,7 @@ namespace Private.Infrastructure
 					await asyncAction();
 					tsc.TrySetResult(true);
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					tsc.TrySetException(e);
 				}
