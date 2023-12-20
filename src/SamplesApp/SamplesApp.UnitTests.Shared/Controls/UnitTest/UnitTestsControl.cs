@@ -29,6 +29,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Immutable;
+using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -58,7 +59,9 @@ namespace Uno.UI.Samples.Tests
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 #endif
 
+#if !WINAPPSDK
 		private ApplicationView _applicationView;
+#endif
 
 		private List<TestCaseResult> _testCases = new List<TestCaseResult>();
 		private TestRun _currentRun;
@@ -107,7 +110,9 @@ namespace Uno.UI.Samples.Tests
 			EnableConfigPersistence();
 			OverrideDebugProviderAsserts();
 
+#if !WINAPPSDK
 			_applicationView = ApplicationView.GetForCurrentView();
+#endif
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs args)
@@ -269,10 +274,13 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
+
+#if !WINAPPSDK
 				_applicationView.Title = message;
+#endif
 			}
 
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Setter);
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Setter);
 		}
 
 		private void ReportTestsResults()
@@ -285,7 +293,7 @@ namespace Uno.UI.Samples.Tests
 				FailedTestCountForUITest = failedTestCount.Text = _currentRun.Failed.ToString();
 			}
 
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
 		}
 
 		private async Task GenerateTestResults()
@@ -297,13 +305,13 @@ namespace Uno.UI.Samples.Tests
 				NUnitTestResultsDocument = results;
 			}
 
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
+			await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Update);
 		}
 
 		private void ReportTestClass(TypeInfo testClass)
 		{
-			var t = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			DispatcherQueue.TryEnqueue(
+				Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal,
 				() =>
 				{
 					if (!IsRunningOnCI)
@@ -399,8 +407,7 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			var t = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			var t = TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				Update);
 		}
 
@@ -606,7 +613,7 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					testResults.Visibility = Visibility.Visible;
@@ -652,7 +659,7 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
 					if (!IsRunningOnCI)
@@ -758,7 +765,7 @@ namespace Uno.UI.Samples.Tests
 						{
 							if (test.RequiresFullWindow)
 							{
-								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 								{
 #if __ANDROID__
 									// Hide the systray!
@@ -770,7 +777,7 @@ namespace Uno.UI.Samples.Tests
 								});
 								cleanupActions.Add(async () =>
 								{
-									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+									await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 									{
 #if __ANDROID__
 										// Restore the systray!
@@ -793,7 +800,7 @@ namespace Uno.UI.Samples.Tests
 							{
 								var cts = new TaskCompletionSource<bool>();
 
-								_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+								_ = TestServices.WindowHelper.RootElementDispatcher.RunAsync(async () =>
 								{
 									try
 									{
@@ -974,7 +981,7 @@ namespace Uno.UI.Samples.Tests
 
 				if (runsOnUIThread)
 				{
-					await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, Run);
+					await TestServices.WindowHelper.RootElementDispatcher.RunAsync(Run);
 				}
 				else
 				{

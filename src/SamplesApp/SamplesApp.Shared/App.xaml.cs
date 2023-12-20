@@ -151,7 +151,9 @@ namespace SamplesApp
 
 			ActivateMainWindow();
 
+#if !WINAPPSDK
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#endif
 
 #if __SKIA__ && DEBUG
 			AppendRepositoryPathToTitleBar();
@@ -251,7 +253,7 @@ namespace SamplesApp
 #if DEBUG && (__SKIA__ || __WASM__)
 			Microsoft.UI.Xaml.Window.Current.EnableHotReload();
 #endif
-			Microsoft.UI.Xaml.Window.Current.Activate();
+			MainWindow.Activate();
 			_wasActivated = true;
 			_isSuspended = false;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);

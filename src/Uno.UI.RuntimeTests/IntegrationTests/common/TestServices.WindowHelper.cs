@@ -121,8 +121,9 @@ namespace Private.Infrastructure
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
-			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
-				CurrentTestWindow.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
+			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
+				? UnitTestDispatcherCompat.From(CurrentTestWindow)
+				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -182,7 +183,7 @@ namespace Private.Infrastructure
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();
 #else
-				if (element.Dispatcher.HasThreadAccess)
+				if (element.DispatcherQueue.HasThreadAccess)
 				{
 					await Do();
 				}
@@ -190,7 +191,7 @@ namespace Private.Infrastructure
 				{
 					TaskCompletionSource<bool> cts = new();
 
-					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = element.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
 					{
 						try
 						{
