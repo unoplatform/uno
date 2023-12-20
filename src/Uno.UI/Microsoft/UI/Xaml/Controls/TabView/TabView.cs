@@ -956,11 +956,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						// It is not ideal to call UpdateLayout here, but it is necessary to ensure that the ContentPresenter has expanded its content
 						// into the live visual tree.
-#if IS_UNO
-						// TODO: Uno specific - issue #4925 - Calling UpdateLayout here causes another Measure of TabListView, which is already in progress
-						// if this tab was added by data binding. As a result, two copies of each tab would be constructed.
-						//tabContentPresenter.UpdateLayout();
-#endif
+						tabContentPresenter.UpdateLayout();
 
 						if (shouldMoveFocusToNewTab)
 						{

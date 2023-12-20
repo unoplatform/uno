@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -703,6 +704,40 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region DependencyProperty: IsTextTrimmed
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged;
+
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public static DependencyProperty IsTextTrimmedProperty { get; } = DependencyProperty.Register(
+			nameof(IsTextTrimmed),
+			typeof(bool),
+			typeof(TextBlock),
+			new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
+
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+		public bool IsTextTrimmed
+		{
+			get => (bool)GetValue(IsTextTrimmedProperty);
+			private set => SetValue(IsTextTrimmedProperty, value);
+		}
+
+		private void OnIsTextTrimmedChanged()
+		{
+			OnIsTextTrimmedChangedPartial();
+			IsTextTrimmedChanged?.Invoke(this, new());
+		}
+
+		partial void OnIsTextTrimmedChangedPartial();
+
+		#endregion
+
 		/// <summary>
 		/// Gets whether the TextBlock is using the fast path in which Inlines
 		/// have not been initialized and don't need to be synchronized.
@@ -1162,5 +1197,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 			}
 		}
+    
+		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
+		private bool IsTextTrimmable =>
+			TextTrimming != TextTrimming.None ||
+			MaxLines != 0;
+
+		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
+		partial void UpdateIsTextTrimmed();
 	}
 }

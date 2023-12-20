@@ -19,6 +19,9 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	private MediaPlayerPresenter? _owner;
 	private HtmlMediaPlayer _htmlPlayer;
 
+	public uint NaturalVideoHeight => (uint)_htmlPlayer.VideoHeight;
+	public uint NaturalVideoWidth => (uint)_htmlPlayer.VideoWidth;
+
 	public MediaPlayerPresenterExtension(object owner)
 	{
 		if (owner is not MediaPlayerPresenter presenter)

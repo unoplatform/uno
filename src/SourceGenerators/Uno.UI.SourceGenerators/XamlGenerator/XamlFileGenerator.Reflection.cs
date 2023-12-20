@@ -15,7 +15,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private Func<string, INamedTypeSymbol?>? _findType;
 		private Func<XamlType, INamedTypeSymbol?>? _findTypeByXamlType;
-		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
+
 		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
 
@@ -28,7 +28,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void InitCaches()
 		{
 			_findType = Funcs.Create<string, INamedTypeSymbol?>(SourceFindType).AsMemoized();
-			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol?>(SourceFindPropertyType).AsMemoized();
 			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsMemoized();
 
 			var defaultXmlNamespace = _fileDefinition
@@ -57,23 +56,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return fullTargetType;
-		}
-
-		private string GetGlobalizedTypeName(XamlType type)
-		{
-			var knownType = FindType(type);
-			if (knownType is not null)
-			{
-				return knownType.GetFullyQualifiedTypeIncludingGlobal();
-			}
-
-			var fullTypeName = type.Name;
-			if (type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
-			{
-				fullTypeName = type.PreferredXamlNamespace.Substring("using:".Length) + "." + type.Name;
-			}
-
-			return GetGlobalizedTypeName(fullTypeName);
 		}
 
 		private bool IsType(XamlType xamlType, XamlType? baseType)
@@ -276,13 +258,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return definition;
 		}
 
-		private INamedTypeSymbol? FindPropertyType(XamlMember xamlMember) => _findPropertyTypeByXamlMember!(xamlMember);
-
-		private INamedTypeSymbol? SourceFindPropertyType(XamlMember xamlMember)
+		private ISymbol? FindProperty(XamlMember xamlMember)
 		{
 			var type = FindType(xamlMember.DeclaringType);
-			return _metadataHelper.FindPropertyTypeByOwnerSymbol(type, xamlMember.Name);
+			return _metadataHelper.FindPropertyByOwnerSymbol(type, xamlMember.Name);
 		}
+
+		private INamedTypeSymbol? FindPropertyType(XamlMember xamlMember) => FindProperty(xamlMember)?.FindDependencyPropertyType();
 
 		private bool IsAttachedProperty(XamlMemberDefinition member)
 		{

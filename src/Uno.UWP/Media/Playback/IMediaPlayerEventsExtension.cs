@@ -46,9 +46,9 @@ namespace Uno.Media.Playback
 		void RaiseSeekCompleted();
 
 		/// <summary>
-		/// Raises the <see cref="MediaPlayer.VideoRatioChanged"/> event
+		/// Raises the <see cref="MediaPlayer.NaturalVideoDimensionChanged"/> event
 		/// </summary>
-		void RaiseVideoRatioChanged(double videoRatio);
+		void RaiseNaturalVideoDimensionChanged();
 
 		/// <summary>
 		/// Raises the <see cref="MediaPlayer.BufferingEnded"/> event
