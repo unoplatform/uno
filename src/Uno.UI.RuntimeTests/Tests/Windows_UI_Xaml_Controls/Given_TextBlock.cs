@@ -305,6 +305,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextWrapping_Changed()
+		{
+			var SUT = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! ",
+			};
+			StackPanel panel = new StackPanel
+			{
+				Width = 100,
+				Children =
+				{
+					SUT
+				}
+			};
+			await UITestHelper.Load(panel);
+			var height1 = SUT.ActualHeight;
+			SUT.TextWrapping = TextWrapping.NoWrap;
+			await Task.Delay(500);
+			var height2 = SUT.ActualHeight;
+			Assert.AreNotEqual(height1, height2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
 		{
 			var container = new Grid()
