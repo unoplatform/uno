@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Peers;
+﻿namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Indicates the type of notification when calling RaiseNotificationEvent

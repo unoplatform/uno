@@ -3,12 +3,12 @@
 using System;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
@@ -23,7 +23,7 @@ internal partial class SystemFocusVisual : Control
 	public SystemFocusVisual()
 	{
 		DefaultStyleKey = typeof(SystemFocusVisual);
-		Windows.UI.Xaml.Window.Current.SizeChanged += WindowSizeChanged;
+		Microsoft.UI.Xaml.Window.Current.SizeChanged += WindowSizeChanged;
 	}
 
 	public UIElement? FocusedElement
@@ -110,7 +110,7 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var transformToRoot = FocusedElement.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
 		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 

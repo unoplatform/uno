@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ using Android.Util;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public static class BindableListViewHelpers
 	{
 		public static int ReadAttributeValue(Android.Content.Context context, IAttributeSet attrs, int[] groupId,

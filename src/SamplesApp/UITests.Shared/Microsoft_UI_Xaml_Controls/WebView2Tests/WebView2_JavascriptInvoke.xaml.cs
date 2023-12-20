@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
@@ -26,7 +26,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 			//		async () => await InvokeScriptAsync(MyWebView2, CancellationToken.None, GetReloadJavascript(), new string[] { "" })
 			//	);
 			//}
-			//public static async Task<string> InvokeScriptAsync(Microsoft.UI.Xaml.Controls.WebView2 webView, CancellationToken ct, string script, string[] arguments)
+			//public static async Task<string> InvokeScriptAsync(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 webView, CancellationToken ct, string script, string[] arguments)
 			//{
 			//	
 			//	//return await webView.CoreWebView2.ExecuteScriptAsync(script, arguments).AsTask(ct);

@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {

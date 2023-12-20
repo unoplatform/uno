@@ -3,7 +3,7 @@ using Uno.UI.Extensions;
 
 #if __IOS__ || __ANDROID__
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// This file only contains support of NativeScrollContentPresenter
 

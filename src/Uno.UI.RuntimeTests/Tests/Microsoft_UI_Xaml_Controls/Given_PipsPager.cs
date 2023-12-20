@@ -1,15 +1,15 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;

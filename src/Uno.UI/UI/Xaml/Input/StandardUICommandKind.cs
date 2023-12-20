@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input;
+﻿namespace Microsoft.UI.Xaml.Input;
 
 /// <summary>
 /// Specifies the set of platform commands (with pre-defined properties such as icon,

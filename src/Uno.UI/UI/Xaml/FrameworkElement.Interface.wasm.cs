@@ -1,14 +1,14 @@
-﻿using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Text;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Shapes;
 
 using Uno.Extensions;
 using Uno.UI;
@@ -17,7 +17,7 @@ using Uno.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BreadcrumbBar.cpp, tag winui3/release/1.4.2
 
@@ -10,14 +10,14 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// The BreadcrumbBar control provides the direct path of pages or folders to the current location.

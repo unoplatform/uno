@@ -9,14 +9,14 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement
 	{

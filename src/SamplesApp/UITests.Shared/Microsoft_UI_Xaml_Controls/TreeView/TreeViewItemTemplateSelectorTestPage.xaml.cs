@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
-using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
+using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
+using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
 

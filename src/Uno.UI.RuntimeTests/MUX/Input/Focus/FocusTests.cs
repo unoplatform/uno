@@ -12,14 +12,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
 namespace Uno.UI.RuntimeTests.MUX.Input.Focus

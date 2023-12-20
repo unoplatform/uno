@@ -6,9 +6,9 @@ using System;
 using DirectUI;
 using Uno.Disposables;
 using Windows.System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Input;
+namespace Microsoft.UI.Xaml.Input;
 
 partial class StandardUICommand : IDependencyObjectInternal
 {

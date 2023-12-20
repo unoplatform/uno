@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Provider;
+﻿namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Enables a Microsoft UI Automation element to describe itself as an element that can 

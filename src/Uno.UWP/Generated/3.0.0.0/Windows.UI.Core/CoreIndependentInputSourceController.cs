@@ -77,8 +77,6 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.Dispose()");
 		}
 #endif
-		// These methods are commented out as they reference Composition namespace which would cause circular reference.
-		/*
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Core.CoreIndependentInputSourceController CreateForVisual(global::Windows.UI.Composition.Visual visual)
@@ -93,7 +91,6 @@ namespace Windows.UI.Core
 			throw new global::System.NotImplementedException("The member CoreIndependentInputSourceController CoreIndependentInputSourceController.CreateForIVisualElement(IVisualElement visualElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreIndependentInputSourceController%20CoreIndependentInputSourceController.CreateForIVisualElement%28IVisualElement%20visualElement%29");
 		}
 #endif
-		*/
 		// Processing: System.IDisposable
 	}
 }

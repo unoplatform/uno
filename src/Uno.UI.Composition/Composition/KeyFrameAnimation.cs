@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class KeyFrameAnimation : CompositionAnimation
 	{

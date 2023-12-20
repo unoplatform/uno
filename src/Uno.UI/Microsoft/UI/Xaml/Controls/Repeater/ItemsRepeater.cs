@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.cpp, commit 1cf9f1c
 
@@ -7,22 +7,22 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(ItemTemplate))]
 	public partial class ItemsRepeater : FrameworkElement, IPanel
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ItemsRepeaterElementClearingEventArgs m_elementClearingArgs;
 		private ItemsRepeaterElementIndexChangedEventArgs m_elementIndexChangedArgs;
 
-		//public Microsoft.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
+		//public Microsoft/* UWP don't rename */.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
 		internal ViewManager ViewManager => m_viewManager;
 		internal AnimationManager AnimationManager => m_animationManager;
 
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		ItemsSourceView m_itemsSourceView;
 
-		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
+		Microsoft/* UWP don't rename */.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper;
 
 		VirtualizingLayoutContext m_layoutContext;
 		object m_layoutState;

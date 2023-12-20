@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Path
 	{

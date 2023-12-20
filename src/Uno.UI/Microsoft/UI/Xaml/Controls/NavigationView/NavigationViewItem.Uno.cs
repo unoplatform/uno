@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 partial class NavigationViewItem
 {

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	partial class LoopingSelectorAutomationPeer
 	{

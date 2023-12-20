@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
-using _View = Windows.UI.Xaml.DependencyObject;
+using Microsoft.UI.Xaml.Media;
+using _View = Microsoft.UI.Xaml.DependencyObject;
 
 namespace Uno.UI.Extensions; // same as in ViewExtensions.visual-tree.cs
 

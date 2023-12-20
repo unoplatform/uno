@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Windows.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.Disposables;

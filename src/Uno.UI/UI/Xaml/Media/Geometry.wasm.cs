@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class Geometry
 	{

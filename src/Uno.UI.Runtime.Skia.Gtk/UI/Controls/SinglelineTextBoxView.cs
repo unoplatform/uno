@@ -5,7 +5,7 @@ using System.Threading;
 using Gtk;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 

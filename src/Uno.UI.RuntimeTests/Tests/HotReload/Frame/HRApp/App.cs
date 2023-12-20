@@ -1,7 +1,7 @@
-using Uno.UI;
+﻿using Uno.UI;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -17,7 +17,7 @@ namespace UnoApp50
 #if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
 			_window = new Window();
 #else
-			_window = Windows.UI.Xaml.Window.Current;
+			_window = Microsoft.UI.Xaml.Window.Current;
 #endif
 			_window.EnableHotReload();
 			// Do not repeat app initialization when the Window already has content,

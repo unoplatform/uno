@@ -2,11 +2,11 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Tests.Enterprise
+namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
 	internal class SafeEventRegistration<TElement, TDelegate>
 		where TElement : class

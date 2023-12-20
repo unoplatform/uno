@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;

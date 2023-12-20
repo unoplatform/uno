@@ -18,10 +18,10 @@ using Windows.System;
 #else
 using Microsoft.UI.Dispatching;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RemoteControl.HotReload;
 

@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml;
 using System;
 
 namespace UnoApp50
@@ -51,22 +51,22 @@ namespace UnoApp50
 			builder.AddFilter("Microsoft", LogLevel.Warning);
 
 			// Generic Xaml events
-			// builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.UIElement", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.FrameworkElement", LogLevel.Trace );
 
 			// Layouter specific messages
-			// builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.Controls", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.Controls.Panel", LogLevel.Debug );
 
 			// builder.AddFilter("Windows.Storage", LogLevel.Debug );
 
 			// Binding related messages
-			// builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
-			// builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.Data", LogLevel.Debug );
+			// builder.AddFilter("Microsoft/* UWP don't rename */.UI.Xaml.Data", LogLevel.Debug );
 
 			// Binder memory references tracking
 			// builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );

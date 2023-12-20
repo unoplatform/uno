@@ -3,11 +3,11 @@
 // MUX Reference TreeViewListAutomationPeer.cpp, tag winui3/release/1.4.2
 
 using System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TreeViewList types to Microsoft UI Automation.

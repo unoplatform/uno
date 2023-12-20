@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 
@@ -83,12 +83,12 @@ namespace Uno.UI.RuntimeTests.Helpers
 			NativeDispatcher.CheckThreadAccess();
 
 			var resources = Application.Current.Resources;
-			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())
+			if (resources is Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources>().Any())
 			{
 				return null;
 			}
 
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			resources.MergedDictionaries.Insert(0, xcr);
 
 			// Force default brushes to be reloaded

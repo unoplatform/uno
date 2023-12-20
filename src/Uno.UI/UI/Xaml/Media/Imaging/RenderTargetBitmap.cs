@@ -15,7 +15,7 @@ using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]

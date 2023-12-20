@@ -4,8 +4,8 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace Private.Infrastructure
 {

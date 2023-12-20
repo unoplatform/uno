@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Windows.UI.Composition;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -17,7 +17,7 @@ public class Given_ContainerVisual
 	[RunsOnUIThread]
 	public void When_Children_Change()
 	{
-		var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+		var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
 		var containerVisual = compositor.CreateContainerVisual();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
 

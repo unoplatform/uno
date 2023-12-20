@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Contains values used as identifiers by IScrollProvider, and also contains the NoScroll constant.

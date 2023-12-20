@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Diagnostics;
@@ -8,13 +8,13 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Security.Cryptography.Core;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public sealed partial class Window
 {

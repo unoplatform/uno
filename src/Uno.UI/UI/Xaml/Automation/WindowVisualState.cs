@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Contains values that specify the visual state of a window for the IWindowProvider pattern.

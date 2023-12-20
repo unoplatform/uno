@@ -4,21 +4,21 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using SampleControl.Entities;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Common;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 #if XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace SampleControl.Presentation
@@ -403,7 +403,7 @@ namespace SampleControl.Presentation
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
-				Application.PropagateResourcesChanged(Windows.UI.Xaml.Window.Current.Content, updateReason);
+				Application.PropagateResourcesChanged(Microsoft.UI.Xaml.Window.Current.Content, updateReason);
 #endif
 				RaisePropertyChanged();
 			}

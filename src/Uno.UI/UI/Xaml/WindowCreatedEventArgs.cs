@@ -1,11 +1,11 @@
-#if !HAS_UNO_WINUI
+﻿#if !HAS_UNO_WINUI
 #nullable enable
 
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Provides data for the OnWindowCreated method.

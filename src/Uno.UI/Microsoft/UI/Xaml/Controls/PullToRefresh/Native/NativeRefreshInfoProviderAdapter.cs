@@ -1,8 +1,8 @@
 ﻿#if __ANDROID__ || __IOS__
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 

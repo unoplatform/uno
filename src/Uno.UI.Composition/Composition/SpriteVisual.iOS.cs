@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{

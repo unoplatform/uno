@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml;
 
 namespace ResourcesExtractor;
 

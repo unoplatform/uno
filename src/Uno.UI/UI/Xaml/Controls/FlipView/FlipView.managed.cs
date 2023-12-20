@@ -6,17 +6,17 @@ using System.Text;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
@@ -30,7 +30,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{

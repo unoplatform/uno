@@ -1,13 +1,13 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft/* UWP don't rename */.UI.Xaml;
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 using Uno.UI.Samples.Controls;
 using System.Collections.Generic;
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 #if !WINDOWS_UWP
 using Microsoft.UI.Input;

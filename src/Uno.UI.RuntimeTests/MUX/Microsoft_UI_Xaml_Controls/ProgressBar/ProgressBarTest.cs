@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
-using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
+using ProgressBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressBar;
 
-using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
+using ProgressBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar;
 
 [TestClass]
 public class ProgressBarTest

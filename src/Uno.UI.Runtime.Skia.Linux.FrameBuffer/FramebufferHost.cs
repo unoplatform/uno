@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Threading;
 using Uno.Extensions.ApplicationModel.Core;
@@ -9,8 +9,8 @@ using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml;
-using WUX = Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {

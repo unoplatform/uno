@@ -3,10 +3,10 @@
 // MUX Reference NavigationViewItemSeparator.cpp, commit 2ec9b1c
 
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class NavigationViewItemSeparator : NavigationViewItemBase
 {

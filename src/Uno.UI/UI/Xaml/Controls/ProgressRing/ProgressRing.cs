@@ -1,10 +1,10 @@
-using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
+﻿using System;
+using Microsoft.UI.Xaml;
+using Uno.UI.Controls.Legacy.Primitives;
 
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Uno.UI.Controls.Legacy;
 
 public partial class ProgressRing : Control
 {

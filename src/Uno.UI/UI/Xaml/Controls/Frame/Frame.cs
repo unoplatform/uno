@@ -6,18 +6,18 @@ using Uno.Disposables;
 using System.Text;
 using Uno.Extensions;
 using System.Collections.Specialized;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Frame : ContentControl
 	{

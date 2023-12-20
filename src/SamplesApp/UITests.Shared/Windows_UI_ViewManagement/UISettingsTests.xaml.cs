@@ -9,8 +9,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_ViewManagement
 {

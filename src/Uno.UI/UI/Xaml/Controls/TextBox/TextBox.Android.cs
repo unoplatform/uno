@@ -22,13 +22,13 @@ using Uno.UI.Extensions;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Android.Widget.TextView;
 using Math = System.Math;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox : View.IOnFocusChangeListener, IOnEditorActionListener
 	{

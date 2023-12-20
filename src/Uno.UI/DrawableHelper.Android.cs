@@ -2,7 +2,7 @@
 using Android.Graphics.Drawables;
 using System;
 using System.ComponentModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI
 {

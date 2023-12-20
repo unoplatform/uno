@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -6,11 +6,11 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using System.Globalization;
-using Windows.UI.Xaml.Controls.Maps;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Maps;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Notifications;
 using System.Numerics;
 

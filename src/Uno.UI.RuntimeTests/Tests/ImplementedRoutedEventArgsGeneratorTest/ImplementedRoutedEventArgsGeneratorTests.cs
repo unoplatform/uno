@@ -3,7 +3,7 @@
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.ImplementedRoutedEventArgsGeneratorTest
 {

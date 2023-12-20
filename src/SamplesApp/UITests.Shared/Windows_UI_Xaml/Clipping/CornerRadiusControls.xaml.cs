@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml.Clipping
 {

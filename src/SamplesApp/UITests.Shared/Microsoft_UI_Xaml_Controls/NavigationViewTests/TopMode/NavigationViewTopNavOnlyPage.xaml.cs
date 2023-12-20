@@ -2,25 +2,25 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Text;
 using System;
 
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationViewSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemHeader = Microsoft.UI.Xaml.Controls.NavigationViewItemHeader;
-using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
-using NavigationViewOverflowLabelMode = Microsoft.UI.Xaml.Controls.NavigationViewOverflowLabelMode;
-using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
+using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemHeader = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemHeader;
+using NavigationViewItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+using NavigationViewOverflowLabelMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewOverflowLabelMode;
+using NavigationViewBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible;
 using Uno.UI.Samples.Controls;
 using MUXControlsTestApp.Utilities;
 
@@ -52,7 +52,7 @@ namespace MUXControlsTestApp
 			viewTitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 			viewTitleBar.ButtonForegroundColor = (Color)Resources["SystemBaseHighColor"];
 
-			Windows.UI.Xaml.Window.Current.CoreWindow.SizeChanged += (s, e) => UpdateAppTitle();
+			Microsoft.UI.Xaml.Window.Current.CoreWindow.SizeChanged += (s, e) => UpdateAppTitle();
 			coreTitleBar.LayoutMetricsChanged += (s, e) => UpdateAppTitle();
 		}
 
@@ -297,13 +297,13 @@ namespace MUXControlsTestApp
 			switch (selectedItem)
 			{
 				case "Always":
-					NavView.ShoulderNavigationEnabled = Microsoft.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.Always;
+					NavView.ShoulderNavigationEnabled = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.Always;
 					break;
 				case "WhenSelectionFollowsFocus":
-					NavView.ShoulderNavigationEnabled = Microsoft.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.WhenSelectionFollowsFocus;
+					NavView.ShoulderNavigationEnabled = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.WhenSelectionFollowsFocus;
 					break;
 				case "Never":
-					NavView.ShoulderNavigationEnabled = Microsoft.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.Never;
+					NavView.ShoulderNavigationEnabled = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.Never;
 					break;
 			}
 		}
@@ -313,11 +313,11 @@ namespace MUXControlsTestApp
 
 			if (selectedItem == "Enabled")
 			{
-				NavView.SelectionFollowsFocus = Microsoft.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus.Enabled;
+				NavView.SelectionFollowsFocus = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus.Enabled;
 			}
 			else
 			{
-				NavView.SelectionFollowsFocus = Microsoft.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus.Disabled;
+				NavView.SelectionFollowsFocus = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus.Disabled;
 
 			}
 		}

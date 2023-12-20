@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -16,13 +16,13 @@ using Android.Views;
 #endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-using XamlWindow = Microsoft.UI.Xaml.Window;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
+using XamlWindow = Microsoft/* UWP don't rename */.UI.Xaml.Window;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class PopupPanel
 {

@@ -7,31 +7,31 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Uno.Disposables;
 using Uno.Extensions;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
 using System;
 using Uno.UI;
 using System.Collections;
 using System.Diagnostics;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
 	public partial class TextBlock : DependencyObject

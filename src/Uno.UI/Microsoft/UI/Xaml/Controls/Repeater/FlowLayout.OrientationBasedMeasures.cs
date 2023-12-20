@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	partial class FlowLayout : OrientationBasedMeasures
 	{

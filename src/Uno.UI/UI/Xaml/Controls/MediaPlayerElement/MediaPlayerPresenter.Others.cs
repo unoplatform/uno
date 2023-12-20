@@ -1,15 +1,15 @@
-#nullable enable
+﻿#nullable enable
 
 #if !__ANDROID__ && !__IOS__ && !__MACOS__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Media.Playback;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter : Border
 	{

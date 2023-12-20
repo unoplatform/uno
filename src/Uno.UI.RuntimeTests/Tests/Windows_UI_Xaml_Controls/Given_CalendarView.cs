@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using System.Reflection;
 
 #if !HAS_UNO_WINUI

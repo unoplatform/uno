@@ -3,7 +3,7 @@ using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ using System.Linq;
 using Uno.UI.Controls;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UnoTwoDScrollView, IShadowChildrenProvider, DependencyObject, ILayouterElement
 	{

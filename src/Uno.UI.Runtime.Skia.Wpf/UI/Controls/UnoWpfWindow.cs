@@ -7,8 +7,8 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using WinUI = Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -116,7 +116,7 @@ internal class UnoWpfWindow : WpfWindow
 
 				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
 			}
-			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{

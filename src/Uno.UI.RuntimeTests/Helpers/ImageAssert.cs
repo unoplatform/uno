@@ -9,10 +9,10 @@ using static System.Math;
 
 using Rectangle = System.Drawing.Rectangle;
 using SamplesApp.UITests;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Helpers;

@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.IO;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 
@@ -103,7 +103,7 @@ partial class App
 			return;
 		}
 		// Temporarily add a TextBox to the current page's content to verify native overlay is available
-		if (Windows.UI.Xaml.Window.Current?.Content is not Frame rootFrame)
+		if (Microsoft.UI.Xaml.Window.Current?.Content is not Frame rootFrame)
 		{
 			throw new InvalidOperationException("Native overlay verification executed too early");
 		}
@@ -128,8 +128,8 @@ partial class App
 	public void AssertInitialWindowSize()
 	{
 #if !__SKIA__ // Will be fixed as part of #8341
-		Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Width > 0);
-		Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
+		Assert.IsTrue(global::Microsoft.UI.Xaml.Window.Current.Bounds.Width > 0);
+		Assert.IsTrue(global::Microsoft.UI.Xaml.Window.Current.Bounds.Height > 0);
 #endif
 	}
 

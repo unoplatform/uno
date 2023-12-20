@@ -20,11 +20,11 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
@@ -92,7 +92,7 @@ namespace Uno.UI.Samples.Tests
 			);
 
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
-				Windows.UI.Xaml.Window.Current;
+				Microsoft.UI.Xaml.Window.Current;
 
 			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
 #if HAS_UNO
