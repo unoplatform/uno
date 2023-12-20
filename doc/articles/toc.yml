@@ -189,7 +189,9 @@
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
       - name: Upgrading to Uno 5.0
-        href: migrating-to-uno-5.md
+        href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 7 to .NET 8
+        href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
         href: migrating-from-xamarin-to-net6.md
       - name: Upgrading to WinUI 3.0
