@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__WASM__
+using System;
 using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Documents;
@@ -98,3 +99,4 @@ public partial class SegmentsCollection : SegmentsCollection<DependencyObject>
 
 	}
 }
+#endif

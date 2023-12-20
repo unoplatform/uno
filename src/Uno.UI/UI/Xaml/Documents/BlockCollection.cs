@@ -1,3 +1,4 @@
+#if !__WASM__
 using System.Collections.Generic;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
@@ -33,3 +34,4 @@ namespace Windows.UI.Xaml.Documents
 		}
 	}
 }
+#endif
