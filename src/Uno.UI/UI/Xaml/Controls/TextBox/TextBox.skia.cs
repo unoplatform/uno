@@ -238,7 +238,7 @@ public partial class TextBox
 			inlines.Selection = new InlineCollection.SelectionDetails(startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
 			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
-			TextBoxView?.DisplayBlock.InvalidateInlines(true);
+			TextBoxView?.DisplayBlock.InvalidateSegments();
 		}
 	}
 

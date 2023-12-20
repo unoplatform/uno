@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents.TextFormatting;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -21,11 +22,11 @@ namespace Windows.UI.Xaml.Documents
 		{
 			switch (_collection.Owner)
 			{
-				case TextBlock textBlock:
-					textBlock.InvalidateInlines(true);
+				case ISegmentsElement segmentsElement:
+					segmentsElement.InvalidateSegments();
 					break;
 				case Inline inline:
-					inline.InvalidateInlines(true);
+					inline.InvalidateSegments();
 					break;
 				default:
 					break;
