@@ -6,9 +6,8 @@ uid: Uno.Development.MigratingToUno5
 Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes. You can find a list of these changes below.
 
 Additionally, this version:
-- Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS.
+- Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS. [Follow this guide](xref:Uno.Development.MigratingFromNet7ToNet8) to upgrade from .NET 7 to .NET 8.
 - Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, .NET 6 (iOS/Android/Catalyst), and netstandard2.0 for WebAssembly.
-
 - .NET 7.0 support for iOS, Android, Mac Catalyst, and macOS remains unchanged.
 - Updates the base Windows SDK version from 18362 to 19041.
 
@@ -48,17 +47,6 @@ Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is n
     ```
 
 Note that Hot Reload has changed to be based on C#, which means that changes done XAML files will need the use of C# Hot Reload feature to be applied to the running app. See [this documentation](xref:Uno.Features.HotReload) for more details.
-
-#### Migrating Shared Class Libraries from net7.0 to net8.0
-
-- If you are building on windows and experience the compilation error NETSDK1083 when retargetting your library from net7.0 to net8.0, add the following to the `csproj`:
-    ```xml
-    <PropertyGroup>
-        <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-    </PropertyGroup>
-    ```
-
-
 
 #### Migrating from Xamarin to net7.0-* targets
 

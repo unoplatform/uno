@@ -11,8 +11,12 @@ This article details the migration steps required to migrate from one version to
 Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes.
 
 Additionally, this version:
+<<<<<<< HEAD
 
 - Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS.
+=======
+- Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS. [Follow this guide](xref:Uno.Development.MigratingFromNet7ToNet8) to upgrade from .NET 7 to .NET 8.
+>>>>>>> 1f72a35996 (docs: Centralize .NET 7 to .NET 8 upgrade)
 - Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, and netstandard2.0 for WebAssembly.
 - .NET 7.0 support for iOS, Android, Mac Catalyst, and macOS remains unchanged.
 - Updates the base Windows SDK version from 18362 to 19041.
