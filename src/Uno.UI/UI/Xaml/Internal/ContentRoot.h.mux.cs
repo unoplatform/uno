@@ -76,7 +76,7 @@ partial class ContentRoot
 		Content
 	}
 
-	private void AddPendingXamlRootChangedEvent(ChangeType _/*ignored for now*/) => _hasPendingChangedEvent = true;
+	internal void AddPendingXamlRootChangedEvent(ChangeType _/*ignored for now*/) => _hasPendingChangedEvent = true;
 
 #pragma warning disable CS0649 // Field is not used yet
 	private LifetimeState _lifetimeState;
