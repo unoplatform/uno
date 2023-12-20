@@ -1197,7 +1197,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 			}
 		}
-    
+
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		private bool IsTextTrimmable =>
 			TextTrimming != TextTrimming.None ||
