@@ -66,7 +66,7 @@ namespace Private.Infrastructure
 #else
 			var tsc = new TaskCompletionSource<bool>();
 
-			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+			await WindowHelper.RootElementDispatcher.RunAsync(async () =>
 			{
 				try
 				{
