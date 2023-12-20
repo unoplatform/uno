@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
-using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -168,17 +167,17 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return group;
 		}
 
-		internal static async Task<Point> GetCenterOfElementAsync(FrameworkElement element)
+		internal static async Task<Point> GetCenterOfElement(FrameworkElement element)
 		{
 			Point offsetFromCenter = default;
 
-			return await GetOffsetCenterOfElementAsync(element, offsetFromCenter);
+			return await GetOffsetCenterOfElement(element, offsetFromCenter);
 		}
 
-		static async Task<Point> GetOffsetCenterOfElementAsync(FrameworkElement element, Point offsetFromCenter)
+		private static async Task<Point> GetOffsetCenterOfElement(FrameworkElement element, Point offsetFromCenter)
 		{
 			Point result = default;
-			await RunOnUIThread(() =>
+			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				var offsetCenterLocal = new Point((element.ActualWidth / 2) + offsetFromCenter.X, (element.ActualHeight / 2) + offsetFromCenter.Y);
 				result = element.TransformToVisual(null).TransformPoint(offsetCenterLocal);

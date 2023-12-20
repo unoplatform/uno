@@ -14,11 +14,11 @@ internal static class DateTimePickerHelper
 	internal static async Task ValidateDateTimePickerFlyoutPositioningAndSizing<T>()
 		where T : FrameworkElement, IDateTimePickerTestHooks, new()
 	{
-		TestServices.WindowHelper.SetWindowSizeOverride(new Size(400, 600));
+		WindowHelper.SetWindowSizeOverride(new Size(400, 600));
 
 		T dateTimePicker = null;
 
-		await TestServices.RunOnUIThread(() =>
+		await RunOnUIThread(() =>
 		{
 			var rootPanel = new Grid();
 
@@ -28,24 +28,24 @@ internal static class DateTimePickerHelper
 			dateTimePicker.Header = "Header";
 
 			rootPanel.Children.Add(dateTimePicker);
-			TestServices.WindowHelper.WindowContent = rootPanel;
+			WindowHelper.WindowContent = rootPanel;
 		});
-		await TestServices.WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
 
 		await OpenDateTimePicker(dateTimePicker);
 
-		await TestServices.RunOnUIThread(() =>
+		await RunOnUIThread(async () =>
 		{
 			// The flyout should be the same width as the datepicker.
-			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter(TestServices.WindowHelper.XamlRoot);
+			var flyoutPresenter = FlyoutHelper.GetOpenFlyoutPresenter(WindowHelper.XamlRoot);
 			VERIFY_ARE_EQUAL(flyoutPresenter.ActualWidth, dateTimePicker.ActualWidth);
 
 			// We expect the HighlightRect to be centered vertically and horizontally over the button.
 			var highlightRect = TreeHelper.GetVisualChildByName(flyoutPresenter, "HighlightRect");
-			var highlightRectCenter = ControlHelper.GetCenterOfElement(highlightRect);
+			var highlightRectCenter = await ControlHelper.GetCenterOfElement(highlightRect);
 
 			var button = TreeHelper.GetVisualChildByName(dateTimePicker, "FlyoutButton");
-			var buttonCenter = ControlHelper.GetCenterOfElement(button);
+			var buttonCenter = await ControlHelper.GetCenterOfElement(button);
 
 			VERIFY_ARE_EQUAL(highlightRectCenter.X, buttonCenter.X);
 			VERIFY_ARE_EQUAL(highlightRectCenter.Y, buttonCenter.Y);
@@ -58,12 +58,12 @@ internal static class DateTimePickerHelper
 	{
 		Button button = default;
 
-		await RunOnUIThread.ExecuteAsync(() =>
+		await RunOnUIThread(() =>
 		{
 			button = TreeHelper.GetVisualChildByName(dateTimePicker, "FlyoutButton") as Button;
 		});
 
 		await ControlHelper.DoClickUsingTap(button);
-		await TestServices.WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
 	}
 }
