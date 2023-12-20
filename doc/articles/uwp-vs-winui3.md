@@ -9,7 +9,8 @@ WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.
 Since WinUI 3 and UWP XAML are very similar in their API, Uno Platform offers compatibility with both. This article goes further into the differences and how they apply to Uno.
 
 > [!TIP]
-> If you just want to add WinUI controls to your Uno Platform project, [check the guide here](features/using-winui2.md).
+> If you just want to add Fluent styles to legacy Uno Platform projects, [check the guide here](features/using-winui2.md).
+
 
 ## How does WinUI 3 differ from UWP XAML?
 

@@ -20,7 +20,7 @@ This setting allows you to choose a presentation architecture.
 
     Its main feature is enabling the use of immutable [POCO](https://en.wikipedia.org/wiki/Plain_old_CLR_object) entities and Models (using [records](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/records)) as the presentation layer, making the whole need for implementing property change notification redundant.  
 
-    To learn more about the MVUX pattern, read [this](xref:Overview.Mvux.Overview).
+    To learn more about the MVUX pattern, read [this](xref:Uno.Extensions.Mvux.Overview).
 
 
     ```

@@ -4234,7 +4234,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using (ThemeHelper.UseDarkTheme())
 			{
-				ScrollTo(SUT, NumberOfItemsShownAtATime * ItemHeight);
+#if __WASM__
+				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight * 2 /* Go twice past then viewport */;
+#else
+				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
+#endif
+
+				ScrollTo(SUT, scrollPosition);
 				await WindowHelper.WaitForIdle();
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))

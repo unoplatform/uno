@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Windows.UI.Xaml.Automation.Peers;
@@ -317,6 +317,12 @@ namespace Windows.UI.Xaml.Controls
 				updateItemSelectedState: updateItemSelectedState);
 
 			UpdateContentPresenter();
+
+			if (updateItemSelectedState)
+			{
+				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
+				TryUpdateSelectorItemIsSelected(selectedItem, true);
+			}
 		}
 
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
