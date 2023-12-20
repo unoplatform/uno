@@ -388,6 +388,8 @@ namespace Windows.UI.Xaml.Controls
 					UpdateNativeTextBlockLayout();
 				}
 
+				UpdateIsTextTrimmed();
+
 				return finalSize;
 			}
 		}
@@ -458,6 +460,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return layout.MeasuredSize;
+		}
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				_measureLayout.MeasuredSize.Width > _arrangeLayout.MeasuredSize.Width ||
+				_measureLayout.MeasuredSize.Height > _arrangeLayout.MeasuredSize.Height
+			);
 		}
 
 		/// <summary>

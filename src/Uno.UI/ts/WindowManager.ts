@@ -1780,6 +1780,11 @@ namespace Uno.UI {
 			(this.getView(elementId) as HTMLInputElement).setSelectionRange(start, start + length);
 		}
 
+		public getIsOverflowing(elementId: number): boolean {
+			const element = this.getView(elementId) as HTMLElement;
+			
+			return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
+		}
 	}
 
 	if (typeof define === "function") {

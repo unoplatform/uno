@@ -12,8 +12,7 @@ There are restrictions for the support for the Framebuffer:
 - It is only supported on Linux where `/dev/fbXX` is available.
 
 ## Get started with the Framebuffer
-- Follow the [getting started guide for linux](../get-started-with-linux.md)
-- Install the [`dotnet new` templates](../get-started-dotnet-new.md)
+- Follow the [getting started guide](xref:Uno.GetStarted.vscode)
 
 Create a new app using
 ```

@@ -236,14 +236,14 @@ namespace MUXControlsTestApp.Utilities
 			return child;
 		}
 
-		public static IEnumerable<String> GetVisualStateGroupsName(FrameworkElement element)
+		public static IEnumerable<string> GetVisualStateGroupsName(FrameworkElement element)
 		{
 			var groups = VisualStateManager.GetVisualStateGroups(GetAndAssertFirstChildAsFrameworkElement(element));
 			return groups.Where(group => group != null && group.Name != null).
 				Select(group => group.Name);
 		}
 
-		public static IEnumerable<String> GetCurrentVisualStateName(FrameworkElement element)
+		public static IEnumerable<string> GetCurrentVisualStateName(FrameworkElement element)
 		{
 			var groups = VisualStateManager.GetVisualStateGroups(GetAndAssertFirstChildAsFrameworkElement(element));
 			return groups.Where(group => group != null && group.CurrentState != null).

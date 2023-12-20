@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +18,10 @@ using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml.Input;
 using Uno.Extensions;
+using MUXControlsTestApp.Utilities;
+using Windows.UI.Xaml.Controls.Primitives;
+
+
 
 
 #if NETFX_CORE
@@ -47,6 +51,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
+
+		private Style ComboBoxItemContainerStyle => _testsResources["ComboBoxItemContainerStyle"] as Style;
 
 		private Style ComboBoxWithSeparatorStyle => _testsResources["ComboBoxWithSeparatorStyle"] as Style;
 
@@ -885,6 +891,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(3, test[0].SelectedNumber);
 			Assert.AreEqual(3, comboBox.SelectedItem);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SelectedItem_Active_VisualState()
+		{
+			var source = Enumerable.Range(0, 10).ToArray();
+			var SUT = new ComboBox
+			{
+				ItemsSource = source,
+				ItemContainerStyle = ComboBoxItemContainerStyle,
+				ItemTemplate = CounterItemTemplate
+			};
+
+			SUT.SelectedItem = 2;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+#if __SKIA__ || __WASM__ // Will fix on: https://github.com/unoplatform/uno/issues/14801
+			SUT.IsDropDownOpen = true;
+			await WindowHelper.WaitForIdle();
+			SUT.IsDropDownOpen = false;
+			await WindowHelper.WaitForIdle();
+#endif
+			var containerForTwo = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+			Assert.IsNotNull(containerForTwo);
+			var h = VisualStateHelper.GetCurrentVisualStateName(containerForTwo);
+			Assert.IsTrue(h.Contains("Selected"));
+
+			SUT.SelectedItem = 6;
+			await WindowHelper.WaitForIdle();
+
+			var containerForSix = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+			Assert.IsNotNull(containerForSix);
+
+			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForTwo).Contains("Normal"));
+			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForSix).Contains("Selected"));
 		}
 #endif
 

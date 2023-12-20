@@ -462,7 +462,7 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
-        - name: WinUI 2 controls
+        - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
         - name: x:Bind
           href: features/windows-ui-xaml-xbind.md
@@ -595,8 +595,14 @@
       href: external/uno.resizetizer/doc/toc.yml
     - name: Uno.UITest
       href: external/uno.uitest/doc/toc.yml
-    - name: Visual Studio Code Extension
-      href: xref:Uno.vscode.additional
+    - name: VS Code Extension
+      items:
+      - name: Visual Studio Code Extension
+        href: xref:Uno.vscode.additional
+      - name: C# Dev Kit Support
+        href: xref:Uno.GetStarted.vscode.DevKit
+      - name: Omnisharp Support
+        href: xref:Uno.GetStarted.vscode.OmniSharp
     - name: Templates
       items:
       - name: Visual Studio Wizard

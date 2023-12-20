@@ -168,9 +168,16 @@
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 		</ItemGroup>
 
+		<PropertyGroup>
+			<_ReplacedSHA>$(GitVersion_Sha)</_ReplacedSHA>
+
+			<!-- Use the VersionSource SHA to avoid conflicts for PR builds that span merges on master -->
+			<_ReplacedSHA Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</_ReplacedSHA>
+		</PropertyGroup>
+
 		<WriteLinesToFile
 			File="%(_Sha1Replace.Identity)"
-			Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(GitVersion_Sha)'))"
+			Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(_ReplacedSHA)'))"
 			Overwrite="true" />
 	</Target>
 
