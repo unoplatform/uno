@@ -59,6 +59,15 @@ namespace Private.Infrastructure
 #endif
 		}
 
+		internal static async Task RunOnUIThread(Func<Task> action)
+		{
+#if __WASM__
+			await action();
+#else
+			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await action());
+#endif
+		}
+
 		internal static void EnsureInitialized() { }
 
 		public static void VERIFY_IS_NOT_NULL(object value)
