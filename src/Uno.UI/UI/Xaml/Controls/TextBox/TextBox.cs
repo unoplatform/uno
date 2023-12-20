@@ -119,6 +119,7 @@ namespace Windows.UI.Xaml.Controls
 
 #if __SKIA__
 			_timer.Tick += TimerOnTick;
+			EnsureHistory();
 #endif
 		}
 
@@ -1214,7 +1215,20 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				var content = Clipboard.GetContent();
-				var clipboardText = await content.GetTextAsync();
+				string clipboardText;
+				try
+				{
+					clipboardText = await content.GetTextAsync();
+				}
+				catch (InvalidOperationException e)
+				{
+					clipboardText = "";
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+					}
+				}
 				var selectionStart = SelectionStart;
 				var selectionLength = SelectionLength;
 				var currentText = Text;
@@ -1228,7 +1242,22 @@ namespace Windows.UI.Xaml.Controls
 
 				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
 
-				Text = currentText;
+#if __SKIA__
+				try
+				{
+
+					_suppressCurrentlyTyping = true;
+#else
+				{
+#endif
+					Text = currentText;
+				}
+#if __SKIA__
+				finally
+				{
+					_suppressCurrentlyTyping = false;
+				}
+#endif
 			});
 		}
 
@@ -1255,7 +1284,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			CopySelectionToClipboard();
 			CutSelectionToClipboardPartial();
-			Text = Text.Remove(SelectionStart, SelectionLength);
+#if __SKIA__
+			try
+			{
+				_suppressCurrentlyTyping = true;
+#else
+			{
+#endif
+				Text = Text.Remove(SelectionStart, SelectionLength);
+			}
+#if __SKIA__
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+			}
+#endif
 		}
 
 		partial void CutSelectionToClipboardPartial();

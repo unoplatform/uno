@@ -26,5 +26,7 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 		FlowDirection FlowDirection { get; }
 
 		int MaxLines { get; }
+
+		void Invalidate(bool updateText);
 	}
 }
