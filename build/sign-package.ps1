@@ -16,6 +16,12 @@ $filesToSign = Get-ChildItem -Recurse $Env:ArtifactDirectory\* -Include *.nupkg 
 foreach ($fileToSign in $filesToSign) {
     Write-Host "Submitting $fileToSign for signing"
     .\SignClient 'sign' -c $appSettings -i $fileToSign -r $env:SignClientUser -s $env:SignClientSecret -n "$env:SignPackageName" -d "$env:SignPackageDescription" -u "$env:build_repository_uri"
+
+    if ($LASTEXITCODE -ne 0) {
+		Write-Error "Failed to sign $fileToSign"
+		exit $LASTEXITCODE
+	}
+
     Write-Host "Finished signing $fileToSign"
 }
 
