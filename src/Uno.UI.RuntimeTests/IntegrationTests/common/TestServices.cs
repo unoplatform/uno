@@ -64,11 +64,19 @@ namespace Private.Infrastructure
 #if __WASM__
 			await asyncAction();
 #else
-			TaskCompletionSource tsc = new TaskCompletionSource<bool>();
+			var tsc = new TaskCompletionSource<bool>();
+			
 			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
 			{
-				await asyncAction();
-				tsc.SetResult(true);
+				try
+				{
+					await asyncAction();
+					tsc.TrySetResult(true);
+				}
+				catch(Exception e)
+				{
+					tsc.TrySetException(e);
+				}
 			});
 
 			await tsc.Task;
