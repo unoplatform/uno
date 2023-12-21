@@ -20,8 +20,8 @@ using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Automation;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
 
 
