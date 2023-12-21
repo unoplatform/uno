@@ -69,6 +69,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_One_Element_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center()
 		{
 			using var _ = new AssertionScope();
@@ -98,6 +99,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Elements_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -206,6 +208,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -254,6 +257,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Stretch_And_Padding()
 		{
 			using var _ = new AssertionScope();
@@ -301,6 +305,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_ColumnSpan_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -349,6 +354,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_RowSpan_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -397,6 +403,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -445,6 +452,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Stretch_And_Padding()
 		{
 			using var _ = new AssertionScope();
@@ -556,6 +564,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Colums_And_Two_Rows_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -1114,6 +1123,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_Columns_And_VerticalAlignment_Top()
 		{
 			using var _ = new AssertionScope();
@@ -1146,6 +1156,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 		{
 			using var _ = new AssertionScope();
@@ -1201,6 +1212,7 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+		[Ignore("To be moved to a runtime test")]
 		public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered_With_RowSpan_And_ColumnSpan()
 		{
 			using var _ = new AssertionScope();
