@@ -257,10 +257,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Alignment==Stretch --> arrange at the slot size minus margins
 				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
-				if (Panel is not Microsoft.UI.Xaml.Shapes.Shape)
+				if (Panel is not Microsoft.UI.Xaml.Shapes.Shape and not ContentControl)
 				{
 					// Uno specific: Shapes arrange is relying on "wrong" layouter logic to be arranged properly
 					// The "Panel is not Shape" check should be removed when we're removing the legacy shape measure/arrange
+					// Also, it seems ContentControl is causing issues (probably related to content presenter bypass?)
 					if (Panel.HorizontalAlignment != HorizontalAlignment.Stretch)
 					{
 						arrangeSize.Width = _unclippedDesiredSize.Width;
