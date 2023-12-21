@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference AutoSuggestBoxAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes AutoSuggestBox types to Microsoft UI Automation.
