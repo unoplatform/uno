@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference APITests/ColorPickerTests.cpp, tag winui3/release/1.4.2
+
+using System;
 using System.Numerics;
 using System.Threading;
 using Common;
@@ -7,14 +12,13 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Shapes;
-
 using TextBox = Windows.UI.Xaml.Controls.TextBox;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[Uno.UI.RuntimeTests.RunsOnUIThread]
-	public partial class ColorPickerTests : MUXApiTestBase
+	public partial class ColorPickerTests_APITests : MUXApiTestBase
 	{
 		[TestMethod]
 		public void ColorPickerTest()
@@ -292,7 +296,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			});
 		}
 
-		// XamlControlsXamlMetaDataProvider does not exist in the OS repo,
+		// Uno TODO: XamlControlsXamlMetaDataProvider is not implemented
 		// so we can't execute this test as authored there.
 		//[TestMethod]
 		//public void VerifyColorPropertyMetadata()
@@ -308,7 +312,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		//}
 
 		[TestMethod]
-		[TestProperty("Ignore", "True")]
+		[TestProperty("Ignore", "True")] // https://github.com/microsoft/microsoft-ui-xaml/issues/3982
 		public void VerifyVisualTree()
 		{
 			ColorPicker colorPicker = null;
