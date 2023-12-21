@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 using Android.App;
-using Android.Util;
 using Android.Views;
-using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
-using Uno.Foundation.Logging;
-using System.Threading.Tasks;
 
 namespace Windows.UI.ViewManagement
 {
@@ -17,6 +13,8 @@ namespace Windows.UI.ViewManagement
 	{
 		private StatusBarForegroundType? _foregroundType;
 		private bool? _isShown;
+
+		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentView();
 
 		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
 		{
@@ -78,13 +76,7 @@ namespace Windows.UI.ViewManagement
 			return occludedRect;
 		}
 
-		private double PhysicalToLogicalPixels(int physicalPixels)
-		{
-			using (DisplayMetrics displayMetrics = Application.Context.Resources.DisplayMetrics)
-			{
-				return physicalPixels / displayMetrics.Density;
-			}
-		}
+		private double PhysicalToLogicalPixels(int physicalPixels) => physicalPixels / _displayInformation.RawPixelsPerViewPixel;
 
 		public IAsyncAction ShowAsync()
 		{
