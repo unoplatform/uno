@@ -15,8 +15,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private NativePagedView PagedView { get { return InternalItemsPanelRoot as NativePagedView; } }
 
+		partial void InitializePartial()
+		{
+			SetClipChildren(true);
+		}
+
 		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
+
 			if (PagedView != null && PagedView.Adapter == null)
 			{
 				PagedView.Adapter = new FlipViewAdapter()
@@ -27,8 +33,11 @@ namespace Microsoft.UI.Xaml.Controls
 				//Set CurrentItem in case SelectedIndex has changed prior to FlipView becoming visible
 				PagedView.CurrentItem = SelectedIndex;
 			}
+
 			PagedView?.Adapter.NotifyDataSetChanged();
+
 			base.UpdateItems(args);
+
 			RequestLayout();
 		}
 
