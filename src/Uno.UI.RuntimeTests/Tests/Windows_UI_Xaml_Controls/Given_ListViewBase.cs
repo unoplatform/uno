@@ -22,13 +22,19 @@ using FluentAssertions.Execution;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
+<<<<<<< HEAD
 #if NETFX_CORE
 using Uno.UI.Extensions;
+=======
+#if WINAPPSDK
+>>>>>>> a87a5cfe75 (chore: adjust test)
 #elif __IOS__
 using Foundation;
 using UIKit;
@@ -4146,59 +4152,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
-
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow("GridView")]
 		[DataRow("ListView")]
 		public async Task When_Header_With_HeaderTemplate_Only_One_Header_Created(string listViewBaseType)
 		{
-			var SUT = (ListViewBase)XamlReader.Load(
-				$"""
-				 <{listViewBaseType}
-				 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-				 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-				 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-				 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-				 	mc:Ignorable="d"
-				 >
-				 	<{listViewBaseType}.HeaderTemplate>
-				 		<DataTemplate>
-				 """
-				+
-				"			<TextBlock Text=\"{Binding}\" />"
-				+
-				$"""
+			var SUT = XamlHelper.LoadXaml<ListViewBase>($$"""
+				<{{listViewBaseType}}>
+					<{{listViewBaseType}}.HeaderTemplate>
+						<DataTemplate>
+							<TextBlock x:Name="HeaderTemplateRoot" Text="{Binding}" />
 						</DataTemplate>
-					</{listViewBaseType}.HeaderTemplate>
-				</{listViewBaseType}>
-				""");
+					</{{listViewBaseType}}.HeaderTemplate>
+				</{{listViewBaseType}}>
+			""");
 			SUT.Header = "Header";
 
 			await UITestHelper.Load(SUT);
 
-			var textBlocks = FindTextBlockChildren(SUT);
+			var roots = SUT.EnumerateDescendants()
+				.OfType<TextBlock>()
+				.Where(x => x.Name == "HeaderTemplateRoot")
+				.ToArray();
 
-			Assert.AreEqual(1, textBlocks.Where(tb => tb.Text == "Header").Count());
-
-			static List<TextBlock> FindTextBlockChildren(DependencyObject parent)
-			{
-				var textBlocks = new List<TextBlock>();
-
-				for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-				{
-					var child = VisualTreeHelper.GetChild(parent, i);
-
-					if (child is TextBlock textBlock)
-					{
-						textBlocks.Add(textBlock);
-					}
-
-					textBlocks.AddRange(FindTextBlockChildren(child));
-				}
-
-				return textBlocks;
-			}
+			Assert.AreEqual(1, roots.Length);
+			Assert.AreEqual((string)SUT.Header, roots[0].Text);
 		}
 
 #if HAS_UNO
