@@ -140,7 +140,7 @@ namespace TestRepro
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private interface IMainPage_Bindings
+		private interface IMainPage_Bindings/*INTENTIONAL CHANGE TO VERIFY FAILURE IN CI*/
 		{
 			void Initialize();
 			void Update();
