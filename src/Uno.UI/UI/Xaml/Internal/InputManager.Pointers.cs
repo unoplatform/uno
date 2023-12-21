@@ -41,7 +41,7 @@ partial class InputManager
 	partial void InjectPointerRemoved(PointerEventArgs args);
 	#endregion
 
-	internal class PointerManager
+	internal partial class PointerManager
 	{
 		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
 		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
