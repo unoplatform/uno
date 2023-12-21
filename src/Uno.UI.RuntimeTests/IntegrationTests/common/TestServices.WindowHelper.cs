@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -183,7 +184,9 @@ namespace Private.Infrastructure
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();
 #else
-				if (element.DispatcherQueue.HasThreadAccess)
+				var dispatcher = UnitTestDispatcherCompat.From(element);
+
+				if (dispatcher.HasThreadAccess)
 				{
 					await Do();
 				}
@@ -191,7 +194,7 @@ namespace Private.Infrastructure
 				{
 					TaskCompletionSource<bool> cts = new();
 
-					_ = element.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+					_ = dispatcher.RunAsync(() =>
 					{
 						try
 						{
