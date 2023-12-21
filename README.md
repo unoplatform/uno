@@ -32,7 +32,7 @@ For a larger example and features demo:
 
 # Uno Platform Features
 * Supported platforms:
-    * Windows 10 and Windows 11 (via the standard UWP and WinUI Toolkit)
+    * Windows 10 and Windows 11
     * Windows 7 (via Skia+WPF)
     * iOS, Mac Catalyst and Android (via [Xamarin](https://www.visualstudio.com/xamarin/) and [.NET](https://dotnet.microsoft.com/))
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)

@@ -4,7 +4,7 @@ uid: Uno.Contributing.UWPConversion
 
 # Converting the source tree to UWP
 
-The current Uno.UI source tree is based on WinUI, and the CI uses a specific step to generate the UWP 3.0 compatible API set, and the associated packages.
+The current Uno.UI source tree is based on WinUI, and the CI uses a specific step to generate the UWP compatible API set, and the associated packages.
 
 ## Using the auto-generated synchronized branch
 The Uno CI automatically maintains a UWP-converted branch of the tree after every push to tracked branches, in order to get started faster when debugging UWP related issues.
