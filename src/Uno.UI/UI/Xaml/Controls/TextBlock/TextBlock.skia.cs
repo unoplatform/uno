@@ -1,19 +1,19 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using SkiaSharp;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
-using Windows.UI.Xaml.Documents.TextFormatting;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{

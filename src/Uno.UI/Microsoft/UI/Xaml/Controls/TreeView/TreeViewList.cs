@@ -5,15 +5,15 @@
 using System.Collections.Generic;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using TreeViewListAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
-using DragEventArgs = Windows.UI.Xaml.DragEventArgs;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using TreeViewListAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
+using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a flattened list of tree view items so that operations such
@@ -131,7 +131,7 @@ public partial class TreeViewList : ListView
 	}
 
 	// IControlOverrides		
-	protected override void OnDrop(Windows.UI.Xaml.DragEventArgs e)
+	protected override void OnDrop(Microsoft.UI.Xaml.DragEventArgs e)
 	{
 		var args = e;
 
@@ -168,7 +168,7 @@ public partial class TreeViewList : ListView
 	}
 
 	// Required as OnDrop is protected and can't be accessed from outside
-	internal void OnDropInternal(Windows.UI.Xaml.DragEventArgs e) => OnDrop(e);
+	internal void OnDropInternal(Microsoft.UI.Xaml.DragEventArgs e) => OnDrop(e);
 
 	private void MoveNodeInto(TreeViewNode node, TreeViewNode insertAtNode)
 	{
@@ -194,7 +194,7 @@ public partial class TreeViewList : ListView
 		}
 	}
 
-	protected override void OnDragOver(Windows.UI.Xaml.DragEventArgs args)
+	protected override void OnDragOver(Microsoft.UI.Xaml.DragEventArgs args)
 	{
 		if (!args.Handled)
 		{
@@ -312,7 +312,7 @@ public partial class TreeViewList : ListView
 		base.OnDragOver(args);
 	}
 
-	protected override void OnDragEnter(Windows.UI.Xaml.DragEventArgs args)
+	protected override void OnDragEnter(Microsoft.UI.Xaml.DragEventArgs args)
 	{
 		if (!args.Handled)
 		{
@@ -321,7 +321,7 @@ public partial class TreeViewList : ListView
 		base.OnDragEnter(args);
 	}
 
-	protected override void OnDragLeave(Windows.UI.Xaml.DragEventArgs args)
+	protected override void OnDragLeave(Microsoft.UI.Xaml.DragEventArgs args)
 	{
 		m_emptySlotIndex = -1;
 		base.OnDragLeave(args);

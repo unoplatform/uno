@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Defines constants that specify the filter type for a CornerRadiusFilterConverter instance.

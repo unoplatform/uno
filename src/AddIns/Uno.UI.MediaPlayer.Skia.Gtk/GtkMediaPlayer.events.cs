@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.UI.Core;
 using LibVLCSharp.Shared;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
 using System.Threading.Tasks;

@@ -11,7 +11,7 @@ using Uno.UI.DataBinding;
 using System.Diagnostics;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial class Timeline
 	{

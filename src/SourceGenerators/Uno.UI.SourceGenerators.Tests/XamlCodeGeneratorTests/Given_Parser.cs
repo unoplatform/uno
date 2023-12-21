@@ -46,7 +46,7 @@ public class Given_Parser
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -105,7 +105,7 @@ public class Given_Parser
 				{
 					"""
 					using System;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{

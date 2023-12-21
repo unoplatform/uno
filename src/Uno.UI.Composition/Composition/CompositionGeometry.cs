@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.Graphics;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGeometry : CompositionObject
 	{

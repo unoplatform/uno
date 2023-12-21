@@ -1,4 +1,4 @@
-#if !__NETSTD_REFERENCE__
+﻿#if !__NETSTD_REFERENCE__
 #nullable enable
 using System;
 using System.Globalization;
@@ -7,15 +7,15 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

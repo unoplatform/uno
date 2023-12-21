@@ -9,7 +9,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Xaml.Core;
-using WinUI = Windows.UI.Xaml;
+using WinUI = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;

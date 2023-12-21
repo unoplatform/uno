@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 //// Similar to SelectedNodesVector, we need to make decisions before the item is inserted or removed.
 //// we can't use vector change events because the event already happened when event hander gets called.

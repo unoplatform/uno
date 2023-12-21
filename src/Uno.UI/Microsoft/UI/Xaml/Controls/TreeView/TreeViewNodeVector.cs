@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal class TreeViewNodeVector : ObservableVector<TreeViewNode>
 {

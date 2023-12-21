@@ -18,7 +18,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 {
 	[Ignore("Tests are not stabilized yet")]
 	public partial class Given_InfoBar : SampleControlUITestBase

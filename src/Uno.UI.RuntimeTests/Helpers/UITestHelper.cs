@@ -12,14 +12,14 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Helpers;
@@ -123,9 +123,9 @@ public static class UITestHelper
 				{
 					new Border
 					{
-						BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
+						BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Black),
 						BorderThickness = new Thickness(1),
-						Background = new SolidColorBrush(Windows.UI.Colors.Gray),
+						Background = new SolidColorBrush(Microsoft.UI.Colors.Gray),
 						Width = bitmap.Width * bitmap.ImplicitScaling + 2,
 						Height = bitmap.Height * bitmap.ImplicitScaling + 2,
 						Child = img = new Image
@@ -288,7 +288,7 @@ public static class InputInjectorExtensions
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 	public static Mouse GetMouse(this InputInjector injector)
 		=> new(injector);
 #endif
@@ -470,7 +470,7 @@ public class Finger : IInjectedPointer, IDisposable
 #endif
 }
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 public class Mouse : IInjectedPointer, IDisposable
 {
 	private readonly InputInjector _input;

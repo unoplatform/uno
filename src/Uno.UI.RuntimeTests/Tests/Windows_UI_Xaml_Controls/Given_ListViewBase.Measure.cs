@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Extensions;
 using System.Collections.ObjectModel;
 using Windows.Foundation;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -379,7 +379,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ScrollTo(SUT, 40);
 			double InitialScroll()
 			{
-#if NETFX_CORE
+#if WINAPPSDK
 				// For some reason on UWP the initial ChangeView may not work
 				ScrollTo(SUT, 40);
 #endif

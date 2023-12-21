@@ -15,14 +15,14 @@ using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Header))]
 	public partial class DatePicker : Control
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 		// Initialize the DatePicker
 		void PrepareState()
 		{
-			Window pCurrentWindow = global::Windows.UI.Xaml.Window.Current;
+			Window pCurrentWindow = global::Microsoft.UI.Xaml.Window.Current;
 
 			// DatePickerGenerated.PrepareState();
 

@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using SampleApps.Utilities;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 		{
 			this.InitializeComponent();
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			bool originalUseInvalidateMeasurePath = FeatureConfiguration.UIElement.UseInvalidateMeasurePath;
 			bool originalUseInvalidateArrangePath = FeatureConfiguration.UIElement.UseInvalidateArrangePath;
 
@@ -191,7 +191,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 		private void changeOptimizeMeasure(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (optimizeMeasure.IsChecked is true)
 			{
 				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = true;

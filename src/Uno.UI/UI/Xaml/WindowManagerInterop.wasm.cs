@@ -11,7 +11,7 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 using System.Runtime.InteropServices.JavaScript;
 

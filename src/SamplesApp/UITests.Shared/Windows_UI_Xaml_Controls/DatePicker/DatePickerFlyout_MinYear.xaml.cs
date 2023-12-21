@@ -1,6 +1,6 @@
 ﻿using UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {

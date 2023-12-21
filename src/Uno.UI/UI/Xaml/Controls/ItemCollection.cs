@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using System.Linq;
 using Uno.Disposables;
 using System.Collections.Specialized;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ItemCollection : IList<object>, IEnumerable<object>, IObservableVector<object>, IObservableVector
 	{

@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageSourceConverter : TypeConverter
 	{

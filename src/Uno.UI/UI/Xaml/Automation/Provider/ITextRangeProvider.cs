@@ -1,6 +1,6 @@
-using Windows.UI.Xaml.Automation.Text;
+ï»¿using Microsoft.UI.Xaml.Automation.Text;
 
-namespace Windows.UI.Xaml.Automation.Provider;
+namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Exposes methods and properties to support Microsoft UI Automation client access
@@ -94,7 +94,7 @@ public partial interface ITextRangeProvider
 	/// Retrieves the plain text of the range.
 	/// </summary>
 	/// <param name="maxLength">The maximum length of the string to return.
-	/// Use – 1 to specify an unlimited length.</param>
+	/// Use ï¿½ 1 to specify an unlimited length.</param>
 	/// <returns>The plain text of the text range, which might represent a portion
 	/// of the full string truncated at the specified maxLength.</returns>
 	string GetText(int maxLength);

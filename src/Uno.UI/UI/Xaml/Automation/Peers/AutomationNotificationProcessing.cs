@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Peers;
+ï»¿namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Specifies the order in which to process a notification.
@@ -27,7 +27,7 @@ public enum AutomationNotificationProcessing
 	MostRecent = 3,
 
 	/// <summary>
-	/// These notifications should be presented to the user when possible. Don’t interrupt the current notification for this one. If new notifications come in from the same source while the current notification is being presented, then keep the most recent and ignore the rest until the current processing is completed. Then use the most recent message as the current message.
+	/// These notifications should be presented to the user when possible. Donï¿½t interrupt the current notification for this one. If new notifications come in from the same source while the current notification is being presented, then keep the most recent and ignore the rest until the current processing is completed. Then use the most recent message as the current message.
 	/// </summary>
 	CurrentThenMostRecent = 4,
 

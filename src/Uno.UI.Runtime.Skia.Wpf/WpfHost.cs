@@ -5,8 +5,8 @@ using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
-using WinUI = Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf;

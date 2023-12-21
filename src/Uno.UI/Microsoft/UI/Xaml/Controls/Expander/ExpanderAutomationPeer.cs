@@ -6,13 +6,13 @@
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Exposes Expander types to Microsoft UI Automation.
@@ -187,7 +187,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 		// Uno Doc: AutomationEvents not currently implemented so added an API check
 		// if (winrt::AutomationPeer::ListenerExists(winrt::AutomationEvents::PropertyChanged))
 		if (ApiInformation.IsEnumNamedValuePresent(
-			"Windows.UI.Xaml.Automation.Peers.AutomationEvents",
+			"Microsoft.UI.Xaml.Automation.Peers.AutomationEvents",
 			nameof(AutomationEvents.PropertyChanged)) && ListenerExists(AutomationEvents.PropertyChanged))
 		{
 			ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?

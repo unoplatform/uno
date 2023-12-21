@@ -2,7 +2,7 @@
 
 using System.ComponentModel;
 using System.Windows.Media;
-using WinUI = Windows.UI.Xaml;
+using WinUI = Microsoft.UI.Xaml;
 using WpfCanvas = global::System.Windows.Controls.Canvas;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.XamlHost.Extensions;
@@ -22,7 +22,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	private bool _ignorePixelScaling;
 	private WpfCanvas _nativeOverlayLayer;
 	private IWpfRenderer _renderer;
-	private Windows.UI.Xaml.UIElement? _rootElement;
+	private Microsoft.UI.Xaml.UIElement? _rootElement;
 
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.

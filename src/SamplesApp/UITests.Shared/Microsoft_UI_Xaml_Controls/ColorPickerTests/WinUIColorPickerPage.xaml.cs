@@ -1,18 +1,18 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
-using ColorChangedEventArgs = Microsoft.UI.Xaml.Controls.ColorChangedEventArgs;
-using ColorPicker = Microsoft.UI.Xaml.Controls.ColorPicker;
-using ColorSpectrum = Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum;
-using ColorSpectrumComponents = Microsoft.UI.Xaml.Controls.ColorSpectrumComponents;
-using ColorSpectrumShape = Microsoft.UI.Xaml.Controls.ColorSpectrumShape;
+using ColorChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorChangedEventArgs;
+using ColorPicker = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker;
+using ColorSpectrum = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum;
+using ColorSpectrumComponents = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorSpectrumComponents;
+using ColorSpectrumShape = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorSpectrumShape;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 {
@@ -107,7 +107,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ColorPickerTests
 				if (colorNameToolTip != null)
 				{
 					// Uno Doc: ToolTip must be fully qualified for iOS/macOS where NSView.ToolTip also exists
-					colorNameToolTip.RegisterPropertyChangedCallback(Windows.UI.Xaml.Controls.ToolTip.ContentProperty, new DependencyPropertyChangedCallback(ColorNameToolTipContentChanged));
+					colorNameToolTip.RegisterPropertyChangedCallback(Microsoft.UI.Xaml.Controls.ToolTip.ContentProperty, new DependencyPropertyChangedCallback(ColorNameToolTipContentChanged));
 					UpdateSelectedColorName();
 				}
 			}

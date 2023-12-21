@@ -3,7 +3,7 @@
 #if HAS_UNO_WINUI
 using Windows.ApplicationModel.Activation;
 
-namespace Microsoft.UI.Xaml
+namespace Microsoft/* UWP don't rename */.UI.Xaml
 {
 	public sealed partial class LaunchActivatedEventArgs
 	{

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TwoPaneView.properties.cpp, tag winui3/release/1.4.2
 
@@ -6,17 +6,17 @@ using System;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a container with two views that size and position content
 /// in the available space, either side-by-side or top-bottom.
 /// </summary>
-public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
+public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 {
 	private const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
 	private const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
@@ -10,7 +10,7 @@ using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

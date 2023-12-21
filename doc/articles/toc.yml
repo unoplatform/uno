@@ -326,8 +326,8 @@
             href: uno-development/Internal-WeakEventHelper.md
           - name: Debugging Uno.UI Java code with Android studio
             href: uno-development/Uno-UI-Debugging-Android-Studio.md
-          - name: Converting the source tree to WinUI
-            href: uno-development/winui-conversion.md
+          - name: Converting the source tree to UWP
+            href: uno-development/uwp-conversion.md
           - name: Troubleshooting Memory Issues
             href: uno-development/troubleshooting-memory-issues.md
           - name: Troubleshooting Source Generation

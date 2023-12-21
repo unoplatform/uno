@@ -13,7 +13,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{

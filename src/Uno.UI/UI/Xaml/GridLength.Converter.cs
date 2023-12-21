@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[TypeConverter(typeof(GridLength.Converter))]
 	public partial struct GridLength

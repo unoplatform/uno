@@ -92,7 +92,7 @@ public class Given_Binding
 					}
 					""",
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -111,8 +111,8 @@ public class Given_Binding
 			}
 		}.AddGeneratedSources();
 		test.ExpectedDiagnostics.Add(
-			// /0/Test0.cs(3,30): warning UXAML0002: TestRepro.UserControl1 does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
-			DiagnosticResult.CompilerWarning("UXAML0002").WithSpan(3, 30, 3, 42).WithArguments("TestRepro.UserControl1 does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.")
+			// /0/Test0.cs(3,30): warning UXAML0002: TestRepro.UserControl1 does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+			DiagnosticResult.CompilerWarning("UXAML0002").WithSpan(3, 30, 3, 42).WithArguments("TestRepro.UserControl1 does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.")
 		);
 		await test.RunAsync();
 	}
@@ -147,7 +147,7 @@ public class Given_Binding
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -198,8 +198,8 @@ public class Given_Binding
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -284,7 +284,7 @@ public class Given_Binding
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -338,7 +338,7 @@ public class Given_Binding
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
+					using Microsoft.UI.Xaml;
 
 					namespace TestRepro
 					{

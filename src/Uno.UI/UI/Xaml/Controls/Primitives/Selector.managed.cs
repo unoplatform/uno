@@ -11,11 +11,11 @@ using Uno.Extensions.Specialized;
 using System.Diagnostics;
 using Uno.UI;
 using Uno.Disposables;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	partial class Selector
 	{

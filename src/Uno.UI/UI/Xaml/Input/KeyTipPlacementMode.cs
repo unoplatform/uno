@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input
+﻿namespace Microsoft.UI.Xaml.Input
 {
 	/// <summary>
 	/// Defines constants that specify where a Key Tip is placed in relation to a UIElement.

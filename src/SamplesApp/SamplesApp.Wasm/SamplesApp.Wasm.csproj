@@ -29,7 +29,7 @@
 		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 	<ItemGroup>
-		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
+		<Content Update="..\SamplesApp.Windows\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />

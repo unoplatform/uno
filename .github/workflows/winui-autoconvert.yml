@@ -1,4 +1,4 @@
-name: Update WinUI Generate Branch
+name: Update UWP Generated Branch
 
 on:
   push:
@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    name: update-winui-branch
+    name: update-uwp-branch
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -66,11 +66,6 @@ jobs:
         & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
       name: Install .NET Workloads
 
-    - name: Convert source tree to WinUI
-      run: |
-        cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
-        dotnet run "$env:GITHUB_WORKSPACE"
-
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
@@ -81,5 +76,5 @@ jobs:
       run: |
         Set-PSDebug -Trace 1
         git add .
-        git commit -m "Update WinUI Autoconvert from $env:GITHUB_SHA"
-        git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/winui-autoconvert -f
+        git commit -m "Update UWP Autoconvert from $env:GITHUB_SHA"
+        git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f

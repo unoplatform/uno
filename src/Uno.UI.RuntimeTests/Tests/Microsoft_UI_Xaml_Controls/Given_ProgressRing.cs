@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 
@@ -13,7 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_ProgressRing
 {
 	[TestMethod]
-#if !(WINDOWS_UWP || __SKIA__ || __WASM__)
+#if !(WINAPPSDK || __SKIA__ || __WASM__)
 	[Ignore("IAnimatedVisualSource is not implemented")]
 #endif
 	public async Task When_NoProgress_IsIndeterminate_Toggle()
@@ -44,7 +44,7 @@ public class Given_ProgressRing
 	}
 
 	[TestMethod]
-#if !(WINDOWS_UWP || __SKIA__ || __WASM__)
+#if !(WINAPPSDK || __SKIA__ || __WASM__)
 	[Ignore("IAnimatedVisualSource is not implemented")]
 #endif
 	public async Task When_HalfProgress_IsIndeterminate_Toggle()

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using DirectUI;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public partial class AppBarButtonAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ButtonAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+	public partial class AppBarButtonAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ButtonAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
 		public AppBarButtonAutomationPeer(AppBarButton owner) : base(owner)
 		{

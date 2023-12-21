@@ -6,9 +6,9 @@ using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Windows.Graphics.Display;
@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Windows.UI.Xaml.Media", IgnoreInSnapshotTests = false)]
+	[Sample("Microsoft.UI.Xaml.Media", IgnoreInSnapshotTests = false)]
 	public sealed partial class RenderTargetBitmaps : Page
 	{
 		public static DependencyProperty RunTestProperty { get; } =
@@ -89,7 +89,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 			using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
 			{
-#if WINDOWS_UWP || __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
+#if WINAPPSDK || __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
 				var pixels = await renderer.GetPixelsAsync();
 				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
 				encoder.SetPixelData(BitmapPixelFormat.Bgra8

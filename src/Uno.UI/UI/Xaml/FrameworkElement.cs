@@ -1,7 +1,7 @@
-#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
 
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,20 +10,20 @@ using System.Linq;
 using Windows.Foundation;
 using Uno.UI.Controls;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno;
 using Uno.Disposables;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
@@ -38,10 +38,10 @@ using View = AppKit.NSView;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
 #if !UNO_REFERENCE_API
@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml
 #if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
-			Resources = new Windows.UI.Xaml.ResourceDictionary();
+			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 		new
 #endif
-		Windows.UI.Xaml.ResourceDictionary Resources
+		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
 			get; set;
 		}

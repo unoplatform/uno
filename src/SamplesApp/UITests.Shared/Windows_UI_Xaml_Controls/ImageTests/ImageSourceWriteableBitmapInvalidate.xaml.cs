@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Reflection;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using System.Runtime.InteropServices.WindowsRuntime;
 #endif
 
@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 
 		private void UpdateSource(object sender, RoutedEventArgs e)
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			using (var data = _bitmap.PixelBuffer.AsStream())
 			{
 				// Half of the image in green, alpha 100% (bgra buffer)

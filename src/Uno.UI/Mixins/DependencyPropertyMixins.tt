@@ -3,7 +3,7 @@
 
 <#
 	_namespaces = new NamespacesBuilder()
-		.Namespace("Windows.UI.Xaml.Controls")
+		.Namespace("Microsoft.UI.Xaml.Controls")
 
 			.Class("Control")
 				.Property("BackgroundSizing", "BackgroundSizing", "default")
@@ -82,7 +82,7 @@
 			.Class("TimePicker")
 				.Property("ClockIdentifier", "string", "Windows.Globalization.ClockIdentifiers.TwelveHour")
 
-		.Namespace("Windows.UI.Xaml.Controls.Primitives")
+		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 			.Class("SelectorItem")
 				.Property("IsSelected", "bool", "false")
 			.Class("Popup")
@@ -102,7 +102,7 @@
 				.Property("DisplayMemberPath", "string", "string.Empty")
 			.Class("HorizontalGridView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
-		.Namespace("Windows.UI.Xaml.Controls.Primitives")
+		.Namespace("Microsoft.UI.Xaml.Controls.Primitives")
 	.Build();
 #>
 

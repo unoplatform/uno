@@ -1,4 +1,4 @@
-<h1 align=center>
+﻿<h1 align=center>
  <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
 </h1>
 
@@ -32,7 +32,7 @@ For a larger example and features demo:
 
 # Uno Platform Features
 * Supported platforms:
-    * Windows 10 and Windows 11 (via the standard UWP and WinUI Toolkit)
+    * Windows 10 and Windows 11
     * Windows 7 (via Skia+WPF)
     * iOS, Mac Catalyst and Android (via [Xamarin](https://www.visualstudio.com/xamarin/) and [.NET](https://dotnet.microsoft.com/))
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
@@ -69,9 +69,9 @@ For a larger example and features demo:
     * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
     * Any UWP project
 * Responsive Design:
-    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)
+    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
-    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
+    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available

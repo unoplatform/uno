@@ -63,7 +63,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
@@ -93,7 +93,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 

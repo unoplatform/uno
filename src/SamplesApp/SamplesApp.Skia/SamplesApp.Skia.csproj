@@ -72,6 +72,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="..\SamplesApp.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 </Project>

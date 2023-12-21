@@ -1,8 +1,8 @@
-using Windows.UI.Xaml.Markup;
+﻿using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
+	public partial class Viewbox : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
 		{

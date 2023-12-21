@@ -2,11 +2,11 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Uno.Disposables;
 
-namespace Windows.UI.Xaml.Tests.Enterprise
+namespace Microsoft.UI.Xaml.Tests.Enterprise
 {
 	internal class SafeEventRegistration<TElement, TDelegate>
 		where TElement : class
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			return _last = Disposable.Create(() =>
 			{
 				// On Windows, token is EventRegistrationToken, on Uno, token is null
-#if NETFX_CORE
+#if WINAPPSDK
 				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { token }));
 #else
 				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { handler }));

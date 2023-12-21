@@ -299,9 +299,9 @@ namespace Uno.UI.Tasks.BatchMerge
 		}
 
 		private static Dictionary<string, string> standardNameDictionary = new Dictionary<string, string> {
-			{ "using:Microsoft.UI.Xaml.Controls", "controls" },
-			{ "using:Microsoft.UI.Xaml.Controls.Primitives", "primitives" },
-			{ "using:Microsoft.UI.Xaml.Media", "media" },
+			{ "using:Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls", "controls" },
+			{ "using:Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.Primitives", "primitives" },
+			{ "using:Microsoft" + /* UWP don't rename */ ".UI.Xaml.Media", "media" },
 			{ "http://schemas.microsoft.com/winfx/2006/xaml", "x"},
 		};
 

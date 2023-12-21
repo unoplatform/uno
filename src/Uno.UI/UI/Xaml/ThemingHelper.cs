@@ -1,6 +1,6 @@
 ﻿using Color = Windows.UI.Color;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal static class ThemingHelper
 {
