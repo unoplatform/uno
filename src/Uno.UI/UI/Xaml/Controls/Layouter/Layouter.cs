@@ -255,6 +255,17 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
+				// Alignment==Stretch --> arrange at the slot size minus margins
+				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
+				if (Panel.HorizontalAlignment != HorizontalAlignment.Stretch)
+				{
+					arrangeSize.Width = _unclippedDesiredSize.Width;
+				}
+				if (Panel.VerticalAlignment != VerticalAlignment.Stretch)
+				{
+					arrangeSize.Height = _unclippedDesiredSize.Height;
+				}
+
 				var (_, maxSize) = this.Panel.GetMinMax();
 				//var marginSize = this.Panel.GetMarginSize();
 

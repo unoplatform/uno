@@ -19,6 +19,14 @@ using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Automation;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Foundation.Metadata;
+
+
+
+
 
 
 #if __IOS__
@@ -143,6 +151,102 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.SetBinding(
 				FrameworkElement.WidthProperty,
 				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+		}
+
+		private sealed partial class MyPanel : Panel
+		{
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				var child = this.Children.Single();
+				if (child is FrameworkElement { Name: "second" } childAsFE)
+				{
+					childAsFE.HorizontalAlignment = HorizontalAlignment.Left;
+				}
+
+				if (child is FrameworkElement { Name: "third" } childAsFE2)
+				{
+					childAsFE2.HorizontalAlignment = HorizontalAlignment.Center;
+				}
+
+				child.Measure(availableSize);
+
+				return child.DesiredSize;
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				var child = this.Children.Single();
+				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+				return finalSize;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("")]
+#endif
+		public async Task When_Alignment_Changes_During_Measure()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var first = new MyPanel()
+			{
+				Name = "first",
+				Width = 50,
+				Background = new SolidColorBrush(Colors.Gray),
+				Children =
+				{
+					new MyPanel()
+					{
+						Background = new SolidColorBrush(Colors.Pink),
+						Name = "second",
+						Width = 50,
+						Children =
+						{
+							new Grid()
+							{
+								Background = new SolidColorBrush(Colors.Green),
+								Name = "third",
+								Children =
+								{
+									new Rectangle()
+									{
+										Fill = new SolidColorBrush(Colors.Red),
+										Width = 20,
+										Height = 20,
+										Name = "rectangle",
+									},
+								},
+							},
+						}
+					},
+				}
+			};
+
+			await UITestHelper.Load(first);
+			var actualBitmap = await UITestHelper.ScreenShot(first);
+
+			var expected = new Border()
+			{
+				Width = 50,
+				Height = 20,
+				Background = new SolidColorBrush(Colors.Pink),
+				Child = new Border()
+				{
+					Width = 20,
+					Height = 20,
+					Background = new SolidColorBrush(Colors.Red),
+				}
+			};
+
+			await UITestHelper.Load(expected);
+			var expectedBitmap = await UITestHelper.ScreenShot(expected);
+
+			await ImageAssert.AreEqualAsync(actualBitmap, expectedBitmap);
 		}
 
 		[TestMethod]
