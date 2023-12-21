@@ -524,7 +524,9 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					TestServices.WindowHelper.RootElementDispatcher.RunAsync(
+					UnitTestDispatcherCompat
+						.From(SamplesApp.App.MainWindow.Content)
+						.RunAsync(
 						async () =>
 						{
 							if (newContent != null)
