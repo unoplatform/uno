@@ -41,23 +41,14 @@ namespace Microsoft.UI.Xaml.Controls
 				requestedVersion = MaxSupportedResourcesVersion;
 			}
 
-			switch (requestedVersion)
-			{
-				case ControlsResourcesVersion.Version1:
-#if !__NETSTD_REFERENCE__
-					Uno.UI.FluentTheme.v1.GlobalStaticResources.Initialize();
-					Uno.UI.FluentTheme.v1.GlobalStaticResources.RegisterDefaultStyles();
-					Uno.UI.FluentTheme.v1.GlobalStaticResources.RegisterResourceDictionariesBySource();
-#endif
-					break;
+			// As Fluent Styles V1 are no longer officially supported, prefer V2 styles.
+			requestedVersion = MaxSupportedResourcesVersion;
 
-				case ControlsResourcesVersion.Version2:
 #if !__NETSTD_REFERENCE__
-					Uno.UI.FluentTheme.v2.GlobalStaticResources.Initialize();
-					Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterDefaultStyles();
-					Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
+			Uno.UI.FluentTheme.v2.GlobalStaticResources.Initialize();
+			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterDefaultStyles();
+			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
 #endif
-					break;
 			}
 
 

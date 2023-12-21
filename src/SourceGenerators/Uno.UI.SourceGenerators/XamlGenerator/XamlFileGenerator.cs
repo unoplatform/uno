@@ -1578,30 +1578,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (type.GetFullyQualifiedTypeExcludingGlobal().Equals("Microsoft.UI.Xaml.Controls.XamlControlsResources", StringComparison.Ordinal))
 			{
-				int GetResourcesVersion()
-				{
-					// We're in a XAML file which uses the XamlControlsResources type. To ensure that the linker can work
-					// properly we're redirecting the type creation to a type containing only the requested version.
-					if (topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ControlsResourcesVersion") is { } versionMember)
-					{
-						if (versionMember.Value?.ToString()?.TrimStart("Version") is { } versionString)
-						{
-							if (int.TryParse(versionString, out var explicitVersion))
-							{
-								if (explicitVersion < 1 || explicitVersion > XamlConstants.MaxFluentResourcesVersion)
-								{
-									throw new Exception($"Unsupported XamlControlsResources version {explicitVersion}. Max version is {XamlConstants.MaxFluentResourcesVersion}");
-								}
-							}
-
-							return explicitVersion;
-						}
-					}
-
-					return XamlConstants.MaxFluentResourcesVersion;
-				}
-
-				using (writer.BlockInvariant($"new global::Microsoft.UI.Xaml.Controls.XamlControlsResourcesV{GetResourcesVersion()}()"))
+				using (writer.BlockInvariant($"new global::Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2()"))
 				{
 					BuildLiteralProperties(writer, topLevelControl);
 				}
