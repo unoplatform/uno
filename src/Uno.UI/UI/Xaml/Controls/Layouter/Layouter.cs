@@ -259,6 +259,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// Alignment!=Stretch --> arrange at the unclippedDesiredSize
 				if (Panel is not Windows.UI.Xaml.Shapes.Shape)
 				{
+					// Uno specific: Shapes arrange is relying on "wrong" layouter logic to be arranged properly
+					// The "Panel is not Shape" check should be removed when we're removing the legacy shape measure/arrange
 					if (Panel.HorizontalAlignment != HorizontalAlignment.Stretch)
 					{
 						arrangeSize.Width = _unclippedDesiredSize.Width;
