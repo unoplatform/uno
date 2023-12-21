@@ -11,6 +11,7 @@ tasks:
   - name: Postinstall .NET and dev certificates
     init: |
       mkdir -p $DOTNET_ROOT && curl -fsSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel $DOTNET_VERSION --install-dir $DOTNET_ROOT 
+      mkdir -p $DOTNET_ROOT && curl -fsSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 7.0.302 --install-dir $DOTNET_ROOT 
       dotnet dev-certs https 
       build/gitpod/build-skia.sh
       build/gitpod/build-wasm.sh
