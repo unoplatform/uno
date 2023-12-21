@@ -16,6 +16,8 @@ namespace Windows.UI.ViewManagement
 
 		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentView();
 
+		private int? _statusBarHeightResourceId;
+
 		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
@@ -60,10 +62,9 @@ namespace Windows.UI.ViewManagement
 			var occludedRect = new Rect();
 
 			// Height
-			int resourceId = activity.Resources.GetIdentifier("status_bar_height", "dimen", "android");
-			if (resourceId > 0)
+			if (StatusBarHeightResourceId > 0)
 			{
-				var physicalStatusBarHeight = activity.Resources.GetDimensionPixelSize(resourceId);
+				var physicalStatusBarHeight = activity.Resources.GetDimensionPixelSize(StatusBarHeightResourceId);
 				var logicalStatusBarHeight = PhysicalToLogicalPixels(physicalStatusBarHeight);
 				occludedRect.Height = logicalStatusBarHeight;
 			}
@@ -144,5 +145,9 @@ namespace Windows.UI.ViewManagement
 			activity.OnConfigurationChanged(activity.Resources.Configuration);
 #pragma warning restore 618
 		}
+
+		private int StatusBarHeightResourceId =>
+			_statusBarHeightResourceId ??=
+				((Activity)ContextHelper.Current).Resources.GetIdentifier("status_bar_height", "dimen", "android");
 	}
 }
