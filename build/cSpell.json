@@ -140,7 +140,8 @@
 	"Yowza",
 	"unpackaged",
 	"GNSS",
-	"winappsdk"
+	"winappsdk",
+	"wapproj's"
   ],
   "patterns": [
 	{

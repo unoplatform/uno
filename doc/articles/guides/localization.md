@@ -92,11 +92,11 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 1. For WinUI 3 projects
    - As an unpackaged WinUI 3 app doesn't contain a package.appxmanifest file, no further action is needed after adding the appropriate resources to the project.
    - If you are working with a packaged WinUI 3 app, open the .wapproj's `package.appxmanifest` in a text editor and locate the following section:
-  ```xml
-    <Resources>
-        <Resource Language="x-generate"/>
-    </Resources>
-  ```
+    ```xml
+        <Resources>
+            <Resource Language="x-generate"/>
+        </Resources>
+    ```
     Replace it with elements for each of your supported languages. For example:    
     ```xml
     <Resources>
@@ -104,7 +104,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         <Resource Language="es-ES"/>
         <!-- Add more languages as needed -->
     </Resources>
-    ``` 
+    ```
 
 ## Get the complete code
 
