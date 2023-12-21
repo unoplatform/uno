@@ -13,14 +13,24 @@ internal static partial class XamlHelper
 	/// <remarks>
 	/// It will match an opening or closing or self-closing tag.
 	/// </remarks>
+#if HAS_UNO
 	[GeneratedRegex(@"(?=( ?/)?>)")]
 	private static partial Regex EndOfTagRegex();
+#else
+	private static Regex EndOfTagRegex() => EndOfTagRegexValue;
+	private readonly static Regex EndOfTagRegexValue = new(@"(?=( ?/)?>)");
+#endif
 
 	/// <summary>
 	/// Matches any tag without xmlns prefix.
 	/// </summary>
+#if HAS_UNO
 	[GeneratedRegex(@"<\w+[ />]")]
 	private static partial Regex NonXmlnsTagRegex();
+#else
+	private static Regex NonXmlnsTagRegex() => NonXmlnsTagRegexValue;
+	private readonly static Regex NonXmlnsTagRegexValue = new(@"<\w+[ />]");
+#endif
 
 	private static readonly IReadOnlyDictionary<string, string> KnownXmlnses = new Dictionary<string, string>
 	{
@@ -71,6 +81,7 @@ internal static partial class XamlHelper
 
 		xaml = EndOfTagRegex().Replace(xaml, injection.TrimEnd(), 1);
 
-		return XamlReader.Load(xaml) as T;
+		var result = XamlReader.Load(xaml);
+		return result as T;
 	}
 }
