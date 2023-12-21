@@ -131,12 +131,12 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 
 			radio_disable.Checked += (s, e) =>
 			{
-				tb.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+				tb.Visibility = Visibility.Collapsed;
 			};
 
 			radio_enable.Checked += (s, e) =>
 			{
-				tb.Visibility = Windows.UI.Xaml.Visibility.Visible;
+				tb.Visibility = Visibility.Visible;
 			};
 
 			radio_disable.IsChecked = true;
