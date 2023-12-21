@@ -52,7 +52,7 @@ public class Given_AttachedPropertyWithNoFuzzyMatching
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net60Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.9.26"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net70Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 

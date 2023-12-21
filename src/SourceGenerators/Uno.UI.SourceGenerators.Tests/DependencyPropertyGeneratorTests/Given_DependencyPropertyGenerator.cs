@@ -14,186 +14,12 @@ using Verify = CSharpIncrementalSourceGeneratorVerifier<DependencyPropertyGenera
 [TestClass]
 public class Given_DependencyPropertyGenerator
 {
-	private const string AttributeStub = """
-		using System;
-		using System.Collections.Generic;
-		using System.Text;
-		using Microsoft.UI.Xaml;
-		using Microsoft.UI.Xaml.Data;
-
-
-		namespace Uno.UI.Xaml
-		{
-			[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-			internal sealed class GeneratedDependencyPropertyAttribute : Attribute
-			{
-				public GeneratedDependencyPropertyAttribute()
-				{
-				}
-
-				public FrameworkPropertyMetadataOptions Options { get; set; }
-				public object DefaultValue { get; set; }
-				public bool CoerceCallback { get; set; }
-				public bool ChangedCallback { get; set; }
-				public bool LocalCache { get; set; } = true;
-				public bool Attached { get; set; }
-				public Type AttachedBackingFieldOwner { get; set; }
-				public string ChangedCallbackName { get; set; }
-			}
-		}
-
-		namespace Microsoft.UI.Xaml
-		{
-			internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue);
-			internal delegate void BackingFieldUpdateCallback(DependencyObject dependencyObject, object newValue);
-
-			public class FrameworkPropertyMetadata : PropertyMetadata
-			{
-				private bool _isDefaultUpdateSourceTriggerSet;
-				private UpdateSourceTrigger _defaultUpdateSourceTrigger;
-
-				public FrameworkPropertyMetadata(
-					object defaultValue
-				) : base(null)
-				{
-				}
-
-				public FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					CoerceValueCallback coerceValueCallback
-				) : base(null)
-				{
-				}
-
-				public FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					PropertyChangedCallback propertyChangedCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(PropertyChangedCallback propertyChangedCallback)
-					: base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					PropertyChangedCallback propertyChangedCallback,
-					BackingFieldUpdateCallback backingFieldUpdateCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					BackingFieldUpdateCallback backingFieldUpdateCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					BackingFieldUpdateCallback backingFieldUpdateCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					PropertyChangedCallback propertyChangedCallback,
-					CoerceValueCallback coerceValueCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					PropertyChangedCallback propertyChangedCallback,
-					CoerceValueCallback coerceValueCallback,
-					BackingFieldUpdateCallback backingFieldUpdateCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					PropertyChangedCallback propertyChangedCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					PropertyChangedCallback propertyChangedCallback,
-					BackingFieldUpdateCallback backingFieldUpdateCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					PropertyChangedCallback propertyChangedCallback,
-					CoerceValueCallback coerceValueCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					PropertyChangedCallback propertyChangedCallback,
-					CoerceValueCallback coerceValueCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					BackingFieldUpdateCallback backingFieldUpdateCallback,
-					CoerceValueCallback coerceValueCallback
-				) : base(null)
-				{
-				}
-
-				internal FrameworkPropertyMetadata(
-					object defaultValue,
-					FrameworkPropertyMetadataOptions options,
-					PropertyChangedCallback propertyChangedCallback,
-					CoerceValueCallback coerceValueCallback,
-					UpdateSourceTrigger defaultUpdateSourceTrigger
-				) : base(null)
-				{
-				}
-
-				public FrameworkPropertyMetadataOptions Options { get; set; }
-
-				public UpdateSourceTrigger DefaultUpdateSourceTrigger { get; private set; }
-
-				internal bool IsLogicalChild { get; set; }
-
-				public bool HasWeakStorage { get; set; }
-			}
-
-		}
-		""";
-
 	[TestMethod]
 	public async Task TestInStaticClass()
 	{
 		var test = new Verify.Test
 		{
+			IgnoreAccessibility = true,
 			TestState =
 			{
 				Sources =
@@ -215,7 +41,8 @@ public class Given_DependencyPropertyGenerator
 							public static int GetMyValue(DependencyObject instance) => GetMyValueValue(instance);
 						}
 					}
-					""", AttributeStub},
+					"""
+				},
 				GeneratedSources =
 				{
 					{ (typeof(DependencyPropertyGenerator), @"Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs", SourceText.From("""
@@ -297,7 +124,7 @@ public class Given_DependencyPropertyGenerator
 					}
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 		};
 
 		await test.RunAsync();
@@ -308,6 +135,7 @@ public class Given_DependencyPropertyGenerator
 	{
 		var test = new Verify.Test
 		{
+			IgnoreAccessibility = true,
 			TestState =
 			{
 				Sources =
@@ -330,6 +158,7 @@ public class Given_DependencyPropertyGenerator
 							public static int GetMyValue(DependencyObject instance) => GetMyValueValue(instance);
 
 							public CoreDispatcher Dispatcher { get; }
+							public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; }
 							public object GetValue(DependencyProperty dp) => null;
 							public void SetValue(DependencyProperty dp, object value) { }
 							public void ClearValue(DependencyProperty dp) { }
@@ -339,7 +168,8 @@ public class Given_DependencyPropertyGenerator
 							public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 						}
 					}
-					""", AttributeStub},
+					"""
+				},
 				GeneratedSources =
 				{
 					{ (typeof(DependencyPropertyGenerator), @"Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs", SourceText.From("""
@@ -421,7 +251,7 @@ public class Given_DependencyPropertyGenerator
 					}
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 		};
 
 		await test.RunAsync();
@@ -432,6 +262,7 @@ public class Given_DependencyPropertyGenerator
 	{
 		var test = new Verify.Test
 		{
+			IgnoreAccessibility = true,
 			TestState =
 			{
 				Sources =
@@ -457,6 +288,7 @@ public class Given_DependencyPropertyGenerator
 							public static int GetMyValueDefaultValue() => 0;
 
 							public CoreDispatcher Dispatcher { get; }
+							public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; }
 							public object GetValue(DependencyProperty dp) => null;
 							public void SetValue(DependencyProperty dp, object value) { }
 							public void ClearValue(DependencyProperty dp) { }
@@ -466,7 +298,8 @@ public class Given_DependencyPropertyGenerator
 							public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 						}
 					}
-					""", AttributeStub},
+					"""
+				},
 				GeneratedSources =
 				{
 					{ (typeof(DependencyPropertyGenerator), @"Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs", SourceText.From("""
@@ -534,7 +367,7 @@ public class Given_DependencyPropertyGenerator
 					}
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 		};
 
 		test.ExpectedDiagnostics.Add(
