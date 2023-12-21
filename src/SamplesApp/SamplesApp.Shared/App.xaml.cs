@@ -57,7 +57,7 @@ namespace SamplesApp
 		private bool _wasActivated;
 		private bool _isSuspended;
 
-		public Window MainWindow { get; set; }
+		public static Window MainWindow { get; set; }
 
 		static App()
 		{
