@@ -310,8 +310,7 @@ namespace Uno.UI.Samples.Tests
 
 		private void ReportTestClass(TypeInfo testClass)
 		{
-			DispatcherQueue.TryEnqueue(
-				Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal,
+			TestServices.WindowHelper.RootElementDispatcher.RunAsync(
 				() =>
 				{
 					if (!IsRunningOnCI)

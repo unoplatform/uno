@@ -115,8 +115,9 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = DispatcherQueue.GetForCurrentThread().TryEnqueue(
-				DispatcherQueuePriority.Normal,
+			_ = UnitTestDispatcherCompat
+				.From(SamplesApp.App.MainWindow.Content)
+				.RunAsync(
 				async () =>
 				{
 					// Initialize favorites and recents list as soon as possible.
@@ -846,9 +847,9 @@ description: {sample.Description}";
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			DispatcherQueue.GetForCurrentThread().TryEnqueue(
-				DispatcherQueuePriority.Normal,
-				() => sample.IsFavorite = isFavorite);
+			_ = UnitTestDispatcherCompat
+				.From(SamplesApp.App.MainWindow.Content)
+				.RunAsync(() => sample.IsFavorite = isFavorite);
 
 			await Task.Yield();
 		}
