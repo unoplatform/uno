@@ -22,9 +22,28 @@ namespace Uno.ReferenceImplComparer
 			{
 				case "list-failed":
 					return ListFailedTests(args[1], args[2]);
+				case "fail-empty":
+					return FailOnEmptyResults(args[1]);
 			}
 
 			return 0;
+		}
+
+		private static int FailOnEmptyResults(string inputFile)
+		{
+			var doc = new XmlDocument();
+			doc.LoadXml(File.ReadAllText(inputFile));
+
+			var allNodes = doc.SelectNodes("//test-case");
+
+			var isEmpty = allNodes?.Count == 0;
+
+			if (isEmpty)
+			{
+				Console.WriteLine($"The test results file {inputFile} does not contain any results");
+			}
+
+			return isEmpty ? 1 : 0;
 		}
 
 		private static int ListFailedTests(string inputFile, string outputFile)

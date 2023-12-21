@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
 		{
@@ -184,16 +184,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextDecorations
 		// Skipping already declared property HorizontalTextAlignment
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsTextTrimmed
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextTrimmedProperty);
-			}
-		}
-#endif
+		// Skipping already declared property IsTextTrimmed
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Documents.TextHighlighter> TextHighlighters
@@ -265,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.OpticalMarginAlignment)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -299,14 +290,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextDecorationsProperty
 		// Skipping already declared property HorizontalTextAlignmentProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextTrimmed), typeof(bool),
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsTextTrimmed
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
@@ -470,21 +454,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TextBlock, global::Windows.UI.Xaml.Controls.IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBlock", "event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> TextBlock.IsTextTrimmedChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBlock", "event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> TextBlock.IsTextTrimmedChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBlock.IsTextTrimmedChanged
 	}
 }

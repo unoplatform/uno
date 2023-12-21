@@ -23,6 +23,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation.Metadata;
+using Uno.UI.Xaml.Core;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -1583,6 +1584,99 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (args.GetCurrentPoint(null).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+			{
+				// On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
+				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
+				// skip focusing, or focus some child of this faux RootScrollViewer. TO match the other platforms, we do the former.
+				if (this.GetParent() is not RootVisual)
+				{
+					args.Handled = Focus(FocusState.Pointer);
+				}
+			}
+		}
+
+#if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			var key = args.Key;
+
+			if (Presenter is null)
+			{
+				return;
+			}
+
+			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
+			var oldVerticalOffset = Presenter.TargetVerticalOffset;
+
+			var newOffset = key switch
+			{
+				VirtualKey.Up => oldVerticalOffset - GetDelta(ActualHeight),
+				VirtualKey.Down => oldVerticalOffset + GetDelta(ActualHeight),
+				VirtualKey.Left => oldHorizontalOffset - GetDelta(ActualWidth),
+				VirtualKey.Right => oldHorizontalOffset + GetDelta(ActualWidth),
+				VirtualKey.PageUp => oldVerticalOffset - ActualHeight,
+				VirtualKey.PageDown => oldVerticalOffset + ActualHeight,
+				VirtualKey.Home => 0,
+				VirtualKey.End => ScrollableHeight,
+				_ => double.E
+			};
+
+			if (newOffset == double.E)
+			{
+				return;
+			}
+
+			if (Content is UIElement)
+			{
+				var canScrollHorizontally = Presenter.CanHorizontallyScroll;
+				var canScrollVertically = Presenter.CanVerticallyScroll;
+
+				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
+				{
+					ScrollToHorizontalOffset(newOffset);
+					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
+				}
+				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
+				{
+					ScrollToVerticalOffset(newOffset);
+					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
+				}
+
+				args.Handled |= key is VirtualKey.PageUp or VirtualKey.Down;
+			}
+
+			// This gets the delta that should be applied when arrow keys are pressed as a function of the
+			// ScrollViewer length in the scrolling direction. WinUI's logic is not quite clear, I just
+			// reverse-engineered the numbers until they matched precisely. I think the original code just
+			// has some weird rounding somewhere that makes the numbers weird to calculate.
+			static int GetDelta(double l)
+			{
+				var length = (int)Math.Max(0, Math.Round(l) - 16);
+				var result = 2 + length / 20 * 3;
+
+				switch (length % 20)
+				{
+					case 0:
+						break;
+					case <= 7:
+						result += 1;
+						break;
+					case <= 14:
+						result += 2;
+						break;
+					default:
+						result += 3;
+						break;
+				}
+
+				return result;
+			}
+		}
+#endif
 
 #if __CROSSRUNTIME__ || __MACOS__
 		private static bool _warnedAboutZoomedContentAlignment;

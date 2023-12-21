@@ -24,7 +24,7 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
-		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
+		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 500;
 
 		internal const long HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 800;
 		internal const float HoldMinPressure = .75f;

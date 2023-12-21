@@ -16,7 +16,7 @@ $external_docs = @{
     "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
     "uno.extensions"     = "e5f8616f41fd4420296d70bceaed2666aff6e0d4"
-    "workshops"          = "89f1d0678d01ca3225453afadc41150263abe54d"
+    "workshops"          = "0c964f38df5a4b0f32cf36cd74591df3012b8e20"
 }
 
 $uno_git_url = "https://github.com/unoplatform/"

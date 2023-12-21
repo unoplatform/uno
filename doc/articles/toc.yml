@@ -189,7 +189,9 @@
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
       - name: Upgrading to Uno 5.0
-        href: migrating-to-uno-5.md
+        href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 7 to .NET 8
+        href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
         href: migrating-from-xamarin-to-net6.md
       - name: Upgrading to WinUI 3.0
@@ -462,7 +464,7 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
-        - name: WinUI 2 controls
+        - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
         - name: x:Bind
           href: features/windows-ui-xaml-xbind.md
@@ -595,8 +597,14 @@
       href: external/uno.resizetizer/doc/toc.yml
     - name: Uno.UITest
       href: external/uno.uitest/doc/toc.yml
-    - name: Visual Studio Code Extension
-      href: xref:Uno.vscode.additional
+    - name: VS Code Extension
+      items:
+      - name: Visual Studio Code Extension
+        href: xref:Uno.vscode.additional
+      - name: C# Dev Kit Support
+        href: xref:Uno.GetStarted.vscode.DevKit
+      - name: Omnisharp Support
+        href: xref:Uno.GetStarted.vscode.OmniSharp
     - name: Templates
       items:
       - name: Visual Studio Wizard

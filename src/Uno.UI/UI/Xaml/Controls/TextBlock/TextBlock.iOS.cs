@@ -68,6 +68,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin, null);
 			}
+
+			UpdateIsTextTrimmed();
 		}
 
 		/// <summary>
@@ -343,6 +345,14 @@ namespace Windows.UI.Xaml.Controls
 
 
 			return characterIndex;
+		}
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				_attributedString.Size.Width > _drawRect.Size.Width ||
+				_attributedString.Size.Height > _drawRect.Size.Height
+			);
 		}
 	}
 }
