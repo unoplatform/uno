@@ -3,7 +3,7 @@
 using System.DirectoryServices.ActiveDirectory;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 

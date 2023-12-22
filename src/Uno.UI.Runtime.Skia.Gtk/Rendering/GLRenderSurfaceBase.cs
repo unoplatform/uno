@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {

@@ -20,7 +20,7 @@ internal class UnoGtkWindow : Window
 	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
 
-	public UnoGtkWindow(WinUIWindow winUIWindow, XamlRoot xamlRoot) : base(WindowType.Toplevel)
+	public UnoGtkWindow(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 

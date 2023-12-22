@@ -95,7 +95,7 @@ namespace Uno.UI.Samples.Tests
 			);
 
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
-				Windows.UI.Xaml.Window.Current;
+				Microsoft.UI.Xaml.Window.Current;
 
 			DataContext = null;
 
@@ -275,7 +275,7 @@ namespace Uno.UI.Samples.Tests
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
 #if HAS_UNO_WINUI || WINUI_WINDOWING
-				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Windows.UI.Xaml.Window window)
+				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
 				{
 					window.Title = message;
 				}

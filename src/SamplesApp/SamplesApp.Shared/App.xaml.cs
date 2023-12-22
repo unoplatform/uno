@@ -58,11 +58,9 @@ namespace SamplesApp
 		private static ILogger? _log;
 #endif
 
-		private static Windows.UI.Xaml.Window? _mainWindow;
+		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
-
-		public static Window MainWindow { get; set; }
 
 		static App()
 		{
@@ -76,7 +74,7 @@ namespace SamplesApp
 		public App()
 		{
 #if !HAS_UNO_WINUI
-			Assert.IsNotNull(Windows.UI.Xaml.Window.Current);
+			Assert.IsNotNull(Microsoft.UI.Xaml.Window.Current);
 #endif
 
 			// Fix language for UI tests
@@ -101,7 +99,7 @@ namespace SamplesApp
 #endif
 		}
 
-		internal static Windows.UI.Xaml.Window? MainWindow => _mainWindow;
+		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
 
 		/// <summary>
 		/// Invoked when the application is launched normally by the end user.  Other entry points
@@ -188,9 +186,9 @@ namespace SamplesApp
 		{
 			_mainWindow ??=
 #if HAS_UNO_WINUI || WINUI_WINDOWING
-				new Windows.UI.Xaml.Window();
+				new Microsoft.UI.Xaml.Window();
 #else
-				Windows.UI.Xaml.Window.Current!;
+				Microsoft.UI.Xaml.Window.Current!;
 #endif
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
