@@ -5,7 +5,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 
