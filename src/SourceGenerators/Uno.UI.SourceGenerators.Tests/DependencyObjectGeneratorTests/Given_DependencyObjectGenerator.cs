@@ -14,9 +14,9 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ImmutableArray<PackageIdentity> _unoPackage = ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.6.19"));
-	private static readonly ReferenceAssemblies _Net60AndroidWithUno = ReferenceAssemblies.Net.Net60Android.AddPackages(_unoPackage);
-	private static readonly ReferenceAssemblies _Net60WithUno = ReferenceAssemblies.Net.Net60.AddPackages(_unoPackage);
+	private static readonly ImmutableArray<PackageIdentity> _unoPackage = ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"));
+	private static readonly ReferenceAssemblies _Net70AndroidWithUno = ReferenceAssemblies.Net.Net70Android.AddPackages(_unoPackage);
+	private static readonly ReferenceAssemblies _Net70WithUno = ReferenceAssemblies.Net.Net70.AddPackages(_unoPackage);
 
 	private async Task TestAndroid(string testCode, params DiagnosticResult[] expectedDiagnostics)
 	{
@@ -26,7 +26,7 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _Net60AndroidWithUno,
+			ReferenceAssemblies = _Net70AndroidWithUno,
 		};
 		test.ExpectedDiagnostics.AddRange(expectedDiagnostics);
 		await test.RunAsync();
@@ -38,6 +38,7 @@ public class Given_DependencyObjectGenerator
 		await TestAndroid("""
 			using Android.Content;
 			using Windows.UI.Core;
+			using Microsoft.UI.Dispatching;
 			using Microsoft.UI.Xaml;
 
 			public class C : Android.Views.View, DependencyObject
@@ -47,6 +48,7 @@ public class Given_DependencyObjectGenerator
 				}
 
 				public CoreDispatcher Dispatcher { get; }
+				public DispatcherQueue DispatcherQueue { get; }
 				public object GetValue(DependencyProperty dp) => null;
 				public void SetValue(DependencyProperty dp, object value) { }
 				public void ClearValue(DependencyProperty dp) { }
@@ -57,7 +59,7 @@ public class Given_DependencyObjectGenerator
 			}
 			""",
 		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(5, 14, 5, 15).WithArguments("Android.Views.View"));
+		DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
@@ -113,6 +115,7 @@ public class Given_DependencyObjectGenerator
 	 	{
 	 		private DependencyObjectStore __storeBackingField;
 	 		public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
+	 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 	 		private DependencyObjectStore __Store
 	 		{
 	 			get
@@ -293,7 +296,7 @@ public class Given_DependencyObjectGenerator
 	 """, Encoding.UTF8)) }
 				}
 			},
-			ReferenceAssemblies = _Net60WithUno,
+			ReferenceAssemblies = _Net70WithUno,
 		}.RunAsync();
 	}
 }
