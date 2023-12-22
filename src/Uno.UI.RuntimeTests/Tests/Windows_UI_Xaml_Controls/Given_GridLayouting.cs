@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -71,7 +72,7 @@ public partial class Given_GridLayouting
 		SUT.Arrange(default);
 
 		size.Should().Be(default);
-		SUT.GetChildren().Should().BeEmpty();
+		SUT.Children.Should().BeEmpty();
 	}
 
 	[TestMethod]
@@ -93,7 +94,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(firstChild).Should().Be(new Rect(0, 0, 20, 20));
 
 		measuredSize.Should().Be(new Size(10, 10));
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -124,7 +125,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(firstChild).Should().Be(new Rect(20, 20, 20, 20));
 
 		measuredSize.Should().Be(new Size(40, 40));
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -167,7 +168,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(20, 20, 20, 20));
 
 		measuredSize.Should().Be(new Size(40, 40));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -201,7 +202,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(0, 0, 20, 20));
 
 		measuredSize.Should().Be(new Size(10, 10));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -211,8 +212,8 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -241,7 +242,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(10, 0, 10, 20));
 
 		measuredSize.Should().Be(new Size(20, 10));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -256,8 +257,8 @@ public partial class Given_GridLayouting
 		SUT.VerticalAlignment = VerticalAlignment.Top;
 		SUT.HorizontalAlignment = HorizontalAlignment.Center;
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -292,7 +293,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(65, 40, 20, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -304,12 +305,12 @@ public partial class Given_GridLayouting
 
 		SUT.MinWidth = 80;
 		SUT.MinHeight = 80;
-		SUT.Padding = new Thickness(10, 20);
+		SUT.Padding = new Thickness(10, 20, 10, 20);
 		SUT.VerticalAlignment = VerticalAlignment.Top;
 		SUT.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "Auto" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
 		var c1 = new View
 		{
@@ -342,7 +343,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(130, 70, 20, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -357,8 +358,8 @@ public partial class Given_GridLayouting
 		SUT.VerticalAlignment = VerticalAlignment.Top;
 		SUT.HorizontalAlignment = HorizontalAlignment.Center;
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -395,7 +396,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(65, 40, 20, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -410,8 +411,8 @@ public partial class Given_GridLayouting
 		SUT.VerticalAlignment = VerticalAlignment.Top;
 		SUT.HorizontalAlignment = HorizontalAlignment.Center;
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -447,7 +448,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 65, 20, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -462,8 +463,8 @@ public partial class Given_GridLayouting
 		SUT.VerticalAlignment = VerticalAlignment.Top;
 		SUT.HorizontalAlignment = HorizontalAlignment.Center;
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -498,7 +499,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 65, 20, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -510,12 +511,12 @@ public partial class Given_GridLayouting
 
 		SUT.MinWidth = 80;
 		SUT.MinHeight = 80;
-		SUT.Padding = new Thickness(10, 20);
+		SUT.Padding = new Thickness(10, 20, 10, 20);
 		SUT.VerticalAlignment = VerticalAlignment.Stretch;
 		SUT.HorizontalAlignment = HorizontalAlignment.Left;
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "Auto" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
 		var c1 = new View
 		{
@@ -550,7 +551,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(70, 120, 20, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -560,11 +561,11 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -619,7 +620,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(10, 10, 10, 10));
 
 		measuredSize.Should().Be(new Size(20, 20));
-		SUT.GetChildren().Should().HaveCount(4);
+		SUT.Children.Should().HaveCount(4);
 	}
 
 	[TestMethod]
@@ -634,11 +635,11 @@ public partial class Given_GridLayouting
 		SUT.VerticalAlignment = VerticalAlignment.Top;
 		SUT.HorizontalAlignment = HorizontalAlignment.Center;
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -705,7 +706,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(50, 50, 50, 50));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(4);
+		SUT.Children.Should().HaveCount(4);
 	}
 
 	[TestMethod]
@@ -715,8 +716,8 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "2*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -745,14 +746,14 @@ public partial class Given_GridLayouting
 		var c1Rect = new Rect(0, 0, (20 / 3.0) * 2.0, 20);
 		var c2Rect = new Rect((20 / 3.0) * 2.0, 0, 10, 20);
 
-		c1.SizePassedToArrangeOverride.Should().Be(c1Rect.Size);
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
 
-		c2.SizePassedToArrangeOverride.Should().Be(c2Rect.Size);
+		c2.SizePassedToArrangeOverride.Should().Be(new Size(c2Rect.Width, c2Rect.Height));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(c2Rect);
 
 		measuredSize.Should().Be(new Size((20 / 3.0) + 10, 10));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -762,8 +763,8 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5, GridUnitType.Pixel) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -799,7 +800,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(7.5, 5, 10, 10));
 
 		measuredSize.Should().Be(new Size(15, 10));
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -809,9 +810,9 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -837,7 +838,7 @@ public partial class Given_GridLayouting
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 30));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 20, 30));
 
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -847,9 +848,9 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1
 			= new View
@@ -889,7 +890,7 @@ public partial class Given_GridLayouting
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(5, 30));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(15, 0, 5, 30));
 
-		SUT.GetChildren().Should().HaveCount(2);
+		SUT.Children.Should().HaveCount(2);
 	}
 
 	[TestMethod]
@@ -899,9 +900,9 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 =
 			new View
@@ -918,11 +919,11 @@ public partial class Given_GridLayouting
 
 		var c1Rect = new Rect(0, 0, (20.0 / 3.0) * 2.0, 20);
 
-		c1.SizePassedToArrangeOverride.Should().Be(c1Rect.Size);
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
 
 		measuredSize.Should().Be(new Size(10, 10));
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -932,14 +933,14 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "2*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "3*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "4*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(4, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "10" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "11" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "12" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(10, GridUnitType.Pixel) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(11, GridUnitType.Pixel) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(12, GridUnitType.Pixel) });
 
 		var c1 = new View
 		{
@@ -984,7 +985,7 @@ public partial class Given_GridLayouting
 		c3.SizePassedToArrangeOverride.Should().Be(new Size(10, 12));
 		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(10, 21, 10, 12));
 
-		SUT.GetChildren().Should().HaveCount(3);
+		SUT.Children.Should().HaveCount(3);
 	}
 
 	[TestMethod]
@@ -994,13 +995,13 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -1018,11 +1019,11 @@ public partial class Given_GridLayouting
 
 		var c1Rect = new Rect(0, 0, (20.0 / 3.0) * 2.0, (20.0 / 3.0) * 2.0);
 
-		c1.SizePassedToArrangeOverride.Should().Be(c1Rect.Size);
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
 
 		measuredSize.Should().Be(new Size(10, 10));
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -1032,13 +1033,13 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View
 		{
@@ -1063,11 +1064,11 @@ public partial class Given_GridLayouting
 				(20.0 / 3.0) * 2.0
 			);
 
-		c1.SizePassedToArrangeOverride.Should().Be(c1Rect.Size);
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
 
 		measuredSize.Should().Be(new Size(10, 10));
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -1077,9 +1078,9 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 =
 			new View
@@ -1098,7 +1099,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 20, 20));
 
 		measuredSize.Should().Be(new Size(10, 10));
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -1124,7 +1125,7 @@ public partial class Given_GridLayouting
 		SUT.Measure(measureAvailableSize);
 		SUT.Arrange(arrangeFinalRect);
 
-		child.SizePassedToArrangeOverride.Should().Be(arrangeFinalRect.Size);
+		child.SizePassedToArrangeOverride.Should().Be(new Size(arrangeFinalRect.Width, arrangeFinalRect.Height));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(arrangeFinalRect);
 
 		var row1 = new RowDefinition { Height = new GridLength(5) };
@@ -1137,11 +1138,15 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(20, 10));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 5, 20, 10));
 
+#if HAS_UNO
 		SUT.IsMeasureDirty.Should().BeFalse();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
+#endif
 		row1.Height = new GridLength(10);
+#if HAS_UNO
 		SUT.IsMeasureDirty.Should().BeTrue();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeTrue();
+#endif
 	}
 
 	[TestMethod]
@@ -1179,11 +1184,15 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(5, 0, 10, 20));
 
+#if HAS_UNO
 		SUT.IsMeasureDirty.Should().BeFalse();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
+#endif
 		col1.Width = new GridLength(10);
+#if HAS_UNO
 		SUT.IsMeasureDirty.Should().BeTrue();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeTrue();
+#endif
 	}
 
 	[TestMethod]
@@ -1238,8 +1247,8 @@ public partial class Given_GridLayouting
 		};
 
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var child = new View
 		{
@@ -1257,7 +1266,7 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 0, 10, 20));
 
-		SUT.GetChildren().Should().HaveCount(1);
+		SUT.Children.Should().HaveCount(1);
 	}
 
 	[TestMethod]
@@ -1274,13 +1283,13 @@ public partial class Given_GridLayouting
 			HorizontalAlignment = HorizontalAlignment.Center
 		};
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "Auto" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "Auto" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
 		Grid.SetRow(c1, 0);
@@ -1319,7 +1328,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(72.5, 72.5, 10, 10));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(4);
+		SUT.Children.Should().HaveCount(4);
 	}
 
 	[TestMethod]
@@ -1336,13 +1345,13 @@ public partial class Given_GridLayouting
 			HorizontalAlignment = HorizontalAlignment.Center
 		};
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "Auto" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "Auto" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(10, 10), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
 		Grid.SetRow(c1, 0);
@@ -1401,7 +1410,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetLayoutSlot(c6).Should().Be(new Rect(45, 45, 10, 10));
 
 		measuredSize.Should().Be(new Size(80, 80));
-		SUT.GetChildren().Should().HaveCount(6);
+		SUT.Children.Should().HaveCount(6);
 	}
 
 	[TestMethod]
@@ -1411,10 +1420,10 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid();
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(5, GridUnitType.Pixel) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(5, GridUnitType.Pixel) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5, GridUnitType.Pixel) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5, GridUnitType.Pixel) });
 
 		var c1 = new View { RequestedDesiredSize = new Size(100, 100) };
 		SUT.Children.Add(c1);
@@ -1438,10 +1447,10 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid();
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "5" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "5" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(5, GridUnitType.Pixel) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(5, GridUnitType.Pixel) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5, GridUnitType.Pixel) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5, GridUnitType.Pixel) });
 
 		var c1 = new View { RequestedDesiredSize = new Size(100, 100) };
 		SUT.Children.Add(c1);
@@ -1454,7 +1463,7 @@ public partial class Given_GridLayouting
 		SUT.DesiredSize.Should().Be(new Size(10, 10));
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(200, 105));
 
-		SUT.Arrange((Rect)"0,0,10,10");
+		SUT.Arrange(new Rect(0, 0, 10, 10));
 	}
 
 	[TestMethod]
@@ -1464,8 +1473,8 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid();
 
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "*" });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View { RequestedDesiredSize = new Size(100, 100) };
 		SUT.Children.Add(c1);
@@ -1480,7 +1489,7 @@ public partial class Given_GridLayouting
 		SUT.DesiredSize.Should().Be(new Size(100, 200));
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(100, 200));
 
-		SUT.Arrange((Rect)"0,0,100,1000");
+		SUT.Arrange(new Rect(0, 0, 100, 1000));
 	}
 
 	[TestMethod]
@@ -1490,8 +1499,8 @@ public partial class Given_GridLayouting
 
 		var SUT = new Grid();
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
 		var c1 = new View { RequestedDesiredSize = new Size(100, 100) };
 		SUT.Children.Add(c1);
@@ -1506,7 +1515,7 @@ public partial class Given_GridLayouting
 		SUT.DesiredSize.Should().Be(new Size(200, 100));
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(200, 100));
 
-		SUT.Arrange((Rect)"0,0,1000,100");
+		SUT.Arrange(new Rect(0, 0, 1000, 100));
 	}
 
 	[TestMethod]
@@ -1572,17 +1581,17 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(topLevel);
 
 		topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-		topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper.FromPixels(10) });
+		topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper2.FromValueAndType(10, GridUnitType.Pixel) });
 		topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-		topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper.FromPixels(10) });
+		topLevel.RowDefinitions.Add(new RowDefinition { Height = GridLengthHelper2.FromValueAndType(10, GridUnitType.Pixel) });
 
 		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.FromPixels(12), MaxWidth = 12 });
-		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.FromPixels(12) });
+		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper2.FromValueAndType(12, GridUnitType.Pixel), MaxWidth = 12 });
+		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper2.FromValueAndType(12, GridUnitType.Pixel) });
 		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper.OneStar });
+		topLevel.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLengthHelper2.FromValueAndType(1, GridUnitType.Star) });
 
-		var spacer = new Grid() { Margin = new Thickness(0, 5) };
+		var spacer = new Grid() { Margin = new Thickness(0, 5, 0, 5) };
 		topLevel.Children.Add(spacer);
 		Grid.SetRow(spacer, 1);
 		Grid.SetRowSpan(spacer, 3);
