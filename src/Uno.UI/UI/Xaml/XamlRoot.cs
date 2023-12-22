@@ -104,7 +104,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal Compositor Compositor => Compositor.GetSharedCompositor();
+	internal Microsoft.UI.Composition.Compositor Compositor => Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.

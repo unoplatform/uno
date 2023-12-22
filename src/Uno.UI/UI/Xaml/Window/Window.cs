@@ -14,11 +14,10 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Core;
-using Windows.UI.WindowManagement;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using System.Collections.Concurrent;
@@ -26,7 +25,7 @@ using Uno.UI;
 using Windows.Devices.PointOfService;
 using Windows.ApplicationModel.Core;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Represents an application window.
@@ -71,7 +70,7 @@ public partial class Window
 			_ => throw new InvalidOperationException("Unsupported window type")
 		};
 
-		Compositor = Windows.UI.Composition.Compositor.GetSharedCompositor();
+		Compositor = Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
 		InitializeWindowingFlavor();
 
@@ -139,7 +138,7 @@ public partial class Window
 	/// <summary>
 	/// Gets the Compositor for this window.
 	/// </summary>
-	public Compositor Compositor { get; private set; }
+	public Microsoft.UI.Composition.Compositor Compositor { get; private set; }
 
 	/// <summary>
 	/// Gets or sets the visual root of an application window.
@@ -333,13 +332,13 @@ public partial class Window
 	/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 	/// </summary>
 	/// <returns>A disposable instance that will cancel the registration.</returns>
-	internal IDisposable RegisterSizeChangedEvent(Windows.UI.Xaml.WindowSizeChangedEventHandler handler)
+	internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
 	{
 		return WeakEventHelper.RegisterEvent(
 			_sizeChangedHandlers,
 			handler,
 			(h, s, e) =>
-				(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 		);
 	}
 

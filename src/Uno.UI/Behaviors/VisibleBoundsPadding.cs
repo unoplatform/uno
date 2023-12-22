@@ -88,9 +88,9 @@ namespace Uno.UI.Toolkit
 #else
 				var window =
 #if HAS_UNO
-					Windows.UI.Xaml.Window.CurrentSafe;
+					Microsoft.UI.Xaml.Window.CurrentSafe;
 #else
-					Windows.UI.Xaml.Window.Current;
+					Microsoft.UI.Xaml.Window.Current;
 #endif
 
 				if (window is null)
@@ -222,12 +222,12 @@ namespace Uno.UI.Toolkit
 #endif
 			}
 
-			private Windows.UI.Xaml.Window? GetOwnerWindow()
+			private Microsoft.UI.Xaml.Window? GetOwnerWindow()
 			{
 #if HAS_UNO
-				return Owner?.XamlRoot?.HostWindow ?? Windows.UI.Xaml.Window.CurrentSafe;
+				return Owner?.XamlRoot?.HostWindow ?? Microsoft.UI.Xaml.Window.CurrentSafe;
 #else
-				return Windows.UI.Xaml.Window.Current;
+				return Microsoft.UI.Xaml.Window.Current;
 #endif
 			}
 

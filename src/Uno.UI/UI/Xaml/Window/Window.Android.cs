@@ -2,7 +2,7 @@
 
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public sealed partial class Window
 {

@@ -1,14 +1,14 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal sealed partial class WindowChrome : ContentControl
 {
-	public WindowChrome(Windows.UI.Xaml.Window parent)
+	public WindowChrome(Microsoft.UI.Xaml.Window parent)
 	{
-		HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
-		VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
-		HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
-		VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
+		HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
+		VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
+		HorizontalContentAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
+		VerticalContentAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
 	}
 }

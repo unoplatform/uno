@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference MicaController.cpp, commit b2aab7e
 
+#nullable enable
+
 using Windows.UI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls

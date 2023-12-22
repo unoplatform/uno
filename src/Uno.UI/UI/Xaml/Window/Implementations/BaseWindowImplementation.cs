@@ -10,7 +10,7 @@ using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 
 #if !HAS_UNO_WINUI
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 #endif
 
 #if HAS_UNO_WINUI

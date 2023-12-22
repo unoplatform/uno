@@ -3,7 +3,7 @@ using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft/* UWP don't rename */.UI.Xaml
+namespace Microsoft/* UWP don't rename */.UI.Xaml;
 
 public sealed partial class WindowSizeChangedEventArgs
 {

@@ -1,9 +1,12 @@
 ﻿#nullable enable
 
 using System;
-using System.Reflection.Metadata.Ecma335;
+using Windows.Foundation;
 using Uno.UI.DataBinding;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Islands;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -13,7 +16,7 @@ internal partial class VisualTree : IWeakReferenceProvider
 	private const int FocusVisualZIndex = UnoTopZIndex + 1;
 
 	private ManagedWeakReference? _selfWeakReference;
-	private ApplicationView? _applicationView;
+	private Windows.UI.ViewManagement.ApplicationView? _applicationView;
 
 	public Canvas? FocusVisualRoot { get; private set; }
 

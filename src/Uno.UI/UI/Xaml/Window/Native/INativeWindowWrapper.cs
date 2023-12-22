@@ -4,7 +4,7 @@ using System;
 using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
