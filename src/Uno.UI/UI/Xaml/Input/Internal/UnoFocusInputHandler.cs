@@ -18,7 +18,7 @@ internal class UnoFocusInputHandler
 
 #if __WASM__
 		//Uno WASM specific - set tabindex to 0 so the RootVisual is "native focusable"
-		SetAttribute("tabindex", "0");
+		rootElement.SetAttribute("tabindex", "0");
 #endif
 	}
 

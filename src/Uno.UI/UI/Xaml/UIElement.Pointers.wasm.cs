@@ -209,7 +209,7 @@ public partial class UIElement : DependencyObject
 
 						if (result.ShouldStop)
 						{
-							XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+							element.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
 						}
 
 						break;

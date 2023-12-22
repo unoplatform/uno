@@ -5,9 +5,17 @@ using Windows.Devices.Input;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
+using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+
+#if HAS_UNO_WINUI
+using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
 namespace Uno.UI.Xaml.Core;
 
