@@ -27,6 +27,7 @@ using Windows.Foundation.Collections;
 using ButtonBase = Microsoft.UI.Xaml.Controls.Primitives.ButtonBase;
 using Uno.UI;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Controls;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
