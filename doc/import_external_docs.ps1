@@ -9,8 +9,13 @@ $external_docs = @{
     # use either commit, or branch name to use its latest commit
     "uno.wasm.bootstrap" = "5ef2048d98df307c738186a5339eedcc4665be72"
     "uno.themes"         = "37e913dea361bcc13e20587184bb3691c6b31d3b"
+<<<<<<< HEAD
     "uno.toolkit.ui"     = "38838426c54a8465873442c7f677de457f19adbc"
     "uno.check"          = "ec524c077487a6156674c9f18fbe073eae025bbf"
+=======
+    "uno.toolkit.ui"     = "1c53eb1bc97af01a352c90ba3a9b01b32ee64a87"
+    "uno.check"          = "251e61153ef936748520ecbaa99e45e10970bab1"
+>>>>>>> 0122e227c9 (chore: Bump updated uno-check docs)
     "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
     "figma-docs"         = "1fb802a63fdb337657147dfb679537ebf568f47f"
     "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
