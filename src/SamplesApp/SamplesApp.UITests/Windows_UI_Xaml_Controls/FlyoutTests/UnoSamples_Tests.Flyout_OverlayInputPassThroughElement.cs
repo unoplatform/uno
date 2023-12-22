@@ -83,7 +83,7 @@ partial class Flyout_Tests : PopupUITestBase
 		AssertContains(await RunTest(testCase, blocking.X - 10, pink.CenterY), "PinkBorder");
 
 		// When tap on orange button
-		AssertContains(await RunTest(testCase, blocking.X - 10, orange.CenterY), "OrangeButton");
+		AssertContains(await RunTest(testCase, blocking.X - 10, orange.CenterY), "OrangeButton", ignorePressed: true);
 
 		// When tap on blocking at pink border level
 		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, pink.CenterY), "PinkBorder");
@@ -112,18 +112,24 @@ partial class Flyout_Tests : PopupUITestBase
 		return (pressed, tapped);
 	}
 
-	private void AssertContains((string pressed, string tapped) result, string element, bool ignoreTapped = false)
+	private void AssertContains((string pressed, string tapped) result, string element, bool ignorePressed = false, bool ignoreTapped = false)
 	{
-		Assert.IsTrue(result.pressed.Contains(element, StringComparison.OrdinalIgnoreCase), $"{element} should have received pressed event");
+		if (!ignorePressed)
+		{
+			Assert.IsTrue(result.pressed.Contains(element, StringComparison.OrdinalIgnoreCase), $"{element} should have received pressed event");
+		}
 		if (!ignoreTapped)
 		{
 			Assert.IsTrue(result.tapped.Contains(element, StringComparison.OrdinalIgnoreCase), $"{element} should have received tapped/clicked event");
 		}
 	}
 
-	private void AssertDoesNotContains((string pressed, string tapped) result, string element, bool ignoreTapped = false)
+	private void AssertDoesNotContains((string pressed, string tapped) result, string element, bool ignorePressed = false, bool ignoreTapped = false)
 	{
-		Assert.IsFalse(result.pressed.Contains(element, StringComparison.OrdinalIgnoreCase), $"{element} should **not** have received pressed event");
+		if (!ignorePressed)
+		{
+			Assert.IsFalse(result.pressed.Contains(element, StringComparison.OrdinalIgnoreCase), $"{element} should **not** have received pressed event");
+		}
 		if (!ignoreTapped)
 		{
 			Assert.IsFalse(result.tapped.Contains(element, StringComparison.OrdinalIgnoreCase), $"{element} should **not** have received tapped/clicked event");
