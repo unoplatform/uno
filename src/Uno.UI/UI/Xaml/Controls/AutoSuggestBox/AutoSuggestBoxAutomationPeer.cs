@@ -10,9 +10,13 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// Exposes AutoSuggestBox types to Microsoft UI Automation.
 /// </summary>
 /// <param name="owner"></param>
-public partial class AutoSuggestBoxAutomationPeer(AutoSuggestBox owner)
-	: FrameworkElementAutomationPeer(owner), Provider.IInvokeProvider
+public partial class AutoSuggestBoxAutomationPeer
+	: FrameworkElementAutomationPeer, Provider.IInvokeProvider
 {
+	public AutoSuggestBoxAutomationPeer(AutoSuggestBox owner) : base(owner)
+	{
+	}
+
 	protected override string GetClassNameCore() => nameof(AutoSuggestBox);
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Group;
