@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using System.Collections.Generic;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace MUXControlsTestApp
 {
@@ -46,7 +46,7 @@ namespace MUXControlsTestApp
 		}
 
 
-		private void TestCaseSelectionChanged(object sender, Windows.UI.Xaml.Controls.SelectionChangedEventArgs e)
+		private void TestCaseSelectionChanged(object sender, Microsoft.UI.Xaml.Controls.SelectionChangedEventArgs e)
 		{
 			//if (sender is RadioButtons rb)
 			//{

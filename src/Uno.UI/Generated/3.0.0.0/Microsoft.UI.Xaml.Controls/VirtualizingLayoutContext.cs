@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RealizationRect.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAt(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAt(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElement(Windows.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElement(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndex.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOrigin.set
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetItemAtCore(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RealizationRectCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.GetOrCreateElementAtCore(int, Microsoft.UI.Xaml.Controls.ElementRealizationOptions)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElementCore(Windows.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecycleElementCore(Microsoft.UI.Xaml.UIElement)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.RecommendedAnchorIndexCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext.LayoutOriginCore.set

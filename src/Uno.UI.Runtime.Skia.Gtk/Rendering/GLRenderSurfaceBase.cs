@@ -4,10 +4,10 @@ using System;
 using System.IO;
 using SkiaSharp;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Input;
-using WUX = Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using WUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
@@ -52,6 +52,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
+			UpdateDpi();
 
 			// Set some event handlers
 			Render += UnoGLDrawingArea_Render;
@@ -88,10 +89,12 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 
 			var scale = _scale ?? 1f;
+			var scaleAdjustment = Math.Truncate(scale);
+
 			var scaledGuardBand = (int)(GuardBand * scale);
 
-			var w = (int)Math.Max(0, AllocatedWidth * scale + scaledGuardBand);
-			var h = (int)Math.Max(0, AllocatedHeight * scale + scaledGuardBand);
+			var w = (int)Math.Max(0, AllocatedWidth * scaleAdjustment + scaledGuardBand);
+			var h = (int)Math.Max(0, AllocatedHeight * scaleAdjustment + scaledGuardBand);
 
 			if (_renderTarget == null || _surface == null || _renderTarget.Width != w || _renderTarget.Height != h)
 			{
@@ -189,6 +192,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 		}
 
-		private void UpdateDpi() => _scale = (float)_displayInformation.RawPixelsPerViewPixel;
+		private void UpdateDpi()
+		{
+			_scale = (float)_displayInformation.RawPixelsPerViewPixel;
+			InvalidateRender();
+		}
 	}
 }

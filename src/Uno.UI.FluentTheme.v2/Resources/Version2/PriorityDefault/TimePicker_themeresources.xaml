@@ -1,0 +1,315 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Default">
+      <StaticResource x:Key="TimePickerSpacerFill" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrush" ResourceKey="ControlElevationBorderBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushPointerOver" ResourceKey="ControlElevationBorderBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonBackground" ResourceKey="ControlFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundPointerOver" ResourceKey="ControlFillColorSecondaryBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundPressed" ResourceKey="ControlFillColorTertiaryBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundFocused" ResourceKey="ControlFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundDefault" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundFocused" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterSpacerFill" ResourceKey="DividerStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterHighlightFill" ResourceKey="AccentAAFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterHighlightForegroundColor" ResourceKey="TextOnAccentAAFillColorPrimary" />
+      <StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+      <SolidColorBrush x:Key="TimePickerHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
+      <SolidColorBrush x:Key="TimePickerForegroundThemeBrush" Color="#FF000000" />
+      <x:Double x:Key="TimePickerSelectorThemeMinWidth">80</x:Double>
+      <x:Double x:Key="TimePickerSpacerThemeWidth">1</x:Double>
+      <Thickness x:Key="TimePickerBorderThemeThickness">1</Thickness>
+      <Thickness x:Key="TimePickerHeaderThemeMargin">0,0,0,4</Thickness>
+      <Thickness x:Key="TimePickerFirstHostThemeMargin">0,0,20,0</Thickness>
+      <Thickness x:Key="TimePickerThirdHostThemeMargin">20,0,0,0</Thickness>
+      <FontWeight x:Key="TimePickerHeaderThemeFontWeight">Normal</FontWeight>
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="HighContrast">
+      <StaticResource x:Key="TimePickerSpacerFill" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TimePickerHeaderForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrush" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundPressed" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundDisabled" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundFocused" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundDefault" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundFocused" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterBackground" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterBorderBrush" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterSpacerFill" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterHighlightFill" ResourceKey="SystemColorHighlightColorBrush" />
+      <Color x:Key="TimePickerFlyoutPresenterHighlightForegroundColor">Transparent</Color>
+      <StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+      <SolidColorBrush x:Key="TimePickerForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <SolidColorBrush x:Key="TimePickerHeaderForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+      <x:Double x:Key="TimePickerSelectorThemeMinWidth">80</x:Double>
+      <Thickness x:Key="TimePickerHeaderThemeMargin">0,0,0,4</Thickness>
+      <x:Double x:Key="TimePickerSpacerThemeWidth">1</x:Double>
+      <Thickness x:Key="TimePickerBorderThemeThickness">1</Thickness>
+      <Thickness x:Key="TimePickerFirstHostThemeMargin">0,0,20,0</Thickness>
+      <Thickness x:Key="TimePickerThirdHostThemeMargin">20,0,0,0</Thickness>
+      <FontWeight x:Key="TimePickerHeaderThemeFontWeight">Normal</FontWeight>
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Light">
+      <StaticResource x:Key="TimePickerSpacerFill" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrush" ResourceKey="ControlElevationBorderBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushPointerOver" ResourceKey="ControlElevationBorderBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonBorderBrushDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonBackground" ResourceKey="ControlFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundPointerOver" ResourceKey="ControlFillColorSecondaryBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundPressed" ResourceKey="ControlFillColorTertiaryBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+      <StaticResource x:Key="TimePickerButtonBackgroundFocused" ResourceKey="ControlFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundDefault" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TimePickerButtonForegroundFocused" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterBackground" ResourceKey="AcrylicBackgroundFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterBorderBrush" ResourceKey="SurfaceStrokeColorFlyoutBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterSpacerFill" ResourceKey="DividerStrokeColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterHighlightFill" ResourceKey="AccentAAFillColorDefaultBrush" />
+      <StaticResource x:Key="TimePickerFlyoutPresenterHighlightForegroundColor" ResourceKey="TextOnAccentAAFillColorPrimary" />
+      <StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+      <SolidColorBrush x:Key="TimePickerForegroundThemeBrush" Color="#FF000000" />
+      <SolidColorBrush x:Key="TimePickerHeaderForegroundThemeBrush" Color="#FF000000" />
+      <x:Double x:Key="TimePickerSelectorThemeMinWidth">80</x:Double>
+      <x:Double x:Key="TimePickerSpacerThemeWidth">1</x:Double>
+      <Thickness x:Key="TimePickerBorderThemeThickness">1</Thickness>
+      <Thickness x:Key="TimePickerHeaderThemeMargin">0,0,0,4</Thickness>
+      <Thickness x:Key="TimePickerFirstHostThemeMargin">0,0,20,0</Thickness>
+      <Thickness x:Key="TimePickerThirdHostThemeMargin">20,0,0,0</Thickness>
+      <FontWeight x:Key="TimePickerHeaderThemeFontWeight">Normal</FontWeight>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+  <Thickness x:Key="TimePickerTopHeaderMargin">0,0,0,4</Thickness>
+  <x:Double x:Key="TimePickerFlyoutPresenterHighlightHeight">40</x:Double>
+  <x:Double x:Key="TimePickerFlyoutPresenterAcceptDismissHostGridHeight">41</x:Double>
+  <x:Double x:Key="TimePickerThemeMinWidth">242</x:Double>
+  <x:Double x:Key="TimePickerThemeMaxWidth">456</x:Double>
+  <x:Double x:Key="TimePickerFlyoutPresenterItemHeight">40</x:Double>
+  <Thickness x:Key="TimePickerFlyoutPresenterItemPadding">0,3,0,6</Thickness>
+  <Thickness x:Key="TimePickerHostPadding">0,3,0,6</Thickness>
+  <Style TargetType="TimePicker">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="FocusVisualMargin" Value="0" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+    <Setter Property="Background" Value="{ThemeResource DatePickerButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TimePickerButtonForeground}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource DatePickerBorderThemeThickness}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="FocusVisualMargin" Value="-3" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TimePicker">
+          <Grid x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+            <Grid.Resources>
+              <Style x:Key="TimePickerFlyoutButtonStyle" TargetType="Button">
+                <Setter Property="ElementSoundMode" Value="FocusOnly" />
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                      <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                          <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="PointerOver">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundPointerOver}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundPointerOver}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushPointerOver}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundPressed}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundPressed}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushPressed}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                              <Storyboard>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBackgroundDisabled}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundDisabled}" />
+                                </ObjectAnimationUsingKeyFrames>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushDisabled}" />
+                                </ObjectAnimationUsingKeyFrames>
+                              </Storyboard>
+                            </VisualState>
+                          </VisualStateGroup>
+                          <VisualStateGroup x:Name="FocusStates">
+                            <VisualState x:Name="Focused" />
+                            <VisualState x:Name="Unfocused" />
+                          </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" CornerRadius="{TemplateBinding CornerRadius}" />
+                      </Grid>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Grid.Resources>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerHeaderForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstColumnDivider" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerSpacerFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondColumnDivider" Storyboard.TargetProperty="Fill">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerSpacerFillDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="HasTimeStates">
+                <VisualState x:Name="HasTime" />
+                <VisualState x:Name="HasNoTime">
+                  <VisualState.Setters>
+                    <Setter Target="FlyoutButton.Foreground" Value="{ThemeResource TimePickerButtonForegroundDefault}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ContentPresenter x:Name="HeaderContentPresenter" Grid.Row="0" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" Margin="{ThemeResource TimePickerTopHeaderMargin}" MaxWidth="{ThemeResource TimePickerThemeMaxWidth}" Foreground="{ThemeResource TimePickerHeaderForeground}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
+            <Button x:Name="FlyoutButton" Grid.Row="1" Style="{StaticResource TimePickerFlyoutButtonStyle}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" IsEnabled="{TemplateBinding IsEnabled}" MinWidth="{StaticResource TimePickerThemeMinWidth}" MaxWidth="{StaticResource TimePickerThemeMaxWidth}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" FocusVisualMargin="{TemplateBinding FocusVisualMargin}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" CornerRadius="{TemplateBinding CornerRadius}">
+              <Grid x:Name="FlyoutButtonContentGrid">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" x:Name="FirstTextBlockColumn" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" x:Name="SecondTextBlockColumn" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" x:Name="ThirdTextBlockColumn" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="FirstPickerHost" Grid.Column="0">
+                  <TextBlock x:Name="HourTextBlock" TextAlignment="Center" Padding="{ThemeResource TimePickerHostPadding}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" AutomationProperties.AccessibilityView="Raw" />
+                </Border>
+                <Rectangle x:Name="FirstColumnDivider" Fill="{ThemeResource TimePickerSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource TimePickerSpacerThemeWidth}" Grid.Column="1" />
+                <Border x:Name="SecondPickerHost" Grid.Column="2">
+                  <TextBlock x:Name="MinuteTextBlock" TextAlignment="Center" Padding="{ThemeResource TimePickerHostPadding}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" AutomationProperties.AccessibilityView="Raw" />
+                </Border>
+                <Rectangle x:Name="SecondColumnDivider" Fill="{ThemeResource TimePickerSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource TimePickerSpacerThemeWidth}" Grid.Column="3" />
+                <Border x:Name="ThirdPickerHost" Grid.Column="4">
+                  <TextBlock x:Name="PeriodTextBlock" TextAlignment="Center" Padding="{ThemeResource TimePickerHostPadding}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" FontSize="{TemplateBinding FontSize}" AutomationProperties.AccessibilityView="Raw" />
+                </Border>
+              </Grid>
+            </Button>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="TimePickerFlyoutPresenter">
+    <Setter Property="Width" Value="242" />
+    <Setter Property="MinWidth" Value="242" />
+    <Setter Property="MaxHeight" Value="398" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontWeight" Value="Normal" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Background" Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
+    <Setter Property="AutomationProperties.AutomationId" Value="TimePickerFlyoutPresenter" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TimePickerFlyoutPresenterBorderBrush}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource DateTimeFlyoutBorderThickness}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="TimePickerFlyoutPresenter">
+          <Border x:Name="Background" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource DateTimeFlyoutBorderPadding}" MaxHeight="398">
+            <Grid x:Name="ContentPanel">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid>
+                <Grid x:Name="PickerHostGrid">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" x:Name="FirstPickerHostColumn" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" x:Name="SecondPickerHostColumn" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" x:Name="ThirdPickerHostColumn" />
+                  </Grid.ColumnDefinitions>
+                  <Grid x:Name="HighlightRect" Canvas.ZIndex="9999" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Margin="4,2,4,2" IsHitTestVisible="false" />
+                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="0" Margin="3,0" SourceElement="{Binding ElementName=FirstPickerHost, Mode=OneTime}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
+                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="2" Margin="3,0" SourceElement="{Binding ElementName=SecondPickerHost}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
+                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="4" Margin="3,0" SourceElement="{Binding ElementName=ThirdPickerHost}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
+                  <Border x:Name="FirstPickerHost" Grid.Column="0" />
+                  <Rectangle x:Name="FirstPickerSpacing" Canvas.ZIndex="10000" Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource TimePickerSpacerThemeWidth}" Grid.Column="1" />
+                  <Border x:Name="SecondPickerHost" Grid.Column="2" />
+                  <Rectangle x:Name="SecondPickerSpacing" Canvas.ZIndex="10000" Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource TimePickerSpacerThemeWidth}" Grid.Column="3" />
+                  <Border x:Name="ThirdPickerHost" Grid.Column="4" />
+                </Grid>
+              </Grid>
+              <Grid Grid.Row="1" Height="{ThemeResource TimePickerFlyoutPresenterAcceptDismissHostGridHeight}" x:Name="AcceptDismissHostGrid">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Rectangle Height="{ThemeResource TimePickerSpacerThemeWidth}" VerticalAlignment="Top" Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}" Grid.ColumnSpan="2" />
+                <Button x:Name="AcceptButton" Grid.Column="0" Content="&#xE8FB;" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{StaticResource DatePickerFlyoutPresenterDismissMargin}" Padding="4" Style="{StaticResource DateTimePickerFlyoutButtonStyle}" />
+                <Button x:Name="DismissButton" Grid.Column="1" Content="&#xE711;" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{StaticResource DatePickerFlyoutPresenterDismissMargin}" Padding="4" Style="{StaticResource DateTimePickerFlyoutButtonStyle}" />
+              </Grid>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

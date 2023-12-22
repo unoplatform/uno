@@ -1,7 +1,7 @@
 ﻿#if __IOS__ || __ANDROID__
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class RefreshContainer : ContentControl
 {

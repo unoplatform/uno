@@ -8,12 +8,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using PipsPager = Microsoft.UI.Xaml.Controls.PipsPager;
-using PipsPagerSelectedIndexChangedEventArgs = Microsoft.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using PipsPager = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager;
+using PipsPagerSelectedIndexChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPagerSelectedIndexChangedEventArgs;
 
 namespace MUXControlsTestApp
 {

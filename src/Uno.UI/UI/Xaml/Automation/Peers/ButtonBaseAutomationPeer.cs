@@ -1,9 +1,9 @@
-#pragma warning disable 108 // new keyword hiding
+﻿#pragma warning disable 108 // new keyword hiding
 using System;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ButtonBaseAutomationPeer : FrameworkElementAutomationPeer
 	{

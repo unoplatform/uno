@@ -9,10 +9,10 @@ using static System.Math;
 
 using Rectangle = System.Drawing.Rectangle;
 using SamplesApp.UITests;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Helpers;
@@ -143,7 +143,7 @@ public static partial class ImageAssert
 		{
 			Assert.Fail(WithContext(builder: builder => builder
 				.AppendLine($"Color at ({x},{y}) is not expected")
-				.AppendLine($"excluded: {ToArgbCode(excludedColor)} {ColorHelper.ToDisplayName(excludedColor)}")
+				.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.ToString()}")
 				.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
 				.AppendLine($"tolerance: {tolerance}")
 				.AppendLine($"difference: {difference}")

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Media;
 
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Polyline
 	{
@@ -16,7 +17,7 @@ namespace Windows.UI.Xaml.Shapes
 			set => SetValue(PointsProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty PointsProperty { get; } = DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty PointsProperty { get; } = DependencyProperty.Register(
 			"Points",
 			typeof(PointCollection),
 			typeof(Polyline),
@@ -39,5 +40,10 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			Points = new PointCollection();
 		}
+
+#if __NETSTD_REFERENCE__
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
+#endif
 	}
 }

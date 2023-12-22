@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// Represents a control that a user can select (check) or clear (uncheck).
@@ -99,7 +99,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_suppressCheckedChanged = false;
 			}
 		}
-
-		internal void AutomationPeerToggle() => OnClick();
 	}
 }

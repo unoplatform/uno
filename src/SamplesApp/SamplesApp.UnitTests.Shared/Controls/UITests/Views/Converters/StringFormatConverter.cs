@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -19,7 +19,7 @@ namespace Uno.UI.Samples.Converters
 	{
 		public object Convert(object value, Type targetType, object parameter, string culture)
 		{
-#if NETFX_CORE || __ANDROID__ || __IOS__
+#if WINAPPSDK || __ANDROID__ || __IOS__
 			var currentCulture = string.IsNullOrWhiteSpace(culture) ? CultureInfo.CurrentUICulture : new CultureInfo(culture);
 #else
 			var currentCulture = culture;

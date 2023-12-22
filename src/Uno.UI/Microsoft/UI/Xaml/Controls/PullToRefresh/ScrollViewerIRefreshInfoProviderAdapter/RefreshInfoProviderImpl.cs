@@ -3,11 +3,11 @@
 // MUX Reference RefreshInfoProviderImpl.cpp, commit de78834
 
 using System;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Composition.Interactions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Private.Controls;
 

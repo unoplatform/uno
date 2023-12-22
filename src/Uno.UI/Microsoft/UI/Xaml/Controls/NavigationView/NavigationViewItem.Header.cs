@@ -1,11 +1,11 @@
 ﻿// MUX reference NavigationViewItem.h, commit d3fef08fd
 
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class NavigationViewItem
 {

@@ -1,29 +1,18 @@
-﻿using System;
-using System.Globalization;
-using Windows.Foundation;
-using Windows.UI.Xaml.Media;
-using Uno.Diagnostics.Eventing;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media.Imaging;
-using Uno.Disposables;
-using Windows.Storage.Streams;
-using System.Runtime.InteropServices;
+﻿using Windows.Foundation;
+using Microsoft.UI.Xaml.Media;
 
-using Windows.UI;
+namespace Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+partial class Image : FrameworkElement
 {
-	partial class Image : FrameworkElement, ICustomClippingElement
-	{
-		partial void OnSourceChanged(ImageSource newValue, bool forceReload = false);
+	partial void OnSourceChanged(ImageSource newValue, bool forceReload = false);
 
-		private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
+	private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
 
-		internal override bool IsViewHit() => Source != null || base.IsViewHit();
+	internal override bool IsViewHit() => Source != null || base.IsViewHit();
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
-	}
+#if !__NETSTD_REFERENCE__
+	private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
+		=> base.GetClipRect(needsClipToSlot, finalRect, maxSize, margin) ?? new Rect(default, RenderSize);
+#endif
 }

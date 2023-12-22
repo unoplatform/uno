@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,21 +7,21 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_DoubleAnimation
 	{
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_SeekAlignedToLastTick()
 		{
 			var target = new Border();
@@ -46,7 +46,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if __ANDROID__
 		[Ignore("In this scenario, droid doesnt ReportEachFrame(), so we won't be able to read the animated values to evaluate this test.")]
 #endif
@@ -119,7 +118,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_RepeatForever_ShouldLoop()
 		{
 			async void Do()
@@ -133,7 +131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 					1;
 #endif
 
-				var target = new Windows.UI.Xaml.Shapes.Rectangle
+				var target = new Microsoft.UI.Xaml.Shapes.Rectangle
 				{
 					Stretch = Stretch.Fill,
 					Fill = new SolidColorBrush(Colors.SkyBlue),
@@ -190,7 +188,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_StartingFrom_AnimatedValue() // value from completed(filling) animation
 		{
 			var translate = new TranslateTransform();
@@ -234,7 +231,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_StartingFrom_AnimatingValue() // value from mid animation
 		{
 			var translate = new TranslateTransform();
@@ -289,16 +285,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
-		public Task When_OverridingFillingValue_WithLocalValue() =>
-			When_OverridingFillingValue_WithLocalValue_Impl(skipToFill: false);
-
-		[TestMethod]
-		[RunsOnUIThread]
-		public Task When_OverridingFillingValue_WithLocalValue_Skipped() =>
-			When_OverridingFillingValue_WithLocalValue_Impl(skipToFill: true);
-
-		public async Task When_OverridingFillingValue_WithLocalValue_Impl(bool skipToFill)
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_OverridingFillingValue_WithLocalValue(bool skipToFill)
 		{
 			var translate = new TranslateTransform();
 			var border = new Border()
@@ -336,6 +325,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			Assert.AreEqual(beforeValue, 100.0, "before: Should be animated to 100");
 			Assert.AreEqual(afterValue, 312.0, "after: Should be set to 312");
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_EasingFunction()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			var myEasingFunction = new MyEasingFunction();
+			var animation = new DoubleAnimation
+			{
+				To = 100,
+				Duration = new Duration(TimeSpan.FromSeconds(0.1)),
+				EasingFunction = myEasingFunction,
+			}.BindTo(translate, nameof(translate.Y));
+
+			await animation.ToStoryboard().RunAsync();
+
+			Assert.IsTrue(myEasingFunction.WasCalledByAndroidTimeInterpolator);
+		}
+
+		private sealed class MyEasingFunction : EasingFunctionBase
+		{
+			public bool WasCalledByAndroidTimeInterpolator { get; private set; } = new();
+
+			private protected override double EaseInCore(double normalizedTime)
+			{
+				WasCalledByAndroidTimeInterpolator |= Environment.StackTrace.Contains("EasingFunctionBase.AndroidTimeInterpolator.GetInterpolation");
+				return normalizedTime;
+			}
+		}
+#endif
 
 		private static double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
 #if !__ANDROID__

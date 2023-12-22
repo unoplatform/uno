@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using static System.Double;
 
 #if __IOS__ || __MACOS__
@@ -52,6 +52,21 @@ namespace Uno.UI
 				.AtMost(maxSize)
 				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 
+			if (e is UIElement uiElement && uiElement.GetUseLayoutRounding())
+			{
+				// It is possible for max vars to be INF so be don't want to round those.
+
+				minSize.Width = uiElement.LayoutRound(minSize.Width);
+
+				if (double.IsFinite(maxSize.Width))
+					maxSize.Width = uiElement.LayoutRound(maxSize.Width);
+
+				minSize.Height = uiElement.LayoutRound(minSize.Height);
+
+				if (double.IsFinite(maxSize.Height))
+					maxSize.Height = uiElement.LayoutRound(maxSize.Height);
+			}
+
 			return (minSize, maxSize);
 		}
 
@@ -93,53 +108,41 @@ namespace Uno.UI
 		}
 
 		[Pure]
-		internal static (Point offset, bool overflow) GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
+		internal static Point GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
 		{
-			// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
-			var offset = new Point(
-				clientSize.Width - renderSize.Width,
-				clientSize.Height - renderSize.Height
-			);
-
-			var overflow = false;
-
+			double offsetX = 0;
+			double offsetY = 0;
 			switch (e.HorizontalAlignment)
 			{
 				case HorizontalAlignment.Stretch when renderSize.Width > clientSize.Width:
-					offset.X = 0;
-					overflow = true;
-					break;
 				case HorizontalAlignment.Left:
-					offset.X = 0;
+					offsetX = 0;
 					break;
 				case HorizontalAlignment.Stretch:
 				case HorizontalAlignment.Center:
-					offset.X *= 0.5;
+					offsetX = (clientSize.Width - renderSize.Width) / 2.0;
 					break;
 				case HorizontalAlignment.Right:
-					offset.X *= 1;
+					offsetX = clientSize.Width - renderSize.Width;
 					break;
 			}
 
 			switch (e.VerticalAlignment)
 			{
 				case VerticalAlignment.Stretch when renderSize.Height > clientSize.Height:
-					offset.Y = 0;
-					overflow = true;
-					break;
 				case VerticalAlignment.Top:
-					offset.Y = 0;
+					offsetY = 0;
 					break;
 				case VerticalAlignment.Stretch:
 				case VerticalAlignment.Center:
-					offset.Y *= 0.5;
+					offsetY = (clientSize.Height - renderSize.Height) / 2.0;
 					break;
 				case VerticalAlignment.Bottom:
-					offset.Y *= 1;
+					offsetY = clientSize.Height - renderSize.Height;
 					break;
 			}
 
-			return (offset, overflow);
+			return new Point(offsetX, offsetY);
 		}
 
 		[Pure]
@@ -185,6 +188,20 @@ namespace Uno.UI
 			return new Size(
 				left.Width + right.Left + right.Right,
 				left.Height + right.Top + right.Bottom
+			);
+		}
+
+		[Pure]
+		internal static Size Subtract(this Size size, double width, double height)
+		{
+			if (width == default && height == default)
+			{
+				return size;
+			}
+
+			return new Size(
+				size.Width - width,
+				size.Height - height
 			);
 		}
 
@@ -414,90 +431,6 @@ namespace Uno.UI
 
 		[Pure]
 		internal static double AspectRatio(this Rect rect) => rect.Size.AspectRatio();
-
-		[Pure]
-		internal static double AspectRatio(this Size size)
-		{
-			var w = size.Width;
-			var h = size.Height;
-
-			switch (w)
-			{
-				case NegativeInfinity:
-					return -1;
-				case PositiveInfinity:
-					return 1;
-				case NaN:
-					return 1;
-				case 0.0d:
-					return 1;
-			}
-
-			switch (h)
-			{
-				case NegativeInfinity:
-					return -1;
-				case PositiveInfinity:
-					return 1;
-				case NaN:
-					return 1;
-				case 0.0d:
-					return 1; // special case
-				case 1.0d:
-					return w;
-			}
-
-			return w / h;
-		}
-
-#if __IOS__ || __MACOS__
-		[Pure]
-		internal static double AspectRatio(this CoreGraphics.CGSize size)
-		{
-			var w = size.Width;
-			var h = size.Height;
-
-			if (w == nfloat.NegativeInfinity)
-			{
-				return -1;
-			}
-			else if (w == nfloat.PositiveInfinity)
-			{
-				return 1;
-			}
-			else if (w == nfloat.NaN)
-			{
-				return 1;
-			}
-			else if (w == 0.0d)
-			{
-				return 1;
-			}
-
-			if (h == nfloat.NegativeInfinity)
-			{
-				return -1;
-			}
-			else if (h == nfloat.PositiveInfinity)
-			{
-				return 1;
-			}
-			else if (h == nfloat.NaN)
-			{
-				return 1;
-			}
-			else if (h == 0.0d)
-			{
-				return 1; // special case
-			}
-			else if (h == 1.0d)
-			{
-				return w;
-			}
-
-			return w / h;
-		}
-#endif
 
 		[Pure]
 		internal static Rect GetBoundsRectRelativeTo(this FrameworkElement element, FrameworkElement relativeTo)

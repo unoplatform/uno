@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.Foundation;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -18,7 +19,7 @@ using View = AppKit.NSView;
 using View = System.Object;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 
 	/// <summary>
@@ -139,6 +140,12 @@ namespace Windows.UI.Xaml
 		/// A function that will create the actual view.
 		/// </summary>
 		public Func<View> ContentBuilder { get; set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{

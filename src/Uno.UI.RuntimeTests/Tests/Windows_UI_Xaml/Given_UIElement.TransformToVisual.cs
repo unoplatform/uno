@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
 using DependencyObjectExtensions = Uno.UI.Extensions.DependencyObjectExtensions;
 using static Private.Infrastructure.TestServices.WindowHelper;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if __IOS__
@@ -43,9 +43,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			FrameworkElement container = new Border
 			{
 				Child = inner,
-				Margin = ThicknessHelper.FromLengths(1, 3, 5, 7),
-				Padding = ThicknessHelper.FromLengths(11, 13, 17, 19),
-				BorderThickness = ThicknessHelper.FromUniformLength(23),
+				Margin = new Thickness(1, 3, 5, 7),
+				Padding = new Thickness(11, 13, 17, 19),
+				BorderThickness = new Thickness(23),
 				HorizontalAlignment = HorizontalAlignment.Right,
 				VerticalAlignment = VerticalAlignment.Bottom,
 				Background = new SolidColorBrush(Colors.DarkSalmon)
@@ -53,8 +53,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			FrameworkElement outer = new Border
 			{
 				Child = container,
-				Padding = ThicknessHelper.FromUniformLength(8),
-				BorderThickness = ThicknessHelper.FromUniformLength(2),
+				Padding = new Thickness(8),
+				BorderThickness = new Thickness(2),
 				Width = 300,
 				Height = 300,
 				Background = new SolidColorBrush(Colors.MediumSeaGreen)
@@ -74,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual("111;105;174;178|145;141;100;100", str);
 		}
 
-#if !WINDOWS_UWP // Cannot create a DataTemplate on UWP
+#if !WINAPPSDK // Cannot create a DataTemplate on UWP
 		[TestMethod]
 		[RunsOnUIThread]
 

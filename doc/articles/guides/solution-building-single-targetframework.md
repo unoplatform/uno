@@ -1,11 +1,39 @@
 ---
 uid: Build.Solution.TargetFramework-override
 ---
-# Adjust an Uno Solution for a faster build with Visual Studio 2022
+# Improve Build Times with Visual Studio 2022
 
-The Uno Platform template provides a cross-targeted Class library that includes multiple target frameworks. While building with the command line `dotnet build -f net7.0-ios` only builds the application's head and the class library for `net7.0-ios`, Visual Studio builds all the target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372).
+The Uno Platform template provides a cross-targeted Class library that includes multiple target frameworks, and your application may contain your own cross-targeted projects as well. This document explains how to make your builds faster.
 
-Considering that during development, it is common to work on a single platform at a given time, here's a suggested set of modifications that can be performed on the solution to restrict the active build platform:
+## Cross-targeted library builds in Visual Studio
+
+While building with the command line `dotnet build -f net7.0-ios` only builds the application's head and the class library for `net7.0-ios`, as of Visual Studio 17.8, class library builds are considering all target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372) being built. _(Please help the Uno Platform community by upvoting the issue!)_
+
+Considering that during development, it is common to work on a single platform at a given time, the two sections below contain a suggested set of changes to the Uno Platform solution that can be performed on the solution to restrict the active build platform, and therefore significantly speed up build times and make intellisense respond faster.
+
+Choose the section that covers your cases, whether you're using a solution built using Uno Platform 5.0 templates, or if it was created with an earlier version.
+
+## Improve performance using the Uno Platform templates
+
+When using an Uno Platform 5.0 template, in the **Solution Explorer**, you'll find a folder named **Solution Items**, and a file named `solution-config.props.sample`.
+
+You can follow the directions specified in this file, or follow them here:
+- Right-click on the root item (your solution name) and **Open in file explorer**
+- Locate the `solution-config.props.sample` and make a copy named `solution-config.props` in the same folder
+- Back in Visual Studio, and for your convenience you can right-click on `Solution Items` and add `solution-config.props`
+
+Now that we have configured this file, let's say that you want to debug for WebAssembly:
+- In the `solution-config.props` file, uncomment the line that mentions `Wasm` or `WebAssembly` then save it.
+- For the change to take effect, close and reopen the solution, or restart Visual Studio.
+
+Repeat this process when changing your active development platform.
+
+> [!NOTE] 
+> The `solution-config.props` is automatically included in a `.gitignore` file to avoid having your CI environment build only for one target.
+
+## Improve your own solution
+
+If you created your solution with an earlier version of Uno Platform, you can make some modifications to make your build faster:
 
 1. Let's create a set of solution filters to ensure that individual project heads can be loaded:
 

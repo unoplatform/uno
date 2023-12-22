@@ -7,11 +7,11 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 
 #if __IOS__
@@ -20,10 +20,11 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupPanel : Panel
 {
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 	private ManagedWeakReference _popup;
 
 	public Popup Popup
@@ -35,6 +36,9 @@ internal partial class PopupPanel : Panel
 			_popup = WeakReferencePool.RentWeakReference(this, value);
 		}
 	}
+#else
+	public Popup Popup { get; }
+#endif
 
 	public PopupPanel(Popup popup)
 	{
@@ -242,7 +246,7 @@ internal partial class PopupPanel : Panel
 		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
 		this.SetLogicalParent(Popup);
 
-		Windows.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
+		Microsoft.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
 	}
 
 	private protected override void OnUnloaded()
@@ -250,7 +254,7 @@ internal partial class PopupPanel : Panel
 		base.OnUnloaded();
 		this.SetLogicalParent(null);
 
-		Windows.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
+		Microsoft.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we

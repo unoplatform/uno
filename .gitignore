@@ -259,3 +259,4 @@ src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
 
 # external docs
 doc/articles/external
+/src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Controls/TimePickerIntegrationTestsTemp.cs

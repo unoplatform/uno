@@ -1,16 +1,18 @@
-﻿// MUX Reference: InfoBadgeTests.cs, commit 76bd573a73595ac66e8ff5ce755537d19f50a96d
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference APITests/InfoBadgeTests.cs, tag winui3/release/1.4.2
 
 using System;
 using Common;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Symbol = Windows.UI.Xaml.Controls.Symbol;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[Uno.UI.RuntimeTests.RunsOnUIThread]
@@ -160,6 +162,5 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.Throws<ArgumentOutOfRangeException>(() => { infoBadge.Value = -10; });
 			});
 		}
-
 	}
 }

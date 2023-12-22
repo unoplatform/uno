@@ -2,7 +2,7 @@
 // #define TRACK_REFS
 #nullable enable
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,17 +11,19 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 #if __MACOS__
 using AppKit;
@@ -52,16 +54,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(TextBlock), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressBar), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.ProgressRing), 15)]
-		//[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
+		//[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
 		[DataRow(typeof(Pivot), 15)]
 		[DataRow(typeof(ScrollBar), 15)]
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar), 15)]
 		[DataRow(typeof(ComboBox), 15)]
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
@@ -79,40 +81,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Page), 15)]
 		[DataRow(typeof(Image), 15)]
 		[DataRow(typeof(ToggleSwitch), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
+#if __ANDROID__
+			LeakTestStyles.Default // Fluent styles disabled - #14341
+#else
+			LeakTestStyles.All
+#endif
+			)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ImageIcon), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBadge), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.InfoBar), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon), 15)]
+#if !WINAPPSDK
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBadge), 15)]
+#endif
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBar), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if false // Disabled for #10309
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
 #endif
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PagerControl), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.PipsPager), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RefreshContainer), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioButtons), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.RatingControl), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ItemsRepeater), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SplitButton), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TabView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TreeView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.TwoPaneView), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
+#if !WINAPPSDK
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15)]
+#endif
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView), 15)]
 		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
 		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
@@ -123,11 +135,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
 #endif
-#if !__IOS__ // Disabled - #10344
-		[DataRow(typeof(TextBox_Focus_Leak), 15)]
-		[DataRow(typeof(PasswordBox_Focus_Leak), 15)]
+		[DataRow(typeof(TextBox_Focus_Leak), 15,
+#if __IOS__
+			LeakTestStyles.None // Disabled - #10344
+#else
+			LeakTestStyles.All
 #endif
-		public async Task When_Add_Remove(object controlTypeRaw, int count)
+			)]
+		[DataRow(typeof(PasswordBox_Focus_Leak), 15,
+#if __IOS__
+			LeakTestStyles.None // Disabled - #10344
+#elif __ANDROID__
+			LeakTestStyles.Default // Fluent styles disabled - #14340
+#else
+			LeakTestStyles.All
+#endif
+			)]
+		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
+		{
+			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
+			{
+				// Test for leaks both without and with fluent styles
+				await When_Add_Remove_Inner(controlTypeRaw, count);
+			}
+
+			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
+			{
+				using (var themeHelper = StyleHelper.UseFluentStyles())
+				{
+					await When_Add_Remove_Inner(controlTypeRaw, count);
+				}
+			}
+		}
+
+		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
 			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
@@ -354,6 +395,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 			public static void Reset() => _counter = 0;
+		}
+
+		[Flags]
+		public enum LeakTestStyles
+		{
+			None = 0,
+			Default = 1,
+			Fluent = 2,
+			All = Default | Fluent
 		}
 	}
 }

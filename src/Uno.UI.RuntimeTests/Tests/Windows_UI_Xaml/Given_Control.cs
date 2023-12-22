@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.UI;
 using Windows.Foundation;
 
@@ -27,6 +27,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				return new(2000, 2000);
 			}
 		}
+
+#if HAS_UNO
+		private partial class OnApplyTemplateCounterControl : Control
+		{
+			public OnApplyTemplateCounterControl() : base()
+			{
+				Loading += (_, _) => OnControlLoading();
+			}
+
+			private ControlTemplate _template;
+			public int OnApplyTemplateCalls { get; private set; }
+
+			protected override void OnApplyTemplate()
+			{
+				// OnApplyTemplate should be called when the Template changes, so we only care
+				// about (unnecessary) calls that happen when the Template doesn't change
+				if (_template != Template)
+				{
+					_template = Template;
+					OnApplyTemplateCalls = 0;
+				}
+
+				OnApplyTemplateCalls++;
+			}
+
+			private void OnControlLoading() => Style = new Style
+			{
+				Setters =
+				{
+					new Setter(TemplateProperty, new ControlTemplate(() => new Grid())
+					{
+						TargetType = typeof(OnApplyTemplateCounterControl),
+					})
+				}
+			};
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -150,6 +187,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.AreEqual(43, testTransform.TranslateY);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Style_Changed_During_Loading()
+		{
+			var SUT = new OnApplyTemplateCounterControl
+			{
+				Style = new Style
+				{
+					Setters =
+					{
+						new Setter(Control.TemplateProperty, new ControlTemplate(() => new Grid())
+						{
+							TargetType = typeof(OnApplyTemplateCounterControl),
+						})
+					}
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = new UserControl
+			{
+				Content = SUT
+			};
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.OnApplyTemplateCalls);
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

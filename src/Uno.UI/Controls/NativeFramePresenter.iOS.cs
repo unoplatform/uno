@@ -7,10 +7,11 @@ using UIKit;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Media.Animation;
+using Windows.Foundation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
@@ -86,6 +87,12 @@ namespace Uno.UI.Controls
 			// Hide the NavigationBar by default. Only show if navigating to a Page that contains a CommandBar.
 			NavigationController.NavigationBarHidden = true;
 		}
+
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
 
 		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{

@@ -6,12 +6,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.UI.Samples.UITests.Helpers;
 using Uno.UI.Toolkit;
-using TextBlock = Windows.UI.Xaml.Controls.TextBlock;
+using TextBlock = Microsoft.UI.Xaml.Controls.TextBlock;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
@@ -46,7 +46,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot()
 		{
-			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var windowBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border1.ActualWidth, windowBounds.Height - visible.Bottom - Border1.ActualHeight);
 
@@ -58,7 +58,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot_With_TranslateTransform()
 		{
-			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var windowBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;
@@ -72,7 +72,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot_With_InheritedTranslateTransform_And_Margin()
 		{
-			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var windowBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;

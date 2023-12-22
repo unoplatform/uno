@@ -9,7 +9,7 @@ namespace Uno.UI.RuntimeTests.Tests.Extensions
 	public class Given_Uri
 	{
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		[TestMethod]
 		public void When_Do_TrimEndUriSlash()
 		{

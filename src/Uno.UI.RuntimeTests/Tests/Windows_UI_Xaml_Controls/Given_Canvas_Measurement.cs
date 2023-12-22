@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using NUnit.Framework;
-using Uno.UITest;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UITest.Helpers.Queries;
-using Windows.UI.Xaml.Controls;
-using SamplesApp.UITests;
-using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml;
-using MUXControlsTestApp;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -52,7 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__ //Color are not interpreted the same way in Mac
 			Assert.Inconclusive();
 #endif
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
@@ -83,7 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__
 			Assert.Inconclusive(); // iOS doesn't support Canvas.ZIndex on any panel
 #endif
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -121,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 			Assert.Inconclusive(); //Color are not interpreted the same way in Mac
 #endif
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
@@ -134,6 +128,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAtChild(bitmap, clippedLocation, (float)clippedLocation.Width / 2, clippedLocation.Height / 2, Blue);
 		}
 
+		[TestMethod]
+#if __ANDROID__
+		[Ignore("Fails on Android.")]
+#endif
+		public async Task When_Canvas_Larger_Than_Parent_Should_Not_Clip()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			var grid = new Grid
+			{
+				Width = 300,
+				Height = 300,
+				Children =
+				{
+					new Grid
+					{
+						Height = 100,
+						Background = new SolidColorBrush(Colors.Red),
+						HorizontalAlignment = HorizontalAlignment.Stretch,
+						Children =
+						{
+							new Canvas
+							{
+								Background = new SolidColorBrush(Colors.Blue),
+								Width = 200,
+								MinHeight = 400,
+								HorizontalAlignment = HorizontalAlignment.Left,
+							},
+						},
+					},
+				},
+			};
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(grid);
+			var bitmap = await RawBitmap.From(renderer, grid);
+
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(200, 100), new Size(99, 99)), redBounds);
+
+			var blueBounds = ImageAssert.GetColorBounds(bitmap, Colors.Blue, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(0, 100), new Size(199, 199)), blueBounds);
+		}
 	}
 }
-

@@ -80,7 +80,6 @@
 
 	<PropertyGroup Condition="$(IsIOS)">
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
-		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsCatalyst)">
@@ -115,12 +114,15 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_overridePackageId>$(AssemblyName)</_overridePackageId>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
+			<_overridePackageId>$(CommonOverridePackageId)</_overridePackageId>
+			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</_overridePackageId>
 			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('Uno.UI','Uno.WinUI'))</_overridePackageId>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetRefFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)\*.*" />
@@ -148,12 +150,10 @@
 			<!-- Current nuget publishing uses netX.0-android30.0 -->
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
 
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
 			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('Uno.UI','Uno.WinUI'))</CommonOverridePackageId>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(_baseNugetPath)\.nuget\packages\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 		</PropertyGroup>
 
 		<ItemGroup>

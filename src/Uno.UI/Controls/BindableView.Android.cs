@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Android.Runtime;
 using Android.Views;
 using Android.Util;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.ComponentModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views.Animations;
 using Uno.Collections;

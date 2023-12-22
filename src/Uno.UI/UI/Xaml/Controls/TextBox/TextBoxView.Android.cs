@@ -1,35 +1,22 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.Widget;
-using Uno.UI;
-using Uno.UI.Helpers;
-using Java.Lang.Reflect;
 using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.OS;
-using Android.Runtime;
 using Android.Text;
-using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
 using Java.Lang.Reflect;
-using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Uno.UI.Extensions;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Uno.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : EditText, DependencyObject
 	{
@@ -102,6 +89,21 @@ namespace Windows.UI.Xaml.Controls
 				/// at the beginning, even if the text is the same.
 				Text = textSafe;
 			}
+		}
+
+		public override bool OnTextContextMenuItem(int id)
+		{
+			if (id == Android.Resource.Id.Paste)
+			{
+				var args = new TextControlPasteEventArgs();
+				Owner?.RaisePaste(args);
+				if (args.Handled)
+				{
+					return true;
+				}
+			}
+
+			return base.OnTextContextMenuItem(id);
 		}
 
 		protected override void OnTextChanged(Java.Lang.ICharSequence? text, int start, int lengthBefore, int lengthAfter)

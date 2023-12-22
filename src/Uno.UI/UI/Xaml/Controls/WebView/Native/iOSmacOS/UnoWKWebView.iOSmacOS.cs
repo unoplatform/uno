@@ -28,7 +28,7 @@ using AppKit;
 using Uno.UI;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
 #if __MACOS__
@@ -458,29 +458,31 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 
 #if __IOS__
+
+	private static readonly string[] _emptyStringArray = new[] { "" };
+
 	private void ParseUriAndLauchMailto(Uri mailtoUri)
 	{
-		_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-			Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+		_ = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
 			async (ct) =>
 			{
 				try
 				{
 					var subject = "";
 					var body = "";
-					var cc = new[] { "" };
-					var bcc = new[] { "" };
+					var cc = _emptyStringArray;
+					var bcc = _emptyStringArray;
 
-					var recipients = mailtoUri.AbsoluteUri.Split(new[] { ':' })[1].Split(new[] { '?' })[0].Split(new[] { ',' });
-					var parameters = mailtoUri.Query.Split(new[] { '?' });
+					var recipients = mailtoUri.AbsoluteUri.Split(':')[1].Split('?')[0].Split(',');
+					var parameters = mailtoUri.Query.Split('?');
 
 					parameters = parameters.Length > 1 ?
-									parameters[1].Split(new[] { '&' }) :
+									parameters[1].Split('&') :
 									Array.Empty<string>();
 
 					foreach (string param in parameters)
 					{
-						var keyValue = param.Split(new[] { '=' });
+						var keyValue = param.Split('=');
 						var key = keyValue[0];
 						var value = keyValue[1];
 
@@ -695,7 +697,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
 	{
-		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
 		var javascript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString);
 
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -817,7 +819,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (directFileParentPath.StartsWith(appRootPath, StringComparison.Ordinal))
 		{
 			var relativePath = directFileParentPath.Substring(appRootPath.Length, directFileParentPath.Length - appRootPath.Length);
-			var topFolder = relativePath.Split(separator: new char[] { '/' }, options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+			var topFolder = relativePath.Split(separator: '/', options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
 			if (topFolder != null)
 			{

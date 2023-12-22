@@ -92,7 +92,7 @@ public class Given_Binding
 					}
 					""",
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -111,8 +111,8 @@ public class Given_Binding
 			}
 		}.AddGeneratedSources();
 		test.ExpectedDiagnostics.Add(
-			// /0/Test0.cs(3,30): warning UXAML0002: TestRepro.UserControl1 does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
-			DiagnosticResult.CompilerWarning("UXAML0002").WithSpan(3, 30, 3, 42).WithArguments("TestRepro.UserControl1 does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.")
+			// /0/Test0.cs(3,30): warning UXAML0002: TestRepro.UserControl1 does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.
+			DiagnosticResult.CompilerWarning("UXAML0002").WithSpan(3, 30, 3, 42).WithArguments("TestRepro.UserControl1 does not explicitly define the Microsoft.UI.Xaml.Controls.UserControl base type in code behind.")
 		);
 		await test.RunAsync();
 	}
@@ -147,7 +147,7 @@ public class Given_Binding
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -198,8 +198,8 @@ public class Given_Binding
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -246,6 +246,123 @@ public class Given_Binding
 							}
 						}
 					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestTwoWay()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+		Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+		<Grid>
+			<TextBlock Text="{x:Bind ViewModel.P, Mode=TwoWay}" />
+		</Grid>
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public class VM
+						{
+							public string P { get; set; }
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public VM ViewModel { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestDefaultBindingModeInDataTemplateInsideResourceDictionary()
+	{
+		var xamlFile = new XamlFile("MyResourceDictionary.xaml", """
+			<ResourceDictionary
+				x:Class="TestRepro.MyResourceDictionary"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				x:DefaultBindMode="OneWay"
+				mc:Ignorable="d">
+
+					<DataTemplate x:Key="myTemplate" x:DataType="local:MyModel">
+						<TextBlock x:Name="tb" Text="{x:Bind MyString}" />
+					</DataTemplate>
+			</ResourceDictionary>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+
+					namespace TestRepro
+					{
+						public sealed partial class MyResourceDictionary : ResourceDictionary
+						{
+							public MyResourceDictionary()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyModel
+						{
+							public string MyString
+							{
+								get => throw new System.NotImplementedException();
+								set => throw new System.NotImplementedException();
+							}
+
+							public static readonly DependencyProperty MyStringProperty =
+								DependencyProperty.Register(nameof(MyString), typeof(string), typeof(MyModel), new FrameworkPropertyMetadata(null));
+						}
+					}
+
 					"""
 				}
 			}

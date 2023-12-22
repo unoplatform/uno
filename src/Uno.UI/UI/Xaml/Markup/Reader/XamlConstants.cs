@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
 	internal static class XamlConstants
 	{
@@ -13,9 +13,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		public const string RootFoundationNamespace = "Windows.Foundation";
 		public const string RootWUINamespace = "Windows" + ".UI"; // Keep split for the WinUI conversion tool
-		public const string RootMUINamespace = "Windows.UI";
-		public const string BaseXamlNamespace = "Windows.UI.Xaml";
-		public const string UnoXamlNamespace = "Windows.UI.Xaml";
+		public const string RootMUINamespace = "Microsoft.UI";
+		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
+		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
 
 		public static class Namespaces
 		{
@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
 			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
+			public const string Input = BaseXamlNamespace + ".Input";
 
 			public static readonly string[] PresentationNamespaces =
 			{
@@ -37,6 +38,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				Controls,
 				Primitives,
 				Data,
+				Input,
 				Documents,
 				Shapes,
 				Media,

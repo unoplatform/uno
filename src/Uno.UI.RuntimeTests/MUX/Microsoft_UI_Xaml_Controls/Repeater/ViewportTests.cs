@@ -5,19 +5,19 @@ using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Numerics;
 using Common;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 using Task = System.Threading.Tasks.Task;
 
@@ -30,22 +30,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using LayoutContext = Microsoft.UI.Xaml.Controls.LayoutContext;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-//using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
-//using ScrollingScrollCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
-//using ScrollingZoomCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
-//using AnimationMode = Microsoft.UI.Xaml.Controls.AnimationMode;
-//using SnapPointsMode = Microsoft.UI.Xaml.Controls.SnapPointsMode;
-//using ScrollingScrollOptions = Microsoft.UI.Xaml.Controls.ScrollingScrollOptions;
-//using ScrollingZoomOptions = Microsoft.UI.Xaml.Controls.ScrollingZoomOptions;
-//using ContentOrientation = Microsoft.UI.Xaml.Controls.ContentOrientation;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using LayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutContext;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+//using ScrollPresenter = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ScrollPresenter;
+//using ScrollingScrollCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
+//using ScrollingZoomCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
+//using AnimationMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationMode;
+//using SnapPointsMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SnapPointsMode;
+//using ScrollingScrollOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollOptions;
+//using ScrollingZoomOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomOptions;
+//using ContentOrientation = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ContentOrientation;
 using IRepeaterScrollingSurface = Microsoft.UI.Private.Controls.IRepeaterScrollingSurface;
 using ConfigurationChangedEventHandler = Microsoft.UI.Private.Controls.ConfigurationChangedEventHandler;
 using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHandler;
@@ -53,7 +53,7 @@ using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChange
 
 using Uno.UI.RuntimeTests;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
@@ -1018,7 +1018,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet erat vel massa rutrum, eget mollis massa vulputate. Vivamus semper augue leo, eget faucibus nulla mattis nec. Donec scelerisque lacus at dui ultricies, eget auctor ipsum placerat. Integer aliquet libero sed nisi eleifend, nec rutrum arcu lacinia. Sed a sem et ante gravida congue sit amet ut augue. Donec quis pellentesque urna, non finibus metus. Proin sed ornare tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet erat vel massa rutrum, eget mollis massa vulputate. Vivamus semper augue leo, eget faucibus nulla mattis nec. Donec scelerisque lacus at dui ultricies, eget auctor ipsum placerat. Integer aliquet libero sed nisi eleifend, nec rutrum arcu lacinia. Sed a sem et ante gravida congue sit amet ut augue. Donec quis pellentesque urna, non finibus metus. Proin sed ornare tellus.";
 				var root = (Grid)XamlReader.Load(TestUtilities.ProcessTestXamlForRepo(
-					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' xmlns:controls='using:Microsoft.UI.Xaml.Controls'> 
+					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'> 
 						 <Grid.Resources>
 						   <controls:StackLayout x:Name='VerticalStackLayout' />
 						   <controls:RecyclingElementFactory x:Key='ElementFactory'>

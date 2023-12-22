@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -12,7 +12,7 @@ using System.Threading;
 using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using System.Collections;
 using System.Globalization;
@@ -24,7 +24,7 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a delegate to be called when a property value changes.
@@ -309,7 +309,9 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
+			// There is no need to force-create property details here.
+			// If it's not yet created, then simply the precedence is DefaultValue
+			return _properties.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
 		/// <summary>
@@ -636,7 +638,7 @@ namespace Windows.UI.Xaml
 
 			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
 
-			if (Equals(previousValue, baseValue) && options.HasFlag(FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged))
+			if (Equals(previousValue, baseValue) && ((options & FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged) != 0))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
@@ -652,7 +654,7 @@ namespace Windows.UI.Xaml
 				// Source: https://msdn.microsoft.com/en-us/library/ms745795%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
-			else if (!Equals(coercedValue, baseValue) || options.HasFlag(FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals))
+			else if (!Equals(coercedValue, baseValue) || ((options & FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals) != 0))
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.
@@ -1285,11 +1287,11 @@ namespace Windows.UI.Xaml
 
 			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
-			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
+			var bindings = _resourceBindings.GetAllBindings();
 
-			foreach (var (property, binding) in bindings)
+			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 
 			UpdateChildResourceBindings(updateReason);
@@ -1330,6 +1332,17 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				// Add the current dictionaries to the resolver scope,
+				// this allows for StaticResource.ResourceKey to resolve properly
+
+				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
+				{
+					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
+				}
+			}
+
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
@@ -1346,6 +1359,14 @@ namespace Windows.UI.Xaml
 				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value))
 				{
 					SetResourceBindingValue(property, binding, value);
+				}
+			}
+
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				foreach (var dict in dictionariesInScope)
+				{
+					ResourceResolver.PopSourceFromScope();
 				}
 			}
 		}
@@ -1409,24 +1430,7 @@ namespace Windows.UI.Xaml
 		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			_isUpdatingChildResourceBindings = true;
-			foreach (var child in GetChildrenDependencyObjects())
-			{
-				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
-				{
-					storeProvider.Store.UpdateResourceBindings(updateReason);
-				}
-			}
-		}
 
-		/// <summary>
-		/// Returns all discoverable child dependency objects.
-		/// </summary>
-		/// <remarks>
-		/// This method is potentially slow and should only be used where performance isn't a concern (eg updating resource bindings
-		/// when the app theme changes).
-		/// </remarks>
-		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
-		{
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
 				if (propertyDetail == null
@@ -1445,7 +1449,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in dependencyObjectCollection)
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
@@ -1453,14 +1457,22 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
 				if (propertyValue is DependencyObject dependencyObject)
 				{
-					yield return dependencyObject;
+					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason);
 				}
+			}
+		}
+
+		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason)
+		{
+			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
+			{
+				storeProvider.Store.UpdateResourceBindings(updateReason);
 			}
 		}
 
@@ -1469,7 +1481,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
-			if (containingDictionary != null)
+			if (containingDictionary is not null)
 			{
 				yield return containingDictionary;
 			}
@@ -1477,13 +1489,13 @@ namespace Windows.UI.Xaml
 			var candidate = ActualInstance;
 			var candidateFE = candidate as FrameworkElement;
 
-			while (candidate != null)
+			while (candidate is not null)
 			{
 				var parent = candidate.GetParent() as DependencyObject;
 
-				if (candidateFE != null)
+				if (candidateFE is not null)
 				{
-					if (candidateFE.Resources != null) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (candidateFE.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
 						yield return candidateFE.Resources;
 					}
@@ -1505,6 +1517,7 @@ namespace Windows.UI.Xaml
 					candidate = parent;
 				}
 			}
+
 			if (includeAppResources && Application.Current != null)
 			{
 				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
@@ -1653,11 +1666,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 					if (instance != null)
 					{
-						if (!hashSet.Contains(instance!))
-						{
-							hashSet.Add(instance);
-						}
-						else
+						if (!hashSet.Add(instance))
 						{
 							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}
@@ -1848,7 +1857,7 @@ namespace Windows.UI.Xaml
 					// Uno TODO: What should we do here for non-UIElements (if anything is needed)?
 					if (actualInstanceAlias is UIElement elt)
 					{
-						Windows.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
+						Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
 					}
 				}
 

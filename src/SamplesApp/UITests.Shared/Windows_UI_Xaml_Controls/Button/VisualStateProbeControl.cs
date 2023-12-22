@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 {
@@ -51,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 
 		private void WriteLine(string line)
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			Debug.WriteLine(line);
 #else
 			Console.WriteLine(line);

@@ -1,6 +1,10 @@
 ﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement.MediaPlayerElement_Full"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:not_win="http://uno.ui/not_win"
+			 mc:Ignorable="d not_win">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="7*" />
@@ -19,8 +23,8 @@
 										IsFastForwardEnabled="{Binding IsChecked, ElementName=IsFastForwardEnabled}"
 										IsFastRewindButtonVisible="{Binding IsChecked, ElementName=IsFastRewindButtonVisible}"
 										IsFastRewindEnabled="{Binding IsChecked, ElementName=IsFastRewindEnabled}"
-										IsFullWindowButtonVisible="{Binding IsChecked, ElementName=IsFullWindowButtonVisible}"
-										IsFullWindowEnabled="{Binding IsChecked, ElementName=IsFullWindowEnabled}"
+										not_win:IsFullWindowButtonVisible="{Binding IsChecked, ElementName=IsFullWindowButtonVisible}"
+										not_win:IsFullWindowEnabled="{Binding IsChecked, ElementName=IsFullWindowEnabled}"
 										IsNextTrackButtonVisible="{Binding IsChecked, ElementName=IsNextTrackButtonVisible}"
 										IsPlaybackRateButtonVisible="{Binding IsChecked, ElementName=IsPlaybackRateButtonVisible}"
 										IsPlaybackRateEnabled="{Binding IsChecked, ElementName=IsPlaybackRateEnabled}"
@@ -39,8 +43,8 @@
 										IsVolumeEnabled="{Binding IsChecked, ElementName=IsVolumeEnabled}"
 										IsZoomButtonVisible="{Binding IsChecked, ElementName=IsZoomButtonVisible}"
 										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}"
-										IsCompactOverlayButtonVisible="{Binding IsChecked, ElementName=IsCompactOverlayButtonVisible}"
-										IsCompactOverlayEnabled="{Binding IsChecked, ElementName=IsCompactOverlayEnabled}"
+										not_win:IsCompactOverlayButtonVisible="{Binding IsChecked, ElementName=IsCompactOverlayButtonVisible}"
+										not_win:IsCompactOverlayEnabled="{Binding IsChecked, ElementName=IsCompactOverlayEnabled}"
 										/>
 			</MediaPlayerElement.TransportControls>
 		</MediaPlayerElement>

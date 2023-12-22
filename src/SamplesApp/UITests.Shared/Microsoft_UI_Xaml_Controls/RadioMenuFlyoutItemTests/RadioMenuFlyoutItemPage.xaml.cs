@@ -1,18 +1,18 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
 using System.Windows.Input;
 using Windows.Foundation.Metadata;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 {
@@ -27,14 +27,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.RadioMenuFlyoutItemTests
 
 			itemStates = new Dictionary<string, TextBlock>();
 
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.MenuFlyoutItem", "Icon"))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.MenuFlyoutItem", "Icon"))
 			{
 				IconMenuFlyoutItem.Icon = new SymbolIcon(Symbol.Calendar);
 				IconRadioMenuFlyoutItem.Icon = new SymbolIcon(Symbol.Calculator);
 				IconRadioMenuFlyoutItem2.Icon = new SymbolIcon(Symbol.Calculator);
 			}
 
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Controls.Grid", "ColumnSpacing"))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Controls.Grid", "ColumnSpacing"))
 			{
 				ItemNames.Spacing = 4;
 				ItemStates.Spacing = 4;

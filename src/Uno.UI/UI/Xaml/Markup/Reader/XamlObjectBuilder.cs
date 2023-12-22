@@ -11,23 +11,23 @@ using Uno.UI;
 using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
 using Color = Windows.UI.Color;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml.Resources;
 
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
 	internal partial class XamlObjectBuilder
 	{
@@ -52,6 +52,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 			typeof(Media.Matrix),
 			typeof(FontWeight),
 		};
+
+		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
@@ -244,7 +246,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			value ??= "";
 
-			if (value.Contains("("))
+			if (value.Contains('('))
 			{
 				foreach (var ns in _fileDefinition.Namespaces)
 				{
@@ -262,12 +264,12 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					do
 					{
-						if (!match.Value.Contains(":"))
+						if (!match.Value.Contains(':'))
 						{
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split(new[] { '.' });
+							var parts = match.Value.Trim(_parenthesesArray).Split('.');
 
 							if (parts.Length == 2)
 							{
@@ -534,7 +536,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (member.Value is string targetPath)
 			{
 				// This builds property setters for specified member setter.
-				var separatorIndex = targetPath.IndexOf(".", StringComparison.Ordinal);
+				var separatorIndex = targetPath.IndexOf('.');
 				var elementName = targetPath.Substring(0, separatorIndex);
 				var propertyName = targetPath.Substring(separatorIndex + 1);
 
@@ -943,7 +945,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					case "_PositionalParameters":
 					case nameof(Binding.Path):
-						binding.Path = RewriteAttachedPropertyPath(bindingProperty.Value?.ToString());
+						var path = bindingProperty.Value?.ToString();
+						if (templateBindingNode is not null && TypeResolver.IsAttachedProperty(member))
+						{
+							path = $"({path})";
+						}
+
+						binding.Path = RewriteAttachedPropertyPath(path);
 						break;
 
 					case nameof(Binding.ElementName):
@@ -1258,9 +1266,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var sourceType = propertyType;
 				var methodName = createFromString.MethodName;
-				if (createFromString.MethodName.Contains("."))
+				if (createFromString.MethodName.Contains('.'))
 				{
-					var splitIndex = createFromString.MethodName.LastIndexOf(".", StringComparison.Ordinal);
+					var splitIndex = createFromString.MethodName.LastIndexOf('.');
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);
 					sourceType = TypeResolver.FindType(typeName);
 					methodName = createFromString.MethodName.Substring(splitIndex + 1);

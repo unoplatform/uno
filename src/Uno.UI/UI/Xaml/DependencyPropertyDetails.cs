@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system
@@ -22,20 +22,23 @@ namespace Windows.UI.Xaml
 		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
-		private static readonly ArrayPool<object?> _pool = ArrayPool<object?>.Shared;
 		private object?[]? _stack;
 		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
 		private Flags _flags;
 		private DependencyPropertyCallbackManager? _callbackManager;
 
-		private const int MaxIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
-		private const int _stackLength = MaxIndex + 1;
+		private const int DefaultValueIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
+		private const int StackSize = DefaultValueIndex + 1;
+
+		private static readonly LinearArrayPool<object?> _pool = LinearArrayPool<object?>.CreateAutomaticallyManaged(StackSize, 1);
+
 		private static readonly object[] _unsetStack;
+
 		static DependencyPropertyDetails()
 		{
-			_unsetStack = new object[_stackLength];
-			for (var i = 0; i < _stackLength; i++)
+			_unsetStack = new object[StackSize];
+			for (var i = 0; i < StackSize; i++)
 			{
 				_unsetStack[i] = DependencyProperty.UnsetValue;
 			}
@@ -61,10 +64,12 @@ namespace Windows.UI.Xaml
 		/// Constructor
 		/// </summary>
 		/// <param name="defaultValue">The default value of the Dependency Property</param>
-		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool hasInherits, bool hasValueInherits, bool hasValueDoesNotInherits)
+		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool isTemplatedParentOrDataContext)
 		{
 			Property = property;
 			_dependencyObjectType = dependencyObjectType;
+
+			GetPropertyInheritanceConfiguration(isTemplatedParentOrDataContext, out var hasInherits, out var hasValueInherits, out var hasValueDoesNotInherits);
 
 			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
@@ -72,11 +77,39 @@ namespace Windows.UI.Xaml
 			_flags |= hasInherits ? Flags.Inherits : Flags.None;
 		}
 
-		private object? GetDefaultValue()
+		private void GetPropertyInheritanceConfiguration(
+			bool isTemplatedParentOrDataContext,
+			out bool hasInherits,
+			out bool hasValueInherits,
+			out bool hasValueDoesNotInherit)
+		{
+			if (isTemplatedParentOrDataContext)
+			{
+				// TemplatedParent is a DependencyObject but does not propagate datacontext
+				hasValueInherits = false;
+				hasValueDoesNotInherit = true;
+				hasInherits = true;
+				return;
+			}
+
+			if (Metadata is FrameworkPropertyMetadata propertyMetadata)
+			{
+				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
+				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
+				hasInherits = propertyMetadata.Options.HasInherits();
+				return;
+			}
+
+			hasValueInherits = false;
+			hasValueDoesNotInherit = false;
+			hasInherits = false;
+		}
+
+		internal object? GetDefaultValue()
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Property.GetMetadata(_dependencyObjectType).DefaultValue;
+				_defaultValue = Metadata.DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
@@ -357,13 +390,12 @@ namespace Windows.UI.Xaml
 			{
 				if (_stack == null)
 				{
-					_stack = _pool.Rent(_stackLength);
+					_stack = _pool.Rent(StackSize);
 
-					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), _stackLength).CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, _stackLength));
+					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), StackSize)
+						.CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, StackSize));
 
-					var defaultValue = GetDefaultValue();
-
-					_stack[MaxIndex] = defaultValue;
+					_stack[DefaultValueIndex] = GetDefaultValue();
 
 					if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
 					{
@@ -403,7 +435,7 @@ namespace Windows.UI.Xaml
 			=> _callbackManager?.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
-		enum Flags
+		private enum Flags : byte
 		{
 			/// <summary>
 			/// No flag is being set

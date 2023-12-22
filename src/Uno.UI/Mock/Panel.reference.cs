@@ -5,14 +5,12 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Drawing;
-using View = Windows.UI.Xaml.UIElement;
 
-
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel : FrameworkElement
 	{
@@ -28,7 +26,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => base.OnBackgroundChanged(e);
+
+		public void Add(UIElement view)
+		{
+			Children.Add(view);
+		}
 	}
 }

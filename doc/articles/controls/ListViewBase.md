@@ -43,7 +43,7 @@ As on Windows, the ItemsPanelTemplate can be set; ItemsStackPanel and ItemsWrapG
 In fact there is only one difference from the Windows style, which is a custom Style on the ScrollViewer element. Below is the custom ScrollViewer style in its entirety:
 
 ```xml
-<!-- This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
+<!-- This is an Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
      while delegating to a native implementation for performance. -->
 <not_win:Style TargetType="ScrollViewer" x:Key="ListViewBaseScrollViewerStyle">
   <Setter Property="Template">

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.UI.Xaml.Core;
@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Represents a tree of XAML content and information about the context in which it is hosted.
@@ -33,7 +33,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public UIElement? Content =>
 		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
-			Windows.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
+			Microsoft.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
 
 	//TODO Uno specific: This logic is most likely not implemented here in MUX:
 	/// <summary>
@@ -140,7 +140,7 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	internal IDisposable OpenPopup(Windows.UI.Xaml.Controls.Primitives.Popup popup)
+	internal IDisposable OpenPopup(Microsoft.UI.Xaml.Controls.Primitives.Popup popup)
 	{
 		if (VisualTree.PopupRoot == null)
 		{

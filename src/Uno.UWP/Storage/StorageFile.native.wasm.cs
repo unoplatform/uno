@@ -60,7 +60,9 @@ namespace Windows.Storage
 
 				var parts = basicPropertiesString.Split('|');
 
+#pragma warning disable CA1806 // Do not ignore method results
 				ulong.TryParse(parts[0], out ulong size);
+#pragma warning restore CA1806 // Do not ignore method results
 
 				var dateTimeModified = DateTimeOffset.UtcNow;
 				if (long.TryParse(parts[1], out var dateModifiedUnixMilliseconds))

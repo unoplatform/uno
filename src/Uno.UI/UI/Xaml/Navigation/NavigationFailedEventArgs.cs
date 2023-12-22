@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation.Metadata;
 
-namespace Windows.UI.Xaml.Navigation
+namespace Microsoft.UI.Xaml.Navigation
 {
 	public sealed partial class NavigationFailedEventArgs
 	{

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Uno.Disposables;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 
@@ -134,7 +134,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		public static void RemoveItem<T>(IList<T> items, T item)
 		{
-			var index = items.Safe().IndexOf(item);
+			var index = items?.IndexOf(item) ?? -1;
 			if (index == -1)
 			{
 				throw new ArgumentOutOfRangeException("The item was not in the collection.");
@@ -165,6 +165,24 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				}
 			}
 			return group;
+		}
+
+		internal static async Task<Point> GetCenterOfElement(FrameworkElement element)
+		{
+			Point offsetFromCenter = default;
+
+			return await GetOffsetCenterOfElement(element, offsetFromCenter);
+		}
+
+		private static async Task<Point> GetOffsetCenterOfElement(FrameworkElement element, Point offsetFromCenter)
+		{
+			Point result = default;
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				var offsetCenterLocal = new Point((element.ActualWidth / 2) + offsetFromCenter.X, (element.ActualHeight / 2) + offsetFromCenter.Y);
+				result = element.TransformToVisual(null).TransformPoint(offsetCenterLocal);
+			});
+			return result;
 		}
 	}
 }

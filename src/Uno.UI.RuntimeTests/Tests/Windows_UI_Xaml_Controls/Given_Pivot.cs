@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			items[1].Content.Should().Be(tbs2.ElementAt(0).Text);
 		}
 
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task Check_Changing_Header_Affects_UI()

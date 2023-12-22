@@ -9,8 +9,9 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Uno.UI.Xaml.Core;
-using WinUI = Windows.UI.Xaml;
-using WinUIWindow = Windows.UI.Xaml.Window;
+using Windows.Graphics.Display;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
@@ -21,6 +22,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private readonly UnoEventBox _eventBox = new();
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
+	private readonly DisplayInformation _displayInformation;
 
 	private Widget? _area;
 	private IGtkRenderer? _renderer;
@@ -30,6 +32,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
+		_displayInformation = DisplayInformation.GetForCurrentView();
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
@@ -56,14 +59,16 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_area = (Widget)_renderer;
 
+		_displayInformation.DpiChanged += OnDpiChanged;
+
 		_area.Realized += (s, e) =>
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
+			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
 		};
 
 		_area.SizeAllocated += (s, e) =>
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
 			if (!_firstSizeAllocated)
 			{
 				_firstSizeAllocated = true;
@@ -75,6 +80,15 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		overlay.AddOverlay(_nativeOverlayLayer);
 		_eventBox.Add(overlay);
 		_gtkWindow.Add(_eventBox);
+	}
+
+	private void OnDpiChanged(DisplayInformation sender, object args) =>
+		UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
+
+	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
+	{
+		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
 	}
 
 	private void RegisterForBackgroundColor()

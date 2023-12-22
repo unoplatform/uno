@@ -26,5 +26,17 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
+		<file src="_._" target="lib\net8.0" />
+		<file src="_._" target="lib\net7.0" />
+		
+		<file src="_._" target="lib\net8.0-android" />
+		<file src="_._" target="lib\net8.0-ios" />
+		<file src="_._" target="lib\net8.0-maccatalyst" />
+		<file src="_._" target="lib\net8.0-macos" />
+		
+		<file src="_._" target="lib\net7.0-android" />
+		<file src="_._" target="lib\net7.0-ios" />
+		<file src="_._" target="lib\net7.0-maccatalyst" />
+		<file src="_._" target="lib\net7.0-macos" />
 	</files>
 </package>

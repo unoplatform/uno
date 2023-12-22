@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using Windows.Foundation;
@@ -7,7 +7,7 @@ using Uno.Extensions;
 using System.Xml.Xsl;
 using Uno.UI.Composition;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
@@ -65,10 +65,7 @@ public partial class ShapeVisual
 			else
 			{
 				var shape = new SKPath();
-				// Note: Here we apply the view box at 0,0 instead of offset
-				//	This is because the view box is somehow the clipping applied on us by our parent (in its coordinate space),
-				//	but when transformed our shapes can draw their content out that bounds ... but still have to respect the clipping of our parent itself.
-				shape.AddRect(new SKRect(0, 0, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
+				shape.AddRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
 				shape.Transform(transform);
 				parentSession.Surface.Canvas.ClipPath(shape, antialias: true);
 			}

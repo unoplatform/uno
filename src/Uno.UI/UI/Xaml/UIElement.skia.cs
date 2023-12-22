@@ -3,13 +3,13 @@
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
@@ -17,16 +17,18 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
+using Uno.UI.Dispatching;
+using Uno.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
@@ -56,8 +58,6 @@ namespace Windows.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(true));
-
-		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
-		public void AddChild(UIElement child, int? index = null)
+		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
 			{
@@ -230,9 +230,9 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		public virtual IEnumerable<UIElement> GetChildren() => _children;
+		internal MaterializableList<UIElement> GetChildren() => _children;
 
-		public IntPtr Handle { get; set; }
+		public IntPtr Handle { get; }
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{

@@ -6,8 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -35,7 +35,7 @@ namespace MUXControlsTestApp.Utilities
 			var dispatcher = whichView.Dispatcher;
 			if (dispatcher.HasThreadAccess
 #if __WASM__
-				|| !Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported
+				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
 #endif
 				)
 			{
@@ -124,7 +124,7 @@ namespace MUXControlsTestApp.Utilities
 			var dispatcher = whichView.Dispatcher;
 			if (dispatcher.HasThreadAccess
 #if __WASM__
-				|| !Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported
+				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
 #endif
 				)
 			{

@@ -13,8 +13,8 @@ Uno Platform provides two versions of the `ProgressRing` control:
 
 | Control            | iOS | macOS | Android | WASM | Skia (GTK, WPF, FrameBuffer, Tizen) |
 |--------------------|-----|-------|---------|------|-------------------------------------|
-| MUX `ProgressRing` | ✅   | ✅     | ✅       | ✅    | ✅                             |
-| WUX `ProgressRing` | ✅   | ✅     | ✅       | ✅    | ✅                             |
+| MUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                             |
+| WUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                             |
 
 ## Using the `Microsoft.UI.Xaml.Controls.ProgressRing`
 

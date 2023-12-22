@@ -5,54 +5,42 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
-#if !SUPPORTS_RTL && !WINDOWS_UWP
+#if !SUPPORTS_RTL && !WINAPPSDK
 [Ignore("RTL is not supported")]
 #endif
 public class Given_FlowDirection
 {
-	private static void AssertRects(Rect rect1, Rect rect2)
+	private static Rectangle CreateRectangle(Stretch stretch, Color fillColor)
 	{
-		Assert.AreEqual(rect1.X, rect2.X);
-		Assert.AreEqual(rect1.Y, rect2.Y);
-		Assert.AreEqual(rect1.Width, rect2.Width, delta: 1);
-		Assert.AreEqual(rect1.Height, rect2.Height, delta: 1);
+		return new Rectangle()
+		{
+			Stretch = stretch,
+			UseLayoutRounding = false,
+			Fill = new SolidColorBrush(fillColor),
+		};
 	}
 
-	private static Rect GetWindowBounds() =>
-#if WINDOWS_UWP
-		Window.Current.Bounds;
-#else
-		TestServices.WindowHelper.WindowContent.XamlRoot.Bounds;
-#endif
-
-	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));
-	private static Rect Get50x50RectAt(double x, double y) => new Rect(new Point(x, y), new Size(50, 50));
-
-	[TestMethod]
-	[RunsOnUIThread]
-	[RequiresFullWindow]
-	public async Task When_RTL()
+	private static Grid CreateGrid(Color background)
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		return new Grid()
 		{
-			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-		}
-
-		var rootGrid = new Grid()
-		{
-			Background = new SolidColorBrush(Colors.WhiteSmoke),
+			UseLayoutRounding = false,
+			Background = new SolidColorBrush(background),
 		};
+	}
 
-		var grid = new Grid()
+	private static Grid CreateRTLGrid200x200WithTwoRowsAndTwoColumns()
+	{
+		return new Grid()
 		{
 			RowDefinitions =
 			{
@@ -67,39 +55,57 @@ public class Given_FlowDirection
 			Width = 200,
 			Height = 200,
 			FlowDirection = FlowDirection.RightToLeft,
+			UseLayoutRounding = false,
 		};
+	}
+
+	private static void AssertRects(Rect rect1, Rect rect2)
+	{
+		Assert.AreEqual(rect1.X, rect2.X);
+		Assert.AreEqual(rect1.Y, rect2.Y);
+		Assert.AreEqual(rect1.Width, rect2.Width, delta: 1);
+		Assert.AreEqual(rect1.Height, rect2.Height, delta: 1);
+	}
+
+	private static Rect GetWindowBounds() =>
+#if WINAPPSDK
+		Window.Current.Bounds;
+#else
+		TestServices.WindowHelper.WindowContent.XamlRoot.Bounds;
+#endif
+
+	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));
+	private static Rect Get50x50RectAt(double x, double y) => new Rect(new Point(x, y), new Size(50, 50));
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_RTL()
+	{
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		{
+			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+		}
+
+		var rootGrid = CreateGrid(Colors.WhiteSmoke);
+
+		var grid = CreateRTLGrid200x200WithTwoRowsAndTwoColumns();
 
 		rootGrid.Children.Add(grid);
 
-		var red = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Red),
-		};
+		var red = CreateRectangle(Stretch.Fill, Colors.Red);
 		Grid.SetRow(red, 0);
 		Grid.SetColumn(red, 0);
 
-		var green = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Green),
-		};
+		var green = CreateRectangle(Stretch.Fill, Colors.Green);
 		Grid.SetRow(green, 0);
 		Grid.SetColumn(green, 1);
 
-		var blue = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Blue),
-		};
+		var blue = CreateRectangle(Stretch.Fill, Colors.Blue);
 		Grid.SetRow(blue, 1);
 		Grid.SetColumn(blue, 0);
 
-		var yellow = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Yellow),
-		};
+		var yellow = CreateRectangle(Stretch.Fill, Colors.Yellow);
 		Grid.SetRow(yellow, 1);
 		Grid.SetColumn(yellow, 1);
 
@@ -200,69 +206,35 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL_RenderTransform_Translation()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
 
-		var rootGrid = new Grid()
-		{
-			Background = new SolidColorBrush(Colors.WhiteSmoke),
-		};
+		var rootGrid = CreateGrid(Colors.WhiteSmoke);
 
-		var grid = new Grid()
+		var grid = CreateRTLGrid200x200WithTwoRowsAndTwoColumns();
+		grid.RenderTransform = new TranslateTransform()
 		{
-			RowDefinitions =
-			{
-				new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-			},
-			ColumnDefinitions =
-			{
-				new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
-			},
-			Width = 200,
-			Height = 200,
-			FlowDirection = FlowDirection.RightToLeft,
-			RenderTransform = new TranslateTransform()
-			{
-				X = 30,
-				Y = 30,
-			},
+			X = 30,
+			Y = 30,
 		};
 
 		rootGrid.Children.Add(grid);
 
-		var red = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Red),
-		};
+		var red = CreateRectangle(Stretch.Fill, Colors.Red);
 		Grid.SetRow(red, 0);
 		Grid.SetColumn(red, 0);
 
-		var green = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Green),
-		};
+		var green = CreateRectangle(Stretch.Fill, Colors.Green);
 		Grid.SetRow(green, 0);
 		Grid.SetColumn(green, 1);
 
-		var blue = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Blue),
-		};
+		var blue = CreateRectangle(Stretch.Fill, Colors.Blue);
 		Grid.SetRow(blue, 1);
 		Grid.SetColumn(blue, 0);
 
-		var yellow = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Yellow),
-		};
+		var yellow = CreateRectangle(Stretch.Fill, Colors.Yellow);
 		Grid.SetRow(yellow, 1);
 		Grid.SetColumn(yellow, 1);
 
@@ -365,69 +337,35 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL_RenderTransform_Scaling()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
 
-		var rootGrid = new Grid()
-		{
-			Background = new SolidColorBrush(Colors.WhiteSmoke),
-		};
+		var rootGrid = CreateGrid(Colors.WhiteSmoke);
 
-		var grid = new Grid()
+		var grid = CreateRTLGrid200x200WithTwoRowsAndTwoColumns();
+		grid.RenderTransform = new ScaleTransform()
 		{
-			RowDefinitions =
-			{
-				new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-			},
-			ColumnDefinitions =
-			{
-				new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
-			},
-			Width = 200,
-			Height = 200,
-			FlowDirection = FlowDirection.RightToLeft,
-			RenderTransform = new ScaleTransform()
-			{
-				ScaleX = 0.5,
-				ScaleY = 0.5,
-			},
+			ScaleX = 0.5,
+			ScaleY = 0.5,
 		};
 
 		rootGrid.Children.Add(grid);
 
-		var red = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Red),
-		};
+		var red = CreateRectangle(Stretch.Fill, Colors.Red);
 		Grid.SetRow(red, 0);
 		Grid.SetColumn(red, 0);
 
-		var green = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Green),
-		};
+		var green = CreateRectangle(Stretch.Fill, Colors.Green);
 		Grid.SetRow(green, 0);
 		Grid.SetColumn(green, 1);
 
-		var blue = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Blue),
-		};
+		var blue = CreateRectangle(Stretch.Fill, Colors.Blue);
 		Grid.SetRow(blue, 1);
 		Grid.SetColumn(blue, 0);
 
-		var yellow = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Yellow),
-		};
+		var yellow = CreateRectangle(Stretch.Fill, Colors.Yellow);
 		Grid.SetRow(yellow, 1);
 		Grid.SetColumn(yellow, 1);
 
@@ -531,71 +469,37 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL_RenderTransform_Composite()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
 
-		var rootGrid = new Grid()
-		{
-			Background = new SolidColorBrush(Colors.WhiteSmoke),
-		};
+		var rootGrid = CreateGrid(Colors.WhiteSmoke);
 
-		var grid = new Grid()
+		var grid = CreateRTLGrid200x200WithTwoRowsAndTwoColumns();
+		grid.RenderTransform = new CompositeTransform()
 		{
-			RowDefinitions =
-			{
-				new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-				new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) },
-			},
-			ColumnDefinitions =
-			{
-				new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
-				new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) },
-			},
-			Width = 200,
-			Height = 200,
-			FlowDirection = FlowDirection.RightToLeft,
-			RenderTransform = new CompositeTransform()
-			{
-				ScaleX = 0.5,
-				ScaleY = 0.5,
-				TranslateX = 30,
-				TranslateY = 30,
-			},
+			ScaleX = 0.5,
+			ScaleY = 0.5,
+			TranslateX = 30,
+			TranslateY = 30,
 		};
 
 		rootGrid.Children.Add(grid);
 
-		var red = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Red),
-		};
+		var red = CreateRectangle(Stretch.Fill, Colors.Red);
 		Grid.SetRow(red, 0);
 		Grid.SetColumn(red, 0);
 
-		var green = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Green),
-		};
+		var green = CreateRectangle(Stretch.Fill, Colors.Green);
 		Grid.SetRow(green, 0);
 		Grid.SetColumn(green, 1);
 
-		var blue = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Blue),
-		};
+		var blue = CreateRectangle(Stretch.Fill, Colors.Blue);
 		Grid.SetRow(blue, 1);
 		Grid.SetColumn(blue, 0);
 
-		var yellow = new Rectangle()
-		{
-			Stretch = Stretch.Fill,
-			Fill = new SolidColorBrush(Colors.Yellow),
-		};
+		var yellow = CreateRectangle(Stretch.Fill, Colors.Yellow);
 		Grid.SetRow(yellow, 1);
 		Grid.SetColumn(yellow, 1);
 

@@ -1,13 +1,15 @@
 ﻿#nullable enable
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
 internal interface IOverlayTextBoxView
 {
+	event TextControlPasteEventHandler? Paste;
+
 	bool IsDisplayed { get; }
 
 	string Text { get; set; }

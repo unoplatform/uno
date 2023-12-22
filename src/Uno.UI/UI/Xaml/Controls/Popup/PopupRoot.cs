@@ -8,9 +8,9 @@ using Uno.UI.Xaml.Islands;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Panel
 {
@@ -19,6 +19,21 @@ internal partial class PopupRoot : Panel
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
+		Microsoft.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
+		Microsoft.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+	}
+
+	private void CloseFlyouts()
+	{
+		for (var i = _openPopups.Count - 1; i >= 0; i--)
+		{
+			var reference = _openPopups[i];
+			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			{
+				var f = popup.AssociatedFlyout;
+				f.Hide();
+			}
+		}
 	}
 
 	protected override void OnChildrenChanged()

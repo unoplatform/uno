@@ -19,8 +19,8 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Haptics;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -36,7 +36,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/*
 	 *	This partial file
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml
 		{
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-			Windows.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Windows.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
+			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
@@ -281,13 +281,13 @@ namespace Windows.UI.Xaml
 				return HitTestability.Collapsed;
 			}
 
-			if (this is Windows.UI.Xaml.Controls.Control ctrl)
+			if (this is Microsoft.UI.Xaml.Controls.Control ctrl)
 			{
 				return ctrl.IsLoaded && ctrl.IsEnabled
 					? HitTestability.Visible
 					: HitTestability.Collapsed;
 			}
-			else if (this is Windows.UI.Xaml.FrameworkElement fwElt)
+			else if (this is Microsoft.UI.Xaml.FrameworkElement fwElt)
 			{
 				return fwElt.IsLoaded
 					? HitTestability.Visible
@@ -548,19 +548,33 @@ namespace Windows.UI.Xaml
 
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
-			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
-			if (routedEvent == HoldingEvent)
+			if (routedEvent != HoldingEvent && FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention)
 			{
-				if (IsGestureRecognizerCreated)
+				// If the feature flag is set, call CompleteGesture.
+				// This is known to not be correct, but it's there just in case the prevention logic caused regressions.
+				CompleteGesture();
+				return;
+			}
+
+			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
+			if (IsGestureRecognizerCreated)
+			{
+				if (routedEvent == TappedEvent)
+				{
+					GestureRecognizer.PreventEvents(((TappedRoutedEventArgs)args).PointerId, GestureSettings.Tap);
+				}
+				else if (routedEvent == DoubleTappedEvent)
+				{
+					GestureRecognizer.PreventEvents(((DoubleTappedRoutedEventArgs)args).PointerId, GestureSettings.DoubleTap);
+				}
+				else if (routedEvent == RightTappedEvent)
+				{
+					GestureRecognizer.PreventEvents(((RightTappedRoutedEventArgs)args).PointerId, GestureSettings.RightTap);
+				}
+				else if (routedEvent == HoldingEvent)
 				{
 					GestureRecognizer.PreventEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
 				}
-			}
-			else
-			{
-				// Note: Here we should prevent only the same gesture ... but actually currently supported gestures
-				// are mutually exclusive, so if a child element detected a gesture, it's safe to prevent all of them.
-				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
 			}
 		}
 
@@ -618,7 +632,7 @@ namespace Windows.UI.Xaml
 
 				case RoutedEventFlag.DragEnter:
 					{
-						var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
+						var pt = ((global::Microsoft.UI.Xaml.DragEventArgs)args).SourceId;
 						var wasDragOver = IsDragOver(pt);
 
 						// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
@@ -636,7 +650,7 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.DragOver:
 					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
-					SetIsDragOver(((global::Windows.UI.Xaml.DragEventArgs)args).SourceId, true);
+					SetIsDragOver(((global::Microsoft.UI.Xaml.DragEventArgs)args).SourceId, true);
 
 					if (!AllowDrop) // The Drag and Drop "routed" events are raised only on controls that opted-in
 					{
@@ -647,7 +661,7 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.DragLeave:
 				case RoutedEventFlag.Drop:
 					{
-						var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
+						var pt = ((global::Microsoft.UI.Xaml.DragEventArgs)args).SourceId;
 						var wasDragOver = IsDragOver(pt);
 
 						// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
@@ -776,7 +790,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		internal void RaiseDragEnterOrOver(global::Windows.UI.Xaml.DragEventArgs args)
+		internal void RaiseDragEnterOrOver(global::Microsoft.UI.Xaml.DragEventArgs args)
 		{
 			var evt = IsDragOver(args.SourceId)
 				? DragOverEvent
@@ -787,7 +801,7 @@ namespace Windows.UI.Xaml
 			SafeRaiseEvent(evt, args);
 		}
 
-		internal void RaiseDragLeave(global::Windows.UI.Xaml.DragEventArgs args, UIElement upTo = null)
+		internal void RaiseDragLeave(global::Microsoft.UI.Xaml.DragEventArgs args, UIElement upTo = null)
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
@@ -795,7 +809,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void RaiseDrop(global::Windows.UI.Xaml.DragEventArgs args)
+		internal void RaiseDrop(global::Microsoft.UI.Xaml.DragEventArgs args)
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{

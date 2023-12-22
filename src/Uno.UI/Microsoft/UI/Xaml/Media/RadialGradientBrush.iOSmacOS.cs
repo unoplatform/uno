@@ -1,12 +1,12 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{

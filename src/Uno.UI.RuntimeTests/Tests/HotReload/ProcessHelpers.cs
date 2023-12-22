@@ -87,7 +87,8 @@ internal class ProcessHelpers
 		List<string> parameters,
 		string workingDirectory,
 		string logPrefix,
-		Dictionary<string, string>? environmentVariables = null)
+		Dictionary<string, string>? environmentVariables = null,
+		StringBuilder? output = null)
 	{
 		var pi = new ProcessStartInfo(executable)
 		{
@@ -117,8 +118,18 @@ internal class ProcessHelpers
 		var process = new System.Diagnostics.Process();
 
 		// hookup the event handlers to capture the data that is received
-		process.OutputDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Debug(logPrefix + ": " + args.Data ?? "<Empty>");
-		process.ErrorDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Error(logPrefix + ": " + args.Data ?? "<Empty>");
+		process.OutputDataReceived += (sender, args) =>
+		{
+			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
+			output?.AppendLine(logMessage);
+			typeof(Given_HotReloadWorkspace).Log().Debug(logMessage);
+		};
+		process.ErrorDataReceived += (sender, args) =>
+		{
+			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
+			output?.AppendLine(logMessage);
+			typeof(Given_HotReloadWorkspace).Log().Error(logMessage);
+		};
 
 		process.StartInfo = pi;
 

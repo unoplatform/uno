@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -14,10 +14,10 @@ using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>

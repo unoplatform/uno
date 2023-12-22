@@ -13,7 +13,7 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Helpers;
 
@@ -363,7 +363,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (!_uri.IsAbsoluteUri || _uri.Scheme == "")
 			{
-				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart(new char[] { '/' }));
+				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart('/'));
 			}
 
 			if (_uri.IsLocalResource())
@@ -572,7 +572,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 						this.Log().Debug($"OnPrepared: {mp.VideoWidth}x{mp.VideoHeight}");
 					}
 
-					Events.RaiseVideoRatioChanged((double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+					Events.RaiseNaturalVideoDimensionChanged();
 				}
 				catch { }
 			}

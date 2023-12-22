@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechRecognition
 		private TaskCompletionSource<SpeechRecognitionResult> _currentCompletionSource;
 
 		[JSExport]
-		public static int DispatchStatus(string instanceId, string state)
+		internal static int DispatchStatus(string instanceId, string state)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
@@ -36,7 +36,7 @@ namespace Windows.Media.SpeechRecognition
 		}
 
 		[JSExport]
-		public static int DispatchError(string instanceId, string error)
+		internal static int DispatchError(string instanceId, string error)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.SpeechRecognition
 		}
 
 		[JSExport]
-		public static int DispatchHypothesis(string instanceId, string hypothesis)
+		internal static int DispatchHypothesis(string instanceId, string hypothesis)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
@@ -67,7 +67,7 @@ namespace Windows.Media.SpeechRecognition
 		}
 
 		[JSExport]
-		public static int DispatchResult(string instanceId, string result, double confidence)
+		internal static int DispatchResult(string instanceId, string result, double confidence)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{

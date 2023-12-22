@@ -44,18 +44,27 @@
 		<ProjectCapability Include="DiagnoseCapabilities" />
 	</ItemGroup>
 
+	<Target Name="AdjustCalabash" BeforeTargets="BeforeBuild">
+		<!-- Needs to be run as a target, as RuntimeIdentifier is set after the csproj is parsed -->
+		<PropertyGroup Condition="!$(RuntimeIdentifier.Contains('arm64'))">
+			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
+		</PropertyGroup>
+	</Target>
 	
 	<Choose>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">
 			<ItemGroup>
-				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.6.0" />
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 				<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
-				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true'" />
+				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true' and !$(RuntimeIdentifier.Contains('arm64'))" />
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+				
+				<!-- iOS 17 compatibility -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
@@ -67,6 +76,10 @@
 				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
 			</PropertyGroup>
 			
+			<PropertyGroup>
+				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
+			</PropertyGroup>
+		
 			<ItemGroup>
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
@@ -89,7 +102,7 @@
 			</PropertyGroup>
 			
 			<ItemGroup>
-				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.6.0" />
+				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 				<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 			</ItemGroup>
 			
@@ -214,15 +227,6 @@
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
-
-	<Target Name="_UnoRemoveGeneratedIcon" 
-			BeforeTargets="CoreCompile"
-			DependsOnTargets="_AddResizetizerWindowIconExtensions">
-		<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
-		<ItemGroup>
-			<Compile Remove="@(_WindowIconExtension)"/>
-		</ItemGroup>
-	</Target>
 
 	<Target Name="GenerateVersion" 
 			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 

@@ -11,9 +11,9 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static System.Math;
-using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
+using static Microsoft.UI.Xaml.Controls.Primitives.GeneratorDirection;
 using Uno.UI.Extensions;
 using System.Collections.Specialized;
 using Uno.UI.Xaml.Controls;
@@ -28,10 +28,10 @@ using UIKit;
 #if __IOS__ || __ANDROID__
 using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
 #else
-using _Panel = Windows.UI.Xaml.Controls.Panel;
+using _Panel = Microsoft.UI.Xaml.Controls.Panel;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 #if __IOS__ || __ANDROID__
 	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
@@ -1103,16 +1103,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
-
-#if __WASM__ || __SKIA__
-		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
-#elif __NETSTD_REFERENCE__
-		private static Point GetRelativePosition(FrameworkElement child) => throw new NotSupportedException();
-#elif __MACOS__ || __IOS__
-		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
-#elif __ANDROID__
-		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
-#endif
 
 		private (double offset, double extent, object item, Uno.UI.IndexPath? index)? _pendingReorder;
 		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)

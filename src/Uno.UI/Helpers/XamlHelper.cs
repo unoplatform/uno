@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.Helpers;
 
@@ -27,7 +27,7 @@ internal static partial class XamlHelper
 		[string.Empty] = "http://schemas.microsoft.com/winfx/2006/xaml/presentation",
 		["x"] = "http://schemas.microsoft.com/winfx/2006/xaml",
 		["toolkit"] = "using:Uno.UI.Toolkit", // uno utilities
-		["muxc"] = "using:Microsoft.UI.Xaml.Controls",
+		["muxc"] = "using:Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls",
 	};
 
 	/// <summary>

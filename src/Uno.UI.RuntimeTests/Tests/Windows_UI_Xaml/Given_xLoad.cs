@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -7,8 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -28,6 +28,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNull(loadBorderFalse);
 			Assert.IsNotNull(loadBorderTrue);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_xLoad_Order()
+		{
+			var sut = new When_xLoad_Order();
+
+			TestServices.WindowHelper.WindowContent = sut;
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(ElementStub));
+
+			sut.IsLoaded2 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(ElementStub));
+
+			sut.IsLoaded3 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(Border));
+
+			sut.IsLoaded1 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(Border));
 		}
 
 		[TestMethod]

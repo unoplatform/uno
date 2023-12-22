@@ -5,6 +5,7 @@
 
 		<PackageId>Uno.UI.DevServer.Messaging</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer.Messaging</PackageId>
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

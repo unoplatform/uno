@@ -14,11 +14,11 @@ using Uno.UI.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Input
 {

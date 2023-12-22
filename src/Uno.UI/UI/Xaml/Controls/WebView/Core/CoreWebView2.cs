@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -193,11 +193,24 @@ public partial class CoreWebView2
 		CanGoForward = canGoForward;
 	}
 
-	internal void RaiseWebMessageReceived(string message) => WebMessageReceived?.Invoke(this, new(message));
+	internal void RaiseWebMessageReceived(string message)
+	{
+		// WebMessageReceived must be called on the UI thread.
+		if (_owner.Dispatcher.HasThreadAccess)
+		{
+			WebMessageReceived?.Invoke(this, new(message));
+		}
+		else
+		{
+			_ = _owner.Dispatcher.RunAsync(
+				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				() => WebMessageReceived?.Invoke(this, new(message)));
+		}
+	}
 
 	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
 	{
-		var args = new Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
+		var args = new Microsoft.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
 		UnsupportedUriSchemeIdentified?.Invoke(this, args);
 
 		handled = args.Handled;

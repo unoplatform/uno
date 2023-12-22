@@ -7,8 +7,8 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using WinUI = Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -16,12 +16,14 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly WinUI.Window _winUIWindow;
+	private readonly UnoWpfWindowHost _host;
 	private bool _isVisible;
 
 	public UnoWpfWindow(WinUI.Window winUIWindow)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 		_winUIWindow.Showing += OnShowing;
+		_winUIWindow.NativeWindow = this;
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
@@ -30,7 +32,7 @@ internal class UnoWpfWindow : WpfWindow
 			Height = (int)preferredWindowSize.Height;
 		}
 
-		Content = new UnoWpfWindowHost(this, winUIWindow);
+		Content = _host = new UnoWpfWindowHost(this, winUIWindow);
 
 		Closing += OnClosing;
 		Activated += OnActivated;
@@ -64,8 +66,11 @@ internal class UnoWpfWindow : WpfWindow
 	private void OnDeactivated(object? sender, EventArgs e) =>
 		_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
 
-	private void OnActivated(object? sender, EventArgs e) =>
+	private void OnActivated(object? sender, EventArgs e)
+	{
 		_winUIWindow.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.PointerActivated);
+		_host.Focus();
+	}
 
 	private void OnStateChanged(object? sender, EventArgs e)
 	{
@@ -111,7 +116,7 @@ internal class UnoWpfWindow : WpfWindow
 
 				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
 			}
-			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{

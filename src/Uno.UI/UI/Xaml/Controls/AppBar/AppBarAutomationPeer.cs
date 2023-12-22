@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class AppBarAutomationPeer : FrameworkElementAutomationPeer, IToggleProvider, IExpandCollapseProvider, IWindowProvider
 	{
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		}
 
-		public void SetVisualState(global::Windows.UI.Xaml.Automation.WindowVisualState state)
+		public void SetVisualState(global::Microsoft.UI.Xaml.Automation.WindowVisualState state)
 		{
 
 		}

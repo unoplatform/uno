@@ -4,12 +4,12 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 #if __ANDROID__
 using View = Android.Views.View;
@@ -17,10 +17,13 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
+	public partial class Panel : FrameworkElement, IPanel
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 		private new UIElementCollection _children;
@@ -64,16 +67,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateTransitions(element);
 		}
-
-		// In WinUI, the base Panel doesn't measure or arrange anything. This is likely due
-		// to FrameworkElement.<Measure|Arrange>Override itself not doing anything. In Uno,
-		// FrameworkElement.<Measure|Arrange>Override have a default implementation that assumes
-		// a single child and measures/arranges it. This is helpful as most elements have one or no
-		// children. However, since derived types of Panel can add their own Children, we need to make
-		// sure our internal FrameworkElement.<Measure|Arrange>Override isn't used by user-defined
-		// subclasses of Panel.
-		protected override Size MeasureOverride(Size availableSize) => new Size(0, 0);
-		protected override Size ArrangeOverride(Size finalSize) => finalSize;
 
 		private void UpdateTransitions(IFrameworkElement element)
 		{

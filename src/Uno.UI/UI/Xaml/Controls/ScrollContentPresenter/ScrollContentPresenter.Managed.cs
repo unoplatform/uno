@@ -1,7 +1,7 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,13 +11,16 @@ using Windows.Foundation;
 using System.IO;
 using Windows.Devices.Input;
 using Windows.System;
-using Windows.UI.Composition;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ICustomClippingElement
+	public partial class ScrollContentPresenter : ContentPresenter
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 
@@ -203,8 +206,10 @@ namespace Windows.UI.Xaml.Controls
 			Set(disableAnimation: true, isIntermediate: false);
 		}
 
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+#endif
 	}
 }
 #endif

@@ -6,7 +6,7 @@ using System.Text;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -22,10 +22,10 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class Grid
 	{

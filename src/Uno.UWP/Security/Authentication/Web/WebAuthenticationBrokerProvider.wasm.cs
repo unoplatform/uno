@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace Uno.AuthenticationBroker
 {
 	partial class WebAuthenticationBrokerProvider
 	{
-		protected virtual string[] GetApplicationCustomSchemes()
+		protected virtual IEnumerable<string> GetApplicationCustomSchemes()
 		{
 			var origin = NativeMethods.GetReturnUrl();
 			return new[] { origin };

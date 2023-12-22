@@ -1,4 +1,4 @@
-//#define USE_CUSTOM_LAYOUT_ATTRIBUTES (cf. VirtualizingPanelLayout.iOS.cs for more info)
+﻿//#define USE_CUSTOM_LAYOUT_ATTRIBUTES (cf. VirtualizingPanelLayout.iOS.cs for more info)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using Uno.Extensions;
 using Uno.UI.Views.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Converters;
 using Uno.Client;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ using System.Globalization;
 using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -30,12 +30,12 @@ using UIKit;
 using CoreGraphics;
 
 #if USE_CUSTOM_LAYOUT_ATTRIBUTES
-using _LayoutAttributes = Windows.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+using _LayoutAttributes = Microsoft.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
 #else
 using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[Bindable]
 	public partial class ListViewBaseSource : UICollectionViewSource
@@ -114,21 +114,42 @@ namespace Windows.UI.Xaml.Controls
 
 		public override nint GetItemsCount(UICollectionView collectionView, nint section)
 		{
-			int count;
-			if (Owner.XamlParent.IsGrouping)
+			try
 			{
-				count = GetGroupedItemsCount(section);
+				if (Owner?.XamlParent is { } parent)
+				{
+					int count;
+
+					if (parent.IsGrouping)
+					{
+						count = GetGroupedItemsCount(section);
+					}
+					else
+					{
+						count = GetUngroupedItemsCount(section);
+					}
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Count requested for section {section}, returning {count}");
+					}
+
+					return count;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+					{
+						this.Log().Debug($"Failed to find parent for ListViewBaseSource (Collected instance?)");
+					}
+				}
 			}
-			else
+			catch (Exception e)
 			{
-				count = GetUngroupedItemsCount(section);
+				Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Count requested for section {section}, returning {count}");
-			}
-			return count;
+			return 0;
 		}
 
 		private int GetUngroupedItemsCount(nint section)
@@ -165,7 +186,10 @@ namespace Windows.UI.Xaml.Controls
 
 				// Reset the parent that may have been set by
 				// GetBindableSupplementaryView for header and footer content
-				key.Content.SetParent(null);
+				if (key.ElementKind == NativeListViewBase.ListViewFooterElementKindNS || key.ElementKind == NativeListViewBase.ListViewHeaderElementKindNS)
+				{
+					key.Content.SetParent(null);
+				}
 
 				if (_onRecycled.TryGetValue(key, out var actions))
 				{
@@ -241,6 +265,13 @@ namespace Windows.UI.Xaml.Controls
 					else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
+					}
+
+					// When reusing the cell there are situation when the parent is detached from the cell.
+					// https://github.com/unoplatform/uno/issues/13199
+					if (selectorItem.GetParent() is null)
+					{
+						selectorItem.SetParent(Owner.XamlParent);
 					}
 
 					Owner?.XamlParent?.PrepareContainerForIndex(selectorItem, index);
@@ -380,6 +411,8 @@ namespace Windows.UI.Xaml.Controls
 				elementKind,
 				reuseIdentifier,
 				indexPath);
+
+			supplementaryView.ElementKind = elementKind;
 
 			using (supplementaryView.InterceptSetNeedsLayout())
 			{
@@ -732,6 +765,8 @@ namespace Windows.UI.Xaml.Controls
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;
 		private ILayouter Layouter => Owner.NativeLayout.Layouter;
+
+		internal string ElementKind { get; set; }
 
 		protected override void Dispose(bool disposing)
 		{

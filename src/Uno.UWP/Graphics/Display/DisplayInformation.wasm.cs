@@ -17,7 +17,7 @@ namespace Windows.Graphics.Display
 		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
 
 		[JSExport]
-		public static int DispatchDpiChanged()
+		internal static int DispatchDpiChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 		}
 
 		[JSExport]
-		public static int DispatchOrientationChanged()
+		internal static int DispatchOrientationChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
 			{
@@ -175,9 +175,9 @@ namespace Windows.Graphics.Display
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
-			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-				Uno.UI.Dispatching.CoreDispatcherPriority.High,
-				(ct) => SetOrientationAsync(orientations, ct));
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
+				() => SetOrientationAsync(orientations),
+				Uno.UI.Dispatching.NativeDispatcherPriority.High);
 		}
 
 		private static bool TryReadDevicePixelRatio(out float value)
@@ -227,7 +227,7 @@ namespace Windows.Graphics.Display
 			};
 		}
 
-		private static Task SetOrientationAsync(DisplayOrientations orientations, CancellationToken ct)
+		private static Task SetOrientationAsync(DisplayOrientations orientations)
 		{
 			return NativeMethods.SetOrientationAsync((int)orientations);
 		}

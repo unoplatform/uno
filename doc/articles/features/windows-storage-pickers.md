@@ -2,35 +2,42 @@
 uid: Uno.Features.WSPickers
 ---
 
-# Windows.Storage.Pickers
+# Storage Pickers
+
+> [!TIP]
+> This article covers Uno-specific information for `Windows.Storage.Pickers` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.storage.pickers
+
+* The `Windows.Storage.Pickers` namespace provides classes that allow the user to pick a folder or a file on the local file system so that the application can work with it.
 
 ![Android JumpList sample](../Assets/features/filepickers/fileopenpicker.png)
 
-File pickers allow the user to pick a folder or a file on the local file system so that the application can work with it. The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
+The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
-  - ✔️  Supported
+  - ✔  Supported
   - 💬 Partially supported (see below for more details)
-  - ❌ Not supported
+  - ✖ Not supported
 
-| Picker         | UWP   | WebAssembly | Android | iOS   | macOS | WPF | GTK |
-|----------------|-------|-------------|---------|-------|-------|-----|-----|
-| FileOpenPicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| FileSavePicker | ✔️   | ✔️  (1)     | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
-| FolderPicker   | ✔️   | ✔️          | ✔️     | 💬 (2)| ✔️   | ❌  | ✔️  |
+| Picker         | UWP   | WebAssembly | Android | iOS    | macOS | WPF | GTK |
+|----------------|-------|-------------|---------|--------|-------|-----|-----|
+| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
+| FileSavePicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
+| FolderPicker   | ✔    | ✔           | ✔      | 💬 (2) | ✔    | ✖   | ✔  |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file picking experience by utilizing additional properties:
 
-| Feature                 | UWP  | WebAssembly | Android | iOS | macOS | WPF | GTK |
-|-------------------------|------|-------------|---------|-----|-------|-----|-----|
-| SuggestedFileName       | ✔️   | ✔️         | ❌      | ❌ | ✔️   | ✔️  | ✔️ |
-| SuggestedStartLocation  | ✔️   | ✔️  (1)    | ❌      | ❌ | ✔️   | ✔️  | ✔️ |
-| SettingsIdentifier      | ✔️   | ✔️  (1)    | ✔️      | ❌ | ❌   | ❌  | ❌ |
+| Feature                 | UWP  | WebAssembly | Android | iOS   | macOS | WPF | GTK |
+|-------------------------|------|-------------|---------|-------|-------|-----|-----|
+| SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔    | ✔   | ✔  |
+| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬     | ✔ (3) | ✔    | ✔   | ✔  |
+| SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✖    | ✖   | ✖  |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*
+*(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used apply `image/*` and `video/*` filters*
+*(3) - PicturesLibrary opens the picture library with the image picker controller*
 
 On platforms where the additional features are not supported yet, setting them will not have any effect.
 
@@ -143,7 +150,7 @@ else
 }
 ```
 
-**Notes**: While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, it must be set, otherwise the dialog crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
+**Notes**: `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 
 ### FileSavePicker
 
@@ -331,6 +338,8 @@ This generally means that the Uno file picking APIs have been invoked without an
 
 Files picked from file pickers on Android are provided by the *Storage Access Framework API*. Due to its limitations, it is not possible to write to existing file in-place. Instead, Uno Platform creates a copy of the file in temporary storage and your changes are applied to this temporary file instead. When your file stream is then flushed, closed, or disposed of, the changes are written to the source file and the temporary file is discarded.
 
+The `FileSavePicker` API which uses `ACTION_CREATE_DOCUMENT` on Android has various limitations. To allow for the best possible compatibility across different Android versions, you should always add your file type extension to `FileTypeChoices`, and if possible provide only one such file type. In addition, if the `SuggestedFileName` or the user-typed file name matches an existing file, the resulting file will be renamed with `(1)` in the name, e.g. `test.txt` will become `test (1).txt` and the existing file will not be overwritten. However, if the user explicitly taps an existing file in the file browser, the system will show a dialog allowing the app to overwrite the existing file. This inconsistent behavior is caused by Android itself, so there is unfortunately no way to work around it from our side. See [this issue](https://issuetracker.google.com/issues/37136466) for more information.
+
 ## iOS
 
 iOS does not offer a built-in `FileSavePicker` experience. Luckily it is possible to implement this functionality for example using a combination of a `FolderPicker` and `ContentDialog`.
@@ -347,7 +356,7 @@ namespace Custom.Pickers
 
         public CustomFileSavePickerExtension(object owner)
         {
-            _fileSavePicker = (FileSavePicker)picker;
+            _fileSavePicker = (FileSavePicker)owner;
         }
 
         public async Task<StorageFile> PickSaveFileAsync(CancellationToken token)

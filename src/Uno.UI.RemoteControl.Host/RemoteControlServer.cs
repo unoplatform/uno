@@ -18,8 +18,8 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		private object _loadContextGate = new();
-		private readonly static Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
+		private readonly object _loadContextGate = new();
+		private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private string? _resolveAssemblyLocation;
@@ -131,6 +131,7 @@ namespace Uno.UI.RemoteControl.Host
 					if (frame.Name == ProcessorsDiscovery.Name)
 					{
 						ProcessDiscoveryFrame(frame);
+						continue;
 					}
 
 					if (frame.Name == KeepAliveMessage.Name)
@@ -141,6 +142,7 @@ namespace Uno.UI.RemoteControl.Host
 						}
 
 						await SendFrame(new KeepAliveMessage());
+						continue;
 					}
 				}
 
@@ -148,7 +150,7 @@ namespace Uno.UI.RemoteControl.Host
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Received Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						this.Log().LogDebug("Received Frame [{Scope} / {Name}] to be processed by {processor}", frame.Scope, frame.Name, processor);
 					}
 
 					await processor.ProcessFrame(frame);

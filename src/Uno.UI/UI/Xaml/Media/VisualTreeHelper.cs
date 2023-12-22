@@ -13,9 +13,15 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
+#if TRACE_HIT_TESTING
+using System.Runtime.CompilerServices;
+using System.Text;
+using Uno.Disposables;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -29,11 +35,11 @@ using _ViewGroup = AppKit.NSView;
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
 #else
-using _View = Windows.UI.Xaml.UIElement;
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
+using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
@@ -130,11 +136,16 @@ namespace Windows.UI.Xaml.Media
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.Count() ?? 0;
+				.Count ?? 0;
 #endif
 		}
 
-		internal static int GetViewGroupChildrenCount(_ViewGroup reference) => reference.GetChildren().Count();
+		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+			=> reference.GetChildren().Count;
+#else
+			=> reference.GetChildren().Count();
+#endif
 
 		internal static void AddView(_ViewGroup parent, _View child, int index)
 		{

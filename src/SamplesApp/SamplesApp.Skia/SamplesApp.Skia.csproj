@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
 	</PropertyGroup>
@@ -45,7 +45,7 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<!-- TODO: Use version 8 when compiling against .NET 8? -->
-		<PackageReference Include="System.Management" Version="7.0.0" />
+		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 	</ItemGroup>
 
@@ -61,11 +61,17 @@
 
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+	
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="..\SamplesApp.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 </Project>

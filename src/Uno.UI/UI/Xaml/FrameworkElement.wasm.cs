@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 using System.Collections;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Windows.UI;
 using System.Dynamic;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public bool HasParent()
+		internal bool HasParent()
 			=> Parent != null;
 
 		public double ActualWidth => GetActualWidth();
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
+		private protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
 			=> BorderLayerRenderer.SetBorder(this, thickness, brush, cornerRadius);
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml
 		{
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
@@ -442,16 +442,6 @@ namespace Windows.UI.Xaml
 
 				base.UpdateDOMProperties();
 			}
-		}
-
-		public override string ToString()
-		{
-			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
-			{
-				return $"{base.ToString()}\"{Name}\"";
-			}
-
-			return base.ToString();
 		}
 	}
 }

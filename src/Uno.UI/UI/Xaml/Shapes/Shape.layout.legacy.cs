@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -28,7 +28,7 @@ using NativeSingle = System.Double;
 
 #endif
 
-namespace Windows.UI.Xaml.Shapes;
+namespace Microsoft.UI.Xaml.Shapes;
 
 partial class Shape
 {
@@ -44,8 +44,7 @@ partial class Shape
 		var vertical = VerticalAlignment;
 		var stretch = Stretch;
 		var userSize = GetUserSizes();
-		var stroke = Stroke;
-		var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
+		var strokeThickness = StrokeThickness;
 		var halfStrokeThickness = strokeThickness / 2.0;
 		var pathBounds = GetPathBoundingBox(path); // The BoundingBox shouldn't include the control points.
 		var pathSize = (Size)pathBounds.Size;

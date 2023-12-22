@@ -3,7 +3,8 @@
 using System;
 using Gtk;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -12,13 +13,16 @@ internal class MultilineTextBoxView : GtkTextBoxView
 	private const string MultilineHostCssClass = "textbox_multiline_host";
 
 	private readonly ScrolledWindow _scrolledWindow = new();
-	private readonly TextView _textView = new();
+	private readonly UnoGtkTextView _textView = new();
 
 	public MultilineTextBoxView()
 	{
 		_scrolledWindow.Add(_textView);
 		_scrolledWindow.StyleContext.AddClass(MultilineHostCssClass);
+		_textView.Paste += OnPaste;
 	}
+
+	private void OnPaste(object sender, TextControlPasteEventArgs args) => RaisePaste(args);
 
 	protected override Widget RootWidget => _scrolledWindow;
 
@@ -55,8 +59,8 @@ internal class MultilineTextBoxView : GtkTextBoxView
 		_textView.Editable = !textBox.IsReadOnly && textBox.IsTabStop;
 		_textView.WrapMode = textBox.TextWrapping switch
 		{
-			Windows.UI.Xaml.TextWrapping.Wrap => WrapMode.WordChar,
-			Windows.UI.Xaml.TextWrapping.WrapWholeWords => WrapMode.Word,
+			Microsoft.UI.Xaml.TextWrapping.Wrap => WrapMode.WordChar,
+			Microsoft.UI.Xaml.TextWrapping.WrapWholeWords => WrapMode.Word,
 			_ => WrapMode.None,
 		};
 	}

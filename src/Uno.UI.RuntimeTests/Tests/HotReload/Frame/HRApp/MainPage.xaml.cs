@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload;
+using Uno.UI.RuntimeTests;
 
 namespace UnoApp50
 {
@@ -40,12 +41,20 @@ namespace UnoApp50
 				await RemoteControlClient.Instance.RegisteredProcessors
 					.OfType<ClientHotReloadProcessor>()
 					.First()
-					.HotReloadWorkspaceLoaded;
+					.WaitForWorkspaceLoaded(default);
 
 				Console.WriteLine($"Initialized remote control");
 			}
 
-			await testControl.RunTests(CancellationToken.None, new());
+			var filters = Environment.GetCommandLineArgs().SkipWhile(a => a != "--filters").Skip(1).FirstOrDefault();
+			Console.WriteLine($"Filters = {filters}");
+			UnitTestEngineConfig testConfig = new();
+			if (filters is { Length: > 0 })
+			{
+				testConfig.Filters = filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+			}
+
+			await testControl.RunTests(CancellationToken.None, testConfig);
 
 			// get the first command line argument after `--uitest`
 			var testResultPath = Environment.GetCommandLineArgs().SkipWhile(a => a != "--uitest").Skip(1).FirstOrDefault();

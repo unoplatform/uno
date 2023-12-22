@@ -324,9 +324,8 @@ namespace Windows.Media.Capture
 
 		public override void Canceled(UIImagePickerController picker)
 		{
-			base.Canceled(picker);
-
 			_cts.TrySetResult(null);
+			picker.DismissModalViewController(true);
 		}
 	}
 }

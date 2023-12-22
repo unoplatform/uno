@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -22,7 +22,7 @@ using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
 #elif __SKIA__
-using NativePath = Windows.UI.Composition.SkiaGeometrySource2D;
+using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
 using NativeSingle = System.Double;
 
 #elif __ANDROID__
@@ -30,19 +30,14 @@ using NativePath = Android.Graphics.Path;
 using NativeSingle = System.Double;
 
 #elif __WASM__
-using NativePath = Windows.UI.Xaml.Shapes.Shape;
+using NativePath = Microsoft.UI.Xaml.Shapes.Shape;
 using NativeSingle = System.Double;
 #endif
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
-		}
-
 		#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
 		{

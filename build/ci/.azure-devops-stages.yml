@@ -16,11 +16,11 @@ stages:
       vmImage: '$(linuxVMImage)'
 
 - stage: convert_tree
-  displayName: WinUI Tree Conversion
+  displayName: UWP Tree Conversion
   dependsOn:
     - Setup
   jobs:
-  - template: .azure-devops-winui-convert.yml
+  - template: .azure-devops-uwp-convert.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -31,21 +31,21 @@ stages:
     - convert_tree
 
   jobs: 
-  - template: .azure-devops-package-net6-win.yml
+  - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
   
   - template: .azure-devops-package-wasm.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
   
   - template: .azure-devops-package-reference.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
       
   - template: .azure-devops-package-skia.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
 
 - stage: packages_build
   displayName: Generate Packages
@@ -61,7 +61,7 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
-      vmImageLinux: '$(linuxVMImage)'
+      vmPoolLinux: '$(linuxScaledPool)'
 
 - stage: unit_tests
   displayName: Tests - Unit
@@ -73,7 +73,7 @@ stages:
 
   - template: .azure-devops-unit-tests.yml
     parameters:
-      vmImage: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly
@@ -84,7 +84,7 @@ stages:
   
   - template: .azure-devops-wasm-uitests.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
 
 - stage: skia_tests
   displayName: Tests - Skia
@@ -97,7 +97,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
-      poolName: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
   
 - stage: macos_tests
   displayName: Tests - macOS
@@ -139,22 +139,21 @@ stages:
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
-- stage: uap_tests
-  displayName: Tests - UAP
+- stage: wasdk_tests
+  displayName: Tests - WinAppSDK  
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-uap.yml
+  - template: .azure-devops-wasdk.yml
     parameters:
-      vmImage: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
 
 - stage: test_finalization
   displayName: Tests - Results
+  # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   dependsOn:
-    - unit_tests
     - wasm_tests
-    - uap_tests
     - ios_tests
     - android_tests
     - macos_tests

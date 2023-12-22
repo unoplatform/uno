@@ -6,8 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -18,12 +18,18 @@ using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else
-using _View = Windows.UI.Xaml.DependencyObject;
+using _View = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
 namespace Uno.UI.Extensions;
 
-public static partial class ViewExtensions
+#if WINAPPSDK || WINDOWS_UWP
+internal
+#else
+public
+#endif
+
+static partial class ViewExtensions
 {
 	/// <summary>
 	/// Produces a text representation of the visual tree.
@@ -199,13 +205,13 @@ public static partial class ViewExtensions
 		}
 	}
 
-	private static IEnumerable<_View> EnumerateChildren(this _View? o)
+	internal static IEnumerable<_View> EnumerateChildren(this _View? o)
 	{
 		if (o is null) return Enumerable.Empty<_View>();
 		return o.Subviews;
 	}
 #elif __ANDROID__
-	private static IEnumerable<_View> EnumerateAncestors(this _View? o)
+	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
 
@@ -215,7 +221,7 @@ public static partial class ViewExtensions
 		}
 	}
 
-	private static IEnumerable<_View> EnumerateChildren(this _View? reference)
+	internal static IEnumerable<_View> EnumerateChildren(this _View? reference)
 	{
 		if (reference is Android.Views.ViewGroup vg)
 		{
@@ -228,7 +234,7 @@ public static partial class ViewExtensions
 		return Enumerable.Empty<_View>();
 	}
 #else
-	private static IEnumerable<_View> EnumerateAncestors(this _View? o)
+	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
 		while (VisualTreeHelper.GetParent(o) is { } parent)
@@ -237,7 +243,7 @@ public static partial class ViewExtensions
 		}
 	}
 
-	private static IEnumerable<_View> EnumerateChildren(this _View? reference)
+	internal static IEnumerable<_View> EnumerateChildren(this _View? reference)
 	{
 		return Enumerable
 			.Range(0, VisualTreeHelper.GetChildrenCount(reference))

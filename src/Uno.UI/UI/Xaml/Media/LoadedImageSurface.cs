@@ -4,9 +4,9 @@
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class LoadedImageSurface : IDisposable, ICompositionSurface
 	{
@@ -16,6 +16,8 @@ namespace Windows.UI.Xaml.Media
 
 #if HAS_UNO_WINUI
 		internal LoadedImageSurface() { }
+#else
+		public LoadedImageSurface() { }
 #endif
 
 		public Size DecodedPhysicalSize { get => _decodedPhysicalSize; }

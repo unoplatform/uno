@@ -4,14 +4,14 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections;
 using System.Linq;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI.Xaml;
 
@@ -33,14 +33,17 @@ using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
+	public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -1131,7 +1134,7 @@ namespace Windows.UI.Xaml.Controls
 			var padding = Padding;
 			var borderThickness = BorderThickness;
 
-			var measuredSize = base.MeasureOverride(
+			var measuredSize = MeasureFirstChild(
 				new Size(
 					size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
 					size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom

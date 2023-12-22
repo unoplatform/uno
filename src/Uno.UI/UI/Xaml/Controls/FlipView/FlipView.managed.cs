@@ -6,17 +6,17 @@ using System.Text;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
@@ -30,7 +30,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
@@ -117,13 +117,6 @@ namespace Windows.UI.Xaml.Controls
 			//m_lastScrollWheelTime = 0;
 			m_keepNavigationButtonsVisible = false;
 			m_itemsAreSized = false;
-		}
-
-
-		protected override void OnApplyTemplate()
-		{
-			// Call base class implementation
-			base.OnApplyTemplate();
 		}
 
 		private protected override void OnLoaded()
@@ -735,12 +728,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				ResetButtonsFadeOutTimer();
 			}
-		}
-
-		protected override bool IsItemItsOwnContainerOverride(object item)
-		{
-			// Require containers be of type IFlipViewItem
-			return item is FlipViewItem;
 		}
 
 		// Creates or identifies the element that is used to display the given item.
@@ -1683,29 +1670,6 @@ namespace Windows.UI.Xaml.Controls
 			HideButtonsImmediately();
 		}
 
-		public (ButtonBase ppPreviousButton, ButtonBase ppNextButton) GetPreviousAndNextButtons()
-		{
-			ButtonBase ppPreviousButton;
-			ButtonBase ppNextButton;
-
-			Orientation physicalOrientation = Orientation.Vertical;
-
-			// Determine the correct button/previous/next
-			(physicalOrientation, _) = GetItemsHostOrientations();
-
-			if (physicalOrientation == Orientation.Vertical)
-			{
-				ppPreviousButton = m_tpPreviousButtonVerticalPart;
-				ppNextButton = m_tpNextButtonVerticalPart;
-			}
-			else
-			{
-				ppPreviousButton = m_tpPreviousButtonHorizontalPart;
-				ppNextButton = m_tpNextButtonHorizontalPart;
-			}
-
-			return (ppPreviousButton, ppNextButton);
-		}
 		private void GetTemplatePart<T>(string name, out T element) where T : class
 		{
 			element = GetTemplateChild(name) as T;

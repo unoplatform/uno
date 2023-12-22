@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -360,6 +360,14 @@ namespace Windows.UI.Xaml
 			if (!isDirty && !IsArrangeDirtyPath)
 			{
 				return; // Nothing do to
+			}
+
+			if (GetUseLayoutRounding())
+			{
+				finalRect.X = LayoutRound(finalRect.X);
+				finalRect.Y = LayoutRound(finalRect.Y);
+				finalRect.Width = LayoutRound(finalRect.Width);
+				finalRect.Height = LayoutRound(finalRect.Height);
 			}
 
 			var remainingTries = MaxLayoutIterations;

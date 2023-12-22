@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-using WUXProgressRing = Windows.UI.Xaml.Controls.ProgressRing;
+using WUXProgressRing = Microsoft.UI.Xaml.Controls.ProgressRing;
 
 namespace Uno.UI.Xaml.Controls;
 

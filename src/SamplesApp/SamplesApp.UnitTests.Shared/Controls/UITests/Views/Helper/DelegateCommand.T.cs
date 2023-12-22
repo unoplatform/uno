@@ -1,6 +1,6 @@
-﻿#if NETFX_CORE
+﻿#if WINAPPSDK
 using System;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;

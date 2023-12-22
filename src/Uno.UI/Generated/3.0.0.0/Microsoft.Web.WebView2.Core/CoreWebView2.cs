@@ -45,16 +45,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Profile Profile
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreWebView2Profile CoreWebView2.Profile is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2Profile%20CoreWebView2.Profile");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
 		{
 			get
@@ -159,16 +149,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.StatusBarText.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.StatusBarTextChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.StatusBarTextChanged.remove
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Profile.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ServerCertificateErrorDetected.add
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ServerCertificateErrorDetected.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ClearServerCertificateErrorActionsAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2.ClearServerCertificateErrorActionsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2.ClearServerCertificateErrorActionsAsync%28%29");
-		}
-#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.CookieManager.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Environment.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceResponseReceived.add
@@ -197,20 +177,8 @@ namespace Microsoft.Web.WebView2.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.Resume()");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, global::Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind accessKind)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ClearVirtualHostNameToFolderMapping(string hostName)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.ClearVirtualHostNameToFolderMapping(string hostName)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.SetVirtualHostNameToFolderMapping(string, string, Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.ClearVirtualHostNameToFolderMapping(string)
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FrameCreated.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FrameCreated.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.DownloadStarting.add
@@ -434,22 +402,6 @@ namespace Microsoft.Web.WebView2.Core
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, object> CoreWebView2.StatusBarTextChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs> ServerCertificateErrorDetected
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2ServerCertificateErrorDetectedEventArgs> CoreWebView2.ServerCertificateErrorDetected");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event TypedEventHandler<CoreWebView2, CoreWebView2ServerCertificateErrorDetectedEventArgs> CoreWebView2.ServerCertificateErrorDetected");
 			}
 		}
 #endif

@@ -12,17 +12,18 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation.Metadata;
+using Uno.UI.Xaml.Core;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -36,13 +37,13 @@ using Font = UIKit.UIFont;
 using View = AppKit.NSView;
 using AppKit;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using _ScrollContentPresenter = Windows.UI.Xaml.Controls.ScrollContentPresenter;
+using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 #else
-using _ScrollContentPresenter = Windows.UI.Xaml.Controls.IScrollContentPresenter;
+using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
 #endif
 
 #if HAS_UNO_WINUI
@@ -50,10 +51,10 @@ using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, IFrameworkTemplatePoolAware
 	{
@@ -266,13 +267,13 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static bool GetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element)
+		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static void SetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
+		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
 #if __IOS__
@@ -688,6 +689,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
+		private double LayoutRoundIfNeeded(FrameworkElement fe, double value)
+		{
+			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
+		}
+
 #if __IOS__
 		internal
 #else
@@ -737,7 +743,7 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualHeight > 0 &&
 						fe.VerticalAlignment == VerticalAlignment.Stretch;
 
-					extentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+					extentHeight = canUseActualHeightAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualHeight) : fe.DesiredSize.Height;
 				}
 
 #if __WASM__
@@ -760,7 +766,7 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualWidth > 0 &&
 						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
 
-					extentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+					extentWidth = canUseActualWidthAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualWidth) : fe.DesiredSize.Width;
 				}
 
 #if __WASM__
@@ -936,14 +942,6 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnApplyTemplate();
 
-#if __SKIA__
-			// To work around non-uniformly applied layout rounding behavior, we need to force set layout
-			// rounding on the child Grid currently. #12082
-			if (this.FindFirstDescendant<Grid>() is { } grid)
-			{
-				grid.UseLayoutRounding = false;
-			}
-#endif
 
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as _ScrollContentPresenter;
@@ -1586,6 +1584,99 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (args.GetCurrentPoint(null).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+			{
+				// On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
+				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
+				// skip focusing, or focus some child of this faux RootScrollViewer. TO match the other platforms, we do the former.
+				if (this.GetParent() is not RootVisual)
+				{
+					args.Handled = Focus(FocusState.Pointer);
+				}
+			}
+		}
+
+#if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			var key = args.Key;
+
+			if (Presenter is null)
+			{
+				return;
+			}
+
+			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
+			var oldVerticalOffset = Presenter.TargetVerticalOffset;
+
+			var newOffset = key switch
+			{
+				VirtualKey.Up => oldVerticalOffset - GetDelta(ActualHeight),
+				VirtualKey.Down => oldVerticalOffset + GetDelta(ActualHeight),
+				VirtualKey.Left => oldHorizontalOffset - GetDelta(ActualWidth),
+				VirtualKey.Right => oldHorizontalOffset + GetDelta(ActualWidth),
+				VirtualKey.PageUp => oldVerticalOffset - ActualHeight,
+				VirtualKey.PageDown => oldVerticalOffset + ActualHeight,
+				VirtualKey.Home => 0,
+				VirtualKey.End => ScrollableHeight,
+				_ => double.E
+			};
+
+			if (newOffset == double.E)
+			{
+				return;
+			}
+
+			if (Content is UIElement)
+			{
+				var canScrollHorizontally = Presenter.CanHorizontallyScroll;
+				var canScrollVertically = Presenter.CanVerticallyScroll;
+
+				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
+				{
+					ScrollToHorizontalOffset(newOffset);
+					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
+				}
+				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
+				{
+					ScrollToVerticalOffset(newOffset);
+					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
+				}
+
+				args.Handled |= key is VirtualKey.PageUp or VirtualKey.Down;
+			}
+
+			// This gets the delta that should be applied when arrow keys are pressed as a function of the
+			// ScrollViewer length in the scrolling direction. WinUI's logic is not quite clear, I just
+			// reverse-engineered the numbers until they matched precisely. I think the original code just
+			// has some weird rounding somewhere that makes the numbers weird to calculate.
+			static int GetDelta(double l)
+			{
+				var length = (int)Math.Max(0, Math.Round(l) - 16);
+				var result = 2 + length / 20 * 3;
+
+				switch (length % 20)
+				{
+					case 0:
+						break;
+					case <= 7:
+						result += 1;
+						break;
+					case <= 14:
+						result += 2;
+						break;
+					default:
+						result += 3;
+						break;
+				}
+
+				return result;
+			}
+		}
+#endif
 
 #if __CROSSRUNTIME__ || __MACOS__
 		private static bool _warnedAboutZoomedContentAlignment;

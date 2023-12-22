@@ -4,8 +4,8 @@ using System.Windows.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
+using Microsoft.UI.Xaml;
+using static Microsoft.UI.Xaml.Shapes.BorderLayerRenderer;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfUIElement = System.Windows.UIElement;
 
@@ -15,12 +15,6 @@ namespace Uno.UI.Runtime.Skia.Wpf
 	{
 		private readonly WpfHost? _host;
 		private readonly CoreWindow _owner;
-
-		public CoreCursor PointerCursor
-		{
-			get => Mouse.OverrideCursor.ToCoreCursor();
-			set => Mouse.OverrideCursor = value.ToCursor();
-		}
 
 		public WpfCoreWindowExtension(object owner)
 		{

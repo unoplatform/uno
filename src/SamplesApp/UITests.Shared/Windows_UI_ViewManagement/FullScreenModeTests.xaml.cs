@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_ViewManagement
 {

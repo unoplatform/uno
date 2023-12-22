@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using FluentAssertions;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
@@ -299,6 +300,7 @@ public class Given_WebView2
 			string message = "";
 			webView.WebMessageReceived += (s, e) =>
 			{
+				Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
 				message = e.WebMessageAsJson;
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
@@ -356,6 +358,7 @@ public class Given_WebView2
 		string message = null;
 		webView.WebMessageReceived += (s, e) =>
 		{
+			Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
 			message = e.WebMessageAsJson;
 		};
 

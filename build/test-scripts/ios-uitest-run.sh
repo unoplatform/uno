@@ -118,6 +118,12 @@ xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
 echo "Shutdown simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
+echo "Installing idb"
+# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
+brew tap facebook/fb
+brew install idb-companion
+pip3 install fb-idb
+
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
@@ -158,7 +164,7 @@ dotnet test \
 	|| true
 
 # export the simulator logs
-export LOG_FILEPATH=$UNO_UITEST_SCREENSHOT_PATH/_logs
+export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
 export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
 

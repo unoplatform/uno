@@ -16,12 +16,15 @@ using ObjCRuntime;
 using _View = AppKit.NSView;
 using ObjCRuntime;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class Canvas : ICustomClippingElement
+	public partial class Canvas
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		: ICustomClippingElement
+#endif
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -67,7 +70,11 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
+#if __SKIA__ || __WASM__
+		private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin) => null;
+#elif !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }

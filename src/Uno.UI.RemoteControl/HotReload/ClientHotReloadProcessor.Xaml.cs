@@ -1,23 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.Storage.Pickers.Provider;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 #if __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.FrameworkElement;
+using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if __IOS__
@@ -34,50 +38,149 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private static IEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
-			object instance,
-			Func<FrameworkElement, TMatch?> predicate,
-			bool enumerateChildrenAfterMatch = false)
-		{
-			if (instance is FrameworkElement fe)
-			{
-				var match = predicate(fe);
-				if (match is not null)
-				{
-					yield return match;
+		private string? _lastUpdatedFilePath;
+		private bool _supportsXamlReader;
 
-					// If we found a match, we don't need to enumerate the children
-					if (!enumerateChildrenAfterMatch)
+		private void InitializeXamlReader()
+		{
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
+
+			// As of VS 17.8, the only target which supports 
+			//
+			// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
+			//
+			_supportsXamlReader = (targetFramework.Contains("-android", StringComparison.OrdinalIgnoreCase)
+				|| targetFramework.Contains("-ios", StringComparison.OrdinalIgnoreCase)
+				|| targetFramework.Contains("-maccatalyst", StringComparison.OrdinalIgnoreCase));
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"XamlReader Hot Reload Enabled:{_supportsXamlReader} " +
+					$"targetFramework:{targetFramework}");
+			}
+		}
+
+		private void ReloadFileWithXamlReader(FileReload fileReload)
+		{
+			if (!fileReload.IsValid())
+			{
+				if (fileReload.FilePath.IsNullOrEmpty() && this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"FileReload is missing a file path");
+				}
+
+				if (fileReload.Content is null && this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"FileReload is missing content");
+				}
+
+				return;
+			}
+
+			_lastUpdatedFilePath = fileReload.FilePath;
+
+			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
+				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				async () =>
+				{
+					await ReloadWithFileAndContent(fileReload.FilePath, fileReload.Content);
+
+					RemoteControlClient.Instance?.NotifyOfEvent(nameof(FileReload), fileReload.FilePath);
+				});
+		}
+
+		private async Task ReloadWithFileAndContent(string filePath, string fileContent)
+		{
+			try
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"XamlReader reloading changed file [{filePath}]");
+				}
+
+				var uri = new Uri("file:///" + filePath.Replace('\\', '/'));
+
+				Application.RegisterComponent(uri, fileContent);
+
+				bool IsSameBaseUri(FrameworkElement i)
+				{
+					return uri.OriginalString == i.DebugParseContext?.LocalFileUri
+
+						// Compatibility with older versions of Uno, where BaseUri is set to the
+						// local file path instead of the component Uri.
+						|| uri.OriginalString == i.BaseUri?.OriginalString;
+				}
+
+				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri).OfType<FrameworkElement>())
+				{
+					if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
 					{
-						yield break;
+						SwapViews(instance, newContent);
 					}
 				}
 
-				IEnumerable<IEnumerable<TMatch>> Dig()
+				if (ResourceResolver.RetrieveDictionaryForFilePath(uri.AbsolutePath) is { } targetDictionary)
+				{
+					var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileContent);
+					targetDictionary.CopyFrom(replacementDictionary);
+					Application.Current.UpdateResourceBindingsForHotReload();
+				}
+			}
+			catch (Exception e)
+			{
+				if (e is TargetInvocationException { InnerException: { } innerException })
+				{
+					e = innerException;
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed reloading changed file [{filePath}]", e);
+				}
+
+				await _rcClient.SendMessage(
+					new HotReload.Messages.XamlLoadError(
+						filePath: filePath,
+						exceptionType: e.GetType().ToString(),
+						message: e.Message,
+						stackTrace: e.StackTrace));
+			}
+		}
+
+		private static IEnumerable<UIElement> EnumerateInstances(object instance, Func<FrameworkElement, bool> predicate)
+		{
+			if (instance is FrameworkElement fe && predicate(fe))
+			{
+				yield return fe;
+			}
+			else if (instance != null)
+			{
+				IEnumerable<IEnumerable<UIElement>> Dig()
 				{
 					switch (instance)
 					{
 						case Panel panel:
 							foreach (var child in panel.Children)
 							{
-								yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch);
+								yield return EnumerateInstances(child, predicate);
 							}
 							break;
 
 						case Border border:
-							yield return EnumerateHotReloadInstances(border.Child, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateInstances(border.Child, predicate);
 							break;
 
 						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
-							yield return EnumerateHotReloadInstances(control.ContentTemplateRoot ?? control.Content, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, predicate);
 							break;
 
 						case Control control:
-							yield return EnumerateHotReloadInstances(control.TemplatedRoot, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateInstances(control.TemplatedRoot, predicate);
 							break;
 
 						case ContentPresenter presenter:
-							yield return EnumerateHotReloadInstances(presenter.Content, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateInstances(presenter.Content, predicate);
 							break;
 					}
 				}
@@ -89,62 +192,6 @@ namespace Uno.UI.RemoteControl.HotReload
 						yield return validElement;
 					}
 				}
-			}
-		}
-
-		private static void SwapViews(_View oldView, _View newView)
-		{
-			if (_log.IsEnabled(LogLevel.Trace))
-			{
-				_log.Trace($"Swapping view {newView.GetType()}");
-			}
-
-			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
-			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
-
-			if (parentAsContentControl?.Content == oldView)
-			{
-				parentAsContentControl.Content = newView;
-			}
-			else if (newView is Page newPage && oldView is Page oldPage)
-			{
-				// In the case of Page, swapping the actual page is not supported, so we
-				// need to swap the content of the page instead. This can happen if the Frame
-				// is using a native presenter which does not use the `Frame.Content` property.
-
-				// Clear any local context, so that the new page can inherit the value coming
-				// from the parent Frame. It may happen if the old page set it explicitly.
-				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-
-				oldPage.Content = newPage;
-				newPage.Frame = oldPage.Frame;
-			}
-			else
-			{
-				VisualTreeHelper.SwapViews(oldView, newView);
-			}
-
-			if (oldView is FrameworkElement oldViewAsFE && newView is FrameworkElement newViewAsFE)
-			{
-				PropagateProperties(oldViewAsFE, newViewAsFE);
-			}
-		}
-
-		private static void PropagateProperties(FrameworkElement oldView, FrameworkElement newView)
-		{
-			if (oldView == null || newView == null)
-			{
-				return;
-			}
-
-			if (newView.DataContext is null
-				&& oldView.DataContext is not null)
-			{
-				// If the DataContext is not provided by the page itself, it may
-				// have been provided by an external actor. Copy the value as is
-				// in the DataContext of the new element.
-
-				newView.DataContext = oldView.DataContext;
 			}
 		}
 	}

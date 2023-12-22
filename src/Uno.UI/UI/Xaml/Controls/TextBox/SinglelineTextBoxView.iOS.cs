@@ -1,25 +1,20 @@
-using CoreGraphics;
-using ObjCRuntime;
-using Uno.UI.DataBinding;
-using Uno.UI.Helpers;
-using Uno.UI.Views.Controls;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Text;
+using CoreGraphics;
+using Foundation;
+using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
-using Uno.UI.Extensions;
-using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
+using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Uno.Disposables;
-using Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using static Uno.UI.FeatureConfiguration;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxView : UITextField, ITextBoxView, DependencyObject, IFontScalable
 	{
@@ -33,6 +28,26 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializeBinder();
 			Initialize();
+		}
+
+		public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+
+		public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+
+		public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+
+		public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+
+		public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+
+		private void HandlePaste(Action baseAction)
+		{
+			var args = new TextControlPasteEventArgs();
+			TextBox?.RaisePaste(args);
+			if (!args.Handled)
+			{
+				baseAction.Invoke();
+			}
 		}
 
 		internal TextBox TextBox => _textBox.GetTarget();

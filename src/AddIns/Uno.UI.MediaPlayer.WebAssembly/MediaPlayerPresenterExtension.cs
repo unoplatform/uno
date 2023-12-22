@@ -6,9 +6,9 @@ using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Foundation;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Maps;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Maps;
+using Microsoft.UI.Xaml.Media;
 
 [assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.Media.MediaPlayerPresenterExtension))]
 
@@ -18,6 +18,9 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
 	private MediaPlayerPresenter? _owner;
 	private HtmlMediaPlayer _htmlPlayer;
+
+	public uint NaturalVideoHeight => (uint)_htmlPlayer.VideoHeight;
+	public uint NaturalVideoWidth => (uint)_htmlPlayer.VideoWidth;
 
 	public MediaPlayerPresenterExtension(object owner)
 	{

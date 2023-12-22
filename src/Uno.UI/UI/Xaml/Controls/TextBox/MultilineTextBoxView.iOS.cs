@@ -11,13 +11,13 @@ using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Uno.UI;
 using Uno.UI.Helpers;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Windows.UI;
 using Uno.Disposables;
 using ObjCRuntime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MultilineTextBoxView : UITextView, ITextBoxView, DependencyObject, IFontScalable, IUIScrollView
 	{
@@ -25,6 +25,27 @@ namespace Windows.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private WeakReference<Uno.UI.Controls.Window> _window;
 		private Action _foregroundChanged;
+
+		public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+
+		public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+
+		public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+
+		public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+
+		public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+
+		private void HandlePaste(Action baseAction)
+		{
+			var args = new TextControlPasteEventArgs();
+			var textBox = _textBox.GetTarget();
+			textBox?.RaisePaste(args);
+			if (!args.Handled)
+			{
+				baseAction.Invoke();
+			}
+		}
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
@@ -74,7 +74,7 @@ If 'Set From' was selected, then rollback means back to value before animation, 
 			var animation = new DoubleAnimation
 			{
 				To = 0,
-				Duration = DurationHelper.FromTimeSpan(_duration),
+				Duration = new Duration(_duration),
 				FillBehavior = fill
 			};
 

@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Documents
+﻿namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class Italic : Span
 	{

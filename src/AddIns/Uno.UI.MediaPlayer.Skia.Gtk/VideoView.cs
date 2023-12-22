@@ -64,7 +64,9 @@ namespace Uno.UI.Media
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
+#pragma warning disable CA1806 // Do not ignore method results
 				Native.XInitThreads();
+#pragma warning restore CA1806 // Do not ignore method results
 			}
 
 			LibVLCSharp.Shared.Core.Initialize();

@@ -20,14 +20,14 @@ namespace SamplesApp.UITests.Runtime
 	public partial class RuntimeTests : SampleControlUITestBase
 	{
 		private const string PendingTestsText = "Pending...";
-		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
+		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(5);
 		private const string TestResultsOutputFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH";
 		private const string TestResultsOutputTempFilePath = "UNO_UITEST_RUNTIMETESTS_RESULTS_TEMP_FILE_PATH";
 		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
 		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
 
 		[Test]
-		[AutoRetry(tryCount: 1)]
+		[AutoRetry(tryCount: 2)]
 		// [Timeout(3000000)] // Timeout is now moved to individual platorms runners configuration in CI
 		public async Task RunRuntimeTests()
 		{
@@ -73,6 +73,7 @@ namespace SamplesApp.UITests.Runtime
 
 				if (lastValue != newValue)
 				{
+					lastValue = newValue;
 					lastChange = DateTimeOffset.Now;
 				}
 

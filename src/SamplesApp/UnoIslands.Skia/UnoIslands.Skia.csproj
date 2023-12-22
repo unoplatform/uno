@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -44,7 +44,7 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<!-- TODO: Use version 8 when compiling against .NET 8? -->
-		<PackageReference Include="System.Management" Version="7.0.0" />
+		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 	</ItemGroup>
 

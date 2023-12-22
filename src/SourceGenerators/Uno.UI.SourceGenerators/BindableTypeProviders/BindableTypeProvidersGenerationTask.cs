@@ -57,7 +57,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					var isDesignTime = DesignTimeHelper.IsDesignTime(context);
 					var isApplication = PlatformHelper.IsApplication(context);
 
-					if (validPlatform && !isDesignTime && isApplication)
+					_ = bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out var disableBindableTypeProvidersGeneration);
+
+					if (validPlatform && !isDesignTime && isApplication && !disableBindableTypeProvidersGeneration)
 					{
 						_cancellationToken = context.CancellationToken;
 
@@ -82,8 +84,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						_javaObjectSymbol = context.Compilation.GetTypeByMetadataName("Java.Lang.Object");
 						_nsObjectSymbol = context.Compilation.GetTypeByMetadataName("Foundation.NSObject");
-						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.Data.NonBindableAttribute");
-						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Windows.UI.Xaml.ResourceDictionary");
+						_nonBindableSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.NonBindableAttribute");
+						_resourceDictionarySymbol = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.ResourceDictionary");
 						_currentModule = context.Compilation.SourceModule;
 
 						var modules = from ext in context.Compilation.ExternalReferences
@@ -377,9 +379,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								{
 									writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
 
-									postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
+									postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
 
-									using (postWriter.BlockInvariant($@"private static void Set{propertyName}(object instance, object value, Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence)"))
+									using (postWriter.BlockInvariant($@"private static void Set{propertyName}(object instance, object value, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence)"))
 									{
 										using (postWriter.BlockInvariant($"if(value != null)"))
 										{
@@ -391,21 +393,21 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								{
 									writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
 
-									postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance,  Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
-									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
+									postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance,  Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
+									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
 								}
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Windows.UI.Xaml.DependencyPropertyValuePrecedences>)");
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Void Set{propertyName}(System.Object,System.Object,System.Nullable`1<Windows.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Void Set{propertyName}(System.Object,System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
 
 							}
 							else if (HasPublicGetter(property))
 							{
 								writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName});");
 
-								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Windows.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
+								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Windows.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
 							}
 						}
 
@@ -534,8 +536,94 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateTypeTable(IndentedStringBuilder writer)
 			{
-				var types = _typeMap.Where(k => !k.Key.IsGenericType);
-				writer.AppendLineIndented($"private readonly global::Uno.UI.DataBinding.IBindableType[] _bindableTypes = new global::Uno.UI.DataBinding.IBindableType[{types.Count()}];");
+				var types = _typeMap.Where(k => !k.Key.IsGenericType).ToArray();
+
+				if (types.Length < 1000)
+				{
+					// Generate a smaller table to avoid tiering issue
+					// with large methods, see https://github.com/dotnet/runtime/issues/93192.
+					// This number is arbitrary, based on observations of generated size of
+					// switch/case static lookup.
+					// As of 2023-10-08, the performance of type reflection enumeration is still 10x
+					// slower than using a pre-built dictionaries, on WebAssembly.
+					GenerateTypeTableSwitch(writer, types);
+				}
+				else
+				{
+					GenerateTypeTableDictionary(writer, types);
+				}
+			}
+
+			private void GenerateTypeTableDictionary(IndentedStringBuilder writer, KeyValuePair<INamedTypeSymbol, GeneratedTypeInfo>[] types)
+			{
+				writer.AppendLineIndented("private delegate global::Uno.UI.DataBinding.IBindableType TypeBuilderDelegate();");
+				writer.AppendLineIndented(@$"static global::System.Collections.Hashtable _bindableTypeCacheByFullName = new global::System.Collections.Hashtable({types.Length});");
+
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
+				{
+					writer.AppendLineIndented(@"var instance = _bindableTypeCacheByFullName[fullName];");
+					writer.AppendLineIndented(@"var builder = instance as TypeBuilderDelegate;");
+
+					using (writer.BlockInvariant(@"if(builder != null)"))
+					{
+						writer.AppendLineIndented(@"_bindableTypeCacheByFullName[fullName] = instance = builder();");
+					}
+
+					writer.AppendLineIndented(@"return instance as global::Uno.UI.DataBinding.IBindableType;");
+				}
+
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(Type type)"))
+				{
+					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
+
+					writer.AppendLineIndented(@"#if DEBUG");
+					using (writer.BlockInvariant(@"if(bindableType == null)"))
+					{
+						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
+						{
+							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
+							{
+								writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
+								writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+							}
+						}
+					}
+					writer.AppendLineIndented(@"#endif");
+
+					writer.AppendLineIndented(@"return bindableType;");
+				}
+
+				using (writer.BlockInvariant("static BindableMetadataProvider()"))
+				{
+					foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType && !k.Key.IsAbstract))
+					{
+						writer.AppendLineIndented($"RegisterBuilder{type.Value.Index:000}();");
+					}
+				}
+
+				// Generate small methods to avoid JIT or interpreter costs associated
+				// with large methods.
+				foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType && !k.Key.IsAbstract))
+				{
+					using (writer.BlockInvariant($"static void RegisterBuilder{type.Value.Index:000}()"))
+					{
+						if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+						{
+							var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
+							var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
+
+							writer.AppendLineIndented($"if(global::{linkerHintsClassName}.{safeTypeName})");
+						}
+
+						writer.AppendLineIndented(
+							$"_bindableTypeCacheByFullName[\"{type.Key}\"] = new TypeBuilderDelegate(MetadataBuilder_{type.Value.Index:000}.Build);");
+					}
+				}
+			}
+
+			private void GenerateTypeTableSwitch(IndentedStringBuilder writer, KeyValuePair<INamedTypeSymbol, GeneratedTypeInfo>[] types)
+			{
+				writer.AppendLineIndented($"private readonly global::Uno.UI.DataBinding.IBindableType[] _bindableTypes = new global::Uno.UI.DataBinding.IBindableType[{types.Length}];");
 				writer.AppendLineIndented($"private static global::Uno.UI.DataBinding.IBindableType _null;");
 
 				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))

@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno;
 using Uno.UI.Helpers;
 using Uno.UI.Extensions;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{

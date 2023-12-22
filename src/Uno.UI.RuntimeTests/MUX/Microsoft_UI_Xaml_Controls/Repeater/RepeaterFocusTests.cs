@@ -1,17 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RepeaterFocusTests.cs, commit 93d6555
+// MUX Reference controls\dev\Repeater\APITests\RepeaterFocusTests.cs, tag winui3/release/1.4.3, commit 685d2bfa86d6169aa1998a7eaa2c38bfcf9f74bc
 
 using Common;
 using MUXControlsTestApp.Utilities;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using System;
 
 #if USING_TAEF
@@ -23,23 +23,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-using Windows.UI.Xaml.Controls.Primitives;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RepeaterFocusTests : MUXApiTestBase
 	{
 #if __MACOS__
@@ -48,19 +47,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public async Task ValidateTabNavigation()
 		{
-			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone2))
-			{
-				Log.Warning("Test is disabled on anything lower than RS3 because the GetChildrenInTabFocusOrder API is not available on previous versions.");
-				return;
-			}
-
-#if HAS_UNO
-			if (TestServices.WindowHelper.IsXamlIsland)
-			{
-				return;
-			}
-#endif
-
 			ItemsRepeater repeater = null;
 			ScrollViewer scrollViewer = null;
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 50).Select(i => "Item #" + i));
@@ -101,12 +87,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				repeater.TabFocusNavigation = KeyboardNavigationMode.Local;
 				Content.UpdateLayout();
-			});
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			await RunOnUIThread.ExecuteAsync(() =>
-			{
 				ValidateTabNavigationOrder(repeater);
 			});
 
@@ -131,12 +111,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				while (data.Count > 21) { data.RemoveAt(21); }
 
 				repeater.UpdateLayout();
-			});
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			await RunOnUIThread.ExecuteAsync(() =>
-			{
 				ValidateTabNavigationOrder(repeater);
 			});
 		}
@@ -150,28 +124,33 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			Log.Comment("Validating forward tab navigation...");
 
+			FindNextElementOptions options = new FindNextElementOptions
+			{
+				SearchRoot = repeater.XamlRoot.Content
+			};
+
 			foreach (var expectedElement in expectedSequence)
 			{
-				var actualElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
-				var actualElementAsbutton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as Button;
-				var actualElementAsToggleButton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as ToggleButton;
+				var actualElement = FocusManager.FindNextElement(FocusNavigationDirection.Next, options);
+				var actualElementAsbutton = FocusManager.FindNextElement(FocusNavigationDirection.Next, options) as Button;
+				var actualElementAsToggleButton = FocusManager.FindNextElement(FocusNavigationDirection.Next, options) as ToggleButton;
 
 				string content = actualElementAsbutton != null ? (string)actualElementAsbutton.Content : (string)actualElementAsToggleButton.Content;
 				// We need to ignore the toggle theme button, so lets set its tabstop to false and get next element.
 				if (content == "Toggle theme")
 				{
 					actualElementAsbutton.IsTabStop = false;
-					actualElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+					actualElement = FocusManager.FindNextElement(FocusNavigationDirection.Next, options);
 				}
-				actualElementAsbutton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as Button;
-				actualElementAsToggleButton = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next) as ToggleButton;
+				actualElementAsbutton = FocusManager.FindNextElement(FocusNavigationDirection.Next, options) as Button;
+				actualElementAsToggleButton = FocusManager.FindNextElement(FocusNavigationDirection.Next, options) as ToggleButton;
 
 				content = actualElementAsbutton != null ? (string)actualElementAsbutton.Content : (string)actualElementAsToggleButton.Content;
 				// We need to ignore the lab dimensions button, so lets set its tabstop to false and get next element.
 				if (content == "Render innerframe in lab dimensions")
 				{
 					actualElementAsToggleButton.IsTabStop = false;
-					actualElement = FocusManager.FindNextFocusableElement(FocusNavigationDirection.Next);
+					actualElement = FocusManager.FindNextElement(FocusNavigationDirection.Next, options);
 				}
 				Log.Comment("Expected: " + expectedElement.Content);
 				Log.Comment("Actual: " + content);
@@ -183,7 +162,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			foreach (var expectedElement in expectedSequence.Reverse().Skip(1))
 			{
-				var actualElement = (Button)FocusManager.FindNextFocusableElement(FocusNavigationDirection.Previous);
+				var actualElement = (Button)FocusManager.FindNextElement(FocusNavigationDirection.Previous, options);
 				Log.Comment("Expected: " + expectedElement.Content);
 				Log.Comment("Actual: " + actualElement.Content);
 				Verify.AreEqual(expectedElement, actualElement);
@@ -201,11 +180,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		private static ItemsRepeaterScrollHost CreateAndInitializeRepeater(
-		   object itemsSource,
-		   VirtualizingLayout layout,
-		   ElementFactory elementFactory,
-		   ref ItemsRepeater repeater,
-		   ref ScrollViewer scrollViewer)
+			object itemsSource,
+			VirtualizingLayout layout,
+			ElementFactory elementFactory,
+			ref ItemsRepeater repeater,
+			ref ScrollViewer scrollViewer)
 		{
 			repeater = new ItemsRepeater()
 			{

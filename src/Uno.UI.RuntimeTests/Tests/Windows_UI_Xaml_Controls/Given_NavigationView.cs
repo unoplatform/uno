@@ -10,7 +10,7 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.ListViewPages;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -25,9 +25,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using NavigationView = Windows.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Windows.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewList = Windows.UI.Xaml.Controls.NavigationViewList;
 #else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -48,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_NavigationView
 	{
+#if !HAS_UNO_WINUI
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -82,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			Assert.AreEqual(item2, children.Last());
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -161,6 +160,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
+
+#if !HAS_UNO_WINUI
 	public partial class MyNavigationView : NavigationView
 	{
 		public NavigationViewList MenuItemsHost { get; private set; }
@@ -170,4 +171,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			MenuItemsHost = GetTemplateChild("MenuItemsHost") as NavigationViewList;
 		}
 	}
+#endif
 }

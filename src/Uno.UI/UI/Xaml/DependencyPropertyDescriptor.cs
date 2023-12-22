@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal class DependencyPropertyDescriptor
 	{
@@ -23,6 +24,8 @@ namespace Windows.UI.Xaml
 
 		public Type OwnerType { get; }
 
+		private static readonly char[] _parenthesesChars = new[] { '(', ')' };
+
 		/// <summary>
 		/// Parses an attached PropertyPath in the form of "(clrnamespace:Type.Property)"
 		/// </summary>
@@ -30,16 +33,16 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal static DependencyPropertyDescriptor Parse(string propertyPath)
 		{
-			if (propertyPath.Contains(":"))
+			if (propertyPath.Contains(':'))
 			{
 				// (Uno.UI.Tests.BinderTests:Attachable.MyValue)
 
-				var bindingParts = propertyPath.Trim(new[] { '(', ')' }).Split(new[] { ':' });
+				var bindingParts = propertyPath.Trim(_parenthesesChars).Split(':');
 
 				if (bindingParts.Length == 2)
 				{
 					var ns = bindingParts[0];
-					var propertyParts = bindingParts[1].Split(new[] { '.' });
+					var propertyParts = bindingParts[1].Split('.');
 
 					if (propertyParts.Length == 2)
 					{
@@ -56,20 +59,7 @@ namespace Windows.UI.Xaml
 
 						if (type == null)
 						{
-							// If not available, search through Reflection
-							type = CanUseTypeGetType ? Type.GetType(qualifiedTypeName) : null;
-
-							if (type == null)
-							{
-								foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-								{
-									type = asm.GetType(qualifiedTypeName);
-									if (type != null)
-									{
-										break;
-									}
-								}
-							}
+							type = SearchTypeInLoadedAssemblies(qualifiedTypeName);
 						}
 
 						if (type != null)
@@ -95,6 +85,32 @@ namespace Windows.UI.Xaml
 			}
 
 			return null;
+		}
+
+
+		/// <remarks>
+		/// This method is split to avoid Type.GetType causing fallbacks
+		/// on the Wasm interpreter.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static Type SearchTypeInLoadedAssemblies(string qualifiedTypeName)
+		{
+			// If not available, search through Reflection
+			var type = CanUseTypeGetType ? Type.GetType(qualifiedTypeName) : null;
+
+			if (type == null)
+			{
+				foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+				{
+					type = asm.GetType(qualifiedTypeName);
+					if (type != null)
+					{
+						break;
+					}
+				}
+			}
+
+			return type;
 		}
 	}
 }

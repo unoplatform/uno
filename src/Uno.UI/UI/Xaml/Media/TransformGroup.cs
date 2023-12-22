@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 #if __ANDROID__
@@ -15,12 +15,12 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #elif __WASM__
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #else
 using _View = System.Object;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Children))]
 	public partial class TransformGroup : Transform

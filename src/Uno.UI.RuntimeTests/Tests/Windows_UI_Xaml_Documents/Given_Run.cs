@@ -1,10 +1,10 @@
-#if __SKIA__
+﻿#if __SKIA__
 
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 {
@@ -103,9 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_MultiwordWithNumericHyphens()
 		{
 			var expected = new ExpectedSegment[] {
-				new("Test1-", 0, 0, 0, false),
-				new("$", 0, 0, 0, false),
-				new("123-", 0, 0, 0, true),
+				new("Test1-$123-", 0, 0, 0, true),
 				new("Test2 ", 0, 1, 0, true),
 				new("-.456", 0, 0, 0, false),
 			};

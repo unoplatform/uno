@@ -60,7 +60,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
 		Justification = "The handlerType passed to GetHandlerActions is preserved by MetadataUpdateHandlerAttribute with DynamicallyAccessedMemberTypes.All.")]
-	private UpdateHandlerActions GetMetadataUpdateHandlerActions()
+	internal UpdateHandlerActions GetMetadataUpdateHandlerActions()
 	{
 		// We need to execute MetadataUpdateHandlers in a well-defined order. For v1, the strategy that is used is to topologically
 		// sort assemblies so that handlers in a dependency are executed before the dependent (e.g. the reflection cache action
@@ -246,7 +246,7 @@ internal sealed class HotReloadAgent : IDisposable
 	}
 
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Hot reload is only expected to work when trimming is disabled.")]
-	private static Type[] GetMetadataUpdateTypes(IReadOnlyList<UpdateDelta> deltas)
+	private Type[] GetMetadataUpdateTypes(IReadOnlyList<UpdateDelta> deltas)
 	{
 		List<Type>? types = null;
 
@@ -269,6 +269,14 @@ internal sealed class HotReloadAgent : IDisposable
 					types.Add(type);
 				}
 			}
+		}
+
+		if (types?.Count != deltas.SelectMany(d => d.UpdatedTypes ?? Array.Empty<int>()).Count())
+		{
+			// List all the types that were updated but not found in the assembly.
+			_log(
+				"Some types were marked as updated, but were not found in the running app. " +
+				"This may indicate a configuration mismatch between the compiled app and the hot reload engine.");
 		}
 
 		return types?.ToArray() ?? Type.EmptyTypes;

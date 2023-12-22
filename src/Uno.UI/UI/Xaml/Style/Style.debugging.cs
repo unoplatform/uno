@@ -9,9 +9,9 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class Style
 	{

@@ -4,28 +4,22 @@ using System.Collections.Immutable;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// This is a helper to support resolution of StaticResource/ThemeResource references using the 'Xaml-tree scope' similar to UWP, as
 	/// opposed to the visual tree. In particular it allows correct resolution during template resolution, where the visual tree may be
 	/// arbitrarily distant from the xaml tree.
 	/// </summary>
-	internal class XamlScope
+	internal record XamlScope(ImmutableStack<ManagedWeakReference> Sources)
 	{
-		private readonly ImmutableStack<ManagedWeakReference> _resourceSources;
+		public XamlScope Push(ManagedWeakReference source)
+			=> new(Sources.Push(source));
 
-		public IEnumerable<ManagedWeakReference> Sources => _resourceSources;
+		public XamlScope Pop()
+			=> new(Sources.Pop());
 
-		private XamlScope(ImmutableStack<ManagedWeakReference> sources)
-		{
-			_resourceSources = sources;
-		}
-
-		public XamlScope Push(ManagedWeakReference source) => new XamlScope(_resourceSources.Push(source));
-
-		public XamlScope Pop() => new XamlScope(_resourceSources.Pop());
-
-		public static XamlScope Create() => new XamlScope(ImmutableStack.Create<ManagedWeakReference>());
+		public static XamlScope Create()
+			=> new(ImmutableStack.Create<ManagedWeakReference>());
 	}
 }

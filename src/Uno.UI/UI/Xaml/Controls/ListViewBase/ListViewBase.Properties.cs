@@ -1,6 +1,9 @@
-﻿using Windows.UI.Xaml;
+﻿using System.Linq;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ListViewBase
 {
@@ -22,4 +25,24 @@ public partial class ListViewBase
 			typeof(bool),
 			typeof(ListViewBase),
 			new FrameworkPropertyMetadata(true));
+
+	public bool IsMultiSelectCheckBoxEnabled
+	{
+		get => (bool)GetValue(IsMultiSelectCheckBoxEnabledProperty);
+		set => SetValue(IsMultiSelectCheckBoxEnabledProperty, value);
+	}
+
+	public static DependencyProperty IsMultiSelectCheckBoxEnabledProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool),
+			typeof(ListViewBase),
+			new FrameworkPropertyMetadata(true, (o, args) => ((ListViewBase)o).OnIsMultiSelectCheckBoxEnabledPropertyChanged(args)));
+
+	private void OnIsMultiSelectCheckBoxEnabledPropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
+		{
+			ApplyMultiSelectState(item);
+		}
+	}
 }

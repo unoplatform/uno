@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +33,7 @@ using Uno.Helpers;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public class BindableImageView : ImageView, View.IOnTouchListener
 	{
 		private string _uriSource;
@@ -239,7 +239,7 @@ namespace Uno.UI.Controls
 				|| newUri.IsFile
 				|| newUri.IsLocalResource())
 			{
-				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart(new[] { '/' })));
+				SetImageResource(GetResourceId(newUri.PathAndQuery.TrimStart('/')));
 			}
 			else if (UriSource.StartsWith("res:///", StringComparison.OrdinalIgnoreCase))
 			{
@@ -286,9 +286,8 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
-				_download.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
-					.RunAsync(
-						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+				_download.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main
+					.EnqueueCancellableOperation(
 						async (ct) =>
 						{
 							var localUri = UriSource;

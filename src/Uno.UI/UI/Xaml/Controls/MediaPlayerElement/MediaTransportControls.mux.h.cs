@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class MediaTransportControls // Strings
 {
@@ -179,6 +179,7 @@ public partial class MediaTransportControls // Strings
 public partial class MediaTransportControls // Definitions
 {
 #pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable CA1823 // Avoid unused private fields
 	// HNS Hunderds of Nano Seconds used for conversion in timer duration
 	private const uint HNSPerSecond = 10000000;
 
@@ -218,6 +219,7 @@ public partial class MediaTransportControls // Definitions
 
 	private const int MinSupportedPlayRate = 2;
 #pragma warning restore IDE0051 // Remove unused private members
+#pragma warning restore CA1823 // Avoid unused private fields
 }
 
 [TemplatePart(Name = TemplateParts.ControlPanelGrid, Type = typeof(Grid))]

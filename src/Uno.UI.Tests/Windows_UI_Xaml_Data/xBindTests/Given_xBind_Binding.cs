@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -412,8 +412,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.ForceLoaded();
 
-			var myTextBlock = SUT.FindName("myTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
-			var myTextBlock2 = SUT.FindName("myTextBlock2") as Windows.UI.Xaml.Controls.TextBlock;
+			var myTextBlock = SUT.FindName("myTextBlock") as Microsoft.UI.Xaml.Controls.TextBlock;
+			var myTextBlock2 = SUT.FindName("myTextBlock2") as Microsoft.UI.Xaml.Controls.TextBlock;
 
 			Assert.AreEqual("v:0 p:test", myTextBlock.Text);
 			Assert.AreEqual("v:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.Binding_Converter_DataTempate_Model p:test", myTextBlock2.Text);
@@ -1459,6 +1459,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual("Updated1", SUT.tbList2.Text);
 			Assert.AreEqual("Updated2", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_XBind_In_ResourceDictionary()
+		{
+			var SUT = new XBind_ResourceDictionary_Control();
+			SUT.ForceLoaded();
+
+			Assert.IsTrue(SUT.ElementLoadedInvoked);
 		}
 
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class

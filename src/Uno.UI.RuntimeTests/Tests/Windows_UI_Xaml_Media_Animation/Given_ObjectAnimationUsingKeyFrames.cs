@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE // Disabled on UWP as tests use Uno-specific APIs
+﻿#if !WINAPPSDK // Disabled on UWP as tests use Uno-specific APIs
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +9,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests

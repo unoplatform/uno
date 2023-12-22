@@ -2,8 +2,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 using Common;
 
 #if USING_TAEF
@@ -25,21 +25,21 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using UniformGridLayoutItemsJustification = Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification;
-using UniformGridLayoutItemsStretch = Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsStretch;
-using FlowLayoutLineAlignment = Microsoft.UI.Xaml.Controls.FlowLayoutLineAlignment;
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using ElementFactory = Microsoft.UI.Xaml.Controls.ElementFactory;
-using RecyclePool = Microsoft.UI.Xaml.Controls.RecyclePool;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using FlowLayout = Microsoft.UI.Xaml.Controls.FlowLayout;
-using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using LayoutPanel = Microsoft.UI.Xaml.Controls.LayoutPanel;
+using UniformGridLayoutItemsJustification = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayoutItemsJustification;
+using UniformGridLayoutItemsStretch = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayoutItemsStretch;
+using FlowLayoutLineAlignment = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FlowLayoutLineAlignment;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using ElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementFactory;
+using RecyclePool = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclePool;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using FlowLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FlowLayout;
+using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using LayoutPanel = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class FlowLayoutTests : MUXApiTestBase
@@ -1364,7 +1364,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var layoutPanel = (LayoutPanel)XamlReader.Load(
 					@"<controls:LayoutPanel Width='800'  
 						xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-						xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+						xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
 						<controls:LayoutPanel.Layout>
 							<controls:FlowLayout  />
 						</controls:LayoutPanel.Layout>

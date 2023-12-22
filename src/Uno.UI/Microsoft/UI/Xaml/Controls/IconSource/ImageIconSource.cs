@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ImageIconSource.cpp, commit 083796a
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+// MUX Reference ImageIconSource.cpp & ImageIconSource.properties.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class ImageIconSource : IconSource
 {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// Binding used for resource resolution at load time. 
@@ -18,8 +18,6 @@ namespace Windows.UI.Xaml.Data
 		public SpecializedResourceDictionary.ResourceKey ResourceKey { get; }
 
 		public ResourceUpdateReason UpdateReason { get; }
-
-		public bool IsThemeResourceExtension { get; }
 
 		public bool IsPersistent => UpdateReason != ResourceUpdateReason.StaticResourceLoading;
 

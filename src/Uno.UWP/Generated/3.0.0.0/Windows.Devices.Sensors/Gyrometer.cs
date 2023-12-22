@@ -123,13 +123,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Gyrometer> Gyrometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGyrometer%3E%20Gyrometer.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Devices.Sensors.Gyrometer GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member Gyrometer Gyrometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Gyrometer%20Gyrometer.GetDefault%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.Devices.Sensors.Gyrometer.GetDefault()
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Gyrometer, global::Windows.Devices.Sensors.GyrometerReadingChangedEventArgs> ReadingChanged

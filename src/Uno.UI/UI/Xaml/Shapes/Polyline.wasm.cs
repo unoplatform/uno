@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Polyline
 	{

@@ -9,7 +9,6 @@
 	<PropertyGroup>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
-		<LangVersion>10.0</LangVersion>
 
 		<AssemblyName>Uno.UI.Svg</AssemblyName>
 		<RootNamespace>Uno.UI.Svg</RootNamespace>
@@ -26,9 +25,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Svg\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI.Svg\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

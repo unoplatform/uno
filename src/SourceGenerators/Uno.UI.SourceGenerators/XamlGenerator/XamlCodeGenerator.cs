@@ -23,8 +23,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			// No initialization required for this one
-			//if (!Process.GetCurrentProcess().ProcessName.Equals("omnisharp.exe", StringComparison.OrdinalIgnoreCase))
+			//var process = Process.GetCurrentProcess().ProcessName;
+			//if (process.IndexOf("VBCSCompiler", StringComparison.OrdinalIgnoreCase) is not -1
+			//	|| process.IndexOf("csc", StringComparison.OrdinalIgnoreCase) is not -1)
 			//{
 			//	Debugger.Launch();
 			//}

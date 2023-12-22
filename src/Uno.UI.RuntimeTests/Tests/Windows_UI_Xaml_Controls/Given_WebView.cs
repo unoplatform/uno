@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Linq;
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 
@@ -18,7 +18,7 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__
+#if (!HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__) && !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView

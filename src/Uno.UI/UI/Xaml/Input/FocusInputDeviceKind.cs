@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input
+﻿namespace Microsoft.UI.Xaml.Input
 {
 	/// <summary>
 	/// Specifies the input device types from which input events are received.

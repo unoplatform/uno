@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Helpers
 {
@@ -17,7 +17,7 @@ namespace Uno.UI.Helpers
 		/// </summary>
 		[Preserve]
 		[JSExport]
-		public static string GetDependencyPropertyValue(int handle, string propertyName)
+		internal static string GetDependencyPropertyValue(int handle, string propertyName)
 		{
 			// Dispatch to right object, if we can find it
 			if (UIElement.GetElementFromHandle(handle) is UIElement element)
@@ -39,7 +39,7 @@ namespace Uno.UI.Helpers
 		/// <returns>The currenty set value at the Local precedence</returns>
 		[Preserve]
 		[JSExport]
-		public static string SetDependencyPropertyValue(int handle, string dependencyPropertyNameAndValue)
+		internal static string SetDependencyPropertyValue(int handle, string dependencyPropertyNameAndValue)
 		{
 			// Dispatch to right object, if we can find it
 			if (UIElement.GetElementFromHandle(handle) is UIElement element)

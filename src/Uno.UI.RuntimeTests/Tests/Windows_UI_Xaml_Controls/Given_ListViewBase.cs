@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -10,13 +10,13 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MUXControlsTestApp.Utilities;
@@ -27,7 +27,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using Foundation;
@@ -40,6 +40,10 @@ using Uno.UI;
 
 using static Private.Infrastructure.TestServices;
 using Point = Windows.Foundation.Point;
+
+#if HAS_UNO
+using static Uno.UI.Extensions.ViewExtensions;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -228,6 +232,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerParentIsKept_OnRemoveAndAdd()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+
+			var indexToAssert = 1;
+			var item2 = source[indexToAssert];
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(indexToAssert, item2);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+
+			// There are situations where the isse occurs the second time.
+			indexToAssert = 3;
+			var item4 = source[indexToAssert];
+
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(indexToAssert, item4);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void InvalidChanges_ShouldNotBeReflectedOnSelectedItem()
@@ -405,7 +446,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.AreEqual("Item 1", si.Content);
-#if NETFX_CORE // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
+#if WINAPPSDK // On iOS and Android (others not tested), ContentTemplateRoot is null, and TemplatedRoot is a ContentPresenter containing an ImplicitTextBlock
 			Assert.IsInstanceOfType(si.ContentTemplateRoot, typeof(TextBlock));
 			Assert.AreEqual("Item 1", (si.ContentTemplateRoot as TextBlock).Text);
 #endif
@@ -436,7 +477,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.AreEqual("item 1", si.Content);
 			Assert.AreSame(si, source[0]);
-#if !NETFX_CORE
+#if !WINAPPSDK
 			Assert.IsFalse(si.IsGeneratedContainer);
 #endif
 
@@ -445,7 +486,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(si2);
 			Assert.AreNotSame(si2, source[1]);
 			Assert.AreEqual("item 2", si2.Content);
-#if !NETFX_CORE
+#if !WINAPPSDK
 			Assert.AreEqual("item 2", si2.DataContext);
 			Assert.IsTrue(si2.IsGeneratedContainer);
 #endif
@@ -643,6 +684,157 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.AreEqual(list.SelectedIndex, -1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__
+		[Ignore("The test can't find MultiSelectSquare")]
+#endif
+		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
+		{
+			var singleList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var singleList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var singleList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					singleList,
+					multipleList,
+					extendedList,
+					singleList2,
+					multipleList2,
+					extendedList2,
+					singleList3,
+					multipleList3,
+					extendedList3
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Visible, ((Border)multipleList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Visible, ((Border)multipleList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList3.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)multipleList3.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList3.FindName("MultiSelectSquare")).Visibility);
 		}
 
 #if HAS_UNO
@@ -1049,7 +1241,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
 		public async Task When_Horizontal_Keyboard_Navigation()
@@ -1091,6 +1283,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(2, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_Space_Or_Enter()
+		{
+			var SUT = new ListView
+			{
+				ItemsSource = "012345"
+			};
+
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT
+				}
+			};
+
+			var handled = false;
+			grid.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, args) => handled = args.Handled), true);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+
+			var lvi1 = (ListViewItem)SUT.ContainerFromIndex(0);
+			lvi1.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.Space();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(lvi1.IsSelected);
+			Assert.IsTrue(handled);
+
+			handled = false;
+
+			SUT.SelectedIndex = -1;
+
+			KeyboardHelper.Enter();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(handled);
 		}
 
 		[TestMethod]
@@ -1178,7 +1416,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-#if NETFX_CORE // TODO: subscribe to changes to Source property
+#if WINAPPSDK // TODO: subscribe to changes to Source property
 			Assert.AreEqual(3, page.SubjectListView.Items.Count);
 #endif
 			ListViewItem lvi = null;
@@ -3618,6 +3856,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task Valid_MultipleSelectionMode_ValidSelectionStates()
+		{
+			const string msc = "MultiSelectCheck";
+			var lvi0 = new ListViewItem
+			{
+				Content = "child 1"
+			};
+			var SUT = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple
+			};
+			SUT.Items.Add(lvi0);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			// Validate the newly materialized item has MultiSelectStates set
+			var root = lvi0 is not null && VisualTreeHelper.GetChildrenCount(lvi0) > 0 ? VisualTreeHelper.GetChild(lvi0, 0) : null;
+			var vsgs = root is FrameworkElement rootAsFE ? VisualStateManager.GetVisualStateGroups(rootAsFE) : null;
+			var vsgMultiSelectStates = vsgs?.FirstOrDefault(x => x.Name == "MultiSelectStates");
+			var vsgCommonStates = vsgs?.FirstOrDefault(x => x.Name == "CommonStates");
+			var mscfe = lvi0.GetTemplateChild(msc) as FrameworkElement;
+
+			Assert.IsNotNull(mscfe, "MultiSelectCheck was not found.");
+			Assert.IsNotNull(vsgMultiSelectStates, "VisualStateGroup[Name=MultiSelectStates] was not found.");
+			Assert.IsNotNull(vsgCommonStates, "VisualStateGroup[Name=CommonStates] was not found.");
+			Assert.AreEqual(vsgMultiSelectStates.CurrentState?.Name, "MultiSelectEnabled");
+			Assert.AreNotEqual(vsgCommonStates.CurrentState?.Name, "Selected");
+			Assert.AreEqual(mscfe.Opacity, 0);
+			lvi0.IsSelected = true;
+			Assert.AreEqual(vsgCommonStates.CurrentState?.Name, "Selected");
+			Assert.AreEqual(mscfe.Opacity, 1);
+		}
+#endif
+
 		[TestMethod]
 		[DataRow(nameof(ListView), "add")]
 		[DataRow(nameof(ListView), "remove")]
@@ -3777,13 +4053,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("String 1", (string)added3.Single());
 		}
 
-		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
-		{
-			public bool Equals(AlwaysEqualClass obj) => true;
-			public override bool Equals(object obj) => true;
-			public override int GetHashCode() => 0;
-		}
-
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_ListView() => await When_Items_Are_Equal_But_Different_References_Common(new ListView());
 
@@ -3796,7 +4065,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
 
-		public record When_Header_DataContext_Model(string MyText);
+		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
+		{
+			var obj1 = new AlwaysEqualClass();
+			var obj2 = new AlwaysEqualClass();
+			var items = new ObservableCollection<AlwaysEqualClass>(new[]
+			{
+				obj1, obj2
+			});
+			sut.ItemsSource = items;
+			var list = new List<SelectionChangedEventArgs>();
+			sut.SelectionChanged += (_, e) => list.Add(e);
+			sut.SelectedIndex = 1;
+			Assert.AreEqual(1, sut.SelectedIndex);
+			Assert.AreSame(obj2, sut.SelectedItem);
+			sut.SelectedIndex = 0;
+			Assert.AreEqual(0, sut.SelectedIndex);
+			Assert.AreSame(obj1, sut.SelectedItem);
+
+			Assert.AreEqual(2, list.Count);
+			var removed1 = list[0].RemovedItems;
+			var removed2 = list[1].RemovedItems;
+
+			var added1 = list[0].AddedItems;
+			var added2 = list[1].AddedItems;
+
+			if (sut is FlipView)
+			{
+				Assert.AreSame(obj1, removed1.Single());
+			}
+			else
+			{
+				Assert.AreEqual(0, removed1.Count);
+			}
+			Assert.AreSame(obj2, added1.Single());
+
+			Assert.AreSame(obj2, removed2.Single());
+			Assert.AreSame(obj1, added2.Single());
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -3928,7 +4234,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using (ThemeHelper.UseDarkTheme())
 			{
-				ScrollTo(SUT, NumberOfItemsShownAtATime * ItemHeight);
+#if __WASM__
+				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight * 2 /* Go twice past then viewport */;
+#else
+				var scrollPosition = NumberOfItemsShownAtATime * ItemHeight;
+#endif
+
+				ScrollTo(SUT, scrollPosition);
 				await WindowHelper.WaitForIdle();
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
@@ -3990,44 +4302,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HeaderDataContext_Cleared_FromNavigation()
 		{
-			var obj1 = new AlwaysEqualClass();
-			var obj2 = new AlwaysEqualClass();
-			var items = new ObservableCollection<AlwaysEqualClass>(new[]
+			var frame = new Frame();
+
+			WindowHelper.WindowContent = frame;
+			await WindowHelper.WaitFor(() => frame.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			frame.Navigate(typeof(When_HeaderDataContext_Cleared_FromNavigation_Page));
+			await WindowHelper.WaitForIdle();
+
+			var page = (When_HeaderDataContext_Cleared_FromNavigation_Page)frame.Content;
+			var sut = frame.FindFirstDescendant<ListView>();
+			var panel = (NativeListViewBase)sut.InternalItemsPanelRoot;
+
+			page.LvHeaderDcChanged += (s, e) => { /* for debugging */ };
+			Assert.IsNotNull(page.DataContext);
+
+			for (var i = 0; i < 3; i++) // may not always trigger, but 3 times is usually more than enough
 			{
-				obj1, obj2
-			});
-			sut.ItemsSource = items;
-			var list = new List<SelectionChangedEventArgs>();
-			sut.SelectionChanged += (_, e) => list.Add(e);
-			sut.SelectedIndex = 1;
-			Assert.AreEqual(1, sut.SelectedIndex);
-			Assert.AreSame(obj2, sut.SelectedItem);
-			sut.SelectedIndex = 0;
-			Assert.AreEqual(0, sut.SelectedIndex);
-			Assert.AreSame(obj1, sut.SelectedItem);
+				// scroll header out of viewport and back in
+				ScrollTo(sut, 100000);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+				ScrollTo(sut, 0);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
 
-			Assert.AreEqual(2, list.Count);
-			var removed1 = list[0].RemovedItems;
-			var removed2 = list[1].RemovedItems;
+				// frame navigate away and back
+				frame.Navigate(typeof(BackNavigationPage));
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1000);
+				frame.GoBack();
+				await WindowHelper.WaitForIdle();
 
-			var added1 = list[0].AddedItems;
-			var added2 = list[1].AddedItems;
-
-			if (sut is FlipView)
-			{
-				Assert.AreSame(obj1, removed1.Single());
+				// check if data-context is still set
+				Assert.AreEqual(GetListViewHeader()?.DataContext, page.DataContext);
 			}
-			else
-			{
-				Assert.AreEqual(0, removed1.Count);
-			}
-			Assert.AreSame(obj2, added1.Single());
 
-			Assert.AreSame(obj2, removed2.Single());
-			Assert.AreSame(obj1, added2.Single());
+			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -4294,6 +4613,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
 			protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
+		}
+
+		public record When_Header_DataContext_Model(string MyText);
+
+		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
+		{
+			public bool Equals(AlwaysEqualClass obj) => true;
+			public override bool Equals(object obj) => true;
+			public override int GetHashCode() => 0;
+		}
+
+#if HAS_UNO
+		public partial class When_HeaderDataContext_Cleared_FromNavigation_Page : Page
+		{
+			public event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> LvHeaderDcChanged;
+
+			public When_HeaderDataContext_Cleared_FromNavigation_Page()
+			{
+				DataContext = "MainVM";
+				Content = new Grid
+				{
+					RowDefinitions =
+					{
+						new() { Height = new GridLength(1, GridUnitType.Auto) },
+						new() { Height = new GridLength(1, GridUnitType.Star) },
+					},
+					Children =
+					{
+						new Button { Content = "Next" }.Apply(x =>
+						{
+							Grid.SetRow(x, 0);
+							x.Click += (s, e) => Frame.Navigate(typeof(BackNavigationPage));
+						}),
+						new ListView
+						{
+							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
+							HeaderTemplate = new DataTemplate(() => new StackPanel
+							{
+								new TextBlock() { Text = "header" },
+								new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+							}.Apply(x => x.DataContextChanged += (s, e) => LvHeaderDcChanged?.Invoke(s, e))),
+						}.Apply(x => Grid.SetRow(x, 1)),
+					},
+				};
+			}
+		}
+#endif
+
+		public partial class BackNavigationPage : Page
+		{
+			public BackNavigationPage()
+			{
+				Content = new Button().Apply(x => x.Click += (s, e) => Frame.GoBack());
+			}
 		}
 	}
 

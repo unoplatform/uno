@@ -11,9 +11,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno;
-
+using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
@@ -52,6 +52,9 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// <summary>
 		/// This will get invoked whenever UpdateApplication is invoked 
 		/// but before any updates are applied to the visual tree. 
+		/// This is only invoked if 
+		///   a) there's no other update in progress
+		///   b) ui updating hasn't been paused
 		/// This is only invoked once per UpdateApplication, 
 		/// irrespective of the number of types the handler is registered for
 		/// </summary>
@@ -60,10 +63,25 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// <summary>
 		/// This will get invoked whenever UpdateApplication is invoked 
 		/// after all updates have been applied to the visual tree. 
+		/// This is only invoked if 
+		///   a) there's no other update in progress
+		///   b) ui updating hasn't been paused
 		/// This is only invoked once per UpdateApplication, 
 		/// irrespective of the number of types the handler is registered for
 		/// </summary>
 		public Action<Type[]?> AfterVisualTreeUpdate { get; set; } = _ => { };
+
+		/// <summary>
+		/// This will get invoked whenever UpdateApplication is invoked 
+		/// after all updates have been applied to the visual tree. 
+		/// This is always invoked, even if 
+		///   a) there's another update in progress
+		///   b) ui updating is paused
+		/// This is only invoked once per UpdateApplication, 
+		/// irrespective of the number of types the handler is registered for
+		/// Second parameter (bool) indicates whether the ui was updated or not
+		/// </summary>
+		public Action<Type[]?, bool> ReloadCompleted { get; set; } = (_, _) => { };
 
 		/// <summary>
 		/// This is invoked when a specific element is found in the tree. 
@@ -92,6 +110,26 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// The newElement is attached to the visual tree and will have data context update, either inherited from parent or copies from the oldElement.
 		/// </summary>
 		public Action<FrameworkElement, FrameworkElement, Type[]?> AfterElementReplaced { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// as part of a preliminary pass through the visual tree prior
+		/// to applying ui updates. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches the type registered for by the handler. 
+		/// Add key-value-pairs to the dictionary parameter
+		/// </summary>
+		public Action<FrameworkElement, IDictionary<string, object>, Type[]?> CaptureState { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// as part of a pass through the visual tree after applying 
+		/// ui updates. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches the type registered for by the handler. 
+		/// Restore properties from the key-value-pairs to the dictionary parameter
+		/// </summary>
+		public Func<FrameworkElement, IDictionary<string, object>, Type[]?, Task> RestoreState { get; set; } = (_, _, _) => Task.CompletedTask;
 	}
 
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
@@ -115,11 +153,12 @@ internal sealed class ElementUpdateAgent : IDisposable
 				{
 
 					var ctorArgs = attr.ConstructorArguments;
-					if (ctorArgs.Count != 2 ||
-						ctorArgs[0].Value is not Type elementType ||
-						ctorArgs[1].Value is not Type handlerType)
+					var elementType = ctorArgs.Count == 2 ? ctorArgs[0].Value as Type : typeof(object);
+					var handlerType = ctorArgs.Count == 2 ? ctorArgs[1].Value as Type :
+											ctorArgs.Count == 1 ? ctorArgs[0].Value as Type : default;
+					if (elementType is null || handlerType is null)
 					{
-						_log($"'{attr}' found with invalid arguments.");
+						_log($"'{attr}' found with invalid arguments. elementType '{elementType?.Name}', handlerType '{handlerType?.Name}'");
 						continue;
 					}
 
@@ -137,23 +176,36 @@ internal sealed class ElementUpdateAgent : IDisposable
 	{
 		bool methodFound = false;
 
+		_log($"Loading ElementMetatdataUpdateHandlerAttribute with constructor arguments {elementType.Name} and {handlerType.Name}");
+
+
 		var updateActions = new ElementUpdateHandlerActions();
 		_elementHandlerActions[elementType] = updateActions;
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.BeforeVisualTreeUpdate)) is MethodInfo beforeVisualTreeUpdate)
 		{
-			updateActions.BeforeVisualTreeUpdate = CreateAction(beforeVisualTreeUpdate);
+			_log($"Adding handler for {nameof(updateActions.BeforeVisualTreeUpdate)} for {handlerType}");
+			updateActions.BeforeVisualTreeUpdate = CreateAction(beforeVisualTreeUpdate, handlerType);
 			methodFound = true;
 		}
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.AfterVisualTreeUpdate)) is MethodInfo afterVisualTreeUpdate)
 		{
-			updateActions.AfterVisualTreeUpdate = CreateAction(afterVisualTreeUpdate);
+			_log($"Adding handler for {nameof(updateActions.AfterVisualTreeUpdate)} for {handlerType}");
+			updateActions.AfterVisualTreeUpdate = CreateAction(afterVisualTreeUpdate, handlerType);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(handlerType, nameof(ElementUpdateHandlerActions.ReloadCompleted), new[] { typeof(Type[]), typeof(bool) }) is MethodInfo reloadCompleted)
+		{
+			_log($"Adding handler for {nameof(updateActions.ReloadCompleted)} for {handlerType}");
+			updateActions.ReloadCompleted = CreateHandlerAction<Action<Type[]?, bool>>(reloadCompleted);
 			methodFound = true;
 		}
 
 		if (GetHandlerMethod(handlerType, nameof(ElementUpdateHandlerActions.ElementUpdate), new[] { typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo elementUpdate)
 		{
+			_log($"Adding handler for {nameof(updateActions.ElementUpdate)} for {handlerType}");
 			updateActions.ElementUpdate = CreateHandlerAction<Action<FrameworkElement, Type[]?>>(elementUpdate);
 			methodFound = true;
 		}
@@ -163,6 +215,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			nameof(ElementUpdateHandlerActions.BeforeElementReplaced),
 			new[] { typeof(FrameworkElement), typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo beforeElementReplaced)
 		{
+			_log($"Adding handler for {nameof(updateActions.BeforeElementReplaced)} for {handlerType}");
 			updateActions.BeforeElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(beforeElementReplaced);
 			methodFound = true;
 		}
@@ -172,14 +225,36 @@ internal sealed class ElementUpdateAgent : IDisposable
 			nameof(ElementUpdateHandlerActions.AfterElementReplaced),
 			new[] { typeof(FrameworkElement), typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo afterElementReplaced)
 		{
+			_log($"Adding handler for {nameof(updateActions.AfterElementReplaced)} for {handlerType}");
 			updateActions.AfterElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(afterElementReplaced);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(
+			handlerType,
+			nameof(ElementUpdateHandlerActions.CaptureState),
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) }) is MethodInfo captureState)
+		{
+			_log($"Adding handler for {nameof(updateActions.CaptureState)} for {handlerType}");
+			updateActions.CaptureState = CreateHandlerAction<Action<FrameworkElement, IDictionary<string, object>, Type[]?>>(captureState);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(
+			handlerType,
+			nameof(ElementUpdateHandlerActions.RestoreState),
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) },
+			typeof(Task)) is MethodInfo restoreState)
+		{
+			_log($"Adding handler for {nameof(updateActions.RestoreState)} for {handlerType}");
+			updateActions.RestoreState = CreateHandlerAction<Func<FrameworkElement, IDictionary<string, object>, Type[]?, Task>>(restoreState);
 			methodFound = true;
 		}
 
 		if (!methodFound)
 		{
 			_log($"No invokable methods found on metadata handler type '{handlerType}'. " +
-				$"Allowed methods are BeforeVisualTreeUpdate, AfterVisualTreeUpdate, ElementUpdate, BeforeElementReplaced, AfterElementReplaced");
+				$"Allowed methods are BeforeVisualTreeUpdate, AfterVisualTreeUpdate, ElementUpdate, BeforeElementReplaced, AfterElementReplaced, CaptureState, RestoreState, ReloadCompleted");
 		}
 		else
 		{
@@ -194,10 +269,14 @@ internal sealed class ElementUpdateAgent : IDisposable
 
 	private MethodInfo? GetHandlerMethod(
 		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
-		Type handlerType, string name, Type[] parameterTypes)
+		Type handlerType, string name, Type[] parameterTypes, Type? returnType = default)
 	{
 		if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, parameterTypes, null) is MethodInfo updateMethod &&
-			updateMethod.ReturnType == typeof(void))
+			(
+				(returnType is null && updateMethod.ReturnType == typeof(void)) ||
+				(updateMethod.ReturnType == returnType)
+			)
+		)
 		{
 			return updateMethod;
 		}
@@ -214,18 +293,18 @@ internal sealed class ElementUpdateAgent : IDisposable
 		return null;
 	}
 
-	private Action<Type[]?> CreateAction(MethodInfo update)
+	private Action<Type[]?> CreateAction(MethodInfo update, Type handlerType)
 	{
 		var action = CreateHandlerAction<Action<Type[]?>>(update);
 		return types =>
 		{
 			try
 			{
-				action(types);
+				action?.Invoke(types);
 			}
 			catch (Exception ex)
 			{
-				_log($"Exception from '{action}': {ex}");
+				_log($"Exception from '{update.Name}' on {handlerType.Name}: {ex}");
 			}
 		};
 	}

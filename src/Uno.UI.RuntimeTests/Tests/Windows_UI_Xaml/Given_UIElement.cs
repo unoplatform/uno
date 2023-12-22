@@ -13,11 +13,11 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 #if __IOS__
 using UIKit;
@@ -81,8 +81,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Border border = new Border();
 			TextBlock text = new TextBlock()
 			{
-				HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center,
-				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center,
+				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
 				Text = "Short text"
 			};
 			border.Child = text;
@@ -110,8 +110,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Rectangle rectangle = new Rectangle()
 			{
-				HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center,
-				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center,
+				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
+				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
 				Width = 42,
 				Height = 24,
 			};
@@ -544,17 +544,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var ctl1 = new MeasureAndArrangeCounter
 			{
-				Background = new SolidColorBrush(Windows.UI.Colors.Yellow),
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
 				Margin = new Thickness(20)
 			};
 			var ctl2 = new MeasureAndArrangeCounter
 			{
-				Background = new SolidColorBrush(Windows.UI.Colors.DarkRed),
+				Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed),
 				Margin = new Thickness(20)
 			};
 			var ctl3 = new MeasureAndArrangeCounter
 			{
-				Background = new SolidColorBrush(Windows.UI.Colors.Cornsilk),
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Cornsilk),
 				Margin = new Thickness(20),
 				Width = 100,
 				Height = 100
@@ -590,7 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				// copied from FrameworkElement.MeasureOverride and modified to compile on Windows
 				var child = Children.Count > 0 ? Children[0] : null;
-#if NETFX_CORE
+#if WINAPPSDK
 				if (child != null)
 				{
 					child.Measure(availableSize);
@@ -612,7 +612,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				if (child != null)
 				{
-#if NETFX_CORE
+#if WINAPPSDK
 					child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 					ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));

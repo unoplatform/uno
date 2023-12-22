@@ -17,12 +17,12 @@
 		<dependencies>
 
 			<!-- References from Uno.UI.Toolkit -->
-			<!-- BEGIN WinUI-specific
+			<!-- BEGIN UWP-excluded -->
 			<group targetFramework="net7.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
-			  END WinUI-specific -->
+			<!-- END UWP-excluded -->
 
 			<!-- net7.0-android30.0 -->
 			<group targetFramework="net7.0-android30.0">
@@ -59,7 +59,6 @@
 
 			<!-- net8.0-android30.0 -->
 			<group targetFramework="net8.0-android30.0">
-				<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0.10" />
 				<dependency id="Xamarin.AndroidX.AppCompat" version="1.3.1.3" />
 				<dependency id="Xamarin.AndroidX.RecyclerView" version="1.2.1.3" />
 				<dependency id="Xamarin.AndroidX.Activity" version="1.3.1.2" />

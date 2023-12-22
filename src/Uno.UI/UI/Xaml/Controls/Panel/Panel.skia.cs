@@ -8,18 +8,17 @@ using System.Text;
 using System.Collections;
 using Uno.UI.DataBinding;
 using Uno.Disposables;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-using View = Windows.UI.Xaml.UIElement;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class Panel : IEnumerable
+	public partial class Panel
 	{
 		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
@@ -85,14 +84,9 @@ namespace Windows.UI.Xaml.Controls
 		/// }
 		/// </summary>
 		/// <param name="view"></param>
-		public void Add(View view)
+		public void Add(UIElement view)
 		{
 			Children.Add(view);
-		}
-
-		public new IEnumerator GetEnumerator()
-		{
-			return this.GetChildren().GetEnumerator();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
@@ -101,8 +95,5 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 			UpdateHitTest();
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

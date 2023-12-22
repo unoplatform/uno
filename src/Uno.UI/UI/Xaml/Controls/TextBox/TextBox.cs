@@ -3,7 +3,6 @@
 #endif
 
 using System;
-
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -12,16 +11,17 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
+using Uno.UI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -30,7 +30,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class TextBoxConstants
 	{
@@ -70,6 +70,19 @@ namespace Windows.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
+#if !IS_UNIT_TESTS && !__MACOS__
+		/// <summary>
+		/// Occurs when text is pasted into the control.
+		/// </summary>
+		public
+#if __IOS__
+			new
+#endif
+			event TextControlPasteEventHandler Paste;
+
+		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
+#endif
+
 		/// <summary>
 		/// Set when <see cref="TextChanged"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
 		/// </summary>
@@ -103,6 +116,61 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
+
+#if __SKIA__
+			_timer.Tick += TimerOnTick;
+			EnsureHistory();
+#endif
+		}
+
+		private bool IsSkiaTextBox =>
+#if __SKIA__
+			!FeatureConfiguration.TextBox.UseOverlayOnSkia;
+#else
+			false;
+#endif
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+#if __ANDROID__
+			SetupTextBoxView();
+#endif
+
+			// This workaround is added in OnLoaded rather than OnApplyTemplate.
+			// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
+			// So, the style setters would override what the workaround does.
+			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
+			if (_contentElement is ScrollViewer scrollViewer)
+			{
+#if __IOS__ || __MACOS__
+				// We disable scrolling because the inner ITextBoxView provides its own scrolling
+				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+#else
+				// The template of TextBox contains the following:
+				/*
+					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+				 */
+				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
+				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
+				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
+				// before the support for TemplateBinding for attached DPs.
+				if (!IsSkiaTextBox)
+				{
+					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
+				}
+#endif
+			}
 		}
 
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
@@ -155,33 +223,6 @@ namespace Windows.UI.Xaml.Controls
 			_placeHolder = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
 			_header = GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
-
-			if (_contentElement is ScrollViewer scrollViewer)
-			{
-#if __IOS__ || __MACOS__
-				// We disable scrolling because the inner ITextBoxView provides its own scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
-				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#else
-				// The template of TextBox contains the following:
-				/*
-					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-				 */
-				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
-				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
-				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
-				// before the support for TemplateBinding for attached DPs.
-				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
-#endif
-			}
 
 			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
 			{
@@ -258,12 +299,16 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
+			OnTextChangedPartial();
+
 			if (!_isTextChangedPending)
 			{
 				_isTextChangedPending = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
 			}
 		}
+
+		partial void OnTextChangedPartial();
 
 		private void RaiseTextChanging()
 		{
@@ -333,6 +378,10 @@ namespace Windows.UI.Xaml.Controls
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
+			}
+			else if (IsSkiaTextBox)
+			{
+				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
 			}
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
@@ -870,9 +919,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateVisualState();
+
+			OnFocusStateChangedPartial2(newValue);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
+
+		partial void OnFocusStateChangedPartial2(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -920,7 +973,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+
+			OnPointerPressedPartial(args);
 		}
+
+		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
+
+		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -933,6 +992,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+
+			OnPointerReleasedPartial(args);
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)
@@ -945,7 +1006,15 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTappedPartial();
 
 		/// <inheritdoc />
-		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		protected override void OnKeyDown(KeyRoutedEventArgs args) => OnKeyDownPartial(args);
+
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+
+#if !__SKIA__
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
+#endif
+
+		private void OnKeyDownInternal(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
 
@@ -1146,7 +1215,20 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				var content = Clipboard.GetContent();
-				var clipboardText = await content.GetTextAsync();
+				string clipboardText;
+				try
+				{
+					clipboardText = await content.GetTextAsync();
+				}
+				catch (InvalidOperationException e)
+				{
+					clipboardText = "";
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+					}
+				}
 				var selectionStart = SelectionStart;
 				var selectionLength = SelectionLength;
 				var currentText = Text;
@@ -1158,9 +1240,28 @@ namespace Windows.UI.Xaml.Controls
 
 				currentText = currentText.Insert(selectionStart, clipboardText);
 
-				Text = currentText;
+				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+
+#if __SKIA__
+				try
+				{
+
+					_suppressCurrentlyTyping = true;
+#else
+				{
+#endif
+					Text = currentText;
+				}
+#if __SKIA__
+				finally
+				{
+					_suppressCurrentlyTyping = false;
+				}
+#endif
 			});
 		}
+
+		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.
@@ -1182,8 +1283,25 @@ namespace Windows.UI.Xaml.Controls
 		public void CutSelectionToClipboard()
 		{
 			CopySelectionToClipboard();
-			Text = Text.Remove(SelectionStart, SelectionLength);
+			CutSelectionToClipboardPartial();
+#if __SKIA__
+			try
+			{
+				_suppressCurrentlyTyping = true;
+#else
+			{
+#endif
+				Text = Text.Remove(SelectionStart, SelectionLength);
+			}
+#if __SKIA__
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+			}
+#endif
 		}
+
+		partial void CutSelectionToClipboardPartial();
 
 		internal override bool CanHaveChildren() => true;
 

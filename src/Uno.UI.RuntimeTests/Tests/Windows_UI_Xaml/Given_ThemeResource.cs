@@ -9,11 +9,11 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_ThemeResource
 	{
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("Fails on UWP with 'The parameter is incorrect.'")]
 #endif
 #if __MACOS__
@@ -156,6 +156,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				color = ((SolidColorBrush)SUT.TestButton.Background).Color;
 
 				Assert.AreEqual(Colors.Red, color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed()
+		{
+			using var _ = StyleHelper.UseFluentStyles();
+
+			var control = new ThemeResource_Theme_Changing_Override();
+			WindowHelper.WindowContent = control;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Colors.Red, (control.button01.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button02.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button03.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button04.Background as SolidColorBrush)?.Color);
+
+			Assert.AreEqual(Colors.Green, (control.button01_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button02_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button03_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button04_override.Background as SolidColorBrush)?.Color);
+
+			using (ThemeHelper.UseDarkTheme())
+			{
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(Colors.DarkRed, (control.button01.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button02.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button03.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button04.Background as SolidColorBrush)?.Color);
+
+				Assert.AreEqual(Colors.DarkGreen, (control.button01_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button02_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button03_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button04_override.Background as SolidColorBrush)?.Color);
 			}
 		}
 

@@ -6,8 +6,7 @@ jobs:
   displayName: 'Unit Tests'
   timeoutInMinutes: 90
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   strategy:
     matrix:
@@ -32,8 +31,8 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    # This is required to be able to use hard links as much as possible
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
     # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
@@ -93,6 +92,8 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
+        !**\Uno.UI.Tests.ViewLibraryProps.dll
+        !**\Uno.UI.Tests.ViewLibrary.dll
         !**\testhost*.*
         !**\Microsoft*.dll
 

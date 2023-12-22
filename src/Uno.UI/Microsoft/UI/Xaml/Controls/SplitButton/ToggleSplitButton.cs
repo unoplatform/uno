@@ -1,15 +1,15 @@
 ﻿// MUX commit reference 36f8f8f6d5f11f414fdaa0462d0c4cb845cf4254
 
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 
 #pragma warning disable 105 // Required for the WinUI replace pass
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 #pragma warning restore 105
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class ToggleSplitButton : SplitButton
 	{

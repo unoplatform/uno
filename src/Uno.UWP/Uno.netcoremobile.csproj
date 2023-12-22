@@ -24,8 +24,6 @@
 		assembly, for non-fully qualified types in System and Windows.System
 		-->
 		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
-
-		<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
@@ -34,10 +32,16 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
+	</ItemGroup>
+
+	<!-- This condition is **explicitly** for net7.0 -->
+	<!-- Don't include this package for any version later than net7.0 -->
+	<!-- Once we remove net7.0 support, this ItemGroup should be deleted. -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 	</ItemGroup>
 
 	<ItemGroup>
