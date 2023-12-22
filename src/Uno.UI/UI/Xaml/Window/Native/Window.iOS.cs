@@ -414,7 +414,7 @@ public partial class Window : UIWindow
 		var viewRectInScrollView = CGRect.Empty;
 
 		//if the view is a multilineTextBox, we want to based our ScrollRectToVisible logic on caret position not on the bottom of the multilineTextBox view
-		var multilineTextBoxView = view as Windows.UI.Xaml.Controls.MultilineTextBoxView;
+		var multilineTextBoxView = view as Microsoft.UI.Xaml.Controls.MultilineTextBoxView;
 		if (multilineTextBoxView == null)
 		{
 			multilineTextBoxView = (view as TextBox)?.MultilineTextBox;
