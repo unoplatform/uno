@@ -19,7 +19,7 @@ internal class UnoWpfWindow : WpfWindow
 
 	private bool _shown;
 
-	public UnoWpfWindow(WinUI.Window winUIWindow, XamlRoot xamlRoot)
+	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 

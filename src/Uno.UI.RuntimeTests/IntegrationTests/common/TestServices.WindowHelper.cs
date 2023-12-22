@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
 #if NETFX_CORE
@@ -31,7 +31,7 @@ namespace Private.Infrastructure
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Windows.UI.Xaml.Window CurrentTestWindow { get; set; }
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 
@@ -108,10 +108,11 @@ namespace Private.Infrastructure
 			public static UIElement RootElement => UseActualWindowRoot ?
 				CurrentTestWindow.Content : EmbeddedTestRoot.control;
 
-			// Dispatcher is a separate property, as accessing CurrentTestWindow.Content when
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
-			public static DispatcherQueue RootElementDispatcherQueue => UseActualWindowRoot ?
-				CurrentTestWindow.DispatcherQueue : EmbeddedTestRoot.control.DispatcherQueue;
+			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
+				? UnitTestDispatcherCompat.From(CurrentTestWindow)
+				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
 
 			internal static Page SetupSimulatedAppPage()
 			{

@@ -28,13 +28,13 @@ internal class ContentRootEventListener
 		//RegisterRightTappedEventHandler();
 	}
 
-	~ContentRootEventListener()
-	{
-		//UnregisterTabProcessEventHandler();
-		//UnregisterContextMenuOpeningEventHandler();
-		//UnregisterManipulationInertiaProcessingEventHandler();
-		//UnregisterRightTappedEventHandler();
-	}
+	//~ContentRootEventListener()
+	//{
+	//	//UnregisterTabProcessEventHandler();
+	//	//UnregisterContextMenuOpeningEventHandler();
+	//	//UnregisterManipulationInertiaProcessingEventHandler();
+	//	//UnregisterRightTappedEventHandler();
+	//}
 
 	private void RegisterTabProcessEventHandler()
 	{

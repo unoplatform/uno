@@ -9,8 +9,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
-using Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 

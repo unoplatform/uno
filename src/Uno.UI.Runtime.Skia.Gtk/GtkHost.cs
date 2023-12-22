@@ -5,17 +5,12 @@ using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers;
 using Microsoft.UI.Xaml;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WUX = Microsoft.UI.Xaml;
-using GtkApplication = Gtk.Application;
-using WinUIWindow = Microsoft.UI.Xaml.Window;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
-using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers;
 using Uno.UI.Runtime.Skia.Gtk.UI;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Windows.UI.Xaml;
 using GtkApplication = Gtk.Application;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {

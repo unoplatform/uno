@@ -2,15 +2,16 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
 using _Debug = System.Diagnostics.Debug;
 
 namespace Microsoft.UI.Xaml.Controls

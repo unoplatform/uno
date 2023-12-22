@@ -4,7 +4,7 @@
 using Gtk;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk;

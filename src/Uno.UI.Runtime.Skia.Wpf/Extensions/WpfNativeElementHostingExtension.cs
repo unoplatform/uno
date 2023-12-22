@@ -2,7 +2,7 @@
 
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf;

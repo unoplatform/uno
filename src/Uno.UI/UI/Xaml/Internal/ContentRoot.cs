@@ -63,7 +63,7 @@ internal partial class ContentRoot
 		//TODO Uno: Does not match WinUI exactly, additional logic can be ported later.
 		VisualTree = new VisualTree(coreServices, backgroundColor, rootElement, this);
 		InputManager = new InputManager(this);
-		m_contentRootEventListener = new ContentRootEventListener(this);
+		_contentRootEventListener = new ContentRootEventListener(this);
 		FocusManager = new FocusManager(this);
 
 		//TODO Uno: We may want to create a custom version of adapter and observer for Island vs CoreWindow.
