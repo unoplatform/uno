@@ -3,13 +3,13 @@
 using System;
 using UIKit;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
+	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
 	{
 		if (rootElement.Superview is null)
 		{

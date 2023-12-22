@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:wasm="http://uno.ui/wasm" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Microsoft.UI.Xaml.Automation" xmlns:local="using:Microsoft.UI.Xaml.Controls" xmlns:localmuxcp="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:animatedVisuals="using:AnimatedVisuals" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:ios="http://uno.ui/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:wasm="http://uno.ui/wasm" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:automation="clr-namespace:Microsoft.UI.Xaml.Automation" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:unouwp="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Uno.WinUI,1)" xmlns:animatedVisuals="using:AnimatedVisuals" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:ios="http://uno.ui/ios" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android wasm skia" x:Key="Default">
       <SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent" />
@@ -1093,7 +1093,7 @@
       <StaticResource x:Key="RatingControlPointerOverSelectedForeground" ResourceKey="SystemControlForegroundAccentBrush" />
       <StaticResource x:Key="RatingControlDisabledSelectedForeground" ResourceKey="SystemBaseMediumLowColor" />
       <StaticResource x:Key="RatingControlCaptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <local:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" />
+      <controls:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" />
       <Thickness x:Key="RepeatButtonBorderThemeThickness">1</Thickness>
       <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <SolidColorBrush x:Key="RepeatButtonBackgroundPointerOver" Color="{StaticResource SystemBaseHighColor}" Opacity="0.1" />
@@ -2575,7 +2575,7 @@
       <StaticResource x:Key="RatingControlPointerOverSelectedForeground" ResourceKey="SystemControlForegroundAccentBrush" />
       <StaticResource x:Key="RatingControlDisabledSelectedForeground" ResourceKey="SystemBaseMediumLowColor" />
       <StaticResource x:Key="RatingControlCaptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <local:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" />
+      <controls:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" />
       <Thickness x:Key="RepeatButtonBorderThemeThickness">1</Thickness>
       <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <SolidColorBrush x:Key="RepeatButtonBackgroundPointerOver" Color="{StaticResource SystemBaseHighColor}" Opacity="0.1" />
@@ -4056,7 +4056,7 @@
       <StaticResource x:Key="RatingControlPointerOverSelectedForeground" ResourceKey="SystemControlHighlightAccentBrush" />
       <StaticResource x:Key="RatingControlDisabledSelectedForeground" ResourceKey="SystemColorGrayTextColor" />
       <StaticResource x:Key="RatingControlCaptionForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
-      <local:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" UnsetGlyph="&#xE734;" />
+      <controls:RatingItemFontInfo x:Key="MUX_RatingControlDefaultFontInfo" Glyph="&#xE735;" UnsetGlyph="&#xE734;" />
       <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="RepeatButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="RepeatButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
@@ -10128,7 +10128,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style x:Key="DefaultCommandBarFlyoutCommandBarStyle" TargetType="localmuxcp:CommandBarFlyoutCommandBar">
+  <Style x:Key="DefaultCommandBarFlyoutCommandBarStyle" TargetType="primitives:CommandBarFlyoutCommandBar">
     <Setter Property="Background" Value="{ThemeResource SystemControlAcrylicElementBrush}" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
     <Setter Property="BorderBrush" Value="{ThemeResource SystemControlTransientBorderBrush}" />
@@ -10148,7 +10148,7 @@
     <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="localmuxcp:CommandBarFlyoutCommandBar">
+        <ControlTemplate TargetType="primitives:CommandBarFlyoutCommandBar">
           <Grid x:Name="LayoutRoot" CornerRadius="{TemplateBinding CornerRadius}">
             <Grid.Resources>
               <Style TargetType="AppBarButton" BasedOn="{StaticResource CommandBarFlyoutAppBarButtonStyle}" />
@@ -10513,7 +10513,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="localmuxcp:CommandBarFlyoutCommandBar" BasedOn="{StaticResource DefaultCommandBarFlyoutCommandBarStyle}" />
+  <Style TargetType="primitives:CommandBarFlyoutCommandBar" BasedOn="{StaticResource DefaultCommandBarFlyoutCommandBarStyle}" />
   <Style x:Key="CommandBarFlyoutAppBarButtonStyleBase" TargetType="AppBarButton">
     <Setter Property="Background" Value="{ThemeResource CommandBarFlyoutButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -13019,7 +13019,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style x:Key="DefaultDropDownButtonStyle" TargetType="local:DropDownButton">
+  <Style x:Key="DefaultDropDownButtonStyle" TargetType="controls:DropDownButton">
     <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource ButtonBorderBrush}" />
@@ -13104,7 +13104,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}" />
+  <Style TargetType="controls:DropDownButton" BasedOn="{StaticResource DefaultDropDownButtonStyle}" />
   <Style TargetType="FlipViewItem" BasedOn="{StaticResource DefaultFlipViewItemStyle}" />
   <Style x:Key="DefaultFlipViewItemStyle" TargetType="FlipViewItem">
     <Setter Property="Background" Value="{ThemeResource FlipViewItemBackground}" />
@@ -14755,14 +14755,14 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:MenuBar" BasedOn="{StaticResource DefaultMenuBarStyle}" />
-  <Style x:Key="DefaultMenuBarStyle" TargetType="local:MenuBar">
+  <Style TargetType="controls:MenuBar" BasedOn="{StaticResource DefaultMenuBarStyle}" />
+  <Style x:Key="DefaultMenuBarStyle" TargetType="controls:MenuBar">
     <Setter Property="Background" Value="{ThemeResource MenuBarBackground}" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Height" Value="{StaticResource MenuBarHeight}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:MenuBar">
+        <ControlTemplate TargetType="controls:MenuBar">
           <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch">
             <ItemsControl x:Name="ContentRoot" VerticalAlignment="Stretch" HorizontalAlignment="Left" IsTabStop="False">
               <ItemsControl.ItemsPanel>
@@ -14776,7 +14776,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:MenuBarItem">
+  <Style TargetType="controls:MenuBarItem">
     <Setter Property="Background" Value="{ThemeResource MenuBarItemBackground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource MenuBarItemBorderThickness}" />
     <Setter Property="BorderBrush" Value="{ThemeResource MenuBarItemBorderBrush}" />
@@ -14786,7 +14786,7 @@
     <Setter Property="UseSystemFocusVisuals" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:MenuBarItem">
+        <ControlTemplate TargetType="controls:MenuBarItem">
           <Grid x:Name="ContentRoot" Background="{TemplateBinding Background}">
             <Grid.Resources>
               <!-- Stop the contained button from setting its background to anything but transparent -->
@@ -14864,7 +14864,7 @@
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
-                    <Setter Target="Content.(local:AnimatedIcon.State)" Value="PointerOver" />
+                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="PointerOver" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
@@ -14877,7 +14877,7 @@
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
-                    <Setter Target="Content.(local:AnimatedIcon.State)" Value="Pressed" />
+                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="Pressed" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Disabled">
@@ -14889,12 +14889,12 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <local:AnimatedIcon x:Name="Content" Height="16" Width="16" local:AnimatedIcon.State="Normal" MirroredWhenRightToLeft="True" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+            <controls:AnimatedIcon x:Name="Content" Height="16" Width="16" local:AnimatedIcon.State="Normal" MirroredWhenRightToLeft="True" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" xmlns:local="using:Microsoft.UI.Xaml.Controls">
               <animatedvisuals:AnimatedBackVisualSource />
-              <local:AnimatedIcon.FallbackIconSource>
-                <local:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
-              </local:AnimatedIcon.FallbackIconSource>
-            </local:AnimatedIcon>
+              <controls:AnimatedIcon.FallbackIconSource>
+                <controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+              </controls:AnimatedIcon.FallbackIconSource>
+            </controls:AnimatedIcon>
           </Grid>
         </ControlTemplate>
       </Setter.Value>
@@ -15380,7 +15380,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:NavigationViewItem" x:Key="MUX_NavigationViewSettingsItemStyleWhenOnTopPane">
+  <Style TargetType="controls:NavigationViewItem" x:Key="MUX_NavigationViewSettingsItemStyleWhenOnTopPane">
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
     <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -15392,7 +15392,7 @@
     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:NavigationViewItem">
+        <ControlTemplate TargetType="controls:NavigationViewItem">
           <Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PointerStates">
@@ -15830,13 +15830,13 @@
     <Setter Property="Margin" Value="{ThemeResource NavigationViewHeaderMargin}" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
   </Style>
-  <Style TargetType="local:NavigationView">
+  <Style TargetType="controls:NavigationView">
     <Setter Property="PaneToggleButtonStyle" Value="{StaticResource PaneToggleButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CompactPaneLength" Value="{ThemeResource NavigationViewCompactPaneLength}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:NavigationView">
+        <ControlTemplate TargetType="controls:NavigationView">
           <Grid x:Name="RootGrid">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="DisplayModeGroup">
@@ -15962,15 +15962,15 @@
                   <ContentControl x:Name="PaneHeaderOnTopPane" IsTabStop="False" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="2" />
                   <ContentControl x:Name="PaneTitleOnTopPane" IsTabStop="False" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="2" />
                   <!-- Top nav ItemsRepeater -->
-                  <local:ItemsRepeaterScrollHost Grid.Column="3">
+                  <controls:ItemsRepeaterScrollHost Grid.Column="3">
                     <ScrollViewer HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Hidden" VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden">
-                      <local:ItemsRepeater AutomationProperties.LandmarkType="Navigation" AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsHost">
-                        <local:ItemsRepeater.Layout>
-                          <local:StackLayout Orientation="Horizontal" />
-                        </local:ItemsRepeater.Layout>
-                      </local:ItemsRepeater>
+                      <controls:ItemsRepeater AutomationProperties.LandmarkType="Navigation" AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsHost">
+                        <controls:ItemsRepeater.Layout>
+                          <controls:StackLayout Orientation="Horizontal" />
+                        </controls:ItemsRepeater.Layout>
+                      </controls:ItemsRepeater>
                     </ScrollViewer>
-                  </local:ItemsRepeaterScrollHost>
+                  </controls:ItemsRepeaterScrollHost>
                   <Button x:Name="TopNavOverflowButton" Grid.Column="4" Content="More" Margin="{ThemeResource TopNavigationViewOverflowButtonMargin}" Style="{StaticResource NavigationViewOverflowButtonStyleWhenPaneOnTop}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OverflowButtonVisibility}">
                     <Button.Flyout>
                       <Flyout contract7NotPresent:Placement="Bottom" contract7Present:Placement="BottomEdgeAlignedRight" ElementSoundMode="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ElementSoundMode}">
@@ -15996,11 +15996,11 @@
                             </Setter>
                           </Style>
                         </Flyout.FlyoutPresenterStyle>
-                        <local:ItemsRepeaterScrollHost>
+                        <controls:ItemsRepeaterScrollHost>
                           <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <local:ItemsRepeater AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsOverflowHost" />
+                            <controls:ItemsRepeater AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsOverflowHost" />
                           </ScrollViewer>
-                        </local:ItemsRepeaterScrollHost>
+                        </controls:ItemsRepeaterScrollHost>
                       </Flyout>
                     </Button.Flyout>
                   </Button>
@@ -16010,11 +16010,11 @@
                   </Grid>
                   <ContentControl x:Name="PaneFooterOnTopPane" IsTabStop="False" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="7" />
                   <!-- Top footer menu ItemsRepeater -->
-                  <local:ItemsRepeater Grid.Column="8" AutomationProperties.LandmarkType="Navigation" AutomationProperties.AccessibilityView="Content" x:Name="TopFooterMenuItemsHost">
-                    <local:ItemsRepeater.Layout>
-                      <local:StackLayout Orientation="Horizontal" />
-                    </local:ItemsRepeater.Layout>
-                  </local:ItemsRepeater>
+                  <controls:ItemsRepeater Grid.Column="8" AutomationProperties.LandmarkType="Navigation" AutomationProperties.AccessibilityView="Content" x:Name="TopFooterMenuItemsHost">
+                    <controls:ItemsRepeater.Layout>
+                      <controls:StackLayout Orientation="Horizontal" />
+                    </controls:ItemsRepeater.Layout>
+                  </controls:ItemsRepeater>
                 </Grid>
                 <Border x:Name="TopNavContentOverlayAreaGrid" Child="{TemplateBinding ContentOverlay}" />
               </StackPanel>
@@ -16063,21 +16063,21 @@
                         <!-- FooterItems -->
                       </Grid.RowDefinitions>
                       <!-- MenuItems -->
-                      <local:ItemsRepeaterScrollHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                      <controls:ItemsRepeaterScrollHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <ScrollViewer x:Name="MenuItemsScrollViewer" TabNavigation="Local" VerticalScrollBarVisibility="Auto">
                           <!-- Left nav ItemsRepeater -->
-                          <local:ItemsRepeater x:Name="MenuItemsHost" AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" AutomationProperties.AccessibilityView="Content" />
+                          <controls:ItemsRepeater x:Name="MenuItemsHost" AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" AutomationProperties.AccessibilityView="Content" />
                         </ScrollViewer>
-                      </local:ItemsRepeaterScrollHost>
-                      <local:NavigationViewItemSeparator x:Name="VisualItemsSeparator" Grid.Row="1" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" />
+                      </controls:ItemsRepeaterScrollHost>
+                      <controls:NavigationViewItemSeparator x:Name="VisualItemsSeparator" Grid.Row="1" VerticalAlignment="Center" Visibility="Collapsed" HorizontalAlignment="Stretch" />
                       <!-- PaneFooter -->
                       <ContentControl x:Name="FooterContentBorder" IsTabStop="False" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Row="2" />
                       <!-- FooterItems -->
-                      <local:ItemsRepeaterScrollHost Grid.Row="3">
+                      <controls:ItemsRepeaterScrollHost Grid.Row="3">
                         <ScrollViewer x:Name="FooterItemsScrollViewer" VerticalScrollBarVisibility="Auto" contract7Present:VerticalAnchorRatio="1">
-                          <local:ItemsRepeater x:Name="FooterMenuItemsHost" AutomationProperties.AccessibilityView="Content" />
+                          <controls:ItemsRepeater x:Name="FooterMenuItemsHost" AutomationProperties.AccessibilityView="Content" />
                         </ScrollViewer>
-                      </local:ItemsRepeaterScrollHost>
+                      </controls:ItemsRepeaterScrollHost>
                     </Grid>
                   </Grid>
                 </SplitView.Pane>
@@ -16131,7 +16131,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:NavigationViewItem">
+  <Style TargetType="controls:NavigationViewItem">
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
     <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource NavigationViewItemBorderBrush}" />
@@ -16146,7 +16146,7 @@
     <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:NavigationViewItem">
+        <ControlTemplate TargetType="controls:NavigationViewItem">
           <Grid x:Name="NVIRootGrid">
             <Grid.RowDefinitions>
               <RowDefinition Height="*" />
@@ -16188,11 +16188,11 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <primitives:NavigationViewItemPresenter x:Name="NavigationViewItemPresenter" Icon="{TemplateBinding Icon}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Margin="{TemplateBinding Margin}" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" primitiveContract7Present:CornerRadius="{TemplateBinding CornerRadius}" IsTabStop="false" Control.IsTemplateFocusTarget="True" />
-            <local:ItemsRepeater Grid.Row="1" Visibility="Collapsed" x:Name="NavigationViewItemMenuItemsHost">
-              <local:ItemsRepeater.Layout>
-                <local:StackLayout Orientation="Vertical" />
-              </local:ItemsRepeater.Layout>
-            </local:ItemsRepeater>
+            <controls:ItemsRepeater Grid.Row="1" Visibility="Collapsed" x:Name="NavigationViewItemMenuItemsHost">
+              <controls:ItemsRepeater.Layout>
+                <controls:StackLayout Orientation="Vertical" />
+              </controls:ItemsRepeater.Layout>
+            </controls:ItemsRepeater>
             <FlyoutBase.AttachedFlyout>
               <Flyout x:Name="ChildrenFlyout" contract7NotPresent:Placement="Right" contract7Present:Placement="RightEdgeAlignedTop">
                 <Flyout.FlyoutPresenterStyle>
@@ -16228,7 +16228,7 @@
     </Setter>
   </Style>
   <Style TargetType="primitives:NavigationViewItemPresenter" />
-  <Style TargetType="local:NavigationViewItemHeader">
+  <Style TargetType="controls:NavigationViewItemHeader">
     <Setter Property="IsEnabled" Value="False" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="MinHeight" Value="0" />
@@ -16237,7 +16237,7 @@
     <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemHeaderForeground}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:NavigationViewItemHeader">
+        <ControlTemplate TargetType="controls:NavigationViewItemHeader">
           <Grid x:Name="NavigationViewItemHeaderRootGrid">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="PaneStates">
@@ -16289,7 +16289,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:NavigationViewItemSeparator">
+  <Style TargetType="controls:NavigationViewItemSeparator">
     <Setter Property="IsEnabled" Value="False" />
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="MinHeight" Value="0" />
@@ -16323,13 +16323,13 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:NumberBox">
+  <Style TargetType="controls:NumberBox">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:NumberBox">
+        <ControlTemplate TargetType="controls:NumberBox">
           <Grid>
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="SpinButtonStates">
@@ -16600,8 +16600,8 @@
   <x:Double x:Key="NumberBoxPopupVerticalOffset">-16</x:Double>
   <x:Double x:Key="NumberBoxPopupShadowDepth">16</x:Double>
   <Thickness x:Key="NumberBoxPopupIndicatorMargin">0,0,8,0</Thickness>
-  <Style TargetType="local:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
-  <Style x:Key="DefaultPersonPictureStyle" TargetType="local:PersonPicture">
+  <Style TargetType="controls:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
+  <Style x:Key="DefaultPersonPictureStyle" TargetType="controls:PersonPicture">
     <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
     <Setter Property="Background" Value="{ThemeResource PersonPictureEllipseFillThemeBrush}" />
     <Setter Property="BorderBrush" Value="{ThemeResource SystemColorButtonTextColor}" />
@@ -16614,7 +16614,7 @@
     <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:PersonPicture">
+        <ControlTemplate TargetType="controls:PersonPicture">
           <Grid x:Name="RootGrid">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
@@ -17076,7 +17076,7 @@
     <Setter Property="FontSize" Value="{ThemeResource TextStyleLargeFontSize}" />
     <Setter Property="Margin" Value="{StaticResource PivotPortraitThemePadding}" />
   </Style>
-  <Style TargetType="local:ProgressBar">
+  <Style TargetType="controls:ProgressBar">
     <Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
     <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ProgressBarBorderThemeThickness}" />
@@ -17088,7 +17088,7 @@
     <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:ProgressBar">
+        <ControlTemplate TargetType="controls:ProgressBar">
           <Grid x:Name="LayoutRoot">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
@@ -17454,13 +17454,13 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:ProgressRing">
+  <Style TargetType="controls:ProgressRing">
     <Setter Property="Foreground" Value="{ThemeResource ProgressRingForegroundThemeBrush}" />
     <Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />
     <Setter Property="Maximum" Value="100" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:ProgressRing">
+        <ControlTemplate TargetType="controls:ProgressRing">
           <Grid x:Name="LayoutRoot" Background="Transparent">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
@@ -17482,7 +17482,7 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <!-- AnimatedVisualPlayer for Lottie -->
-            <local:AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill" Opacity="0" />
+            <controls:AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill" Opacity="0" />
             <!--ProgressRing-->
             <Grid x:Name="DeterminateProgressRingRoot">
               <!-- Progress Ring Track-->
@@ -17529,21 +17529,21 @@
   </Style>
   <x:Double x:Key="ProgressRingStrokeThickness">4</x:Double>
   <Style TargetType="RadioButton" BasedOn="{StaticResource DefaultRadioButtonStyle}" />
-  <Style TargetType="local:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
-  <Style x:Key="DefaultRadioButtonsStyle" TargetType="local:RadioButtons">
+  <Style TargetType="controls:RadioButtons" BasedOn="{StaticResource DefaultRadioButtonsStyle}" />
+  <Style x:Key="DefaultRadioButtonsStyle" TargetType="controls:RadioButtons">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
     <Setter Property="TabNavigation" Value="Once" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:RadioButtons">
+        <ControlTemplate TargetType="controls:RadioButtons">
           <StackPanel>
             <ContentPresenter Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
-            <local:ItemsRepeater x:Name="InnerRepeater" ItemTemplate="{TemplateBinding ItemTemplate}">
-              <local:ItemsRepeater.Layout>
+            <controls:ItemsRepeater x:Name="InnerRepeater" ItemTemplate="{TemplateBinding ItemTemplate}">
+              <controls:ItemsRepeater.Layout>
                 <primitives:ColumnMajorUniformToLargestGridLayout MaxColumns="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MaxColumns}" ColumnSpacing="{ThemeResource RadioButtonsColumnSpacing}" RowSpacing="{ThemeResource RadioButtonsRowSpacing}" />
-              </local:ItemsRepeater.Layout>
-            </local:ItemsRepeater>
+              </controls:ItemsRepeater.Layout>
+            </controls:ItemsRepeater>
           </StackPanel>
         </ControlTemplate>
       </Setter.Value>
@@ -17694,7 +17694,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:RatingControl">
+  <Style TargetType="controls:RatingControl">
     <Setter Property="Height" Value="32" />
     <!-- 9794813: retire these two properties as customisation points once all resource keys available -->
     <Setter Property="Foreground" Value="{ThemeResource RatingControlCaptionForeground}" />
@@ -17712,7 +17712,7 @@
     <Setter Property="FocusVisualMargin" Value="-8,-7,-8,0" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:RatingControl">
+        <ControlTemplate TargetType="controls:RatingControl">
           <Grid x:Name="LayoutRoot">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
@@ -18893,8 +18893,8 @@
   <Thickness x:Key="TabViewItemScrollButtonPadding">6,4,10,5</Thickness>
   <x:Double x:Key="TabViewShadowDepth">16</x:Double>
   <Thickness x:Key="TabViewItemSeparatorMargin">0,6,0,6</Thickness>
-  <Style TargetType="local:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
-  <Style x:Key="DefaultTabViewStyle" TargetType="local:TabView">
+  <Style TargetType="controls:TabView" BasedOn="{StaticResource DefaultTabViewStyle}" />
+  <Style x:Key="DefaultTabViewStyle" TargetType="controls:TabView">
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="Padding" Value="{ThemeResource TabViewHeaderPadding}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -18902,7 +18902,7 @@
     <contract6Present:Setter Property="KeyboardAcceleratorPlacementMode" Value="Hidden" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:TabView">
+        <ControlTemplate TargetType="controls:TabView">
           <Grid>
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
@@ -19108,7 +19108,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:TabViewItem">
+  <Style TargetType="controls:TabViewItem">
     <Setter Property="Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
     <Setter Property="HorizontalContentAlignment" Value="Left" />
     <!-- TODO: Uno specific: This is a temporary workaround for TabView items stretching vertically
@@ -19117,7 +19117,7 @@
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:TabViewItem">
+        <ControlTemplate TargetType="controls:TabViewItem">
           <Grid x:Name="LayoutRoot" Padding="{TemplateBinding Padding}" Margin="-1,0,0,0">
             <!-- This item will cover the separator on its left side. -->
             <Grid.ColumnDefinitions>
@@ -20041,8 +20041,8 @@
       <TextBlock Text="{Binding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{ThemeResource BodyTextBlockStyle}" />
     </Grid>
   </DataTemplate>
-  <Style TargetType="local:TreeView" BasedOn="{StaticResource DefaultTreeViewStyle}" />
-  <Style x:Key="DefaultTreeViewStyle" TargetType="local:TreeView">
+  <Style TargetType="controls:TreeView" BasedOn="{StaticResource DefaultTreeViewStyle}" />
+  <Style x:Key="DefaultTreeViewStyle" TargetType="controls:TreeView">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="CanDragItems" Value="True" />
     <Setter Property="CanReorderItems" Value="True" />
@@ -20058,14 +20058,14 @@
     </Setter>
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:TreeView">
-          <local:TreeViewList x:Name="ListControl" ItemTemplate="{TemplateBinding ItemTemplate}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}" ItemContainerTransitions="{TemplateBinding ItemContainerTransitions}" CanDragItems="{TemplateBinding CanDragItems}" AllowDrop="{TemplateBinding AllowDrop}" CanReorderItems="{TemplateBinding CanReorderItems}" />
+        <ControlTemplate TargetType="controls:TreeView">
+          <controls:TreeViewList x:Name="ListControl" ItemTemplate="{TemplateBinding ItemTemplate}" ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}" ItemContainerStyle="{TemplateBinding ItemContainerStyle}" ItemContainerStyleSelector="{TemplateBinding ItemContainerStyleSelector}" ItemContainerTransitions="{TemplateBinding ItemContainerTransitions}" CanDragItems="{TemplateBinding CanDragItems}" AllowDrop="{TemplateBinding AllowDrop}" CanReorderItems="{TemplateBinding CanReorderItems}" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
-  <Style TargetType="local:TreeViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}" x:Key="MUX_TreeViewItemStyle">
+  <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource MUX_TreeViewItemStyle}" />
+  <Style TargetType="controls:TreeViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}" x:Key="MUX_TreeViewItemStyle">
     <Setter Property="Padding" Value="0" />
     <Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TreeViewItemBorderBrush}" />
@@ -20074,7 +20074,7 @@
     <Setter Property="MinHeight" Value="{ThemeResource TreeViewItemMinHeight}" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:TreeViewItem">
+        <ControlTemplate TargetType="controls:TreeViewItem">
           <Grid x:Name="ContentPresenterGrid" Margin="0,0,0,0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
@@ -20187,7 +20187,7 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style x:Key="DefaultTwoPaneViewStyle" TargetType="local:TwoPaneView">
+  <Style x:Key="DefaultTwoPaneViewStyle" TargetType="controls:TwoPaneView">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="VerticalAlignment" Value="Stretch" />
     <Setter Property="MinWideModeWidth" Value="641" />
@@ -20195,7 +20195,7 @@
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="local:TwoPaneView">
+        <ControlTemplate TargetType="controls:TwoPaneView">
           <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="ModeStates">
@@ -20271,5 +20271,5 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="local:TwoPaneView" BasedOn="{StaticResource DefaultTwoPaneViewStyle}" />
+  <Style TargetType="controls:TwoPaneView" BasedOn="{StaticResource DefaultTwoPaneViewStyle}" />
 </ResourceDictionary>

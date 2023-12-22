@@ -1,13 +1,13 @@
 ﻿#nullable enable
 
 using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class NativeWindowFactory
 {
-	public static INativeWindowWrapper? CreateWindow(Windows.UI.Xaml.Window window, XamlRoot xamlRoot)
+	public static INativeWindowWrapper? CreateWindow(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
 	{
 		if (window is null)
 		{

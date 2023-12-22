@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AppWindow
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		internal AppWindow()
 		{
 		}
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.WindowId Id
 		{
@@ -279,7 +279,7 @@ namespace Microsoft.UI.Windowing
 			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28AppWindowPresenter%20appWindowPresenter%2C%20WindowId%20ownerWindowId%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Windowing.AppWindow GetFromWindowId(global::Microsoft.UI.WindowId windowId)
 		{
@@ -302,7 +302,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Windowing.AppWindow, global::Microsoft.UI.Windowing.AppWindowClosingEventArgs> Closing
 		{

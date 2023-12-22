@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -9,5 +9,5 @@ internal interface INativeWindowFactoryExtension
 {
 	bool SupportsMultipleWindows { get; }
 
-	INativeWindowWrapper CreateWindow(Windows.UI.Xaml.Window window, XamlRoot xamlRoot);
+	INativeWindowWrapper CreateWindow(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot);
 }

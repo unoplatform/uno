@@ -1,6 +1,6 @@
 ﻿using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 partial class Window : IWeakReferenceProvider
 {

@@ -11,7 +11,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using Size = Windows.Foundation.Size;
 
@@ -44,7 +44,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
 		}
 
-		_mainController = Windows.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
+		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 
 		ObserveOrientationAndSize();
 	}
