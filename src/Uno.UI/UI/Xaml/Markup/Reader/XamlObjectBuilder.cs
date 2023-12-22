@@ -1225,7 +1225,23 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						if (memberValue is { Length: > 0 } &&
 							PropertyPathPattern().Match(memberValue) is { Success: true, Groups: var g })
 						{
-							var declaringType = g["type"].Success ? TypeResolver.FindType(g["type"].Value) : _styleTargetTypeStack.Peek();
+							Type? declaringType;
+							if (g["type"].Success)
+							{
+								if (g["xmlns"].Success && g["xmlns"].Value is { } xmlns && xmlns.Length > 0)
+								{
+									declaringType = TypeResolver.FindType($"{xmlns}:{g["type"].Value}");
+								}
+								else
+								{
+									declaringType = TypeResolver.FindType(g["type"].Value);
+								}
+							}
+							else
+							{
+								declaringType = _styleTargetTypeStack.Peek();
+							}
+
 							var propertyName = g["property"].Value;
 
 							if (TypeResolver.FindDependencyProperty(declaringType, propertyName) is DependencyProperty property)
