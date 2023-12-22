@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml
 		[JSExport]
 		internal static int DispatchVisibilityChange(bool isVisible)
 		{
-			var application = Windows.UI.Xaml.Application.Current;
+			var application = Microsoft.UI.Xaml.Application.Current;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>

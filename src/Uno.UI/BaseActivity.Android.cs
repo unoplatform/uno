@@ -209,7 +209,7 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseResuming();
+			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
 			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
@@ -233,7 +233,7 @@ namespace Uno.UI
 			ResignCurrent();
 
 			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
-			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
+			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
 		partial void InnerDestroy() => ResignCurrent();

@@ -17,7 +17,7 @@ internal partial class XamlIslandRootCollection : Panel
 	{
 		var desiredSize = new Size(0, 0);
 
-		var collection = GetChildren();
+		var collection = this.Children;
 		if (collection != null)
 		{
 			foreach (var child in collection)
@@ -41,7 +41,7 @@ internal partial class XamlIslandRootCollection : Panel
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var collection = GetChildren();
+		var collection = this.Children;
 
 		if (collection != null)
 		{

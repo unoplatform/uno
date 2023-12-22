@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property Content
 		// Skipping already declared property Bounds
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.Compositor Compositor
 		{
