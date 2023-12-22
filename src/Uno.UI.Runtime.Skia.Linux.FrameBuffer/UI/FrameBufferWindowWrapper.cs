@@ -2,7 +2,7 @@
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
