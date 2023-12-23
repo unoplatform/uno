@@ -10,7 +10,7 @@ using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI

@@ -368,12 +368,12 @@ namespace Uno.UI.Controls
 			{
 				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
 				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
-				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
+				Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
-				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
+				Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
 				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
