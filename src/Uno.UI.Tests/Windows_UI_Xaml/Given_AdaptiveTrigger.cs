@@ -5,9 +5,8 @@ using Microsoft.UI.Xaml;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
-using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {

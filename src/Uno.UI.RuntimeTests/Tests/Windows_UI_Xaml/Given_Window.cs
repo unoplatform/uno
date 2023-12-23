@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Core;
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
 #endif
 
