@@ -11,9 +11,14 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes CalendarDatePicker types to Microsoft UI Automation.
 /// </summary>
-partial class CalendarDatePickerAutomationPeer(CalendarDatePicker owner) : FrameworkElementAutomationPeer(owner)
+partial class CalendarDatePickerAutomationPeer : FrameworkElementAutomationPeer
 {
 	private const string UIA_AP_CALENDARDATEPICKER = nameof(UIA_AP_CALENDARDATEPICKER);
+
+	public CalendarDatePickerAutomationPeer(CalendarDatePicker owner) : base(owner)
+	{
+
+	}
 
 	/// <summary>
 	/// Gets a value that specifies whether the value of a control is read-only.

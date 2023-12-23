@@ -12,8 +12,13 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// Exposes Button types to UI Automation.
 /// </summary>
 /// <param name="owner"></param>
-public partial class ButtonAutomationPeer(Button owner) : ButtonBaseAutomationPeer(owner), IInvokeProvider
+public partial class ButtonAutomationPeer : ButtonBaseAutomationPeer, IInvokeProvider
 {
+	public ButtonAutomationPeer(Button owner) : base(owner)
+	{
+
+	}
+
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Invoke)
