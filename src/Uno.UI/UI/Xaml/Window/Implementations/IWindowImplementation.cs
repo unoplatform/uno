@@ -5,7 +5,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.Xaml.Controls;
