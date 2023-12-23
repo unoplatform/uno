@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;

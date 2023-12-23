@@ -14,7 +14,7 @@ using Uno.UI.Samples.Controls;
 #if XAMARIN || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 #else
-using Microsoft.Graphics.Imaging;
+using Windows.Graphics.Imaging;
 using Microsoft.Graphics.Display;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;

@@ -48,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO
 			TestServices.WindowHelper.XamlRoot.Bounds;
 #else
-			Windows.UI.Xaml.Window.Current?.Bounds ?? default;
+			Microsoft.UI.Xaml.Window.Current?.Bounds ?? default;
 #endif
 #endif
 
