@@ -20,7 +20,7 @@ Uno Platform 5.0 continues to support both UWP ([Uno.UI](https://www.nuget.org/p
 
 This change ensures that the XAML parser will only look for types in an explicit way, and avoids fuzzy matching that could lead to incorrect type resolution.
 
-In order to resolve types properly in a conditional XAML namespace, make use of the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+In order to resolve types properly in a conditional XAML namespace, make use of the [new syntax introduced in Uno 4.8](/articles/platform-specific-xaml.md?q=condition#specifying-namespaces).
 
 ### Enabling Hot Reload
 

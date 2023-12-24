@@ -22,7 +22,7 @@ This sample application demonstrates the usage  of the `WebAuthenticationBroker`
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/Authentication.OidcDemo)
 
-[Follow the tutorial](https://platform.uno/docs/articles/guides/open-id-connect.html)
+[Follow the tutorial](/articles/guides/open-id-connect.md)
 
 ### Auto-Suggest
 
@@ -69,7 +69,7 @@ Note that the [`Default namespace`](https://stackoverflow.com/questions/2871314/
 
 ### FileSavePicker iOS
 
-A working implementation of a folder-based save file picker for iOS. See [the 'iOS' section in the Windows.Storage.Pickers Uno documentation](https://platform.uno/docs/articles/features/windows-storage-pickers.html#ios) for more information.
+A working implementation of a folder-based save file picker for iOS. See [the 'iOS' section in the Windows.Storage.Pickers Uno documentation](/articles/features/windows-storage-pickers.md#ios) for more information.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS)
 
@@ -85,10 +85,10 @@ A pair of samples related to localization:
 
 - Localization: A sample showcasing the basics of localization.
   [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
-  [Follow the tutorial](https://platform.uno/docs/articles/guides/localization.html)
+  [Follow the tutorial](/articles/guides/localization.md)
 - RuntimeCultureSwitching: An example of changing app language while it is running.
   [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
-  [Follow the tutorial](https://platform.uno/docs/articles/guides/hotswap-app-language.html)
+  [Follow the tutorial](/articles/guides/hotswap-app-language.md)
 
 ### Map Control
 
@@ -102,7 +102,7 @@ An example showcasing how to set up the native frame navigation for iOS and Andr
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav)
 
-[Follow the tutorial](https://platform.uno/docs/articles/guides/native-frame-nav-tutorial.html)
+[Follow the tutorial](/articles/guides/native-frame-nav-tutorial.md)
 
 ### Native Style Switch
 
@@ -144,7 +144,7 @@ An example showing how to adjust the `StatusBar` and `CommandBar` dynamically ba
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/StatusBarThemeColor)
 
-[Follow the tutorial](https://platform.uno/docs/articles/guides/status-bar-theme-color.html)
+[Follow the tutorial](/articles/guides/status-bar-theme-color.md)
 
 ### TheCatApiClient
 
@@ -152,7 +152,7 @@ An example demonstrating an approach to consuming REST web services in Uno using
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 
-[Follow the tutorial](https://platform.uno/docs/articles/howto-consume-webservices.html)
+[Follow the tutorial](/articles/howto-consume-webservices.md)
 
 ### TimeEntry
 
@@ -203,7 +203,7 @@ A dynamic grid view ported from the Windows Community Toolkit that allows for x:
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample)
 
-[Follow the tutorial](https://platform.uno/docs/articles/uno-community-toolkit.html)
+[Follow the tutorial](/articles/uno-community-toolkit.md)
 
 ### WCT DataGrid, TreeView, TabView
 

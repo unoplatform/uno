@@ -20,7 +20,7 @@ Throughout the how-to, there will be notes on recommended practices and tips tha
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 >
 > [!TIP]
-> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
+> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](/articles/get-started-vs-2022.md)
 
 ## Task 1 - Create a simple Uno application
 
@@ -1826,7 +1826,7 @@ The full source code for this tutorial is available here - [Tutorial Source Code
 ## References
 
 * Uno Platform:
-  * [Using Uno - getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
+  * [Using Uno - getting started on Visual Studio](/articles/get-started-vs-2022.md)
 * Uno Platform Samples:
   * [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples)
   * [Tutorial Source Code - TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)

@@ -21,7 +21,7 @@ Here are questions you can consider before you file a bug to make sure you're no
 
 Pre-Submission check:
 
-1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
+1. Did you read the [documentation](/articles/intro.md)?
 2. Did you check the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed?
 3. Does the issue exist on the UWP / WinUI project (in which case it is not an Uno Platform issue)
 
@@ -48,7 +48,7 @@ Wherever we can, we prefer to implement UWP/WinUI APIs for maximum cross-platfor
 
 ### Ask (and answer) questions
 
-If you have a question, be sure first to check out our [documentation](https://platform.uno/docs/articles/intro.html). But if you are still stuck, please visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
+If you have a question, be sure first to check out our [documentation](/articles/intro.md). But if you are still stuck, please visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) where our engineering team and community will be able to help you.
 
 If you've already done some Uno development, maybe there's a GitHub discussion question you can answer, giving another user the benefit of your experience.
 
