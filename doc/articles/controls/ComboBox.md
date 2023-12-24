@@ -5,7 +5,7 @@ uid: Uno.Controls.ComboBox
 # ComboBox
 
 The `ComboBox` is designed to select a value in a set of items. For more info about its usage, 
-[please refer to the Microsoft documentation.](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/combo-box)
+[please refer to the Microsoft documentation.](https://learn.microsoft.com/windows/apps/design/controls/combo-box)
 
 ## Customize the placement of the Drop-Down (UNO-only feature)
 
