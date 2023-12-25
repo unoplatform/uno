@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Media;
 using MUXControlsTestApp;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
@@ -126,6 +127,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 #endif
 		public async Task TouchTest()
 		{
+			// Uno Specific: close popups after the test
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+
 			var splitButtonPage = new SplitButtonPage();
 			WindowHelper.WindowContent = splitButtonPage;
 			await WindowHelper.WaitForIdle();
@@ -214,6 +218,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 #endif
 		public async Task KeyboardTest()
 		{
+			// Uno Specific: close popups after the test
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+
 			var splitButtonPage = new SplitButtonPage();
 			WindowHelper.WindowContent = splitButtonPage;
 			await WindowHelper.WaitForIdle();
@@ -253,9 +260,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			KeyboardHelper.PressKeySequence("$d$_f4#$u$_f4");
 			await WindowHelper.WaitForIdle();
 			Verify.AreEqual("2", flyoutOpenedCountTextBlock.Text);
-
-			// Uno Specific: close flyouts when done
-			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.IsForFlyout).ForEach(p => p.AssociatedFlyout.Hide());
 		}
 
 		[TestMethod]
@@ -264,6 +268,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 #endif
 		public async Task ToggleTest()
 		{
+			// Uno Specific: close popups after the test
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+
 			var splitButtonPage = new SplitButtonPage();
 			WindowHelper.WindowContent = splitButtonPage;
 			await WindowHelper.WaitForIdle();
@@ -307,9 +314,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 
 			Verify.AreEqual("Unchecked", toggleStateTextBlock.Text);
 			Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
-
-			// Uno Specific: close flyouts when done
-			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.IsForFlyout).ForEach(p => p.AssociatedFlyout.Hide());
 		}
 
 		[TestMethod]

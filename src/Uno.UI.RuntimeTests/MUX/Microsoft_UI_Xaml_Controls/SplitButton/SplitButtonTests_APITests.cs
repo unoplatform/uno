@@ -6,20 +6,17 @@
 #if !WINDOWS_UWP
 using System;
 using System.Windows.Input;
-
 using MUXControlsTestApp.Utilities;
-
 using Microsoft.UI.Xaml.Controls;
 using Common;
 using System.Threading.Tasks;
-
 using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
 using ToggleSplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	public partial class SplitButtonTests: MUXApiTestBase
+	public partial class SplitButtonTests : MUXApiTestBase
 	{
 		[TestMethod]
 		[Description("Verifies SplitButton default properties.")]

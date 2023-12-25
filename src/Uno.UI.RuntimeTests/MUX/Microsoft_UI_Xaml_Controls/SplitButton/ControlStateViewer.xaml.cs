@@ -3,11 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using System.Reflection;
 
 namespace MUXControlsTestApp.UtilitiesTemp
 {
