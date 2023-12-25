@@ -7,21 +7,22 @@
 
 using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Common;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
-using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
-using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
+using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
+using ToggleSplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {

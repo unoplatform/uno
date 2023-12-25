@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
+using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
 #if HAS_UNO
-using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
+using SplitButtonTestHelper = Microsoft/* UWP don't rename */.UI.Private.Controls.SplitButtonTestHelper;
 #endif
-using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
-using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
+using ToggleSplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton;
+using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 {
