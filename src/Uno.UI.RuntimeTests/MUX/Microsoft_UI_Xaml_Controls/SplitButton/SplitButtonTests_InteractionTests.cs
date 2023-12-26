@@ -145,7 +145,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			Log.Comment("Check simulate touch mode checkbox"); // Uno Doc: this is not needed, we use an injected touch pointer
+			// Uno Doc: this is not needed, we use an injected touch pointer
+			Log.Comment("Check simulate touch mode checkbox");
 			// simulateTouchCheckBox.Click(); // This conveniently moves the mouse over the checkbox so that it isn't over the split button yet
 			simulateTouchCheckBox.ProgrammaticClick();
 			await WindowHelper.WaitForIdle();
@@ -243,7 +244,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 
 			Verify.AreEqual("0", flyoutOpenedCountTextBlock.Text);
 			Log.Comment("Verify that pressing alt-down on SplitButton opens the flyout");
-			KeyboardHelper.PressKeySequence("$d$_alt#$d$_down#$u$_down#alt");
+			KeyboardHelper.PressKeySequence("$d$_alt#$d$_down#$u$_down#$u$_alt");
 			await WindowHelper.WaitForIdle();
 			Verify.AreEqual("1", flyoutOpenedCountTextBlock.Text);
 
