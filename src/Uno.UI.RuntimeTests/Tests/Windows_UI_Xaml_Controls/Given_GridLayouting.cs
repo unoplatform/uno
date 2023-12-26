@@ -239,7 +239,7 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 10, 20));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
