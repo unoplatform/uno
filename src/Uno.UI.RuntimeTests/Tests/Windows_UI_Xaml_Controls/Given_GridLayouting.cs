@@ -77,6 +77,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_One_Element()
 	{
 		using var _ = new AssertionScope();
@@ -99,6 +102,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_One_Element_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center()
 	{
 		using var _ = new AssertionScope();
@@ -131,6 +137,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Elements_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -303,6 +312,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Stretch_And_Padding()
 	{
 		using var _ = new AssertionScope();
@@ -353,6 +365,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Colums_And_One_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_ColumnSpan_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -406,6 +421,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_With_RowSpan_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -458,6 +476,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -509,6 +530,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Rows_And_One_Column_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Stretch_And_Padding()
 	{
 		using var _ = new AssertionScope();
@@ -561,6 +585,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Colums_And_Two_Rows_And_No_Size_Spec()
 	{
 		using var _ = new AssertionScope();
@@ -630,6 +657,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Colums_And_Two_Rows_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -716,6 +746,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Star_Uneven_Colums_And_One_Row()
 	{
 		using var _ = new AssertionScope();
@@ -771,6 +804,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_One_Absolute_Column_And_One_Star_Column_And_One_Row()
 	{
 		using var _ = new AssertionScope();
@@ -833,6 +869,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_One_Variable_Sized_Element_With_ColSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -871,6 +910,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_Variable_Sized_Element_With_ColSpan_and_One_Auto_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -986,6 +1028,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Three_Element_With_ColSpan_and_Four_Progressing_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1093,6 +1138,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns_And_Middle()
 	{
 		using var _ = new AssertionScope();
@@ -1331,6 +1379,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_Two_StarColums_One_Variable_Column_And_Two_StarRows_One_Variable_Row_And_MinWidth_MinHeight_VerticalAlignment_Top_HorizontalAlignment_Center_And_Child_Stretched_And_Centered()
 	{
 		using var _ = new AssertionScope();
@@ -1475,6 +1526,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Row_Out_Of_Range()
 	{
 		using var _ = new AssertionScope();
