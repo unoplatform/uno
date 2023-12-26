@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -89,7 +90,7 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
 
-		var firstChild = (View)SUT.Children.First(); // Arranged: new Rect(0, 0, 20, 20)
+		var firstChild = (View)SUT.Children.First();
 		firstChild.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
 		LayoutInformation.GetLayoutSlot(firstChild).Should().Be(new Rect(0, 0, 20, 20));
 
@@ -120,9 +121,10 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 60, 60));
 
-		var firstChild = (View)SUT.Children.First(); // Arranged: new Rect(20, 20, 20, 20)
+		var firstChild = (View)SUT.Children.First();
 		firstChild.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(firstChild).Should().Be(new Rect(20, 20, 20, 20));
+		LayoutInformation.GetLayoutSlot(firstChild).Should().Be(new Rect(0, 0, 40, 40));
+		firstChild.ActualOffset.Should().Be(new Vector3(10, 10, 0));
 
 		measuredSize.Should().Be(new Size(40, 40));
 		SUT.Children.Should().HaveCount(1);
@@ -161,11 +163,13 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 60, 60));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(60, 60));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 60, 60));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(40, 40));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40, 40));
+		c1.ActualOffset.Should().Be(default(Vector3));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(20, 20, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(0, 0, 40, 40));
+		c2.ActualOffset.Should().Be(new Vector3(10, 10, 0));
 
 		measuredSize.Should().Be(new Size(40, 40));
 		SUT.Children.Should().HaveCount(2);
@@ -287,10 +291,12 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(15, 40, 20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40, 80));
+		c1.ActualOffset.Should().Be(new Vector3(10, 30, 0));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(65, 40, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 0, 40, 80));
+		c2.ActualOffset.Should().Be(new Vector3(50, 30, 0));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(2);
@@ -336,11 +342,11 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 160, 160));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(120, 120));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(10, 20, 120, 120));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(120, 40));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(10, 20, 120, 40));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(130, 70, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(130, 20, 20, 40));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(2);
@@ -390,10 +396,10 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(40, 40, 20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 80, 80));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(65, 40, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 0, 40, 80));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(2);
@@ -442,10 +448,10 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(40, 40, 20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 80, 80));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 65, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(0, 40, 80, 40));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(2);
@@ -493,10 +499,10 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(40, 15, 20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 80, 40));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 65, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(0, 40, 80, 40));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(2);
@@ -545,10 +551,10 @@ public partial class Given_GridLayouting
 		SUT.Arrange(new Rect(0, 0, 160, 160));
 
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(70, 60, 20, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(10, 20, 60, 100));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(70, 120, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(10, 120, 60, 20));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(2);
@@ -693,17 +699,17 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(50, 50));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(40, 40));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40, 40));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(65, 15, 20, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40, 0, 40, 40));
 
 		c3.SizePassedToArrangeOverride.Should().Be(new Size(20, 20));
-		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(15, 65, 20, 20));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(0, 40, 40, 40));
 
-		c4.SizePassedToArrangeOverride.Should().Be(new Size(50, 50));
-		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(50, 50, 50, 50));
+		c4.SizePassedToArrangeOverride.Should().Be(new Size(40, 40));
+		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(40, 40, 40, 40));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(4);
@@ -1263,8 +1269,8 @@ public partial class Given_GridLayouting
 
 		measuredSize.Should().Be(new Size(10, 10));
 
-		child.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
-		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 0, 10, 20));
+		child.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 0, 10, 10));
 
 		SUT.Children.Should().HaveCount(1);
 	}
@@ -1315,17 +1321,17 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(45, 45));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 45, 45));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(35, 35));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 35, 35));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(45, 45, 10, 10));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(35, 35, 10, 10));
 
-		c3.SizePassedToArrangeOverride.Should().Be(new Size(10, 45));
-		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(45, 55, 10, 45));
+		c3.SizePassedToArrangeOverride.Should().Be(new Size(10, 35));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(35, 45, 10, 35));
 
 		c4.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(72.5, 72.5, 10, 10));
+		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(45, 45, 35, 35));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(4);
@@ -1391,23 +1397,23 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 100, 100));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(55, 45));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 55, 45));
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(45, 35));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 45, 35));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(72.5, 17.5, 10, 10));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(45, 0, 35, 35));
 
-		c3.SizePassedToArrangeOverride.Should().Be(new Size(45, 55));
-		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(0, 45, 45, 55));
+		c3.SizePassedToArrangeOverride.Should().Be(new Size(35, 45));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(0, 35, 35, 45));
 
-		c4.SizePassedToArrangeOverride.Should().Be(new Size(55, 10));
-		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(45, 45, 55, 10));
+		c4.SizePassedToArrangeOverride.Should().Be(new Size(45, 10));
+		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(35, 35, 45, 10));
 
 		c5.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c5).Should().Be(new Rect(67.5, 72.5, 10, 10));
+		LayoutInformation.GetLayoutSlot(c5).Should().Be(new Rect(35, 45, 45, 35));
 
 		c6.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c6).Should().Be(new Rect(45, 45, 10, 10));
+		LayoutInformation.GetLayoutSlot(c6).Should().Be(new Rect(35, 35, 10, 10));
 
 		measuredSize.Should().Be(new Size(80, 80));
 		SUT.Children.Should().HaveCount(6);
