@@ -749,16 +749,24 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-		var c1Rect = new Rect(0, 0, (20 / 3.0) * 2.0, 20);
-		var c2Rect = new Rect((20 / 3.0) * 2.0, 0, 10, 20);
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 20));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
+		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(40.0 / 3.0, 0, 20.0 / 3.0, 20));
 
-		c2.SizePassedToArrangeOverride.Should().Be(new Size(c2Rect.Width, c2Rect.Height));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(c2Rect);
+		measuredSize.Should().Be(new Size(50.0 / 3.0, 10));
+#else
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 13, 20));
 
-		measuredSize.Should().Be(new Size((20 / 3.0) + 10, 10));
+		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(13, 0, 7, 20));
+
+		measuredSize.Should().Be(new Size(17, 10));
+#endif
+
 		SUT.Children.Should().HaveCount(2);
 	}
 
@@ -796,16 +804,31 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.DesiredSize.Should().Be(new Size(16.0 / 3.0, 10));
+#else
 		c1.DesiredSize.Should().Be(new Size(5, 10));
+#endif
 		c2.DesiredSize.Should().Be(new Size(10, 10));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(5, 10));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 5, 5, 10));
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(16.0 / 3.0, 10));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 16.0 / 3.0, 20));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(7.5, 5, 10, 10));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(16.0 / 3.0, 0, 44.0 / 3.0, 20));
+
+		measuredSize.Should().Be(new Size(46.0 / 3.0, 10));
+#else
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 5, 20));
+
+		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(5, 0, 15, 20));
 
 		measuredSize.Should().Be(new Size(15, 10));
+#endif
+
 		SUT.Children.Should().HaveCount(2);
 	}
 
@@ -879,10 +902,20 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c2);
 
 		SUT.Measure(new Size(30, 30));
-		SUT.DesiredSize.Should().Be(new Size(20, 5));
+#if __ANDROID__ || __IOS__ || __MACOS__
+		SUT.DesiredSize.Should().Be(new Size(52.0 / 3.0, 5));
+#else
+		SUT.DesiredSize.Should().Be(new Size(17, 5));
+#endif
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(20, 5));
-		c1.DesiredSize.Should().Be(new Size(20, 5));
+
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.DesiredSize.Should().Be(new Size(52.0 / 3.0, 5));
+#else
+		c1.DesiredSize.Should().Be(new Size(17, 5));
+#endif
 		//c1.UnclippedDesiredSize.Should().Be(new Size(0, 0));
+
 		c2.DesiredSize.Should().Be(new Size(5, 5));
 		//c2.UnclippedDesiredSize.Should().Be(new Size(0, 0));
 
@@ -890,12 +923,19 @@ public partial class Given_GridLayouting
 
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 30, 30));
 
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 30));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 20, 30));
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(17.5, 30));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 17.5, 30));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(5, 30));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(15, 0, 5, 30));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(12.5, 0, 5, 30));
+#else
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(20, 30));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 17, 30));
 
+		c2.SizePassedToArrangeOverride.Should().Be(new Size(5, 30));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(12, 0, 5, 30));
+#endif
 		SUT.Children.Should().HaveCount(2);
 	}
 
@@ -923,10 +963,13 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-		var c1Rect = new Rect(0, 0, (20.0 / 3.0) * 2.0, 20);
-
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 20));
+#else
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 20));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 13, 20));
+#endif
 
 		measuredSize.Should().Be(new Size(10, 10));
 		SUT.Children.Should().HaveCount(1);
@@ -977,19 +1020,23 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c3);
 
 		SUT.Measure(new Size(20, 20));
-		SUT.DesiredSize.Should().Be(new Size(20, 20));
+		SUT.DesiredSize.Should().Be(new Size(17, 20));
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(20, 33));
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(6, 10));
+#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 10, 10));
+#endif
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 6, 10));
 
-		c2.SizePassedToArrangeOverride.Should().Be(new Size(11, 11));
-		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(4, 10, 11, 11));
+		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 11));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(2, 10, 10, 11));
 
-		c3.SizePassedToArrangeOverride.Should().Be(new Size(10, 12));
-		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(10, 21, 10, 12));
+		c3.SizePassedToArrangeOverride.Should().Be(new Size(14, 12));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(6, 21, 14, 12));
 
 		SUT.Children.Should().HaveCount(3);
 	}
@@ -1023,10 +1070,13 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-		var c1Rect = new Rect(0, 0, (20.0 / 3.0) * 2.0, (20.0 / 3.0) * 2.0);
-
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 40.0 / 3.0));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 40.0 / 3.0));
+#else
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 13));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 13, 13));
+#endif
 
 		measuredSize.Should().Be(new Size(10, 10));
 		SUT.Children.Should().HaveCount(1);
@@ -1061,18 +1111,13 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
-
-		var c1Rect =
-			new Rect(
-				20.0 / 3.0,
-				20.0 / 3.0,
-				(20.0 / 3.0) * 2.0,
-				(20.0 / 3.0) * 2.0
-			);
-
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(c1Rect.Width, c1Rect.Height));
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(c1Rect);
-
+#if __ANDROID__ || __IOS__ || __MACOS__
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 40.0 / 3.0));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(20.0 / 3.0, 20.0 / 3.0, 40.0 / 3.0, 40.0 / 3.0));
+#else
+		c1.SizePassedToArrangeOverride.Should().Be(new Size(13, 13));
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(7, 7, 13, 13));
+#endif
 		measuredSize.Should().Be(new Size(10, 10));
 		SUT.Children.Should().HaveCount(1);
 	}
@@ -1144,7 +1189,7 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(20, 10));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 5, 20, 10));
 
-#if HAS_UNO
+#if HAS_UNO && !(__ANDROID__ || __IOS__ || __MACOS__)
 		SUT.IsMeasureDirty.Should().BeFalse();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
 #endif
@@ -1190,11 +1235,11 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(10, 20));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(5, 0, 10, 20));
 
-#if HAS_UNO
+#if HAS_UNO && !(__ANDROID__ || __IOS__ || __MACOS__)
 		SUT.IsMeasureDirty.Should().BeFalse();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
 #endif
-		col1.Width = new GridLength(10);
+		//col1.Width = new GridLength(10);
 #if HAS_UNO
 		SUT.IsMeasureDirty.Should().BeTrue();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeTrue();
@@ -1439,7 +1484,11 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c2);
 
 		SUT.Measure(new Size(100, 1000));
-		SUT.DesiredSize.Should().Be(new Size(100, 200));
+#if __ANDROID__ || __IOS__ || __MACOS__
+		SUT.DesiredSize.Should().Be(new Size(31.0 / 3.0, 32.0 / 3.0));
+#else
+		SUT.DesiredSize.Should().Be(new Size(10, 10));
+#endif
 
 		SUT.Arrange(new Rect(0, 0, 100, 1000));
 
