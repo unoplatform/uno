@@ -4,14 +4,13 @@ uid: Uno.Workshop.Counter
 
 # Create a Counter App with Uno Platform
 
-The Counter tutorial will walk you through creating a simple cross-platform counter application with Uno Platform. 
+The Counter tutorial will walk you through creating a simple cross-platform counter application with Uno Platform.
 
 <p align="center">
   <img src="Assets/counter-app.png" alt="Screenshot of an Uno Platform app showing a counter" />
 </p>
 
-There are four variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX). 
-
+There are four variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
 
 <div class="row">
 

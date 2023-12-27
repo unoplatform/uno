@@ -6,7 +6,6 @@ uid: Uno.Workshop.Counter.XAML.MVUX
 
 [Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX)  
 
-
 [!INCLUDE [Intro](include-intro.md)]
 
 In this tutorial you will learn how to:
@@ -16,7 +15,7 @@ In this tutorial you will learn how to:
 - Add code to the C# file to implement the application logic using the [Model-View-Update-eXtended (MVUX)](xref:Uno.Extensions.Mvux.Overview) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#. 
+To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#.
 
 [!INCLUDE [VS](include-create.md)]
 
@@ -74,8 +73,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Counter Solution](include-solution.md)]
 
-
-![Counter Solution](Assets/counter-solution-xaml.png) 
+![Counter Solution](Assets/counter-solution-xaml.png)
 
 [!INCLUDE [Main Window](include-mainwindow.md)]
 
@@ -169,8 +167,7 @@ The final code for **MainPage.xaml** should look like this:
   </StackPanel>
 </Page>
 ```
+
 [!INCLUDE [View Model](include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX).
-
-
