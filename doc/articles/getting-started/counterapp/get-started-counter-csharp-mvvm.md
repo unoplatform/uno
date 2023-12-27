@@ -11,7 +11,7 @@ uid: Uno.Workshop.Counter.CSharp.MVVM
 In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the **dotnet new** command
-- Add elements to the C# file, using [C# Markup](Uno.Extensions.Markup.Overview), to define the layout of the application
+- Add elements to the C# file, using [C# Markup](xref:Uno.Extensions.Markup.Overview), to define the layout of the application
 - Add code to the C# file to implement the application logic using the Model-View-ViewModel (MVVM) pattern
 - Use data binding to connect the UI to the application logic
 
@@ -46,7 +46,6 @@ Before completing the wizard, take a look through each of the sections and see w
 
 The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
-
 # [Command Line](#tab/cli)
 
 > [!NOTE] 
@@ -68,13 +67,11 @@ dotnet new unoapp -h
 
 Also, for more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 
-
 ---
 
 [!INCLUDE [Counter Solution](include-solution.md)]
 
-
-![Counter Solution](Assets/counter-solution-csharp.png) 
+![Counter Solution](Assets/counter-solution-csharp.png)
 
 [!INCLUDE [Main Window](include-mainwindow.md)]
 
@@ -89,7 +86,6 @@ Also, for more information on all the template options, see [Using the Uno Platf
 [!INCLUDE [Main Page - Other Elements](include-elements-csharp.md)]
 
 [!INCLUDE [View Model](include-mvvm.md)]
-
 
 ## Data Binding
 
@@ -183,5 +179,3 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
 [!INCLUDE [View Model](include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM).
-
-
