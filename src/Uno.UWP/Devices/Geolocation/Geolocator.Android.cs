@@ -183,7 +183,7 @@ public sealed partial class Geolocator
 		{
 			TryInitialize();
 
-			if (_locationProvider is null || _locationManager is null)
+			if (string.IsNullOrWhiteSpace(_locationProvider) || _locationManager is null)
 			{
 				return Task.FromResult<Geoposition?>(null);
 			}
@@ -262,7 +262,7 @@ public sealed partial class Geolocator
 		if (_locationManager == null)
 		{
 			_locationManager = InitializeLocationProvider();
-			if (_locationManager is null || _locationProvider is null)
+			if (_locationManager is null || string.IsNullOrWhiteSpace(_locationProvider))
 			{
 				return;
 			}
