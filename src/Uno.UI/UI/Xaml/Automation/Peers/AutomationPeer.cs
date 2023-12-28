@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
@@ -251,6 +252,18 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		protected internal global::Microsoft.UI.Xaml.Automation.Provider.IRawElementProviderSimple ProviderFromPeer(global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer peer)
 		{
 			throw new global::System.NotImplementedException("The member IRawElementProviderSimple AutomationPeer.ProviderFromPeer(AutomationPeer peer) is not implemented in Uno.");
+		}
+
+		[global::Uno.NotImplemented]
+		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
+		}
+
+		[global::Uno.NotImplemented]
+		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
 		}
 		#endregion
 	}
