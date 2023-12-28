@@ -298,6 +298,7 @@ public sealed partial class Geolocator
 
 	private LocationManager? InitializeLocationProvider()
 	{
+		_locationProvider = null;
 		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 
 		var criteriaForLocationService = new Criteria
@@ -305,15 +306,9 @@ public sealed partial class Geolocator
 			Accuracy = Accuracy.Coarse
 		};
 
-		var acceptableLocationProviders = locationManager?.GetProviders(criteriaForLocationService, true);
-
-		if (acceptableLocationProviders != null && acceptableLocationProviders.Any())
+		if (locationManager?.GetProviders(criteriaForLocationService, true) is { } acceptableLocationProviders)
 		{
-			_locationProvider = acceptableLocationProviders.First();
-		}
-		else
-		{
-			_locationProvider = string.Empty;
+			_locationProvider = acceptableLocationProviders.FirstOrDefault();
 		}
 
 		return locationManager;

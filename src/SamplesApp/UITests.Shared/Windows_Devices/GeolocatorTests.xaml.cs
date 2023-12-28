@@ -168,8 +168,10 @@ namespace UITests.Shared.Windows_Devices
 			}
 		}
 
-		private async void RequestAccess() =>
+		private async void RequestAccess()
+		{
 			GeolocationAccessStatus = await Geolocator.RequestAccessAsync();
+		}
 
 		private async void GetGeoposition()
 		{
