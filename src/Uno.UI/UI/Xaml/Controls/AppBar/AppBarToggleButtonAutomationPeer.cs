@@ -37,7 +37,7 @@ public partial class AppBarToggleButtonAutomationPeer : ToggleButtonAutomationPe
 		return returnValue;
 	}
 
-	protected override string GetLocalizedControlTypeCore() 
+	protected override string GetLocalizedControlTypeCore()
 		=> DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_APPBAR_TOGGLEBUTTON");
 
 	protected override string GetAcceleratorKeyCore()
