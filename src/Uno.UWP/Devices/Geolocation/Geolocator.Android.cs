@@ -141,6 +141,7 @@ public sealed partial class Geolocator
 				: GeolocationAccessStatus.Denied;
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
+
 			if (status == GeolocationAccessStatus.Allowed)
 			{
 				BroadcastStatusChanged(PositionStatus.Ready);
@@ -163,7 +164,19 @@ public sealed partial class Geolocator
 			}
 		}
 
+		if (!IsLocationProvidedEnabled())
+		{
+			status = GeolocationAccessStatus.Denied;
+		}
+
 		return status;
+	}
+
+	public static bool IsLocationProvidedEnabled()
+	{
+		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+		return locationManager?.GetProviders(new Criteria { Accuracy = Accuracy.Coarse }, true)?.Count > 0;
 	}
 
 	/// <summary>
