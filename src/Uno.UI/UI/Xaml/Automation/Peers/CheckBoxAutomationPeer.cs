@@ -9,7 +9,6 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes CheckBox types to Microsoft UI Automation.
 /// </summary>
-/// <param name="owner"></param>
 public partial class CheckBoxAutomationPeer : ToggleButtonAutomationPeer
 {
 	public CheckBoxAutomationPeer(CheckBox owner) : base(owner)
