@@ -132,6 +132,11 @@ public sealed partial class Geolocator
 
 	private static async Task<GeolocationAccessStatus> RequestAccessCore()
 	{
+		if (!IsLocationEnabled())
+		{
+			return GeolocationAccessStatus.Denied;
+		}
+
 		var status = GeolocationAccessStatus.Allowed;
 
 		if (!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
@@ -164,19 +169,14 @@ public sealed partial class Geolocator
 			}
 		}
 
-		if (!IsLocationProvidedEnabled())
-		{
-			status = GeolocationAccessStatus.Denied;
-		}
-
 		return status;
 	}
 
-	public static bool IsLocationProvidedEnabled()
+	public static bool IsLocationEnabled()
 	{
 		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 
-		return locationManager?.GetProviders(new Criteria { Accuracy = Accuracy.Coarse }, true)?.Count > 0;
+		return locationManager?.IsLocationEnabled ?? false;
 	}
 
 	/// <summary>
