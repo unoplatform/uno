@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Uno.Extensions;
 using Uno.Extensions.System;
-using Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers;
+using Uno.UI.Runtime.Skia.Extensions.System.LauncherHelpers;
 using Windows.System;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System
+namespace Uno.UI.Runtime.Skia.Extensions.System
 {
-	internal class LauncherExtension : ILauncherExtension
+	internal class LinuxLauncherExtension : ILauncherExtension
 	{
-		public LauncherExtension(object owner)
+		public LinuxLauncherExtension(object owner)
 		{
 		}
 
@@ -45,9 +44,9 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System
 				catch (Exception exception)
 				{
 					// Failure here does not affect the the query.
-					if (typeof(LauncherExtension).Log().IsEnabled(LogLevel.Error))
+					if (typeof(LinuxLauncherExtension).Log().IsEnabled(LogLevel.Error))
 					{
-						typeof(LauncherExtension).Log().Error($"Failed to invoke xdg-settings", exception);
+						typeof(LinuxLauncherExtension).Log().Error($"Failed to invoke xdg-settings", exception);
 					}
 				}
 

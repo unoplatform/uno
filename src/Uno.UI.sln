@@ -317,6 +317,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Windows", "Sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.Sdk", "Uno.Sdk\Uno.Sdk.csproj", "{38B6228E-4FED-4437-9243-A6B69ACB3DFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Runtime.Skia.X11", "Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj", "{524BA841-8CD6-4ADD-BD48-F875F2E0F021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.X11", "SamplesApp\SamplesApp.Skia.X11\SamplesApp.Skia.X11.csproj", "{78877B61-82F8-4509-AAAC-673F0E7D9C6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

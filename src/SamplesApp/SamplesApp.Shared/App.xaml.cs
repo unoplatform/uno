@@ -146,8 +146,6 @@ namespace SamplesApp
 
 			InitializeFrame(e.Arguments);
 
-			AssertIssue8641NativeOverlayInitialized();
-
 			ActivateMainWindow();
 
 #if !WINAPPSDK

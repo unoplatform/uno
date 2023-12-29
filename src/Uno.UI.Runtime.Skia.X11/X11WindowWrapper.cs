@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Concurrent;
+using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Avalonia.X11;
+
+namespace Uno.WinUI.Runtime.Skia.X11;
+
+internal class X11WindowWrapper : NativeWindowWrapperBase
+{
+	private X11XamlRootHost _host;
+	private XamlRoot _xamlRoot;
+	private static ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
+
+	internal X11WindowWrapper(Window window, XamlRoot xamlRoot)
+	{
+		_xamlRoot = xamlRoot;
+
+		_host = new X11XamlRootHost(window, RaiseNativeSizeChanged, Close, OnNativeActivated, OnNativeVisibilityChanged);
+		X11Manager.XamlRootMap.Register(xamlRoot, _host);
+
+		_windowToHost[window] = _host;
+		var tcs = X11XamlRootHost.GetTCSFromX11Window(_host.X11Window);
+		tcs?.Task.ContinueWith(task => _windowToHost.TryRemove(window, out _));
+	}
+
+	public static X11XamlRootHost? GetHostFromWindow(Window window)
+		=> _windowToHost.TryGetValue(window, out var host) ? host : null;
+
+	public override object NativeWindow => _host.X11Window;
+
+	private void RaiseNativeSizeChanged(Size newWindowSize)
+	{
+		Bounds = new Rect(default, newWindowSize);
+		VisibleBounds = new Rect(default, newWindowSize);
+	}
+
+	// TODO: might need to send _NET_ACTIVE_WINDOW as well
+	public override void Activate()
+	{
+		if (NativeWindow is X11Window x11Window)
+		{
+			XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+			XLib.XSetInputFocus(x11Window.Display, x11Window.Window, RevertTo.None, /* CurrentTime */ IntPtr.Zero);
+		}
+	}
+
+	public override void Close()
+	{
+		if (NativeWindow is X11Window x11Window)
+		{
+			X11Manager.XamlRootMap.Unregister(_xamlRoot);
+			X11XamlRootHost.TryCompleteWindowCompletionSource(x11Window);
+			XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
+		}
+
+		RaiseClosed();
+	}
+
+	private void OnNativeActivated(bool focused) => ActivationState = focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;
+
+	private void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+
+	protected override void ShowCore()
+	{
+		if (NativeWindow is X11Window x11Window)
+		{
+			XLib.XMapWindow(x11Window.Display, x11Window.Window);
+		}
+	}
+}

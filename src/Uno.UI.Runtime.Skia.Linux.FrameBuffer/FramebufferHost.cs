@@ -13,6 +13,7 @@ using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
+using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer

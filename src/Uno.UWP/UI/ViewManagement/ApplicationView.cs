@@ -3,7 +3,9 @@
 #pragma warning disable 67
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Devices.Sensors;
@@ -25,7 +27,7 @@ namespace Windows.UI.ViewManagement
 		private const string PreferredLaunchViewWidthKey = "__Uno.PreferredLaunchViewSizeKey.Width";
 		private const string PreferredLaunchViewHeightKey = "__Uno.PreferredLaunchViewSizeKey.Height";
 
-		private static readonly Dictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
+		private static readonly ConcurrentDictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
@@ -108,6 +110,23 @@ namespace Windows.UI.ViewManagement
 #pragma warning restore RS0030 // Do not use banned APIs
 
 		internal static global::Windows.UI.ViewManagement.ApplicationView GetForWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
+
+		internal MUXWindowId WindowId
+		{
+			get
+			{
+				// If this proves costly, just add another dictionary in the opposite direction.
+				foreach (var kvp in _windowIdMap)
+				{
+					if (kvp.Value == this)
+					{
+						return kvp.Key;
+					}
+				}
+
+				throw new UnreachableException($"Failed to find a WindowId for ApplicationView {this}");
+			}
+		}
 
 		internal static void InitializeForWindowId(MUXWindowId windowId)
 		{

@@ -9,14 +9,18 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		private readonly Lazy<IApplicationViewExtension> _applicationViewExtension;
+		private readonly Lazy<IApplicationViewExtension?> _applicationViewExtension;
 
 		private Size _preferredMinSize;
 		private string _title = "";
 
 		public ApplicationView()
 		{
-			_applicationViewExtension = new Lazy<IApplicationViewExtension>(() => ApiExtensibility.CreateInstance<IApplicationViewExtension>(this));
+			_applicationViewExtension = new Lazy<IApplicationViewExtension?>(() =>
+			{
+				ApiExtensibility.CreateInstance<IApplicationViewExtension>(this, out var extension);
+				return extension;
+			});
 		}
 
 		public string Title
@@ -41,9 +45,9 @@ namespace Windows.UI.ViewManagement
 
 		internal PropertyChangedEventHandler? PropertyChanged;
 
-		public bool TryEnterFullScreenMode() => _applicationViewExtension.Value.TryEnterFullScreenMode();
+		public bool TryEnterFullScreenMode() => _applicationViewExtension.Value?.TryEnterFullScreenMode() ?? false;
 
-		public void ExitFullScreenMode() => _applicationViewExtension.Value.ExitFullScreenMode();
+		public void ExitFullScreenMode() => _applicationViewExtension.Value?.ExitFullScreenMode();
 
 		public bool TryResizeView(Size value)
 		{
@@ -51,7 +55,7 @@ namespace Windows.UI.ViewManagement
 			{
 				return false;
 			}
-			return _applicationViewExtension.Value.TryResizeView(value);
+			return _applicationViewExtension.Value?.TryResizeView(value) ?? false;
 		}
 
 		public void SetPreferredMinSize(Size minSize) => PreferredMinSize = minSize;

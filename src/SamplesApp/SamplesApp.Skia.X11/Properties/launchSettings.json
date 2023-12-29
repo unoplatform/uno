@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SamplesApp.Skia.X11": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
