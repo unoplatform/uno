@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

@@ -6,9 +6,8 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Avalonia.X11;
-using WUX = Windows.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

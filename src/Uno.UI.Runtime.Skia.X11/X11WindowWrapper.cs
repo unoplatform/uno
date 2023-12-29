@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Avalonia.X11;
 
 namespace Uno.WinUI.Runtime.Skia.X11;

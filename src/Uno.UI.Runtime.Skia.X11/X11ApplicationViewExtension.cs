@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Avalonia.X11;
 using Microsoft.UI.Windowing;
 

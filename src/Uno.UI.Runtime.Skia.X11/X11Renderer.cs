@@ -1,6 +1,5 @@
 ﻿using System;
 using SkiaSharp;
-using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
 using Avalonia.X11;

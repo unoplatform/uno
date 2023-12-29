@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
