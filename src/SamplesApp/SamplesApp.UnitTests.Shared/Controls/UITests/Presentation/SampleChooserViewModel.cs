@@ -978,9 +978,6 @@ description: {sample.Description}";
 				RecentSamples = recents;
 			}
 
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-
 			return container;
 		}
 
