@@ -2,20 +2,20 @@
 
 using System.Collections.Generic;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.ObjectModel;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class RadioButtons : Control
@@ -75,6 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 					repeater.ElementClearing += OnRepeaterElementClearing;
 					repeater.ElementIndexChanged += OnRepeaterElementIndexChanged;
 					repeater.Loaded += OnRepeaterLoaded;
+					repeater.Unloaded += OnRepeaterUnloaded;
 					return repeater;
 				}
 				return null;
@@ -114,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					// Focus was already in the repeater: in On RS3+ Selection follows focus unless control is held down.
 					else if (SharedHelpers.IsRS3OrHigher() &&
-						(Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
+						(Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
 							CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 					{
 						var newFocusedElementAsUIE = args.NewFocusedElement as UIElement;
@@ -664,7 +665,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		~RadioButtons()
+		private void OnRepeaterUnloaded(object sender, RoutedEventArgs args)
 		{
 			var layout = GetLayout();
 			if (layout != null)

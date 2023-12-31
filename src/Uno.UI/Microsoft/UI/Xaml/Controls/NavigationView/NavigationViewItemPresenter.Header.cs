@@ -3,10 +3,10 @@
 // MUX Reference NavigationViewItemPresenter.h, commit d3fef08
 
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 public partial class NavigationViewItemPresenter
 {

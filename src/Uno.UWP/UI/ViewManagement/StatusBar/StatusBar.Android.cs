@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 using Android.App;
-using Android.Util;
 using Android.Views;
-using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
-using Uno.Foundation.Logging;
-using System.Threading.Tasks;
 
 namespace Windows.UI.ViewManagement
 {
@@ -17,6 +13,10 @@ namespace Windows.UI.ViewManagement
 	{
 		private StatusBarForegroundType? _foregroundType;
 		private bool? _isShown;
+
+		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentView();
+
+		private int? _statusBarHeightResourceId;
 
 		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
 		{
@@ -62,10 +62,9 @@ namespace Windows.UI.ViewManagement
 			var occludedRect = new Rect();
 
 			// Height
-			int resourceId = activity.Resources.GetIdentifier("status_bar_height", "dimen", "android");
-			if (resourceId > 0)
+			if (StatusBarHeightResourceId > 0)
 			{
-				var physicalStatusBarHeight = activity.Resources.GetDimensionPixelSize(resourceId);
+				var physicalStatusBarHeight = activity.Resources.GetDimensionPixelSize(StatusBarHeightResourceId);
 				var logicalStatusBarHeight = PhysicalToLogicalPixels(physicalStatusBarHeight);
 				occludedRect.Height = logicalStatusBarHeight;
 			}
@@ -78,13 +77,7 @@ namespace Windows.UI.ViewManagement
 			return occludedRect;
 		}
 
-		private double PhysicalToLogicalPixels(int physicalPixels)
-		{
-			using (DisplayMetrics displayMetrics = Application.Context.Resources.DisplayMetrics)
-			{
-				return physicalPixels / displayMetrics.Density;
-			}
-		}
+		private double PhysicalToLogicalPixels(int physicalPixels) => physicalPixels / _displayInformation.RawPixelsPerViewPixel;
 
 		public IAsyncAction ShowAsync()
 		{
@@ -152,5 +145,9 @@ namespace Windows.UI.ViewManagement
 			activity.OnConfigurationChanged(activity.Resources.Configuration);
 #pragma warning restore 618
 		}
+
+		private int StatusBarHeightResourceId =>
+			_statusBarHeightResourceId ??=
+				((Activity)ContextHelper.Current).Resources.GetIdentifier("status_bar_height", "dimen", "android");
 	}
 }

@@ -6,7 +6,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Input;
 using Windows.ApplicationModel.Appointments;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {
@@ -78,7 +78,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			internal void SetWeakDataContext(ManagedWeakReference? weakDataContext, bool transferReferenceOwnership = false)
+			internal void SetWeakDataContext(ManagedWeakReference? weakDataContext)
 			{
 				var previousStorage = _dataContextWeakStorage;
 

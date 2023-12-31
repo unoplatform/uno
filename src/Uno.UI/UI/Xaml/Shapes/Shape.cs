@@ -4,13 +4,13 @@ using Uno.Disposables;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI.Helpers;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public abstract partial class Shape : FrameworkElement
 	{

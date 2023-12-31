@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
@@ -65,7 +65,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					StrokeThickness = sst,
 				});
 
-#if NETFX_CORE
+#if WINAPPSDK
 			var geometry = XamlReader.Load("<Geometry xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>M0,0L60,40 0,40 60,0Z</Geometry>") as Geometry;
 #else
 			var geometry = (Geometry)"M0,0L60,40 0,40 60,0Z";

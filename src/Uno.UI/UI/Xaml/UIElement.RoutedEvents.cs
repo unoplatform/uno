@@ -15,15 +15,15 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/*
 		This partial file handles the registration and bubbling of routed events of a UIElement
@@ -666,7 +666,7 @@ namespace Windows.UI.Xaml
 		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
 #if TRACE_ROUTED_EVENT_BUBBLING
-			global::System.Diagnostics.Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}-{args?.GetHashCode():X8}] (ctx: {ctx}){(this is Windows.UI.Xaml.Controls.ContentControl ctrl ? ctrl.DataContext : "")}\r\n");
+			global::System.Diagnostics.Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}-{args?.GetHashCode():X8}] (ctx: {ctx}){(this is Microsoft.UI.Xaml.Controls.ContentControl ctrl ? ctrl.DataContext : "")}\r\n");
 #endif
 
 			if (routedEvent.Flag == RoutedEventFlag.None)
@@ -986,7 +986,7 @@ namespace Windows.UI.Xaml
 					holdingEventHandler(this, (HoldingRoutedEventArgs)args);
 					break;
 				case DragEventHandler dragEventHandler:
-					dragEventHandler(this, (global::Windows.UI.Xaml.DragEventArgs)args);
+					dragEventHandler(this, (global::Microsoft.UI.Xaml.DragEventArgs)args);
 					break;
 				case TypedEventHandler<UIElement, DragStartingEventArgs> dragStartingHandler:
 					dragStartingHandler(this, (DragStartingEventArgs)args);

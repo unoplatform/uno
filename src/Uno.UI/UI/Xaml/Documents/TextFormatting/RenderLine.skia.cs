@@ -5,7 +5,7 @@ using System.Text;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Documents.TextFormatting
+namespace Microsoft.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
 	/// Represents the set of segment spans that make up a rendered text line.

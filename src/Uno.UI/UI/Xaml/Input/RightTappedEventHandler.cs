@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input
+﻿namespace Microsoft.UI.Xaml.Input
 {
 	public delegate void RightTappedEventHandler(object sender, RightTappedRoutedEventArgs e);
 }

@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.IO;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 
@@ -21,7 +21,7 @@ partial class App
 	/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
 	public void AssertIssue1790ApplicationSettingsUsable()
 	{
-		void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
+		void AssertIsUsable(global::Windows.Storage.ApplicationDataContainer container)
 		{
 			const string issue1790 = nameof(issue1790);
 
@@ -31,8 +31,8 @@ partial class App
 			Assert.IsTrue(container.Values.ContainsKey(issue1790));
 		}
 
-		AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
-		AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+		AssertIsUsable(global::Windows.Storage.ApplicationData.Current.LocalSettings);
+		AssertIsUsable(global::Windows.Storage.ApplicationData.Current.RoamingSettings);
 	}
 
 	/// <summary>
@@ -103,7 +103,7 @@ partial class App
 			return;
 		}
 		// Temporarily add a TextBox to the current page's content to verify native overlay is available
-		if (Windows.UI.Xaml.Window.Current?.Content is not Frame rootFrame)
+		if (Microsoft.UI.Xaml.Window.Current?.Content is not Frame rootFrame)
 		{
 			throw new InvalidOperationException("Native overlay verification executed too early");
 		}
@@ -127,9 +127,9 @@ partial class App
 
 	public void AssertInitialWindowSize()
 	{
-#if !__SKIA__ // Will be fixed as part of #8341
-		Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Width > 0);
-		Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
+#if !__SKIA__ && !WINAPPSDK // Will be fixed as part of #8341
+		Assert.IsTrue(global::Microsoft.UI.Xaml.Window.Current.Bounds.Width > 0);
+		Assert.IsTrue(global::Microsoft.UI.Xaml.Window.Current.Bounds.Height > 0);
 #endif
 	}
 

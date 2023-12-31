@@ -1,7 +1,7 @@
 ﻿using Uno;
 using Windows.System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal static class PlatformHelpers
 	{

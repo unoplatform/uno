@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -9,12 +9,12 @@ using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
@@ -375,7 +375,7 @@ namespace Private.Infrastructure
 
 		internal static void CheckFocusedItem()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			var item = FocusManager.GetFocusedElement();
 #else
 			var item = FocusManager.GetFocusedElement((TestServices.WindowHelper.WindowContent as UIElement)?.XamlRoot);

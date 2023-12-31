@@ -10,12 +10,12 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToggleSwitch
 	{
@@ -220,13 +220,13 @@ namespace Windows.UI.Xaml.Controls
 			var core = DXamlCore.Current;
 			if (dependencyProperty == OnContentProperty)
 			{
-				var onString = core.GetLocalizedResourceString("ToggleSwitchOnContent");
+				var onString = core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_ON");
 				value = onString;
 				return true;
 			}
 			else if (dependencyProperty == OffContentProperty)
 			{
-				var offString = core.GetLocalizedResourceString("ToggleSwitchOffContent");
+				var offString = core.GetLocalizedResourceString("TEXT_TOGGLESWITCH_OFF");
 				value = offString;
 				return true;
 			}

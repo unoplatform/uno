@@ -4,10 +4,10 @@
 
 #nullable enable
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+using Microsoft.UI.Composition;
+using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;
 

@@ -15,14 +15,14 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
 using Windows.UI.WebUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using XamlWindow = Windows.UI.Xaml.Window;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using XamlWindow = Microsoft.UI.Xaml.Window;
 
 namespace UITests.Windows_UI_Core
 {
@@ -55,12 +55,14 @@ namespace UITests.Windows_UI_Core
 			CoreWindow.GetForCurrentThread().Activated += CoreWindowActivated;
 			XamlWindow.Current.Activated += WindowActivated;
 			XamlWindow.Current.VisibilityChanged += WindowVisibilityChanged;
+#if !WINAPPSDK
 			Application.Current.EnteredBackground += AppEnteredBackground;
 			Application.Current.LeavingBackground += AppLeavingBackground;
-			CoreApplication.EnteredBackground += CoreApplicationEnteredBackground;
-			CoreApplication.LeavingBackground += CoreApplicationLeavingBackground;
 			Application.Current.Suspending += ApplicationSuspending;
 			Application.Current.Resuming += ApplicationResuming;
+#endif
+			CoreApplication.EnteredBackground += CoreApplicationEnteredBackground;
+			CoreApplication.LeavingBackground += CoreApplicationLeavingBackground;
 			CoreApplication.Suspending += CoreApplicationSuspending;
 			CoreApplication.Resuming += CoreApplicationResuming;
 
@@ -69,12 +71,14 @@ namespace UITests.Windows_UI_Core
 				CoreWindow.GetForCurrentThread().Activated -= CoreWindowActivated;
 				XamlWindow.Current.Activated -= WindowActivated;
 				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
+#if !WINAPPSDK
 				Application.Current.EnteredBackground -= AppEnteredBackground;
 				Application.Current.LeavingBackground -= AppLeavingBackground;
-				CoreApplication.EnteredBackground -= CoreApplicationEnteredBackground;
-				CoreApplication.LeavingBackground -= CoreApplicationLeavingBackground;
 				Application.Current.Suspending -= ApplicationSuspending;
 				Application.Current.Resuming -= ApplicationResuming;
+#endif
+				CoreApplication.EnteredBackground -= CoreApplicationEnteredBackground;
+				CoreApplication.LeavingBackground -= CoreApplicationLeavingBackground;
 				CoreApplication.Suspending -= CoreApplicationSuspending;
 				CoreApplication.Resuming -= CoreApplicationResuming;
 			});
@@ -137,17 +141,23 @@ namespace UITests.Windows_UI_Core
 
 		private void WindowActivated(object sender,
 #if HAS_UNO_WINUI
-			Microsoft.UI.Xaml.WindowActivatedEventArgs e
+			Microsoft/* UWP don't rename */.UI.Xaml.WindowActivatedEventArgs e
 #else
 			Windows.UI.Core.WindowActivatedEventArgs e
 #endif
 			)
 		{
+#if !WINAPPSDK
 			CoreWindowActivationState = e.WindowActivationState;
+#endif
 			AddHistory("Window.Activated");
 		}
 
+#if WINAPPSDK
+		private void WindowVisibilityChanged(object sender, WindowVisibilityChangedEventArgs e)
+#else
 		private void WindowVisibilityChanged(object sender, VisibilityChangedEventArgs e)
+#endif
 		{
 			WindowVisibility = XamlWindow.Current.Visible ? "Visible" : "Hidden";
 			AddHistory("Window.VisibilityChanged");

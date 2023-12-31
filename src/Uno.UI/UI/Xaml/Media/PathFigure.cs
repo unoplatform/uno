@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Segments))]
 	public partial class PathFigure : DependencyObject

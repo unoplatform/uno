@@ -4,7 +4,7 @@ uid: Uno.Development.Overview
 
 # Developing with Uno Platform
 
-Write applications once in XAML and C# and deploy them to [any target platform](getting-started/requirements.md).
+Write applications once in XAML and/or C# and deploy them to [any target platform](getting-started/requirements.md).
 
 ## About Uno
 
@@ -32,7 +32,7 @@ These articles cover general WinUI features in Uno Platform, discussing what's s
  * [Custom fonts](features/custom-fonts.md)
  * [Shapes & Brushes](features/shapes-and-brushes.md)
  * [Handling user input](features/pointers-keyboard-and-other-user-inputs.md)
- * [Using WinUI 2 controls](features/using-winui2.md)
+ * [Using Fluent styles in legacy apps](features/using-winui2.md)
 
 ## WinUI controls
 

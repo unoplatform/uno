@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -7,7 +7,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
@@ -87,7 +87,17 @@ namespace Windows.UI.Composition
 
 				var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 
-				fillPaint.Shader = imageShader;
+				if (UsePaintColorToColorSurface)
+				{
+					// use the set color instead of the image pixel values. This is what happens on WinUI.
+					var blendedShader = SKShader.CreateColorFilter(imageShader, SKColorFilter.CreateBlendMode(fillPaint.Color, SKBlendMode.SrcIn));
+
+					fillPaint.Shader = blendedShader;
+				}
+				else
+				{
+					fillPaint.Shader = imageShader;
+				}
 
 				fillPaint.IsAntialias = true;
 			}
@@ -111,6 +121,8 @@ namespace Windows.UI.Composition
 				fillPaint.Shader = null;
 			}
 		}
+
+		internal bool UsePaintColorToColorSurface { private get; set; }
 
 		void IOnlineBrush.Draw(in DrawingSession session, SKRect bounds)
 		{

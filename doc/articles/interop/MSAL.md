@@ -12,7 +12,7 @@ Quick-start for MSAL: https://docs.microsoft.com/azure/active-directory/develop/
 
 ## General usage
 
-To use MSAL into a Uno project, follow the following steps:
+To use MSAL into an Uno project, follow the following steps:
 
 1. Add a reference to [`Uno.WinUI.MSAL`](https://www.nuget.org/packages/Uno.UI.MSAL) (or `Uno.UI.MSAL` for UWP) package to all your heads - including UWP.
 

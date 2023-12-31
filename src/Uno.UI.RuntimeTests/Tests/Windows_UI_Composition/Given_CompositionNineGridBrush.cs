@@ -2,11 +2,15 @@
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Media;
+
+#if HAS_UNO
+using Uno.UI.Dispatching;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -18,6 +22,12 @@ public class Given_CompositionNineGridBrush
 	[RunsOnUIThread]
 	public async Task When_Source_Changes()
 	{
+#if HAS_UNO
+		var expectedThreadId = -1;
+		NativeDispatcher.Main.Enqueue(() => expectedThreadId = Environment.CurrentManagedThreadId, NativeDispatcherPriority.High);
+		await TestServices.WindowHelper.WaitFor(() => expectedThreadId != -1);
+#endif
+
 		var compositor = Window.Current.Compositor;
 
 		var onlineSource = new Image
@@ -51,12 +61,19 @@ public class Given_CompositionNineGridBrush
 
 		online.Background = new TestBrush(onlineNineGridBrush);
 
-		var surface = Windows.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_100_100.png"));
+		var surface = Microsoft.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_100_100.png"));
 
 		bool loadCompleted = false;
 		surface.LoadCompleted += async (s, o) =>
 		{
-			if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
+#if HAS_UNO
+			if (Environment.CurrentManagedThreadId != expectedThreadId)
+			{
+				Assert.Fail("LoadCompleted event is run on thread pool incorrectly");
+			}
+#endif
+
+			if (o.Status == Microsoft.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
 			{
 				var offlineBrush = compositor.CreateSurfaceBrush(surface);
 
@@ -80,7 +97,7 @@ public class Given_CompositionNineGridBrush
 		await TestServices.WindowHelper.WaitFor(() => loadCompleted);
 	}
 
-	private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase
+	private class TestBrush : Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 		private CompositionBrush Brush;
 

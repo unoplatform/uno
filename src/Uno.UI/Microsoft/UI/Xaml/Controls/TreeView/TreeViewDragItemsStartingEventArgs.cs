@@ -4,9 +4,9 @@
 
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides event data for the TreeView.DragItemsStarting event.

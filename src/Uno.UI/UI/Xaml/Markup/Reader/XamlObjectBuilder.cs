@@ -11,23 +11,23 @@ using Uno.UI;
 using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
 using Windows.UI.Text;
 using Windows.Foundation.Metadata;
 using Color = Windows.UI.Color;
-using Windows.UI.Xaml.Resources;
+using Microsoft.UI.Xaml.Resources;
 
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Markup.Reader
+namespace Microsoft.UI.Xaml.Markup.Reader
 {
 	internal partial class XamlObjectBuilder
 	{
@@ -1225,7 +1225,23 @@ namespace Windows.UI.Xaml.Markup.Reader
 						if (memberValue is { Length: > 0 } &&
 							PropertyPathPattern().Match(memberValue) is { Success: true, Groups: var g })
 						{
-							var declaringType = g["type"].Success ? TypeResolver.FindType(g["type"].Value) : _styleTargetTypeStack.Peek();
+							Type? declaringType;
+							if (g["type"].Success)
+							{
+								if (g["xmlns"].Success && g["xmlns"].Value is { } xmlns && xmlns.Length > 0)
+								{
+									declaringType = TypeResolver.FindType($"{xmlns}:{g["type"].Value}");
+								}
+								else
+								{
+									declaringType = TypeResolver.FindType(g["type"].Value);
+								}
+							}
+							else
+							{
+								declaringType = _styleTargetTypeStack.Peek();
+							}
+
 							var propertyName = g["property"].Value;
 
 							if (TypeResolver.FindDependencyProperty(declaringType, propertyName) is DependencyProperty property)

@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	public delegate void RoutedEventHandler(object sender, RoutedEventArgs e);
 

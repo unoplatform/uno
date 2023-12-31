@@ -12,11 +12,11 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if __IOS__
 using UIKit;

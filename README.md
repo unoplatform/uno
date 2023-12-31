@@ -1,4 +1,4 @@
-<h1 align=center>
+﻿<h1 align=center>
  <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
 </h1>
 
@@ -16,7 +16,7 @@
 # What is the Uno Platform?
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop and embedded apps quickly.
 
-It allows C# and WinUI XAML or C# Markup code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
+It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
 
 Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
@@ -24,7 +24,7 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 
 # Getting Started
 
-See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, JetBrains Rider, or Visual Studio for Mac.
+See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guides for starting with Visual Studio, Visual Studio Code, or JetBrains Rider.
 
 For a larger example and features demo:
 * Visit the [Uno Gallery](https://github.com/unoplatform/uno.gallery) repository.
@@ -32,7 +32,7 @@ For a larger example and features demo:
 
 # Uno Platform Features
 * Supported platforms:
-    * Windows 10 and Windows 11 (via the standard UWP and WinUI Toolkit)
+    * Windows 10 and Windows 11
     * Windows 7 (via Skia+WPF)
     * iOS, Mac Catalyst and Android (via [Xamarin](https://www.visualstudio.com/xamarin/) and [.NET](https://dotnet.microsoft.com/))
     * WebAssembly through the [.NET Runtime WebAssembly SDK](https://github.com/dotnet/runtime/tree/main/src/mono/wasm)
@@ -43,7 +43,7 @@ For a larger example and features demo:
     * [C# Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload) on Windows (VS2022), Linux and macOS (VS Code)
     * Validate on other platforms as late as possible
     * Develop in VS Code, Codespaces or GitPod
-    * XAML or C# Markup Hot Reload for WebAssembly, Linux, iOS and Android
+    * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls:
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
@@ -69,9 +69,9 @@ For a larger example and features demo:
     * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
     * Any UWP project
 * Responsive Design:
-    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)
+    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
-    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger)
+    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available

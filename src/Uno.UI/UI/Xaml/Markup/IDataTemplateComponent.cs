@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Markup;
+﻿namespace Microsoft.UI.Xaml.Markup;
 
 /// <summary>
 /// Provides methods that enable the XAML parser to communicate with generated binding code.

@@ -4,10 +4,10 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents the base class for an icon UI element.

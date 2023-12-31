@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +6,9 @@ using CoreGraphics;
 using UIKit;
 using Uno.Disposables;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Windows.UI;
 using Foundation;
@@ -22,14 +22,7 @@ namespace Uno.UI.Controls
 
 		public CommandBarRenderer(CommandBar element) : base(element) { }
 
-		protected override UINavigationBar CreateNativeInstance()
-		{
-			var navigationBar = new UINavigationBar();
-			var navigationItem = Element.GetRenderer(() => new CommandBarNavigationItemRenderer(Element)).Native;
-			navigationBar.PushNavigationItem(navigationItem, false);
-
-			return navigationBar;
-		}
+		protected override UINavigationBar CreateNativeInstance() => throw new NotSupportedException("The Native instance must be provided.");
 
 		protected override IEnumerable<IDisposable> Initialize()
 		{

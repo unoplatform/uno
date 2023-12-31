@@ -5,9 +5,9 @@
 #nullable enable
 
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 
 namespace Uno.UI.Extensions
 {

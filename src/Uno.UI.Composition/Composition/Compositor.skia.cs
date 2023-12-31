@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Uno.Extensions;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class Compositor
 {

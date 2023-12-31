@@ -1,5 +1,5 @@
 ---
-uid: articles.features.illinker
+uid: uno.articles.features.illinker
 ---
 
 # Using the IL Linker

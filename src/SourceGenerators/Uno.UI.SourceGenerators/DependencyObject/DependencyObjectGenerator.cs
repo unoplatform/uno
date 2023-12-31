@@ -62,9 +62,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				_javaObjectSymbol = comp.GetTypeByMetadataName("Java.Lang.Object");
 				_androidActivitySymbol = comp.GetTypeByMetadataName("Android.App.Activity");
 				_androidFragmentSymbol = comp.GetTypeByMetadataName("AndroidX.Fragment.App.Fragment");
-				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.Data.BindableAttribute");
+				_bindableAttributeSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.Data.BindableAttribute");
 				_iFrameworkElementSymbol = comp.GetTypeByMetadataName(XamlConstants.Types.IFrameworkElement);
-				_frameworkElementSymbol = comp.GetTypeByMetadataName("Windows.UI.Xaml.FrameworkElement");
+				_frameworkElementSymbol = comp.GetTypeByMetadataName("Microsoft.UI.Xaml.FrameworkElement");
 				_isUnoSolution = _context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 				_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 			}
@@ -154,8 +154,8 @@ using System.Runtime.CompilerServices;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using Uno.Diagnostics.Eventing;
 #if __MACOS__
 using AppKit;
@@ -165,7 +165,7 @@ using AppKit;
 					{
 						if (_bindableAttributeSymbol != null && typeSymbol.FindAttribute(_bindableAttributeSymbol) == null)
 						{
-							builder.AppendLineIndented(@"[global::Windows.UI.Xaml.Data.Bindable]");
+							builder.AppendLineIndented(@"[global::Microsoft.UI.Xaml.Data.Bindable]");
 						}
 
 						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
@@ -569,9 +569,21 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 					[SuppressMessage(
 						""Microsoft.Usage"",
 						""CA2215:DisposeMethodsShouldCallBaseClassDispose"",
-						Justification = ""The dispose is re-scheduled using the ValidateDispose method"")]
+						Justification = ""The dispose is re-scheduled in order to properly remove children from their parent"")]
 					protected sealed override void Dispose(bool disposing)
 					{{
+						// This method is present in order to ensure for faster collection of a disposed visual tree
+						// as well as ensure that instances can be properly returned to the FrameworkTemplatePool.
+						//
+						// This method can be called by the finalizer, in which case the object is re-registered 
+						// for finalization, and the Dispose method is invoked explicitly during a idle dispatch.
+						// 
+						// This operation can fail if Dispose() is called by user code on UIView instances.
+						// The Roslyn analyzer UnoDoNotDisposeNativeViews will warn the developer if this is the case.
+						// 
+						// For native exceptions that may be raised if Disposed is called incorrectly, see 
+						// https://github.com/xamarin/xamarin-macios/issues/19493.
+
 						if(_isDisposed)
 						{{
 							base.Dispose(disposing);
@@ -712,17 +724,17 @@ public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 
 #endregion
 
-public void SetBinding(object target, string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
+public void SetBinding(object target, string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(target, dependencyProperty, binding);
 }}
 
-public void SetBinding(string dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
+public void SetBinding(string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(dependencyProperty, binding);
 }}
 
-public void SetBinding(DependencyProperty dependencyProperty, global::Windows.UI.Xaml.Data.BindingBase binding)
+public void SetBinding(DependencyProperty dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(dependencyProperty, binding);
 }}
@@ -739,7 +751,7 @@ partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 
 partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
-public global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	=>  __Store.GetBindingExpression(dependencyProperty);
 
 public void ResumeBindings()
@@ -824,11 +836,11 @@ public override bool Equals(object other)
 
 				if (_isUnoSolution && !typeSymbol.IsSealed)
 				{
-					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
+					builder.AppendLineIndented("void IDependencyObjectInternal.OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);");
 
 					if (typeSymbol.GetMethodsWithName("OnPropertyChanged2").None(m => m.Parameters.Length == 1))
 					{
-						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) { }");
+						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs args) { }");
 					}
 				}
 			}

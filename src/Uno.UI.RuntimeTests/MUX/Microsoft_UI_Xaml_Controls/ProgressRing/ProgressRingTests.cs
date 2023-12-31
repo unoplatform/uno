@@ -2,7 +2,7 @@
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressRingTests;
 
@@ -23,7 +23,7 @@ public class ProgressRingTests
 			var grid = new Grid();
 			grid.Width = 100;
 			grid.Height = 100;
-			var progressRing = new Microsoft.UI.Xaml.Controls.ProgressRing() { IsActive = true };
+			var progressRing = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing() { IsActive = true };
 			grid.Children.Add(progressRing);
 			RunOnUIThread.Execute(() => TestServices.WindowHelper.WindowContent = grid);
 

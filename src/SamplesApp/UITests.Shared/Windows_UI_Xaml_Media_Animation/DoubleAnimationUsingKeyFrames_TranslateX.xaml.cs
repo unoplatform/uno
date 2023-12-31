@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations

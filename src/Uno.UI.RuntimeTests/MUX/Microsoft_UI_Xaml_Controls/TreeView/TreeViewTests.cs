@@ -5,14 +5,14 @@
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
 using MUXControlsTestApp;
 using Common;
@@ -26,12 +26,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
-using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
-using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
-using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
-using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
-using TreeViewSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs;
+using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
+using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
+using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
+using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
+using TreeViewSelectionMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionMode;
+using TreeViewSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionChangedEventArgs;
 using Uno.UI.RuntimeTests;
 using Private.Infrastructure;
 using System.Threading.Tasks;

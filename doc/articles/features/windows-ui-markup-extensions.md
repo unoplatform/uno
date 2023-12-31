@@ -2,7 +2,7 @@
 uid: Uno.Features.WinUIMarkupExtension
 ---
 
-# Windows.UI.Xaml.Markup.MarkupExtension
+# Markup Extensions
 
 Uno Platform supports the `MarkupExtension` class, which gives the ability to enhance the XAML-first experience.
 

@@ -8,7 +8,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 #if __ANDROID__
 using Android.Views;
 #elif __IOS__
@@ -16,10 +16,10 @@ using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class StackPanel : Panel
 	{

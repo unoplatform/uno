@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.UI.Core;
 using LibVLCSharp.Shared;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Logging;
 using System.Threading.Tasks;
@@ -29,7 +29,7 @@ public partial class GtkMediaPlayer
 	public event EventHandler<object>? OnMetadataLoaded;
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
-	public event EventHandler<object?>? OnVideoRatioChanged;
+	public event Action? OnNaturalVideoDimensionChanged;
 
 	private bool _updateVideoSizeOnFirstTimeStamp = true;
 	private bool _isParsedLocalFile;

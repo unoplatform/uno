@@ -1,6 +1,6 @@
-using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class DatePickerAutomationPeer : FrameworkElementAutomationPeer
 	{

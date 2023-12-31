@@ -12,8 +12,8 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 	[TestClass]
 	public class Given_ImplementedRoutedEventsGenerator
 	{
-		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Default.AddPackages(
-			ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.7.0-dev.427")));
+		private static readonly ReferenceAssemblies s_defaultWithUno = ReferenceAssemblies.Net.Net70.AddPackages(
+			ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118")));
 
 		private async Task TestGeneratorAsync(string inputSource, params GeneratedFile[] generatedFiles)
 		{
@@ -33,7 +33,7 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 		public async Task Given_NonGeneric_Control_In_Global_Namespace()
 		{
 			const string inputSource = @"
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 public partial class MyAwesomeControl : Control
 {
@@ -60,7 +60,7 @@ partial class MyAwesomeControl
 		public async Task Given_Generic_Control_In_Global_Namespace()
 		{
 			const string inputSource = @"
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 public partial class MyAwesomeControl<T> : Control
 {
@@ -87,7 +87,7 @@ partial class MyAwesomeControl<T>
 		public async Task Given_Generic_Control_In_Non_Global_Namespace()
 		{
 			const string inputSource = @"
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace MyControls.Test
 {

@@ -36,6 +36,7 @@
 	"Gyrometer",
 	"Hanja",
 	"hectopascals",
+	"HoloLens",
 	"Inlines",
 	"keychain",
 	"laggy",
@@ -62,6 +63,7 @@
 	"Resizetizer",
 	"resw",
 	"roadmap",
+	"retargeting",
 	"sandboxed",
 	"Segoe",
 	"Silverlight",
@@ -89,6 +91,7 @@
   ],
   "ignoreWords": [
 	"ADAL",
+	"AEHD",
 	"appsettings",
 	"Authenticode",
 	"automagically",
@@ -108,10 +111,12 @@
 	"Krueger",
 	"libgtk",
 	"Liu's",
+	"macios",
 	"Matteo",
 	"McCaffrey",
 	"mdpi",
 	"Mergify",
+	"mlaunch",
 	"netstd",
 	"nventive",
 	"odel",
@@ -126,6 +131,9 @@
 	"Udemy",
 	"UNOB",
 	"winui",
+	"xhdpi",
+	"xxhdpi",
+	"xxxhdpi",
 	"illinker",
 	"Onoh",
 	"Findlay",
@@ -133,7 +141,9 @@
 	"addin",
 	"Yowza",
 	"unpackaged",
-	"GNSS"
+	"GNSS",
+	"winappsdk",
+	"wapproj's"
   ],
   "patterns": [
 	{

@@ -12,7 +12,7 @@ Starting from Uno 4.8.26, the Uno Platform solution templates contains the appro
 
 Both [Source Link](https://github.com/dotnet/designs/blob/main/accepted/2020/diagnostics/source-link.md) and "Sources embedded inside PDB" features are used by Uno Platform and are supported by the extension.
 
-However only Android includes the `.pdb` of the referenced assemblies inside debug builds for net6.0. This makes the features unusable for iOS, macOS and MacCatalyst, see [issue](https://github.com/xamarin/xamarin-macios/issues/11879#issuecomment-1279452073).
+However only Android includes the `.pdb` of the referenced assemblies inside debug builds for net6.0. This makes the features unusable for iOS, macOS and Mac Catalyst, see [issue](https://github.com/xamarin/xamarin-macios/issues/11879#issuecomment-1279452073).
 
 This situation [should be](https://github.com/dotnet/sdk/issues/1458#issuecomment-1244736464) fixed with net7.0. A workaround for net6 mobile projects is to install [Cymbal](https://github.com/SimonCropp/Cymbal).
 
@@ -33,13 +33,13 @@ Existing Uno Platform projects requires a few simple changes to work properly wi
 You can add a default entry for all mobile targets by adding the following JSON block inside your `launch.json`.
 
 ```json
-    {
-      "name": "Uno Platform Mobile",
-      "type": "Uno",
-      "request": "launch",
-      // any Uno* task will do, this is simply to satisfy vscode requirement when a launch.json is present
-      "preLaunchTask": "Uno: net7.0-android | Debug | android-x64"
-    },
+{
+  "name": "Uno Platform Mobile",
+  "type": "Uno",
+  "request": "launch",
+  // any Uno* task will do, this is simply to satisfy vscode requirement when a launch.json is present
+  "preLaunchTask": "Uno: net7.0-android | Debug | android-x64"
+},
 ```
 
 This will ask the `Uno` debug provider how to build and launch the application. The Target Framework Moniker (TFM) selected in VS Code's status bar, e.g. `net7.0-ios`, and the target platform, e.g. `iossimulator-x64`, will be used automatically.
@@ -116,30 +116,30 @@ If you need to define launches or modify the defaults then you can can create yo
 1. This will insert a JSON block that looks like the following:
 
 ```json
-    {
-      "comment1": "// name: unique name for the configuration, can be identical to preLaunchTask",
-      "name": "Uno: net6.0-android | Debug | android-x64",
-      "comment2": "// type: 'Uno' for mono-based SDK, 'coreclr' for macOS and Skia.Gtk",
-      "type": "Uno",
-      "request": "launch",
-      "comment3": "// preLaunchTask format is 'Uno: {tfm} | {config}[ | {rid]}]' where ",
-      "comment4": "// * {tfm} is the target framework moniker, e.g. net6.0-ios",
-      "comment5": "// * {config} is the build configuration, e.g. 'Debug' or 'Release'",
-      "comment6": "// * {rid} is the optional runtime identifier, e.g. 'osx-arm64'",
-      "comment7": "// E.g. 'Uno: net6.0-ios | Debug | iossimulator-x64', 'Uno: net6.0 | Debug' for Skia.Gtk",
-      "preLaunchTask": "Uno: net6.0-android | Debug | android-x64"
-    },
+{
+  "comment1": "// name: unique name for the configuration, can be identical to preLaunchTask",
+  "name": "Uno: net6.0-android | Debug | android-x64",
+  "comment2": "// type: 'Uno' for mono-based SDK, 'coreclr' for macOS and Skia.Gtk",
+  "type": "Uno",
+  "request": "launch",
+  "comment3": "// preLaunchTask format is 'Uno: {tfm} | {config}[ | {rid]}]' where ",
+  "comment4": "// * {tfm} is the target framework moniker, e.g. net6.0-ios",
+  "comment5": "// * {config} is the build configuration, e.g. 'Debug' or 'Release'",
+  "comment6": "// * {rid} is the optional runtime identifier, e.g. 'osx-arm64'",
+  "comment7": "// E.g. 'Uno: net6.0-ios | Debug | iossimulator-x64', 'Uno: net6.0 | Debug' for Skia.Gtk",
+  "preLaunchTask": "Uno: net6.0-android | Debug | android-x64"
+},
 ```
 
 Follow the comments to construct the launch required by your target platform, for example:
 
 ```json
-    {
-      "name": "net7.0-ios | simulator | x64",
-      "type": "Uno",
-      "request": "launch",
-      "preLaunchTask": "Uno: net7.0-ios | Debug | iossimulator-x64"
-    },
+{
+  "name": "net7.0-ios | simulator | x64",
+  "type": "Uno",
+  "request": "launch",
+  "preLaunchTask": "Uno: net7.0-ios | Debug | iossimulator-x64"
+},
 ```
 
 If you follow the `Uno: {tfm} | {config}[ | {rid]}]` convention then there is no need to add entries inside the `tasks.json` file, the extension already provides them.
@@ -159,25 +159,25 @@ See [VS Code documentation](https://code.visualstudio.com/docs/editor/tasks) for
 #### Example
 
 ```json
-    {
-      "label": "custom-mac-build",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}/unoapp.Mobile/unoapp.Mobile.csproj",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary",
-        // specify the target platform - since there's more than one inside the mobile.csproj
-        "/property:TargetFramework=net7.0-maccatalyst",
-        "/property:RuntimeIdentifier=maccatalyst-arm64",
-        "/property:Configuration=Debug",
-        // this is to workaround both an OmniSharp limitation and a dotnet issue #21877
-        "/property:UnoForceSingleTFM=true"
-        // other custom settings that you need
-      ],
-      "problemMatcher": "$msCompile"
-    },
+{
+  "label": "custom-mac-build",
+  "command": "dotnet",
+  "type": "process",
+  "args": [
+    "build",
+    "${workspaceFolder}/unoapp.Mobile/unoapp.Mobile.csproj",
+    "/property:GenerateFullPaths=true",
+    "/consoleloggerparameters:NoSummary",
+    // specify the target platform - since there's more than one inside the mobile.csproj
+    "/property:TargetFramework=net7.0-maccatalyst",
+    "/property:RuntimeIdentifier=maccatalyst-arm64",
+    "/property:Configuration=Debug",
+    // this is to workaround both an OmniSharp limitation and a dotnet issue #21877
+    "/property:UnoForceSingleTFM=true"
+    // other custom settings that you need
+  ],
+  "problemMatcher": "$msCompile"
+},
 ```
 
 #### Tips

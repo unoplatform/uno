@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 			hasInherits = false;
 		}
 
-		private object? GetDefaultValue()
+		internal object? GetDefaultValue()
 		{
 			if (!HasDefaultValueSet)
 			{

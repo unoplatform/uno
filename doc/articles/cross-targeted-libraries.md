@@ -28,13 +28,13 @@ NuGet references that should be shared by all platforms can be added through the
 
 If you want to apply NuGet references only to specific platforms, you can do so by manually editing the `csproj` file and putting the `PackageReference` within a conditional `ItemGroup`, eg:
 ```xml
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<PackageReference Include="MyLibraryA" Version="3.0.4" PrivateAssets="none" />
-	</ItemGroup>
+<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
+	<PackageReference Include="MyLibraryA" Version="3.0.4" PrivateAssets="none" />
+</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios' or '$(TargetFramework)' == 'net7.0-maccatalyst'">
-		<PackageReference Include="MyLibraryB" Version="2.5.11" PrivateAssets="none" />
-	</ItemGroup>
+<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios' or '$(TargetFramework)' == 'net7.0-maccatalyst'">
+	<PackageReference Include="MyLibraryB" Version="2.5.11" PrivateAssets="none" />
+</ItemGroup>
 ```
 
 ### Project references and SDK references
@@ -43,17 +43,17 @@ Adding project references and framework references is not currently working thro
 
 Example project reference:
 ```xml
-  <ItemGroup>
-    <ProjectReference Include="..\CoolControls.Core\CoolControls.Core.csproj" />
-  </ItemGroup>
+<ItemGroup>
+	<ProjectReference Include="..\CoolControls.Core\CoolControls.Core.csproj" />
+</ItemGroup>
 ```
 
 Example SDK reference:
 ```xml
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Numerics.Vectors" />
-	</ItemGroup>
+<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
+	<Reference Include="System.Numerics" />
+	<Reference Include="System.Numerics.Vectors" />
+</ItemGroup>
 ```
 
 ## Adding XAML files
@@ -66,9 +66,9 @@ In Visual Studio you can add new XAML files via the normal 'Add Items...' UI. No
 
 Adding a new conditional symbol via the Visual Studio UI may result in it only being defined for a single target platform. To add it for all platforms (or a specific subset), manually edit the `csproj` file:
 ```xml
-  <PropertyGroup>
-    <DefineConstants>UNO_1213</DefineConstants>
-  </PropertyGroup>
+<PropertyGroup>
+	<DefineConstants>UNO_1213</DefineConstants>
+</PropertyGroup>
 ```
 
 ## Using WebAssembly-specific attributes

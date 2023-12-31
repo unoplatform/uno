@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
 using SkiaSharp;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class LineGeometry
 	{

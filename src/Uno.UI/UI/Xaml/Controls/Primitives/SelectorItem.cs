@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Uno.UI;
@@ -13,7 +13,7 @@ using Windows.Devices.Input;
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class SelectorItem : ContentControl
 	{

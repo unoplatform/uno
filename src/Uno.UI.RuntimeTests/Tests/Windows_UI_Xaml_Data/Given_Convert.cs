@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !WINAPPSDK
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

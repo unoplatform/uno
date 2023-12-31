@@ -1,27 +1,61 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using FluentAssertions;
 using static Private.Infrastructure.TestServices;
+using System.Collections.Generic;
+
+#if __SKIA__
+using SkiaSharp;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+#if __SKIA__
 		[TestMethod]
-		[RunsOnUIThread]
+		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
+		[Ignore("Fails on CI")]
+		public async Task Check_FontFallback()
+		{
+			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStyle).SKFont;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
+
+			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
+
+			await UITestHelper.Load(SUT);
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
+			var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
+			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
+
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
+		}
+#endif
+
+		[TestMethod]
 		public async Task Check_TextDecorations_Binding()
 		{
 			var SUT = new TextDecorationsBinding();
@@ -36,7 +70,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure()
 		{
 			var SUT = new TextBlock { Text = "Some text" };
@@ -53,7 +86,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure_Collapsed()
 		{
 			var SUT = new TextBlock { Text = "Some text", Visibility = Visibility.Collapsed };
@@ -67,7 +99,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void Check_Text_When_Having_Inline_Text_In_Span()
 		{
 			var SUT = new InlineTextInSpan();
@@ -81,7 +112,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public void When_Null_FontFamily()
 		{
 			var SUT = new TextBlock { Text = "Some text", FontFamily = null };
@@ -90,7 +120,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task Check_Single_Character_Run_With_Wrapping_Constrained()
 		{
 #if __MACOS__
@@ -107,7 +136,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CharacterSpacing = 18
 			};
 
-			WindowHelper.WindowContent = new Border { Width = 10, Height = 10, Child = SUT };
+			WindowHelper.WindowContent = new Border
+			{
+				Width = 10,
+				Height = 10,
+				Child = SUT
+			};
 
 			await WindowHelper.WaitForIdle();
 
@@ -120,13 +154,181 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[Ignore("Fails")]
-		public async Task When_Text_Ends_In_Return()
+		public async Task When_Multiline_Wrapping_LongWord_Then_Space_Then_Word()
 		{
 			var SUT = new TextBlock
 			{
+				Width = 150,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "abcdefghijklmnopqrstuvwxyzabcdefg"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text += " a";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiline_Wrapping_LeadingSpaces()
+		{
+			var SUT = new TextBlock
+			{
+				Width = 150,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "initial"
+			};
+
+			WindowHelper.WindowContent = new Border
+			{
+				Child = SUT,
+				BorderBrush = new SolidColorBrush(Colors.Pink),
+				BorderThickness = new Thickness(1)
+			};
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = new string(' ', 120);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+#if __IOS__
+		[Ignore("Fails")]
+#endif
+		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
+		{
+			var SUT = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
 				Text = "hello world"
 			};
+
+			WindowHelper.WindowContent = new Border
+			{
+				Width = 150,
+				Child = SUT
+			};
+
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = "mmmmmmmmm               ";
+			await WindowHelper.WaitForIdle();
+
+			// Trailing space shouldn't wrap
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_CarriageReturn()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+
+			SUT0.Text = "text";
+			SUT1.Text = "text\r";
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_CarriageReturn2()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+			var SUT2 = new TextBlock();
+			var SUT3 = new TextBlock();
+
+			SUT1.Text = "\r";
+			SUT2.Text = "\r\r";
+			SUT3.Text = "\r\r\r";
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					},
+					new Border
+					{
+						Child = SUT2,
+						BorderBrush = new SolidColorBrush(Colors.Brown)
+					},
+					new Border
+					{
+						Child = SUT3,
+						BorderBrush = new SolidColorBrush(Colors.Yellow)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+			SUT2.ActualHeight.Should().BeGreaterThan(SUT1.ActualHeight);
+			SUT3.ActualHeight.Should().BeGreaterThan(SUT2.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_Return()
+		{
+			var SUT = new TextBlock { Text = "hello world" };
 
 			WindowHelper.WindowContent = new Border { Child = SUT };
 
@@ -136,12 +338,105 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var height = SUT.ActualHeight;
 
 			SUT.Text += "\r";
+			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(SUT.ActualHeight > height * 1.5);
+			SUT.ActualHeight.Should().BeGreaterThan(height * 1.5);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_LineBreak()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+
+			SUT0.Text = "text";
+			SUT1.Inlines.Add(new Run { Text = "text" });
+			SUT1.Inlines.Add(new LineBreak());
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_LineBreak2()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+			var SUT2 = new TextBlock();
+			var SUT3 = new TextBlock();
+
+			SUT1.Inlines.Add(new LineBreak());
+
+			SUT2.Inlines.Add(new LineBreak());
+			SUT2.Inlines.Add(new LineBreak());
+
+			SUT3.Inlines.Add(new LineBreak());
+			SUT3.Inlines.Add(new LineBreak());
+			SUT3.Inlines.Add(new LineBreak());
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					},
+					new Border
+					{
+						Child = SUT2,
+						BorderBrush = new SolidColorBrush(Colors.Brown)
+					},
+					new Border
+					{
+						Child = SUT3,
+						BorderBrush = new SolidColorBrush(Colors.Yellow)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+			SUT2.ActualHeight.Should().BeGreaterThan(SUT1.ActualHeight);
+			SUT3.ActualHeight.Should().BeGreaterThan(SUT2.ActualHeight);
+		}
+
+		[TestMethod]
 		public void When_Inlines_XamlRoot()
 		{
 			var SUT = new InlineTextInSpan();
@@ -156,7 +451,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -174,7 +468,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
+			SUT.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
 
 			int counter = 3;
 
@@ -191,7 +485,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -226,7 +519,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 #if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
 #endif
@@ -244,7 +536,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
+			SUT.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -259,10 +551,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -281,6 +572,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
 			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextWrapping_Changed()
+		{
+			var SUT = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! ",
+			};
+			StackPanel panel = new StackPanel
+			{
+				Width = 100,
+				Children =
+				{
+					SUT
+				}
+			};
+			await UITestHelper.Load(panel);
+			var height1 = SUT.ActualHeight;
+			SUT.TextWrapping = TextWrapping.NoWrap;
+			await Task.Delay(500);
+			var height2 = SUT.ActualHeight;
+			Assert.AreNotEqual(height1, height2);
 		}
 
 		[TestMethod]
@@ -306,7 +622,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !__IOS__ // Line height is not supported on iOS
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
 		{
 			var container = new Grid()
@@ -328,7 +643,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Empty_TextBlocks_Stacked()
 		{
 			var container = new StackPanel();
@@ -367,5 +681,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				previousOrigin = textBlockOrigin;
 			}
 		}
+
+#if !__MACOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming()
+		{
+			var sut = new TextBlock
+			{
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				TextTrimming = TextTrimming.Clip,
+			};
+			var container = new Border
+			{
+				BorderThickness = new Thickness(1),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				Width = 100,
+				Child = sut,
+			};
+
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
+
+			Assert.IsTrue(sut.IsTextTrimmed, "IsTextTrimmed should be trimmed.");
+			Assert.IsTrue(states.Count == 1 && states[0] == true, $"IsTextTrimmedChanged should only proc once for IsTextTrimmed=true. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimmingNone()
+		{
+			var sut = new TextBlock
+			{
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				TextTrimming = TextTrimming.None,
+			};
+			var container = new Border
+			{
+				BorderThickness = new Thickness(1),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				Width = 100,
+				Child = sut,
+			};
+
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle(); // necessary on ios, since the container finished loading before the text is drawn
+
+			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
+			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
+		}
+#endif
 	}
 }

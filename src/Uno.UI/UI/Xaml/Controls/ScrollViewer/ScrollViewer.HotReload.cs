@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
-[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Windows.UI.Xaml.Controls.ScrollViewer), typeof(Windows.UI.Xaml.Controls.ScrollViewerMetadataUpdateHandler))]
+[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.ScrollViewer), typeof(Microsoft.UI.Xaml.Controls.ScrollViewerMetadataUpdateHandler))]
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal static partial class ScrollViewerMetadataUpdateHandler
 {

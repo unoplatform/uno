@@ -1,13 +1,16 @@
-using System;
+﻿using System;
 using Android.Views;
 using Uno.Media.Playback;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaPlayerPresenter
 	{
+		internal uint NaturalVideoWidth => MediaPlayer?.NaturalVideoWidth ?? 0;
+		internal uint NaturalVideoHeight => MediaPlayer?.NaturalVideoHeight ?? 0;
+
 		private void SetVideoSurface(IVideoSurface videoSurface)
 		{
 			this.Child = VisualTreeHelper.AdaptNative(videoSurface as SurfaceView);

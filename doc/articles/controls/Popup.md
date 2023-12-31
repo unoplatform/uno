@@ -14,16 +14,12 @@ using _Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
 #else
 using _Popup = Windows.UI.Xaml.Controls.Popup;
 #endif
-
 ...
 
-    public partial class TestPopup : Control
-    {
-        _Popup _popup;
-
-...
-
-            _popup = GetTemplateChild("PART_Popup") as _Popup;
+protected override void OnApplyTemplate()
+{
+    var popup = GetTemplateChild("PART_Popup") as _Popup;
+}
 ```
 
 In XAML markup, you can use `Popup` in the same way across all platforms without any workaround.
@@ -34,6 +30,6 @@ If you want to show a dimmed overlay underneath the popup, set the `Popup.LightD
 
 If you wish to customize the overlay color, add the following to your top-level `App.Resources`:
 ```xml
-		<SolidColorBrush x:Key="PopupLightDismissOverlayBackground"
-						 Color="Red" />
+<SolidColorBrush x:Key="PopupLightDismissOverlayBackground"
+				 Color="Red" />
 ```

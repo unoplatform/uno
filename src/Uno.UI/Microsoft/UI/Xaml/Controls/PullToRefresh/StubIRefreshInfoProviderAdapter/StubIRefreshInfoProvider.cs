@@ -1,9 +1,9 @@
 ﻿#pragma warning disable CS0067
 
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI.Xaml.Controls;
 
