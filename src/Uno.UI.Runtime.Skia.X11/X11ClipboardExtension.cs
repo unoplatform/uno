@@ -52,6 +52,7 @@ using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using EventMask = Avalonia.X11.EventMask;
 using PropertyMode = Avalonia.X11.PropertyMode;
 
@@ -95,10 +96,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 	private readonly X11Window _x11Window;
 	private readonly object _windowMutex = new object();
 
-	private int _currentlyOwningClipboard;
-	// there are only valid if CurrentlyOwningClipboard
+	private volatile bool _currentlyOwningClipboard;
+	// these are only valid if CurrentlyOwningClipboard. However, reading outdated values is benign, so no lock needed for now
 	private IntPtr _ownershipTimestamp;
-	private DataPackageView _clipboard;
+	private DataPackageView _clipboardData;
 
 #pragma warning disable CS0067 // Event is never used
 	public event EventHandler<object> ContentChanged;
@@ -111,10 +112,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
 		if (display == IntPtr.Zero)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error("XLIB ERROR: Cannot connect to X server");
-			}
+			this.Log().Error("XLIB ERROR: Cannot connect to X server");
 		}
 
 		int screen = XLib.XDefaultScreen(display);
@@ -133,7 +131,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS)
 		);
 
-		var selThread = new Thread(Run)
+		var selThread = new Thread(ClipboardOwnerLoop)
 		{
 			Name = "X11 Selection Ownership",
 			IsBackground = true
@@ -142,76 +140,160 @@ internal class X11ClipboardExtension : IClipboardExtension
 		selThread.Start();
 	}
 
-	private bool CurrentlyOwningClipboard
-	{
-		get => Interlocked.CompareExchange(ref _currentlyOwningClipboard, 1, 1) == 1;
-		set
-		{
-			if (value)
-			{
-				Interlocked.CompareExchange(ref _currentlyOwningClipboard, 1, 0);
-			}
-			else
-			{
-				Interlocked.CompareExchange(ref _currentlyOwningClipboard, 0, 1);
-			}
-		}
-	}
-
 	public void StartContentChanged() => throw new NotImplementedException();
 	public void StopContentChanged() => throw new NotImplementedException();
 
 	public void Clear() => SetContent(new DataPackage());
 
 	// TODO: do we need to do anything specific here?
-	// X11 has the bizzare concept of a clipboard owner, where if the clipboard owner goes away,
+	// X11 has the bizarre concept of a clipboard owner, where if the clipboard owner goes away,
 	// the clipboard vanishes. In practice, the DE persists the clipboard even if the x11 client
-	// that set it goes away. Most likely, the DE does something similar to xclipd, where it continuously
-	// takes the ownership of the clipboard whenever it changes: https://github.com/jhunt/xclipd/blob/master/src/xclipd.c
+	// that set it goes away. Usually, the DE has a clipboard mananger, where it continuously
+	// polls the owner of the clipboard for new values.
 	public void Flush() { }
 
 	public void SetContent(DataPackage content)
 	{
 		lock (_windowMutex)
 		{
-			_ownershipTimestamp = /* CurrentTime */ IntPtr.Zero;
-			// _ownershipTimestamp = GetTimestamp();
+			_ownershipTimestamp = GetTimestamp();
+			// TODO: should we also acquire CLIPBOARD?
+			// Utilities and apps are conflicted on this. xsel and xclip use PRIMARY.
+			// Gtk uses CLIPBOARD. Firefox expects PRIMARY.
+			// Similar open issue for Gtk: https://github.com/unoplatform/uno/issues/14945
 			XLib.XSetSelectionOwner(_x11Window.Display, X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD), _x11Window.Window, _ownershipTimestamp);
 
 			if (XLib.XGetSelectionOwner(_x11Window.Display, X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD)) == _x11Window.Window)
 			{
-				if (this.Log().IsEnabled(LogLevel.Information))
-				{
-					this.Log().LogInfo($"Successfully acquired x11 selection ownership");
-				}
+				this.Log().LogInfo($"Successfully acquired x11 selection ownership");
 
-				// TODO: expand this
-				_clipboard = content.GetView();
-				CurrentlyOwningClipboard = true;
+				_clipboardData = content.GetView();
+				_currentlyOwningClipboard = true;
 			}
 			else
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Failed to acquire x11 selection");
-				}
+				this.Log().Error($"Failed to acquire x11 selection");
 
-				CurrentlyOwningClipboard = false;
+				_currentlyOwningClipboard = false;
 			}
 		}
 	}
 
+	/// <returns>true if a supported property matches, otherwise false</returns>
+	/// <remarks>We need an additional target parameter to support the recursive MULTIPLE</remarks>
+	private bool SwitchTargets(IntPtr requestor, IntPtr target, IntPtr property)
+	{
+		if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TIMESTAMP))
+		{
+			/* Return timestamp used to acquire ownership if target is TIMESTAMP */
+			XLib.XChangeProperty(_x11Window.Display, requestor, property, X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_INTEGER), 32, PropertyMode.Replace,
+				_ownershipTimestamp, 1);
+		}
+		else if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS))
+		{
+			// TODO: most likely broken
+			var atoms = _supportedAtoms.Concat(_textFormats.Keys.Select(name => X11Helper.GetAtom(_x11Window.Display, name))).ToArray();
+			XLib.XChangeProperty(
+				_x11Window.Display,
+				requestor,
+				property,
+				X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_ATOM),
+				32,
+				PropertyMode.Replace,
+				atoms,
+				atoms.Length);
+		}
+		else if (_textFormats.TryGetValue(XLib.GetAtomName(_x11Window.Display, target), out var encoding) &&
+			_clipboardData.AvailableFormats.Contains(XLib.GetAtomName(_x11Window.Display, target)))
+		{
+			if (_clipboardData.FindRawData(StandardDataFormats.Text) is string s)
+			{
+				var bytes = encoding.GetBytes(s);
+				XLib.XChangeProperty(_x11Window.Display, requestor, property, target, 8, PropertyMode.Replace,
+					bytes, bytes.Length);
+			}
+			else if (_clipboardData.FindRawData(StandardDataFormats.Text) is byte[] bytes)
+			{
+				XLib.XChangeProperty(_x11Window.Display, requestor, property, target, 8, PropertyMode.Replace,
+					bytes, bytes.Length);
+			}
+		}
+		else if (_textFormats.TryGetValue(XLib.GetAtomName(_x11Window.Display, target), out var encoding2) &&
+			(_clipboardData.AvailableFormats.Contains(StandardDataFormats.Text) || _clipboardData.AvailableFormats.Contains(StandardDataFormats.Uri)))
+		{
+			var s = _clipboardData.AvailableFormats.Contains(StandardDataFormats.Text) ?
+				_clipboardData.GetTextAsync().GetResults() :
+				_clipboardData.GetUriAsync().GetResults().ToString(); // TODO: is this deadlock-proof?
+			var bytes = encoding2.GetBytes(s);
+			XLib.XChangeProperty(_x11Window.Display, requestor, property, target, 8, PropertyMode.Replace,
+				bytes, bytes.Length);
+		}
+		else if (XLib.GetAtomName(_x11Window.Display, target) == "text/html" &&
+			_clipboardData.AvailableFormats.Contains(StandardDataFormats.Html))
+		{
+			var s = _clipboardData.GetHtmlFormatAsync().GetResults(); // TODO: is this deadlock-proof?
+			var bytes = Encoding.GetEncoding(s).GetBytes(s);
+			XLib.XChangeProperty(_x11Window.Display, requestor, property, target, 8, PropertyMode.Replace,
+				bytes, bytes.Length);
+		}
+		else if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
+		{
+			if (property == X11Helper.None)
+			{
+				/* Invalid MULTIPLE request */
+				return false;
+			}
+
+			XLib.XGetWindowProperty(_x11Window.Display, requestor, property, 0, new IntPtr(0x7fffffff),
+				false, X11Helper.GetAtom(_x11Window.Display, X11Helper.ATOM_PAIR), out IntPtr _,
+				out int format, out var length, out IntPtr _, out IntPtr atomsArray);
+			using var _ = Disposable.Create(() => XLib.XFree(atomsArray));
+
+			/* Make sure we got the Atom list we want */
+			if (format != 32)
+			{
+				return true;
+			}
+
+			unsafe
+			{
+				var atomsSpan = new Span<IntPtr>(atomsArray.ToPointer(), (int)length);
+				for (var i = 0; i < length; i+= 2)
+				{
+					var target_ = atomsSpan[i];
+					var prop = atomsSpan[i + 1];
+
+					SwitchTargets(requestor, target_, prop);
+				}
+			}
+		}
+		// TODO: support image copying.
+		// Image conversion is broken in SkiaSharp on Linux as of 29/12/2023, so no need to
+		// implement this right now.
+		else if (XLib.GetAtomName(_x11Window.Display, target) is var name && _clipboardData.AvailableFormats.Contains(name))
+		{
+			// last-ditch effort
+			if (_clipboardData.GetDataAsync(name).GetResults() is byte[] bytes)
+			{
+				XLib.XChangeProperty(_x11Window.Display, requestor, property, target, 8, PropertyMode.Replace,
+					bytes, bytes.Length);
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	[DoesNotReturn]
-	private void Run()
+	private void ClipboardOwnerLoop()
 	{
 		while (true)
 		{
 			SpinWait.SpinUntil(() =>
 			{
-				if (CurrentlyOwningClipboard)
-				{
-					return true;
-				}
 				lock (_windowMutex)
 				{
 					return X11Helper.XPending(_x11Window.Display) > 0;
@@ -222,9 +304,12 @@ internal class X11ClipboardExtension : IClipboardExtension
 			{
 				XLib.XNextEvent(_x11Window.Display, out var event_);
 
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				this.Log().Trace($"XSEL EVENT: {event_.type}");
+
+				if (!_currentlyOwningClipboard)
 				{
-					this.Log().Trace($"XSEL EVENT: {event_.type}");
+					this.Log().Debug($"Not currently owning clipboard, skipping event: {event_.type}");
+					continue;
 				}
 
 				switch (event_.type)
@@ -232,28 +317,19 @@ internal class X11ClipboardExtension : IClipboardExtension
 					case XEventName.SelectionClear:
 						if (event_.SelectionEvent.selection == X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 						{
-							if (this.Log().IsEnabled(LogLevel.Information))
-							{
-								this.Log().LogInfo($"Lost X11 selection ownership");
-							}
+							this.Log().LogInfo($"Lost X11 selection ownership");
 
-							CurrentlyOwningClipboard = false;
+							_currentlyOwningClipboard = false;
 						}
 						else
 						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Trace($"Somehow losing X11 selection {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we only acquire CLIPBOARD");
-							}
+							this.Log().Trace($"Somehow losing X11 selection {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
 						}
 						break;
 					case XEventName.SelectionRequest:
 						if (event_.SelectionRequestEvent.selection != X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Trace($"Somehow getting a SelectionRequest for {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we only acquire CLIPBOARD");
-							}
+							this.Log().Trace($"Somehow getting a SelectionRequest for {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
 							break;
 						}
 
@@ -261,18 +337,16 @@ internal class X11ClipboardExtension : IClipboardExtension
 						XSelectionEvent ev = default; // reply
 
 						ev.type = XEventName.SelectionNotify;
-						ev.display = xsr.display;
+						ev.display = _x11Window.Display;
 						ev.requestor = xsr.requestor;
 						ev.selection = xsr.selection;
 						ev.time = xsr.time;
+						ev.send_event = 1;
 						ev.target = xsr.target;
 
-						if (this.Log().IsEnabled(LogLevel.Information))
-						{
-							this.Log().LogInfo($"Received SelectionRequest with target {XLib.GetAtomName(_x11Window.Display, ev.target)} and requestor {ev.requestor.ToString("X")}");
-						}
+						this.Log().LogInfo($"Received SelectionRequest with target {XLib.GetAtomName(_x11Window.Display, ev.target)} and requestor {ev.requestor.ToString("X")}");
 
-						if (xsr.property == /* None */ IntPtr.Zero && ev.target != X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
+						if (xsr.property == X11Helper.None && ev.target != X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
 						{
 							/* Obsolete requestor */
 							xsr.property = xsr.target;
@@ -280,165 +354,21 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 						// To be ICCCM-compliant, we need to support TARGETS and MULTIPLE at the very least.
 
-						if (ev.time != /* CurrentTime */ IntPtr.Zero && ev.time < _ownershipTimestamp)
+						if (ev.time != X11Helper.CurrentTime && ev.time < _ownershipTimestamp)
 						{
 							/* If the time is outside the period we have owned the selection,
 							 * which is any time later than timestamp, or if the requested target
 							 * is not a string, then refuse the SelectionRequest. NB. Some broken
 							 * clients don't set a valid timestamp, so we have to check against
 							 * CurrentTime here. */
-							ev.property = /* None */ IntPtr.Zero;
+							ev.property = X11Helper.None;
 						}
-						else if (ev.target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TIMESTAMP))
-						{
-							/* Return timestamp used to acquire ownership if target is TIMESTAMP */
-							ev.property = xsr.property;
-
-							XLib.XChangeProperty(ev.display, ev.requestor, ev.property, X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_INTEGER), 32, PropertyMode.Replace,
-								_ownershipTimestamp, 1);
-						}
-						else if (ev.target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS))
+						else if (SwitchTargets(xsr.requestor, xsr.target, xsr.property))
 						{
 							ev.property = xsr.property;
-
-							unsafe
-							{
-								var atoms = _supportedAtoms.Concat(_textFormats.Keys.Select(name => X11Helper.GetAtom(_x11Window.Display, name))).ToArray();
-								var size = atoms.Length * sizeof(IntPtr);
-								var targetsCpy = Marshal.AllocHGlobal(size);
-								var span = new ReadOnlySpan<IntPtr>(atoms);
-								span.CopyTo(new Span<IntPtr>(targetsCpy.ToPointer(), size));
-
-								XLib.XChangeProperty(
-									ev.display,
-									ev.requestor,
-									ev.property,
-									X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_ATOM),
-									32,
-									PropertyMode.Replace,
-									targetsCpy,
-									size);
-								XLib.XFlush(_x11Window.Display);
-
-								Marshal.FreeHGlobal(targetsCpy);
-							}
-						}
-						else if (ev.target == X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
-						{
-							// TODO: refactor the implementation so that we can implemenent MULTIPLE sanely
-							// if (xsr.property == /* None */ IntPtr.Zero)
-							// { /* Invalid MULTIPLE request */
-							// 	ev.property = /* None */ IntPtr.Zero;
-							// }
-							// else
-							// {
-							// 	ev.property = xsr.property;
-							//
-							// 	// hr = handle_multiple (ev.display, ev.requestor, ev.property, sel,
-							// 	// 	ev.selection, ev.time, NULL);
-							//
-							// 	// static HandleResult
-							// 	// 	handle_multiple (Display * display, Window requestor, Atom property,
-							// 	// 		unsigned char * sel, Atom selection, Time time,
-							// 	// 	MultTrack * mparent);
-							//
-							//
-							// 	XLib.XGetWindowProperty(ev.display, ev.requestor, ev.property, 0, new IntPtr(0x7fffffff),
-							// 		false, /* AnyPropertyType */ IntPtr.Zero, out IntPtr type,
-							// 		out int format, out var length, out IntPtr bytesafter,
-							// 		out IntPtr atomsArray);
-							//
-							// 	/* Make sure we got the Atom list we want */
-							// 	if (format != 32)
-							// 	{
-							// 		break;
-							// 	}
-							//
-							// 	unsafe
-							// 	{
-							// 		var atomsSpan = new Span<IntPtr>(atomsArray.ToPointer(), (int)length);
-							// 		for (var i = 0; i < length; i+= 2)
-							// 		{
-							// 			var atom = atomsSpan[i];
-							// 			var prop = atomsSpan[i + 1];
-							//
-							// 			// TODO: this is kind of redundant, maybe refactor this out like xsel does
-							// 			if (atom == X11Helper.GetAtom(_x11Window.Display, X11Helper.TIMESTAMP))
-							// 			{
-							// 				XLib.XChangeProperty(ev.display, ev.requestor, prop, X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_INTEGER), 32, PropertyMode.Replace,
-							// 					_ownershipTimestamp, 1);
-							// 			}
-							// 			else if (atom == X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS))
-							// 			{
-							// 				var atoms = _supportedAtoms.Concat(_textFormats.Keys.Select(name => X11Helper.GetAtom(_x11Window.Display, name))).ToArray();
-							// 				var size = atoms.Length * sizeof(IntPtr);
-							// 				var targetsCpy = Marshal.AllocHGlobal(size);
-							// 				var span = new ReadOnlySpan<IntPtr>(atoms);
-							// 				span.CopyTo(new Span<IntPtr>(targetsCpy.ToPointer(), size));
-							//
-							// 				XLib.XChangeProperty(
-							// 					ev.display,
-							// 					ev.requestor,
-							// 					ev.property,
-							// 					X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_ATOM),
-							// 					32,
-							// 					PropertyMode.Replace,
-							// 					targetsCpy,
-							// 					size);
-							// 				XLib.XFlush(_x11Window.Display);
-							//
-							// 				Marshal.FreeHGlobal(targetsCpy);
-							// 			}
-							// 			else if (atom == X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
-							// 			{
-							//
-							// 			}
-							// 		}
-							// 	}
-							// }
-						}
-						// TODO: some applications refuse to paste the clipboard we set with Ctrl-V. In firefox, only Ctrl-Shift-V works. Why?
-						// Other apps like Thunar work as expected.
-						else if (_textFormats.TryGetValue(XLib.GetAtomName(_x11Window.Display, ev.target), out var encoding))
-						{
-							ev.property = xsr.property;
-
-							if (_clipboard.AvailableFormats.Contains(XLib.GetAtomName(_x11Window.Display, ev.target)))
-							{
-								if (_clipboard.FindRawData(StandardDataFormats.Text) is string s)
-								{
-									var bytes = encoding.GetBytes(s);
-									XLib.XChangeProperty(ev.display, ev.requestor, ev.property, ev.target, 8, PropertyMode.Replace,
-										bytes, bytes.Length);
-								}
-								else if (_clipboard.FindRawData(StandardDataFormats.Text) is byte[] bytes)
-								{
-									XLib.XChangeProperty(ev.display, ev.requestor, ev.property, ev.target, 8, PropertyMode.Replace,
-										bytes, bytes.Length);
-								}
-							}
-							else if (_clipboard.AvailableFormats.Contains(StandardDataFormats.Text))
-							{
-								var s = _clipboard.GetTextAsync().GetResults(); // TODO: is this deadlock-proof?
-								var bytes = encoding.GetBytes(s);
-								XLib.XChangeProperty(ev.display, ev.requestor, ev.property, ev.target, 8, PropertyMode.Replace,
-									bytes, bytes.Length);
-							}
-							else
-							{
-								XLib.XChangeProperty(ev.display, ev.requestor, ev.property, X11Helper.GetAtom(_x11Window.Display, X11Helper.UTF8_STRING), 8, PropertyMode.Replace,
-									IntPtr.Zero, 0);
-							}
-						}
-						// TODO: support image copying.
-						// Image conversion is broken in SkiaSharp on Linux as of 29/12/2023, so no need to
-						// implement this right now.
-						else
-						{
-							ev.property = /* None */ IntPtr.Zero;
 						}
 
-						if (ev.property != /* None */ IntPtr.Zero)
+						if (ev.property != X11Helper.None)
 						{
 							XEvent xev = default;
 							xev.SelectionEvent = ev;
@@ -455,9 +385,9 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 	public DataPackageView GetContent()
 	{
-		if (CurrentlyOwningClipboard)
+		if (_currentlyOwningClipboard)
 		{
-			return _clipboard;
+			return _clipboardData;
 		}
 
 		var dataPackage = new DataPackage();
@@ -517,10 +447,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			if (!HasOwner)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Found the X11 CLIPBOARD clipboard to be owner-less.");
-				}
+				this.Log().Error($"Found the X11 clipboard to be owner-less.");
 
 				return null;
 			}
@@ -528,7 +455,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			var clipboardAtom = X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD);
 			var targetsAtom = X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS);
 			XLib.XConvertSelection(_x11Window.Display, clipboardAtom, targetsAtom, targetsAtom,
-				_x11Window.Window, /* CurrentTime */ IntPtr.Zero);
+				_x11Window.Window, X11Helper.CurrentTime);
 
 			// We don't need an event mask here as Selection events aren't maskable.
 
@@ -539,10 +466,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			if (event_.type != XEventName.SelectionNotify)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
-				}
+				this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
 
 				return null;
 			}
@@ -550,29 +474,20 @@ internal class X11ClipboardExtension : IClipboardExtension
 			var sel = event_.SelectionEvent;
 			if (sel.property != targetsAtom)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"EXPECTED XSELECTION PROPERTY {targetsAtom}, INSTEAD FOUND {sel.property}");
-				}
+				this.Log().Error($"EXPECTED XSELECTION PROPERTY {targetsAtom}, INSTEAD FOUND {sel.property}");
 
 				return null;
 			}
 
 			if (sel.selection != clipboardAtom)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
-				}
+				this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
 			}
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
-			}
+			this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
 
-			XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, /* AnyPropertyType */ IntPtr.Zero,
-				out var actualTypeAtom, out var actualFormat, out var nitems, out var bytes_after, out var prop);
+			XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, X11Helper.AnyPropertyType,
+				out var _, out var actualFormat, out var nitems, out var _, out var prop);
 			using var _ = Disposable.Create(() => XLib.XFree(prop));
 
 			// TODO: do we need this check?
@@ -583,10 +498,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			if (actualFormat != 32)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"EXPECTED XSELECTION actual_format TO BE 32 (IntPtr), INSTEAD FOUND {actualFormat}");
-				}
+				this.Log().Error($"EXPECTED XSELECTION actual_format TO BE 32 (IntPtr), INSTEAD FOUND {actualFormat}");
 
 				return null;
 			}
@@ -603,17 +515,14 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			if (!HasOwner)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Found the X11 CLIPBOARD clipboard to be owner-less.");
-				}
+				this.Log().Error($"Found the X11 clipboard to be owner-less.");
 
 				return null;
 			}
 
 			var clipboardAtom = X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD);
 			XLib.XConvertSelection(_x11Window.Display, clipboardAtom, format, format,
-				_x11Window.Window, /* CurrentTime */ IntPtr.Zero);
+				_x11Window.Window, X11Helper.CurrentTime);
 
 			// We don't need an event mask here as Selection events aren't maskable.
 
@@ -624,10 +533,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			if (event_.type != XEventName.SelectionNotify)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
-				}
+				this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
 
 				return null;
 			}
@@ -635,28 +541,19 @@ internal class X11ClipboardExtension : IClipboardExtension
 			var sel = event_.SelectionEvent;
 			if (sel.property != format)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"EXPECTED XSELECTION PROPERTY {format}, INSTEAD FOUND {sel.property}");
-				}
+				this.Log().Error($"EXPECTED XSELECTION PROPERTY {format}, INSTEAD FOUND {sel.property}");
 
 				return null;
 			}
 
 			if (sel.selection != clipboardAtom)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
-				}
+				this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
 			}
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
-			}
+			this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
 
-			XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, /* AnyPropertyType */ IntPtr.Zero,
+			XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, X11Helper.AnyPropertyType,
 				out var actualTypeAtom, out var actualFormat, out var nitems, out var bytes_after, out var prop);
 			var readonlyProp = prop;
 			using var propDisposable = Disposable.Create(() => XLib.XFree(readonlyProp));
@@ -684,12 +581,12 @@ internal class X11ClipboardExtension : IClipboardExtension
 					SpinWait.SpinUntil(() => X11Helper.XPending(_x11Window.Display) > 0);
 					XLib.XNextEvent(_x11Window.Display, out event_);
 
-					if (event_.type != XEventName.PropertyNotify || event_.PropertyEvent.state != /* PropertyNewValue */ IntPtr.Zero)
+					if (event_.type != XEventName.PropertyNotify || event_.PropertyEvent.state != X11Helper.PropertyNewValue)
 					{
 						continue;
 					}
 
-					XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, /* AnyPropertyType */ IntPtr.Zero,
+					XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, X11Helper.AnyPropertyType,
 						out actualTypeAtom, out actualFormat, out nitems, out bytes_after, out prop);
 					var readonlyProp2 = prop;
 					using var propDisposable2 = Disposable.Create(() => XLib.XFree(readonlyProp2));
@@ -712,10 +609,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			if (actualTypeAtom != format)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"EXPECTED XSELECTION FORMAT {format}, INSTEAD FOUND {actualTypeAtom}");
-				}
+				this.Log().Error($"EXPECTED XSELECTION FORMAT {format}, INSTEAD FOUND {actualTypeAtom}");
 
 				return null;
 			}
@@ -752,40 +646,42 @@ internal class X11ClipboardExtension : IClipboardExtension
 		return bitmap.Encode(SKEncodedImageFormat.Bmp, 100).ToArray();
 	}
 
-	/*
-	 * get_timestamp ()
-	 *
-	 * Get the current X server time.
-	 *
-	 * This is done by doing a zero-length append to a random property of the
-	 * window, and checking the time on the subsequent PropertyNotify event.
-	 *
-	 * PRECONDITION: the window must have PropertyChangeMask set.
-	 */
+	/// <summary>
+	/// get_timestamp ()
+	///
+	/// Get the current X server time.
+	///
+	/// This is done by doing a zero-length append to a random property of the
+	/// window, and checking the time on the subsequent PropertyNotify event.
+	///
+	/// PRECONDITION: the window must have PropertyChangeMask set.
+	/// </summary>
 	// TODO: currently hangs
 	private IntPtr GetTimestamp()
 	{
-		lock (_windowMutex)
-		{
-			XLib.XChangeProperty(
-				_x11Window.Display,
-				_x11Window.Window,
-				X11Helper.GetAtom(_x11Window.Display, "_NET_WM_NAME"),
-				X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_STRING),
-				8,
-				PropertyMode.Append,
-				IntPtr.Zero,
-				0);
+		return X11Helper.CurrentTime;
 
-			while (true)
-			{
-				XLib.XNextEvent(_x11Window.Display, out var event_);
-
-				if (event_.type == XEventName.PropertyNotify)
-				{
-					return event_.PropertyEvent.time;
-				}
-			}
-		}
+		// lock (_windowMutex)
+		// {
+		// 	XLib.XChangeProperty(
+		// 		_x11Window.Display,
+		// 		_x11Window.Window,
+		// 		X11Helper.GetAtom(_x11Window.Display, "_NET_WM_NAME"),
+		// 		X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_STRING),
+		// 		8,
+		// 		PropertyMode.Append,
+		// 		IntPtr.Zero,
+		// 		0);
+		//
+		// 	while (true)
+		// 	{
+		// 		XLib.XNextEvent(_x11Window.Display, out var event_);
+		//
+		// 		if (event_.type == XEventName.PropertyNotify)
+		// 		{
+		// 			return event_.PropertyEvent.time;
+		// 		}
+		// 	}
+		// }
 	}
 }

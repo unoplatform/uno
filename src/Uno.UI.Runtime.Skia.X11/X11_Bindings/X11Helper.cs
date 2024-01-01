@@ -30,6 +30,11 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// </summary>
 public static class X11Helper
 {
+	public static readonly IntPtr CurrentTime = IntPtr.Zero;
+	public static readonly IntPtr None = IntPtr.Zero;
+	public static readonly IntPtr AnyPropertyType = IntPtr.Zero;
+	public static readonly IntPtr PropertyNewValue = IntPtr.Zero;
+
 	public const string WM_DELETE_WINDOW = "WM_DELETE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
@@ -37,10 +42,10 @@ public static class X11Helper
 	public const string MULTIPLE = "MULTIPLE";
 	public const string TARGETS = "TARGETS";
 	public const string CLIPBOARD = "CLIPBOARD";
+	public const string PRIMARY = "PRIMARY";
 	public const string XA_INTEGER = "XA_INTEGER";
 	public const string XA_ATOM = "XA_ATOM";
-	public const string UTF8_STRING = "UTF8_STRING";
-	public const string XA_STRING = "XA_STRING";
+	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);

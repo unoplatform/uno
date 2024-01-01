@@ -43,7 +43,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		if (NativeWindow is X11Window x11Window)
 		{
 			XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
-			XLib.XSetInputFocus(x11Window.Display, x11Window.Window, RevertTo.None, /* CurrentTime */ IntPtr.Zero);
+			XLib.XSetInputFocus(x11Window.Display, x11Window.Window, RevertTo.None,  X11Helper.CurrentTime);
 		}
 	}
 

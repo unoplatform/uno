@@ -30,7 +30,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				IntPtr wm_state = X11Helper.GetAtom(host.X11Window.Display, X11Helper._NET_WM_STATE);
 				IntPtr wm_fullscreen = X11Helper.GetAtom(host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN);
 
-				if (wm_state == /* None */ IntPtr.Zero || wm_fullscreen == /* None */ IntPtr.Zero)
+				if (wm_state == X11Helper.None || wm_fullscreen == X11Helper.None)
 				{
 					return false;
 				}
