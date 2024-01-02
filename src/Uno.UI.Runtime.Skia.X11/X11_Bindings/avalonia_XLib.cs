@@ -115,6 +115,9 @@ namespace Avalonia.X11
 		public static extern int XDefaultScreen(IntPtr display);
 
 		[DllImport(libX11)]
+		public static extern int XScreenNumberOfScreen(IntPtr display, IntPtr Screen);
+
+		[DllImport(libX11)]
 		public static extern int XChangeProperty(IntPtr display, IntPtr window, IntPtr property, IntPtr type,
 			int format, PropertyMode mode, byte[] data, int nelements);
 

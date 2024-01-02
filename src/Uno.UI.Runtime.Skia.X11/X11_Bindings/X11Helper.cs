@@ -64,4 +64,16 @@ public static class X11Helper
 
 	[DllImport("libX11.so.6")]
 	public static extern IntPtr XDefaultGC(IntPtr display, int screen_number);
+
+	[DllImport("libX11.so.6")]
+	public static extern int XWidthMMOfScreen(IntPtr screen);
+
+	[DllImport("libX11.so.6")]
+	public static extern int XWidthOfScreen(IntPtr screen);
+
+	[DllImport("libX11.so.6")]
+	public static extern int XHeightMMOfScreen(IntPtr screen);
+
+	[DllImport("libX11.so.6")]
+	public static extern int XHeightOfScreen(IntPtr screen);
 }

@@ -77,6 +77,31 @@ internal partial class X11XamlRootHost : ISkiaApplicationHost, IXamlRootHost
 		}
 	}
 
+	// TODO: return the first window and keep the order somehow
+	// This is just a terrible workaround to deal with DisplayInformation being a singleton instead
+	// of having a DisplayInformation instance per application view.
+	public static X11Window GetWindow()
+	{
+		lock (_windowToTCS)
+		{
+			foreach (var pair in _windowToTCS)
+			{
+				if (pair.Value.Task.IsCompleted)
+				{
+					_windowToTCS.Remove(pair.Key);
+				}
+				else
+				{
+					return pair.Key;
+				}
+			}
+		}
+
+		typeof(X11XamlRootHost).Log().Error($"{nameof(GetWindow)} didn't find any window.");
+
+		return default;
+	}
+
 	public static void TryCompleteWindowCompletionSource(X11Window x11window)
 	{
 		lock (_windowToTCSMutex)
