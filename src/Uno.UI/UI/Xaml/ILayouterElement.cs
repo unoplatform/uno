@@ -1,4 +1,6 @@
 ﻿#nullable enable
+
+#if !UNO_REFERENCE_API
 using System;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
@@ -136,3 +138,4 @@ internal static class LayouterElementExtensions
 		return false; // UIElement.MaxLayoutIterations reached. Maybe an exception should be raised instead.
 	}
 }
+#endif
