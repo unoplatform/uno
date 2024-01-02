@@ -3425,13 +3425,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (
 								member.Member.Name == "Name"
+								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 								&& !isMemberInsideResourceDictionary.isInside
 							)
 							{
-								if (member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-								{
-									ValidateName(value);
-								}
+								ValidateName(value);
 
 								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {closureName});");
 							}
