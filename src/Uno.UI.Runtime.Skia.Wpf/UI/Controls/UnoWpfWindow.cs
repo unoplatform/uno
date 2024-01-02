@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using Microsoft.UI;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.UI.ViewManagement;
@@ -41,6 +42,8 @@ internal class UnoWpfWindow : WpfWindow
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}
+
+	public WindowId WindowId => _winUIWindow.AppWindow.Id;
 
 	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{

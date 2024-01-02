@@ -6,11 +6,18 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
+using Windows.UI.ViewManagement;
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
+#endif
+
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
 namespace SamplesApp;
@@ -202,5 +209,13 @@ partial class App
 		{
 			Assert.Fail("Resuming should never be triggered unless the app is suspended.");
 		}
+	}
+
+	private static void AssertWindowSize(WindowSizeChangedEventArgs e)
+	{
+		// The idea is just to make sure the bounds are set correctly before WindowSize event is fired.
+		var applicationViewBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+		Assert.AreEqual(e.Size, new global::Windows.Foundation.Size(applicationViewBounds.Width, applicationViewBounds.Height));
+		Assert.AreEqual(MainWindow.Bounds, applicationViewBounds);
 	}
 }

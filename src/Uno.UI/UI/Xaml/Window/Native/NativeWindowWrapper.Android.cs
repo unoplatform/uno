@@ -55,8 +55,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		var (windowSize, visibleBounds, trueVisibleBounds) = GetVisualBounds();
 
-		Bounds = new Rect(default, windowSize);
-		VisibleBounds = visibleBounds;
+		var newBounds = new Rect(default, windowSize);
+		var shouldRaise = newBounds != VisibleBounds;
+		VisibleBounds = newBounds;
+		Bounds = newBounds;
 
 		if (_previousTrueVisibleBounds != trueVisibleBounds)
 		{
@@ -64,6 +66,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 			// TODO: Adjust when multiple windows are supported on Android #13827
 			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
+		}
+
+		if (shouldRaise && Microsoft.UI.Xaml.Window.IsCurrentSet)
+		{
+			ApplicationView.GetForCurrentView()?.RaiseVisibleBoundsChanged();
 		}
 	}
 

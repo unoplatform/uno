@@ -293,6 +293,7 @@ namespace SamplesApp
 				throw new InvalidOperationException("Main window must be initialized before Frame");
 			}
 
+			_mainWindow.SizeChanged += (_, e) => AssertWindowSize(e);
 			var rootFrame = _mainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,

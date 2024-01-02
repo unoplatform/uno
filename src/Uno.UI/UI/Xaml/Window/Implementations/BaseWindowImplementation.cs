@@ -67,7 +67,15 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		{
 			_wasShown = true;
 
+			var applicationView = ApplicationView.GetForWindowId(Window.AppWindow.Id);
+			var oldVisibleBounds = applicationView.VisibleBounds;
 			SetVisibleBoundsFromNative();
+			var newVisibleBounds = applicationView.VisibleBounds;
+			if (newVisibleBounds != oldVisibleBounds)
+			{
+				applicationView.RaiseVisibleBoundsChanged();
+			}
+
 			NativeWindowWrapper?.Show();
 		}
 		else

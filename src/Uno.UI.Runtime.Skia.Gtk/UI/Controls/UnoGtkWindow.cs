@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Gtk;
+using Microsoft.UI;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.UI.Core;
 using Windows.ApplicationModel.Core;
@@ -69,6 +70,7 @@ internal class UnoGtkWindow : Window
 	}
 
 	internal UnoGtkWindowHost Host { get; }
+	internal WindowId WindowId => _winUIWindow.AppWindow.Id;
 
 	internal void UpdateWindowPropertiesFromPackage()
 	{

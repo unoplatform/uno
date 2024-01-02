@@ -2,10 +2,12 @@
 
 using System;
 using System.ComponentModel;
+using Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
+using Windows.UI.ViewManagement;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -35,8 +37,14 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
 	{
-		Bounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
-		VisibleBounds = Bounds;
+		var newBounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
+		var shouldRaise = newBounds != VisibleBounds;
+		VisibleBounds = newBounds;
+		Bounds = newBounds;
+		if (shouldRaise && Window.IsCurrentSet)
+		{
+			ApplicationView.GetForWindowId(_wpfWindow.WindowId).RaiseVisibleBoundsChanged();
+		}
 	}
 
 	private void OnNativeClosed(object? sender, EventArgs e) => RaiseClosed();

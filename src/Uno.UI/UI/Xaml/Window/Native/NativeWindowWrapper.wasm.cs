@@ -1,6 +1,9 @@
 using System;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -29,9 +32,15 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 	internal void RaiseNativeSizeChanged(double width, double height)
 	{
 		var bounds = new Rect(default, new Size(width, height));
+		var shouldRaise = bounds != VisibleBounds;
 
-		Bounds = bounds;
 		VisibleBounds = bounds;
+		Bounds = bounds;
+		if (shouldRaise && Window.IsCurrentSet)
+		{
+			// TODO: Handle when multiwindow is supported on Wasm
+			ApplicationView.GetForCurrentView()?.RaiseVisibleBoundsChanged();
+		}
 	}
 
 	protected override void ShowCore() => WindowManagerInterop.WindowActivate();
