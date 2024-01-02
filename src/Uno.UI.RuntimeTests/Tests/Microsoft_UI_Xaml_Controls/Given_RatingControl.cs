@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
+
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
