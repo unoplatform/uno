@@ -13,6 +13,7 @@
 		<StackPanel.Resources>
 			<Style TargetType="TextBlock">
 				<Setter Property="TextWrapping" Value="Wrap" />
+				<Setter Property="Margin" Value="0,0,0,8" />
 			</Style>
 		</StackPanel.Resources>
 		<TextBlock>
@@ -27,7 +28,7 @@
 			<Run FontWeight="Bold" Text="Description: " />
 			<LineBreak /><Run Text="{Binding Description}" />
 		</TextBlock>
-		<TextBlock FontWeight="Bold" Text="Control type:" />
+		<TextBlock FontWeight="Bold" Text="Control type:" Margin="0" />
 		<Grid ColumnSpacing="8">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -39,6 +40,7 @@
 			<TextBlock Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding ControlType.FullName}" />
 		</Grid>
 
+		<TextBlock FontWeight="Bold" Text="Query string:" Margin="0" />
 		<Grid ColumnSpacing="8">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
