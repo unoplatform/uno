@@ -19,11 +19,6 @@ namespace Microsoft.UI.Xaml;
 /// </remarks>
 public sealed partial class XamlRoot
 {
-	internal XamlRoot(VisualTree visualTree)
-	{
-		VisualTree = visualTree;
-	}
-
 	/// <summary>
 	/// Occurs when a property of XamlRoot has changed.
 	/// </summary>
@@ -167,4 +162,5 @@ public sealed partial class XamlRoot
 
 		return VisualTree.PopupRoot.OpenPopup(popup);
 	}
+
 }

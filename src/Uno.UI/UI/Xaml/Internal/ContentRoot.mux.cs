@@ -5,11 +5,11 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Core;

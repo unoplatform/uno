@@ -5,16 +5,13 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
-using Windows.Foundation;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 #if __IOS__
@@ -29,6 +26,24 @@ namespace Uno.UI.Xaml.Core;
 
 partial class VisualTree
 {
+	private const int VisualDiagnosticsRootZIndex = UnoTopZIndex - 1;
+	private const int ConnectedAnimationRootZIndex = VisualDiagnosticsRootZIndex - 1;
+	private const int PopupZIndex = ConnectedAnimationRootZIndex - 1;
+	private const int FullWindowMediaRootZIndex = PopupZIndex - 1;
+
+	internal enum LookupOptions
+	{
+		/// <summary>
+		/// Normal lookup.
+		/// </summary>
+		NoFallback = 0,
+
+		/// <summary>
+		/// Provides warning if not found.
+		/// </summary>
+		WarningIfNotFound = 1
+	}
+
 	internal RootVisual? RootVisual => _rootVisual;
 
 	/// <summary>
@@ -38,6 +53,8 @@ partial class VisualTree
 	internal UIElement? RootElement => _rootElement;
 
 	internal UIElement? PublicRootVisual => _publicRootVisual;
+
+	public ScrollViewer? RootScrollViewer => _rootScrollViewer;
 
 	private readonly CoreServices _core;
 	private readonly ContentRoot _coreContentRoot;
@@ -59,7 +76,7 @@ partial class VisualTree
 	//std::shared_ptr<RootScale> m_rootScale;
 
 	// This is effectively the public API wrapper for this type
-	private object? _xamlRoot;
+	private XamlRoot? _xamlRoot;
 
 	//std::shared_ptr<QualifierContext> m_pQualifierContext { nullptr };
 
