@@ -40,6 +40,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			dialog.Content = hideButton;
 
 			DidShowAsyncReturnTextBlock.Text = "Not Returned";
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = await dialog.ShowAsync();
 			DidShowAsyncReturnTextBlock.Text = "Returned";
 		}

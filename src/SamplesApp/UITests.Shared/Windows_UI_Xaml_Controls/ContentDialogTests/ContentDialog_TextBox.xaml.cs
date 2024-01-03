@@ -83,6 +83,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 				SecondaryButtonText = "Nope"
 			};
 
+			SUT.XamlRoot = this.XamlRoot;
 			await SUT.ShowAsync();
 		}
 	}
