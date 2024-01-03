@@ -131,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		SerialDisposable m_epFlyoutButtonClickHandler = new SerialDisposable();
 
-		SerialDisposable m_epWindowActivatedHandler = new SerialDisposable();
+		// SerialDisposable m_epWindowActivatedHandler = new SerialDisposable();
 
 		// See the comment of AllowReactionToSelectionChange method for use of this variable.
 		bool m_reactionToSelectionChangeAllowed;
@@ -201,6 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 			PrepareState();
 		}
 
+#if HAS_UNO // TODO Uno specific: Window activation handling to accomodate for WinUI multiwindow, original implementation can be ported when DatePicker is updated from WinUI 3 sources.
 		private readonly SerialDisposable _windowActivatedToken = new();
 
 		private void DatePicker_Unloaded(object sender, RoutedEventArgs e)
@@ -239,6 +240,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+#endif
 
 		~DatePicker()
 		{
@@ -252,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpAsyncSelectionInfo.Cancel();
 			}
 
-			m_epWindowActivatedHandler.Disposable = null;
+			// m_epWindowActivatedHandler.Disposable = null;
 		}
 
 		// Initialize the DatePicker

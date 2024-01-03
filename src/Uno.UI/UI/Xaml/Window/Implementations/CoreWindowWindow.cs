@@ -8,7 +8,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class CoreWindowWindow : BaseWindowImplementation
+internal class CoreWindowWindow : BaseWindowImplementation
 {
 	private readonly ContentManager _contentManager;
 

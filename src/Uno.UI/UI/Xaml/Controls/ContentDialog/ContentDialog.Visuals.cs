@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.WinRT.Extensions.UI.Popups;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -208,7 +209,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (XamlRoot is null)
 			{
-				throw new InvalidOperationException("Can't size and position content unless loaded");
+				if (this is not MessageDialogContentDialog)
+				{
+					throw new InvalidOperationException(
+						"Trying to set position of the dialog before it is associated with a visual tree. " +
+						"This can happen if the dialog's XamlRoot was not set.");
+				}
+				else
+				{
+					throw new InvalidOperationException(
+						"Trying to set position of the dialog before it is associated with a visual tree. " +
+						"Make sure to use InitializeWithWindow before calling ShowAsync.");
+				}
 			}
 
 			var xamlRootSize = XamlRoot.Size;

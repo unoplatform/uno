@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Hosting;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class DesktopWindow : BaseWindowImplementation
+internal class DesktopWindow : BaseWindowImplementation
 {
 	private WindowChrome? _windowChrome;
 	private DesktopWindowXamlSource? _desktopWindowXamlSource;
@@ -40,7 +40,9 @@ internal partial class DesktopWindow : BaseWindowImplementation
 		{
 			if (_windowChrome is null)
 			{
-				throw new InvalidOperationException("Window content is being set before the window is initialized.");
+				throw new InvalidOperationException(
+					"Window content is being set before the application is initialized." +
+					"Instead, set the window content later - e.g. in OnLaunched.");
 			}
 			_windowChrome.Content = value;
 		}
