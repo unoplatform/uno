@@ -1,22 +1,27 @@
 ﻿#nullable enable
 
 using System;
-using Windows.Foundation;
-using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Core;
 
-internal partial class VisualTree : IWeakReferenceProvider
+partial class VisualTree : IWeakReferenceProvider
 {
 	private const int UnoTopZIndex = int.MaxValue - 100;
 	private const int FocusVisualZIndex = UnoTopZIndex + 1;
 
+	private readonly UnoFocusInputHandler? _focusInputHandler;
+
 	private ManagedWeakReference? _selfWeakReference;
 	private Windows.UI.ViewManagement.ApplicationView? _applicationView;
+
+	internal UnoFocusInputHandler? UnoFocusInputHandler => _focusInputHandler;
 
 	public Canvas? FocusVisualRoot { get; private set; }
 
@@ -36,6 +41,8 @@ internal partial class VisualTree : IWeakReferenceProvider
 	ManagedWeakReference IWeakReferenceProvider.WeakReference =>
 		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
+	// TODO Uno: This is a custom implementation of IsVisible, Size, VisibleBounds, and TrueVisibleBounds.
+	// We should align as much as possible with WinUI later.
 	internal bool IsVisible
 	{
 		get

@@ -53,6 +53,8 @@ namespace Uno.UI.Xaml.Core
 
 		public DependencyObject? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
+		public bool HasXamlIslands => InitializationType == InitializationType.IslandsOnly; // TODO Uno: This logic is simplified now.
+
 		internal void InitCoreWindowContentRoot()
 		{
 			if (_mainVisualTree is not null)
