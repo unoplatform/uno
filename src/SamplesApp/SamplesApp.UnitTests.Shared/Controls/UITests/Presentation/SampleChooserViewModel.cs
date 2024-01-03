@@ -829,21 +829,6 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task ShowTestInformation(CancellationToken ct)
-		{
-			var sample = CurrentSelectedSample;
-			if (sample != null)
-			{
-				var text = $@"
-query string: ?sample={sample.Categories.FirstOrDefault() ?? ""}/{sample.ControlName}
-view: {sample.ControlType.FullName}
-categories: {sample.Categories?.JoinBy(", ")}
-description: {sample.Description}";
-
-				await new MessageDialog(text.Trim(), sample.ControlName).ShowAsync();
-			}
-		}
-
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
