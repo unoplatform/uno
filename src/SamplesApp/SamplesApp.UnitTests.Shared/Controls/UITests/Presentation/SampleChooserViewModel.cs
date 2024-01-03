@@ -35,6 +35,7 @@ using SamplesApp;
 using Uno.UI.Extensions;
 using Microsoft.UI.Dispatching;
 using Private.Infrastructure;
+using System.Reflection.Metadata;
 
 namespace SampleControl.Presentation
 {

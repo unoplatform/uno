@@ -43,6 +43,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 				DidCloseTextBlock.Text = "Closed";
 			};
 
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = dialog.ShowAsync();
 
 			await Task.Delay(50);
@@ -91,6 +92,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 				DidCloseTextBlock.Text = "Closed";
 			};
 
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = dialog.ShowAsync();
 		}
 
@@ -108,6 +110,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 				DidCloseTextBlock.Text = "Closed";
 			};
 
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = dialog.ShowAsync();
 		}
 
@@ -130,6 +133,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 				DidCloseTextBlock.Text = "Closed";
 			};
 
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = dialog.ShowAsync();
 		}
 	}

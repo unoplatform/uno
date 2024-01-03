@@ -40,6 +40,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			};
 
 			ResultsTextBlock.DataContext = viewModel;
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = dialog.ShowAsync();
 		}
 
