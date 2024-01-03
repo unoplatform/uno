@@ -4,15 +4,13 @@ uid: Uno.XamarinFormsMigration.Overview
 
 # Migrating from Xamarin.Forms to Uno Platform
 
-Apps that are built with native controls and APIs are able to meet today's standards for accessibility and performance. The launch of Xamarin.Forms in 2014 brought a UI framework to the .NET community that was intentionally designed to embrace this approach — across multiple platforms. Pages and layouts could be composed quickly using XAML, with developers rarely needing to write platform-specific code.
+Apps that are built with native controls and APIs are able to meet today's standards for accessibility and performance. The launch of Xamarin.Forms in 2014 brought a UI framework to the .NET community that was intentionally designed to embrace this approach, across multiple platforms. Pages and controls could be composed quickly using XAML or in C#, with developers rarely needing to write platform-specific code.
 
-Enter **Uno Platform**, a modern, cross-platform framework that shares Xamarin.Forms' commitment to leveraging native controls and APIs. However, it differs in key architectural areas which make up a compelling option to customize the presentation layer across app experiences'. This is especially valuable when your team needs to convey a precise brand identity. Developers evaluating Uno Platform may notice inherent similarities between the two, yet Xamarin.Forms has lagged behind other frameworks in its current state.
+The Uno Platform shares Xamarin.Forms' commitment to leveraging native controls and APIs. However, it differs in key architectural areas which make up a compelling option to customize the presentation layer across app experiences. Where Xamarin.Forms uses the design of the underlying platform (Material on Android, Cupertino on iOS, and Fluent on Windows), the Uno Platform provides a design that is pixel-perfect across all platforms. This is especially valuable when your team needs to convey a precise brand identity. 
 
-Notwithstanding the [announced](https://dotnet.microsoft.com/platform/support/policy/xamarin#microsoft-support) end of support date in May 2024, Xamarin.Forms lacks the broad reach possible by targeting the web with the same codebase. Further, it's missed out on supporting features from major .NET releases that brought performance improvements and productivity gains.
+With the [announced](https://dotnet.microsoft.com/platform/support/policy/xamarin#microsoft-support) end of support date for Xamarin.Forms, Uno Platform is a natural choice for teams looking to modernize their existing investment. This series of articles will outline how to migrate key aspects of the app to unlock the benefits of Uno Platform.
 
-Fortunately, the commonalities with Xamarin.Forms make Uno Platform a natural choice for teams looking to modernize their existing investment. This straightforward series of articles will outline how to migrate key aspects of the app to unlock the benefits of Uno Platform; meaning compatibility with a multitude of powerful controls, productivity gains from recent .NET features, and a demonstrated commitment to punctuality with support for work done upstream.
-
-With each article, we offer thoughtful insights that will aid the adoption of Uno Platform as the path forward for existing your existing Xamarin.Forms investment.
+Each article provides guidance on how to migrate different areas of your existing Xamarin.Forms investment across to the Uno Platform.
 
 ## What's covered
 
