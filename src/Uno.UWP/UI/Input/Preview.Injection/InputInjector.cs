@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using Uno.Foundation.Logging;
 using Windows.Devices.Input;
-using Windows.Foundation;
 using Windows.System;
-using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Input.Preview.Injection;
 
@@ -15,7 +13,16 @@ public partial class InputInjector
 	[ThreadStatic] private static IInputInjectorTarget? _inputManager;
 
 	internal static void SetTargetForCurrentThread(IInputInjectorTarget manager)
-		=> _inputManager ??= manager; // Set only once per thread.
+	{
+		if (_inputManager is not null &&
+			_inputManager != manager &&
+			manager.Log().IsEnabled(LogLevel.Warning))
+		{
+			manager.Log().LogWarning($"InputInjector is already set for this thread.");
+		}
+
+		_inputManager ??= manager; // Set only once per thread.
+	}
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()

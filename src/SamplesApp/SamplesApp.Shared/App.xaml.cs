@@ -75,10 +75,6 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
-#if !HAS_UNO_WINUI
-			Assert.IsNotNull(Microsoft.UI.Xaml.Window.Current);
-#endif
-
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");

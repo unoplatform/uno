@@ -151,6 +151,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (XamlRoot?.HostWindow is null)
 				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning(
+							$"Cannot toggle Full Screen as the media player was not yet " +
+							$"loaded in the visual tree.");
+					}
+
 					return;
 				}
 

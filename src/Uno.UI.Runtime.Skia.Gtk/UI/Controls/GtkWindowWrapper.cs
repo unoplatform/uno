@@ -66,7 +66,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		var windows = global::Gtk.Window.ListToplevels();
 		if (!windows.Where(w => w is UnoGtkWindow && w != NativeWindow).Any())
 		{
-			global::Gtk.Application.Quit();
+			WinUIApplication.Current.Exit();
 		}
 	}
 

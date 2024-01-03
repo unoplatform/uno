@@ -99,9 +99,9 @@ namespace UnitTestsApp
 		{
 			_mainWindow ??=
 #if HAS_UNO_WINUI || WINUI_WINDOWING
-				new Windows.UI.Xaml.Window();
+				new Microsoft.UI.Xaml.Window();
 #elif HAS_UNO
-				Windows.UI.Xaml.Window.CurrentSafe!;
+				Microsoft.UI.Xaml.Window.CurrentSafe!;
 #else
 				Window.Current;
 #endif

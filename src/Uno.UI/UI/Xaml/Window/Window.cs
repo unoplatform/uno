@@ -189,6 +189,8 @@ public partial class Window
 		}
 	}
 
+	internal static bool IsCurrentSet => _current is not null;
+
 #pragma warning disable RS0030 // Current is banned
 	/// <summary>
 	/// Use this instead of Window.Current throughout this codebase

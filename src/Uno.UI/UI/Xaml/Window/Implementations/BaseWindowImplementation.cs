@@ -24,7 +24,7 @@ using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 
 namespace Uno.UI.Xaml.Controls;
 
-abstract partial class BaseWindowImplementation : IWindowImplementation
+internal abstract class BaseWindowImplementation : IWindowImplementation
 {
 	private bool _wasShown;
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
