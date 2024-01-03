@@ -197,6 +197,7 @@
     - name: Migrating
       items:
       - name: Xamarin Forms
+        topicHref: xref:Uno.XamarinFormsMigration.Overview
         href: guides/xf-migration/toc.yml
       - name: WPF
         items:
