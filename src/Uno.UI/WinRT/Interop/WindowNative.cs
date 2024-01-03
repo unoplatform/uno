@@ -8,12 +8,12 @@ public static class WindowNative
 {
 	public static IntPtr GetWindowHandle(object target)
 	{
-		if (target is Window window)
+		if (target is not Window window)
 		{
-			return new IntPtr((long)window.AppWindow.Id.Value);
+			throw new InvalidOperationException("The target must be a Window");
 		}
 
-		return IntPtr.Zero;
+		return new IntPtr((long)window.AppWindow.Id.Value);
 	}
 }
 #endif

@@ -90,7 +90,14 @@ public partial class Window
 
 	private void OnWindowClosed(object sender, object e) => ApplicationHelper.RemoveWindow(this);
 
-	internal static Window GetFromAppWindow(AppWindow appWindow) => _appWindowMap[appWindow];
+	internal static Window GetFromAppWindow(AppWindow appWindow)
+	{
+		if (!_appWindowMap.TryGetValue(appWindow, out var window))
+		{
+			throw new InvalidOperationException("Window not found");
+		}
+		return window;
+	}
 
 	partial void InitializeWindowingFlavor();
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -30,7 +31,15 @@ partial class AppWindow
 
 	public MUXWindowId Id { get; }
 
-	public static AppWindow GetFromWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
+	public static AppWindow GetFromWindowId(MUXWindowId windowId)
+	{
+		if (!_windowIdMap.TryGetValue(windowId, out var appWindow))
+		{
+			throw new InvalidOperationException("Window not found");
+		}
+
+		return appWindow;
+	}
 
 	internal void RaiseClosing(AppWindowClosingEventArgs args) => Closing?.Invoke(this, args);
 }

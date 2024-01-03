@@ -1,4 +1,3 @@
-#if !HAS_UNO_WINUI
 using System;
 using System.Diagnostics;
 
@@ -27,4 +26,3 @@ public partial struct WindowId : IEquatable<WindowId>
 	public override int GetHashCode()
 		=> Value.GetHashCode();
 }
-#endif

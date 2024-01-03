@@ -168,7 +168,7 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Force a refresh
-		Window.Current.ForceHotReloadUpdate();
+		Window.Current!.ForceHotReloadUpdate();
 
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 
