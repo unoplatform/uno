@@ -33,13 +33,17 @@ namespace Uno.UI.Samples.Content.UITests.FocusTests
 			var buttonLeft = LeftButton as Button;
 			var buttonNone = NoneButton as Button;
 
-			buttonNext.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Next));
-			buttonPrevious.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Previous));
-			buttonUp.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Up));
-			buttonDown.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Down));
-			buttonRight.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Right));
-			buttonLeft.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Left));
-			buttonNone.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.None));
+			var options = new FindNextElementOptions
+			{
+				SearchRoot = this
+			};
+			buttonNext.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Next, options));
+			buttonPrevious.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Previous, options));
+			buttonUp.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Up, options));
+			buttonDown.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Down, options));
+			buttonRight.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Right, options));
+			buttonLeft.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Left, options));
+			buttonNone.Command = new DelegateCommand(() => Microsoft.UI.Xaml.Input.FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.None, options));
 		}
 
 	}
