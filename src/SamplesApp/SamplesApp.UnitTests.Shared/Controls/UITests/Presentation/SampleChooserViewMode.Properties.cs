@@ -242,7 +242,6 @@ namespace SampleControl.Presentation
 				_currentSelectedSample = value;
 				RaisePropertyChanged();
 				(ReloadCurrentTestCommand as DelegateCommand).CanExecuteEnabled = true;
-				(ShowTestInformationCommand as DelegateCommand).CanExecuteEnabled = true;
 
 				var currentTextIndex = SelectedCategory?.SamplesContent.IndexOf(value);
 				// Set Previous
