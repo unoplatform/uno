@@ -14,14 +14,88 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public partial class RenderTargetBitmap : ImageSource, IDisposable
+	public partial class RenderTargetBitmap : ImageSource
 	{
+		// This is to avoid LOH array allocations
+		private unsafe struct UnmanagedArrayOfBytes : IDisposable
+		{
+			public nint Pointer;
+			public int Length { get; }
+
+			public UnmanagedArrayOfBytes(int length)
+			{
+				Length = length;
+				Pointer = Marshal.AllocHGlobal(length);
+			}
+
+			public byte this[int index]
+			{
+				get
+				{
+					return ((byte*)Pointer.ToPointer())[index];
+				}
+				set
+				{
+					((byte*)Pointer.ToPointer())[index] = value;
+				}
+			}
+
+			public void Dispose()
+			{
+				Marshal.FreeHGlobal(Pointer);
+			}
+		}
+
+		// https://stackoverflow.com/questions/52190423/c-sharp-access-unmanaged-array-using-memoryt-or-arraysegmentt
+		private sealed unsafe class UnmanagedMemoryManager<T> : MemoryManager<T>
+			where T : unmanaged
+		{
+			private readonly T* _pointer;
+			private readonly int _length;
+
+			/// <summary>
+			/// Create a new UnmanagedMemoryManager instance at the given pointer and size
+			/// </summary>
+			public UnmanagedMemoryManager(T* pointer, int length)
+			{
+				if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+				_pointer = pointer;
+				_length = length;
+			}
+			/// <summary>
+			/// Obtains a span that represents the region
+			/// </summary>
+			public override Span<T> GetSpan() => new Span<T>(_pointer, _length);
+
+			/// <summary>
+			/// Provides access to a pointer that represents the data (note: no actual pin occurs)
+			/// </summary>
+			public override MemoryHandle Pin(int elementIndex = 0)
+			{
+				if (elementIndex < 0 || elementIndex >= _length)
+					throw new ArgumentOutOfRangeException(nameof(elementIndex));
+				return new MemoryHandle(_pointer + elementIndex);
+			}
+
+			/// <summary>
+			/// Has no effect
+			/// </summary>
+			public override void Unpin() { }
+
+			/// <summary>
+			/// Releases all resources associated with this object
+			/// </summary>
+			protected override void Dispose(bool disposing) { }
+		}
+
+
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -63,7 +137,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 		#endregion
 
-		private byte[]? _buffer;
+		private UnmanagedArrayOfBytes? _buffer;
 		private int _bufferSize;
 
 		/// <inheritdoc />
@@ -78,7 +152,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				return false;
 			}
 
-			image = Open(_buffer, _bufferSize, width, height);
+			image = Open(_buffer.Value, _bufferSize, width, height);
 			InvalidateImageSource();
 			return image.HasData;
 		}
@@ -142,7 +216,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				{
 					return Task.FromResult<IBuffer>(new Buffer(Array.Empty<byte>()));
 				}
-				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0, _bufferSize)));
+
+				unsafe
+				{
+					var mem = new UnmanagedMemoryManager<byte>((byte*)_buffer.Value.Pointer.ToPointer(), _bufferSize);
+					return Task.FromResult<IBuffer>(new Buffer(mem.Memory.Slice(0, _bufferSize)));
+				}
 			});
 
 #if NOT_IMPLEMENTED
@@ -150,26 +229,26 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
-		void IDisposable.Dispose()
+		~RenderTargetBitmap()
 		{
-			if (_buffer is not null)
+			if (_buffer.HasValue)
 			{
-				ArrayPool<byte>.Shared.Return(_buffer);
+				_buffer.Value.Dispose();
 			}
 		}
 
 		#region Misc static helpers
 #if !NOT_IMPLEMENTED
-		private static void EnsureBuffer(ref byte[]? buffer, int length)
+		private static void EnsureBuffer(ref UnmanagedArrayOfBytes? buffer, int length)
 		{
 			if (buffer is null)
 			{
-				buffer = ArrayPool<byte>.Shared.Rent(length);
+				buffer = new UnmanagedArrayOfBytes(length);
 			}
-			else if (buffer.Length < length)
+			else if (buffer.Value.Length < length)
 			{
-				ArrayPool<byte>.Shared.Return(buffer);
-				buffer = ArrayPool<byte>.Shared.Rent(length);
+				buffer.Value.Dispose();
+				buffer = new UnmanagedArrayOfBytes(length);
 			}
 		}
 #endif
