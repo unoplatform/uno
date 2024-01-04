@@ -591,6 +591,7 @@ namespace Uno.UWPSyncGenerator
 
 			//New example creations
 			["fe7ad367"] = new[] { "Pivot" },
+			["89516e60"] = new[] { "AppBarButton" },
 		};
 	}
 }
