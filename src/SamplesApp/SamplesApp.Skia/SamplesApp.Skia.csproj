@@ -37,8 +37,6 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-
-
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
 		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />

@@ -84,7 +84,7 @@ public class Given_CompositionNineGridBrush
 				offline.Background = new TestBrush(offlineNineGridBrush);
 
 				var result = await Render(onlineSource, online, offline);
-				await ImageAssert.AreEqualAsync(result.actual, result.expected);
+				await ImageAssert.AreEqual(result.actual, result.expected);
 
 				loadCompleted = true;
 			}

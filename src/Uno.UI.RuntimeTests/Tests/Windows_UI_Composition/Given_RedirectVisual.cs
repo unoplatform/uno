@@ -43,7 +43,7 @@ public class Given_RedirectVisual
 		ElementCompositionPreview.SetElementChildVisual(sut, redirectVisual);
 
 		var result = await Render(expected, sut);
-		await ImageAssert.AreEqualAsync(result.actual, result.expected);
+		await ImageAssert.AreEqual(result.actual, result.expected);
 	}
 
 	private async Task<(RawBitmap expected, RawBitmap actual)> Render(FrameworkElement expected, FrameworkElement sut)

@@ -557,7 +557,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var after = await UITestHelper.ScreenShot(SUT, true);
 
-			await ImageAssert.AreEqualAsync(before, after);
+			await ImageAssert.AreEqual(before, after);
 		}
 
 #if HAS_UNO

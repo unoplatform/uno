@@ -106,14 +106,14 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 			var screenshotBeforeVerify = await TakeScreenshot(grid);
-			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotBeforeVerify);
+			await ImageAssert.AreEqual(screenshotBefore, screenshotBeforeVerify);
 
 			Deferral deferral = null;
 			refreshContainer.RequestRefresh();
 
 			await Task.Delay(200); // Artificial delay to allow the indicator to animate in
 			var screenshotAfter = await TakeScreenshot(grid);
-			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotAfter);
+			await ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
 			deferral.Complete();
 
 			void OnRefreshRequested(

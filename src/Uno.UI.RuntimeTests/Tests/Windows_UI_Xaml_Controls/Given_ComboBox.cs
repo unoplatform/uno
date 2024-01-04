@@ -1042,7 +1042,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshotOpened = await TakeScreenshot(stackPanel);
 
 			// Verify that the UI changed
-			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotOpened);
+			await ImageAssert.AreNotEqual(screenshotBefore, screenshotOpened);
 
 			var textCenter = text.GetAbsoluteBounds().GetCenter();
 			finger.Press(textCenter.X, textCenter.Y + 100);
@@ -1055,7 +1055,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshotAfter = await TakeScreenshot(stackPanel);
 
 			// Verify that the UI looks the same as at the beginning
-			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotAfter);
+			await ImageAssert.AreEqual(screenshotBefore, screenshotAfter);
 		}
 
 		[TestMethod]

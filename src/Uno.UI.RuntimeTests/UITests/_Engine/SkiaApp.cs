@@ -31,8 +31,6 @@ public partial class SkiaApp : IApp
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
 		Mouse = new MouseHelper(_input);
 
-		CurrentPointerType = DefaultPointerType;
-
 		// Does not supports parallel testing ... but we are running on the UI thread anyway, we cannot use concurrent testing!
 		Uno.UITest.Helpers.Queries.Helpers.App = this;
 	}
@@ -41,8 +39,6 @@ public partial class SkiaApp : IApp
 	/// Gets the default pointer type for the current platform
 	/// </summary>
 	public PointerDeviceType DefaultPointerType => PointerDeviceType.Mouse;
-
-	public PointerDeviceType CurrentPointerType { get; private set; }
 
 	public async Task RunAsync(string metadataName)
 	{
@@ -107,17 +103,9 @@ public partial class SkiaApp : IApp
 		InjectMouseInput(Mouse.MoveTo(0, 0));
 	}
 
-	public IDisposable SetPointer(PointerDeviceType type)
-	{
-		var previous = CurrentPointerType;
-		CurrentPointerType = type;
-
-		return new DisposableAction(() => CurrentPointerType = previous);
-	}
-
 	public void TapCoordinates(double x, double y)
 	{
-		switch (CurrentPointerType)
+		switch (InputInjectorHelper.Current.CurrentPointerType)
 		{
 			case PointerDeviceType.Touch:
 				_input.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
@@ -170,7 +158,7 @@ public partial class SkiaApp : IApp
 
 	public void DragCoordinates(double fromX, double fromY, double toX, double toY)
 	{
-		switch (CurrentPointerType)
+		switch (InputInjectorHelper.Current.CurrentPointerType)
 		{
 			case PointerDeviceType.Touch:
 				_input.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
@@ -255,5 +243,5 @@ public partial class SkiaApp : IApp
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
 	private Exception NotSupported([CallerMemberName] string operation = "")
-		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
+		=> new NotSupportedException($"'{operation}' with type '{InputInjectorHelper.Current.CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
 }

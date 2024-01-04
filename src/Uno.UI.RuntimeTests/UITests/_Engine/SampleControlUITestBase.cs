@@ -9,27 +9,20 @@ using Uno.UITest;
 
 namespace SamplesApp.UITests;
 
-// Note: All tests that are inheriting from this base class will run on UI thread.
-public class SampleControlUITestBase : IInjectPointers
+[RunsOnUIThread]
+public class SampleControlUITestBase
 {
 	protected SkiaApp App => SkiaApp.Current;
 
 	/// <summary>
 	/// Gets the default pointer type for the current platform
 	/// </summary>
-	public PointerDeviceType DefaultPointerType => App.DefaultPointerType;
+	public PointerDeviceType DefaultPointerType => InputInjectorHelper.DefaultPointerType;
 
-	public PointerDeviceType CurrentPointerType => App.CurrentPointerType;
+	public PointerDeviceType CurrentPointerType => InputInjectorHelper.Current.CurrentPointerType;
 
 	protected async Task RunAsync(string metadataName)
 	{
 		await App.RunAsync(metadataName);
 	}
-
-	void IInjectPointers.CleanupPointers()
-		=> App.CleanupPointers();
-
-	/// <inheritdoc />
-	public IDisposable SetPointer(PointerDeviceType type)
-		=> App.SetPointer(type);
 }

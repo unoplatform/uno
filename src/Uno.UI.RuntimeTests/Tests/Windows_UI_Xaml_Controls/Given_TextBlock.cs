@@ -580,7 +580,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
+			ImageAssert.HasColorInRectangle(bitmap, new Rect(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
 		}
 
 		[TestMethod]

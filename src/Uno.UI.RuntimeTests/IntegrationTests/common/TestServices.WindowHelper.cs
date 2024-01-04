@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
 using System.Linq;
+using Uno.UI.RuntimeTests;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -35,7 +36,11 @@ namespace Private.Infrastructure
 
 			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
 
-			public static bool UseActualWindowRoot { get; set; }
+			public static bool UseActualWindowRoot
+			{
+				get => UnitTestsUIContentHelper.UseActualWindowRoot; 
+				set => UnitTestsUIContentHelper.UseActualWindowRoot = value;
+			}
 
 			public static UIElement WindowContent
 			{
@@ -105,10 +110,9 @@ namespace Private.Infrastructure
 				}
 			}
 
-			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
+			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot => UnitTestsUIContentHelper.EmbeddedTestRoot;
 
-			public static UIElement RootElement => UseActualWindowRoot ?
-				CurrentTestWindow.Content : EmbeddedTestRoot.control;
+			public static UIElement RootElement => UnitTestsUIContentHelper.RootElement;
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.

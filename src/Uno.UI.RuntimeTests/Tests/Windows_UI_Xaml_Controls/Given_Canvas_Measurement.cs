@@ -57,11 +57,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var clippedLocation = canvas.Get_LocatorBorder1();
 			await WindowHelper.WaitForIdle();
-			ImageAssert.HasColorAtChild(bitmap, clippedLocation, (float)clippedLocation.Width / 2, (float)clippedLocation.Height / 2, Red);
+			ImageAssert.HasColorAtChild(bitmap, canvas, clippedLocation, (float)clippedLocation.Width / 2, (float)clippedLocation.Height / 2, Red);
 
 			var unclippedLocation = canvas.Get_LocatorBorder2();
 			await WindowHelper.WaitForIdle();
-			ImageAssert.HasColorAtChild(bitmap, unclippedLocation, (float)unclippedLocation.Width / 2, (float)unclippedLocation.Height / 2, Blue);
+			ImageAssert.HasColorAtChild(bitmap, canvas, unclippedLocation, (float)unclippedLocation.Width / 2, (float)unclippedLocation.Height / 2, Blue);
 		}
 
 		[TestMethod]
@@ -87,25 +87,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var redBorderRect1 = canvas.Get_CanvasBorderRed1();
-			ImageAssert.HasColorAtChild(bitmap, redBorderRect1, (float)redBorderRect1.Width / 2, (float)redBorderRect1.Height / 2, Green);
+			ImageAssert.HasColorAtChild(bitmap, canvas, redBorderRect1, (float)redBorderRect1.Width / 2, (float)redBorderRect1.Height / 2, Green);
 
 			var redBorderRect2 = canvas.Get_CanvasBorderRed2();
-			ImageAssert.HasColorAtChild(bitmap, redBorderRect2, (float)redBorderRect2.Width / 2, (float)redBorderRect2.Height / 2, Green);
+			ImageAssert.HasColorAtChild(bitmap, canvas, redBorderRect2, (float)redBorderRect2.Width / 2, (float)redBorderRect2.Height / 2, Green);
 
 			var redBorderRect3 = canvas.Get_CanvasBorderRed3();
-			ImageAssert.HasColorAtChild(bitmap, redBorderRect3, (float)redBorderRect3.Width / 2, (float)redBorderRect3.Height / 2, Green);
+			ImageAssert.HasColorAtChild(bitmap, canvas, redBorderRect3, (float)redBorderRect3.Width / 2, (float)redBorderRect3.Height / 2, Green);
 
 			var greenBorderRect1 = canvas.Get_CanvasBorderGreen1();
-			ImageAssert.HasColorAtChild(bitmap, greenBorderRect1, (float)greenBorderRect1.Width / 2, (float)greenBorderRect1.Height / 2, Brown);
-			ImageAssert.HasColorAtChild(bitmap, greenBorderRect1, (float)greenBorderRect1.Width - 1, (float)greenBorderRect1.Height / 2, Blue);
+			ImageAssert.HasColorAtChild(bitmap, canvas, greenBorderRect1, (float)greenBorderRect1.Width / 2, (float)greenBorderRect1.Height / 2, Brown);
+			ImageAssert.HasColorAtChild(bitmap, canvas, greenBorderRect1, (float)greenBorderRect1.Width - 1, (float)greenBorderRect1.Height / 2, Blue);
 
 			var greenBorderRect2 = canvas.Get_CanvasBorderGreen1();
-			ImageAssert.HasColorAtChild(bitmap, greenBorderRect2, (float)greenBorderRect2.Width / 2, (float)greenBorderRect2.Height / 2, Brown);
-			ImageAssert.HasColorAtChild(bitmap, greenBorderRect2, (float)greenBorderRect2.Width - 1, greenBorderRect2.Height / 2, Blue);
+			ImageAssert.HasColorAtChild(bitmap, canvas, greenBorderRect2, (float)greenBorderRect2.Width / 2, (float)greenBorderRect2.Height / 2, Brown);
+			ImageAssert.HasColorAtChild(bitmap, canvas, greenBorderRect2, (float)greenBorderRect2.Width - 1, greenBorderRect2.Height / 2, Blue);
 
 			var greenBorderRect3 = canvas.Get_CanvasBorderGreen3();
-			ImageAssert.HasColorAtChild(bitmap, greenBorderRect3, (float)greenBorderRect3.Width / 2, (float)greenBorderRect3.Height / 2, Brown);
-			ImageAssert.HasColorAtChild(bitmap, greenBorderRect3, (float)greenBorderRect3.Width - 1, (float)greenBorderRect3.Height / 2, Blue);
+			ImageAssert.HasColorAtChild(bitmap, canvas, greenBorderRect3, (float)greenBorderRect3.Width / 2, (float)greenBorderRect3.Height / 2, Brown);
+			ImageAssert.HasColorAtChild(bitmap, canvas, greenBorderRect3, (float)greenBorderRect3.Width - 1, (float)greenBorderRect3.Height / 2, Blue);
 
 		}
 
@@ -125,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(canvas);
 			var clippedLocation = canvas.Get_CanvasBorderBlue1();
 
-			ImageAssert.HasColorAtChild(bitmap, clippedLocation, (float)clippedLocation.Width / 2, clippedLocation.Height / 2, Blue);
+			ImageAssert.HasColorAtChild(bitmap, canvas, clippedLocation, (float)clippedLocation.Width / 2, clippedLocation.Height / 2, Blue);
 		}
 
 		[TestMethod]
