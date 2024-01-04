@@ -10,7 +10,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Hosting;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
-using FrameworkApplication = Microsoft.UI.Xaml.Application;
+using Uno.UI.Xaml.Islands;
 
 namespace Microsoft.UI.Xaml;
 
@@ -37,6 +37,58 @@ partial class Application
 		NormalLaunchActivatedEventArgs > uwpLaunchActivatedEventArgs;
 		IFC_RETURN(NormalLaunchActivatedEventArgs::Create(uwpLaunchActivatedEventArgs.ReleaseAndGetAddressOf()));
 		IFC_RETURN(InvokeOnLaunchActivated(uwpLaunchActivatedEventArgs.Get()));
+	}
+
+	internal XamlIsland CreateIsland()
+	{
+		var dxamlCore = DXamlCore.Current;
+
+		// http://osgvsowi/17333449 - (deliverable) This is a temporary trick to kick off XAML's normal applicaiton startup path.
+		// we need to refactor islands and xaml::Window to reduce the complexity of the code as captured by the task below
+		// https://microsoft.visualstudio.com/OS/_workitems/edit/37066232
+		var window = DXamlCore.Current.GetDummyWindow();
+		window.EnsureInitializedForIslands();
+
+		// Create a new XamlIsland.
+		var newIsland = new XamlIsland();
+
+		// Notify core of new XamlIsland
+		var coreServices = dxamlCore.GetHandle();
+		coreServices.AddXamlIslandRoot(newIsland);
+		return newIsland;
+	}
+
+	internal XamlIsland CreateIslandWithContentBridge(object owner, object contentBridge)
+	{
+		var dxamlCore = DXamlCore.Current;
+
+		// http://osgvsowi/17333449 - (deliverable) This is a temporary trick to kick off XAML's normal application startup path.
+		// we need to refactor islands and xaml::Window to reduce the complexity of the code as captured by the task below
+		// https://microsoft.visualstudio.com/OS/_workitems/edit/37066232
+		var window = DXamlCore.Current.GetDummyWindow();
+		window.EnsureInitializedForIslands();
+
+		// Create a new XamlIsland.
+		var newIsland = new XamlIsland();
+
+		// Notify core of new XamlIsland
+		var coreServices = dxamlCore.GetHandle();
+		coreServices.AddXamlIslandRoot(newIsland);
+
+		newIsland.SetOwner(owner);
+		return newIsland;
+	}
+
+	internal void RemoveIsland(XamlIsland value)
+	{
+		var xamlIslandRoot = value;
+
+		if (xamlIslandRoot is not null)
+		{
+			var dxamlCore = DXamlCore.Current;
+			var coreServices = dxamlCore.GetHandle();
+			coreServices.RemoveXamlIslandRoot(xamlIslandRoot);
+		}
 	}
 
 	/// <summary>

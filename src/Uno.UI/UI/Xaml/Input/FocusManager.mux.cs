@@ -5,22 +5,19 @@
 #nullable enable
 
 using System;
-
-using Uno.Extensions;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Input;
-using Windows.Foundation;
-using Uno.UI.Extensions;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
-using Uno.UI.Xaml.Rendering;
-using Uno.UI.Xaml.Core.Rendering;
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
-using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.Rendering;
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Rendering;
+using Windows.Foundation;
+using Windows.UI.Core;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 //TODO:MZ: Handle parameters in/out
 
@@ -86,12 +83,14 @@ namespace Microsoft.UI.Xaml.Input
 		/// "first" tab.  This is deemed better than getting stuck at the end.
 		/// (Reverse "first" and "last" for Shift-Tab.)
 		/// </summary>
-		private const bool _canTabOutOfPlugin =
-#if !__WASM__
-				false;
+		private bool _canTabOutOfPlugin
+#if __WASM__
+			= true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
 #else
-				true; // For WASM it is more appropriate to let the user escape from the app to tab into the browser toolbars.
+			;
 #endif
+
+		internal void SetCanTabOutOfPlugin(bool bCanTabOutOfPlugin) => _canTabOutOfPlugin = bCanTabOutOfPlugin;
 
 		private bool _isPrevFocusTextControl;
 

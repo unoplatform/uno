@@ -58,7 +58,7 @@ partial class VisualTree
 	/// Find the XamlIslandRootCollection in the tree, if there is one
 	/// </summary>
 	/// <returns></returns>
-	private XamlIslandRootCollection? XamlIslandRootCollection
+	internal XamlIslandRootCollection? XamlIslandRootCollection
 	{
 		get
 		{
@@ -682,7 +682,7 @@ partial class VisualTree
 		return false;
 	}
 
-	private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
+	internal static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
 	{
 		if (pObject is null || !pObject.GetContext().HasXamlIslands)
 		{

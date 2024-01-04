@@ -14,11 +14,23 @@ namespace Uno.UI.Xaml.Islands;
 
 internal partial class XamlIsland
 {
+	private ContentRoot _contentRoot = null!;
+
 	internal void InitializeRoot(WinUICoreServices coreServices)
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIsland, Colors.Transparent, this);
 		_contentRoot.XamlIslandRoot = this;
 	}
+
+	private void SetPublicRootVisual(
+		UIElement? rootVisual,
+		ScrollViewer? rootScrollViewer,
+		ContentPresenter? contentPresenter) =>
+		_contentRoot.VisualTree.SetPublicRootVisual(rootVisual, rootScrollViewer, contentPresenter);
+
+	internal VisualTree? VisualTree => _contentRoot?.VisualTree;
+
+	internal UIElement? PublicRootVisual => _contentRoot?.VisualTree.PublicRootVisual;
 
 	internal ContentRoot ContentRoot => _contentRoot;
 
