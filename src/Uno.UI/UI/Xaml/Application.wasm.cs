@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading.Tasks;
 using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -77,7 +78,7 @@ namespace Microsoft.UI.Xaml
 			return 0;
 		}
 
-		static async partial void StartPartial(ApplicationInitializationCallback callback)
+		private async Task BeforeStartAsync()
 		{
 			try
 			{
@@ -92,8 +93,6 @@ namespace Microsoft.UI.Xaml
 				await WindowManagerInterop.InitAsync(isLoadEventsEnabled);
 
 				Windows.Storage.ApplicationData.Init();
-
-				callback(new ApplicationInitializationCallbackParams());
 			}
 			catch (Exception exception)
 			{

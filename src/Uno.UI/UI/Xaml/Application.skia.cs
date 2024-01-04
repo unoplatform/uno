@@ -73,15 +73,13 @@ namespace Microsoft.UI.Xaml
 			Start(callback);
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		private static void BeforeStart()
 		{
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(
 				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
-
-			callback(new ApplicationInitializationCallbackParams());
 		}
 
 		private void Initialize()

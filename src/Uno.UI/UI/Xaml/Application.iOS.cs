@@ -38,11 +38,6 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
-		{
-			callback(new ApplicationInitializationCallbackParams());
-		}
-
 		/// <summary>
 		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />
 		/// which however does not support launch with arguments and is "technically" deprecated.
