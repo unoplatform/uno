@@ -1,14 +1,14 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Private.Infrastructure;
 
 #if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -16,6 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [TestClass]
 public partial class Given_LayoutPanel
 {
+#if !WINAPPSDK
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Padding_Set_In_SizeChanged()
@@ -51,4 +52,5 @@ public partial class Given_LayoutPanel
 
 		Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 	}
+#endif
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace SamplesApp.Windows_UI_Xaml_Media.Animation
 {
@@ -53,7 +53,7 @@ namespace SamplesApp.Windows_UI_Xaml_Media.Animation
 			var anim = new DoubleAnimation()
 			{
 				To = to,
-				Duration = DurationHelper.FromTimeSpan(DURATION),
+				Duration = new Duration(DURATION),
 				EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseInOut }
 			};
 

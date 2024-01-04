@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +21,7 @@ using Uno.Extensions.Specialized;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public class BindablePagerAdapter : PagerAdapter, View.IOnClickListener
 	{
 		private IEnumerable _itemsSource;
@@ -87,10 +87,7 @@ namespace Uno.UI.Controls
 
 			var view = GetBindableView(convertView, source, templateId, parent);
 
-			if (!_views.ContainsKey(position))
-			{
-				_views.Add(position, view);
-			}
+			_views.TryAdd(position, view);
 
 			view.SetOnClickListener(this);
 

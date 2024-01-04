@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {

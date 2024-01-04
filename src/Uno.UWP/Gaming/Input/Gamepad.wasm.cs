@@ -89,7 +89,7 @@ public partial class Gamepad
 	}
 
 	[JSExport]
-	public static int DispatchGamepadAdded(int id)
+	internal static int DispatchGamepadAdded(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
@@ -105,7 +105,7 @@ public partial class Gamepad
 	}
 
 	[JSExport]
-	public static int DispatchGamepadRemoved(int id)
+	internal static int DispatchGamepadRemoved(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)

@@ -15,8 +15,9 @@ For other types of automated tests used internally by Uno.UI, [see here](../cont
 Since the Uno.UI.RuntimeTests tests run in the platform environment using the real Uno.UI binaries, they must be run from within SamplesApp.
 
 1. Build and launch the SamplesApp, following [the instructions here](working-with-the-samples-apps.md). Note: if you're testing a mobile platform, it's recommended to run on a tablet in landscape mode. On a phone-sized layout, a few tests will fail because they don't have enough space to measure properly.
-2. From the sample menu, navigate to 'Unit Tests' > 'Unit Tests Runner'.
+2. From the sample menu, navigate to 'Unit Tests' > 'Unit Tests Runner' or click on the top-left-most button.
 3. (Optional) Add a filter string in the text input control at the top of the page (for example the name or part of the name of your test method); only tests matching the filter will be run. Otherwise, all tests will run.
+    > On mobile devices with limit screen width, you can drag the grid-slitter (the horizontal and vertical blue bars) to make more space for the filter textbox or test area.
 4. Press the 'Run' button. Tests will run in sequence, and the results will be shown.
 
 ## Authoring tests
@@ -86,38 +87,38 @@ In this test we want to check that the item containers inside the list have been
 Finally we assert that the `ActualWidth` of each container is what we expect, and the `ActualWidth` of the list itself for good measure.
 
 ```csharp
-		[TestMethod]
+[TestMethod]
 #if __IOS__ || __ANDROID__
-		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
+[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
-		public async Task When_ListView_Parent_Unstretched()
-		{
-			var source = Enumerable.Range(0, 5).ToArray();
-			var SUT = new ListView
-			{
-				HorizontalAlignment = HorizontalAlignment.Stretch,
-				ItemsSource = source
-			};
+public async Task When_ListView_Parent_Unstretched()
+{
+	var source = Enumerable.Range(0, 5).ToArray();
+	var SUT = new ListView
+	{
+		HorizontalAlignment = HorizontalAlignment.Stretch,
+		ItemsSource = source
+	};
 
-			const int minWidth = 193;
-			var border = new Border
-			{
-				HorizontalAlignment = HorizontalAlignment.Left,
-				MinWidth = minWidth,
-				Child = SUT
-			};
+	const int minWidth = 193;
+	var border = new Border
+	{
+		HorizontalAlignment = HorizontalAlignment.Left,
+		MinWidth = minWidth,
+		Child = SUT
+	};
 
-			WindowHelper.WindowContent = border;
+	WindowHelper.WindowContent = border;
 
-			await WindowHelper.WaitForIdle();
+	await WindowHelper.WaitForIdle();
 
-			ListViewItem lvi = null;
-			foreach (var item in source)
-			{
-				await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
-				Assert.AreEqual(minWidth, lvi.ActualWidth);
-			}
+	ListViewItem lvi = null;
+	foreach (var item in source)
+	{
+		await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
+		Assert.AreEqual(minWidth, lvi.ActualWidth);
+	}
 
-			Assert.AreEqual(minWidth, SUT.ActualWidth);
-		}
+	Assert.AreEqual(minWidth, SUT.ActualWidth);
+}
 ```

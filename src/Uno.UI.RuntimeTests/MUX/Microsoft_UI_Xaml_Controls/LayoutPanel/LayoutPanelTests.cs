@@ -2,12 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
 using System.Threading;
 using System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Windows.Foundation;
 using Common;
@@ -21,13 +21,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-//using LayoutPanel = Microsoft.UI.Xaml.Controls.LayoutPanel;
-//using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
-using NonVirtualizingLayout = Microsoft.UI.Xaml.Controls.NonVirtualizingLayout;
-using NonVirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+//using LayoutPanel = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutPanel;
+//using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
+using NonVirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NonVirtualizingLayout;
+using NonVirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NonVirtualizingLayoutContext;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 #if false
 	[TestClass]

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 #if !NETFX_CORE
 using System;
@@ -12,10 +12,10 @@ using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
 
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.Collections;
 
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
@@ -304,7 +304,7 @@ namespace Uno.UI.DataBinding
 						// In some cases, there are multiple indexers, in which case GetIndexerInfo fails due to multiple matches when not given an explicit parameter type.
 						// If we know this parses as an integer, then use typeof(int) to reduce the cases of failure.
 						Type? indexerParameterType = null;
-						if (int.TryParse(property.Substring(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
+						if (int.TryParse(property.AsSpan().Slice(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
 						{
 							indexerParameterType = typeof(int);
 						}
@@ -313,8 +313,8 @@ namespace Uno.UI.DataBinding
 							indexerParameterType = typeof(string);
 						}
 
-						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: false);
-						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: false);
+						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: allowPrivateMembers);
+						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: allowPrivateMembers);
 
 						if (indexerInfo != null)
 						{
@@ -327,7 +327,7 @@ namespace Uno.UI.DataBinding
 						}
 					}
 
-					var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: false);
+					var propertyInfo = GetPropertyInfo(type, property, allowPrivateMembers: allowPrivateMembers);
 
 					if (propertyInfo != null)
 					{
@@ -499,13 +499,13 @@ namespace Uno.UI.DataBinding
 			// Possible values for 'property' parameter:
 			// - "PropertyName"
 			// - "TypeName.PropertyName"
-			// - "Windows.UI.Xaml.Controls:UIElement.Opacity" (fully qualified)
+			// - "Microsoft.UI.Xaml.Controls:UIElement.Opacity" (fully qualified)
 
-			if (property.Contains("."))
+			if (property.Contains('.'))
 			{
 				var parts = property
 					.Replace(":", ".") // ':' is sometimes used to separate namespace from type
-					.Split(new[] { '.' })
+					.Split('.')
 					.Reverse()
 					.Take(2) // type name + property name
 					.Reverse()

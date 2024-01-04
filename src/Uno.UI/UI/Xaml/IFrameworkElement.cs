@@ -1,22 +1,24 @@
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
+using Uno.Collections;
 
 #if __ANDROID__
 using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
@@ -28,6 +30,7 @@ using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
 #elif __IOS__
 using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using CoreGraphics;
@@ -37,6 +40,7 @@ using ObjCRuntime;
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using CoreGraphics;
@@ -51,7 +55,8 @@ using Point = Windows.Foundation.Point;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #else
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
@@ -59,10 +64,11 @@ using nfloat = System.Double;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
@@ -101,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		Style Style { get; set; }
 
-		Windows.UI.Xaml.Media.Brush Background { get; set; }
+		Microsoft.UI.Xaml.Media.Brush Background { get; set; }
 
 		Transform RenderTransform { get; set; }
 
@@ -232,51 +238,50 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		public static IFrameworkElement FindName(IFrameworkElement e, IEnumerable<View> subviews, string name)
+		public static IFrameworkElement FindName(IFrameworkElement e, ViewGroup group, string name)
 		{
 			if (string.Equals(e.Name, name, StringComparison.Ordinal))
 			{
 				return e;
 			}
 
-			var frameworkElements = subviews
-				.Safe()
-				.OfType<IFrameworkElement>()
-				.Reverse()
-				.ToArray();
-
-			if (frameworkElements.Length == 0)
+			// The lambda is static to make sure it doesn't capture anything, for performance reasons.
+			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null);
+			matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement);
+			if (matchingChild is not null)
 			{
-				// If element is a ContentControl with a view as Content, include the view and its children in the search,
-				// to better match Windows behaviour
-				var content =
-					(e as ContentControl)?.Content as IFrameworkElement ??
-					(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
-
-				if (content != null)
-				{
-					frameworkElements = new IFrameworkElement[] { content };
-				}
+				return matchingChild.ConvertFromStubToElement(e, name);
 			}
 
-			foreach (var frameworkElement in frameworkElements)
+			// If element is a ContentControl with a view as Content, include the view and its children in the search,
+			// to better match Windows behaviour
+			IFrameworkElement content = null;
+			if (e is ContentControl contentControl &&
+				contentControl.Content is IFrameworkElement innerContent &&
+				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
 			{
-				if (string.Equals(frameworkElement.Name, name, StringComparison.Ordinal))
-				{
-					return frameworkElement.ConvertFromStubToElement(e, name);
-				}
+				content = innerContent;
+			}
+			else if (e is Controls.Primitives.Popup popup)
+			{
+				content = popup.Child as IFrameworkElement;
 			}
 
-			foreach (var frameworkElement in frameworkElements)
+			if (content != null)
 			{
-				var subviewResult = frameworkElement.FindName(name) as IFrameworkElement;
+				if (string.Equals(content.Name, name, StringComparison.Ordinal))
+				{
+					return content.ConvertFromStubToElement(e, name);
+				}
+
+				var subviewResult = content.FindName(name) as IFrameworkElement;
 				if (subviewResult != null)
 				{
 					return subviewResult.ConvertFromStubToElement(e, name);
 				}
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
 			{
 				// Static version here to ensure that it's not used outside of this scope
 				// where we're ensuring that we're not taking a dependency on FlyoutBase statically.
@@ -300,7 +305,6 @@ namespace Windows.UI.Xaml
 
 			return null;
 		}
-
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
@@ -448,7 +452,7 @@ namespace Windows.UI.Xaml
 				.SizeThatFits(view, new _Size(view.MeasuredWidth, view.MeasuredHeight).PhysicalToLogicalPixels())
 				.LogicalToPhysicalPixels();
 
-			Windows.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
+			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
 		}
 
 		/// <summary>
@@ -462,7 +466,7 @@ namespace Windows.UI.Xaml
 				.SizeThatFits(view, new _Size(measuredSize.Width, measuredSize.Height).PhysicalToLogicalPixels())
 				.LogicalToPhysicalPixels();
 
-			Windows.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
+			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
 		}
 #endif
 

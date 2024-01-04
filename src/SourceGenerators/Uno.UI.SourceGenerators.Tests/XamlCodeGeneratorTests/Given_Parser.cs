@@ -46,7 +46,7 @@ public class Given_Parser
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -71,6 +71,68 @@ public class Given_Parser
 				DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent")
 			}
 		);
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Namespace_Is_On_Nested_Element()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:local="using:TestRepro"
+					  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+					<Grid>
+
+						<local:MyStackPanel xmlns:SUT="NamespaceUnderTest" Source="SUT:C" />
+
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+
+						public sealed partial class MyStackPanel : StackPanel
+						{
+							public Type Source { get; set; }
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+
+					namespace NamespaceUnderTest
+					{
+						public class C { }
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
 		await test.RunAsync();
 	}
 }

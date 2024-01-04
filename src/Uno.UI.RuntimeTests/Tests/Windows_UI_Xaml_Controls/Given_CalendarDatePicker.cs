@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarDatePicker
 {
-#if !WINDOWS_UWP && !__MACOS__ // test is failling in macOS for some reason.
+#if !WINAPPSDK && !__MACOS__ // test is failling in macOS for some reason.
 	[TestMethod]
 	public async Task TestCalendarPanelSize()
 	{
@@ -38,7 +38,7 @@ public class Given_CalendarDatePicker
 	}
 #endif
 
-#if !WINDOWS_UWP && !__MACOS__
+#if !WINAPPSDK && !__MACOS__
 	[TestMethod]
 	public async Task When_Theme_Changes()
 	{

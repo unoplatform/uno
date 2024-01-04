@@ -7,6 +7,8 @@
 		project may run with net6 only SDK installed
 		-->
 		<RollForward>Major</RollForward>
+
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-windows.props" />
@@ -65,6 +67,12 @@
 	    <DesignTime>True</DesignTime>
 	  </Compile>
 	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<Import Project="..\..\..\build\nuget\*.Skia.Wpf.props" />
 	<Import Project="..\..\..\build\nuget\*.Skia.Wpf.targets" />

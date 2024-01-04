@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Windows.Globalization;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -287,7 +287,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		{
 			// This forces the app to use the specified language/locale:
 			this.Log().InfoFormat("VerifyDayMonthYearOrder: Setting ApplicationLanguages.PrimaryLanguageOverride to {0}", locale);
-			Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
+			global::Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = locale;
 
 			var datePicker = await SetupDatePickerTest();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -745,7 +745,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-#if NETFX_CORE
+#if WINAPPSDK
 				var flyoutPopup = VisualTreeHelper.GetOpenPopups(Window.Current)[0];
 #else
 				var flyoutPopup = VisualTreeHelper.GetOpenPopupsForXamlRoot(datePicker.XamlRoot)[0];

@@ -7,16 +7,34 @@ using System.Text;
 using Uno.Buffers;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal class ResourceBindingCollection
 {
 	private readonly Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>> _bindings = new();
 	private BindingEntry[]? _cachedAllBindings;
 
-	public bool HasBindings => _bindings.Count > 0 && _bindings.Any(b => b.Value.Any());
+	public bool HasBindings
+	{
+		get
+		{
+			// Avoiding the use of LINQ here to reduce unnecessary enumerator boxing.
+			if (_bindings.Count > 0)
+			{
+				foreach (var entry in _bindings)
+				{
+					if (entry.Value.Count > 0)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+	}
 
 	public record struct BindingEntry(DependencyProperty Property, ResourceBinding Binding);
 

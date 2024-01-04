@@ -1,15 +1,17 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using Windows.Foundation;
-
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI;
+using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
+		internal bool CancelNextNativeScroll { get; private set; }
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
@@ -72,5 +74,29 @@ namespace Windows.UI.Xaml.Controls
 				ChangeView(HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
 			}
 		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			AddHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged), true);
+		}
+
+		private void OnPointerWheelChanged(object sender, PointerRoutedEventArgs e)
+		{
+			// There is no way to distinguish the cause of a `scroll` DOM event, so we need to discriminate between
+			// wheel scrolling and keyboard scrolling before we get the `scroll` event. We only need to cancel keyboard
+			// scrolling (due to space, etc.)
+			CancelNextNativeScroll = false;
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			RemoveHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown));
+			RemoveHandler(PointerWheelChangedEvent, new KeyEventHandler(OnKeyDown));
+		}
+
+		private void OnKeyDown(object sender, KeyRoutedEventArgs args) => CancelNextNativeScroll = args.Handled;
 	}
 }

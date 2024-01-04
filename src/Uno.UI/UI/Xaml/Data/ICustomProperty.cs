@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// Implements custom property definition support for data binding sources that are implemented using COM.

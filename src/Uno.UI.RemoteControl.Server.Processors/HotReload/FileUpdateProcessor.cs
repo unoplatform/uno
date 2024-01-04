@@ -39,9 +39,23 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 
 	private void ProcessUpdateFile(UpdateFile? message)
 	{
-		if (message?.IsValid() is not true
-			|| !File.Exists(message.FilePath))
+		if (message?.IsValid() is not true)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Got an invalid update file frame ({message})");
+			}
+
+			return;
+		}
+
+		if (!File.Exists(message.FilePath))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists.");
+			}
+
 			return;
 		}
 

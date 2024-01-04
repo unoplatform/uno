@@ -1,6 +1,6 @@
-using Uno.UI.Samples.Controls;
+﻿using Uno.UI.Samples.Controls;
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 {

@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
-using System.Collections;
+using Uno.Collections;
 using Uno.UI;
+using Windows.Foundation;
 
-namespace Windows.UI.Xaml
+using View = Microsoft.UI.Xaml.UIElement;
+
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -23,7 +25,7 @@ namespace Windows.UI.Xaml
 
 		internal View FindFirstChild() => throw new NotSupportedException("Reference assembly");
 
-		internal virtual IEnumerable<View> GetChildren() => throw new NotSupportedException("Reference assembly");
+		internal MaterializableList<View> GetChildren() => throw new NotSupportedException("Reference assembly");
 
 		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
 

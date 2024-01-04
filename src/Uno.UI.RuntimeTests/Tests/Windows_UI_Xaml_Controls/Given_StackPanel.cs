@@ -2,20 +2,20 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -25,6 +25,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public partial class Given_StackPanel
 	{
+		private partial class MyStackPanel : StackPanel
+		{
+			public int MeasureCount { get; private set; }
+			public int ArrangeCount { get; private set; }
+
+			public Size LastMeasureOverrideReturn { get; private set; }
+			public Size LastArrangeOverrideReturn { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				MeasureCount++;
+				return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size arrangeSize)
+			{
+				ArrangeCount++;
+				return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __IOS__
@@ -233,7 +254,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				if (!double.IsInfinity(maxConstraints.Width))
 				{
-#if WINDOWS_UWP || __CROSSRUNTIME__
+#if WINAPPSDK || __CROSSRUNTIME__
 					Assert.AreEqual(constrained.ActualWidth, orientation == Orientation.Horizontal ? 1000 : maxConstraints.Width);
 #else
 					// TODO: Align Uno with Windows behavior.
@@ -244,7 +265,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 				if (!double.IsInfinity(maxConstraints.Height))
 				{
-#if WINDOWS_UWP || __CROSSRUNTIME__
+#if WINAPPSDK || __CROSSRUNTIME__
 					Assert.AreEqual(constrained.ActualHeight, orientation == Orientation.Vertical ? 1000 : maxConstraints.Height);
 #else
 					// TODO: Align Uno with Windows behavior.
@@ -370,7 +391,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderThickness = new Windows.UI.Xaml.Thickness(5),
+				BorderThickness = new Microsoft.UI.Xaml.Thickness(5),
 				BorderBrush = new SolidColorBrush(Colors.Bisque)
 			};
 
@@ -384,27 +405,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
-		}
-	}
-
-	internal partial class MyStackPanel : StackPanel
-	{
-		public int MeasureCount { get; private set; }
-		public int ArrangeCount { get; private set; }
-
-		public Size LastMeasureOverrideReturn { get; private set; }
-		public Size LastArrangeOverrideReturn { get; private set; }
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			MeasureCount++;
-			return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
-		}
-
-		protected override Size ArrangeOverride(Size arrangeSize)
-		{
-			ArrangeCount++;
-			return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
 		}
 	}
 }

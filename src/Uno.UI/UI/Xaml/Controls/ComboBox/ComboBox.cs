@@ -1,17 +1,18 @@
 ﻿#nullable enable
 
 using System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Windows.System;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 
 #if __ANDROID__
 using Android.Views;
@@ -23,16 +24,16 @@ using _View = UIKit.UIView;
 using AppKit;
 using _View = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.FrameworkElement;
+using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ComboBox : Selector
 	{
@@ -59,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ComboBox);
 		}
 
-		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
+		public global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
 
 		protected override DependencyObject GetContainerForItemOverride() => new ComboBoxItem { IsGeneratedContainer = true };
 
@@ -308,6 +309,12 @@ namespace Windows.UI.Xaml.Controls
 				updateItemSelectedState: updateItemSelectedState);
 
 			UpdateContentPresenter();
+
+			if (updateItemSelectedState)
+			{
+				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
+				TryUpdateSelectorItemIsSelected(selectedItem, true);
+			}
 		}
 
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
@@ -478,14 +485,18 @@ namespace Windows.UI.Xaml.Controls
 				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
+
+				var index = SelectedIndex;
+				index = index == -1 ? 0 : index;
+				if (ContainerFromIndex(index) is ComboBoxItem container)
+				{
+					container.Focus(FocusState.Programmatic);
+				}
 			}
 			else
 			{
 				OnDropDownClosed(args);
 				UpdateContentPresenter();
-
-				// Focus moves to ComboBox after item is selected.
-				Focus(FocusState.Programmatic);
 			}
 
 			UpdateDropDownState();
@@ -584,6 +595,31 @@ namespace Windows.UI.Xaml.Controls
 						SelectedIndex = SelectedIndex - 1;
 						return true;
 					}
+				}
+			}
+			else if (args.Key == VirtualKey.Tab)
+			{
+				var dropDownWasOpen = IsDropDownOpen;
+				if (_popup is { } p)
+				{
+					p.IsOpen = false;
+				}
+				// Don't handle. Let VisualTree.RootElement deal with focus management
+
+				if (dropDownWasOpen)
+				{
+					var focusManager = VisualTree.GetFocusManagerForElement(this);
+
+					// Set the focus on the next focusable element if Tab was pressed while the Popup is open.
+					// In this case, we got here through ComboBoxItem which is inside the Popup.
+					// Focus management would normally be dealt with at the VisualTree.RootElement level (UnoFocusInputManager), but because
+					// the Popup collapsed, the PopupPanel was removed from the visual tree and event propagation won't go up that far.
+					// Alternatively, we handle the focus here.
+					focusManager?.TryMoveFocusInstance(
+						args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift) ?
+						FocusNavigationDirection.Previous :
+						FocusNavigationDirection.Next
+					);
 				}
 			}
 			return false;

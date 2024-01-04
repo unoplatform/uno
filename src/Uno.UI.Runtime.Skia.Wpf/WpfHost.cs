@@ -5,8 +5,8 @@ using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
-using WinUI = Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf;
@@ -90,4 +90,10 @@ public class WpfHost : IWpfApplicationHost
 
 		WinUIApplication.StartWithArguments(CreateApp);
 	}
+
+	public override string ToString() =>
+		"If you are seeing this, make sure to follow the \"Migrating WpfHost\" section of Migrating from " +
+		"previous releases article in the Uno Platform documentation at " +
+		"https://aka.platform.uno/uno5-wpfhost-migration. " +
+		"WpfHost is used at the application level instead of window level starting Uno Platform 5.0.";
 }

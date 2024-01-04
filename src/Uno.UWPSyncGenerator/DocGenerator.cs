@@ -51,7 +51,7 @@ namespace Uno.UWPSyncGenerator
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (19041)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the WinUI API. Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
@@ -131,13 +131,33 @@ namespace Uno.UWPSyncGenerator
 							{
 								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
-								var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-								_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
+								var baseDocLinkUrl = @"https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
+								_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
 
 								var customDocLink = GetCustomDocLink(viewName);
 								if (customDocLink != null)
 								{
 									_sb.AppendParagraph($"In addition, {formattedViewName} has Uno-specific documentation {Hyperlink("here", customDocLink)}.");
+								}
+
+								List<string> options = new List<string>();
+								void AddOption(string text, string linkText, string link)
+								{
+									if (link is not null)
+									{
+										options.Add($"{text} {Hyperlink(linkText, link)}");
+									}
+								}
+
+								var galleryLink = GetGalleryLink(viewName);
+								var playgroundLink = GetPlaygroundLink(viewName);
+
+								AddOption("use the", "Uno Gallery", galleryLink);
+								AddOption($"run your own tests on the", "Uno Playground", playgroundLink);
+
+								if (options.Count > 0)
+								{
+									_sb.AppendParagraph($"To better understand how {formattedViewName} works, you can {string.Join(" or ", options)}.");
 								}
 
 								var properties = view.UAPSymbol.GetMembers().OfType<IPropertySymbol>().Select(p => GetAllMatchingPropertyMember(view, p)).ToArray();
@@ -155,13 +175,20 @@ namespace Uno.UWPSyncGenerator
 								AppendImplementedMembers("methods", "Method", methods);
 								AppendImplementedMembers("events", "Event", events);
 
-								_sb.AppendHorizontalRule();
+								var notImplementedProperties = GetNotImplementedMembers(properties);
+								var notImplementedMethods = GetNotImplementedMembers(methods);
+								var notImplementedEvents = GetNotImplementedMembers(events);
+								if (notImplementedProperties.Any() || notImplementedMethods.Any() || notImplementedEvents.Any())
+								{
+									_sb.AppendHorizontalRule();
 
-								_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
+									_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
 
-								AppendNotImplementedMembers("properties", "Property", properties);
-								AppendNotImplementedMembers("methods", "Method", methods);
-								AppendNotImplementedMembers("events", "Event", events);
+									AppendNotImplementedMembers("properties", "Property", notImplementedProperties);
+									AppendNotImplementedMembers("methods", "Method", notImplementedMethods);
+									AppendNotImplementedMembers("events", "Event", notImplementedEvents);
+
+								}
 
 								_sb.AppendHorizontalRule();
 
@@ -190,13 +217,18 @@ namespace Uno.UWPSyncGenerator
 									}
 								}
 
-								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+								IEnumerable<PlatformSymbols<T>> GetNotImplementedMembers<T>(IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 								{
-									var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+									return members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+								}
+
+								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> notImplemented) where T : ISymbol
+								{
 									if (notImplemented.None())
 									{
 										return;
 									}
+
 									using (_sb.Section($"Not implemented {memberTypePlural}"))
 									{
 										using (_sb.Table(memberTypeSingular, "Not supported on"))
@@ -404,6 +436,161 @@ namespace Uno.UWPSyncGenerator
 			["controls/commandbar.md"] = new[] { "CommandBar" },
 			["controls/MenuFlyout.md"] = new[] { "MenuFlyout" },
 			["features/shapes-and-brushes.md"] = new[] { "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rectangle", "ArbitraryShapeBase" },
+		};
+
+
+		private static string GetGalleryLink(string shortTypeName)
+		{
+			var galleryDocMapping = GalleryDocMapping.FirstOrDefault(kvp => kvp.Value.Contains(shortTypeName)).Key;
+			return galleryDocMapping != null ?
+				$"https://gallery.platform.uno/#{galleryDocMapping}" :
+				null;
+		}
+
+		private static readonly Dictionary<string, string[]> GalleryDocMapping = new Dictionary<string, string[]>
+		{
+			["ListView"] = new[] { "ListView", "ListViewItem" },
+			["InfoBadge"] = new[] { "InfoBadge" },
+			["Panel"] = new[] { "Panel" },
+			["Grid"] = new[] { "Grid" },
+			["GridView"] = new[] { "GridView" },
+			["StackPanel"] = new[] { "StackPanel" },
+			["RelativePanel"] = new[] { "RelativePanel" },
+			["RadioButton"] = new[] { "RadioButton" },
+			["PersonPicture"] = new[] { "PersonPicture" },
+			["ViewBox"] = new[] { "ViewBox" },
+			["TreeView"] = new[] { "TreeView", "TreeViewItem" },
+			["ColorPicker"] = new[] { "ColorPicker" },
+			["Button"] = new[] { "Button" },
+			["PasswordBox"] = new[] { "PasswordBox" },
+			["DatePicker"] = new[] { "DatePicker" },
+			["CalendarDatePicker"] = new[] { "CalendarDatePicker" },
+			["ToggleSwitch"] = new[] { "ToggleSwitch" },
+			["ComboBox"] = new[] { "ComboBox" },
+			["BreadcrumbBar"] = new[] { "BreadcrumbBar", "BreadcrumbBarItem" },
+			["Image"] = new[] { "Image" },
+			["CheckBox"] = new[] { "CheckBox" },
+			["MediaPlayerElement"] = new[] { "MediaPlayerElement" },
+			["ListView"] = new[] { "ListView", "ListViewItem" },
+			["Flyout"] = new[] { "MenuFlyout", "MenuFlyoutItem", "MenuFlyoutSubItem", "MenuFlyoutSeparator " },
+			["ContentDialog"] = new[] { "ContentDialog" },
+			["NumberBox"] = new[] { "NumberBox" },
+			["AutoSuggestBox"] = new[] { "AutoSuggestBox" },
+			["PipsPager"] = new[] { "PipsPager" },
+			["MenuBar"] = new[] { "MenuBar", "MenuBarItem" },
+			["Slider"] = new[] { "Slider" },
+			["HyperlinkButton"] = new[] { "HyperlinkButton" },
+			["CalendarView"] = new[] { "CalendarView" },
+			["RatingControl"] = new[] { "RatingControl" },
+			["CommandBar"] = new[] { "CommandBar" },
+			["TextBlock"] = new[] { "TextBlock" },
+			["Shape"] = new[] { "Shape" },
+			["TwoPaneView"] = new[] { "TwoPaneView" },
+			["TabBar"] = new[] { "TabBar" },
+			["DataGrid"] = new[] { "DataGrid" },
+			["SwipeControl"] = new[] { "SwipeControl" },
+			["RefreshContainer"] = new[] { "RefreshContainer" },
+			["Icon"] = new[] { "Icon" },
+			["Path"] = new[] { "Path" },
+			["Progress Ring/Bar"] = new[] { "ProgressBar", "ProgressRing" },
+			["TextBox"] = new[] { "TextBox" },
+			["VariableSizedWrapGrid"] = new[] { "VariableSizedWrapGrid" },
+
+			//Should we redirect NavigationView to NavigationBar?
+			//["NavigationView"] = new[] { "NavigationView" },
+			//["NavigationBar"] = new[] { "NavigationBar" },
+
+			//There is a gallery, but it is not on the list of references
+			//["Lottie"] = new[] { "Lottie" },
+			//["Chip"] = new[] { "Chip" },
+			//["Material Palette"] = new[] { "Material Palette" },
+			//["Animation"] = new[] { "Animation" },
+			//["ElevatedView"] = new[] { "ElevatedView" },
+			//["Launcher"] = new[] { "Launcher" },
+			//["Card"] = new[] { "Card" },
+			//["Cupertino Palette"] = new[] { "Cupertino Palette" },
+			//["PhoneCallManager"] = new[] { "PhoneCallManager" },
+			//["ShadowContainer"] = new[] { "ShadowContainer" },
+			//["SegmentedControl"] = new[] { "SegmentedControl" },
+			//["ChipGroup"] = new[] { "ChipGroup" },
+			//["Binding"] = new[] { "Binding" },
+			//["Simple Orientation"] = new[] { "Simple Orientation" },
+			//["Fluent Palette"] = new[] { "Fluent Palette" },
+			//["Divider"] = new[] { "Divider" },
+			//["Geolocator"] = new[] { "Geolocator" },
+			//["Sharing"] = new[] { "Sharing" },
+			//["Display Request"] = new[] { "Display Request" },
+			//["Light Sensor"] = new[] { "Light Sensor" },
+			//["Overview"] = new[] { "Overview" },
+			//["Clipboard"] = new[] { "Clipboard" },
+			//["Gyrometer"] = new[] { "Gyrometer" },
+			//["Acrylic"] = new[] { "Acrylic" },
+			//["Floating Action Button"] = new[] { "Floating Action Button" },
+			//["Typography"] = new[] { "Typography" },
+			//["Local Settings"] = new[] { "Local Settings" },
+			//["Email Manager"] = new[] { "Email Manager" },
+			//["Lightweight Styling"] = new[] { "Lightweight Styling" },
+			//["Network Information"] = new[] { "Network Information" },
+			//["Lamp"] = new[] { "Lamp" },
+			//["Pedometer"] = new[] { "Pedometer" },
+			//["Vibration"] = new[] { "Vibration" },
+			//["File and Folder Pickers"] = new[] { "File and Folder Pickers" },
+			//["Brush"] = new[] { "Brush" },
+			//["Magnetometer"] = new[] { "Magnetometer" },
+			//["Accelerometer"] = new[] { "Accelerometer" },
+			//["Gamepad"] = new[] { "Gamepad" },
+			//["Transforms"] = new[] { "Transforms" },
+
+		};
+
+		private static string GetPlaygroundLink(string shortTypeName)
+		{
+			var playgroundDocMapping = PlaygroundDocMapping.FirstOrDefault(kvp => kvp.Value.Contains(shortTypeName)).Key;
+			return playgroundDocMapping != null ?
+				$"https://playground.platform.uno/#{playgroundDocMapping}" :
+				null;
+		}
+
+		private static readonly Dictionary<string, string[]> PlaygroundDocMapping = new Dictionary<string, string[]>
+		{
+			//List of existing references in the Playground
+			["cards"] = new[] { "ListView", "ListViewItem" },
+			["combobox"] = new[] { "ComboBox" },
+			["animation-simple"] = new[] { "Animations" },
+			["borders"] = new[] { "Border" },
+			["button"] = new[] { "Button" },
+			["canvas"] = new[] { "Canvas" },
+			["checkbox"] = new[] { "CheckBox" },
+			["date-and-time"] = new[] { "DatePicker", "CalendarDatePicker", "CalendarView" },
+			["grid"] = new[] { "Grid" },
+			["hello-world"] = new[] { "TextBlock" },
+			["hyperlinkbutton"] = new[] { "HyperlinkButton" },
+			["image"] = new[] { "Image" },
+			["info-bar"] = new[] { "InfoBar" },
+			["menubar"] = new[] { "MenuBar", "MenuBarItem", "MenuFlyoutSubItem", "MenuFlyoutItem" },
+			["menuflyout"] = new[] { "Flyout", "MenuFlyoutItem", "MenuFlyoutSeparator" },
+			["numberbox"] = new[] { "NumberBox" },
+			["relativepanel"] = new[] { "RelativePanel" },
+			["panels"] = new[] { "Canvas", "Grid" },
+			["passwordbox"] = new[] { "PasswordBox" },
+			["path"] = new[] { "Path" },
+			["person-picture"] = new[] { "PersonPicture" },
+			["progressbar"] = new[] { "ProgressBar" },
+			["radiobutton"] = new[] { "RadioButton" },
+			["shapes"] = new[] { "Ellipse", "Rectangle", "Polygon" },
+			["slider"] = new[] { "Slider" },
+			["stackpanel"] = new[] { "StackPanel" },
+			["tabview"] = new[] { "TabView", "TabViewItem" },
+			["textblock"] = new[] { "TextBlock" },
+			["textbox"] = new[] { "TextBox" },
+			["toggle-button"] = new[] { "ToggleButton" },
+			["toggleswitch"] = new[] { "ToggleSwitch" },
+			["transforms"] = new[] { "FrameworkElement" },
+			["treeview"] = new[] { "TreeView", "TreeViewNode" },
+			["viewbox"] = new[] { "Viewbox" },
+
+			//New example creations
+			["fe7ad367"] = new[] { "Pivot" },
 		};
 	}
 }

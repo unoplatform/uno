@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml;
+﻿namespace Microsoft/* UWP don't rename */.UI.Xaml;
 
 /// <summary>
 /// Contains the window's state information returned by the Window.Closed event.

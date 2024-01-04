@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Collections;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : ICollection<UIElement>, IEnumerable<UIElement>, IList<UIElement>, INotifyCollectionChanged
 	{
@@ -57,10 +57,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Add(UIElement item)
 		{
-			if (item is IDependencyObjectStoreProvider provider)
-			{
-				item.SetParent(_owner);
-			}
+			item.SetParent(_owner);
 
 			AddCore(item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));

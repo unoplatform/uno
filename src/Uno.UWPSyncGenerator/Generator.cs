@@ -14,7 +14,7 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
-		internal const string CSharpLangVersion = "11.0";
+		internal const string CSharpLangVersion = "12.0";
 
 		private const string UnitTestsDefine = "IS_UNIT_TESTS";
 		private const string AndroidDefine = "__ANDROID__";
@@ -747,7 +747,7 @@ namespace Uno.UWPSyncGenerator
 					)
 					|| !IsNotUWPMapping(ownerType, property))
 				{
-					return;
+					continue;
 				}
 
 				if (allProperties.HasUndefined)
@@ -1210,6 +1210,27 @@ namespace Uno.UWPSyncGenerator
 				{
 					// This member uses the experimental input layer from UWP
 					case "StartDragAsync":
+						return true;
+				}
+			}
+#else
+			if (method.ContainingType.Name == "CoreIndependentInputSourceController")
+			{
+				switch (method.Name)
+				{
+					// Avoid circular reference in UWP
+					case "CreateForVisual":
+					case "CreateForIVisualElement":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "ElementCompositionPreview")
+			{
+				switch (method.Name)
+				{
+					// Adjust for already implemented member
+					case "SetElementChildVisual":
 						return true;
 				}
 			}

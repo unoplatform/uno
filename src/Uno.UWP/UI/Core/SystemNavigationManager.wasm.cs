@@ -28,6 +28,6 @@ namespace Windows.UI.Core
 
 		[Preserve]
 		[JSExport]
-		public static bool DispatchBackRequest() => GetForCurrentView().RequestBack();
+		internal static bool DispatchBackRequest() => GetForCurrentView().RequestBack();
 	}
 }

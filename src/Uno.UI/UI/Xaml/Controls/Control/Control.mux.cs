@@ -8,10 +8,10 @@ using System;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control
 	{
@@ -145,6 +145,19 @@ namespace Windows.UI.Xaml.Controls
 				var focusDisengagedEventArgs = new FocusDisengagedEventArgs();
 				focusDisengagedEventArgs.OriginalSource = this;
 				FocusDisengaged?.Invoke(this, focusDisengagedEventArgs);
+			}
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			var spFocusVisualWhiteDO = GetTemplateChild("FocusVisualWhite");
+			var spFocusVisualBlackDO = GetTemplateChild("FocusVisualBlack");
+			if (spFocusVisualWhiteDO is Rectangle spFocusVisualWhiteDORect && spFocusVisualBlackDO is Rectangle spFocusVisualBlackDORect)
+			{
+				LayoutRoundRectangleStrokeThickness(spFocusVisualWhiteDORect);
+				LayoutRoundRectangleStrokeThickness(spFocusVisualBlackDORect);
 			}
 		}
 

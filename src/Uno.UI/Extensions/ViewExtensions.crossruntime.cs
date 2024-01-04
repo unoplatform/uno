@@ -1,13 +1,12 @@
 ﻿#nullable enable
 
-#if !__NETSTD_REFERENCE__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 
@@ -15,6 +14,23 @@ namespace Uno.UI
 {
 	public static partial class ViewExtensions
 	{
+		internal static TResult? FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult?> selector)
+			where TResult : class
+		{
+			var children = group.GetChildren();
+			for (int i = children.Count - 1; i >= 0; i--)
+			{
+				var result = selector(children[i], param);
+				if (result is not null)
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
+
+#if !__NETSTD_REFERENCE__
 		/// <summary>
 		/// Find the first child of a specific type.
 		/// </summary>
@@ -23,7 +39,7 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T? FindFirstChild<T>(this UIElement view, int? childLevelLimit = null, bool includeCurrent = true)
+		internal static T? FindFirstChild<T>(this UIElement view, int? childLevelLimit = null, bool includeCurrent = true)
 			where T : UIElement
 		{
 			return view.FindFirstChild<T>(null, childLevelLimit, includeCurrent);
@@ -38,7 +54,7 @@ namespace Uno.UI
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
-		public static T? FindFirstChild<T>(this UIElement view, Func<T, bool>? selector, int? childLevelLimit = null, bool includeCurrent = true)
+		internal static T? FindFirstChild<T>(this UIElement view, Func<T, bool>? selector, int? childLevelLimit = null, bool includeCurrent = true)
 			where T : UIElement
 		{
 			Func<UIElement, bool> childSelector;
@@ -61,7 +77,7 @@ namespace Uno.UI
 			return (T?)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
 		}
 
-		public static string ShowDescendants(this UIElement view, StringBuilder? sb = null, string spacing = "", UIElement? viewOfInterest = null)
+		internal static string ShowDescendants(this UIElement view, StringBuilder? sb = null, string spacing = "", UIElement? viewOfInterest = null)
 		{
 			sb = sb ?? new StringBuilder();
 			AppendView(view);
@@ -89,9 +105,6 @@ namespace Uno.UI
 					.Append(innerView + namePart)
 					.Append($"-({layoutSlot.Width:F1}x{layoutSlot.Height:F1})@({layoutSlot.X:F1},{layoutSlot.Y:F1})")
 					.Append($" d:{desiredSize}")
-#if __IOS__
-						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
-#endif
 					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
@@ -109,7 +122,7 @@ namespace Uno.UI
 		}
 
 
-		public static string ShowLocalVisualTree(this UIElement element, int fromHeight = 0)
+		internal static string ShowLocalVisualTree(this UIElement element, int fromHeight = 0)
 		{
 			var root = element;
 
@@ -128,6 +141,6 @@ namespace Uno.UI
 
 			return ShowDescendants(root, viewOfInterest: element);
 		}
+#endif
 	}
 }
-#endif

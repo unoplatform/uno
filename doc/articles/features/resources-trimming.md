@@ -20,6 +20,14 @@ In order for an application to enable resources trimming, the following needs to
 </PropertyGroup>
 ```
 
+Starting from .NET 8, you will also need to add the following package to your `.Wasm.csproj`:
+
+```xml
+<ItemGroup>
+   <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.0" />
+</ItemGroup>
+```
+
 ## Enabling XAML Resources trimming for libraries and NuGet Packages
 For libraries to be eligible for resources trimming, the `UnoXamlResourcesTrimming` tag must also be added.
 

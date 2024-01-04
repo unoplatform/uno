@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class DragItemsStartingEventArgs
 	{

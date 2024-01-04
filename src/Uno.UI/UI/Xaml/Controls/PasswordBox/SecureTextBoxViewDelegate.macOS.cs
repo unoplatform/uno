@@ -8,7 +8,7 @@ using AppKit;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class SecureTextBoxViewDelegate : NSTextFieldDelegate
 	{

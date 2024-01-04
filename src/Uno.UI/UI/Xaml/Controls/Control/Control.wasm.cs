@@ -3,22 +3,22 @@ using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Drawing;
 using System.Linq;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Control
 	{
 		public Control() : this("div") { }
 
-		public Control(string htmlTag) : base(htmlTag)
+		internal Control(string htmlTag) : base(htmlTag)
 		{
 			InitializeControl();
 		}
@@ -52,6 +52,6 @@ namespace Windows.UI.Xaml.Controls
 			SetAttribute("tabindex", isFocusable ? "0" : "-1");
 		}
 
-		protected virtual bool IsDelegatingFocusToTemplateChild() => false;
+		private protected virtual bool IsDelegatingFocusToTemplateChild() => false;
 	}
 }

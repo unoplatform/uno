@@ -1,16 +1,16 @@
-﻿#if !NETFX_CORE
+﻿#if !WINAPPSDK
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -23,6 +23,10 @@ namespace Uno.UI.Tests.BorderTests
 #endif
 	public partial class Given_Border : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Border_Has_Fixed_Size()
 		{
@@ -296,10 +300,6 @@ namespace Uno.UI.Tests.BorderTests
 #endif
 			}
 		}
-	}
-
-	public partial class View : FrameworkElement
-	{
 	}
 }
 #endif

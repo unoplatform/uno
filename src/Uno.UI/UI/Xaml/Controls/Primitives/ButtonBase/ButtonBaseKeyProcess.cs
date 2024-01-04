@@ -5,7 +5,7 @@
 using Windows.System;
 using static Uno.UI.Xaml.Input.KeyPress;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase
 	{

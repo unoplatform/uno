@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
-using static Windows.UI.Xaml.Media.Stretch;
+using static Microsoft.UI.Xaml.Media.Stretch;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal static class ImageSizeHelper
 	{

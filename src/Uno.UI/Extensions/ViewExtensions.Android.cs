@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +13,13 @@ using Android.Views;
 using Android.Widget;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.Extensions;
 using System.Drawing;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Android.Views.Animations;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
 
 namespace Uno.UI
@@ -149,6 +149,42 @@ namespace Uno.UI
 			{
 				return GetChildrenSlow(group);
 			}
+		}
+
+		internal static TResult? FindLastChild<TParam, TResult>(this ViewGroup group, TParam param, Func<View, TParam, TResult?> selector)
+			where TResult : class
+		{
+			if (group is IShadowChildrenProvider shadowProvider)
+			{
+				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
+				// a fast path that relies on a shadowed list of the children in BindableView.
+				var childrenShadow = shadowProvider.ChildrenShadow;
+				for (int i = childrenShadow.Count - 1; i >= 0; i--)
+				{
+					var result = selector(childrenShadow[i], param);
+					if (result is not null)
+					{
+						return result;
+					}
+				}
+
+				return null;
+			}
+
+			// Slow path if the current view doesn't implement IShadowChildrenProvider
+			var count = group.ChildCount;
+
+			for (int i = count - 1; i >= 0; i--)
+			{
+				var child = group.GetChildAt(i)!;
+				var result = selector(child, param);
+				if (result is not null)
+				{
+					return result;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>

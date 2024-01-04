@@ -6,27 +6,27 @@
 #pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Automation;
 using Windows.ApplicationModel.Core;
 
-using NavigationViewDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewDisplayMode;
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using NavigationViewSelectionChangedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
-using NavigationViewItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewDisplayModeChangedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs;
-using NavigationViewPaneClosingEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs;
-using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
-using NavigationViewBackRequestedEventArgs = Microsoft.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs;
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationViewDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayMode;
+using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
+using NavigationViewSelectionChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs;
+using NavigationViewItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs;
+using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewDisplayModeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs;
+using NavigationViewPaneClosingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs;
+using NavigationViewBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewBackRequestedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackRequestedEventArgs;
+using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
 //using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
-using NavigationViewSelectionFollowsFocus = Microsoft.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus;
-using Microsoft.UI.Xaml.Controls;
+using NavigationViewSelectionFollowsFocus = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using System.Collections.Generic;
 using Uno.UI.Samples.Controls;
@@ -279,15 +279,15 @@ namespace MUXControlsTestApp
 			{
 				case NavigationViewDisplayMode.Minimal:
 					DisplayModeTextBox.Text = "Minimal";
-					DisplayModeTextBox.Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DodgerBlue);
+					DisplayModeTextBox.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DodgerBlue);
 					break;
 				case NavigationViewDisplayMode.Compact:
 					DisplayModeTextBox.Text = "Compact";
-					DisplayModeTextBox.Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DarkMagenta);
+					DisplayModeTextBox.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkMagenta);
 					break;
 				case NavigationViewDisplayMode.Expanded:
 					DisplayModeTextBox.Text = "Expanded";
-					DisplayModeTextBox.Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.DarkRed);
+					DisplayModeTextBox.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DarkRed);
 					break;
 			}
 		}

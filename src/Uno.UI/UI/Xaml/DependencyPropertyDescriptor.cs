@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal class DependencyPropertyDescriptor
 	{
@@ -24,6 +24,8 @@ namespace Windows.UI.Xaml
 
 		public Type OwnerType { get; }
 
+		private static readonly char[] _parenthesesChars = new[] { '(', ')' };
+
 		/// <summary>
 		/// Parses an attached PropertyPath in the form of "(clrnamespace:Type.Property)"
 		/// </summary>
@@ -35,12 +37,12 @@ namespace Windows.UI.Xaml
 			{
 				// (Uno.UI.Tests.BinderTests:Attachable.MyValue)
 
-				var bindingParts = propertyPath.Trim(new[] { '(', ')' }).Split(new[] { ':' });
+				var bindingParts = propertyPath.Trim(_parenthesesChars).Split(':');
 
 				if (bindingParts.Length == 2)
 				{
 					var ns = bindingParts[0];
-					var propertyParts = bindingParts[1].Split(new[] { '.' });
+					var propertyParts = bindingParts[1].Split('.');
 
 					if (propertyParts.Length == 2)
 					{

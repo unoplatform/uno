@@ -2,9 +2,12 @@
 uid: Uno.Features.WinUINotifications
 ---
 
-# Uno Support for Windows.UI.Notifications
+# Badge Notifications
 
-## Badge notifications
+> [!TIP]
+> This article covers Uno-specific information for `Windows.UI.Notifications` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.ui.notifications
+
+* The `Windows.UI.Notifications` namespace provides classes for creating and managing badge notifications.
 
 Badge notifications are supported on iOS and macOS.
 

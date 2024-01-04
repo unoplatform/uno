@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 using System.Collections;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Windows.UI;
 using System.Dynamic;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -153,5 +153,17 @@ namespace Windows.UI.Xaml
 		partial void OnUnloadedPartial();
 
 		private protected virtual void OnUnloaded() { }
+
+		public override string ToString()
+		{
+#if __WASM__
+			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
+			{
+				return $"{base.ToString()}\"{Name}\"";
+			}
+#endif
+
+			return base.ToString();
+		}
 	}
 }

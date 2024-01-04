@@ -5,19 +5,19 @@ using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Numerics;
 using Common;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 using Task = System.Threading.Tasks.Task;
 
@@ -30,22 +30,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using LayoutContext = Microsoft.UI.Xaml.Controls.LayoutContext;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
-using ItemsRepeaterScrollHost = Microsoft.UI.Xaml.Controls.ItemsRepeaterScrollHost;
-//using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
-//using ScrollingScrollCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
-//using ScrollingZoomCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
-//using AnimationMode = Microsoft.UI.Xaml.Controls.AnimationMode;
-//using SnapPointsMode = Microsoft.UI.Xaml.Controls.SnapPointsMode;
-//using ScrollingScrollOptions = Microsoft.UI.Xaml.Controls.ScrollingScrollOptions;
-//using ScrollingZoomOptions = Microsoft.UI.Xaml.Controls.ScrollingZoomOptions;
-//using ContentOrientation = Microsoft.UI.Xaml.Controls.ContentOrientation;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using LayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.LayoutContext;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
+using ItemsRepeaterScrollHost = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeaterScrollHost;
+//using ScrollPresenter = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ScrollPresenter;
+//using ScrollingScrollCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
+//using ScrollingZoomCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
+//using AnimationMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationMode;
+//using SnapPointsMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SnapPointsMode;
+//using ScrollingScrollOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollOptions;
+//using ScrollingZoomOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomOptions;
+//using ContentOrientation = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ContentOrientation;
 using IRepeaterScrollingSurface = Microsoft.UI.Private.Controls.IRepeaterScrollingSurface;
 using ConfigurationChangedEventHandler = Microsoft.UI.Private.Controls.ConfigurationChangedEventHandler;
 using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHandler;
@@ -53,7 +53,7 @@ using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChange
 
 using Uno.UI.RuntimeTests;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
@@ -1018,7 +1018,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				var lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet erat vel massa rutrum, eget mollis massa vulputate. Vivamus semper augue leo, eget faucibus nulla mattis nec. Donec scelerisque lacus at dui ultricies, eget auctor ipsum placerat. Integer aliquet libero sed nisi eleifend, nec rutrum arcu lacinia. Sed a sem et ante gravida congue sit amet ut augue. Donec quis pellentesque urna, non finibus metus. Proin sed ornare tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam laoreet erat vel massa rutrum, eget mollis massa vulputate. Vivamus semper augue leo, eget faucibus nulla mattis nec. Donec scelerisque lacus at dui ultricies, eget auctor ipsum placerat. Integer aliquet libero sed nisi eleifend, nec rutrum arcu lacinia. Sed a sem et ante gravida congue sit amet ut augue. Donec quis pellentesque urna, non finibus metus. Proin sed ornare tellus.";
 				var root = (Grid)XamlReader.Load(TestUtilities.ProcessTestXamlForRepo(
-					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' xmlns:controls='using:Microsoft.UI.Xaml.Controls'> 
+					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'> 
 						 <Grid.Resources>
 						   <controls:StackLayout x:Name='VerticalStackLayout' />
 						   <controls:RecyclingElementFactory x:Key='ElementFactory'>
@@ -1353,145 +1353,145 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				ArrangeLayoutFunc = (finalSize, context) => finalSize
 			};
 		}
-	}
 
-	internal partial class TestScrollingSurface : ContentControl, IRepeaterScrollingSurface
-	{
-		private bool _isHorizontallyScrollable;
-		private bool _isVerticallyScrollable;
-		private ConfigurationChangedEventHandler _configurationChangedTokenTable;
-
-		public bool InMeasure { get; set; }
-		public bool InArrange { get; set; }
-		public bool InPostArrange { get; private set; }
-
-		public Action ConfigurationChangedAddFunc { get; set; }
-		public Action ConfigurationChangedRemoveFunc { get; set; }
-
-		public Action<UIElement> RegisterAnchorCandidateFunc { get; set; }
-		public Action<UIElement> UnregisterAnchorCandidateFunc { get; set; }
-		public Func<UIElement, Rect> GetRelativeViewportFunc { get; set; }
-
-		public UIElement AnchorElement { get; set; }
-
-		public bool IsHorizontallyScrollable
+		private partial class TestScrollingSurface : ContentControl, IRepeaterScrollingSurface
 		{
-			get { return _isHorizontallyScrollable; }
-			set
-			{
-				_isHorizontallyScrollable = value;
-				RaiseConfigurationChanged();
-				InvalidateMeasure();
-			}
-		}
+			private bool _isHorizontallyScrollable;
+			private bool _isVerticallyScrollable;
+			private ConfigurationChangedEventHandler _configurationChangedTokenTable;
 
-		public bool IsVerticallyScrollable
-		{
-			get { return _isVerticallyScrollable; }
-			set
-			{
-				_isVerticallyScrollable = value;
-				RaiseConfigurationChanged();
-				InvalidateMeasure();
-			}
-		}
+			public bool InMeasure { get; set; }
+			public bool InArrange { get; set; }
+			public bool InPostArrange { get; private set; }
 
-		public event ConfigurationChangedEventHandler ConfigurationChanged
-		{
-			add
+			public Action ConfigurationChangedAddFunc { get; set; }
+			public Action ConfigurationChangedRemoveFunc { get; set; }
+
+			public Action<UIElement> RegisterAnchorCandidateFunc { get; set; }
+			public Action<UIElement> UnregisterAnchorCandidateFunc { get; set; }
+			public Func<UIElement, Rect> GetRelativeViewportFunc { get; set; }
+
+			public UIElement AnchorElement { get; set; }
+
+			public bool IsHorizontallyScrollable
 			{
-				if (ConfigurationChangedAddFunc != null)
+				get { return _isHorizontallyScrollable; }
+				set
 				{
-					ConfigurationChangedAddFunc();
+					_isHorizontallyScrollable = value;
+					RaiseConfigurationChanged();
+					InvalidateMeasure();
 				}
-
-				_configurationChangedTokenTable += value;
 			}
-			remove
+
+			public bool IsVerticallyScrollable
 			{
-				if (ConfigurationChangedRemoveFunc != null)
+				get { return _isVerticallyScrollable; }
+				set
 				{
-					ConfigurationChangedRemoveFunc();
+					_isVerticallyScrollable = value;
+					RaiseConfigurationChanged();
+					InvalidateMeasure();
 				}
-
-				_configurationChangedTokenTable -= value;
 			}
-		}
-		public event PostArrangeEventHandler PostArrange;
+
+			public event ConfigurationChangedEventHandler ConfigurationChanged
+			{
+				add
+				{
+					if (ConfigurationChangedAddFunc != null)
+					{
+						ConfigurationChangedAddFunc();
+					}
+
+					_configurationChangedTokenTable += value;
+				}
+				remove
+				{
+					if (ConfigurationChangedRemoveFunc != null)
+					{
+						ConfigurationChangedRemoveFunc();
+					}
+
+					_configurationChangedTokenTable -= value;
+				}
+			}
+			public event PostArrangeEventHandler PostArrange;
 #pragma warning disable CS0067
-		// Warning CS0067: The event 'ViewportTests.TestScrollingSurface.ViewportChanged' is never used.
-		public event ViewportChangedEventHandler ViewportChanged;
+			// Warning CS0067: The event 'ViewportTests.TestScrollingSurface.ViewportChanged' is never used.
+			public event ViewportChangedEventHandler ViewportChanged;
 #pragma warning restore CS0067
 
-		public void RegisterAnchorCandidate(UIElement element)
-		{
-			RegisterAnchorCandidateFunc(element);
-		}
-
-		public void UnregisterAnchorCandidate(UIElement element)
-		{
-			UnregisterAnchorCandidateFunc(element);
-		}
-
-		public Rect GetRelativeViewport(UIElement child)
-		{
-			return GetRelativeViewportFunc(child);
-		}
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			InMeasure = true;
-			var result = base.MeasureOverride(availableSize);
-			InMeasure = false;
-			return result;
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			InArrange = true;
-
-			var result = base.ArrangeOverride(finalSize);
-
-			InArrange = false;
-			InPostArrange = true;
-
-			if (PostArrange != null)
+			public void RegisterAnchorCandidate(UIElement element)
 			{
-				PostArrange(this);
+				RegisterAnchorCandidateFunc(element);
 			}
 
-			InPostArrange = false;
+			public void UnregisterAnchorCandidate(UIElement element)
+			{
+				UnregisterAnchorCandidateFunc(element);
+			}
 
-			return result;
+			public Rect GetRelativeViewport(UIElement child)
+			{
+				return GetRelativeViewportFunc(child);
+			}
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				InMeasure = true;
+				var result = base.MeasureOverride(availableSize);
+				InMeasure = false;
+				return result;
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				InArrange = true;
+
+				var result = base.ArrangeOverride(finalSize);
+
+				InArrange = false;
+				InPostArrange = true;
+
+				if (PostArrange != null)
+				{
+					PostArrange(this);
+				}
+
+				InPostArrange = false;
+
+				return result;
+			}
+
+			private void RaiseConfigurationChanged()
+			{
+				_configurationChangedTokenTable?.Invoke(this);
+			}
 		}
 
-		private void RaiseConfigurationChanged()
+		private partial class TestStackLayout : StackLayout
 		{
-			_configurationChangedTokenTable?.Invoke(this);
+			public UIElement SuggestedAnchor { get; private set; }
+
+			protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+			{
+				var anchorIndex = context.RecommendedAnchorIndex;
+				SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
+				return base.MeasureOverride(context, availableSize);
+			}
 		}
-	}
 
-	internal partial class TestStackLayout : StackLayout
-	{
-		public UIElement SuggestedAnchor { get; private set; }
-
-		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+		private partial class TestGridLayout : UniformGridLayout
 		{
-			var anchorIndex = context.RecommendedAnchorIndex;
-			SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
-			return base.MeasureOverride(context, availableSize);
-		}
-	}
+			public UIElement SuggestedAnchor { get; private set; }
 
-	internal partial class TestGridLayout : UniformGridLayout
-	{
-		public UIElement SuggestedAnchor { get; private set; }
-
-		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
-		{
-			var anchorIndex = context.RecommendedAnchorIndex;
-			SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
-			return base.MeasureOverride(context, availableSize);
+			protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+			{
+				var anchorIndex = context.RecommendedAnchorIndex;
+				SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
+				return base.MeasureOverride(context, availableSize);
+			}
 		}
 	}
 }

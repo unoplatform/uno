@@ -5,13 +5,13 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -31,7 +31,7 @@ namespace MUXControlsTestApp
 
 		private void FlipOrientationButton_Clicked(object sender, RoutedEventArgs e)
 		{
-			NavView.PaneDisplayMode = NavView.PaneDisplayMode == Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top ? Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Auto : Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top;
+			NavView.PaneDisplayMode = NavView.PaneDisplayMode == Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top ? Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Auto : Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Top;
 		}
 	}
 }

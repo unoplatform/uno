@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public partial struct RepeatBehavior : IEquatable<RepeatBehavior>
 	{
@@ -109,9 +109,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				return Forever;
 			}
-			else if (str.EndsWith("x", StringComparison.InvariantCultureIgnoreCase))
+			else if (str.EndsWith('x') || str.EndsWith('X'))
 			{
-				if (double.TryParse(str.Substring(0, str.Length - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var count))
+				if (double.TryParse(str.AsSpan().Slice(0, str.Length - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var count))
 				{
 					return new RepeatBehavior(count);
 				}

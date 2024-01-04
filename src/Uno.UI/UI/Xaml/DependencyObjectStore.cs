@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -12,7 +12,7 @@ using System.Threading;
 using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using System.Collections;
 using System.Globalization;
@@ -24,7 +24,7 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a delegate to be called when a property value changes.
@@ -309,7 +309,9 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
+			// There is no need to force-create property details here.
+			// If it's not yet created, then simply the precedence is DefaultValue
+			return _properties.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
 		/// <summary>
@@ -636,7 +638,7 @@ namespace Windows.UI.Xaml
 
 			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
 
-			if (Equals(previousValue, baseValue) && options.HasFlag(FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged))
+			if (Equals(previousValue, baseValue) && ((options & FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged) != 0))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
@@ -652,7 +654,7 @@ namespace Windows.UI.Xaml
 				// Source: https://msdn.microsoft.com/en-us/library/ms745795%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
-			else if (!Equals(coercedValue, baseValue) || options.HasFlag(FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals))
+			else if (!Equals(coercedValue, baseValue) || ((options & FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals) != 0))
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.
@@ -1428,24 +1430,7 @@ namespace Windows.UI.Xaml
 		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			_isUpdatingChildResourceBindings = true;
-			foreach (var child in GetChildrenDependencyObjects())
-			{
-				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
-				{
-					storeProvider.Store.UpdateResourceBindings(updateReason);
-				}
-			}
-		}
 
-		/// <summary>
-		/// Returns all discoverable child dependency objects.
-		/// </summary>
-		/// <remarks>
-		/// This method is potentially slow and should only be used where performance isn't a concern (eg updating resource bindings
-		/// when the app theme changes).
-		/// </remarks>
-		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
-		{
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
 				if (propertyDetail == null
@@ -1464,7 +1449,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in dependencyObjectCollection)
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
@@ -1472,14 +1457,22 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
 				if (propertyValue is DependencyObject dependencyObject)
 				{
-					yield return dependencyObject;
+					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason);
 				}
+			}
+		}
+
+		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason)
+		{
+			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
+			{
+				storeProvider.Store.UpdateResourceBindings(updateReason);
 			}
 		}
 
@@ -1673,11 +1666,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 					if (instance != null)
 					{
-						if (!hashSet.Contains(instance!))
-						{
-							hashSet.Add(instance);
-						}
-						else
+						if (!hashSet.Add(instance))
 						{
 							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}
@@ -1868,7 +1857,7 @@ namespace Windows.UI.Xaml
 					// Uno TODO: What should we do here for non-UIElements (if anything is needed)?
 					if (actualInstanceAlias is UIElement elt)
 					{
-						Windows.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
+						Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
 					}
 				}
 

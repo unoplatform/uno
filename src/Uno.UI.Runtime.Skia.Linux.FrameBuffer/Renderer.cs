@@ -4,7 +4,7 @@ using System.Text;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Runtime.Skia.Native;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
@@ -90,15 +90,19 @@ namespace Uno.UI.Runtime.Skia
 
 					for (int line = 0; line < height; line++)
 					{
+#pragma warning disable CA1806 // Do not ignore method results
 						Libc.memcpy(
 							_fbDev.BufferAddress + line * _fbDev.RowBytes,
 							pixels + line * bitmapRowBytes,
 							new IntPtr(width * bitmapBytesPerPixel));
+#pragma warning restore CA1806 // Do not ignore method results
 					}
 				}
 				else
 				{
+#pragma warning disable CA1806 // Do not ignore method results
 					Libc.memcpy(_fbDev.BufferAddress, _bitmap.GetPixels(out _), new IntPtr(_fbDev.RowBytes * height));
+#pragma warning restore CA1806 // Do not ignore method results
 				}
 			}
 		}

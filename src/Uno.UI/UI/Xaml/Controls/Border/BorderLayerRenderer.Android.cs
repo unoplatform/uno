@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 #pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
 
 using System;
@@ -14,11 +14,11 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Controls;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Rect = Windows.Foundation.Rect;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class BorderLayerRenderer
 	{

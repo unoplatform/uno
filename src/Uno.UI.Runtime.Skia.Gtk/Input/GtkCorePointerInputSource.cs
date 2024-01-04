@@ -15,7 +15,7 @@ using static Windows.UI.Input.PointerUpdateKind;
 using Exception = System.Exception;
 using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -163,7 +163,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerEntered(ptArgs);
 			}
@@ -182,7 +182,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 			// This may need to be removed when we implement native pointer capture support properly.
 			if (args.Event.Mode != CrossingMode.Ungrab)
 			{
-				if (AsPointerArgs(args.Event) is { } ptArgs)
+				if (AsPointerArgs(o, args.Event) is { } ptArgs)
 				{
 					RaisePointerExited(ptArgs);
 				}
@@ -211,7 +211,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerPressed(ptArgs);
 			}
@@ -226,7 +226,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerReleased(ptArgs);
 			}
@@ -241,7 +241,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerMoved(ptArgs);
 			}
@@ -256,7 +256,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerWheelChanged(ptArgs);
 			}
@@ -271,7 +271,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(evt) is { } ptArgs)
+			if (AsPointerArgs(o!, evt) is { } ptArgs)
 			{
 				switch (evt.Type)
 				{
@@ -305,7 +305,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerExited(ptArgs);
 			}
@@ -320,7 +320,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			if (AsPointerArgs(args.Event) is { } ptArgs)
+			if (AsPointerArgs(o, args.Event) is { } ptArgs)
 			{
 				RaisePointerEntered(ptArgs);
 			}
@@ -355,23 +355,37 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	#region Convert helpers
-	private PointerEventArgs? AsPointerArgs(EventTouch evt)
-		=> AsPointerArgs(
+	private PointerEventArgs? AsPointerArgs(object o, EventTouch evt)
+	{
+		var (windowX, windowY) = GetWindowCoordinates(o);
+		var x = evt.XRoot - windowX;
+		var y = evt.YRoot - windowY;
+
+		return AsPointerArgs(
 			evt.Device, PointerDeviceType.Touch, (uint?)evt.Sequence?.Handle ?? 1u,
 			evt.Type, evt.Time,
 			evt.XRoot, evt.YRoot,
-			evt.X, evt.Y,
+			x, y,
 			(ModifierType)evt.State,
 			evt: null);
+	}
 
-	private PointerEventArgs? AsPointerArgs(Event evt)
+	private PointerEventArgs? AsPointerArgs(object o, Event evt)
 	{
+		// The coordinates received in the event args are relative to the widget that raised the event.
+		// Usually, that's the native overlay (which embodies the entire window, minus the titlebar). However,
+		// if another overlay (e.g. TextBox) raises an event, we still want the coordinates relative to the
+		// top-left of the window. This method makes that adjustment
+		var (windowX, windowY) = GetWindowCoordinates(o);
+
 		var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
 		var type = evt.Type;
 		var time = EventHelper.GetTime(evt);
 		EventHelper.GetRootCoords(evt, out var rootX, out var rootY);
-		EventHelper.GetCoords(evt, out var x, out var y);
 		EventHelper.GetState(evt, out var state);
+
+		var x = rootX - windowX;
+		var y = rootY - windowY;
 
 		return AsPointerArgs(
 			dev, GetDeviceType(dev), 1u,
@@ -486,7 +500,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		var pointerPoint = new Windows.UI.Input.PointerPoint(
 			frameId: time,
-			timestamp: time,
+			timestamp: time * (ulong)TimeSpan.TicksPerMillisecond, // time is in ms, timestamp is in ticks
 			device: pointerDevice,
 			pointerId: pointerId,
 			rawPosition: rawPosition,
@@ -595,5 +609,24 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		PointerWheelChanged?.Invoke(this, ptArgs);
+	}
+
+	private static (int x, int y) GetWindowCoordinates(object eventSource)
+	{
+		// Calling GetGeometry on any window reference such as e.Window or (o as Widget).window will return wrong
+		// values (usually just 0). Only UnoGtkWindow.Window will give us what we need.
+		while (eventSource is not UnoGtkWindow)
+		{
+			if (eventSource is not Widget w)
+			{
+				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow.
+				throw new InvalidOperationException("Gtk widget has no UnoGtkWindow parent.");
+			}
+
+			eventSource = w.Parent;
+		}
+
+		((UnoGtkWindow)eventSource).Window.GetGeometry(out var x, out var y, out _, out _);
+		return (x, y);
 	}
 }

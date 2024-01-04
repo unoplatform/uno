@@ -13,7 +13,7 @@ using Uno.Foundation.Logging;
 using Uno.Diagnostics.Eventing;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class DependencyObjectExtensions
 	{

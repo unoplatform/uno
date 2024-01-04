@@ -152,6 +152,13 @@ namespace SamplesApp.UITests
 
 			ValidateAutoRetry();
 
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser
+				&& TestContext.CurrentContext.CurrentRepeatCount > 0)
+			{
+				Console.WriteLine("Refreshing browser for test retry");
+				_app.InvokeGeneric("browser:SampleRunner|RefreshBrowser", "");
+			}
+
 			// Check if the test needs to be ignore or not
 			// If nothing specified, it is considered as a global test
 			var platforms = GetActivePlatforms().Distinct().ToArray();

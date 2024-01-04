@@ -55,7 +55,7 @@ Here's a complete sample:
 					Value="12" />
 		</StackPanel>
 		<maps:MapControl Grid.Row="1"
-			         ZoomLevel="{Binding ElementName=zoomSlider, Path=Value, Mode=TwoWay}" />
+						 ZoomLevel="{Binding ElementName=zoomSlider, Path=Value, Mode=TwoWay}" />
 	</Grid>
 </Page>
 ```
@@ -104,17 +104,17 @@ The key will be set as the value for the parameter _MapServiceToken_ for the Map
 
 +  Enable Map Service. In case this is your first time using the Google Maps API you will need to enable it before using it.
 
-        1. Go to https://console.developers.google.com
-        2. Login with a Google account
-        3. Click on "Enable APIs and Services"
-        4. Select "Maps SDK for Android" and click on Enable
+    1. Go to https://console.developers.google.com
+    2. Login with a Google account
+    3. Click on "Enable APIs and Services"
+    4. Select "Maps SDK for Android" and click on Enable
     
 +  Generate an API key.
 
-        1.  If you are coming from step-2 just navigate back until you are again in the dashboard, otherwise, go to  https://console.developers.google.com and login with a Google account.
-        2.  Go to the Credentials section on the left-hand side menu
-        3.  Click on "Create Credentials", then "API key"
-        4.  Copy the key generated as this will be the one we will use later in the application
+    1.  If you are coming from step-2 just navigate back until you are again in the dashboard, otherwise, go to  https://console.developers.google.com and login with a Google account.
+    2.  Go to the Credentials section on the left-hand side menu
+    3.  Click on "Create Credentials", then "API key"
+    4.  Copy the key generated as this will be the one we will use later in the application
 
 **Note:** For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
 
@@ -124,23 +124,25 @@ _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Andr
 
 - For **Android**
     1.  Add the following to AndroidManifest.xml:
-    ```xml
-    <uses-library android:name="com.google.android.maps" />
-    ```
-                        
+
+        ```xml
+        <uses-library android:name="com.google.android.maps" />
+        ```
+
     2.  Add the API key to `AssemblyInfo.cs`.
-    
-    ```csharp
-	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
-    ```
-    Replace the text YOUR_API_KEY with the key generated in previous step.
-    
-    Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.
-	
+
+        ```csharp
+        [assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
+        ```
+
+        Replace the text YOUR_API_KEY with the key generated in previous step.
+
+        Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.
+
     3.  Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
-    
-	 ```csharp
-	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
-	[assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
-	[assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
-	```
+
+        ```csharp
+        [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+        [assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
+        [assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
+        ```

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,17 +15,17 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.Toolkit.Extensions;
 
-using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
-using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
+using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1437,7 +1437,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SplitButton_Flyout_XamlRoot()
 		{
 			var flyout = new Flyout();
-			var host = new Microsoft.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
+			var host = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton() { Content = "Asd" };
 			host.Flyout = flyout;
 			TestServices.WindowHelper.WindowContent = host;
 			await TestServices.WindowHelper.WaitForIdle();
@@ -1561,6 +1561,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Unbound_FullFlyout()
+		{
+			var host = new Button
+			{
+				Content = "Asd",
+				Flyout = new Flyout
+				{
+					Placement = FlyoutPlacementMode.Full,
+					FlyoutPresenterStyle = new Style
+					{
+						TargetType = typeof(FlyoutPresenter),
+						Setters =
+						{
+							// style reset
+							new Setter(FlyoutPresenter.MarginProperty, new Thickness(0)),
+							new Setter(FlyoutPresenter.PaddingProperty, new Thickness(0)),
+							new Setter(FlyoutPresenter.BorderThicknessProperty, new Thickness(0)),
+
+							// remove limit from default style
+							new Setter(FlyoutPresenter.MaxWidthProperty, double.NaN),
+							new Setter(FlyoutPresenter.MaxHeightProperty, double.NaN),
+
+							// full stretch
+							new Setter(FlyoutPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch),
+							new Setter(FlyoutPresenter.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch),
+							new Setter(FlyoutPresenter.VerticalAlignmentProperty, VerticalAlignment.Stretch),
+							new Setter(FlyoutPresenter.VerticalContentAlignmentProperty, VerticalAlignment.Stretch),
+						}
+					},
+					Content = new Border
+					{
+						Background = new SolidColorBrush(Colors.SkyBlue),
+						Child = new TextBlock { Text = "Asd" },
+					},
+				},
+			};
+
+			TestServices.WindowHelper.WindowContent = host;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(host);
+
+			try
+			{
+				host.Flyout.ShowAt(host);
+
+				bool AnyPopupIsOpen() => VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).Any();
+				await TestServices.WindowHelper.WaitFor(AnyPopupIsOpen, message: "Timeout waiting on flyout to open");
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).LastOrDefault();
+				var presenter = popup.Child as FlyoutPresenter;
+				await TestServices.WindowHelper.WaitForLoaded(presenter);
+
+				var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+				Assert.IsTrue(
+					presenter.ActualWidth >= bounds.Width && presenter.ActualHeight >= bounds.Height,
+					$"flyout not taking the full size offered: flyout={presenter.ActualWidth}x{presenter.ActualHeight}, VisibleBounds={bounds.Width}x{bounds.Height}");
+			}
+			finally
+			{
+				host.Flyout.Hide();
+			}
+		}
 
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{

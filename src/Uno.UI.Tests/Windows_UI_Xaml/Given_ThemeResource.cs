@@ -9,12 +9,12 @@ using Uno.UI.Tests.Helpers;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -641,7 +641,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		private IDisposable UseFluentResources()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			app.Resources.MergedDictionaries.Insert(0, xcr);
 			return new DisposableAction(() => Application.Current.Resources.MergedDictionaries.Remove(xcr));
 

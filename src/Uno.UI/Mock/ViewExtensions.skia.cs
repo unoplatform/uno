@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI
 {
@@ -14,14 +14,14 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public static IEnumerable<object> GetChildren(this object group)
+		internal static IEnumerable<object> GetChildren(this object group)
 		{
 			return Array.Empty<object>();
 		}
 
-		public static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
+		internal static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
 
-		public static T FindFirstChild<T>(this FrameworkElement root) where T : FrameworkElement
+		internal static T FindFirstChild<T>(this FrameworkElement root) where T : FrameworkElement
 		{
 			return root.GetDescendants().OfType<T>().FirstOrDefault();
 		}

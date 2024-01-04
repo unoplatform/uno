@@ -1,8 +1,10 @@
 ---
-uid: Uno.Contributing.HotReload
+uid: Uno.Contributing.Internals.HotReload
 ---
 
-# Hot Reload Phases
+## Hot Reload Phases
+
+_This page details the internals of Hot Reload. To use Hot Reload, [head over here](xref:Uno.Features.HotReload)._
 
 When a change is made to XAML or a C# code file, it's immediately picked up by compiler. However the updates aren't immediately sent to the app until the file is saved (assuming "Hot Reload on Save" is enabled) or the Hot Reload button is clicked in Visual Studio.
 
@@ -39,6 +41,8 @@ static void BeforeVisualTreeUpdate(Type[]? updatedTypes);
 
 static void AfterVisualTreeUpdate(Type[]? updatedTypes);
 
+static void ReloadCompleted(Type[]? updatedTypes, bool uiUpdated);
+
 static void ElementUpdate(FrameworkElement, Type[]?);
 
 static void BeforeElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
@@ -50,12 +54,11 @@ static void AfterElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
 
 Pausing and resuming UI Update is done by calling
 
-TypeMappingHelper.PauseReloading and TypeMappingHelper.ResumeReloading
-// TODO: These method names probably need to be updated to Pause/ResumeUIUpdates
+`TypeMappings.Pause()` and `TypeMappings.Resume()`
 
 Note that pausing UI Updates doesn't stop the Hot Reload process. It only prevents the UI Update from running until UI Updates are resumed.
 
-# Waiting for Hot Reload
+# Waiting for Hot Reload to be applied
 
 // TODO: Give an example of how to await UI Updates (eg https://github.com/unoplatform/uno/blob/0340cc1394994cdbd525d61de611a0531c38bcc7/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/Tests/Given_Frame.cs#L9-L37)
 

@@ -9,6 +9,8 @@ namespace Windows.ApplicationModel.Resources.Core
 {
 	public partial class ResourceQualifier
 	{
+		private static readonly char[] _dashArray = new[] { '-' };
+
 		internal ResourceQualifier(string name, string value)
 		{
 			QualifierName = name;
@@ -28,7 +30,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 			if (str.Contains("-"))
 			{
-				var qualifierParts = str.Split(new[] { '-' }, 2);
+				var qualifierParts = str.Split(_dashArray, 2);
 				var name = qualifierParts[0].ToLowerInvariant();
 				var value = qualifierParts[1];
 

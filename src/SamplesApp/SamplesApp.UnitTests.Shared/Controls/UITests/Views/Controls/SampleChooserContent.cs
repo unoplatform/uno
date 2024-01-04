@@ -1,13 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Uno;
+using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
 namespace SampleControl.Entities
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	[DebuggerDisplay("{" + nameof(ControlName) + "}")]
 	public partial class SampleChooserContent : INotifyPropertyChanged
 	{
@@ -15,7 +17,9 @@ namespace SampleControl.Entities
 		public Type ViewModelType { get; set; }
 		public Type ControlType { get; set; }
 		public string[] Categories { get; set; }
+		public string CategoriesString => Categories?.JoinBy(", ");
 		public string Description { get; set; }
+		public string QueryString => $"?sample={Categories.FirstOrDefault() ?? ""}/{ControlName}";
 		public bool IgnoreInSnapshotTests { get; internal set; }
 		public bool IsManualTest { get; internal set; }
 		public bool UsesFrame { get; internal set; }

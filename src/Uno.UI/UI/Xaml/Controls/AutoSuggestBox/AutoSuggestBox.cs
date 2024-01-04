@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Specialized;
 using System.Linq;
@@ -9,9 +9,9 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
@@ -20,7 +20,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
 	{
@@ -386,6 +386,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (e.Key == Windows.System.VirtualKey.Enter)
 			{
+				e.Handled = true;
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug($"Enter key pressed");
@@ -395,10 +396,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
 			{
+				e.Handled = true;
 				HandleUpDownKeys(e);
 			}
 			else if (e.Key == Windows.System.VirtualKey.Escape && IsSuggestionListOpen)
 			{
+				e.Handled = true;
 				RevertTextToUserInput();
 				IsSuggestionListOpen = false;
 			}
@@ -451,6 +454,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(o));
+
+			_textBox?.Select(_textBox.Text.Length, 0);
 		}
 
 		private void RevertTextToUserInput()

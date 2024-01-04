@@ -123,6 +123,9 @@ namespace Windows.Media.Playback
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
 
+		internal uint NaturalVideoHeight { get; private set; }
+		internal uint NaturalVideoWidth { get; private set; }
+
 		private void Initialize()
 		{
 			_observer = new Observer(this);
@@ -274,12 +277,12 @@ namespace Windows.Media.Playback
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
-				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(new char[] { '/' }));
+				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart('/'));
 			}
 
 			if (uri.IsLocalResource())
 			{
-				var filePath = uri.PathAndQuery.TrimStart(new[] { '/' })
+				var filePath = uri.PathAndQuery.TrimStart('/')
 				// UWP supports backward slash in path for directory separators
 				.Replace("\\", "/");
 				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);
@@ -386,9 +389,11 @@ namespace Windows.Media.Playback
 
 		private void OnVideoRectChanged()
 		{
-			if (_videoLayer?.VideoRect != null)
+			if (_videoLayer?.VideoRect is { } videoRect)
 			{
-				VideoRatioChanged?.Invoke(this, _videoLayer.VideoRect.Width / Math.Max(_videoLayer.VideoRect.Height, 1));
+				NaturalVideoWidth = (uint)videoRect.Width;
+				NaturalVideoHeight = (uint)videoRect.Height;
+				NaturalVideoDimensionChanged?.Invoke(this, null);
 			}
 		}
 

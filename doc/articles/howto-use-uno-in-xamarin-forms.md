@@ -15,20 +15,20 @@ In code-behind, before adding Uno.UI controls to the visual tree or in your Xama
 Example for Android:
 
 ```csharp
-        public App()
-        {
+public App()
+{
 #if __ANDROID__
-            // set current Activity. You may use 'Plugin.CurrentActivity' NuGet package
-            Uno.UI.ContextHelper.Current = Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity;
-            // or if you use Xamarin.Essentials v1.4.0 and higher
-            Uno.UI.ContextHelper.Current = Xamarin.Essentials.Platform.CurrentActivity;
+    // set current Activity. You may use 'Plugin.CurrentActivity' NuGet package
+    Uno.UI.ContextHelper.Current = Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity;
+    // or if you use Xamarin.Essentials v1.4.0 and higher
+    Uno.UI.ContextHelper.Current = Xamarin.Essentials.Platform.CurrentActivity;
 #endif
-            // create an instance of Application, otherwise Uno.UI controls won't work in Xamarin.Forms
-            new Windows.UI.Xaml.Application();
+    // create an instance of Application, otherwise Uno.UI controls won't work in Xamarin.Forms
+    new Windows.UI.Xaml.Application();
 
-            InitializeComponent();
-            MainPage = new MainPage();
-        }
+    InitializeComponent();
+    MainPage = new MainPage();
+}
 
 ```
 

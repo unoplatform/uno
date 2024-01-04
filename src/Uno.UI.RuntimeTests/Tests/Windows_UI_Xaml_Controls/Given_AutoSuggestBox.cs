@@ -7,11 +7,11 @@ using Windows.System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AutoSuggestBox
 	{
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		public async Task When_Text_Changed_Should_Reflect_In_DataTemplate_TextBox()
 		{
@@ -272,6 +272,398 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 #endif
+
+		[TestMethod]
+#if WINAPPSDK
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_Keyboard_Handled()
+		{
+			var SUT = new AutoSuggestBox();
+
+			static void AutoSuggestBox_TextChanged(AutoSuggestBox s, AutoSuggestBoxTextChangedEventArgs e)
+			{
+				var items = new List<string>
+				{
+					"A0",
+					"A1",
+					"A2",
+					"B0",
+					"B1",
+					"B2",
+					"C0",
+					"C1",
+					"C2"
+				};
+
+				if (e.Reason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+				{
+					s.ItemsSource = items.Where(a => a.StartsWith(s.Text.Trim())).ToArray();
+				}
+			}
+
+			Button button = null;
+			try
+			{
+				button = new Button();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					}
+				};
+
+				var keyDownHandled = 0;
+				var keyDownNotHandled = 0;
+				SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, a) =>
+				{
+					if (a.Handled)
+					{
+						keyDownHandled++;
+					}
+					else
+					{
+						keyDownNotHandled++;
+					}
+				}), true);
+
+				SUT.TextChanged += AutoSuggestBox_TextChanged;
+				WindowHelper.WindowContent = stack;
+				await WindowHelper.WaitForIdle();
+
+				var tb = SUT.FindVisualChildByType<TextBox>();
+				var popup = SUT.FindVisualChildByType<Popup>();
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Text = "A";
+				await WindowHelper.WaitForIdle();
+				tb.Select(1, 0);
+				await WindowHelper.WaitForIdle();
+
+				var lv = popup.Child.FindVisualChildByType<ListView>();
+
+				Assert.AreEqual(-1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 1);
+				Assert.AreEqual(keyDownNotHandled, 0);
+
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 2);
+				Assert.AreEqual(keyDownNotHandled, 0);
+
+				KeyboardHelper.Right();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 2);
+				Assert.AreEqual(keyDownNotHandled, 1);
+
+				KeyboardHelper.Left();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 3); // actually handled in textbox
+				Assert.AreEqual(keyDownNotHandled, 1);
+
+				KeyboardHelper.Up();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 4);
+				Assert.AreEqual(keyDownNotHandled, 1);
+			}
+			finally
+			{
+				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if WINAPPSDK
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_ArrowKeys_Handled()
+		{
+			var SUT = new AutoSuggestBox();
+
+			static void AutoSuggestBox_TextChanged(AutoSuggestBox s, AutoSuggestBoxTextChangedEventArgs e)
+			{
+				var items = new List<string>
+				{
+					"A0",
+					"A1",
+					"A2",
+					"B0",
+					"B1",
+					"B2",
+					"C0",
+					"C1",
+					"C2"
+				};
+
+				if (e.Reason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+				{
+					s.ItemsSource = items.Where(a => a.StartsWith(s.Text.Trim())).ToArray();
+				}
+			}
+
+			Button button = null;
+			try
+			{
+				button = new Button();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					}
+				};
+
+				var keyDownHandled = 0;
+				var keyDownNotHandled = 0;
+				SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, a) =>
+				{
+					if (a.Handled)
+					{
+						keyDownHandled++;
+					}
+					else
+					{
+						keyDownNotHandled++;
+					}
+				}), true);
+
+				SUT.TextChanged += AutoSuggestBox_TextChanged;
+				WindowHelper.WindowContent = stack;
+				await WindowHelper.WaitForIdle();
+
+				var tb = SUT.FindVisualChildByType<TextBox>();
+				var popup = SUT.FindVisualChildByType<Popup>();
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Text = "A";
+				await WindowHelper.WaitForIdle();
+				tb.Select(1, 0);
+				await WindowHelper.WaitForIdle();
+
+				var lv = popup.Child.FindVisualChildByType<ListView>();
+
+				Assert.AreEqual(-1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 2);
+				Assert.AreEqual(keyDownNotHandled, 0);
+
+				KeyboardHelper.Enter();
+				Assert.AreEqual(keyDownHandled, 3);
+				Assert.AreEqual(keyDownNotHandled, 0);
+			}
+			finally
+			{
+				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if WINAPPSDK
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Enter_Escape_Handled(bool escape)
+		{
+			var SUT = new AutoSuggestBox();
+
+			static void AutoSuggestBox_TextChanged(AutoSuggestBox s, AutoSuggestBoxTextChangedEventArgs e)
+			{
+				var items = new List<string>
+				{
+					"A0",
+					"A1",
+					"A2",
+					"B0",
+					"B1",
+					"B2",
+					"C0",
+					"C1",
+					"C2"
+				};
+
+				if (e.Reason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+				{
+					s.ItemsSource = items.Where(a => a.StartsWith(s.Text.Trim())).ToArray();
+				}
+			}
+
+			Button button = null;
+			try
+			{
+				button = new Button();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					}
+				};
+
+				var keyDownHandled = 0;
+				var keyDownNotHandled = 0;
+				SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, a) =>
+				{
+					if (a.Handled)
+					{
+						keyDownHandled++;
+					}
+					else
+					{
+						keyDownNotHandled++;
+					}
+				}), true);
+
+				SUT.TextChanged += AutoSuggestBox_TextChanged;
+				WindowHelper.WindowContent = stack;
+				await WindowHelper.WaitForIdle();
+
+				var tb = SUT.FindVisualChildByType<TextBox>();
+				var popup = SUT.FindVisualChildByType<Popup>();
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Text = "A";
+				await WindowHelper.WaitForIdle();
+				tb.Select(1, 0);
+				await WindowHelper.WaitForIdle();
+
+				var lv = popup.Child.FindVisualChildByType<ListView>();
+
+				Assert.AreEqual(-1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(keyDownHandled, 2);
+				Assert.AreEqual(keyDownNotHandled, 0);
+
+				if (escape)
+				{
+					KeyboardHelper.Escape();
+				}
+				else
+				{
+					KeyboardHelper.Enter();
+				}
+				Assert.AreEqual(keyDownHandled, 3);
+				Assert.AreEqual(keyDownNotHandled, 0);
+			}
+			finally
+			{
+				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if WINAPPSDK
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_SuggestionChosen_TextBox_Moves_To_The_End()
+		{
+			var SUT = new AutoSuggestBox();
+
+			static void AutoSuggestBox_TextChanged(AutoSuggestBox s, AutoSuggestBoxTextChangedEventArgs e)
+			{
+				var items = new List<string>
+				{
+					"0",
+					"01",
+					"012",
+					"0123",
+					"01234",
+					"012345",
+					"0123456"
+				};
+
+				if (e.Reason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+				{
+					s.ItemsSource = items.Where(a => a.StartsWith(s.Text.Trim())).ToArray();
+				}
+			}
+
+			Button button = null;
+			try
+			{
+				button = new Button();
+				var stack = new StackPanel()
+				{
+					Children =
+					{
+						button,
+						SUT
+					}
+				};
+
+				SUT.TextChanged += AutoSuggestBox_TextChanged;
+				WindowHelper.WindowContent = stack;
+				await WindowHelper.WaitForIdle();
+
+				var tb = SUT.FindVisualChildByType<TextBox>();
+				var popup = SUT.FindVisualChildByType<Popup>();
+
+				SUT.Focus(FocusState.Programmatic);
+				SUT.Text = "0";
+				await WindowHelper.WaitForIdle();
+				tb.Select(1, 0);
+				await WindowHelper.WaitForIdle();
+
+				var lv = popup.Child.FindVisualChildByType<ListView>();
+
+				Assert.AreEqual(-1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(tb.Text.Length, tb.SelectionStart);
+
+				KeyboardHelper.Up();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, lv.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.AreEqual(tb.Text.Length, tb.SelectionStart);
+			}
+			finally
+			{
+				button?.Focus(FocusState.Programmatic); // Unfocus the AutoSuggestBox to ensure popup is closed.
+				await WindowHelper.WaitForIdle();
+			}
+		}
 
 		[TestMethod]
 		public async Task When_Typing_Should_Keep_Focus()

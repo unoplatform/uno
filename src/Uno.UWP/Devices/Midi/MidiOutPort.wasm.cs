@@ -32,7 +32,7 @@ namespace Windows.Devices.Midi
 		{
 		}
 
-		public void SendBufferInternal(IBuffer midiBuffer, TimeSpan timestamp)
+		internal void SendBufferInternal(IBuffer midiBuffer, TimeSpan timestamp)
 		{
 			var data = midiBuffer.ToArray();
 			NativeMethods.SendBuffer(Uri.EscapeDataString(_wasmId), timestamp.TotalMilliseconds, data);

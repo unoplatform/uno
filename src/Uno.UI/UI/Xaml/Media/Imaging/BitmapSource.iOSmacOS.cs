@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Foundation;
 using Uno.UI.Extensions;
@@ -9,7 +9,7 @@ using _UIImage = UIKit.UIImage;
 using _UIImage = AppKit.NSImage;
 #endif
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 public partial class BitmapSource
 {

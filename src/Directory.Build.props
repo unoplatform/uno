@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 
 	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
@@ -33,7 +33,7 @@
 		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 		<Deterministic>true</Deterministic>
 
-		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
+		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Resizetizer codegen is not supported in UWP -->
@@ -71,7 +71,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.7.0</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.8.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -83,7 +83,7 @@
 
 	<PropertyGroup>
 		<!-- When updating this in the future, please also update CSharpLangVersion constant in src\Uno.UWPSyncGenerator\Generator.cs -->
-		<LangVersion>11.0</LangVersion>
+		<LangVersion>12.0</LangVersion>
 	</PropertyGroup>
 
 	<!--
@@ -261,12 +261,14 @@
 		<When Condition="'$(UnoDisableNetAnalyzers)'=='false'">
 			<PropertyGroup>
 				<!-- Enable some CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
-				<AnalysisLevel>latest</AnalysisLevel>
+				<!-- Normally, we'd want to use latest -->
+				<!-- But that is currently problematic due to https://github.com/dotnet/roslyn-analyzers/issues/6999 -->
+				<AnalysisLevel>8</AnalysisLevel>
 				<AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0-preview1.23165.1" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
@@ -291,7 +293,7 @@
 				<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+				<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
 			</ItemGroup>
 		</When>
 	</Choose>

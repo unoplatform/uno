@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 using Android.Views;
-using Window = Windows.UI.Xaml.Window;
+using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI
 {

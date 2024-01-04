@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using Windows.Foundation;
@@ -7,7 +7,7 @@ using Uno.Extensions;
 using System.Xml.Xsl;
 using Uno.UI.Composition;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {

@@ -10,13 +10,13 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Entities;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.Storage;
 using Uno.Extensions;
 using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.IO;
 using Uno.Disposables;
 using System.ComponentModel;
@@ -24,13 +24,13 @@ using System.Windows.Input;
 using Uno.UI.Common;
 
 #if XAMARIN || UNO_REFERENCE_API
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
 using ICommand = System.Windows.Input.ICommand;
@@ -49,7 +49,6 @@ namespace SampleControl.Presentation
 			LoadPreviousTestCommand = new DelegateCommand(() => _ = LoadPreviousTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			ReloadCurrentTestCommand = new DelegateCommand(() => _ = ReloadCurrentTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			LoadNextTestCommand = new DelegateCommand(() => _ = LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
-			ShowTestInformationCommand = new DelegateCommand(() => _ = ShowTestInformation(CancellationToken.None)) { CanExecuteEnabled = false };
 			OpenRuntimeTestsCommand = new DelegateCommand(() => _ = OpenRuntimeTests(CancellationToken.None));
 		}
 
@@ -61,7 +60,6 @@ namespace SampleControl.Presentation
 		public ICommand LoadPreviousTestCommand { get; private set; }
 		public ICommand ReloadCurrentTestCommand { get; private set; }
 		public ICommand LoadNextTestCommand { get; private set; }
-		public ICommand ShowTestInformationCommand { get; private set; }
 		public ICommand OpenRuntimeTestsCommand { get; private set; }
 	}
 }

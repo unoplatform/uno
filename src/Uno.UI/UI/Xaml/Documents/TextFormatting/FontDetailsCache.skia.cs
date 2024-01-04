@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.UI.Text;
 
-namespace Windows.UI.Xaml.Documents.TextFormatting;
+namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
 internal static class FontDetailsCache
 {

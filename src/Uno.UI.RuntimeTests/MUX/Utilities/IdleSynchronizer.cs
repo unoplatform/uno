@@ -16,7 +16,7 @@ namespace MUXControlsTestApp.Utilities
 				return;
 			}
 #endif
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (!CoreDispatcher.Main.HasThreadAccess)
 #endif
 			{

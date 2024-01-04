@@ -1,11 +1,13 @@
 ﻿using System.Windows.Input;
 using System;
+using System.Reflection;
 using Uno.Foundation.Logging;
-using Uno.UI.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using WpfUIElement = System.Windows.UIElement;
 using WinUIKeyEventArgs = Windows.UI.Core.KeyEventArgs;
 
@@ -29,7 +31,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		hostControl.AddHandler(WpfUIElement.KeyDownEvent, (KeyEventHandler)HostOnKeyDown, true);
 	}
 
-	private void HostOnKeyDown(object sender, System.Windows.Input.KeyEventArgs args)
+	private void HostOnKeyDown(object sender, KeyEventArgs args)
 	{
 		try
 		{
@@ -40,19 +42,22 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 				this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
 			}
 
+			var scanCode = GetScanCode(args);
+
 			KeyDown?.Invoke(this, new(
 				"keyboard",
 				virtualKey,
 				GetKeyModifiers(args.KeyboardDevice.Modifiers),
 				new CorePhysicalKeyStatus
 				{
-					ScanCode = (uint)args.SystemKey,
+					ScanCode = scanCode,
 					RepeatCount = 1,
-				}));
+				},
+				KeyCodeToUnicode(scanCode)));
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
@@ -67,20 +72,54 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 				this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
 			}
 
+			var scanCode = GetScanCode(args);
+
 			KeyUp?.Invoke(this, new(
 				"keyboard",
 				virtualKey,
 				GetKeyModifiers(args.KeyboardDevice.Modifiers),
 				new CorePhysicalKeyStatus
 				{
-					ScanCode = (uint)args.SystemKey,
+					ScanCode = scanCode,
 					RepeatCount = 1,
-				}));
+				},
+				KeyCodeToUnicode(scanCode)));
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
+	}
+
+	// WPF doesn't expose the scancode, but it exists internally
+	private static uint GetScanCode(KeyEventArgs args)
+	{
+		try
+		{
+			if (typeof(KeyEventArgs).GetProperty("ScanCode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) is { } propertyInfo)
+			{
+				return (uint)(int)propertyInfo.GetValue(args)!;
+			}
+			else
+			{
+				throw new PlatformNotSupportedException("Unable to get the ScanCode property from WPF. This likely means this WPF version is not compatible with Uno Platform, contact the developers for more information.");
+			}
+		}
+		catch (Exception e)
+		{
+			if (typeof(WpfKeyboardInputSource).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(WpfKeyboardInputSource).Log().LogError("Unable to get ScanCode from WPF KeyEventArgs.", e);
+			}
+
+			throw;
+		}
+	}
+
+	private static char? KeyCodeToUnicode(uint keyCode)
+	{
+		var result = InputHelper.WindowsScancodeToUnicode(keyCode);
+		return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)

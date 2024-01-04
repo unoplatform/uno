@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Interop;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Interop;
 using PropertyChangedEventHandler = System.ComponentModel.PropertyChangedEventHandler;
 using PropertyChangedEventArgs = System.ComponentModel.PropertyChangedEventArgs;
 using Type = System.Type;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class SelectionModel : global::System.ComponentModel.INotifyPropertyChanged, ICustomPropertyProvider
 	{

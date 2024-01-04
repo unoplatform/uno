@@ -44,7 +44,7 @@ namespace Windows.Devices.Midi
 		}
 
 		[JSExport]
-		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
+		internal static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
 #if DEBUG
 			Debug.WriteLine($"Message arrived {managedId}, {serializedMessage}, {timestamp}");

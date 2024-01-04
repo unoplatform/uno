@@ -11,7 +11,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
@@ -104,7 +104,7 @@ unsafe internal partial class FrameBufferPointerInputSource
 
 		var pointerPoint = new Windows.UI.Input.PointerPoint(
 			frameId: (uint)timestamp, // UNO TODO: How should set the frame, timestamp may overflow.
-			timestamp: timestamp,
+			timestamp: timestamp * TimeSpan.TicksPerMicrosecond,
 			device: PointerDevice.For(PointerDeviceType.Mouse),
 			pointerId: 0,
 			rawPosition: _mousePosition,

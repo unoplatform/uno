@@ -143,13 +143,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Accelerometer%20Accelerometer.GetDefault%28AccelerometerReadingType%20readingType%29");
 		}
 #endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.Devices.Sensors.Accelerometer GetDefault()
-		{
-			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Accelerometer%20Accelerometer.GetDefault%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.Devices.Sensors.Accelerometer.GetDefault()
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Accelerometer, global::Windows.Devices.Sensors.AccelerometerReadingChangedEventArgs> ReadingChanged

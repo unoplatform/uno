@@ -1,19 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- Target used to override the runtime for netstandard2.0 based targets -->
+	<!-- Target used to override the uno-runtime targets -->
 	<Target Name="ReplaceUnoRuntime"
 				Condition="'$(UnoRuntimeIdentifier)'!=''"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
-		<PropertyGroup>
-			<_UnoRuntimeTargetFramework>netstandard2.0</_UnoRuntimeTargetFramework>
-			<_UnoRuntimeTargetFramework Condition="'$(TargetFrameworkVersion)'!='' and '$(TargetFrameworkVersion.Substring(1))'&gt;='7.0'">net7.0</_UnoRuntimeTargetFramework>
-			<_UnoRuntimeTargetFramework Condition="'$(TargetFrameworkVersion)'!='' and '$(TargetFrameworkVersion.Substring(1))'&gt;='8.0'">net8.0</_UnoRuntimeTargetFramework>
-		</PropertyGroup>
-
-		<ItemGroup>
-			<_UnoRuntimeEnabledPackage2 Include="@(UnoRuntimeEnabledPackage)"/>
-		</ItemGroup>
 
 		<ItemGroup>
 
@@ -33,8 +24,8 @@
 			-->
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
+							Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+							NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
 				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
@@ -47,37 +38,37 @@
 				DestinationSubPath="%(FileName)%(Extension)"
 				CopyToPublishDirectory="true"
 				PathInPackage="uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
-
+			
 			<!-- Publish pdb files -->
 			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+		</ItemGroup>
 
-			<!-- 
-			Uno 4.6 or later convention: netstandard2.0, net7.0 or later (uno-runtime/[TargetFramework]/**)
-			-->
-			<!-- Add the files for the current selected runtime identifier -->
-			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
-			<RuntimeCopyLocalItemsMerged
-				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
+		<!-- 
+		Uno 4.6 or later convention: net7.0 or later (uno-runtime/[TargetFramework]/**)
+		-->
+		<RuntimeAssetsSelectorTask_v0
+			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
+			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			TargetFrameworkVersion="$(TargetFrameworkVersion)">
+			<Output TaskParameter="Assemblies" ItemName="RuntimeCopyLocalItemsMerged2" />
+				
+			<!-- Publish PDB files-->
+			<Output TaskParameter="DebugSymbols" ItemName="ReferenceCopyLocalPaths" />
+		</RuntimeAssetsSelectorTask_v0>
 
+		<ItemGroup>
 			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
 			<RuntimeCopyLocalItemsToUpdate
-				Include="@(RuntimeCopyLocalItemsMerged)"
+				Include="@(RuntimeCopyLocalItemsMerged2)"
 				AssetType="runtime"
 				CopyLocal="true"
 				DestinationSubPath="%(FileName)%(Extension)"
 				CopyToPublishDirectory="true"
-				PathInPackage="uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
+				PathInPackage="%(PathInPackage)" />
 
 			<RuntimeCopyLocalItems
 				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
-
-			<!-- Publish pdb files -->
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
-			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
 		</ItemGroup>
 
 		<Error
@@ -87,7 +78,7 @@
 
 	<!-- Force a rebuild on runtime files changes -->
 	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
-		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/uno-runtime/*" />
+		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
 	</ItemGroup>
 
 

@@ -1,5 +1,5 @@
-using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.UI.Xaml;
 using System;
 
 namespace UnoApp50
@@ -36,7 +36,7 @@ namespace UnoApp50
 			builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #elif __IOS__ || __MACCATALYST__
 			builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
-#elif NETFX_CORE
+#elif WINAPPSDK
 			builder.AddDebug();
 #else
 			builder.AddConsole();

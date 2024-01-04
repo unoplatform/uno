@@ -105,10 +105,10 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		{
 			var result = NativeMethods.FindDevices(_isInput);
 
-			var devices = result.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
+			var devices = result.Split('&', StringSplitOptions.RemoveEmptyEntries);
 			foreach (var device in devices)
 			{
-				var deviceMetadata = device.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+				var deviceMetadata = device.Split('#', StringSplitOptions.RemoveEmptyEntries);
 				var id = Uri.UnescapeDataString(deviceMetadata[0]);
 				var name = Uri.UnescapeDataString(deviceMetadata[1]);
 				yield return CreateDeviceInformation(id, name);

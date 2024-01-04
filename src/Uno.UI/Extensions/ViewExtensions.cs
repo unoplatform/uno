@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -8,16 +8,16 @@ using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.ViewGroup;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Extensions
 {

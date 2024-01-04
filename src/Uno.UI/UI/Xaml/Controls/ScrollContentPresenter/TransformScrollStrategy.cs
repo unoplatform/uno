@@ -3,9 +3,9 @@
 
 using System;
 using System.Linq;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Supports scrolling of the managed ScrollContentPresenter using RenderTransform

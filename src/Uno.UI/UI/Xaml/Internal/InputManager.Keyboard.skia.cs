@@ -3,8 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -54,7 +54,7 @@ partial class InputManager
 
 			originalSource.RaiseEvent(
 				UIElement.KeyDownEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus)
+				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 				{
 					CanBubbleNatively = false
 				}
@@ -84,7 +84,7 @@ partial class InputManager
 
 			originalSource.RaiseEvent(
 				UIElement.KeyUpEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus)
+				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 				{
 					CanBubbleNatively = false
 				}

@@ -15,14 +15,14 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Windows.ApplicationModel.Background;
 using Uno.Foundation.Extensibility;
-using Windows.UI.Xaml.Controls.Maps;
+using Microsoft.UI.Xaml.Controls.Maps;
 using System.Numerics;
 using Uno.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using GLib;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
@@ -133,14 +133,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player?.SetVolume(volume);
 	}
 
-	private void OnVideoRatioChanged(object? sender, object? e)
+	private void OnNaturalVideoDimensionChanged()
 	{
 		if (_player is not null
 			&& _player.IsVideo
 			&& Events is not null)
 		{
 			IsVideo = _player.IsVideo;
-			Events?.RaiseVideoRatioChanged(Math.Max(1, (double)_player.VideoRatio));
+			Events?.RaiseNaturalVideoDimensionChanged();
 		}
 	}
 

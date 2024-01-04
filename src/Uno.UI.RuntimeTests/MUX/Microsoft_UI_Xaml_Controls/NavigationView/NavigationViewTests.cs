@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using MUXControlsTestApp.Utilities;
@@ -6,9 +6,9 @@ using MUXControlsTestApp.Utilities;
 using Common;
 using System;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -19,18 +19,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using NavigationViewDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewDisplayMode;
-using NavigationViewPaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewItemHeader = Microsoft.UI.Xaml.Controls.NavigationViewItemHeader;
-using NavigationViewItemSeparator = Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator;
-using NavigationViewBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible;
+using NavigationViewDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewDisplayMode;
+using NavigationViewPaneDisplayMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewPaneDisplayMode;
+using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
+using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItemHeader = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemHeader;
+using NavigationViewItemSeparator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator;
+using NavigationViewBackButtonVisible = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewBackButtonVisible;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Composition;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Composition;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI.RuntimeTests;
 using Private.Infrastructure;
 using System.Threading.Tasks;
@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 // VerifyHeaderContentMarginOnMinimalNav
 // VerifyVisualTree
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
@@ -707,7 +707,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
                     <DataTemplate
                         xmlns ='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:controls='using:Microsoft.UI.Xaml.Controls'>
+                        xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls'>
                         <controls:NavigationViewItem
                             Content='Item'>
                             <controls:NavigationViewItem.Icon>
@@ -869,7 +869,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[Ignore("This test is disabled in WinUI")]
 		public void VerifyCanNotAddWUXItems()
 		{
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Controls.NavigationViewItem"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Controls.NavigationViewItem"))
 			{
 				Log.Warning("WUX version of NavigationViewItem only available starting in RS3.");
 				return;
@@ -879,15 +879,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				var navView = new NavigationView();
 
-				var muxItem = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "MUX Item" };
+				var muxItem = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem { Content = "MUX Item" };
 				navView.MenuItems.Add(muxItem);
 
-				navView.MenuItems.Add(new Microsoft.UI.Xaml.Controls.NavigationViewItemSeparator());
+				navView.MenuItems.Add(new Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItemSeparator());
 
 				// No errors should occur here when we only use MUX items
 				navView.UpdateLayout();
 
-				var wuxItem = new Windows.UI.Xaml.Controls.NavigationViewItem { Content = "WUX Item" };
+				var wuxItem = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = "WUX Item" };
 				navView.MenuItems.Add(wuxItem);
 
 				// But adding a WUX item should generate an exception (as soon as the new item gets processed)

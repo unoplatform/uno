@@ -13,11 +13,10 @@ jobs:
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
+    UNO_UWP_BUILD: false
+    XAML_FLAVOR_BUILD: WinUI
 
   steps:
-  - checkout: self
-    clean: true
-
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)

@@ -59,7 +59,7 @@ dotnet_diagnostic.CA2218.severity = error
 dotnet_diagnostic.CA1802.severity = none
 
 # CA1806: Do not ignore method results
-dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CA1806.severity = error
 
 # CA1810: Initialize reference type static fields inline
 dotnet_diagnostic.CA1810.severity = none
@@ -120,6 +120,10 @@ dotnet_diagnostic.CA1859.severity = none
 
 # CA1860: Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance
 dotnet_diagnostic.CA1860.severity = none
+
+# CA1863: Use composite format
+# TODO: Enable when we are .NET 8+ to avoid conditional code between net7.0 and net8.0
+dotnet_diagnostic.CA1863.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal
 

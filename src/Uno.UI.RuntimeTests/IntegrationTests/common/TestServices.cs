@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Private.Infrastructure
 {
@@ -37,7 +37,7 @@ namespace Private.Infrastructure
 
 			}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			internal static FrameworkElement GetPopupOverlayElement(Popup popup)
 			{
 				return null;
@@ -55,7 +55,31 @@ namespace Private.Infrastructure
 			action();
 			return Task.CompletedTask;
 #else
-			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
+#endif
+		}
+
+		internal static async Task RunOnUIThread(Func<Task> asyncAction)
+		{
+#if __WASM__
+			await asyncAction();
+#else
+			var tsc = new TaskCompletionSource<bool>();
+
+			await WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					await asyncAction();
+					tsc.TrySetResult(true);
+				}
+				catch (Exception e)
+				{
+					tsc.TrySetException(e);
+				}
+			});
+
+			await tsc.Task;
 #endif
 		}
 

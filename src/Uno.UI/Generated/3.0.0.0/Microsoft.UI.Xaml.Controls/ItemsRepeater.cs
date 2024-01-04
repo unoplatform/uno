@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemsRepeater : global::Windows.UI.Xaml.FrameworkElement
+	public partial class ItemsRepeater : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property VerticalCacheLength
 		// Skipping already declared property Layout
@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.VerticalCacheLength.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.Background.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.Background.set
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementIndex(Windows.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementIndex(Microsoft.UI.Xaml.UIElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.TryGetElement(int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsRepeater.GetOrCreateElement(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeater.ElementPrepared.add

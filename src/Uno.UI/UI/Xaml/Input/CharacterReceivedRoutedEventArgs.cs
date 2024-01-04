@@ -1,7 +1,7 @@
-using Uno.UI.Xaml.Input;
+﻿using Uno.UI.Xaml.Input;
 using Windows.UI.Core;
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	/// <summary>
 	/// Data for event which occurs when a single, composed character is received by the input queue.

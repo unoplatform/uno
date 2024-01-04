@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.Xaml.Islands;
 
-namespace Windows.UI.Xaml.Hosting;
+namespace Microsoft.UI.Xaml.Hosting;
 
 partial class DesktopWindowXamlSource
 {

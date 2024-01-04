@@ -1,12 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference PathIconSource.cpp, commit 083796a
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls;
+// MUX Reference PathIconSource_Partial.cpp, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class PathIconSource : IconSource
 {
@@ -24,17 +25,11 @@ public partial class PathIconSource : IconSource
 #endif
 	protected override IconElement CreateIconElementCore()
 	{
+		Geometry data = Data;
+
 		var pathIcon = new PathIcon();
 
-		if (Data != null)
-		{
-			pathIcon.Data = Data;
-		}
-
-		if (Foreground != null)
-		{
-			pathIcon.Foreground = Foreground;
-		}
+		pathIcon.Data = Data;
 
 		return pathIcon;
 	}
@@ -48,7 +43,9 @@ public partial class PathIconSource : IconSource
 		{
 			return PathIcon.DataProperty;
 		}
-
-		return base.GetIconElementPropertyCore(iconSourceProperty);
+		else
+		{
+			return base.GetIconElementPropertyCore(iconSourceProperty);
+		}
 	}
 }

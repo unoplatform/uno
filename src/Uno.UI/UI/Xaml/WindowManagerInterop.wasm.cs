@@ -11,7 +11,7 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 using System.Runtime.InteropServices.JavaScript;
 
@@ -1056,6 +1056,9 @@ namespace Uno.UI.Xaml
 			NativeMethods.WindowActivate();
 		}
 
+		internal static bool GetIsOverflowing(IntPtr htmlId)
+			=> NativeMethods.GetIsOverflowing(htmlId);
+
 		#region Pointers
 		[Flags]
 		internal enum HtmlPointerButtonsState
@@ -1082,6 +1085,7 @@ namespace Uno.UI.Xaml
 			Eraser = 5
 		}
 		#endregion
+
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
@@ -1177,6 +1181,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.activate")]
 			internal static partial void WindowActivate();
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getIsOverflowing")]
+			internal static partial bool GetIsOverflowing(IntPtr htmlId);
 		}
 	}
 }

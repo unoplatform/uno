@@ -7,15 +7,8 @@
 
 using System;
 using Uno.Disposables;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Hosting;
-#else
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Hosting;
-#endif
 using NavigationViewItemAutomationPeer = Windows.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer;
 using NavigationViewItemPresenter = Windows.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter;
 

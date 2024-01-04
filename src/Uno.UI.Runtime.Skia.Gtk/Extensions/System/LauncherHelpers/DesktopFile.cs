@@ -50,11 +50,11 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers
 				{
 					continue;
 				}
-				if (line.StartsWith("#", StringComparison.Ordinal))
+				if (line.StartsWith('#'))
 				{
 					continue;
 				}
-				if (line.StartsWith("[", StringComparison.Ordinal) && line.EndsWith("]", StringComparison.Ordinal))
+				if (line.StartsWith('[') && line.EndsWith(']'))
 				{
 					currentHeaderName = line.Substring(1, line.Length - 2);
 					if (!_groups.ContainsKey(currentHeaderName))
@@ -69,10 +69,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers
 				var value = line.Substring(splitPos + 1).Trim();
 
 				var group = _groups[currentHeaderName];
-				if (!group.ContainsKey(key))
-				{
-					group.Add(key, value);
-				}
+				group.TryAdd(key, value);
 			}
 		}
 	}

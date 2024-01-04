@@ -33,6 +33,9 @@ namespace Uno.Xaml
 {
 	internal class ParsedMarkupExtensionInfo
 	{
+		private static readonly char[] _singleQuoteArray = new[] { '\'' };
+		private static readonly char[] _doubleQuoteArray = new[] { '\"' };
+
 		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
 		{
@@ -149,12 +152,12 @@ namespace Uno.Xaml
 				// Remove wrapping single quotes.
 				if (stringValue.StartsWith("'", StringComparison.Ordinal) && stringValue.EndsWith("'", StringComparison.Ordinal))
 				{
-					return stringValue.Trim(new[] { '\'' });
+					return stringValue.Trim(_singleQuoteArray);
 				}
 				// Remove wrapping double quotes.
 				else if (stringValue.StartsWith("\"", StringComparison.Ordinal) && stringValue.EndsWith("\"", StringComparison.Ordinal))
 				{
-					return stringValue.Trim(new[] { '\"' });
+					return stringValue.Trim(_doubleQuoteArray);
 				}
 			}
 

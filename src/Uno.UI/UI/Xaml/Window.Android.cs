@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Android.App;
 using Android.Runtime;
 using Android.Util;
@@ -15,13 +15,13 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using static System.Net.Mime.MediaTypeNames;
 using Size = Windows.Foundation.Size;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public sealed partial class Window
 	{

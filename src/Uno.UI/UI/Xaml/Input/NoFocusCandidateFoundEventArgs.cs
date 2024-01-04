@@ -1,6 +1,6 @@
-using Uno.UI.Xaml.Input;
+﻿using Uno.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	/// <summary>
 	/// Provides data for the NoFocusCandidateFound event.

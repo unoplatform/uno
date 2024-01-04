@@ -25,7 +25,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal class WebViewNavigationDelegate : WKNavigationDelegate
 {
@@ -93,8 +93,8 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 				// AND the new url needs to have content on the right of the anchor indicator.
 				if (unoWKWebView._lastNavigationData is Uri urlLastNavigation)
 				{
-					var currentUrlParts = urlLastNavigation?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
-					var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
+					var currentUrlParts = urlLastNavigation?.AbsoluteUri?.ToString().Split('#');
+					var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split('#');
 
 					return currentUrlParts?.Length > 0
 						&& newUrlParts?.Length > 1

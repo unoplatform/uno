@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using CoreAnimation;
 using System.Numerics;
@@ -7,9 +7,9 @@ using System;
 using CoreGraphics;
 using ObjCRuntime;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
-	public partial class Visual : global::Windows.UI.Composition.CompositionObject
+	public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		internal UIView? NativeOwner { get; set; }
 

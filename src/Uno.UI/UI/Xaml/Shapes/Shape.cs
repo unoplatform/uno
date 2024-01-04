@@ -4,13 +4,13 @@ using Uno.Disposables;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI.Helpers;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	public abstract partial class Shape : FrameworkElement
 	{
@@ -156,5 +156,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		internal override bool IsViewHit()
 			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
+		}
 	}
 }

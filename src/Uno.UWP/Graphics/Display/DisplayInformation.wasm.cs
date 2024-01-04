@@ -17,7 +17,7 @@ namespace Windows.Graphics.Display
 		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
 
 		[JSExport]
-		public static int DispatchDpiChanged()
+		internal static int DispatchDpiChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Display
 		}
 
 		[JSExport]
-		public static int DispatchOrientationChanged()
+		internal static int DispatchOrientationChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
 			{

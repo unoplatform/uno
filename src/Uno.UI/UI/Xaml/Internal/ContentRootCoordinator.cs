@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Core
 {
