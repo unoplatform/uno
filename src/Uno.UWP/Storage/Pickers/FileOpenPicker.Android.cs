@@ -20,7 +20,7 @@ namespace Windows.Storage.Pickers
 
 		private const string StorageIdentifierFormatString = "Uno.FileOpenPicker.{0}";
 
-		private Intent _helperIntent;
+		private Intent _helperIntent = new Intent();
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{

@@ -15,7 +15,7 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-		private Intent _helperIntent;
+		private Intent _helperIntent = new Intent();
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			if (!(ContextHelper.Current is Activity appActivity))
