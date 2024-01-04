@@ -176,24 +176,23 @@ internal partial class DXamlCore
 	//
 	private void InitializeInstance(InitializationType initializationType)
 	{
+		//CoreServices? pCore = null;
+		//SuspendingEventHandler* pSuspendingEventHandler = NULL;
+		//IEventHandler<IInspectable*>* pResumingEventHandler = NULL;
 
-		CoreServices? pCore = null;
-		SuspendingEventHandler* pSuspendingEventHandler = NULL;
-		IEventHandler<IInspectable*>* pResumingEventHandler = NULL;
-
-	#if DBG
+#if DBG
 		WaitForDebuggerIfNeeded();
-	#endif
+#endif
 
-		TraceInitializeCoreBegin();
+		//TraceInitializeCoreBegin();
 
-		// Start TIP test
-		var initDxamlCoreTest = tip.start_and_watch_errors<DXamlInitializeCoreTest>();
+		//// Start TIP test
+		//var initDxamlCoreTest = tip.start_and_watch_errors<DXamlInitializeCoreTest>();
 
-		// Log the mux version
-		initDxamlCoreTest->muxVersion = TipTestHelper.GetMuxVersion();
+		//// Log the mux version
+		//initDxamlCoreTest->muxVersion = TipTestHelper.GetMuxVersion();
 
-		m_state = DXamlCore.Initializing;
+		_state = DXamlCore.State.Initializing;
 
 		// Initialize the lock used to access the peer table.
 		InitializeSRWLock(&m_peerReferenceLock);
@@ -216,15 +215,15 @@ internal partial class DXamlCore
 			// When running in UWP, we must make sure there's a DispatcherQueueController on the thread, since XAML
 			// requires one to be running.  Since we don't support UWP, we don't bother to shutdown the DQC, this is
 			// just to keep XAML tests running.
-			DispatcherQueueControllerStatics> dispatcherQueueControllerStatics;
+			DispatcherQueueControllerStatics > dispatcherQueueControllerStatics;
 
-		IFCFAILFAST(GetActivationFactory(
-			wrl.Wrappers.HStringReference(RuntimeClass_Microsoft_UI_Dispatching_DispatcherQueueController).Get(),
-					&dispatcherQueueControllerStatics));
-				IFCFAILFAST(dispatcherQueueControllerStatics->CreateOnCurrentThread(&m_dispatcherQueueController));
-			}
+			IFCFAILFAST(GetActivationFactory(
+				wrl.Wrappers.HStringReference(RuntimeClass_Microsoft_UI_Dispatching_DispatcherQueueController).Get(),
+						&dispatcherQueueControllerStatics));
+			IFCFAILFAST(dispatcherQueueControllerStatics->CreateOnCurrentThread(&m_dispatcherQueueController));
+		}
 
-			if (initializationType == InitializationType.MainView)
+		if (initializationType == InitializationType.MainView)
 		{
 			initDxamlCoreTest.set_flag(TIP_reason(DXamlInitializeCoreTest.reason.init_type_main_view));
 			// We allow this temporarily only for UWP because we're not supporting it for foward-compat yet.
@@ -258,7 +257,7 @@ internal partial class DXamlCore
 		}
 
 		// initialize the XAML dispatcher
-		IFC(ctl.ComObject < DispatcherImpl >.CreateInstance(m_spDispatcherImpl.ReleaseAndGetAddressOf()));
+		IFC(ctl.ComObject<DispatcherImpl>.CreateInstance(m_spDispatcherImpl.ReleaseAndGetAddressOf()));
 		IFC(m_spDispatcherImpl->Connect(this));
 		initDxamlCoreTest.set_flag(TIP_reason(DXamlInitializeCoreTest.reason.initialized_dispatcher));
 
@@ -294,7 +293,7 @@ internal partial class DXamlCore
 		// Initialize Visual Diagnostics
 		IFC(RegisterVisualDiagnosticsPort());
 
-		m_state = DXamlCore.Initialized;
+		_state = DXamlCore.Initialized;
 
 		// Now that DXamlCore is initialized, listen to the UISettings' AnimationsEnabledChanged event for future updates
 		// and immediately refresh the m_isAnimationEnabled field.
@@ -305,10 +304,10 @@ internal partial class DXamlCore
 			IFC(UpdateAnimationsEnabled());
 		}
 
-		Cleanup:
+	Cleanup:
 		if (FAILED(hr))
 		{
-			m_state = DXamlCore.InitializationFailed;
+			_state = DXamlCore.InitializationFailed;
 			initDxamlCoreTest.set_flag(TIP_reason(DXamlInitializeCoreTest.reason.failed_dxamlcore_init));
 			if (m_uwpWindowNoRef != nullptr)
 			{

@@ -9,6 +9,9 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Islands;
+using Uno.UI.Extensions;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -55,6 +58,24 @@ namespace Uno.UI.Xaml.Core
 
 		public bool HasXamlIslands => InitializationType == InitializationType.IslandsOnly; // TODO Uno: This logic is simplified now.
 
+		internal DependencyObject? GetRootForElement(DependencyObject dependencyObject)
+		{
+			if (_mainVisualTree is not null)
+			{
+				var xamlIslandRoot = _mainVisualTree.GetXamlIslandRootForElement(dependencyObject);
+				if (xamlIslandRoot is not null)
+				{
+					return xamlIslandRoot;
+				}
+
+				return _mainVisualTree.RootVisual;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
 		internal void InitCoreWindowContentRoot()
 		{
 			if (_mainVisualTree is not null)
@@ -79,6 +100,66 @@ namespace Uno.UI.Xaml.Core
 		[NotImplemented]
 		internal void UIARaiseFocusChangedEventOnUIAWindow(DependencyObject sender)
 		{
+		}
+
+		internal void AddXamlIslandRoot(XamlIsland xamlIslandRoot)
+		{
+			if (_mainVisualTree is null)
+			{
+				throw new InvalidOperationException("Main visual tree is not initialized.");
+			}
+
+			var xamlIslandRootCollection = _mainVisualTree.XamlIslandRootCollection;
+
+			if (xamlIslandRootCollection is null)
+			{
+				throw new InvalidOperationException("Xaml island root collection is not initialized.");
+			}
+
+			var collection = xamlIslandRootCollection.Children;
+
+			collection.Add(xamlIslandRoot);
+
+			// m_pNWWindowRenderTarget->GetDCompTreeHost()->AddXamlIslandTarget(xamlIslandRoot);
+		}
+
+		internal void RemoveXamlIslandRoot(XamlIsland xamlIslandRoot)
+		{
+			_isTearingDownIsland = true;
+
+			var xamlIslandRootCollection = (XamlIslandRootCollection)xamlIslandRoot.GetParentInternal(false /*publicOnly*/);
+			if (_mainVisualTree is not null)
+			{
+				MUX_ASSERT(_mainVisualTree.XamlIslandRootCollection == xamlIslandRootCollection);
+			}
+
+			if (xamlIslandRootCollection is null)
+			{
+				throw new InvalidOperationException("Xaml island root collection is not initialized.");
+			}
+
+			var xamlIslands = xamlIslandRootCollection.Children;
+			var result = xamlIslands.Remove(xamlIslandRoot);
+
+			if (result)
+			{
+				xamlIslandRoot.Release();
+			}
+
+			// m_pNWWindowRenderTarget->GetDCompTreeHost()->RemoveXamlIslandTarget(xamlIslandRoot);
+
+			if (_inputServices is not null
+				&& InitializationType == InitializationType.IslandsOnly
+				&& xamlIslands.Count == 0)
+			{
+				// If the last island is going away and we're in "islands-only" mode, we have some extra cleanup to do.
+				// When tests run with non-island hosting, they set "Window.Content = null" at the end of the test,
+				// which calls CCoreServices::StartApplication and cleans up the pointer objects.  The equivalent in
+				// the islands-only case is to do this when the last island gets removed.
+				m_inputServices->DestroyPointerObjects();
+			}
+
+			_isTearingDownIsland = false;
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
