@@ -366,6 +366,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			global::System.Diagnostics.Debug.Assert(staticZoomFactor == 1f || staticZoomFactor == zoomFactor);
 
+			if (snapPoints is null)
+			{
+				return null;
+			}
+
 			var result = new List<float>(snapPoints.Count);
 
 			if (snapPoints.Count > 0)

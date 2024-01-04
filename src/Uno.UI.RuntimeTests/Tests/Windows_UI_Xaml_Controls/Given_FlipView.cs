@@ -283,6 +283,150 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(classesArray.Contains("scroll-y-disabled"), $"Classes found: {classes}");
 		}
 #endif
+
+		private sealed class FlipViewVM : INotifyPropertyChanged
+		{
+			private int _index = 0;
+
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			public int Index
+			{
+				get => _index;
+				set
+				{
+					if (_index != value)
+					{
+						_index = value;
+						OnPropertyChanged(nameof(Index));
+					}
+				}
+			}
+			private void OnPropertyChanged(string propertyName)
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			}
+
+		}
+
+		[TestMethod]
+		public async Task When_Navigate_Skips_An_Item()
+		{
+			var flipView = new FlipView
+			{
+				Width = 500,
+				Height = 500,
+				Items =
+				{
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Azure),
+					},
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Blue),
+					},
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Yellow),
+					},
+					new Grid
+					{
+						Background = new SolidColorBrush(Colors.Fuchsia),
+					},
+				}
+			};
+
+			var horizontalPanel = new StackPanel
+			{
+				Orientation = Orientation.Horizontal,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				Children =
+				{
+					new RadioButton()
+					{
+						Content = "Page 1",
+						Tag = 0,
+					},
+					new RadioButton()
+					{
+						Content = "Page 2",
+						Tag = 1,
+					},
+					new RadioButton()
+					{
+						Content = "Page 3",
+						Tag = 2,
+					},
+					new RadioButton()
+					{
+						Content = "Page 4",
+						Tag = 3,
+					},
+				}
+			};
+
+			flipView.SelectionChanged += FlipView_SelectionChanged;
+			flipView.DataContext = new FlipViewVM();
+			flipView.SetBinding(FlipView.SelectedIndexProperty, new Binding() { Path = new("Index"), Mode = BindingMode.TwoWay });
+
+			foreach (RadioButton b in horizontalPanel.Children)
+			{
+				b.Checked += RadioButton_Checked;
+			}
+
+			var panel = new StackPanel
+			{
+				Children =
+				{
+					flipView,
+					horizontalPanel,
+				},
+			};
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+
+			Assert.AreEqual(0, flipView.SelectedIndex);
+			Assert.IsTrue(((RadioButton)horizontalPanel.Children[0]).IsChecked);
+
+			((RadioButton)horizontalPanel.Children[2]).IsChecked = true;
+
+			// Using WaitForIdle wouldn't make the test fail when the bug occurs.
+			// The bug being tested is related to native scrolling event that breaks things.
+			// So, we have to wait long enough to ensure FlipView is working correctly.
+			await Task.Delay(1000);
+
+			Assert.AreEqual(2, flipView.SelectedIndex);
+			Assert.IsTrue(((RadioButton)horizontalPanel.Children[2]).IsChecked);
+
+			void RadioButton_Checked(object sender, RoutedEventArgs e)
+			{
+				if (sender is RadioButton rb)
+				{
+					if (int.TryParse(rb!.Tag.ToString(), out var result))
+					{
+						flipView.SelectedIndex = result;
+					}
+				}
+			}
+
+			void FlipView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				UpdateRadioButtonSelection(flipView.SelectedIndex);
+			}
+
+			void UpdateRadioButtonSelection(int selectedIndex)
+			{
+				if (selectedIndex < 0)
+				{
+					return;
+				}
+
+				var radioButton = (RadioButton)horizontalPanel.Children[selectedIndex];
+				radioButton.IsChecked = true;
+			}
+
+		}
 	}
 
 #if __SKIA__ || __WASM__
