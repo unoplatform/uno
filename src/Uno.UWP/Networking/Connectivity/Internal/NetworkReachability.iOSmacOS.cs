@@ -135,8 +135,8 @@ namespace Uno.Networking.Connectivity.Internal
 
 	class ReachabilityListener : IDisposable
 	{
-		NetworkReachability defaultRouteReachability;
-		NetworkReachability remoteHostReachability;
+		NetworkReachability? defaultRouteReachability;
+		NetworkReachability? remoteHostReachability;
 
 		internal ReachabilityListener()
 		{
@@ -159,7 +159,7 @@ namespace Uno.Networking.Connectivity.Internal
 #endif
 		}
 
-		internal event Action ReachabilityChanged;
+		internal event Action? ReachabilityChanged;
 
 		void IDisposable.Dispose() => Dispose();
 

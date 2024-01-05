@@ -14,7 +14,7 @@ namespace Windows.Storage.Internal
 		{
 			lock (_syncLock)
 			{
-				var absoluteString = url.AbsoluteString;
+				var absoluteString = url.AbsoluteString!;
 				if (!_activeScopes.TryGetValue(absoluteString, out var disposable) || disposable.IsDisposed)
 				{
 					bool scopeStarted = false;

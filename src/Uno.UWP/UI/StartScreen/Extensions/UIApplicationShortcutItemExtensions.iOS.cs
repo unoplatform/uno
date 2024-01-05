@@ -26,8 +26,8 @@ namespace Uno.UI.StartScreen.Extensions
 			}
 
 			var jumpListItem = JumpListItem.CreateWithArguments(shortcut.Type, shortcut.LocalizedTitle);
-			jumpListItem.Description = shortcut.LocalizedSubtitle;
-			if (shortcut.UserInfo.ContainsKey(new NSString(JumpListItem.ImagePathKey)))
+			jumpListItem.Description = shortcut.LocalizedSubtitle!;
+			if (shortcut.UserInfo!.ContainsKey(new NSString(JumpListItem.ImagePathKey)))
 			{
 				var imagePath = shortcut.UserInfo[JumpListItem.ImagePathKey].ToString();
 				jumpListItem.Logo = new Uri(imagePath);

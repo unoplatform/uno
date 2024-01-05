@@ -31,7 +31,7 @@ namespace Windows.Storage.Streams
 				share &= ~readWriteAccess;
 				share |= readWriteAccess;
 
-				Func<Stream> streamBuilder = () => File.Open(url.Path, FileMode.OpenOrCreate, access, share);
+				Func<Stream> streamBuilder = () => File.Open(url.Path!, FileMode.OpenOrCreate, access, share);
 				var securityScopedStream = new SecurityScopeStreamWrapper(url, streamBuilder);
 				return new SecurityScoped(securityScopedStream, url, access, share);
 			}
@@ -43,7 +43,7 @@ namespace Windows.Storage.Streams
 					throw new NotSupportedException("The file has not been opened for read.");
 				}
 
-				Func<Stream> streamBuilder = () => File.Open(_url.Path, FileMode.OpenOrCreate, FileAccess.Read, _share);
+				Func<Stream> streamBuilder = () => File.Open(_url.Path!, FileMode.OpenOrCreate, FileAccess.Read, _share);
 				var securityScopedStream = new SecurityScopeStreamWrapper(_url, streamBuilder);
 				securityScopedStream.Seek((long)position, SeekOrigin.Begin);
 
@@ -57,7 +57,7 @@ namespace Windows.Storage.Streams
 					throw new NotSupportedException("The file has not been opened for write.");
 				}
 
-				Func<Stream> streamBuilder = () => File.Open(_url.Path, FileMode.OpenOrCreate, FileAccess.Write, _share);
+				Func<Stream> streamBuilder = () => File.Open(_url.Path!, FileMode.OpenOrCreate, FileAccess.Write, _share);
 				var securityScopedStream = new SecurityScopeStreamWrapper(_url, streamBuilder);
 				securityScopedStream.Seek((long)position, SeekOrigin.Begin);
 

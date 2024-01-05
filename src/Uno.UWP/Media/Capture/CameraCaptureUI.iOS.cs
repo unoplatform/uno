@@ -21,7 +21,7 @@ namespace Windows.Media.Capture
 	{
 		private async Task<StorageFile?> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
 		{
-			UIImagePickerController picker = null;
+			UIImagePickerController? picker = null;
 			var cameraDelegate = new CameraDelegate();
 
 			if (UIImagePickerController.IsSourceTypeAvailable(UIImagePickerControllerSourceType.Camera))
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture
 			}
 
 			picker.Delegate = cameraDelegate;
-			UIKit.UIApplication.SharedApplication.KeyWindow?.RootViewController.PresentModalViewController(picker, true);
+			UIKit.UIApplication.SharedApplication.KeyWindow?.RootViewController!.PresentModalViewController(picker, true);
 
 			using (ct.Register(() => picker.DismissViewController(true, () => { }), useSynchronizationContext: true))
 			{
@@ -101,7 +101,7 @@ namespace Windows.Media.Capture
 					else
 					{
 						var assetUrl = result[UIImagePickerController.MediaURL] as NSUrl;
-						PHAsset phAsset = null;
+						PHAsset? phAsset = null;
 
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
@@ -112,7 +112,7 @@ namespace Windows.Media.Capture
 						{
 							if (OperatingSystem.IsIOSVersionAtLeast(11, 0))
 							{
-								if (!assetUrl.Scheme.Equals("assets-library", StringComparison.OrdinalIgnoreCase))
+								if (!assetUrl.Scheme!.Equals("assets-library", StringComparison.OrdinalIgnoreCase))
 								{
 									var doc = new UIDocument(assetUrl);
 									var fullPath = doc.FileUrl?.Path;
@@ -185,11 +185,6 @@ namespace Windows.Media.Capture
 
 		private async Task<StorageFile> ConvertToMp4(string originalFilename)
 		{
-			if (originalFilename == null)
-			{
-				return null;
-			}
-
 			var outputFilePath = Path.Combine(ApplicationData.Current.TemporaryFolder.Path, Guid.NewGuid() + ".mp4");
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -306,15 +301,15 @@ namespace Windows.Media.Capture
 
 	class CameraDelegate : UIImagePickerControllerDelegate
 	{
-		private readonly TaskCompletionSource<NSDictionary> _cts;
+		private readonly TaskCompletionSource<NSDictionary?> _cts;
 
 		public CameraDelegate()
 		{
-			_cts = new TaskCompletionSource<NSDictionary>();
+			_cts = new TaskCompletionSource<NSDictionary?>();
 			Task = _cts.Task;
 		}
 
-		public Task<NSDictionary> Task { get; }
+		public Task<NSDictionary?> Task { get; }
 
 		public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
 		{

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
+		[MemberNotNull(nameof(Values))]
 		partial void InitializePartial(ApplicationData owner)
 		{
 			Values = new NSUserDefaultsPropertySet();
@@ -29,7 +31,7 @@ namespace Windows.Storage
 				{
 					var value = NSUserDefaults.StandardUserDefaults.ValueForKey((NSString)key)?.ToString();
 
-					return DataTypeSerializer.Deserialize(value);
+					return DataTypeSerializer.Deserialize(value)!;
 				}
 				set
 				{
@@ -52,8 +54,8 @@ namespace Windows.Storage
 				=> NSUserDefaults.StandardUserDefaults
 				.ToDictionary()
 				.Values
-				.Select(k => DataTypeSerializer.Deserialize(k?.ToString()))
-				.ToList();
+				.Select(k => DataTypeSerializer.Deserialize(k?.ToString()!))
+				.ToList()!;
 
 			public int Count
 				=> (int)NSUserDefaults.StandardUserDefaults.ToDictionary().Count;
@@ -61,7 +63,7 @@ namespace Windows.Storage
 			public bool IsReadOnly => false;
 
 #pragma warning disable CS0067
-			public event MapChangedEventHandler<string, object> MapChanged;
+			public event MapChangedEventHandler<string, object>? MapChanged;
 #pragma warning restore CS0067
 
 			public void Add(string key, object value)
@@ -101,7 +103,7 @@ namespace Windows.Storage
 			{
 				return NSUserDefaults.StandardUserDefaults
 					.ToDictionary()
-					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Key.ToString())))
+					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Key.ToString())!))
 					.GetEnumerator();
 			}
 
@@ -115,11 +117,11 @@ namespace Windows.Storage
 
 			public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
-			public bool TryGetValue(string key, out object value)
+			public bool TryGetValue(string key, out object? value)
 			{
 				if (NSUserDefaults.StandardUserDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
 				{
-					value = DataTypeSerializer.Deserialize(nsvalue?.ToString());
+					value = DataTypeSerializer.Deserialize(nsvalue?.ToString())!;
 					return true;
 				}
 

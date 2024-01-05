@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials
 				var record = SecKeyChain.QueryAsRecord(_query, out var statusCode);
 				if (statusCode == SecStatusCode.Success)
 				{
-					inputStream = record.ValueData.AsStream();
+					inputStream = record!.ValueData!.AsStream();
 					return true;
 				}
 				else

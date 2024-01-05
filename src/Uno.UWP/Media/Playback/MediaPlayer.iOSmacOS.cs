@@ -12,6 +12,7 @@ using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Media.Core;
 using Uno.Helpers;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Media.Playback
 {
@@ -96,26 +97,26 @@ namespace Windows.Media.Playback
 			}
 
 			public EventHandler<AVPlayerItemErrorEventArgs> OnMediaFailed { get; }
-			private void OnMediaFailedCore(object sender, AVPlayerItemErrorEventArgs args)
+			private void OnMediaFailedCore(object? sender, AVPlayerItemErrorEventArgs args)
 				=> _target.GetTarget()?.OnMediaFailed(new Exception(args.Error.LocalizedDescription));
 
 			public EventHandler<NSNotificationEventArgs> OnMediaStalled { get; }
-			private void OnMediaStalledCore(object sender, NSNotificationEventArgs args)
+			private void OnMediaStalledCore(object? sender, NSNotificationEventArgs args)
 				=> _target.GetTarget()?.OnMediaFailed();
 
 			public EventHandler<NSNotificationEventArgs> OnMediaEnded { get; }
-			private void OnMediaEndedCore(object sender, NSNotificationEventArgs args)
+			private void OnMediaEndedCore(object? sender, NSNotificationEventArgs args)
 				=> _target.GetTarget()?.OnMediaEnded(sender, args);
 		}
 
 		private Observer _observer;
 
-		private AVQueuePlayer _player;
-		private AVPlayerLayer _videoLayer;
-		private NSObject _periodicTimeObserverObject;
-		private NSObject _itemFailedToPlayToEndTimeNotification;
-		private NSObject _playbackStalledNotification;
-		private NSObject _didPlayToEndTimeNotification;
+		private AVQueuePlayer? _player;
+		private AVPlayerLayer? _videoLayer;
+		private NSObject? _periodicTimeObserverObject;
+		private NSObject? _itemFailedToPlayToEndTimeNotification;
+		private NSObject? _playbackStalledNotification;
+		private NSObject? _didPlayToEndTimeNotification;
 
 		private static readonly NSString _rateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
 
@@ -126,6 +127,7 @@ namespace Windows.Media.Playback
 		internal uint NaturalVideoHeight { get; private set; }
 		internal uint NaturalVideoWidth { get; private set; }
 
+		[MemberNotNull(nameof(_observer))]
 		private void Initialize()
 		{
 			_observer = new Observer(this);
@@ -139,14 +141,14 @@ namespace Windows.Media.Playback
 			{
 				try
 				{
-					_videoLayer.RemoveObserver(_observer, new NSString("videoRect"), _videoLayer.Handle);
+					_videoLayer!.RemoveObserver(_observer, new NSString("videoRect"), _videoLayer.Handle);
 					_videoLayer.RemoveFromSuperLayer();
 
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
 					_player.RemoveObserver(_observer, new NSString("rate"), _rateObservationContext.Handle);
-					_player.RemoveTimeObserver(_periodicTimeObserverObject);
+					_player.RemoveTimeObserver(_periodicTimeObserverObject!);
 					_player.RemoveAllItems();
 				}
 				finally
@@ -164,6 +166,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		[MemberNotNull(nameof(_player), nameof(_videoLayer))]
 		private void InitializePlayer()
 		{
 			_player = new AVQueuePlayer();
@@ -175,7 +178,7 @@ namespace Windows.Media.Playback
 			var avSession = AVAudioSession.SharedInstance();
 			avSession.SetCategory(AVAudioSessionCategory.Playback);
 
-			NSError activationError = null;
+			NSError? activationError = null;
 			avSession.SetActive(true, out activationError);
 			if (activationError != null)
 			{
@@ -241,7 +244,7 @@ namespace Windows.Media.Playback
 						throw new InvalidOperationException("Unsupported media source type");
 				}
 
-				_player.CurrentItem.AddObserver(_observer, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
+				_player.CurrentItem!.AddObserver(_observer, new NSString("duration"), NSKeyValueObservingOptions.Initial, _player.Handle);
 				_player.CurrentItem.AddObserver(_observer, new NSString("status"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _player.Handle);
 				_player.CurrentItem.AddObserver(_observer, new NSString("loadedTimeRanges"), NSKeyValueObservingOptions.Initial | NSKeyValueObservingOptions.New, _player.Handle);
 
@@ -261,7 +264,7 @@ namespace Windows.Media.Playback
 			foreach (var item in playlist.Items)
 			{
 				var asset = AVAsset.FromUrl(DecodeUri(item.Source.Uri));
-				_player.InsertItem(new AVPlayerItem(asset), null);
+				_player!.InsertItem(new AVPlayerItem(asset), null);
 			}
 		}
 
@@ -270,7 +273,7 @@ namespace Windows.Media.Playback
 			var nsAsset = AVAsset.FromUrl(DecodeUri(uri));
 			var streamingItem = AVPlayerItem.FromAsset(nsAsset);
 
-			_player.ReplaceCurrentItemWithPlayerItem(streamingItem);
+			_player!.ReplaceCurrentItemWithPlayerItem(streamingItem);
 		}
 
 		private static NSUrl DecodeUri(Uri uri)
@@ -331,11 +334,11 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		private void OnMediaEnded(object sender, NSNotificationEventArgs args)
+		private void OnMediaEnded(object? sender, NSNotificationEventArgs args)
 		{
 			MediaEnded?.Invoke(this, null);
 
-			if (Source is MediaPlaybackList && (AVPlayerItem)args.Notification.Object != _player.Items.Last())
+			if (Source is MediaPlaybackList && (AVPlayerItem)args.Notification.Object! != _player!.Items.Last())
 			{
 				return;
 			}
@@ -343,7 +346,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
-		private void OnMediaFailed(Exception ex = null, string message = null)
+		private void OnMediaFailed(Exception? ex = null, string? message = null)
 		{
 			MediaFailed?.Invoke(
 				this,
@@ -358,7 +361,7 @@ namespace Windows.Media.Playback
 		{
 			if (_player?.CurrentItem != null)
 			{
-				IsVideo = _player.CurrentItem.Tracks?.Any(x => x.AssetTrack.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video)) == true;
+				IsVideo = _player.CurrentItem.Tracks?.Any(x => x.AssetTrack!.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video)) == true;
 
 				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed || _player.Status == AVPlayerStatus.Failed)
 				{
@@ -427,7 +430,7 @@ namespace Windows.Media.Playback
 
 		private void OnCurrentItemDurationChanged()
 		{
-			var duration = _player.CurrentItem.Duration;
+			var duration = _player!.CurrentItem!.Duration;
 
 			if (duration != CMTime.Indefinite)
 			{
@@ -471,7 +474,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				return TimeSpan.FromSeconds(_player.CurrentItem.CurrentTime.Seconds);
+				return TimeSpan.FromSeconds(_player!.CurrentItem!.CurrentTime.Seconds);
 			}
 			set
 			{

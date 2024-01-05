@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Foundation;
 using UIKit;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
@@ -12,13 +13,14 @@ public partial class PowerManager
 	private const string DeviceModelSimulator = "Simulator";
 
 
-	private static NSObject _batteryLevelChangeSubscription;
-	private static NSObject _batteryStateChangeSubscription;
-	private static NSObject _powerStateChangeSubscription;
+	private static NSObject? _batteryLevelChangeSubscription;
+	private static NSObject? _batteryStateChangeSubscription;
+	private static NSObject? _powerStateChangeSubscription;
 
 	private static UIDevice _device;
 	private static bool _isSimulator;
 
+	[MemberNotNull(nameof(_device))]
 	static partial void InitializePlatform()
 	{
 		_device = UIDevice.CurrentDevice;
@@ -132,7 +134,7 @@ public partial class PowerManager
 		return (int)Math.Round(_device.BatteryLevel * 100f);
 	}
 
-	private static void TryAddNotificationSubscription(NSString notificationIdentifier, ref NSObject subscriptionToken, Action<NSNotification> handler)
+	private static void TryAddNotificationSubscription(NSString notificationIdentifier, ref NSObject? subscriptionToken, Action<NSNotification> handler)
 	{
 		if (subscriptionToken == null)
 		{
@@ -142,7 +144,7 @@ public partial class PowerManager
 		}
 	}
 
-	private static void TryRemoveNotificationSubscription(ref NSObject subscriptionToken)
+	private static void TryRemoveNotificationSubscription(ref NSObject? subscriptionToken)
 	{
 		subscriptionToken?.Dispose();
 		subscriptionToken = null;

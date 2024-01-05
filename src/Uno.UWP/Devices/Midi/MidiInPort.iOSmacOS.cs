@@ -14,9 +14,9 @@ namespace Windows.Devices.Midi
 {
 	public partial class MidiInPort
 	{
-		private MidiEndpoint _endpoint;
-		private MidiClient _client;
-		private MidiPort _port;
+		private MidiEndpoint? _endpoint;
+		private MidiClient? _client;
+		private MidiPort? _port;
 
 		private MidiInPort(string deviceId, MidiEndpoint endpoint)
 		{
@@ -28,14 +28,14 @@ namespace Windows.Devices.Midi
 
 		partial void StartMessageReceived()
 		{
-			_port.ConnectSource(_endpoint);
+			_port!.ConnectSource(_endpoint!);
 			_port.MessageReceived += NativePortMessageReceived;
 		}
 
 		partial void StopMessageReceived()
 		{
-			_port.MessageReceived -= NativePortMessageReceived;
-			_port.Disconnect(_endpoint);
+			_port!.MessageReceived -= NativePortMessageReceived;
+			_port.Disconnect(_endpoint!);
 		}
 
 		partial void DisposeNative()
@@ -63,7 +63,7 @@ namespace Windows.Devices.Midi
 		}
 
 
-		private void NativePortMessageReceived(object sender, MidiPacketsEventArgs e)
+		private void NativePortMessageReceived(object? sender, MidiPacketsEventArgs e)
 		{
 			foreach (var packet in e.Packets)
 			{

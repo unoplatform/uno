@@ -11,7 +11,7 @@ namespace Windows.Phone.Devices.Notification
 	public partial class VibrationDevice
 	{
 		private const int PopSoundId = 1520;
-		private static VibrationDevice _instance;
+		private static VibrationDevice? _instance;
 
 		private VibrationDevice()
 		{

@@ -7,6 +7,7 @@ using CoreLocation;
 using Foundation;
 using Uno.Extensions;
 using Windows.UI.Core;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Devices.Geolocation
 {
@@ -14,6 +15,7 @@ namespace Windows.Devices.Geolocation
 	{
 		private CLLocationManager _locationManager;
 
+		[MemberNotNull(nameof(_locationManager))]
 		partial void PlatformInitialize()
 		{
 			_locationManager = new CLLocationManager
@@ -26,7 +28,7 @@ namespace Windows.Devices.Geolocation
 			_locationManager.StartUpdatingLocation();
 		}
 
-		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
+		private void _locationManager_LocationsUpdated(object? sender, CLLocationsUpdatedEventArgs e)
 		{
 			BroadcastStatusChanged(PositionStatus.Ready);
 			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
@@ -191,7 +193,7 @@ namespace Windows.Devices.Geolocation
 #if __IOS__
 		private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
 		{
-			public event EventHandler<CLAuthorizationChangedEventArgs> AuthorizationChanged;
+			public event EventHandler<CLAuthorizationChangedEventArgs>? AuthorizationChanged;
 
 			[Export("locationManager:didChangeAuthorizationStatus:")]
 			public void DidChangeAuthorizationStatus(CLLocationManager manager, CLAuthorizationStatus status)

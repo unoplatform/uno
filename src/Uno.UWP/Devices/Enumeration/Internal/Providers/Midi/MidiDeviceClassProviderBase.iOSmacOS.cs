@@ -14,17 +14,17 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		// https://github.com/xamarin/ios-samples/tree/master/CoreMidiSample
 		private readonly bool _isInput;
 
-		private MidiClient _client;
+		private MidiClient? _client;
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
 
 		public bool CanWatch => true;
 
-		public event EventHandler<DeviceInformation> WatchAdded;
-		public event EventHandler<DeviceInformation> WatchEnumerationCompleted;
-		public event EventHandler<DeviceInformationUpdate> WatchRemoved;
-		public event EventHandler<object> WatchStopped;
-		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
+		public event EventHandler<DeviceInformation>? WatchAdded;
+		public event EventHandler<DeviceInformation?>? WatchEnumerationCompleted;
+		public event EventHandler<DeviceInformationUpdate>? WatchRemoved;
+		public event EventHandler<object?>? WatchStopped;
+		public event EventHandler<DeviceInformationUpdate>? WatchUpdated;
 
 		public Task<DeviceInformation[]> FindAllAsync() =>
 			Task.FromResult(GetMidiDevices().ToArray());
@@ -45,7 +45,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			_client.PropertyChanged += MidiObjectChanged;
 		}
 
-		private void MidiObjectAdded(object sender, ObjectAddedOrRemovedEventArgs e)
+		private void MidiObjectAdded(object? sender, ObjectAddedOrRemovedEventArgs e)
 		{
 			if (e.Child is MidiEndpoint endpoint)
 			{
@@ -53,7 +53,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 		}
 
-		private void MidiObjectRemoved(object sender, ObjectAddedOrRemovedEventArgs e)
+		private void MidiObjectRemoved(object? sender, ObjectAddedOrRemovedEventArgs e)
 		{
 			if (e.Child is MidiEndpoint endpoint)
 			{
@@ -61,7 +61,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 		}
 
-		private void MidiObjectChanged(object sender, ObjectPropertyChangedEventArgs e)
+		private void MidiObjectChanged(object? sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.MidiObject is MidiEndpoint endpoint)
 			{
@@ -79,19 +79,19 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			_client.ObjectAdded -= MidiObjectAdded;
 			_client.ObjectRemoved -= MidiObjectRemoved;
 			_client.PropertyChanged -= MidiObjectChanged;
-			_client = null;
 			_client.Dispose();
+			_client = null;
 			WatchStopped?.Invoke(this, null);
 		}
 
-		internal MidiEndpoint GetNativeEndpoint(string midiDeviceId)
+		internal MidiEndpoint? GetNativeEndpoint(string midiDeviceId)
 		{
 			var parsed = ParseMidiDeviceId(midiDeviceId);
 			if (_isInput)
 			{
 				for (int inputId = 0; inputId < MidiInfo.SourceCount; inputId++)
 				{
-					var source = MidiEndpoint.GetSource(inputId);
+					var source = MidiEndpoint.GetSource(inputId)!;
 
 					if (source.EndpointName == parsed)
 					{
@@ -103,7 +103,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			{
 				for (int outputId = 0; outputId < MidiInfo.DestinationCount; outputId++)
 				{
-					var destination = MidiEndpoint.GetDestination(outputId);
+					var destination = MidiEndpoint.GetDestination(outputId)!;
 
 					if (destination.EndpointName == parsed)
 					{
@@ -132,7 +132,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchUpdated?.Invoke(this, update);
 		}
 
-		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)
+		private void OnEnumerationCompleted(DeviceInformation? lastDeviceInformation)
 		{
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}
@@ -144,14 +144,14 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				for (int inputId = 0; inputId < MidiInfo.SourceCount; inputId++)
 				{
 					var source = MidiEndpoint.GetSource(inputId);
-					yield return CreateDeviceInformation(source);
+					yield return CreateDeviceInformation(source!);
 				}
 			}
 			else
 			{
 				for (int outputId = 0; outputId < MidiInfo.DestinationCount; outputId++)
 				{
-					var destination = MidiEndpoint.GetDestination(outputId);
+					var destination = MidiEndpoint.GetDestination(outputId)!;
 					yield return CreateDeviceInformation(destination);
 				}
 			}

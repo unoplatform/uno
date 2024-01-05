@@ -7,22 +7,22 @@ namespace Windows.Services.Maps
 	public sealed partial class MapAddress
 	{
 		internal MapAddress(
-			string buildingFloor,
-			string buildingName,
-			string buildingRoom,
-			string buildingWing,
-			string formattedAddress,
-			string continent,
-			string country,
-			string countryCode,
-			string district,
-			string neighborhood,
-			string postCode,
-			string region,
-			string regionCode,
-			string street,
-			string streetNumber,
-			string town
+			string? buildingFloor,
+			string? buildingName,
+			string? buildingRoom,
+			string? buildingWing,
+			string? formattedAddress,
+			string? continent,
+			string? country,
+			string? countryCode,
+			string? district,
+			string? neighborhood,
+			string? postCode,
+			string? region,
+			string? regionCode,
+			string? street,
+			string? streetNumber,
+			string? town
 		)
 		{
 			FormattedAddress = formattedAddress ?? string.Empty;

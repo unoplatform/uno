@@ -12,8 +12,8 @@ public partial class Gamepad
 		new Dictionary<GCController, Gamepad>();
 
 	private static int _nextGamepadId = 1;
-	private static NSObject _didConnectObserver;
-	private static NSObject _didDisconnectObserver;
+	private static NSObject? _didConnectObserver;
+	private static NSObject? _didDisconnectObserver;
 	private readonly GCController _controller;
 	private readonly int _id;
 
@@ -40,7 +40,7 @@ public partial class Gamepad
 	{
 		var reading = new GamepadReading();
 
-		reading.Timestamp = (ulong)(_controller.ExtendedGamepad.LastEventTimestamp * 100000);
+		reading.Timestamp = (ulong)(_controller.ExtendedGamepad!.LastEventTimestamp * 100000);
 
 		if (_controller.ExtendedGamepad.ButtonA.IsPressed)
 		{
@@ -126,7 +126,7 @@ public partial class Gamepad
 	{
 		var reading = new GamepadReading();
 
-		reading.Timestamp = (ulong)_controller.MicroGamepad.LastEventTimestamp;
+		reading.Timestamp = (ulong)_controller.MicroGamepad!.LastEventTimestamp;
 
 		if (_controller.MicroGamepad.ButtonA.IsPressed)
 		{
@@ -201,7 +201,7 @@ public partial class Gamepad
 	private static void EndGamepadAdded()
 	{
 		NSNotificationCenter.DefaultCenter.RemoveObserver(
-			_didConnectObserver);
+			_didConnectObserver!);
 		_didConnectObserver = null;
 	}
 
@@ -215,14 +215,14 @@ public partial class Gamepad
 	private static void EndGamepadRemoved()
 	{
 		NSNotificationCenter.DefaultCenter.RemoveObserver(
-			_didDisconnectObserver);
+			_didDisconnectObserver!);
 		_didDisconnectObserver = null;
 	}
 
 	private static void OnDidConnect(NSNotification notification)
 	{
-		var controller = (GCController)notification.Object;
-		Gamepad gamepad;
+		var controller = (GCController)notification.Object!;
+		Gamepad? gamepad;
 		lock (_gamepadCache)
 		{
 			if (!_gamepadCache.TryGetValue(controller, out gamepad))
@@ -236,8 +236,8 @@ public partial class Gamepad
 
 	private static void OnDidDisconnect(NSNotification notification)
 	{
-		var controller = (GCController)notification.Object;
-		Gamepad gamepad;
+		var controller = (GCController)notification.Object!;
+		Gamepad? gamepad;
 		lock (_gamepadCache)
 		{
 			if (!_gamepadCache.TryGetValue(controller, out gamepad))

@@ -28,7 +28,7 @@ namespace Windows.Services.Maps
 				var point = new Geopoint(
 					new BasicGeoposition
 					{
-						Latitude = loc.Location.Coordinate.Latitude,
+						Latitude = loc.Location!.Coordinate.Latitude,
 						Longitude = loc.Location.Coordinate.Longitude,
 						Altitude = loc.Location.Altitude
 					}

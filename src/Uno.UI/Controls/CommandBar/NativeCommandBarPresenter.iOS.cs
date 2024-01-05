@@ -93,7 +93,7 @@ namespace Uno.UI.Controls
 			});
 
 			// iOS doesn't automatically update the navigation bar position when the status bar visibility changes.
-			void OnStatusBarChanged(StatusBar sender, object args)
+			void OnStatusBarChanged(StatusBar sender, object? args)
 			{
 				nativeBar.SetNeedsLayout();
 				nativeBar.Superview.SetNeedsLayout();

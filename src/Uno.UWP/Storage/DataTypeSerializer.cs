@@ -35,7 +35,7 @@ namespace Windows.Storage
 			typeof(Uri),
 		};
 
-		public static object? Deserialize(string value)
+		public static object? Deserialize(string? value)
 		{
 			var index = value?.IndexOf(':') ?? -1;
 

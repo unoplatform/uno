@@ -13,7 +13,7 @@ namespace Windows.Graphics.Imaging
 	{
 		private readonly Func<UIImage, NSData> _encoder;
 		private readonly global::Windows.Storage.Streams.IRandomAccessStream _stream;
-		private global::Windows.Graphics.Imaging.SoftwareBitmap _softwareBitmap;
+		private global::Windows.Graphics.Imaging.SoftwareBitmap? _softwareBitmap;
 
 		private BitmapEncoder(Func<UIImage, NSData> encoder
 			, Storage.Streams.IRandomAccessStream stream)
