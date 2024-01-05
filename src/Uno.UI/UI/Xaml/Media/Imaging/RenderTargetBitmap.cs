@@ -23,6 +23,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 	public partial class RenderTargetBitmap : ImageSource
 	{
+#if !__ANDROID__
 		// This is to avoid LOH array allocations
 		private unsafe struct UnmanagedArrayOfBytes : IDisposable
 		{
@@ -94,7 +95,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			/// </summary>
 			protected override void Dispose(bool disposing) { }
 		}
-
+#endif
 
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
@@ -137,7 +138,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 		#endregion
 
+#if !__ANDROID__
 		private UnmanagedArrayOfBytes? _buffer;
+#else
+		private byte[]? _buffer;
+#endif
 		private int _bufferSize;
 
 		/// <inheritdoc />
@@ -146,19 +151,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			var width = PixelWidth;
 			var height = PixelHeight;
 
-			if (_buffer is null || _bufferSize <= 0 || width <= 0 || height <= 0)
+			if (_buffer is not { } buffer || _bufferSize <= 0 || width <= 0 || height <= 0)
 			{
 				image = default;
 				return false;
 			}
 
-			image = Open(_buffer.Value, _bufferSize, width, height);
+			image = Open(buffer, _bufferSize, width, height);
 			InvalidateImageSource();
 			return image.HasData;
 		}
 
 #if NOT_IMPLEMENTED
-		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
+		private static ImageData Open(UnmanagedArrayOfBytes buffer, int bufferLength, int width, int height)
 			=> default;
 #endif
 
@@ -217,18 +222,23 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					return Task.FromResult<IBuffer>(new Buffer(Array.Empty<byte>()));
 				}
 
+#if !__ANDROID__
 				unsafe
 				{
 					var mem = new UnmanagedMemoryManager<byte>((byte*)_buffer.Value.Pointer.ToPointer(), _bufferSize);
 					return Task.FromResult<IBuffer>(new Buffer(mem.Memory.Slice(0, _bufferSize)));
 				}
+#else
+				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0, _bufferSize)));
+#endif
 			});
 
 #if NOT_IMPLEMENTED
-		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
+		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+#if !__ANDROID__
 		~RenderTargetBitmap()
 		{
 			if (_buffer.HasValue)
@@ -236,9 +246,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				_buffer.Value.Dispose();
 			}
 		}
+#endif
 
 		#region Misc static helpers
 #if !NOT_IMPLEMENTED
+#if __ANDROID__
+		private static void EnsureBuffer(ref byte[]? buffer, int length)
+		{
+			if (buffer is null || buffer.Length < length)
+			{
+				buffer = new byte[length];
+			}
+		}
+#else
 		private static void EnsureBuffer(ref UnmanagedArrayOfBytes? buffer, int length)
 		{
 			if (buffer is null)
@@ -251,6 +271,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				buffer = new UnmanagedArrayOfBytes(length);
 			}
 		}
+#endif
 #endif
 		#endregion
 	}
