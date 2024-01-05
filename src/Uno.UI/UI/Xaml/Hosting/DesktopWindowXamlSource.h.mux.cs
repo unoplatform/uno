@@ -9,18 +9,18 @@ namespace Microsoft.UI.Xaml.Hosting;
 
 public partial class DesktopWindowXamlSource : IDisposable
 {
-	private bool _closed;
-	private bool _initializedCalled;
-	private bool _bridgeClosed;
-	private WindowsXamlManager _spXamlCore;
+	//private bool _closed;
+	//private bool _initializedCalled;
+	//private bool _bridgeClosed;
+	//private WindowsXamlManager _spXamlCore;
 	private XamlIsland _spXamlIsland;
 	//private ContentSiteBridge m_contentBridge;
 	//private DesktopChildSiteBridge> m_contentBridgeDW;
 	//private DesktopSiteBridge> m_desktopBridge;
 	//private HWND m_childHwnd = { };
 	//private ctl::ComPtr<xaml::Media::ISystemBackdrop> m_systemBackdrop;
-	private FocusController _spFocusController;
-	private EventRegistrationToken m_losingFocusEventCookie = { };
-	private EventRegistrationToken m_gotFocusEventCookie = { };
-	private EventRegistrationToken m_bridgeClosedToken { };
+	//private FocusController _spFocusController;
+	//private EventRegistrationToken m_losingFocusEventCookie = { };
+	//private EventRegistrationToken m_gotFocusEventCookie = { };
+	//private EventRegistrationToken m_bridgeClosedToken { };
 }

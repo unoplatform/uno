@@ -34,7 +34,7 @@ internal partial class DXamlCore
 	//		we accept to create it even with the "NoCreate" overload.
 	public static DXamlCore Current => _instance!;
 
-	public static DXamlCore? GetCurrentNoCreate() => Current;
+	public static DXamlCore GetCurrentNoCreate() => Current;
 
 	public Uno.UI.Xaml.Core.CoreServices GetHandle() => Uno.UI.Xaml.Core.CoreServices.Instance;
 
@@ -237,9 +237,9 @@ internal partial class DXamlCore
 
 		//	XamlOneCoreTransforms.EnsureInitialized(XamlOneCoreTransforms.InitMode.Normal);
 
-		//	IFC(JupiterControl.Create(&m_pControl));
+		_control = JupiterControl.Create();
 
-		//	pCore = m_pControl->GetCoreServices();
+		//	pCore = _control->GetCoreServices();
 		//	IFCEXPECT(pCore);
 
 		//	IFC(pCore->SetCurrentApplication(NULL));
@@ -296,7 +296,7 @@ internal partial class DXamlCore
 		//	// Initialize Visual Diagnostics
 		//	IFC(RegisterVisualDiagnosticsPort());
 
-		//	_state = DXamlCore.Initialized;
+		_state = DXamlCore.State.Initialized;
 
 		//	// Now that DXamlCore is initialized, listen to the UISettings' AnimationsEnabledChanged event for future updates
 		//	// and immediately refresh the m_isAnimationEnabled field.

@@ -118,4 +118,10 @@ internal partial class ContentManager
 	internal static void AttachToWindow(UIElement rootElement, Microsoft.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
 
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window);
+
+
+	internal void OnWindowSizeChanged()
+	{
+		// TODO MZ: Port this.
+	}
 }

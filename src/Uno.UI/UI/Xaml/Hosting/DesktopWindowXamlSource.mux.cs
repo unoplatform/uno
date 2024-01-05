@@ -32,7 +32,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 
 	private void Initialize()
 	{
-		_spXamlCore = WindowsXamlManager.InitializeForCurrentThread();
+		/*_spXamlCore = */WindowsXamlManager.InitializeForCurrentThread();
 
 		// CheckThread();
 
@@ -44,9 +44,9 @@ public partial class DesktopWindowXamlSource : IDisposable
 		_spXamlIsland = frameworkApplication.CreateIslandWithContentBridge(this, null);
 
 		// Create and configure focus navigation controller
-		var focusController = _spXamlIsland.FocusController;
-		_spFocusController.GotFocus += OnFocusControllerGotFocus;
-		_spFocusController.LosingFocus += OnFocusControllerLosingFocus;
+		//var focusController = _spXamlIsland.FocusController;
+		//_spFocusController.GotFocus += OnFocusControllerGotFocus;
+		//_spFocusController.LosingFocus += OnFocusControllerLosingFocus;
 
 		XamlIsland xamlIsland = _spXamlIsland;
 		FocusManager focusManager = VisualTree.GetFocusManagerForElement(xamlIsland);
@@ -56,7 +56,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 		coreXamlIsland.SetHasTransparentBackground(true);
 
 		//InstrumentUsage(false); // false -> adding
-		_initializedCalled = true;
+		//_initializedCalled = true;
 	}
 
 

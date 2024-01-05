@@ -68,8 +68,8 @@ partial class Application
 		// http://osgvsowi/17333449 - (deliverable) This is a temporary trick to kick off XAML's normal application startup path.
 		// we need to refactor islands and xaml::Window to reduce the complexity of the code as captured by the task below
 		// https://microsoft.visualstudio.com/OS/_workitems/edit/37066232
-		var window = DXamlCore.Current.GetDummyWindow();
-		window.EnsureInitializedForIslands();
+		//var window = DXamlCore.Current.GetDummyWindow();
+		//window.EnsureInitializedForIslands();
 
 		// Create a new XamlIsland.
 		var newIsland = new XamlIsland();

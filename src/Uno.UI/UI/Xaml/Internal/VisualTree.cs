@@ -7,6 +7,6 @@
 /// <remarks>
 /// Uno Platform implementation is mostly a stub for now, needs to be expanded upon.
 /// </remarks>
-internal partial sealed class VisualTree
+internal sealed partial class VisualTree
 {
 }

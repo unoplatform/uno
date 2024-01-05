@@ -5,12 +5,12 @@ using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.DirectUI;
 
-internal class WinBrowserHost
+internal static class WinBrowserHost
 {
-	internal void PutSource(DependencyObject? dependencyObject)
+	private static void PutSource(DependencyObject? dependencyObject)
 	{
 		CoreServices.Instance.PutVisualRoot(dependencyObject);
 	}
 
-	internal void PutEmptySource(bool firstLoad) => PutSource(null);
+	internal static void PutEmptySource(bool firstLoad) => PutSource(null);
 }

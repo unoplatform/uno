@@ -10,6 +10,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Core;
+using System.Threading;
 
 namespace Microsoft.UI.Xaml
 {

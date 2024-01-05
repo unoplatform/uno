@@ -34,7 +34,7 @@ partial class WindowsXamlManager
 	}
 
 	private DispatcherQueue _dispatcherQueue;
-	private bool _isClosed;
+	//private bool _isClosed;
 
 	private XamlCore? _xamlCore;
 

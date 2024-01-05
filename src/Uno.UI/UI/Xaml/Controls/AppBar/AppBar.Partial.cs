@@ -329,7 +329,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var automationName = AutomationProperties.GetName((Button)m_tpExpandButton);
 				if (automationName == null)
 				{
-					automationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_MORE_BUTTON);
+					automationName = DXamlCore.GetCurrentNoCreate()?.GetLocalizedResourceString(UIA_MORE_BUTTON) ?? "";
 					AutomationProperties.SetName((Button)m_tpExpandButton, automationName);
 				}
 			}
@@ -478,7 +478,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				ToolTipService.SetToolTip(m_tpExpandButton, toolTip);
 
-				AutomationProperties.SetName(m_tpExpandButton, DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_LESS_BUTTON));
+				AutomationProperties.SetName(m_tpExpandButton, DXamlCore.GetCurrentNoCreate()?.GetLocalizedResourceString(UIA_LESS_BUTTON));
 			}
 
 			ElementSoundPlayer.RequestInteractionSoundForElement(ElementSoundKind.Show, this);
