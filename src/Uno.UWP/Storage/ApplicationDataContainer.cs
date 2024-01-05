@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage;
@@ -19,4 +20,8 @@ public partial class ApplicationDataContainer
 	public string Name { get; }
 
 	public IPropertySet Values { get; private set; }
+#if __NETSTD_REFERENCE__
+		// initialized properly to non-null on Skia and Wasm in InitializePartial.
+		= null!;
+#endif
 }

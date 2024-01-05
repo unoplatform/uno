@@ -1,5 +1,8 @@
-﻿using System;
-using Uno;
+﻿#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
+#define IS_IMPLEMENTED
+#endif
+
+using System;
 
 namespace Windows.ApplicationModel.Activation
 {
@@ -21,11 +24,13 @@ namespace Windows.ApplicationModel.Activation
 		/// <param name="previousExecutionState">Previous execution state.</param>
 		internal ProtocolActivatedEventArgs(Uri uri, ApplicationExecutionState previousExecutionState)
 		{
+#if IS_IMPLEMENTED
 			Uri = uri;
 			PreviousExecutionState = previousExecutionState;
+#endif
 		}
 
-#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
+#if IS_IMPLEMENTED
 
 		/// <summary>
 		/// Gets the activation type.
