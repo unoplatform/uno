@@ -21,28 +21,28 @@ public class ResourcesGenerationTask_v0 : Task
 	Source: {1}
 ";
 	[Required]
-	public ITaskItem[] Resources { get; set; }
+	public ITaskItem[] Resources { get; set; } = null!;
 
-	public string TargetPlatform { get; set; }
+	public string? TargetPlatform { get; set; }
 
 	public bool EnableTraceLogging { get; set; }
 
 	public bool IsUnoHead { get; set; }
 
 	[Required]
-	public string ProjectName { get; set; }
+	public string ProjectName { get; set; } = null!;
 
 	[Required]
-	public string TargetProjectDirectory { get; set; }
+	public string TargetProjectDirectory { get; set; } = null!;
 
 	[Required]
-	public string OutputPath { get; set; }
+	public string OutputPath { get; set; } = null!;
 
 	[Required]
-	public string DefaultLanguage { get; set; }
+	public string DefaultLanguage { get; set; } = null!;
 
 	[Output]
-	public ITaskItem[] GeneratedFiles { get; set; }
+	public ITaskItem[]? GeneratedFiles { get; set; }
 
 	public override bool Execute()
 	{

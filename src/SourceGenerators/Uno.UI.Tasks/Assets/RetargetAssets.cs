@@ -25,35 +25,35 @@ namespace Uno.UI.Tasks.Assets
 		public bool UseHighDPIResources { get; set; }
 
 		[Required]
-		public string TargetPlatform { get; set; }
+		public string TargetPlatform { get; set; } = null!;
 
 		[Required]
-		public string IntermediateOutputPath { get; set; }
+		public string IntermediateOutputPath { get; set; } = null!;
 
-		public string AndroidAssetsPrefix { get; set; }
+		public string? AndroidAssetsPrefix { get; set; }
 
-		public string IosAppManifest { get; set; }
-
-		[Required]
-		public string DefaultLanguage { get; set; }
+		public string IosAppManifest { get; set; } = null!;
 
 		[Required]
-		public ITaskItem[] ContentItems { get; set; }
+		public string DefaultLanguage { get; set; } = null!;
+
+		[Required]
+		public ITaskItem[] ContentItems { get; set; } = null!;
 
 		[Output]
-		public ITaskItem[] Assets { get; set; }
+		public ITaskItem[]? Assets { get; set; }
 
 		[Output]
-		public ITaskItem[] RetargetedAssets { get; set; }
+		public ITaskItem[]? RetargetedAssets { get; set; }
 
 		[Output]
-		public ITaskItem[] PartialAppManifests { get; set; }
+		public ITaskItem[]? PartialAppManifests { get; set; }
 
 		public override bool Execute()
 		{
 			Log.LogMessage($"Retargeting assets to {TargetPlatform}.");
 
-			Func<ResourceCandidate, string> resourceToTargetPath;
+			Func<ResourceCandidate, string?> resourceToTargetPath;
 			Func<string, string> pathEncoder;
 
 			switch (TargetPlatform)
@@ -78,7 +78,7 @@ namespace Uno.UI.Tasks.Assets
 			return true;
 		}
 
-		private void ProcessContentItems(ITaskItem[] assets, Func<ResourceCandidate, string> resourceToTargetPath, Func<string, string> pathEncoder)
+		private void ProcessContentItems(ITaskItem[] assets, Func<ResourceCandidate, string?> resourceToTargetPath, Func<string, string> pathEncoder)
 		{
 			List<TaskItem> retargetdAssets = new();
 			List<string> fontAssets = new();

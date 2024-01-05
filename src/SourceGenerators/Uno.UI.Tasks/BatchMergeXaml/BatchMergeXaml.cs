@@ -10,16 +10,16 @@ namespace Uno.UI.Tasks.BatchMerge
 	public class BatchMergeXaml : CustomTask
 	{
 		[Required]
-		public ITaskItem[] Pages { get; set; }
+		public ITaskItem[] Pages { get; set; } = null!;
 
 		[Required]
-		public string MergedXamlFile { get; set; }
+		public string MergedXamlFile { get; set; } = null!;
 
 		[Required]
-		public string TlogReadFilesOutputPath { get; set; }
+		public string TlogReadFilesOutputPath { get; set; } = null!;
 
 		[Required]
-		public string TlogWriteFilesOutputPath { get; set; }
+		public string TlogWriteFilesOutputPath { get; set; } = null!;
 
 		[Output]
 		public string[] FilesWritten

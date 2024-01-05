@@ -7,7 +7,7 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 {
 	public static class AndroidResourcesWriter
 	{
-		public static void Write(Dictionary<string, string> resources, string path, string comment = null)
+		public static void Write(Dictionary<string, string> resources, string path, string? comment = null)
 		{
 			Directory.CreateDirectory(Path.GetDirectoryName(path));
 

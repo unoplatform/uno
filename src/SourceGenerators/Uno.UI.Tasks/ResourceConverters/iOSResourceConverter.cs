@@ -10,7 +10,7 @@ namespace Windows.ApplicationModel.Resources.Core
 	/// </summary>
 	internal static class iOSResourceConverter
 	{
-		public static string Convert(ResourceCandidate resourceCandidate, string defaultLanguage)
+		public static string? Convert(ResourceCandidate resourceCandidate, string defaultLanguage)
 		{
 			try
 			{
