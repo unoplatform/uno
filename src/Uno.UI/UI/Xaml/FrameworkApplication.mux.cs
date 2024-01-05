@@ -23,7 +23,7 @@ partial class Application
 		_applicationInitializationCallback = pCallback;
 
 		// if this thread wasn't already initialized in FrameworkApplication.StartDesktop, then init it now
-		if (!DXamlCore.IsInitialized)
+		if (!DXamlCore.IsInitializedStatic)
 		{
 			DXamlCore.Initialize(InitializationType.IslandsOnly);
 		}
@@ -33,10 +33,13 @@ partial class Application
 		// ICoreWindow parameter is not created as part of the Desktop initialization path. It is only needed for UWP.
 		DXamlCore.Current.ConfigureJupiterWindow(null);
 
-		// call the OnLaunchedProtected method
-		NormalLaunchActivatedEventArgs > uwpLaunchActivatedEventArgs;
-		IFC_RETURN(NormalLaunchActivatedEventArgs::Create(uwpLaunchActivatedEventArgs.ReleaseAndGetAddressOf()));
-		IFC_RETURN(InvokeOnLaunchActivated(uwpLaunchActivatedEventArgs.Get()));
+		// TODO Uno: This currently happens in platform-specific code, probably should be
+		// moved here to a shared location, but not clear on how to handle Activated vs. Launched yet.
+
+		// call the OnLaunched method
+		//NormalLaunchActivatedEventArgs > uwpLaunchActivatedEventArgs;
+		//IFC_RETURN(NormalLaunchActivatedEventArgs::Create(uwpLaunchActivatedEventArgs.ReleaseAndGetAddressOf()));
+		//IFC_RETURN(InvokeOnLaunchActivated(uwpLaunchActivatedEventArgs.Get()));
 	}
 
 	internal XamlIsland CreateIsland()
@@ -46,8 +49,8 @@ partial class Application
 		// http://osgvsowi/17333449 - (deliverable) This is a temporary trick to kick off XAML's normal applicaiton startup path.
 		// we need to refactor islands and xaml::Window to reduce the complexity of the code as captured by the task below
 		// https://microsoft.visualstudio.com/OS/_workitems/edit/37066232
-		var window = DXamlCore.Current.GetDummyWindow();
-		window.EnsureInitializedForIslands();
+		// var window = DXamlCore.Current.GetDummyWindow();
+		// window.EnsureInitializedForIslands();
 
 		// Create a new XamlIsland.
 		var newIsland = new XamlIsland();
