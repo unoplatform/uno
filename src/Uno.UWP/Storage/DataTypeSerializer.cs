@@ -35,13 +35,13 @@ namespace Windows.Storage
 			typeof(Uri),
 		};
 
-		public static object Deserialize(string value)
+		public static object? Deserialize(string value)
 		{
 			var index = value?.IndexOf(':') ?? -1;
 
 			if (index != -1)
 			{
-				string typeName = value.Substring(0, index);
+				string typeName = value!.Substring(0, index);
 				var dataType = Type.GetType(typeName) ?? Type.GetType(typeName + ", " + typeof(Foundation.Point).GetTypeInfo().Assembly.FullName);
 				var valueField = value.Substring(index + 1);
 
@@ -57,15 +57,13 @@ namespace Windows.Storage
 				{
 					return TimeSpan.Parse(valueField, CultureInfo.InvariantCulture);
 				}
-				else
+				else if (dataType is not null)
 				{
 					return Convert.ChangeType(valueField, dataType, CultureInfo.InvariantCulture);
 				}
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		public static string Serialize(object value)

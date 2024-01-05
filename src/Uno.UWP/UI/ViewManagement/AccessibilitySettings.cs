@@ -10,7 +10,7 @@ namespace Windows.UI.ViewManagement
 	/// </summary>
 	public partial class AccessibilitySettings
 	{
-		private static readonly ConcurrentDictionary<WeakReference<AccessibilitySettings>, object> _instances = new ConcurrentDictionary<WeakReference<AccessibilitySettings>, object>();
+		private static readonly ConcurrentDictionary<WeakReference<AccessibilitySettings>, object?> _instances = new ConcurrentDictionary<WeakReference<AccessibilitySettings>, object?>();
 		private readonly WeakReference<AccessibilitySettings> _weakReference;
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace Windows.UI.ViewManagement
 		///	Raised when <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/> changes.
 		/// </remarks>
 		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event TypedEventHandler<AccessibilitySettings, object> HighContrastChanged;
+		public event TypedEventHandler<AccessibilitySettings, object?>? HighContrastChanged;
 
 		internal static void OnHighContrastChanged()
 		{

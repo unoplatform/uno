@@ -60,7 +60,7 @@ namespace Windows.UI.Input
 			=> $"x:{Translation.X:N0};y:{Translation.Y:N0};θ:{Rotation:F2};s:{Scale:F2};e:{Expansion:F2}";
 
 		#region Equality Members
-		public override bool Equals(object obj) => obj is ManipulationDelta delta && Equals(delta);
+		public override bool Equals(object? obj) => obj is ManipulationDelta delta && Equals(delta);
 
 		public bool Equals(ManipulationDelta other)
 		{

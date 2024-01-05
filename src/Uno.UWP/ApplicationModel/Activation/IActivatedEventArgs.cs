@@ -9,6 +9,6 @@ namespace Windows.ApplicationModel.Activation
 
 		ApplicationExecutionState PreviousExecutionState { get; }
 
-		SplashScreen SplashScreen { get; }
+		SplashScreen? SplashScreen { get; }
 	}
 }

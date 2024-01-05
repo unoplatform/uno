@@ -12,7 +12,7 @@ namespace Windows.Graphics.Imaging
 	{
 		private readonly SKEncodedImageFormat _imageFormat;
 		private readonly Storage.Streams.IRandomAccessStream _stream;
-		private SoftwareBitmap _softwareBitmap;
+		private SoftwareBitmap? _softwareBitmap;
 
 		private BitmapEncoder(SKEncodedImageFormat imageFormat
 			, Storage.Streams.IRandomAccessStream stream)

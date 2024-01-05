@@ -13,7 +13,9 @@ namespace Windows.Security.Credentials
 		{
 		}
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. - False positive
 		public PasswordCredential(string resource, string userName, string password)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			Resource = resource;
 			UserName = userName;

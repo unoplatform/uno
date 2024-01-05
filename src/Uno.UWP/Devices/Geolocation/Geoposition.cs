@@ -4,17 +4,17 @@ namespace Windows.Devices.Geolocation
 {
 	public partial class Geoposition
 	{
-		public Geoposition(Geocoordinate coordinate, CivicAddress civicAddress = null, VenueData venueData = null)
+		public Geoposition(Geocoordinate coordinate, CivicAddress? civicAddress = null, VenueData? venueData = null)
 		{
 			CivicAddress = civicAddress;
 			Coordinate = coordinate;
 			VenueData = venueData;
 		}
 
-		public CivicAddress CivicAddress { get; }
+		public CivicAddress? CivicAddress { get; }
 
 		public Geocoordinate Coordinate { get; }
 
-		public VenueData VenueData { get; }
+		public VenueData? VenueData { get; }
 	}
 }

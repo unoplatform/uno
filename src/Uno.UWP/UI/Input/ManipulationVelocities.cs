@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 			=> $"x:{Linear.X:N0};y:{Linear.Y:N0};θ:{Angular};e:{Expansion:F2}";
 
 		#region Equality Members
-		public override bool Equals(object obj) => obj is ManipulationVelocities velocities && Equals(velocities);
+		public override bool Equals(object? obj) => obj is ManipulationVelocities velocities && Equals(velocities);
 
 		public bool Equals(ManipulationVelocities other)
 		{

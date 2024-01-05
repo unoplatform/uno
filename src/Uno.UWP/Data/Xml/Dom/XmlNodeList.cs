@@ -22,7 +22,7 @@ namespace Windows.Data.Xml.Dom
 
 		public IXmlNode this[int index]
 		{
-			get => (IXmlNode)_owner.Wrap(_backingList[index]);
+			get => (IXmlNode)_owner.Wrap(_backingList[index]!);
 			set => throw new InvalidOperationException("List is read-only");
 		}
 

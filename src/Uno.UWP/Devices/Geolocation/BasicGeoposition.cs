@@ -11,7 +11,7 @@ namespace Windows.Devices.Geolocation
 		// NOTE: Equality implementation should be modified if a new field/property is added.
 
 		#region Equality Members
-		public override bool Equals(object obj) => obj is BasicGeoposition geoposition && Equals(geoposition);
+		public override bool Equals(object? obj) => obj is BasicGeoposition geoposition && Equals(geoposition);
 		public bool Equals(BasicGeoposition other) => Altitude == other.Altitude && Latitude == other.Latitude && Longitude == other.Longitude;
 
 		public override int GetHashCode()

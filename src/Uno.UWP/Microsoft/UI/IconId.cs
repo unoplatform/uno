@@ -22,7 +22,7 @@ public struct IconId : IEquatable<IconId>
 	public bool Equals(IconId other)
 		=> Value == other.Value;
 
-	public override bool Equals(object obj)
+	public override bool Equals(object? obj)
 		=> (obj is IconId y) && Equals(y);
 
 	public override int GetHashCode()

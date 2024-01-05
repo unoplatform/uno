@@ -173,8 +173,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_timer.Start();
 		}
 
-		private static void RunNextFrame(DispatcherQueueTimer timer, object state)
-			=> ((KeyFrameScheduler<TValue>)timer.State).RunNextFrame();
+		private static void RunNextFrame(DispatcherQueueTimer timer, object? state)
+			=> ((KeyFrameScheduler<TValue>)timer.State!).RunNextFrame();
 
 		private void RunNextFrame()
 		{

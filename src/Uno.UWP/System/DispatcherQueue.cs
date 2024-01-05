@@ -13,7 +13,7 @@ namespace Windows.System
 	public partial class DispatcherQueue
 	{
 		[ThreadStatic]
-		private static DispatcherQueue _current;
+		private static DispatcherQueue? _current;
 
 		private DispatcherQueue()
 		{
@@ -40,7 +40,7 @@ namespace Windows.System
 #endif
 					!NativeDispatcher.Main.HasThreadAccess)
 				{
-					return default;
+					return default!;
 				}
 
 				_current = new DispatcherQueue();

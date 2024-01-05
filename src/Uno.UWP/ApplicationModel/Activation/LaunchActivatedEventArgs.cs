@@ -12,7 +12,7 @@ namespace Windows.ApplicationModel.Activation
 
 		}
 
-		internal LaunchActivatedEventArgs(ActivationKind kind, string arguments)
+		internal LaunchActivatedEventArgs(ActivationKind kind, string? arguments)
 		{
 			Arguments = arguments;
 			Kind = kind;
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.Activation
 		[NotImplemented]
 		public int CurrentlyShownApplicationViewId { get; }
 
-		public string Arguments { get; } = "";
+		public string? Arguments { get; } = "";
 
 		[NotImplemented]
 		public string TileId { get; } = "App";

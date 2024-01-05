@@ -32,10 +32,10 @@ public partial class PhoneCallHistoryEntryAddress
 	/// <summary>
 	/// Gets or sets the address information for this contact.
 	/// </summary>
-	public string RawAddress { get; set; }
+	public string? RawAddress { get; set; } = "";
 
 	/// <summary>
 	/// Get or sets the display name for this entry.
 	/// </summary>
-	public string DisplayName { get; set; }
+	public string? DisplayName { get; set; } = "";
 }

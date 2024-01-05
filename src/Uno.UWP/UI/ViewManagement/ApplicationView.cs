@@ -24,8 +24,8 @@ namespace Windows.UI.ViewManagement
 		private static readonly Dictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
-		private IReadOnlyList<Rect> _defaultSpanningRects;
-		private IApplicationViewSpanningRects _applicationViewSpanningRects;
+		private IReadOnlyList<Rect>? _defaultSpanningRects;
+		private IApplicationViewSpanningRects? _applicationViewSpanningRects;
 
 		[global::Uno.NotImplemented]
 		public int Id => 1;
@@ -81,7 +81,7 @@ namespace Windows.UI.ViewManagement
 			set;
 		}
 
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object?>? VisibleBoundsChanged;
 
 		[global::Uno.NotImplemented]
 		public bool IsFullScreenMode => true;
@@ -124,7 +124,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs>? Consolidated;
 
 		public ApplicationViewMode ViewMode
 		{
@@ -202,7 +202,7 @@ namespace Windows.UI.ViewManagement
 		{
 			TryInitializeSpanningRectsExtension();
 
-			return _applicationViewSpanningRects?.GetSpanningRects() ?? _defaultSpanningRects;
+			return _applicationViewSpanningRects?.GetSpanningRects() ?? _defaultSpanningRects!;
 		}
 
 		private void TryInitializeSpanningRectsExtension()

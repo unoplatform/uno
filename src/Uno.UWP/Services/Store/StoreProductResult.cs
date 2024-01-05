@@ -10,9 +10,9 @@ namespace Windows.Services.Store
 	{
 		internal StoreProductResult() { }
 
-		public StoreProduct Product { get; internal set; }
+		public StoreProduct Product { get; internal set; } = null!;
 
-		public Exception ExtendedError { get; internal set; }
+		public Exception ExtendedError { get; internal set; } = null!;
 
 	}
 }

@@ -64,7 +64,7 @@ public sealed partial class MessageDialog
 				var show = default(Task<IUICommand>);
 				await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => show = ShowInnerAsync(ct));
 
-				return await show;
+				return await show!;
 			}
 		});
 	}

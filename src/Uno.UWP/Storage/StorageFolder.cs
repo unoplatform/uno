@@ -71,7 +71,7 @@ namespace Windows.Storage
 		public IAsyncOperation<StorageFolder> GetFolderAsync(string name) =>
 			AsyncOperation.FromTask(ct => Implementation.GetFolderAsync(name, ct));
 
-		public IAsyncOperation<IStorageItem> TryGetItemAsync(string name) =>
+		public IAsyncOperation<IStorageItem?> TryGetItemAsync(string name) =>
 			AsyncOperation.FromTask(ct => Implementation.TryGetItemAsync(name, ct));
 
 		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName) =>
@@ -97,7 +97,7 @@ namespace Windows.Storage
 		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetBasicPropertiesAsync(ct));
 
-		public IAsyncOperation<StorageFolder> GetParentAsync() =>
+		public IAsyncOperation<StorageFolder?> GetParentAsync() =>
 			AsyncOperation.FromTask(ct => Implementation.GetParentAsync(ct));
 
 		public bool IsEqual(IStorageItem item) => Implementation.IsEqual(item);

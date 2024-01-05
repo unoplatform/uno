@@ -4,43 +4,43 @@ namespace Windows.Data.Xml.Dom
 {
 	public partial interface IXmlNode : IXmlNodeSelector, IXmlNodeSerializer
 	{
-		XmlNamedNodeMap Attributes { get; }
+		XmlNamedNodeMap? Attributes { get; }
 
 		XmlNodeList ChildNodes { get; }
 
-		IXmlNode FirstChild { get; }
+		IXmlNode? FirstChild { get; }
 
-		IXmlNode LastChild { get; }
+		IXmlNode? LastChild { get; }
 
 		object LocalName { get; }
 
 		object NamespaceUri { get; }
 
-		IXmlNode NextSibling { get; }
+		IXmlNode? NextSibling { get; }
 
 		string NodeName { get; }
 
 		NodeType NodeType { get; }
 
-		object NodeValue { get; set; }
+		object? NodeValue { get; set; }
 
 		XmlDocument OwnerDocument { get; }
 
-		IXmlNode ParentNode { get; }
+		IXmlNode? ParentNode { get; }
 
 		object Prefix { get; set; }
 
-		IXmlNode PreviousSibling { get; }
+		IXmlNode? PreviousSibling { get; }
 
 		bool HasChildNodes();
 
-		IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild);
+		IXmlNode? InsertBefore(IXmlNode newChild, IXmlNode referenceChild);
 
 		IXmlNode ReplaceChild(IXmlNode newChild, IXmlNode referenceChild);
 
 		IXmlNode RemoveChild(IXmlNode childNode);
 
-		IXmlNode AppendChild(IXmlNode newChild);
+		IXmlNode? AppendChild(IXmlNode newChild);
 
 		IXmlNode CloneNode(bool deep);
 

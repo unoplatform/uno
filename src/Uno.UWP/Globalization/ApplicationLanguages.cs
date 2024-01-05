@@ -6,6 +6,7 @@ using Windows.Storage;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Globalization
 {
@@ -124,10 +125,11 @@ namespace Windows.Globalization
 			return languages
 				.Where(l => !string.IsNullOrWhiteSpace(l))
 				.Distinct()
-				.ToArray();
+				.ToArray()!;
 		}
 #endif
 
+		[MemberNotNull(nameof(Languages))]
 		private static void ApplyLanguages()
 		{
 			var overridenLanguage = PrimaryLanguageOverride;
@@ -150,7 +152,7 @@ namespace Windows.Globalization
 			}
 		}
 
-		private static Regex _cultureFormatRegex;
+		private static Regex? _cultureFormatRegex;
 
 		private static CultureInfo CreateCulture(string cultureId)
 		{

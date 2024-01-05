@@ -27,8 +27,8 @@ namespace Windows.Graphics.Display
 
 		private static DisplayOrientations _autoRotationPreferences;
 
-		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
-		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
+		private TypedEventHandler<DisplayInformation, object>? _orientationChanged;
+		private TypedEventHandler<DisplayInformation, object?>? _dpiChanged;
 
 		private DisplayInformation()
 		{

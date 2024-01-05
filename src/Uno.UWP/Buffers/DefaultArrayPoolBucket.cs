@@ -21,7 +21,7 @@ namespace Uno.Buffers
 		private sealed class Bucket
 		{
 			internal readonly int _bufferLength;
-			private readonly T[][] _buffers;
+			private readonly T[]?[] _buffers;
 			private readonly int _poolId;
 			private static readonly int SizeOfT = Unsafe.SizeOf<T>();
 
@@ -50,10 +50,10 @@ namespace Uno.Buffers
 			internal int Id => GetHashCode();
 
 			/// <summary>Takes an array from the bucket.  If the bucket is empty, returns null.</summary>
-			internal T[] Rent()
+			internal T[]? Rent()
 			{
-				T[][] buffers = _buffers;
-				T[] buffer = null;
+				T[]?[] buffers = _buffers;
+				T[]? buffer = null;
 
 				// While holding the lock, grab whatever is at the next available index and
 				// update the index.  We do as little work as possible while holding the spin
@@ -104,7 +104,7 @@ namespace Uno.Buffers
 
 			private void TrimOne()
 			{
-				T[][] buffers = _buffers;
+				T[]?[] buffers = _buffers;
 
 				// While holding the lock, grab whatever is at the next available index and
 				// update the index.  We do as little work as possible while holding the spin

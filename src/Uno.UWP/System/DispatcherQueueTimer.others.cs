@@ -14,7 +14,7 @@ partial class DispatcherQueueTimer
 {
 	private readonly TimeSpan _minInterval = TimeSpan.FromMilliseconds(1);
 
-	private Timer _timer;
+	private Timer? _timer;
 
 	private void ScheduleTickNative(TimeSpan interval)
 	{

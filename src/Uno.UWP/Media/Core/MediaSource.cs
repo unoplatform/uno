@@ -5,7 +5,7 @@ namespace Windows.Media.Core
 {
 	public partial class MediaSource : IDisposable, IMediaPlaybackSource
 	{
-		public Uri Uri { get; private set; }
+		public Uri Uri { get; private set; } = null!;
 
 		public static MediaSource CreateFromUri(Uri uri)
 		{

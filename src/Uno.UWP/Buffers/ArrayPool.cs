@@ -25,7 +25,7 @@ namespace Uno.Buffers
 	internal partial class ArrayPool<T>
 	{
 		/// <summary>The lazily-initialized shared pool instance.</summary>
-		private static ArrayPool<T> s_sharedInstance;
+		private static ArrayPool<T>? s_sharedInstance;
 
 		/// <summary>
 		/// Retrieves a shared <see cref="ArrayPool{T}"/> instance.

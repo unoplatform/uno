@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Core;
 public static partial class CoreApplication
 {
 	private static CoreApplicationView _currentView;
-	private static List<CoreApplicationView> _views;
+	private static List<CoreApplicationView>? _views;
 
 	static CoreApplication()
 	{
@@ -27,28 +27,28 @@ public static partial class CoreApplication
 	/// <summary>
 	/// Occurs when an app is resuming.
 	/// </summary>
-	public static event EventHandler<object> Resuming;
+	public static event EventHandler<object?>? Resuming;
 
 	/// <summary>
 	/// Occurs when the app is suspending.
 	/// </summary>
-	public static event EventHandler<SuspendingEventArgs> Suspending;
+	public static event EventHandler<SuspendingEventArgs>? Suspending;
 
 	/// <summary>
 	/// Fired when the app enters the running in the background state.
 	/// </summary>
-	public static event EventHandler<EnteredBackgroundEventArgs> EnteredBackground;
+	public static event EventHandler<EnteredBackgroundEventArgs>? EnteredBackground;
 
 	/// <summary>
 	/// Fired just before application UI becomes visible.
 	/// </summary>
-	public static event EventHandler<LeavingBackgroundEventArgs> LeavingBackground;
+	public static event EventHandler<LeavingBackgroundEventArgs>? LeavingBackground;
 
 #if __ANDROID__ || __SKIA__ || __MACOS__
 	/// <summary>
 	/// Occurs when the app is shutting down.
 	/// </summary>
-	public static event EventHandler<object> Exiting;
+	public static event EventHandler<object?>? Exiting;
 #endif
 
 	/// <summary>

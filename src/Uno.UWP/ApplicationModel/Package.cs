@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
-		private StorageFolder _installedLocation;
+		private StorageFolder? _installedLocation;
 
 		internal Package() => InitializePlatform();
 

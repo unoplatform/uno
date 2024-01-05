@@ -25,37 +25,37 @@ namespace Windows.Data.Xml.Dom
 		public object Prefix
 		{
 			get => _backingText.Prefix;
-			set => _backingText.Prefix = value?.ToString();
+			set => _backingText.Prefix = value.ToString()!;
 		}
 
-		public object NodeValue
+		public object? NodeValue
 		{
 			get => _backingText.Data;
 			set => _backingText.Data = value?.ToString();
 		}
-		public IXmlNode FirstChild => (IXmlNode)_owner.Wrap(_backingText.FirstChild);
+		public IXmlNode? FirstChild => (IXmlNode?)_owner.Wrap(_backingText.FirstChild);
 
-		public IXmlNode LastChild => (IXmlNode)_owner.Wrap(_backingText.LastChild);
+		public IXmlNode? LastChild => (IXmlNode?)_owner.Wrap(_backingText.LastChild);
 
 		public object LocalName => _backingText.LocalName;
 
 		public object NamespaceUri => _backingText.NamespaceURI;
 
-		public IXmlNode NextSibling => (IXmlNode)_backingText.NextSibling;
+		public IXmlNode? NextSibling => (IXmlNode?)_backingText.NextSibling;
 
 		public string NodeName => _backingText.Name;
 
 		public Dom.NodeType NodeType => Dom.NodeType.TextNode;
 
-		public XmlNamedNodeMap Attributes => (XmlNamedNodeMap)_owner.Wrap(_backingText.Attributes);
+		public XmlNamedNodeMap? Attributes => (XmlNamedNodeMap?)_owner.Wrap(_backingText.Attributes);
 
 		public XmlDocument OwnerDocument => _owner;
 
 		public XmlNodeList ChildNodes => (XmlNodeList)_owner.Wrap(_backingText.ChildNodes);
 
-		public IXmlNode ParentNode => (IXmlNode)_owner.Wrap(_backingText.ParentNode);
+		public IXmlNode? ParentNode => (IXmlNode?)_owner.Wrap(_backingText.ParentNode);
 
-		public IXmlNode PreviousSibling => (IXmlNode)_owner.Wrap(_backingText.PreviousSibling);
+		public IXmlNode? PreviousSibling => (IXmlNode?)_owner.Wrap(_backingText.PreviousSibling);
 
 		public string InnerText
 		{
@@ -77,8 +77,8 @@ namespace Windows.Data.Xml.Dom
 
 		public bool HasChildNodes() => _backingText.HasChildNodes;
 
-		public IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
-			(IXmlNode)_owner.Wrap(
+		public IXmlNode? InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
+			(IXmlNode?)_owner.Wrap(
 				_backingText.InsertBefore(
 					(SystemXmlNode)_owner.Unwrap(newChild),
 					(SystemXmlNode)_owner.Unwrap(referenceChild)));
@@ -94,8 +94,8 @@ namespace Windows.Data.Xml.Dom
 				_backingText.RemoveChild(
 					(SystemXmlNode)_owner.Unwrap(childNode)));
 
-		public IXmlNode AppendChild(IXmlNode newChild) =>
-			(IXmlNode)_owner.Wrap(
+		public IXmlNode? AppendChild(IXmlNode newChild) =>
+			(IXmlNode?)_owner.Wrap(
 				_backingText.AppendChild(
 					(SystemXmlNode)_owner.Unwrap(newChild)));
 
@@ -103,9 +103,9 @@ namespace Windows.Data.Xml.Dom
 
 		public void Normalize() => _backingText.Normalize();
 
-		public IXmlNode SelectSingleNode(string xpath) => (IXmlNode)_owner.Wrap(_backingText.SelectSingleNode(xpath));
+		public IXmlNode? SelectSingleNode(string xpath) => (IXmlNode?)_owner.Wrap(_backingText.SelectSingleNode(xpath));
 
-		public XmlNodeList SelectNodes(string xpath) => (XmlNodeList)_owner.Wrap(_backingText.SelectNodes(xpath));
+		public XmlNodeList? SelectNodes(string xpath) => (XmlNodeList?)_owner.Wrap(_backingText.SelectNodes(xpath));
 
 		public string GetXml() => _backingText.OuterXml;
 	}

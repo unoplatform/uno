@@ -18,7 +18,7 @@ public struct DisplayId : IEquatable<DisplayId>
 	public bool Equals(DisplayId other)
 		=> Value == other.Value;
 
-	public override bool Equals(object obj)
+	public override bool Equals(object? obj)
 		=> (obj is DisplayId y) && Equals(y);
 
 	public override int GetHashCode()

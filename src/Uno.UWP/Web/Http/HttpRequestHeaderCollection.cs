@@ -38,7 +38,7 @@ public partial class HttpRequestHeaderCollection : IDictionary<string, string>, 
 				return;
 			}
 
-			_dictionary["Referer"] = new Uri(_requestMessage.RequestUri, value).AbsoluteUri;
+			_dictionary["Referer"] = new Uri(_requestMessage.RequestUri!, value).AbsoluteUri;
 		}
 	}
 
@@ -199,7 +199,7 @@ public partial class HttpRequestHeaderCollection : IDictionary<string, string>, 
 		{
 			if (key.Equals("Referer", StringComparison.Ordinal))
 			{
-				_dictionary[key] = new Uri(_requestMessage.RequestUri, value).AbsoluteUri;
+				_dictionary[key] = new Uri(_requestMessage.RequestUri!, value).AbsoluteUri;
 			}
 			else
 			{

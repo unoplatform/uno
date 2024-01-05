@@ -4,7 +4,7 @@ namespace Windows.Media.Playback;
 
 public partial class MediaPlayerFailedEventArgs
 {
-	internal MediaPlayerFailedEventArgs(MediaPlayerError error, string errorMessage, Exception extendedErrorCode)
+	internal MediaPlayerFailedEventArgs(MediaPlayerError error, string? errorMessage, Exception? extendedErrorCode)
 	{
 		Error = error;
 		ErrorMessage = errorMessage;
@@ -16,12 +16,12 @@ public partial class MediaPlayerFailedEventArgs
 		get;
 	}
 
-	public string ErrorMessage
+	public string? ErrorMessage
 	{
 		get;
 	}
 
-	public global::System.Exception ExtendedErrorCode
+	public global::System.Exception? ExtendedErrorCode
 	{
 		get;
 	}

@@ -66,7 +66,7 @@ public partial class Appointment
 	/// Gets or sets the organizer of the appointment. Organizer is of type AppointmentOrganizer.
 	/// The number of invitees is unlimited.
 	/// </summary>
-	public AppointmentOrganizer Organizer { get; set; } // Android: string = email; Win: Address (email), DisplayName (optional)
+	public AppointmentOrganizer? Organizer { get; set; } // Android: string = email; Win: Address (email), DisplayName (optional)
 
 	/// <summary>
 	/// Gets or sets a time span value. The value declares the amount of time

@@ -43,6 +43,6 @@ public static partial class NetworkInformation
 	}
 
 	internal static void OnNetworkStatusChanged() =>
-		_networkStatusChanged.Event?.Invoke(null);
+		_networkStatusChanged.Event?.Invoke(null!);
 }
 #endif

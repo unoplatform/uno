@@ -19,6 +19,6 @@ partial class WinRTFeatureConfiguration
 		/// which displays the MessageDialog. Should be set to a name (Key)
 		/// of a Application-level ContentDialog style resource.
 		/// </summary>
-		public static string StyleOverride { get; set; }
+		public static string? StyleOverride { get; set; }
 	}
 }

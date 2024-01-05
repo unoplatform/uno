@@ -49,7 +49,7 @@ public partial class Package
 	internal static void SetEntryAssembly(Assembly entryAssembly)
 	{
 		_entryAssembly = entryAssembly;
-		Current.Id.Name = entryAssembly.GetName().Name; // Set the package name to the entry assembly name by default.
+		Current.Id.Name = entryAssembly.GetName().Name!; // Set the package name to the entry assembly name by default.
 		Current.ParsePackageManifest();
 		IsManifestInitialized = true;
 	}

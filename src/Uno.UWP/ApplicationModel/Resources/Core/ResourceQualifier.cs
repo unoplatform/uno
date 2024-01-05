@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -21,7 +23,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 		public string QualifierValue { get; }
 
-		internal static ResourceQualifier Parse(string str)
+		internal static ResourceQualifier? Parse(string str)
 		{
 			if (IsLanguageTag(str))
 			{
@@ -50,7 +52,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 		#region Language helpers
 
-		private static HashSet<string> _languageTags;
+		private static HashSet<string>? _languageTags;
 		private static HashSet<string> LanguageTags
 		{
 			get

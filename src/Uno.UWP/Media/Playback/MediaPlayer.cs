@@ -18,8 +18,8 @@ namespace Windows.Media.Playback
 
 		#region Properties
 
-		private IMediaPlaybackSource _source;
-		public IMediaPlaybackSource Source
+		private IMediaPlaybackSource? _source;
+		public IMediaPlaybackSource? Source
 		{
 			get => _source;
 			set
@@ -71,21 +71,21 @@ namespace Windows.Media.Playback
 
 		#region Events
 
-		public event TypedEventHandler<MediaPlayer, object> SourceChanged;
+		public event TypedEventHandler<MediaPlayer, object?>? SourceChanged;
 
-		public event TypedEventHandler<MediaPlayer, object> IsMutedChanged;
+		public event TypedEventHandler<MediaPlayer, object>? IsMutedChanged;
 
-		public event TypedEventHandler<MediaPlayer, object> VolumeChanged;
+		public event TypedEventHandler<MediaPlayer, object?>? VolumeChanged;
 
-		public event TypedEventHandler<MediaPlayer, object> MediaEnded;
+		public event TypedEventHandler<MediaPlayer, object>? MediaEnded;
 
-		public event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs> MediaFailed;
+		public event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs>? MediaFailed;
 
-		public event TypedEventHandler<MediaPlayer, object> MediaOpened;
+		public event TypedEventHandler<MediaPlayer, object>? MediaOpened;
 
-		public event TypedEventHandler<MediaPlayer, object> SeekCompleted;
+		public event TypedEventHandler<MediaPlayer, object>? SeekCompleted;
 
-		public event TypedEventHandler<MediaPlayer, object> NaturalVideoDimensionChanged;
+		public event TypedEventHandler<MediaPlayer, object?>? NaturalVideoDimensionChanged;
 
 		#endregion
 

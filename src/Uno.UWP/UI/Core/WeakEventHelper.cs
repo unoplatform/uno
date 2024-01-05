@@ -47,7 +47,7 @@ namespace Windows.UI.Core
 		{
 			var wr = new WeakReference(handler);
 
-			GenericEventHandler genericHandler = null;
+			GenericEventHandler genericHandler = null!;
 
 			// This weak reference ensure that the closure will not link
 			// the caller and the callee, in the same way "newValueActionWeak" 
@@ -86,7 +86,7 @@ namespace Windows.UI.Core
 
 				// Force a closure on the callback, to make its lifetime as long 
 				// as the subscription being held by the callee.
-				handler = null;
+				handler = null!;
 			});
 		}
 

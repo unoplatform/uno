@@ -17,22 +17,22 @@ namespace Windows.Data.Xml.Dom
 		public object Prefix
 		{
 			get => _backingDocumentFragment.Prefix;
-			set => _backingDocumentFragment.Prefix = value?.ToString();
+			set => _backingDocumentFragment.Prefix = value.ToString()!;
 		}
 
-		public object NodeValue
+		public object? NodeValue
 		{
 			get => _backingDocumentFragment.Value;
 			set => _backingDocumentFragment.Value = value?.ToString();
 		}
 
-		public IXmlNode FirstChild => (IXmlNode)_owner.Wrap(_backingDocumentFragment.FirstChild);
+		public IXmlNode? FirstChild => (IXmlNode?)_owner.Wrap(_backingDocumentFragment.FirstChild);
 
-		public IXmlNode LastChild => (IXmlNode)_owner.Wrap(_backingDocumentFragment.LastChild);
+		public IXmlNode? LastChild => (IXmlNode?)_owner.Wrap(_backingDocumentFragment.LastChild);
 
 		public object LocalName => _backingDocumentFragment.LocalName;
 
-		public IXmlNode NextSibling => (IXmlNode)_owner.Wrap(_backingDocumentFragment.NextSibling);
+		public IXmlNode? NextSibling => (IXmlNode?)_owner.Wrap(_backingDocumentFragment.NextSibling);
 
 		public object NamespaceUri => _backingDocumentFragment.NamespaceURI;
 
@@ -40,15 +40,15 @@ namespace Windows.Data.Xml.Dom
 
 		public string NodeName => _backingDocumentFragment.Name;
 
-		public XmlNamedNodeMap Attributes => (XmlNamedNodeMap)_owner.Wrap(_backingDocumentFragment.Attributes);
+		public XmlNamedNodeMap? Attributes => (XmlNamedNodeMap?)_owner.Wrap(_backingDocumentFragment.Attributes);
 
 		public XmlDocument OwnerDocument => _owner;
 
-		public IXmlNode ParentNode => (IXmlNode)_owner.Wrap(_backingDocumentFragment.ParentNode);
+		public IXmlNode? ParentNode => (IXmlNode?)_owner.Wrap(_backingDocumentFragment.ParentNode);
 
 		public XmlNodeList ChildNodes => (XmlNodeList)_owner.Wrap(_backingDocumentFragment.ChildNodes);
 
-		public IXmlNode PreviousSibling => (IXmlNode)_owner.Wrap(_backingDocumentFragment.PreviousSibling);
+		public IXmlNode? PreviousSibling => (IXmlNode?)_owner.Wrap(_backingDocumentFragment.PreviousSibling);
 
 		public string InnerText
 		{
@@ -58,8 +58,8 @@ namespace Windows.Data.Xml.Dom
 
 		public bool HasChildNodes() => _backingDocumentFragment.HasChildNodes;
 
-		public IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
-			(IXmlNode)_owner.Wrap(
+		public IXmlNode? InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
+			(IXmlNode?)_owner.Wrap(
 				_backingDocumentFragment.InsertBefore(
 					(SystemXmlNode)_owner.Unwrap(newChild),
 					(SystemXmlNode)_owner.Unwrap(referenceChild)));
@@ -75,8 +75,8 @@ namespace Windows.Data.Xml.Dom
 				_backingDocumentFragment.RemoveChild(
 					(SystemXmlNode)_owner.Unwrap(childNode)));
 
-		public IXmlNode AppendChild(IXmlNode newChild) =>
-			(IXmlNode)_owner.Wrap(
+		public IXmlNode? AppendChild(IXmlNode newChild) =>
+			(IXmlNode?)_owner.Wrap(
 				_backingDocumentFragment.AppendChild(
 					(SystemXmlNode)_owner.Unwrap(newChild)));
 
@@ -84,9 +84,9 @@ namespace Windows.Data.Xml.Dom
 
 		public void Normalize() => _backingDocumentFragment.Normalize();
 
-		public IXmlNode SelectSingleNode(string xpath) => (IXmlNode)_owner.Wrap(_backingDocumentFragment.SelectSingleNode(xpath));
+		public IXmlNode? SelectSingleNode(string xpath) => (IXmlNode?)_owner.Wrap(_backingDocumentFragment.SelectSingleNode(xpath));
 
-		public XmlNodeList SelectNodes(string xpath) => (XmlNodeList)_owner.Wrap(_backingDocumentFragment.SelectNodes(xpath));
+		public XmlNodeList? SelectNodes(string xpath) => (XmlNodeList?)_owner.Wrap(_backingDocumentFragment.SelectNodes(xpath));
 
 		public string GetXml() => _backingDocumentFragment.OuterXml;
 	}

@@ -19,7 +19,7 @@ namespace Windows.UI.ViewManagement
 	/// To ensure the class does not get garbage collected, keep a strong reference to it.</remarks>
 	public partial class UISettings
 	{
-		private static readonly ConcurrentDictionary<WeakReference<UISettings>, object> _instances = new ConcurrentDictionary<WeakReference<UISettings>, object>();
+		private static readonly ConcurrentDictionary<WeakReference<UISettings>, object?> _instances = new ConcurrentDictionary<WeakReference<UISettings>, object?>();
 		private readonly WeakReference<UISettings> _weakReference;
 
 		public UISettings()
@@ -54,7 +54,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public event TypedEventHandler<UISettings, object> ColorValuesChanged;
+		public event TypedEventHandler<UISettings, object?>? ColorValuesChanged;
 
 #if !__ANDROID__
 		public bool AnimationsEnabled => true;
@@ -232,10 +232,10 @@ namespace Windows.UI.ViewManagement
 
 #pragma warning disable 67
 		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> TextScaleFactorChanged;
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object>? TextScaleFactorChanged;
 
 		[global::Uno.NotImplemented]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object> AdvancedEffectsEnabledChanged;
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, object>? AdvancedEffectsEnabledChanged;
 #pragma warning restore 67
 	}
 }

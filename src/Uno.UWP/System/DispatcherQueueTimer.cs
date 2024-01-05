@@ -41,7 +41,7 @@ public partial class DispatcherQueueTimer
 	/// <summary>
 	/// Occurs when the timer interval has elapsed.
 	/// </summary>
-	public event TypedEventHandler<DispatcherQueueTimer, object> Tick;
+	public event TypedEventHandler<DispatcherQueueTimer, object?>? Tick;
 
 	/// <summary>
 	/// Gets and sets the interval for the timer.
@@ -86,7 +86,7 @@ public partial class DispatcherQueueTimer
 	/// <summary>
 	/// An internal state that can be used to store a value in order to prevent a closure in the click handler.
 	/// </summary>
-	internal object State { get; set; }
+	internal object? State { get; set; }
 
 	public void Start()
 	{

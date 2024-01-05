@@ -15,14 +15,14 @@ namespace Uno.Devices.Enumeration.Internal
 
 		bool CanWatch { get; }
 
-		event EventHandler<DeviceInformation> WatchAdded;
+		event EventHandler<DeviceInformation>? WatchAdded;
 
-		event EventHandler<DeviceInformation> WatchEnumerationCompleted;
+		event EventHandler<DeviceInformation>? WatchEnumerationCompleted;
 
-		event EventHandler<DeviceInformationUpdate> WatchRemoved;
+		event EventHandler<DeviceInformationUpdate>? WatchRemoved;
 
-		event EventHandler<object> WatchStopped;
+		event EventHandler<object>? WatchStopped;
 
-		event EventHandler<DeviceInformationUpdate> WatchUpdated;
+		event EventHandler<DeviceInformationUpdate>? WatchUpdated;
 	}
 }
