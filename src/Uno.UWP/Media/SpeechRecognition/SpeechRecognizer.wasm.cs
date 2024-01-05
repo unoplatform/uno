@@ -20,7 +20,7 @@ namespace Windows.Media.SpeechRecognition
 
 		private readonly Guid _instanceId = Guid.NewGuid();
 
-		private TaskCompletionSource<SpeechRecognitionResult> _currentCompletionSource;
+		private TaskCompletionSource<SpeechRecognitionResult>? _currentCompletionSource;
 
 		[JSExport]
 		internal static int DispatchStatus(string instanceId, string state)
@@ -77,7 +77,7 @@ namespace Windows.Media.SpeechRecognition
 					Text = result,
 					RawConfidence = confidence
 				};
-				speechRecognizer?._currentCompletionSource.SetResult(recognitionResult);
+				speechRecognizer?._currentCompletionSource!.SetResult(recognitionResult);
 			}
 			return 0;
 		}

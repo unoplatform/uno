@@ -20,7 +20,7 @@ namespace Windows.Devices.Midi
 		private readonly object _syncLock = new object();
 		private readonly MidiMessageParser _parser = new MidiMessageParser();
 
-		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> _messageReceived;
+		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>? _messageReceived;
 
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.

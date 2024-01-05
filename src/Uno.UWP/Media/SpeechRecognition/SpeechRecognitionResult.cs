@@ -17,15 +17,15 @@ namespace Windows.Media.SpeechRecognition
 #if __WASM__
 		// TODO: Make a breaking change for Android and iOS and make the setters internal unconditionally.
 		public double RawConfidence { get; internal set; }
-		public string Text { get; internal set; }
+		public string Text { get; internal set; } = null!;
 #else
 		public double RawConfidence { get; set; }
 		public string Text { get; set; }
 #endif
 
-		internal IReadOnlyList<SpeechRecognitionResult> Alternates { get; set; }
+		internal IReadOnlyList<SpeechRecognitionResult>? Alternates { get; set; }
 
-		public IReadOnlyList<SpeechRecognitionResult> GetAlternates(uint maxAlternates) => Alternates?.Take((int)maxAlternates).ToList();
+		public IReadOnlyList<SpeechRecognitionResult>? GetAlternates(uint maxAlternates) => Alternates?.Take((int)maxAlternates).ToList();
 	}
 }
 #endif

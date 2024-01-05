@@ -8,14 +8,14 @@ namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice
 	{
-		private static VibrationDevice _instance;
+		private static VibrationDevice? _instance;
 		private static bool _initializationAttempted;
 
 		private VibrationDevice()
 		{
 		}
 
-		public static VibrationDevice GetDefault()
+		public static VibrationDevice? GetDefault()
 		{
 			if (!_initializationAttempted && _instance == null)
 			{

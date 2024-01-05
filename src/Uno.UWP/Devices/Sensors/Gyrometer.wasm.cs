@@ -18,7 +18,7 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public uint ReportInterval { get; set; }
 
-		private static Gyrometer TryCreateInstance()
+		private static Gyrometer? TryCreateInstance()
 		{
 			return NativeMethods.Initialize() ? new() : null;
 		}

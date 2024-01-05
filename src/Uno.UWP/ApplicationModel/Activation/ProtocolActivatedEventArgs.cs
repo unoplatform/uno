@@ -14,12 +14,6 @@ namespace Windows.ApplicationModel.Activation
 		IViewSwitcherProvider,
 		IActivatedEventArgsWithUser
 	{
-		internal ProtocolActivatedEventArgs()
-		{
-
-		}
-
-#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 		/// <summary>
 		/// Internal-only constructor for protocol activation.
 		/// </summary>
@@ -30,6 +24,8 @@ namespace Windows.ApplicationModel.Activation
 			Uri = uri;
 			PreviousExecutionState = previousExecutionState;
 		}
+
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 
 		/// <summary>
 		/// Gets the activation type.
@@ -47,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		public Uri Uri { get; }
 
 		[NotImplemented]
-		public SplashScreen SplashScreen
+		public SplashScreen? SplashScreen
 		{
 			get;
 		}

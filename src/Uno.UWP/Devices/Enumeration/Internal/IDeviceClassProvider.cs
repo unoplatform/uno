@@ -17,11 +17,11 @@ namespace Uno.Devices.Enumeration.Internal
 
 		event EventHandler<DeviceInformation>? WatchAdded;
 
-		event EventHandler<DeviceInformation>? WatchEnumerationCompleted;
+		event EventHandler<DeviceInformation?>? WatchEnumerationCompleted;
 
 		event EventHandler<DeviceInformationUpdate>? WatchRemoved;
 
-		event EventHandler<object>? WatchStopped;
+		event EventHandler<object?>? WatchStopped;
 
 		event EventHandler<DeviceInformationUpdate>? WatchUpdated;
 	}

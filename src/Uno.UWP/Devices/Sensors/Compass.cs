@@ -11,10 +11,10 @@ public partial class Compass
 {
 	private readonly static object _syncLock = new();
 
-	private static Compass _instance;
+	private static Compass? _instance;
 	private static bool _initializationAttempted;
 
-	private TypedEventHandler<Compass, CompassReadingChangedEventArgs> _readingChanged;
+	private TypedEventHandler<Compass, CompassReadingChangedEventArgs>? _readingChanged;
 
 	/// <summary>
 	/// Hides the public parameterless constructor
@@ -27,7 +27,7 @@ public partial class Compass
 	/// Returns the default compass.
 	/// </summary>
 	/// <returns>The default compass or null if no integrated compasses are found.</returns>
-	public static Compass GetDefault()
+	public static Compass? GetDefault()
 	{
 		if (_initializationAttempted)
 		{

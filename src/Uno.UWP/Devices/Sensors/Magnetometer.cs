@@ -15,10 +15,10 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly static object _syncLock = new object();
 
-		private static Magnetometer _instance;
+		private static Magnetometer? _instance;
 		private static bool _initializationAttempted;
 
-		private TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> _readingChanged;
+		private TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs>? _readingChanged;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
@@ -31,7 +31,7 @@ namespace Windows.Devices.Sensors
 		/// Returns the default magnetometer.
 		/// </summary>
 		/// <returns>The default magnetometer.</returns>
-		public static Magnetometer GetDefault()
+		public static Magnetometer? GetDefault()
 		{
 			if (_initializationAttempted)
 			{

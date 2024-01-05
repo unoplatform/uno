@@ -12,10 +12,10 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly static object _syncLock = new object();
 
-		private static Gyrometer _instance;
+		private static Gyrometer? _instance;
 		private static bool _initializationAttempted;
 
-		private TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> _readingChanged;
+		private TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs>? _readingChanged;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
@@ -28,7 +28,7 @@ namespace Windows.Devices.Sensors
 		/// Returns the default gyrometer.
 		/// </summary>
 		/// <returns>Null if no integrated gyrometers are found.</returns>
-		public static Gyrometer GetDefault()
+		public static Gyrometer? GetDefault()
 		{
 			if (_initializationAttempted)
 			{

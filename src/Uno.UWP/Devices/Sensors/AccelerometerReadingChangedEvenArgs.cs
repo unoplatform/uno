@@ -9,16 +9,12 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class AccelerometerReadingChangedEventArgs
 	{
-		internal AccelerometerReadingChangedEventArgs()
-		{
-
-		}
-
-#if __IOS__ || __ANDROID__ || __WASM__
 		internal AccelerometerReadingChangedEventArgs(AccelerometerReading reading)
 		{
 			Reading = reading;
 		}
+
+#if __IOS__ || __ANDROID__ || __WASM__
 
 		/// <summary>
 		/// Gets the most recent accelerometer reading.

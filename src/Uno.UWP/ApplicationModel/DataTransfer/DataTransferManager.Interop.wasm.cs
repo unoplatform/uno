@@ -13,7 +13,7 @@ namespace __Windows.ApplicationModel.DataTransfer
 			internal static partial bool IsSupported();
 
 			[JSImport($"{JsType}.showShareUI")]
-			internal static partial Task<string> ShowShareUIAsync(string title, string text, string uri);
+			internal static partial Task<string> ShowShareUIAsync(string title, string text, string? uri);
 		}
 	}
 }

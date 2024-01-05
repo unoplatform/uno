@@ -14,21 +14,7 @@ namespace Uno.Helpers.Serialization
 				throw new ArgumentNullException(nameof(json));
 			}
 
-			return System.Text.Json.JsonSerializer.Deserialize<T>(json);
-		}
-
-		public static bool TryDeserialize<T>(string json, out T value)
-		{
-			value = default;
-			try
-			{
-				value = Deserialize<T>(json);
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
+			return System.Text.Json.JsonSerializer.Deserialize<T>(json)!;
 		}
 
 		public static string Serialize<T>(T value)

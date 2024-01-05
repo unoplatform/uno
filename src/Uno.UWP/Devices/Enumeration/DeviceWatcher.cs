@@ -83,12 +83,12 @@ namespace Windows.Devices.Enumeration
 		/// <summary>
 		/// Event that is raised when the enumeration of devices completes.
 		/// </summary>
-		public event TypedEventHandler<DeviceWatcher, object>? EnumerationCompleted;
+		public event TypedEventHandler<DeviceWatcher, object?>? EnumerationCompleted;
 
 		/// <summary>
 		/// Event that is raised when the enumeration operation has been stopped.
 		/// </summary>
-		public event TypedEventHandler<DeviceWatcher, object>? Stopped;
+		public event TypedEventHandler<DeviceWatcher, object?>? Stopped;
 
 		private void Provider_WatchAdded(object? sender, DeviceInformation e) =>
 			Added?.Invoke(this, e);
@@ -99,7 +99,7 @@ namespace Windows.Devices.Enumeration
 		private void Provider_WatchRemoved(object? sender, DeviceInformationUpdate e) =>
 			Removed?.Invoke(this, e);
 
-		private void Provider_WatchEnumerationCompleted(object? sender, DeviceInformation e)
+		private void Provider_WatchEnumerationCompleted(object? sender, DeviceInformation? e)
 		{
 			_enumerationCounter++;
 			if (_enumerationCounter == _providers.Length)
@@ -109,7 +109,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 
-		private void Provider_WatchStopped(object? sender, object e)
+		private void Provider_WatchStopped(object? sender, object? e)
 		{
 			_stopCounter++;
 			if (_stopCounter == _providers.Length)

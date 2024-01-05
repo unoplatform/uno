@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />

@@ -24,11 +24,11 @@ public static partial class PowerManager
 	private static EnergySaverStatus? _lastEnergySaverStatus;
 #endif
 
-	private readonly static StartStopEventWrapper<EventHandler<object>> _powerSupplyStatusChanged;
-	private readonly static StartStopEventWrapper<EventHandler<object>> _remainingChargePercentChanged;
-	private readonly static StartStopEventWrapper<EventHandler<object>> _batteryStatusChanged;
+	private readonly static StartStopEventWrapper<EventHandler<object?>> _powerSupplyStatusChanged;
+	private readonly static StartStopEventWrapper<EventHandler<object?>> _remainingChargePercentChanged;
+	private readonly static StartStopEventWrapper<EventHandler<object?>> _batteryStatusChanged;
 #if __WASM__
-	private readonly static StartStopEventWrapper<EventHandler<object>> _remainingDischargeTimeChanged;
+	private readonly static StartStopEventWrapper<EventHandler<object?>> _remainingDischargeTimeChanged;
 #endif
 #if !__WASM__
 	private readonly static StartStopEventWrapper<EventHandler<object>> _energySaverStatusChanged;
@@ -78,26 +78,26 @@ public static partial class PowerManager
 	public static EnergySaverStatus EnergySaverStatus => GetEnergySaverStatus();
 #endif
 
-	public static event EventHandler<object> PowerSupplyStatusChanged
+	public static event EventHandler<object?> PowerSupplyStatusChanged
 	{
 		add => _powerSupplyStatusChanged.AddHandler(value);
 		remove => _powerSupplyStatusChanged.RemoveHandler(value);
 	}
 
-	public static event EventHandler<object> RemainingChargePercentChanged
+	public static event EventHandler<object?> RemainingChargePercentChanged
 	{
 		add => _remainingChargePercentChanged.AddHandler(value);
 		remove => _remainingChargePercentChanged.RemoveHandler(value);
 	}
 
-	public static event EventHandler<object> BatteryStatusChanged
+	public static event EventHandler<object?> BatteryStatusChanged
 	{
 		add => _batteryStatusChanged.AddHandler(value);
 		remove => _batteryStatusChanged.RemoveHandler(value);
 	}
 
 #if __WASM__
-	public static event EventHandler<object> RemainingDischargeTimeChanged
+	public static event EventHandler<object?> RemainingDischargeTimeChanged
 	{
 		add => _remainingDischargeTimeChanged.AddHandler(value);
 		remove => _remainingDischargeTimeChanged.RemoveHandler(value);
