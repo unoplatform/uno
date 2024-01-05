@@ -111,7 +111,7 @@ namespace Uno.UI.Tasks.Assets
 				{
 					var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
 
-					if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), CultureInfo.InvariantCulture, out var scale) && scale > HighDPIThresholdScale)
+					if (!UseHighDPIResources && int.TryParse(resourceCandidate.GetQualifierValue("scale"), out var scale) && scale > HighDPIThresholdScale)
 					{
 						Log.LogMessage($"Skipping '{asset.ItemSpec}' of scale {scale} because {nameof(UseHighDPIResources)} is false.");
 						continue;
