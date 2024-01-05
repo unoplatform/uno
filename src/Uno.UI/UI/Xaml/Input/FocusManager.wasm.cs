@@ -73,6 +73,10 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 
+		// The way focus management works natively (HTML live standard) is fundamentally different from
+		// WinUI focus management. In WinUI, elements gets focus when an explicit call is made (e.g.
+		// when a button is pressed, it focuses itself, etc.). However, in a browser, clicking on an
+		// html element will simply focus that element (assuming it's focusable).
 		internal static bool FocusNative(UIElement element)
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))
