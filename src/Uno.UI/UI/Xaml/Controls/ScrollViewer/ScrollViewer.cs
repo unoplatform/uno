@@ -1609,9 +1609,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
-// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
-// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
+		// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
+		// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
+		// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{

@@ -2046,6 +2046,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Arrow_keys_ListView_Only_Scrolled_As_Needed()
+		{
+			var SUT = new ListView
+			{
+				Height = 120, // fits 2 items and a bit
+				ItemsSource = "12345"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var sv = (ScrollViewer)SUT.GetTemplateChild("ScrollViewer");
+			var lvi = (ListViewItem)SUT.ContainerFromIndex(0);
+
+			lvi.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, sv.VerticalOffset);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, sv.VerticalOffset);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+
+			sv.VerticalOffset.Should().BeApproximately(lvi.ActualHeight * 3 - 120, 2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
