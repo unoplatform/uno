@@ -172,6 +172,8 @@ namespace Microsoft.UI.Xaml.Controls
 					throw new ArgumentOutOfRangeException();
 			}
 
+			// StartBringIntoView shouldn't be needed, since the internal ScrollViewer has BringIntoViewOnFocusChange
+			// but since that property isn't currently supported, we have to manually BringIntoView.
 			newContainer?.StartBringIntoView(new BringIntoViewOptions()
 			{
 				AnimationDesired = false

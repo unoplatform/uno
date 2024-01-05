@@ -1617,7 +1617,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var key = args.Key;
 
-			if (Presenter is null)
+			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
+			// but interestingly that doesn't seem to affect pointer wheel scrolling
+			// despite the generic name implying that it would stop all scrolling
+			if (Presenter is null || TemplatedParentHandlesScrolling)
 			{
 				return;
 			}
