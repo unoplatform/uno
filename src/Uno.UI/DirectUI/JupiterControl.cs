@@ -1,4 +1,8 @@
-﻿namespace DirectUI;
+﻿#nullable enable
+
+using Windows.UI.Core;
+
+namespace DirectUI;
 
 internal class JupiterControl
 {
@@ -11,5 +15,10 @@ internal class JupiterControl
 
 	private JupiterControl()
 	{
+	}
+
+	internal void ConfigureJupiterWindow(CoreWindow? pCoreWindow)
+	{
+		// TODO Uno: This is not needed currently.
 	}
 }

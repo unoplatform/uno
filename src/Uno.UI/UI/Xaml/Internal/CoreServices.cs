@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Islands;
 using Uno.UI.Extensions;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.Xaml.Core
 {
@@ -76,6 +77,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
+		[MemberNotNull(nameof(_mainVisualTree))]
 		internal void InitCoreWindowContentRoot()
 		{
 			if (_mainVisualTree is not null)
@@ -160,6 +162,18 @@ namespace Uno.UI.Xaml.Core
 			}
 
 			_isTearingDownIsland = false;
+		}
+
+		internal void PutVisualRoot(DependencyObject? dependencyObject)
+		{
+			// ResetCoreWindowVisualTree();
+
+			InitCoreWindowContentRoot();
+
+			if (dependencyObject is UIElement uiElement)
+			{
+				_mainVisualTree.SetPublicRootVisual(uiElement, null, null);
+			}
 		}
 	}
 }
