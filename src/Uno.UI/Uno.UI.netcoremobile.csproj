@@ -17,8 +17,6 @@
 		<!-- Obsolete members CA1422 -->
 		<NoWarn>$(NoWarn);CA1422</NoWarn>
 
-		<Nullable>disable</Nullable>
-
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
