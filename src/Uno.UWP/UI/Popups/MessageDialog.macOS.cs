@@ -22,7 +22,7 @@ public partial class MessageDialog
 
 		var actualCommandOrder = new List<UICommand>();
 
-		UICommand defaultCommand = null;
+		UICommand? defaultCommand = null;
 		if (DefaultCommandIndex >= 0 &&
 			DefaultCommandIndex < Commands.Count)
 		{
@@ -62,7 +62,7 @@ public partial class MessageDialog
 
 			var commandIndex = (int)response - FirstButtonResultIndex;
 			var commandResponse = actualCommandOrder[commandIndex];
-			commandResponse?.Invoked?.Invoke(commandResponse);
+			commandResponse.Invoked?.Invoke(commandResponse);
 			return commandResponse;
 		});
 	}

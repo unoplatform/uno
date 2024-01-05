@@ -173,7 +173,7 @@ namespace Windows.Media.Playback
 			_videoLayer = AVPlayerLayer.FromPlayer(_player);
 			_videoLayer.Frame = ((VideoSurface)RenderSurface).Frame;
 			_videoLayer.VideoGravity = AVLayerVideoGravity.ResizeAspect;
-			((VideoSurface)RenderSurface).Layer.AddSublayer(_videoLayer);
+			((VideoSurface)RenderSurface).Layer!.AddSublayer(_videoLayer);
 #if __IOS__
 			var avSession = AVAudioSession.SharedInstance();
 			avSession.SetCategory(AVAudioSessionCategory.Playback);
