@@ -18,7 +18,6 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 using Color = Windows.UI.Color;
-using System.Globalization;
 using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml
