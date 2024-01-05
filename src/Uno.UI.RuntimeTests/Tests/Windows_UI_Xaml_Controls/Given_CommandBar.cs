@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.RuntimeTests.Helpers;
+<<<<<<< HEAD
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+=======
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+>>>>>>> bb648dd5f5 (chore: Add missing usings)
 using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
