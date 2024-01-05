@@ -101,29 +101,29 @@ partial class WindowsXamlManager
 			var pCore = DXamlCore.Current;
 			pCore.EnsureCoreApplicationInitialized();
 
-			// In XamlBridge mode, we can't use WinRT-only input.  Explicitly turn it off.
-			// TODO: OS bug 14726409
-			XamlOneCoreTransforms.EnsureInitialized(XamlOneCoreTransforms::InitMode::ForceDisable);
+			//// In XamlBridge mode, we can't use WinRT-only input.  Explicitly turn it off.
+			//// TODO: OS bug 14726409
+			//XamlOneCoreTransforms.EnsureInitialized(XamlOneCoreTransforms::InitMode::ForceDisable);
 
 
-			::EnableMouseInPointer(TRUE);
+			//::EnableMouseInPointer(TRUE);
 
-			// NotifyEndOfReferenceTrackingOnThread destroys all RCWs of the current thread including NON Xaml ones
-			// This will break text input as WPF maintains RCW for TSF among other things.
-			pCore.DisableNotifyEndOfReferenceTrackingOnThread();
+			//// NotifyEndOfReferenceTrackingOnThread destroys all RCWs of the current thread including NON Xaml ones
+			//// This will break text input as WPF maintains RCW for TSF among other things.
+			//pCore.DisableNotifyEndOfReferenceTrackingOnThread();
 
-			auto shutdownStartingCallback = WRLHelper::MakeAgileCallback<
-				wf::ITypedEventHandler<msy::DispatcherQueue*, msy::DispatcherQueueShutdownStartingEventArgs*>>
-				([](msy::IDispatcherQueue *, msy::IDispatcherQueueShutdownStartingEventArgs *)
+			//auto shutdownStartingCallback = WRLHelper::MakeAgileCallback<
+			//	wf::ITypedEventHandler<msy::DispatcherQueue*, msy::DispatcherQueueShutdownStartingEventArgs*>>
+			//	([](msy::IDispatcherQueue *, msy::IDispatcherQueueShutdownStartingEventArgs *)
 
-			{
-				tls_xamlCore->SyncCloseAllManagers();
-				return S_OK;
-			});
+			//{
+			//	tls_xamlCore->SyncCloseAllManagers();
+			//	return S_OK;
+			//});
 
-			IFCFAILFAST(m_dispatcherQueue3->add_FrameworkShutdownStarting(
-				shutdownStartingCallback.Get(),
-				&m_frameworkShutdownStartingToken));
+			//IFCFAILFAST(m_dispatcherQueue3->add_FrameworkShutdownStarting(
+			//	shutdownStartingCallback.Get(),
+			//	&m_frameworkShutdownStartingToken));
 		}
 
 		internal void AddManager(WindowsXamlManager manager)

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using Uno.UI.Xaml.Islands;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 /*
     +------------------------------------------------------------------------------------+

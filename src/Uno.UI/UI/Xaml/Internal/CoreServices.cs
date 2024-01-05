@@ -63,7 +63,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			if (_mainVisualTree is not null)
 			{
-				var xamlIslandRoot = _mainVisualTree.GetXamlIslandRootForElement(dependencyObject);
+				var xamlIslandRoot = VisualTree.GetXamlIslandRootForElement(dependencyObject);
 				if (xamlIslandRoot is not null)
 				{
 					return xamlIslandRoot;
@@ -127,9 +127,9 @@ namespace Uno.UI.Xaml.Core
 
 		internal void RemoveXamlIslandRoot(XamlIsland xamlIslandRoot)
 		{
-			_isTearingDownIsland = true;
+			// _isTearingDownIsland = true;
 
-			var xamlIslandRootCollection = (XamlIslandRootCollection)xamlIslandRoot.GetParentInternal(false /*publicOnly*/);
+			var xamlIslandRootCollection = (XamlIslandRootCollection?)xamlIslandRoot.GetParentInternal(false /*publicOnly*/);
 			if (_mainVisualTree is not null)
 			{
 				MUX_ASSERT(_mainVisualTree.XamlIslandRootCollection == xamlIslandRootCollection);
@@ -145,23 +145,24 @@ namespace Uno.UI.Xaml.Core
 
 			if (result)
 			{
-				xamlIslandRoot.Release();
+				// TODO Uno: Cleanup?
+				// xamlIslandRoot.Release();
 			}
 
 			// m_pNWWindowRenderTarget->GetDCompTreeHost()->RemoveXamlIslandTarget(xamlIslandRoot);
 
-			if (_inputServices is not null
-				&& InitializationType == InitializationType.IslandsOnly
-				&& xamlIslands.Count == 0)
-			{
-				// If the last island is going away and we're in "islands-only" mode, we have some extra cleanup to do.
-				// When tests run with non-island hosting, they set "Window.Content = null" at the end of the test,
-				// which calls CCoreServices::StartApplication and cleans up the pointer objects.  The equivalent in
-				// the islands-only case is to do this when the last island gets removed.
-				m_inputServices->DestroyPointerObjects();
-			}
+			//if (_inputServices is not null
+			//	&& InitializationType == InitializationType.IslandsOnly
+			//	&& xamlIslands.Count == 0)
+			//{
+			//	// If the last island is going away and we're in "islands-only" mode, we have some extra cleanup to do.
+			//	// When tests run with non-island hosting, they set "Window.Content = null" at the end of the test,
+			//	// which calls CCoreServices::StartApplication and cleans up the pointer objects.  The equivalent in
+			//	// the islands-only case is to do this when the last island gets removed.
+			//	m_inputServices->DestroyPointerObjects();
+			//}
 
-			_isTearingDownIsland = false;
+			//_isTearingDownIsland = false;
 		}
 
 		internal void PutVisualRoot(DependencyObject? dependencyObject)

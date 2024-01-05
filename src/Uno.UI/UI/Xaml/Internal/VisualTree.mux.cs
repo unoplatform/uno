@@ -247,7 +247,7 @@ partial class VisualTree
 	/// </remarks>
 	public VisualTree(CoreServices coreServices, Color backgroundColor, UIElement? rootElement, ContentRoot contentRoot)
 	{
-		_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
+		_core = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 		_coreContentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
 
 		if (rootElement is not null)
@@ -428,14 +428,14 @@ partial class VisualTree
 		return null;
 	}
 
-	internal static ContentRoot? GetContentRootForElement(DependencyObject dependencyObject, LookupOptions options = LookupOptions.WarningIfNotFound)
+	internal static ContentRoot? GetContentRootForElement(DependencyObject? dependencyObject, LookupOptions options = LookupOptions.WarningIfNotFound)
 	{
 		if (GetForElement(dependencyObject, options) is { } visualTree)
 		{
 			return visualTree.ContentRoot;
 		}
 
-		if (dependencyObject.GetContext().ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot is { } contentRoot)
+		if (dependencyObject?.GetContext().ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot is { } contentRoot)
 		{
 			return contentRoot;
 		}

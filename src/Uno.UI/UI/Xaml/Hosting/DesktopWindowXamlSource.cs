@@ -44,6 +44,6 @@ public partial class DesktopWindowXamlSource : IDisposable
 	internal void AttachToWindow(Window window)
 	{
 		ContentManager.AttachToWindow(XamlIsland, window);
-		_xamlIsland.OwnerWindow = window;
+		_spXamlIsland.OwnerWindow = window;
 	}
 }

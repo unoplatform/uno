@@ -70,7 +70,7 @@ partial class XamlIsland
 		}
 	}
 
-	internal static void OnSizeChanged(XamlIsland xamlIsland) => 
+	internal static void OnSizeChanged(XamlIsland xamlIsland) =>
 		xamlIsland._contentManager.OnWindowSizeChanged();
 
 	internal ScrollViewer? RootScrollViewer => _contentManager.RootScrollViewer;
@@ -81,7 +81,7 @@ partial class XamlIsland
 		CoreServices core = dxamlCore.GetHandle();
 		DependencyObject coreElement = element;
 		var coreXamlIsland = core.GetRootForElement(coreElement);
-		return coreXamlIsland;
+		return coreXamlIsland as XamlIsland;
 	}
 
 	// internal FocusController FocusController { get; }

@@ -48,9 +48,9 @@ partial class VisualTree
 
 	/// <summary>
 	/// RootElement is the parent of the roots.  For XAML app window content, this is the _rootVisual.
-	// For XamlIsland content, it's the XamlIslandRoot.
+	/// For XamlIsland content, it's the XamlIslandRoot.
 	/// </summary>
-	internal UIElement? RootElement => _rootElement;
+	internal UIElement RootElement => _rootElement;
 
 	internal UIElement? PublicRootVisual => _publicRootVisual;
 
@@ -62,7 +62,7 @@ partial class VisualTree
 	private readonly UIElement _rootElement;
 	private RootVisual? _rootVisual;
 	private PopupRoot? _popupRoot;
-	private Grid? _visualDiagnosticsRoot;
+	//private Grid? _visualDiagnosticsRoot;
 	private UIElement? _publicRootVisual;
 	private ScrollViewer? _rootScrollViewer;
 	private ContentPresenter? _rootContentPresenter;
@@ -82,7 +82,8 @@ partial class VisualTree
 
 	bool IsMainVisualTree => _rootVisual is not null;
 
-	bool _isRootScrollViewerAddedToRoot;
-	bool _shutdownInProgress;
-	bool _isShutdown;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+	//bool _isRootScrollViewerAddedToRoot;
+	private bool _shutdownInProgress;
+	private bool _isShutdown;
 }
