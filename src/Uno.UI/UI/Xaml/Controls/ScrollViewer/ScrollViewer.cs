@@ -1599,7 +1599,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
+// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
+// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
+// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			var key = args.Key;
