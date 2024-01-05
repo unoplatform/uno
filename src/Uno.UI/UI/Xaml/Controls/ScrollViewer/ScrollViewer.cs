@@ -1322,6 +1322,16 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
+
+#if __WASM__
+			// On WASM, a large wheel scroll can be a large number of OnScroll events in sequence.
+			// In that case, the queue will be drowning with scroll events before any chance of layout
+			// updates. The ScrollContentPresenter will scroll smoothly since the native scrolling/rendering
+			// is on a separate thread, but the ScrollBars will be frozen until the end of the (long) scrolling
+			// duration.
+			_horizontalScrollbar?.Arrange(_horizontalScrollbar.LayoutSlot);
+			_verticalScrollbar?.Arrange(_verticalScrollbar.LayoutSlot);
+#endif
 		}
 
 		// Presenter to Control, i.e. OnPresenterZoomed
