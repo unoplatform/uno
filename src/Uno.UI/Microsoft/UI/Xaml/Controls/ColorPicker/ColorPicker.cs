@@ -1069,9 +1069,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private Rgb GetRgbColorFromTextBoxes()
 		{
 			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_redTextBox?.Text, out int redValue);
-			_ = int.TryParse(m_greenTextBox?.Text, out int greenValue);
-			_ = int.TryParse(m_blueTextBox?.Text, out int blueValue);
+			_ = int.TryParse(m_redTextBox?.Text, CultureInfo.InvariantCulture, out int redValue);
+			_ = int.TryParse(m_greenTextBox?.Text, CultureInfo.InvariantCulture, out int greenValue);
+			_ = int.TryParse(m_blueTextBox?.Text, CultureInfo.InvariantCulture, out int blueValue);
 
 			return new Rgb(redValue / 255.0, greenValue / 255.0, blueValue / 255.0);
 		}
@@ -1079,9 +1079,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private Hsv GetHsvColorFromTextBoxes()
 		{
 			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_hueTextBox?.Text, out int hueValue);
-			_ = int.TryParse(m_saturationTextBox?.Text, out int saturationValue);
-			_ = int.TryParse(m_valueTextBox?.Text, out int valueValue);
+			_ = int.TryParse(m_hueTextBox?.Text, CultureInfo.InvariantCulture, out int hueValue);
+			_ = int.TryParse(m_saturationTextBox?.Text, CultureInfo.InvariantCulture, out int saturationValue);
+			_ = int.TryParse(m_valueTextBox?.Text, CultureInfo.InvariantCulture, out int valueValue);
 
 			return new Hsv(hueValue, saturationValue / 100.0, valueValue / 100.0);
 		}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Android.Animation;
@@ -245,7 +246,7 @@ namespace Uno.UI.Controls
 			{
 				int resourceId;
 
-				if (int.TryParse(UriSource.Replace("res:///", ""), out resourceId))
+				if (int.TryParse(UriSource.Replace("res:///", ""), CultureInfo.InvariantCulture, out resourceId))
 				{
 					SetImageResource(resourceId);
 				}

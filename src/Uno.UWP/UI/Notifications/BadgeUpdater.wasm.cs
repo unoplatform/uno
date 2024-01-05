@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Globalization;
 using Uno.Foundation;
 
 using NativeMethods = __Windows.UI.Notifications.BadgeUpdater.NativeMethods;
@@ -10,7 +11,7 @@ namespace Windows.UI.Notifications
 	{
 		partial void SetBadge(string? value)
 		{
-			if (int.TryParse(value, out var number))
+			if (int.TryParse(value, CultureInfo.InvariantCulture, out var number))
 			{
 				NativeMethods.SetNumber(number);
 			}
