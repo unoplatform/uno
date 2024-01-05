@@ -899,7 +899,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var classAccessibility = isTopLevel ? "" : "private";
 
 							WriteMetadataNewTypeAttribute(writer);
-
+							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 							using (writer.BlockInvariant($"{classAccessibility} class {className} {hrInterfaceImpl}"))
 							{
 								BuildBaseUri(writer);
