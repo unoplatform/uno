@@ -94,9 +94,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 			RemoveHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown));
-			RemoveHandler(PointerWheelChangedEvent, new KeyEventHandler(OnKeyDown));
+			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged));
 		}
 
-		private void OnKeyDown(object sender, KeyRoutedEventArgs args) => CancelNextNativeScroll = args.Handled;
+		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			// event got handled before it reached ScrollViewer, cancel scrolling
+			CancelNextNativeScroll = args.Handled;
+		}
 	}
 }
