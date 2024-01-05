@@ -24,15 +24,15 @@ namespace Uno.UI.StartScreen.Extensions
 					nameof(shortcut));
 			}
 
-			var jumpListItem = JumpListItem.CreateWithArguments(shortcut.Id, shortcut.ShortLabel);
+			var jumpListItem = JumpListItem.CreateWithArguments(shortcut.Id, shortcut.ShortLabel!);
 			if (!string.IsNullOrEmpty(shortcut.LongLabel))
 			{
 				jumpListItem.Description = shortcut.LongLabel;
 			}
-			if (shortcut.Extras.ContainsKey(JumpListItem.ImagePathKey))
+			if (shortcut.Extras!.ContainsKey(JumpListItem.ImagePathKey))
 			{
 				var imagePath = shortcut.Extras.GetString(JumpListItem.ImagePathKey);
-				jumpListItem.Logo = new Uri(imagePath);
+				jumpListItem.Logo = new Uri(imagePath!);
 			}
 			return jumpListItem;
 		}

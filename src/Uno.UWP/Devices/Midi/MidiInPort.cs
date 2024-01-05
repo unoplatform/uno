@@ -106,9 +106,9 @@ namespace Windows.Devices.Midi
 			return deviceIdentifier;
 		}
 
-		private void OnMessageReceived(byte[] message, int startingOffset, int length, TimeSpan timestamp)
+		private void OnMessageReceived(byte[]? message, int startingOffset, int length, TimeSpan timestamp)
 		{
-			if (message.Length == 0)
+			if (message is null || message.Length == 0)
 			{
 				// ignore empty message
 				return;

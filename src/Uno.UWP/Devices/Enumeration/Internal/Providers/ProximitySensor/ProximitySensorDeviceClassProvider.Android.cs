@@ -17,11 +17,11 @@ internal class ProximitySensorDeviceClassProvider : IDeviceClassProvider
 #pragma warning disable CS0067
 	public event EventHandler<DeviceInformation>? WatchAdded;
 
-	public event EventHandler<DeviceInformation>? WatchEnumerationCompleted;
+	public event EventHandler<DeviceInformation?>? WatchEnumerationCompleted;
 
 	public event EventHandler<DeviceInformationUpdate>? WatchRemoved;
 
-	public event EventHandler<object>? WatchStopped;
+	public event EventHandler<object?>? WatchStopped;
 
 	public event EventHandler<DeviceInformationUpdate>? WatchUpdated;
 #pragma warning restore CS0067

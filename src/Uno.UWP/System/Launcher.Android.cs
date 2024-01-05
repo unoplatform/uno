@@ -59,7 +59,7 @@ namespace Windows.System
 				var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
 				var intent = new Intent(Intent.ActionView, androidUri);
 
-				var manager = Uno.UI.ContextHelper.Current.PackageManager;
+				var manager = Uno.UI.ContextHelper.Current.PackageManager!;
 				var activity = intent.ResolveActivity(manager);
 
 				IList<ResolveInfo> supportedResolvedInfos = null;

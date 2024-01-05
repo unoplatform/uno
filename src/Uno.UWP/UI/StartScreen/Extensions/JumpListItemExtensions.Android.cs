@@ -16,7 +16,7 @@ namespace Uno.UI.StartScreen.Extensions
 		{
 			var builder = new ShortcutInfo.Builder(Application.Context, jumpListItem.Arguments);
 			var pm = Application.Context.PackageManager;
-			var intent = pm.GetLaunchIntentForPackage(Application.Context.PackageName);
+			var intent = pm!.GetLaunchIntentForPackage(Application.Context.PackageName!)!;
 			intent.PutExtra(JumpListItem.ArgumentsExtraKey, jumpListItem.Arguments);
 			builder.SetIntent(intent);
 			builder.SetShortLabel(

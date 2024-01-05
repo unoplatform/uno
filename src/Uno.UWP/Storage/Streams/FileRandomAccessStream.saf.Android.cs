@@ -14,7 +14,7 @@ namespace Windows.Storage.Streams
 		private class SafStream : ImplementationBase
 		{
 			private readonly Android.Net.Uri _fileUri;
-			private readonly IRentableStream _rentableStream;
+			private readonly IRentableStream? _rentableStream;
 			private readonly FileAccessMode _accessMode;
 
 			private SafStream(Android.Net.Uri fileUri, Stream stream) : base(stream)
@@ -39,7 +39,7 @@ namespace Windows.Storage.Streams
 
 				if (access == FileAccessMode.Read)
 				{
-					var backingStream = Application.Context.ContentResolver.OpenInputStream(fileUri);
+					var backingStream = Application.Context.ContentResolver!.OpenInputStream(fileUri)!;
 					return new SafStream(fileUri, backingStream);
 				}
 				else
@@ -54,12 +54,12 @@ namespace Windows.Storage.Streams
 			{
 				if (_accessMode == FileAccessMode.Read)
 				{
-					var newReadStream = Application.Context.ContentResolver.OpenInputStream(_fileUri);
+					var newReadStream = Application.Context.ContentResolver!.OpenInputStream(_fileUri)!;
 					return new FileRandomAccessStream(new SafStream(_fileUri, newReadStream));
 				}
 				else
 				{
-					var rentedStream = _rentableStream.Rent();
+					var rentedStream = _rentableStream!.Rent();
 					return new FileRandomAccessStream(new SafStream(_fileUri, rentedStream, _rentableStream));
 				}
 			}
@@ -71,7 +71,7 @@ namespace Windows.Storage.Streams
 					throw new NotSupportedException("The file has not been opened for read.");
 				}
 
-				var newReadStream = Application.Context.ContentResolver.OpenInputStream(_fileUri);
+				var newReadStream = Application.Context.ContentResolver!.OpenInputStream(_fileUri)!;
 
 				newReadStream.Seek((long)position, SeekOrigin.Begin);
 
@@ -85,7 +85,7 @@ namespace Windows.Storage.Streams
 					throw new NotSupportedException("The file has not been opened for write.");
 				}
 
-				var rentedStream = _rentableStream.Rent();
+				var rentedStream = _rentableStream!.Rent();
 
 				rentedStream.Seek((long)position, SeekOrigin.Begin);
 

@@ -7,10 +7,10 @@ namespace Windows.System.Power;
 
 internal class BatteryChangedBroadcastReceiver : BroadcastReceiver
 {
-	public override void OnReceive(Context context, Intent intent)
+	public override void OnReceive(Context? context, Intent? intent)
 	{
 		if (Intent.ActionBatteryLow.Equals(
-				intent.Action, StringComparison.InvariantCultureIgnoreCase) ||
+				intent!.Action, StringComparison.InvariantCultureIgnoreCase) ||
 			Intent.ActionBatteryOkay.Equals(
 				intent.Action, StringComparison.InvariantCultureIgnoreCase))
 		{

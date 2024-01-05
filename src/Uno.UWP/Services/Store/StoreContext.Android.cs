@@ -14,7 +14,7 @@ namespace Windows.Services.Store
 		{
 			return AsyncOperation.FromTask(ct =>
 			{
-				var storeId = ContextHelper.Current.PackageName;
+				var storeId = ContextHelper.Current.PackageName!;
 
 				return Task.FromResult(new StoreProductResult
 				{

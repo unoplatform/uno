@@ -19,8 +19,8 @@ namespace Windows.Extensions
 	/// </summary>
 	public class PermissionsHelper
 	{
-		private static FuncAsync<string, bool> _tryGetPermission;
-		private static FuncAsync<string, bool> _checkPermission;
+		private static FuncAsync<string, bool>? _tryGetPermission;
+		private static FuncAsync<string, bool>? _checkPermission;
 
 		internal static void Initialize(FuncAsync<string, bool> getter, FuncAsync<string, bool> checkPermission)
 		{
@@ -37,7 +37,7 @@ namespace Windows.Extensions
 		{
 			var context = Application.Context;
 #pragma warning disable CS0618 // Type or member is obsolete
-			var packageInfo = context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.Permissions);
+			var packageInfo = context.PackageManager!.GetPackageInfo(context.PackageName!, PackageInfoFlags.Permissions);
 #pragma warning restore CS0618 // Type or member is obsolete
 			var requestedPermissions = packageInfo?.RequestedPermissions;
 
@@ -56,7 +56,7 @@ namespace Windows.Extensions
 		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
 		public static Task<bool> TryGetPermission(CancellationToken ct, string permissionIdentifier)
-			=> _tryGetPermission(ct, permissionIdentifier);
+			=> _tryGetPermission!(ct, permissionIdentifier);
 
 		/// <summary>
 		/// Validate if a given permission was granted to the app but not request it to the user
@@ -69,7 +69,7 @@ namespace Windows.Extensions
 		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
 		public static Task<bool> CheckPermission(CancellationToken ct, string permissionIdentifier)
-			=> _checkPermission(ct, permissionIdentifier);
+			=> _checkPermission!(ct, permissionIdentifier);
 
 		/// <summary>
 		/// Manifest.Permission.AccessFineLocation

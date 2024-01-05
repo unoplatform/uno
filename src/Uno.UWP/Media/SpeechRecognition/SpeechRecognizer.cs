@@ -43,7 +43,7 @@ namespace Windows.Media.SpeechRecognition
 			});
 		}
 
-		private void OnHypothesisGenerated(string hypothesis)
+		private void OnHypothesisGenerated(string? hypothesis)
 		{
 			HypothesisGenerated?.Invoke(
 				this,

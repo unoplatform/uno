@@ -41,12 +41,12 @@ This usually means that the device is using an API older than 18 (4.3). More det
 			private const string _alias = "uno_passwordvault";
 			private static readonly byte[] _iv = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(_alias));
 
-			private readonly IKey _key;
+			private readonly IKey? _key;
 
-			public KeyStorePersister(string filePath = null)
+			public KeyStorePersister(string? filePath = null)
 				: base(filePath)
 			{
-				KeyStore store;
+				KeyStore? store;
 				try
 				{
 					store = KeyStore.GetInstance(_provider);
@@ -71,7 +71,7 @@ This usually means that the device is using an API older than 18 (4.3). More det
 				else
 				{
 					var generator = KeyGenerator.GetInstance(_algo, _provider);
-					generator.Init(new KeyGenParameterSpec.Builder(_alias, KeyStorePurpose.Encrypt | KeyStorePurpose.Decrypt)
+					generator!.Init(new KeyGenParameterSpec.Builder(_alias, KeyStorePurpose.Encrypt | KeyStorePurpose.Decrypt)
 						.SetBlockModes(_block)
 						.SetEncryptionPaddings(_padding)
 						.SetRandomizedEncryptionRequired(false)
@@ -84,7 +84,7 @@ This usually means that the device is using an API older than 18 (4.3). More det
 			protected override Stream Encrypt(Stream outputStream)
 			{
 				var cipher = Cipher.GetInstance(_fullTransform);
-				var iv = new IvParameterSpec(_iv, 0, cipher.BlockSize);
+				var iv = new IvParameterSpec(_iv, 0, cipher!.BlockSize);
 
 				cipher.Init(CipherMode.EncryptMode, _key, iv);
 
@@ -95,7 +95,7 @@ This usually means that the device is using an API older than 18 (4.3). More det
 			protected override Stream Decrypt(Stream inputStream)
 			{
 				var cipher = Cipher.GetInstance(_fullTransform);
-				var iv = new IvParameterSpec(_iv, 0, cipher.BlockSize);
+				var iv = new IvParameterSpec(_iv, 0, cipher!.BlockSize);
 
 				cipher.Init(CipherMode.DecryptMode, _key, iv);
 
@@ -173,7 +173,7 @@ This usually means that the device is using an API older than 18 (4.3). More det
 		{
 			private const string _notSupported = @"RSA/ECB/PKCS1Padding with asymetric key is considered not secure and will not  be supported for device under API level 23";
 
-			public UnSecureKeyStorePersister(string filePath = null)
+			public UnSecureKeyStorePersister(string? filePath = null)
 				: base(filePath)
 			{
 				throw new NotSupportedException(_notSupported);

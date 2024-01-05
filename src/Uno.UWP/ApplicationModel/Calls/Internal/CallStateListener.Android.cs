@@ -9,7 +9,7 @@ namespace Windows.ApplicationModel.Calls
 #pragma warning disable CS0618, CS0672 // PhoneStateListener is obsolete
 	internal class CallStateListener : PhoneStateListener
 	{
-		public override void OnCallStateChanged([GeneratedEnum] CallState state, string phoneNumber)
+		public override void OnCallStateChanged([GeneratedEnum] CallState state, string? phoneNumber)
 		{
 			PhoneCallManager.RaiseCallStateChanged();
 		}

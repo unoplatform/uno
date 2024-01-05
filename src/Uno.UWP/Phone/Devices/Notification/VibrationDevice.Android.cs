@@ -11,7 +11,7 @@ namespace Windows.Phone.Devices.Notification
 	public partial class VibrationDevice
 	{
 		private const string Permission = "android.permission.VIBRATE";
-		private static VibrationDevice _instance;
+		private static VibrationDevice? _instance;
 		private static bool _initializationAttempted;
 
 		private readonly Vibrator _vibrator;
@@ -19,7 +19,7 @@ namespace Windows.Phone.Devices.Notification
 		private VibrationDevice(Vibrator vibrator) =>
 			_vibrator = vibrator;
 
-		public static VibrationDevice GetDefault()
+		public static VibrationDevice? GetDefault()
 		{
 			if (!_initializationAttempted && _instance == null)
 			{

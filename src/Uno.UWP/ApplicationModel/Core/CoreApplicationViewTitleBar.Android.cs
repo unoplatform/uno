@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.Core
 				{
 					if (ContextHelper.Current is Activity activity)
 					{
-						return (activity.Window.Attributes.Flags & WindowManagerFlags.TranslucentStatus) != 0;
+						return (activity.Window!.Attributes!.Flags & WindowManagerFlags.TranslucentStatus) != 0;
 					}
 				}
 
@@ -34,11 +34,11 @@ namespace Windows.ApplicationModel.Core
 						{
 							if (value)
 							{
-								activity.Window.SetFlags(WindowManagerFlags.TranslucentStatus, WindowManagerFlags.TranslucentStatus);
+								activity.Window!.SetFlags(WindowManagerFlags.TranslucentStatus, WindowManagerFlags.TranslucentStatus);
 							}
 							else
 							{
-								activity.Window.ClearFlags(WindowManagerFlags.TranslucentStatus);
+								activity.Window!.ClearFlags(WindowManagerFlags.TranslucentStatus);
 							}
 
 							ExtendViewIntoTitleBarChanged?.Invoke();

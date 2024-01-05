@@ -13,10 +13,10 @@ namespace Windows.UI.ViewManagement
 	/// </summary>
 	public sealed partial class StatusBar
 	{
-		private static StatusBar _statusBar;
+		private static StatusBar? _statusBar;
 
-		public event TypedEventHandler<StatusBar, object> Hiding;
-		public event TypedEventHandler<StatusBar, object> Showing;
+		public event TypedEventHandler<StatusBar, object?>? Hiding;
+		public event TypedEventHandler<StatusBar, object?>? Showing;
 
 		private StatusBar() { }
 

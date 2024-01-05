@@ -31,7 +31,7 @@ namespace Windows.System.UserProfile
 				throw new InvalidOperationException("Operation called too early in application lifecycle.");
 			}
 
-			return WallpaperManager.GetInstance(ContextHelper.Current);
+			return WallpaperManager.GetInstance(ContextHelper.Current)!;
 		}
 
 		private Task<bool> TrySetImageAsync(StorageFile imageFile, WallpaperManagerFlags target)

@@ -17,10 +17,10 @@ namespace Windows.Devices.Sensors
 		private static readonly object _syncLock = new object();
 
 		private static bool _initializationAttempted;
-		private static HingeAngleSensor _instance;
-		private static INativeHingeAngleSensor _hingeAngleSensor;
+		private static HingeAngleSensor? _instance;
+		private static INativeHingeAngleSensor? _hingeAngleSensor;
 
-		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
+		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>? _readingChanged;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		/// Asynchronously retrieves the default hinge angle sensor.
 		/// </summary>
 		/// <returns>When this method completes, it returns a reference to the default HingeAngleSensor.</returns>
-		public static IAsyncOperation<HingeAngleSensor> GetDefaultAsync()
+		public static IAsyncOperation<HingeAngleSensor?> GetDefaultAsync()
 		{
 			// avoid locking if possible
 			if (!_initializationAttempted)
@@ -102,12 +102,12 @@ namespace Windows.Devices.Sensors
 		}
 
 		private void StartReading() =>
-			_hingeAngleSensor.ReadingChanged += OnNativeReadingChanged;
+			_hingeAngleSensor!.ReadingChanged += OnNativeReadingChanged;
 
 		private void StopReading() =>
-			_hingeAngleSensor.ReadingChanged -= OnNativeReadingChanged;
+			_hingeAngleSensor!.ReadingChanged -= OnNativeReadingChanged;
 
-		private void OnNativeReadingChanged(object sender, NativeHingeAngleReading e) =>
+		private void OnNativeReadingChanged(object? sender, NativeHingeAngleReading e) =>
 			_readingChanged?.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
 	}
 }

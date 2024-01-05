@@ -32,7 +32,7 @@ namespace Uno.Media.Playback
 				return;
 			}
 
-			var egl = Javax.Microedition.Khronos.Egl.EGLContext.EGL.JavaCast<IEGL10>();
+			var egl = Javax.Microedition.Khronos.Egl.EGLContext.EGL.JavaCast<IEGL10>()!;
 			var display = egl.EglGetDisplay(EGL10.EglDefaultDisplay);
 			egl.EglInitialize(display, null);
 

@@ -49,11 +49,11 @@ public sealed partial class MessageDialog
 	/// </summary>
 	internal object AssociatedWindow { get; set; }
 
-	public IAsyncOperation<IUICommand> ShowAsync()
+	public IAsyncOperation<IUICommand?> ShowAsync()
 	{
 		VisualTreeHelperProxy.CloseAllFlyouts();
 
-		return AsyncOperation.FromTask<IUICommand>(async ct =>
+		return AsyncOperation.FromTask<IUICommand?>(async ct =>
 		{
 			if (CoreDispatcher.Main.HasThreadAccess)
 			{
@@ -61,7 +61,7 @@ public sealed partial class MessageDialog
 			}
 			else
 			{
-				var show = default(Task<IUICommand>);
+				var show = default(Task<IUICommand?>);
 				await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => show = ShowInnerAsync(ct));
 
 				return await show!;
@@ -106,7 +106,7 @@ public sealed partial class MessageDialog
 	/// </summary>
 	public string Title { get; set; }
 
-	private async Task<IUICommand> ShowInnerAsync(CancellationToken ct)
+	private async Task<IUICommand?> ShowInnerAsync(CancellationToken ct)
 	{
 #if __IOS__ || __MACOS__ || __ANDROID__ || __WASM__
 		if (WinRTFeatureConfiguration.MessageDialog.UseNativeDialog)

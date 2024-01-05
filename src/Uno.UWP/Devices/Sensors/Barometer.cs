@@ -11,9 +11,9 @@ namespace Windows.Devices.Sensors
 	{
 		private static readonly object _syncLock = new object();
 		private static bool _initializationAttempted;
-		private static Barometer _instance;
+		private static Barometer? _instance;
 
-		private TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> _readingChanged;
+		private TypedEventHandler<Barometer, BarometerReadingChangedEventArgs>? _readingChanged;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
@@ -26,7 +26,7 @@ namespace Windows.Devices.Sensors
 		/// Returns the default barometer sensor.
 		/// </summary>
 		/// <returns>If no barometer sensor is available, this method will return null.</returns>
-		public static Barometer GetDefault()
+		public static Barometer? GetDefault()
 		{
 			if (_initializationAttempted)
 			{

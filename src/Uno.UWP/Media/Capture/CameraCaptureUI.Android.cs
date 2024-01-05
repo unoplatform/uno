@@ -25,7 +25,7 @@ namespace Windows.Media.Capture
 	{
 		private const int CameraRequestCode = 2;
 
-		private async Task<StorageFile> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
+		private async Task<StorageFile?> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
 		{
 			await ValidateRequiredPermissions(ct);
 
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture
 
 			// On some device (like nexus phone), we need to add extra to the intent to be able to get the Uri of the image
 			// http://stackoverflow.com/questions/9890757/android-camera-data-intent-returns-null
-			var photoUri = mediaPickerActivity.ContentResolver.Insert(MediaStore.Images.Media.ExternalContentUri, new ContentValues());
+			var photoUri = mediaPickerActivity.ContentResolver!.Insert(MediaStore.Images.Media.ExternalContentUri!, new ContentValues());
 			takePictureIntent.PutExtra(MediaStore.ExtraOutput, photoUri);
 
 			var result = await mediaPickerActivity.GetActivityResult(ct, takePictureIntent, CameraRequestCode);
@@ -60,8 +60,8 @@ namespace Windows.Media.Capture
 			}
 
 			return await CreateTempImage(
-				ContextHelper.Current.ContentResolver.OpenInputStream(photoUri),
-				Path.GetExtension(photoUri.Path)
+				ContextHelper.Current.ContentResolver!.OpenInputStream(photoUri!)!,
+				Path.GetExtension(photoUri!.Path)!
 			);
 		}
 
@@ -124,7 +124,7 @@ namespace Windows.Media.Capture
 		)]
 		internal class MediaPickerActivity : FragmentActivity
 		{
-			public static event Action<MediaPickerActivity> Resumed;
+			public static event Action<MediaPickerActivity>? Resumed;
 
 			// Some devices (Galaxy S4) use a second activity to get the result.
 			// This dictionary is used to keep track of the original activities that requests the values.
@@ -156,7 +156,7 @@ namespace Windows.Media.Capture
 				}
 			}
 
-			protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent intent)
+			protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent? intent)
 			{
 				base.OnActivityResult(requestCode, resultCode, intent);
 
@@ -207,7 +207,7 @@ namespace Windows.Media.Capture
 
 		internal class MediaPickerActivityResult
 		{
-			public MediaPickerActivityResult(int requestCode, Result resultCode, Intent intent)
+			public MediaPickerActivityResult(int requestCode, Result resultCode, Intent? intent)
 			{
 				RequestCode = requestCode;
 				ResultCode = resultCode;
@@ -218,7 +218,7 @@ namespace Windows.Media.Capture
 
 			public Result ResultCode { get; }
 
-			public Intent Intent { get; }
+			public Intent? Intent { get; }
 		}
 	}
 }

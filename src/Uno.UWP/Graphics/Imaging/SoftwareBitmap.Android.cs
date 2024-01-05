@@ -59,7 +59,7 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static SoftwareBitmap Copy(SoftwareBitmap source) =>
-			new SoftwareBitmap(source.bitmap.Copy(null, true), false);
+			new SoftwareBitmap(source.bitmap.Copy(null, true)!, false);
 
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
@@ -91,7 +91,7 @@ namespace Windows.Graphics.Imaging
 					Swap(ref pixels[i], ref pixels[i + 2]);
 				}
 			}
-			var destination = Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888);
+			var destination = Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888!)!;
 
 			destination.SetPremultiplied(alpha == BitmapAlphaMode.Premultiplied);
 

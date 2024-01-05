@@ -29,7 +29,7 @@ public partial class PdfDocument : IDisposable
 		}
 
 		var pdfPage = _pdfRenderer.OpenPage((int)pageIndex);
-		return new PdfPage(pdfPage);
+		return new PdfPage(pdfPage!);
 	}
 
 	public static IAsyncOperation<PdfDocument> LoadFromFileAsync(Storage.IStorageFile file)
@@ -37,7 +37,7 @@ public partial class PdfDocument : IDisposable
 		return LoadFromFileAsync(file, null);
 	}
 
-	public static IAsyncOperation<PdfDocument> LoadFromFileAsync(Storage.IStorageFile file, string password)
+	public static IAsyncOperation<PdfDocument> LoadFromFileAsync(Storage.IStorageFile file, string? password)
 	{
 		if (!string.IsNullOrEmpty(password))
 		{
@@ -53,8 +53,8 @@ public partial class PdfDocument : IDisposable
 		var localpath = file.Path;
 		var fileDescriptor = localpath.StartsWith('/')
 			? ParcelFileDescriptor.Open(new Java.IO.File(localpath), ParcelFileMode.ReadOnly)
-			: Android.App.Application.Context.ContentResolver.OpenFileDescriptor(Android.Net.Uri.Parse(localpath), "r");
-		var pdfRenderer = new PdfRenderer(fileDescriptor);
+			: Android.App.Application.Context.ContentResolver!.OpenFileDescriptor(Android.Net.Uri.Parse(localpath)!, "r");
+		var pdfRenderer = new PdfRenderer(fileDescriptor!);
 		var pdfDocument = new PdfDocument(pdfRenderer);
 
 		return Task.FromResult(pdfDocument).AsAsyncOperation();
@@ -65,7 +65,7 @@ public partial class PdfDocument : IDisposable
 		return LoadFromStreamAsync(inputStream, default);
 	}
 
-	public static IAsyncOperation<PdfDocument> LoadFromStreamAsync(Storage.Streams.IRandomAccessStream inputStream, string password)
+	public static IAsyncOperation<PdfDocument> LoadFromStreamAsync(Storage.Streams.IRandomAccessStream inputStream, string? password)
 	{
 		if (!string.IsNullOrEmpty(password))
 		{
@@ -107,6 +107,6 @@ public partial class PdfDocument : IDisposable
 				}
 				outputStream.Flush();
 				outputStream.Close();
-				return ParcelFileDescriptor.Open(file, ParcelFileMode.ReadOnly);
+				return ParcelFileDescriptor.Open(file, ParcelFileMode.ReadOnly)!;
 			}, token);
 }

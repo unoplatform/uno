@@ -19,7 +19,7 @@ namespace Windows.Media.Capture
 {
 	public partial class CameraCaptureUI
 	{
-		private async Task<StorageFile> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
+		private async Task<StorageFile?> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
 		{
 			UIImagePickerController picker = null;
 			var cameraDelegate = new CameraDelegate();

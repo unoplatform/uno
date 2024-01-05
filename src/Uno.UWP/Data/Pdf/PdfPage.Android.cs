@@ -106,7 +106,7 @@ public partial class PdfPage : IDisposable
 		#endregion
 
 		#region create bitmap
-		var bitmap = Bitmap.CreateBitmap((int)destination.Width, (int)destination.Height, Bitmap.Config.Argb8888);
+		var bitmap = Bitmap.CreateBitmap((int)destination.Width, (int)destination.Height, Bitmap.Config.Argb8888!)!;
 		RectF destinationRect = new Rect(new Foundation.Point(), destination);
 		#endregion
 
@@ -127,7 +127,7 @@ public partial class PdfPage : IDisposable
 		if (sourceRect.Width > 0 && sourceRect.Height > 0)
 		{
 			using var oldbitmap = bitmap;
-			bitmap = Bitmap.CreateBitmap(oldbitmap, (int)sourceRect.X, (int)sourceRect.Y, (int)sourceRect.Width, (int)sourceRect.Height, null, false);
+			bitmap = Bitmap.CreateBitmap(oldbitmap, (int)sourceRect.X, (int)sourceRect.Y, (int)sourceRect.Width, (int)sourceRect.Height, null, false)!;
 		}
 
 		return bitmap;

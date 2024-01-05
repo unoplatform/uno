@@ -26,15 +26,15 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// This is not a bug, Android uses "input" for output.
 		/// </summary>
-		private MidiInputPort _midiPort;
-		private MidiDevice _midiDevice;
+		private MidiInputPort? _midiPort;
+		private MidiDevice? _midiDevice;
 
 		private MidiOutPort(
 			string deviceId,
 			MidiDeviceInfo deviceInfo,
 			MidiDeviceInfo.PortInfo portInfo)
 		{
-			_midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
+			_midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>()!;
 			DeviceId = deviceId ?? throw new ArgumentNullException(nameof(deviceId));
 			_deviceInfo = deviceInfo ?? throw new ArgumentNullException(nameof(deviceInfo));
 			_portInfo = portInfo ?? throw new ArgumentNullException(nameof(portInfo));
@@ -52,7 +52,7 @@ namespace Windows.Devices.Midi
 				_midiManager.OpenDevice(_deviceInfo, deviceOpenListener, null);
 				_midiDevice = await completionSource.Task;
 				// This is not a bug, Android uses "input" for output.
-				_midiPort = _midiDevice.OpenInputPort(_portInfo.PortNumber);
+				_midiPort = _midiDevice.OpenInputPort(_portInfo.PortNumber)!;
 			}
 		}
 

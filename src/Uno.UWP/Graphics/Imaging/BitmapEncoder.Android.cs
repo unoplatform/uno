@@ -12,7 +12,7 @@ namespace Windows.Graphics.Imaging
 	{
 		private readonly Bitmap.CompressFormat _imageFormat;
 		private readonly Storage.Streams.IRandomAccessStream _stream;
-		private SoftwareBitmap _softwareBitmap;
+		private SoftwareBitmap? _softwareBitmap;
 
 		private BitmapEncoder(Bitmap.CompressFormat imageFormat
 			, Storage.Streams.IRandomAccessStream stream)
@@ -56,7 +56,7 @@ namespace Windows.Graphics.Imaging
 			_softwareBitmap?.Dispose();
 			_softwareBitmap = null;
 
-			var destination = Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888);
+			var destination = Bitmap.CreateBitmap((int)width, (int)height, Bitmap.Config.Argb8888!)!;
 
 			static void Swap(ref byte foo, ref byte bar)
 			{

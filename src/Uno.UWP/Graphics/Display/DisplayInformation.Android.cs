@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Android.App;
 using Android.Content;
 using Android.Util;
@@ -42,6 +43,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 
+		[MemberNotNull(nameof(_cachedDisplayMetrics))]
 		partial void Initialize()
 		{
 			RefreshDisplayMetricsCache();
@@ -230,6 +232,7 @@ namespace Windows.Graphics.Display
 			OnDisplayMetricsChanged();
 		}
 
+		[MemberNotNull(nameof(_cachedDisplayMetrics))]
 		private void RefreshDisplayMetricsCache()
 		{
 			using var displayMetrics = new DisplayMetrics();

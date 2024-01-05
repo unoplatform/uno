@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,6 +80,7 @@ public sealed partial class Geolocator
 	private double _movementThreshold;
 	private uint _reportInterval = 1000;
 
+	[MemberNotNull(nameof(_locationListener))]
 	partial void PlatformInitialize()
 	{
 		_locationListener = new(this);

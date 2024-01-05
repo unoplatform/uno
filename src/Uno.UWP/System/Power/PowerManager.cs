@@ -31,7 +31,7 @@ public static partial class PowerManager
 	private readonly static StartStopEventWrapper<EventHandler<object?>> _remainingDischargeTimeChanged;
 #endif
 #if !__WASM__
-	private readonly static StartStopEventWrapper<EventHandler<object>> _energySaverStatusChanged;
+	private readonly static StartStopEventWrapper<EventHandler<object?>> _energySaverStatusChanged;
 #endif
 
 	static PowerManager()
@@ -105,7 +105,7 @@ public static partial class PowerManager
 #endif
 
 #if !__WASM__
-	public static event EventHandler<object> EnergySaverStatusChanged
+	public static event EventHandler<object?> EnergySaverStatusChanged
 	{
 		add => _energySaverStatusChanged.AddHandler(value);
 		remove => _energySaverStatusChanged.RemoveHandler(value);

@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Email
 			Application.Context.StartActivity(intent);
 		}
 
-		private static async Task<ComponentName> ResolveEmailComponent()
+		private static async Task<ComponentName?> ResolveEmailComponent()
 		{
 			var packageManager = Application.Context.PackageManager;
 
@@ -76,7 +76,7 @@ namespace Windows.ApplicationModel.Email
 
 #pragma warning disable CS0618 // Type or member is obsolete
 #pragma warning disable CA1422 // Validate platform compatibility
-			var emailActivities = packageManager.QueryIntentActivities(emailDummyIntent, 0);
+			var emailActivities = packageManager!.QueryIntentActivities(emailDummyIntent, 0)!;
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
 
@@ -105,14 +105,14 @@ namespace Windows.ApplicationModel.Email
 
 			if (result.Result == Result.Ok)
 			{
-				return result.Intent.Component;
+				return result.Intent!.Component;
 			}
 			return null;
 		}
 
 		private static ComponentName GetComponentName(ResolveInfo resolve)
 		{
-			return new ComponentName(resolve.ActivityInfo.PackageName, resolve.ActivityInfo.Name);
+			return new ComponentName(resolve.ActivityInfo!.PackageName!, resolve.ActivityInfo.Name!);
 		}
 	}
 }

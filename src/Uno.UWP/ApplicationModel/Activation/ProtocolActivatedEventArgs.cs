@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using Uno;
 
 namespace Windows.ApplicationModel.Activation
 {

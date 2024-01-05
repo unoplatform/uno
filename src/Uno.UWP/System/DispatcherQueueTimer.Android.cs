@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Android.OS;
 using Java.Lang;
 
@@ -13,9 +14,10 @@ partial class DispatcherQueueTimer
 	private Handler _handler;
 	private TickRunnable _runnable;
 
+	[MemberNotNull(nameof(_handler), nameof(_runnable))]
 	partial void InitializePlatform()
 	{
-		_handler = new Handler(Looper.MainLooper);
+		_handler = new Handler(Looper.MainLooper!);
 		_runnable = new TickRunnable(this);
 	}
 

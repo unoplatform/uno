@@ -20,7 +20,7 @@ namespace Windows.Media.SpeechRecognition
 		public string Text { get; internal set; } = null!;
 #else
 		public double RawConfidence { get; set; }
-		public string Text { get; set; }
+		public string? Text { get; set; }
 #endif
 
 		internal IReadOnlyList<SpeechRecognitionResult>? Alternates { get; set; }

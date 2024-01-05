@@ -77,13 +77,13 @@ namespace Windows.Media.Playback
 
 		public event TypedEventHandler<MediaPlayer, object?>? VolumeChanged;
 
-		public event TypedEventHandler<MediaPlayer, object>? MediaEnded;
+		public event TypedEventHandler<MediaPlayer, object?>? MediaEnded;
 
 		public event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs>? MediaFailed;
 
-		public event TypedEventHandler<MediaPlayer, object>? MediaOpened;
+		public event TypedEventHandler<MediaPlayer, object?>? MediaOpened;
 
-		public event TypedEventHandler<MediaPlayer, object>? SeekCompleted;
+		public event TypedEventHandler<MediaPlayer, object?>? SeekCompleted;
 
 		public event TypedEventHandler<MediaPlayer, object?>? NaturalVideoDimensionChanged;
 

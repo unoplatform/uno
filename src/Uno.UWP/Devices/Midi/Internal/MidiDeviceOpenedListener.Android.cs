@@ -17,7 +17,7 @@ namespace Uno.Devices.Midi.Internal
 			_taskCompletionSource = taskCompletionSource;
 		}
 
-		public void OnDeviceOpened(MidiDevice device)
+		public void OnDeviceOpened(MidiDevice? device)
 		{
 			if (device == null)
 			{

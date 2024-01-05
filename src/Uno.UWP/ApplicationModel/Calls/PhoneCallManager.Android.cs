@@ -20,8 +20,8 @@ namespace Windows.ApplicationModel.Calls
 					"PhoneCallManager was used too early in the application lifetime. " +
 					"Android app context needs to be available.");
 			}
-			_telephonyManager = (TelephonyManager)ContextHelper.Current
-				.GetSystemService(Context.TelephonyService);
+			_telephonyManager = (TelephonyManager)ContextHelper.Current!
+				.GetSystemService(Context.TelephonyService)!;
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
 #pragma warning disable CA1422 // Validate platform compatibility
 			_telephonyManager.Listen(new CallStateListener(), PhoneStateListenerFlags.CallState);
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Calls
 #pragma warning restore CS0618 // TelephonyManager is obsolete in API 31
 		}
 
-		public static event EventHandler<object> CallStateChanged;
+		public static event EventHandler<object?>? CallStateChanged;
 
 		public static bool IsCallActive =>
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
@@ -59,17 +59,17 @@ namespace Windows.ApplicationModel.Calls
 		{
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
 			{
-				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber, Java.Util.Locale.GetDefault(Java.Util.Locale.Category.Format).Country);
+				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber, Java.Util.Locale.GetDefault(Java.Util.Locale.Category.Format!).Country)!;
 			}
 			else if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 			{
-				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber, Java.Util.Locale.Default.Country);
+				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber, Java.Util.Locale.Default.Country)!;
 			}
 			else
 			{
 #pragma warning disable CS0618
 #pragma warning disable CA1422 // Validate platform compatibility
-				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber);
+				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber)!;
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618
 			}

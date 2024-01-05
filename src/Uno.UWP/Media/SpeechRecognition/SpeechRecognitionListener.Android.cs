@@ -8,26 +8,26 @@ namespace Windows.Media.SpeechRecognition
 {
 	public class SpeechRecognitionListener : Java.Lang.Object, IRecognitionListener
 	{
-		public Action StartOfSpeech { get; set; }
+		public Action? StartOfSpeech { get; set; }
 
-		public Action EndOfSpeech { get; set; }
+		public Action? EndOfSpeech { get; set; }
 
-		public Action ReadyForSpeech { get; set; }
+		public Action? ReadyForSpeech { get; set; }
 
-		public Action<SpeechRecognizerError> Error { get; set; }
+		public Action<SpeechRecognizerError>? Error { get; set; }
 
-		public Action<SpeechRecognitionResult> FinalResults { get; set; }
+		public Action<SpeechRecognitionResult>? FinalResults { get; set; }
 
-		public Action<SpeechRecognitionResult> PartialResults { get; set; }
+		public Action<SpeechRecognitionResult>? PartialResults { get; set; }
 
-		public Action<float> RmsChanged { get; set; }
+		public Action<float>? RmsChanged { get; set; }
 
 		public void OnBeginningOfSpeech()
 		{
 			this.StartOfSpeech?.Invoke();
 		}
 
-		public void OnBufferReceived(byte[] buffer)
+		public void OnBufferReceived(byte[]? buffer)
 		{
 		}
 
@@ -41,23 +41,23 @@ namespace Windows.Media.SpeechRecognition
 			this.Error?.Invoke(error);
 		}
 
-		public void OnEvent(int eventType, Bundle @params)
+		public void OnEvent(int eventType, Bundle? @params)
 		{
 		}
 
-		public void OnReadyForSpeech(Bundle @params)
+		public void OnReadyForSpeech(Bundle? @params)
 		{
 			this.ReadyForSpeech?.Invoke();
 		}
 
-		public void OnPartialResults(Bundle bundle)
+		public void OnPartialResults(Bundle? bundle)
 		{
-			this.SendResults(bundle, this.PartialResults);
+			this.SendResults(bundle!, this.PartialResults);
 		}
 
-		public void OnResults(Bundle bundle)
+		public void OnResults(Bundle? bundle)
 		{
-			this.SendResults(bundle, this.FinalResults);
+			this.SendResults(bundle!, this.FinalResults);
 		}
 
 		public void OnRmsChanged(float rmsdB)
@@ -65,7 +65,7 @@ namespace Windows.Media.SpeechRecognition
 			this.RmsChanged?.Invoke(rmsdB);
 		}
 
-		private void SendResults(Bundle bundle, Action<SpeechRecognitionResult> action)
+		private void SendResults(Bundle bundle, Action<SpeechRecognitionResult>? action)
 		{
 			var matches = bundle.GetStringArrayList(Android.Speech.SpeechRecognizer.ResultsRecognition);
 			var scores = bundle.GetFloatArray(Android.Speech.SpeechRecognizer.ConfidenceScores);

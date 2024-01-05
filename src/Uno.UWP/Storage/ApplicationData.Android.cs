@@ -6,13 +6,13 @@ namespace Windows.Storage
 	partial class ApplicationData
 	{
 		private static string GetLocalCacheFolder()
-			=> GetAndroidAppContext().CacheDir.AbsolutePath;
+			=> GetAndroidAppContext().CacheDir!.AbsolutePath;
 
 		private static string GetTemporaryFolder()
 			=> Path.GetTempPath();
 
 		private static string GetLocalFolder()
-			=> GetAndroidAppContext().FilesDir.AbsolutePath;
+			=> GetAndroidAppContext().FilesDir!.AbsolutePath;
 
 		private static string GetRoamingFolder()
 			=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
