@@ -34,7 +34,7 @@ namespace Uno
 			key = new string(charArray);
 
 			//Checks if the keys are starting by a number because they are invalid in C#
-			if (key.Length > 0 && int.TryParse(key.Substring(0, 1), CultureInfo.InvariantCulture, out _))
+			if (key.Length > 0 && int.TryParse(key.Substring(0, 1), out _))
 			{
 				key = $"{NumberPrefix}{key}";
 			}
