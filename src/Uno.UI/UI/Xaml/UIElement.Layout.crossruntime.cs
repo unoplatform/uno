@@ -1,10 +1,9 @@
 ﻿#if !__NETSTD_REFERENCE__
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml
 {
@@ -64,12 +63,14 @@ namespace Microsoft.UI.Xaml
 		{
 			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
 			{
-				parent.InvalidateMeasureDirtyPath();
+				if (!parent.IsVisualTreeRoot)
+				{
+					parent.InvalidateMeasureDirtyPath();
+					return;
+				}
 			}
-			else if (IsVisualTreeRoot)
-			{
-				XamlRoot.InvalidateMeasure();
-			}
+
+			XamlRoot?.InvalidateMeasure();
 		}
 
 		public void InvalidateArrange()
@@ -118,12 +119,15 @@ namespace Microsoft.UI.Xaml
 		{
 			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
 			{
-				parent.InvalidateArrangeDirtyPath();
+				if (!parent.IsVisualTreeRoot)
+				{
+					parent.InvalidateArrangeDirtyPath();
+					return;
+				}
 			}
-			else //TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
-			{
-				XamlRoot?.InvalidateArrange();
-			}
+
+			//TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
+			XamlRoot?.InvalidateArrange();
 		}
 
 		public void Measure(Size availableSize)
@@ -271,6 +275,11 @@ namespace Microsoft.UI.Xaml
 				}
 
 				break;
+			}
+
+			if (remainingTries == 0)
+			{
+
 			}
 		}
 
