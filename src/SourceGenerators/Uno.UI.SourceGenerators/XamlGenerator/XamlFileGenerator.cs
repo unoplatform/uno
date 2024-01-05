@@ -1586,7 +1586,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (versionMember.Value?.ToString()?.TrimStart("Version") is { } versionString)
 						{
-							if (int.TryParse(versionString, out var explicitVersion))
+							if (int.TryParse(versionString, CultureInfo.InvariantCulture, out var explicitVersion))
 							{
 								if (explicitVersion < 1 || explicitVersion > XamlConstants.MaxFluentResourcesVersion)
 								{

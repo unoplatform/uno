@@ -245,7 +245,7 @@ namespace Uno.UI.RemoteControl.VS
 
 			if (result.output.Contains("."))
 			{
-				if (int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
+				if (int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), CultureInfo.InvariantCulture, out int majorVersion))
 				{
 					return majorVersion;
 				}

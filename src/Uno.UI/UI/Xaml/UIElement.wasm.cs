@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -637,7 +638,7 @@ namespace Microsoft.UI.Xaml
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
 		{
-			if (int.TryParse(payload, out int xamlHandle))
+			if (int.TryParse(payload, CultureInfo.InvariantCulture, out int xamlHandle))
 			{
 				if (GetElementFromHandle(xamlHandle) is UIElement element)
 				{
