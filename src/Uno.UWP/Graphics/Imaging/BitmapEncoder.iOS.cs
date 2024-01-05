@@ -60,7 +60,7 @@ namespace Windows.Graphics.Imaging
 			_softwareBitmap = SoftwareBitmap.CreateCopyFromBuffer(pixels.AsBuffer(), pixelFormat, (int)width, (int)height, alphaMode);
 		}
 
-		private static NSData AsPNG(UIImage image) => image.AsPNG();
-		private static NSData AsJPEG(UIImage image) => image.AsJPEG(1);
+		private static NSData AsPNG(UIImage image) => image.AsPNG()!;
+		private static NSData AsJPEG(UIImage image) => image.AsJPEG(1)!;
 	}
 }

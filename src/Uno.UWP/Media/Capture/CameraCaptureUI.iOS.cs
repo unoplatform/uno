@@ -89,8 +89,8 @@ namespace Windows.Media.Capture
 						{
 							return PhotoSettings.Format switch
 							{
-								CameraCaptureUIPhotoFormat.Jpeg => (image.AsJPEG().AsStream(), ".jpg"),
-								CameraCaptureUIPhotoFormat.Png => (image.AsPNG().AsStream(), ".png"),
+								CameraCaptureUIPhotoFormat.Jpeg => (image.AsJPEG()!.AsStream(), ".jpg"),
+								CameraCaptureUIPhotoFormat.Png => (image.AsPNG()!.AsStream(), ".png"),
 								_ => throw new NotSupportedException($"{PhotoSettings.Format} is not supported"),
 							};
 						};

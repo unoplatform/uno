@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel
 		{
 			var urlToDocumentsFolder = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.DocumentationDirectory, NSSearchPathDomain.User);
 
-			var installDate = NSFileManager.DefaultManager.GetAttributes(urlToDocumentsFolder[0].Path, out var error).CreationDate;
+			var installDate = NSFileManager.DefaultManager.GetAttributes(urlToDocumentsFolder[0].Path!, out var error)!.CreationDate!;
 
 			return (DateTimeOffset)(DateTime)installDate;
 		}
