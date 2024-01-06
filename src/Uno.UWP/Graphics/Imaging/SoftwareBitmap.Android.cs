@@ -59,8 +59,7 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static SoftwareBitmap Copy(SoftwareBitmap source) =>
-			new SoftwareBitmap(source.bitmap.Copy(null!, true)!, false);
-
+			new SoftwareBitmap(source.bitmap.Copy(source.bitmap.GetConfig() ?? Bitmap.Config.Argb8888!, true)!, false);
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
 			return CreateCopyFromBuffer(source, format, width, height, global::Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
