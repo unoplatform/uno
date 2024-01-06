@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources.Core
 				ValidatePlatform(resourceCandidate);
 
 				var language = GetLanguage(resourceCandidate);
-				var directory = Path.GetDirectoryName(resourceCandidate.LogicalPath);
+				var directory = Path.GetDirectoryName(resourceCandidate.LogicalPath)!;
 				var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(resourceCandidate.LogicalPath);
 				var scale = GetScale(resourceCandidate);
 				var extension = Path.GetExtension(resourceCandidate.LogicalPath).ToLowerInvariant();
