@@ -301,7 +301,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked;
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();

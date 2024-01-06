@@ -57,7 +57,7 @@ internal partial class Given_HotReloadWorkspace
 	[Filters]
 	public async Task When_HotReloadScenario(string filters)
 	{
-		var cts = new CancellationTokenSource(50 * 60 * 1000);
+		var cts = new CancellationTokenSource(5 * 60 * 1000);
 		var tcs = new TaskCompletionSource<string>();
 		cts.Token.Register(() => tcs.TrySetException(new TimeoutException()));
 
