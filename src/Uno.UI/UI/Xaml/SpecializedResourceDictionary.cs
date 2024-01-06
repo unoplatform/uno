@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml
 				Debug.Assert(_buckets != null, "_buckets should be non-null");
 				Debug.Assert(_entries != null, "_entries should be non-null");
 
-				Array.Clear(_buckets, 0, _buckets.Length);
+				Array.Clear(_buckets);
 
 				_count = 0;
 				_freeList = -1;
