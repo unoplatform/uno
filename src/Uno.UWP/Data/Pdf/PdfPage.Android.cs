@@ -71,7 +71,7 @@ public partial class PdfPage : IDisposable
 		{
 			const int quality = 100;
 			var bitmap = RenderInternal(options);
-			bitmap.Compress(Bitmap.CompressFormat.Png, quality, outputStream.AsStream());
+			bitmap.Compress(Bitmap.CompressFormat.Png!, quality, outputStream.AsStream());
 			bitmap.Dispose();
 		}).AsAsyncAction();
 	}
