@@ -511,11 +511,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (inline.Foreground is SolidColorBrush scb)
 					{
+						var scbColor = scb.Color;
 						paint.Color = new SKColor(
-							red: scb.Color.R,
-							green: scb.Color.G,
-							blue: scb.Color.B,
-							alpha: (byte)(scb.Color.A * scb.Opacity * session.Filters.Opacity));
+							red: scbColor.R,
+							green: scbColor.G,
+							blue: scbColor.B,
+							alpha: (byte)(scbColor.A * scb.Opacity * session.Filters.Opacity));
 					}
 
 					var glyphs = new ushort[segmentSpan.GlyphsLength];
