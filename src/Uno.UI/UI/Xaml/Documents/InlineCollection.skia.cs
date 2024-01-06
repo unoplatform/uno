@@ -1,16 +1,16 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using SkiaSharp;
-using Windows.Foundation;
-using Windows.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Composition;
-
-#nullable enable
+using Windows.Foundation;
+using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -518,8 +518,15 @@ namespace Microsoft.UI.Xaml.Documents
 							alpha: (byte)(scb.Color.A * scb.Opacity * session.Filters.Opacity));
 					}
 
-					var glyphs = new ushort[segmentSpan.GlyphsLength];
-					var positions = new SKPoint[segmentSpan.GlyphsLength];
+					// TODO: Consider using a stackalloc for small values of GlyphsLength.
+					// Note that using a stackalloc will require refactoring this code to a separate method to avoid having a stackalloc in a loop.
+					var glyphs = ArrayPool<ushort>.Shared.Rent(segmentSpan.GlyphsLength);
+					var positions = ArrayPool<SKPoint>.Shared.Rent(segmentSpan.GlyphsLength);
+
+					// The pool can rent us arrays of size larger than the requested size.
+					// So, we pass these spans around to make sure nothing tries to read beyond the correct size.
+					var glyphsSpan = glyphs.AsSpan().Slice(0, segmentSpan.GlyphsLength);
+					var positionsSpan = positions.AsSpan().Slice(0, segmentSpan.GlyphsLength);
 
 					if (segment.Direction == FlowDirection.LeftToRight)
 					{
@@ -532,8 +539,8 @@ namespace Microsoft.UI.Xaml.Documents
 								x += segmentSpan.CharacterSpacing;
 							}
 
-							glyphs[i] = glyphInfo.GlyphId;
-							positions[i] = new SKPoint(x + glyphInfo.OffsetX - segmentSpan.CharacterSpacing, glyphInfo.OffsetY);
+							glyphsSpan[i] = glyphInfo.GlyphId;
+							positionsSpan[i] = new SKPoint(x + glyphInfo.OffsetX - segmentSpan.CharacterSpacing, glyphInfo.OffsetY);
 							x += glyphInfo.AdvanceX;
 						}
 					}
@@ -561,8 +568,8 @@ namespace Microsoft.UI.Xaml.Documents
 									x += segmentSpan.CharacterSpacing;
 								}
 
-								glyphs[j] = glyphInfo.GlyphId;
-								positions[j] = new SKPoint(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
+								glyphsSpan[j] = glyphInfo.GlyphId;
+								positionsSpan[j] = new SKPoint(x + glyphInfo.OffsetX, glyphInfo.OffsetY);
 								x += glyphInfo.AdvanceX;
 							}
 						}
@@ -576,9 +583,9 @@ namespace Microsoft.UI.Xaml.Documents
 					// Note that carets and text decorations never occur at the same time for now (TextBox has a caret but no
 					// decorations, TextBlock doesn't have a caret), but a RichTextBox can have both, so that should be kept in mind
 
-					HandleSelection(lineIndex, characterCountSoFar, positions, x, justifySpaceOffset, segmentSpan, segment, fontInfo, fireEvents, y, line, canvas);
+					HandleSelection(lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, fireEvents, y, line, canvas);
 
-					RenderText(lineIndex, characterCountSoFar, segmentSpan, fontInfo, positions, glyphs, canvas, y, baselineOffsetY, paint);
+					RenderText(lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, canvas, y, baselineOffsetY, paint);
 
 					var decorations = inline.TextDecorations;
 					const TextDecorations allDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
@@ -606,10 +613,13 @@ namespace Microsoft.UI.Xaml.Documents
 						}
 					}
 
-					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positions, x, justifySpaceOffset, fireEvents, y, line);
+					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, fireEvents, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? 1 : 0);
+
+					ArrayPool<SKPoint>.Shared.Return(positions);
+					ArrayPool<ushort>.Shared.Return(glyphs);
 				}
 			}
 
@@ -627,7 +637,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		private void HandleSelection(int lineIndex, int characterCountSoFar, SKPoint[] positions, float x, float justifySpaceOffset, RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, bool fireEvents, float y, RenderLine line, SKCanvas canvas)
+		private void HandleSelection(int lineIndex, int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset, RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, bool fireEvents, float y, RenderLine line, SKCanvas canvas)
 		{
 			if (RenderSelection && _selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 			{
@@ -683,7 +693,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		private void RenderText(int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo, SKPoint[] positions, ushort[] glyphs, SKCanvas canvas, float y, float baselineOffsetY, SKPaint paint)
+		private void RenderText(int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs, SKCanvas canvas, float y, float baselineOffsetY, SKPaint paint)
 		{
 			if (!RenderSelection || _selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
 			{
@@ -737,8 +747,8 @@ namespace Microsoft.UI.Xaml.Documents
 				if (startOfSelection > 0) // pre selection
 				{
 					var run1 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, startOfSelection);
-					new Span<SKPoint>(positions, 0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
-					new Span<ushort>(glyphs, 0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
+					positions.Slice(0, startOfSelection).CopyTo(run1.GetPositionSpan(startOfSelection));
+					glyphs.Slice(0, startOfSelection).CopyTo(run1.GetGlyphSpan(startOfSelection));
 					using var textBlob1 = _textBlobBuilder.Build();
 					canvas.DrawText(textBlob1, 0, y + baselineOffsetY, paint);
 				}
@@ -746,8 +756,8 @@ namespace Microsoft.UI.Xaml.Documents
 				if (endOfSelection - startOfSelection > 0) // selection
 				{
 					var run2 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, endOfSelection - startOfSelection);
-					new Span<SKPoint>(positions, startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetPositionSpan(endOfSelection - startOfSelection));
-					new Span<ushort>(glyphs, startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
+					positions.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetPositionSpan(endOfSelection - startOfSelection));
+					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection).CopyTo(run2.GetGlyphSpan(endOfSelection - startOfSelection));
 					using var textBlob2 = _textBlobBuilder.Build();
 					var color = paint.Color;
 					paint.Color = new SKColor(255, 255, 255, 255); // selection is always white
@@ -758,15 +768,15 @@ namespace Microsoft.UI.Xaml.Documents
 				if (segmentSpan.GlyphsLength - endOfSelection > 0) // post selection
 				{
 					var run3 = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength - endOfSelection);
-					new Span<SKPoint>(positions, endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
-					new Span<ushort>(glyphs, endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
+					positions.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetPositionSpan(segmentSpan.GlyphsLength - endOfSelection));
+					glyphs.Slice(endOfSelection, segmentSpan.GlyphsLength - endOfSelection).CopyTo(run3.GetGlyphSpan(segmentSpan.GlyphsLength - endOfSelection));
 					using var textBlob3 = _textBlobBuilder.Build();
 					canvas.DrawText(textBlob3, 0, y + baselineOffsetY, paint);
 				}
 			}
 		}
 
-		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, SKPoint[] positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
+		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, Span<SKPoint> positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
 		{
 			var spanStartingIndex = characterCountSoFar;
 			if (RenderCaret && _selection is { } selection)
