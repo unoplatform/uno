@@ -937,7 +937,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_Mouse_Opened_And_Closed()
@@ -1008,7 +1008,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_Mouse_Opened_And_Closed_Fluent()

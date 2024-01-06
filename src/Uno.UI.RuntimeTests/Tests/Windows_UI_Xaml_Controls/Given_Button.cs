@@ -111,7 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_DoubleTap_Timing()
@@ -188,7 +188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Tapped_PointerPressed_Is_Not_Raised()
