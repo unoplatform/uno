@@ -15,7 +15,7 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConnectionProfile>> NetworkInformation.FindConnectionProfilesAsync(ConnectionProfileFilter pProfileFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CConnectionProfile%3E%3E%20NetworkInformation.FindConnectionProfilesAsync%28ConnectionProfileFilter%20pProfileFilter%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()
 		{
