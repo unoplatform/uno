@@ -64,9 +64,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var (flyout, content) = CreateFlyoutWithBindingMultipleChildren();
 
-			const double MarginValue = 105;
-			const int TargetWidth = 88;
-
 			var border = new Border()
 			{
 				DataContext = "My Data Context"
