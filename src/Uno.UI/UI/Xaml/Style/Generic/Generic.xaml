@@ -1854,34 +1854,20 @@
 	<not_win:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.TimePicker -->
-	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
-	<not_win:Style TargetType="TimePicker">
-		<Setter Property="IsTabStop"
-                Value="False" />
-		<Setter Property="MinWidth"
-				Value="242" />
-		<Setter Property="MaxWidth"
-				Value="456" />
-		<Setter Property="FontFamily"
-				Value="{ThemeResource ContentControlThemeFontFamily}" />
-		<Setter Property="FontSize"
-				Value="{ThemeResource ControlContentThemeFontSize}" />
-		<Setter Property="Foreground"
-				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-		<Setter Property="HorizontalAlignment"
-				Value="Left" />
-		<Setter Property="VerticalAlignment"
-				Value="Center" />
-		<!-- Uno specific property use only in ios, set placement to "Full" to dock of the flyout at the bottom of the screen -->
-		<ios:Setter Property="FlyoutPlacement"
-				Value="Full" />
+	<Style TargetType="TimePicker">
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+		<Setter Property="Foreground" Value="{ThemeResource TimePickerButtonForeground}" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TimePicker">
-					<StackPanel x:Name="LayoutRoot"
-								Margin="{TemplateBinding Padding}">
-						<StackPanel.Resources>
+					<Grid x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+
+						<Grid.Resources>
 							<Style x:Key="TimePickerFlyoutButtonStyle" TargetType="Button">
 								<Setter Property="UseSystemFocusVisuals" Value="False" />
 								<Setter Property="ElementSoundMode" Value="FocusOnly" />
@@ -1889,9 +1875,11 @@
 									<Setter.Value>
 										<ControlTemplate TargetType="Button">
 											<Grid Background="{TemplateBinding Background}">
+
 												<VisualStateManager.VisualStateGroups>
 													<VisualStateGroup x:Name="CommonStates">
 														<VisualState x:Name="Normal" />
+
 														<VisualState x:Name="PointerOver">
 															<Storyboard>
 																<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
@@ -1905,6 +1893,7 @@
 																</ObjectAnimationUsingKeyFrames>
 															</Storyboard>
 														</VisualState>
+
 														<VisualState x:Name="Pressed">
 															<Storyboard>
 																<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
@@ -1918,6 +1907,7 @@
 																</ObjectAnimationUsingKeyFrames>
 															</Storyboard>
 														</VisualState>
+
 														<VisualState x:Name="Disabled">
 															<Storyboard>
 																<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
@@ -1948,123 +1938,138 @@
 													</VisualStateGroup>
 												</VisualStateManager.VisualStateGroups>
 												<ContentPresenter x:Name="ContentPresenter"
-																  BorderBrush="{ThemeResource TimePickerButtonBorderBrush}"
-																  Background="{ThemeResource TimePickerButtonBackground}"
-																  BorderThickness="2"
-																  Content="{TemplateBinding Content}"
-																  Foreground="{TemplateBinding Foreground}"
-																  HorizontalContentAlignment="Stretch"
-																  VerticalContentAlignment="Stretch"
-																  AutomationProperties.AccessibilityView="Raw" />
+							BorderBrush="{ThemeResource TimePickerButtonBorderBrush}"
+							Background="{ThemeResource TimePickerButtonBackground}"
+							BorderThickness="2"
+							Content="{TemplateBinding Content}"
+							Foreground="{TemplateBinding Foreground}"
+							HorizontalContentAlignment="Stretch"
+							VerticalContentAlignment="Stretch"
+							AutomationProperties.AccessibilityView="Raw" />
 											</Grid>
 										</ControlTemplate>
 									</Setter.Value>
 								</Setter>
 							</Style>
-						</StackPanel.Resources>
+						</Grid.Resources>
 
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
+
 								<VisualState x:Name="Disabled">
+
 									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerHeaderForegroundDisabled}" />
 										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstColumnDivider"
-																	   Storyboard.TargetProperty="Fill">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstColumnDivider" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerSpacerFillDisabled}" />
 										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondColumnDivider"
-																	   Storyboard.TargetProperty="Fill">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondColumnDivider" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerSpacerFillDisabled}" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
+
 							</VisualStateGroup>
+							<VisualStateGroup x:Name="HasTimeStates">
+								<VisualState x:Name="HasTime" />
+								<VisualState x:Name="HasNoTime">
+									<VisualState.Setters>
+										<Setter Target="HourTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+										<Setter Target="MinuteTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+										<Setter Target="PeriodTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+									</VisualState.Setters>
+								</VisualState>
+
+							</VisualStateGroup>
+
 						</VisualStateManager.VisualStateGroups>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
 						<ContentPresenter x:Name="HeaderContentPresenter"
-										  x:DeferLoadStrategy="Lazy"
-										  Visibility="Collapsed"
-										  Content="{TemplateBinding Header}"
-										  ContentTemplate="{TemplateBinding HeaderTemplate}"
-										  Margin="0,0,0,8"
-										  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-										  AutomationProperties.AccessibilityView="Raw" />
+				Grid.Row="0"
+				Content="{TemplateBinding Header}"
+				ContentTemplate="{TemplateBinding HeaderTemplate}"
+				Margin="{ThemeResource TimePickerTopHeaderMargin}"
+				MaxWidth="{ThemeResource TimePickerThemeMaxWidth}"
+				Foreground="{ThemeResource TimePickerHeaderForeground}"
+				TextWrapping="Wrap"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Top"
+				Visibility="Collapsed"
+				AutomationProperties.AccessibilityView="Raw" />
 						<Button x:Name="FlyoutButton"
-								Style="{StaticResource TimePickerFlyoutButtonStyle}"
-								Foreground="{TemplateBinding Foreground}"
-								Background="{TemplateBinding Background}"
-								IsEnabled="{TemplateBinding IsEnabled}"
-								HorizontalAlignment="Stretch"
-								HorizontalContentAlignment="Stretch">
+				Grid.Row="1"
+				Style="{StaticResource TimePickerFlyoutButtonStyle}"
+				Foreground="{TemplateBinding Foreground}"
+				Background="{TemplateBinding Background}"
+				IsEnabled="{TemplateBinding IsEnabled}"
+				MinWidth="{StaticResource TimePickerThemeMinWidth}"
+				MaxWidth="{StaticResource TimePickerThemeMaxWidth}"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Stretch"
+				VerticalAlignment="Top"
+				UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}">
 							<Grid x:Name="FlyoutButtonContentGrid">
+
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"
-													  x:Name="FirstTextBlockColumn" />
+									<ColumnDefinition Width="*" x:Name="FirstTextBlockColumn" />
 									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*"
-													  x:Name="SecondTextBlockColumn" />
+									<ColumnDefinition Width="*" x:Name="SecondTextBlockColumn" />
 									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*"
-													  x:Name="ThirdTextBlockColumn" />
+									<ColumnDefinition Width="*" x:Name="ThirdTextBlockColumn" />
 								</Grid.ColumnDefinitions>
-
-								<Border x:Name="FirstPickerHost"
-										Grid.Column="0">
+								<Border x:Name="FirstPickerHost" Grid.Column="0">
 									<TextBlock x:Name="HourTextBlock"
-											   TextAlignment="Center"
-											   Padding="0,3,0,5"
-											   FontFamily="{TemplateBinding FontFamily}"
-											   FontWeight="{TemplateBinding FontWeight}"
-											   FontSize="{TemplateBinding FontSize}"
-											   AutomationProperties.AccessibilityView="Raw" />
+						TextAlignment="Center"
+						Padding="{ThemeResource TimePickerFlyoutPresenterItemPadding}"
+						FontFamily="{TemplateBinding FontFamily}"
+						FontWeight="{TemplateBinding FontWeight}"
+						FontSize="{TemplateBinding FontSize}"
+						AutomationProperties.AccessibilityView="Raw" />
 								</Border>
-
 								<Rectangle x:Name="FirstColumnDivider"
-										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
-										   HorizontalAlignment="Center"
-										   Width="2"
-										   Grid.Column="1" />
-
-								<Border x:Name="SecondPickerHost"
-										Grid.Column="2">
+					Fill="{ThemeResource TimePickerSpacerFill}"
+					HorizontalAlignment="Center"
+					Width="2"
+					Grid.Column="1" />
+								<Border x:Name="SecondPickerHost" Grid.Column="2">
 									<TextBlock x:Name="MinuteTextBlock"
-											   TextAlignment="Center"
-											   Padding="0,3,0,5"
-											   FontFamily="{TemplateBinding FontFamily}"
-											   FontWeight="{TemplateBinding FontWeight}"
-											   FontSize="{TemplateBinding FontSize}"
-											   AutomationProperties.AccessibilityView="Raw" />
+						TextAlignment="Center"
+						Padding="{ThemeResource TimePickerFlyoutPresenterItemPadding}"
+						FontFamily="{TemplateBinding FontFamily}"
+						FontWeight="{TemplateBinding FontWeight}"
+						FontSize="{TemplateBinding FontSize}"
+						AutomationProperties.AccessibilityView="Raw" />
 								</Border>
-
 								<Rectangle x:Name="SecondColumnDivider"
-										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
-										   HorizontalAlignment="Center"
-										   Width="2"
-										   Grid.Column="3" />
-
-								<Border x:Name="ThirdPickerHost"
-										Grid.Column="4">
+					Fill="{ThemeResource TimePickerSpacerFill}"
+					HorizontalAlignment="Center"
+					Width="2"
+					Grid.Column="3" />
+								<Border x:Name="ThirdPickerHost" Grid.Column="4">
 									<TextBlock x:Name="PeriodTextBlock"
-											   TextAlignment="Center"
-											   Padding="0,3,0,5"
-											   FontFamily="{TemplateBinding FontFamily}"
-											   FontWeight="{TemplateBinding FontWeight}"
-											   FontSize="{TemplateBinding FontSize}"
-											   AutomationProperties.AccessibilityView="Raw" />
+						TextAlignment="Center"
+						Padding="{ThemeResource TimePickerFlyoutPresenterItemPadding}"
+						FontFamily="{TemplateBinding FontFamily}"
+						FontWeight="{TemplateBinding FontWeight}"
+						FontSize="{TemplateBinding FontSize}"
+						AutomationProperties.AccessibilityView="Raw" />
 								</Border>
 							</Grid>
 						</Button>
-					</StackPanel>
+
+					</Grid>
+
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</not_win:Style>
+	</Style>
 
 	<SolidColorBrush x:Key="SplitViewDismissBackgroundColor"
 					 Color="Black"

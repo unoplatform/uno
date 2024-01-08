@@ -718,7 +718,7 @@
 	</ios:Style>
 
 	<!-- TimePicker -->
-	<android:Style TargetType="TimePickerFlyoutPresenter">
+	<android:Style TargetType="NativeTimePickerFlyoutPresenter">
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
@@ -743,7 +743,7 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-	<ios:Style TargetType="TimePickerFlyoutPresenter">
+	<ios:Style TargetType="NativeTimePickerFlyoutPresenter">
 		<Setter Property="Background"
 				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
@@ -813,6 +813,98 @@
 			</Setter.Value>
 		</Setter>
 	</ios:Style>
+
+	<Style TargetType="TimePickerFlyoutPresenter">
+        <Setter Property="Width" Value="242" />
+        <Setter Property="MinWidth" Value="242" />
+        <Setter Property="MaxHeight" Value="398" />
+        <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Background" Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
+        <Setter Property="AutomationProperties.AutomationId" Value="TimePickerFlyoutPresenter" />
+        <Setter Property="BorderBrush" Value="{ThemeResource TimePickerFlyoutPresenterBorderBrush}" />
+        <Setter Property="BorderThickness" Value="{ThemeResource DateTimeFlyoutBorderThickness}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TimePickerFlyoutPresenter">
+                    <Border x:Name="Background"
+              Background="{TemplateBinding Background}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              CornerRadius="{TemplateBinding CornerRadius}"
+              Padding="{ThemeResource DateTimeFlyoutBorderPadding}"
+              MaxHeight="398">
+                        <Grid x:Name="ContentPanel">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" x:Name="FirstPickerHostColumn" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" x:Name="SecondPickerHostColumn" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" x:Name="ThirdPickerHostColumn" />
+                                </Grid.ColumnDefinitions>
+                                <Rectangle x:Name="HighlightRect"
+                    Fill="{ThemeResource TimePickerFlyoutPresenterHighlightFill}"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="5"
+                    VerticalAlignment="Center"
+                    Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" />
+                                <Border x:Name="FirstPickerHost" Grid.Column="0" />
+                                <Rectangle x:Name="FirstPickerSpacing"
+                    Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}"
+                    HorizontalAlignment="Center"
+                    Width="2"
+                    Grid.Column="1" />
+                                <Border x:Name="SecondPickerHost" Grid.Column="2" />
+                                <Rectangle x:Name="SecondPickerSpacing"
+                    Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}"
+                    HorizontalAlignment="Center"
+                    Width="2"
+                    Grid.Column="3" />
+                                <Border x:Name="ThirdPickerHost" Grid.Column="4" />
+                            </Grid>
+                            <Grid Grid.Row="1" Height="{ThemeResource TimePickerFlyoutPresenterAcceptDismissHostGridHeight}" x:Name="AcceptDismissHostGrid">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Height="2"
+                    VerticalAlignment="Top"
+                    Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}"
+                    Grid.ColumnSpan="2" />
+                                <Button x:Name="AcceptButton"
+                    Grid.Column="0"
+                    Content="&#xE8FB;"
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Style="{StaticResource DateTimePickerFlyoutButtonStyle}"/>
+                                <Button x:Name="DismissButton"
+                    Grid.Column="1"
+                    Content="&#xE711;"
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    FontSize="16"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Style="{StaticResource DateTimePickerFlyoutButtonStyle}"/>
+                            </Grid>
+                            
+                        </Grid>
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 	<not_win:Style TargetType="TimePickerSelector">
 		<ios:Setter Property="Template">
