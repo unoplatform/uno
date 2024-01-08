@@ -53,9 +53,9 @@ partial class TimePickerFlyoutPresenter
 	private const string _strHourFormat = "{hour.integer(1)}";
 	private const string _strMinuteFormat = "{minute.integer(2)}";
 	private const string _strPeriodFormat = "{period.abbreviated(2)}";
-	private const long _timeSpanTicksPerMinute = 600000000;
-	private const long _timeSpanTicksPerHour = 36000000000;
-	private const long _timeSpanTicksPerDay = 864000000000;
+	private const long _timeSpanTicksPerMinute = TimeSpan.TicksPerMinute;
+	private const long _timeSpanTicksPerHour = TimeSpan.TicksPerHour;
+	private const long _timeSpanTicksPerDay = TimeSpan.TicksPerDay;
 	internal const int _periodCoercionOffset = 12;
 	private const string _firstPickerHostName = "FirstPickerHost";
 	private const string _secondPickerHostName = "SecondPickerHost";

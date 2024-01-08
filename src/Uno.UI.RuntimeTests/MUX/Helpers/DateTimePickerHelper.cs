@@ -70,7 +70,7 @@ internal static class DateTimePickerHelper
 			button = TreeHelper.GetVisualChildByName(dateTimePicker, "FlyoutButton") as Button;
 		});
 
-		await ControlHelper.DoClickUsingTap(button);
+		await ControlHelper.DoClickUsingAP(button);
 		await WindowHelper.WaitForIdle();
 	}
 

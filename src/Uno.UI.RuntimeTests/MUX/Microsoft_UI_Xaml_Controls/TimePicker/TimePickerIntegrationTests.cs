@@ -122,7 +122,7 @@ public class TimePickerIntegrationTests
 			timePicker.SelectedTime = new TimeSpan?(timeSpanOriginal);
 			selectedTimeChangedRegistration.Detach();
 
-			var timeChangedRegistration = CreateSafeEventRegistration<TimePicker, TypedEventHandler<TimePicker, TimePickerValueChangedEventArgs>>("TimeChanged");
+			var timeChangedRegistration = CreateSafeEventRegistration<TimePicker, EventHandler<TimePickerValueChangedEventArgs>>("TimeChanged");
 			timeChangedRegistration.Attach(timePicker, (sender, args) =>
 			{
 				LOG_OUTPUT("CanFireTimeChangedEvent: TimePickerValueChanged event fired.");
@@ -266,9 +266,9 @@ public class TimePickerIntegrationTests
 			var targetTimeSpan = CalendarToTimeSpan(targetTime);
 
 			LOG_OUTPUT("Time and SelectedTime should now refer to the same date.");
-			VERIFY_ARE_EQUAL(targetTimeSpan.Duration, timePicker.Time.Duration);
+			VERIFY_ARE_EQUAL(targetTimeSpan, timePicker.Time);
 			VERIFY_IS_NOT_NULL(timePicker.SelectedTime);
-			VERIFY_ARE_EQUAL(targetTimeSpan.Duration, timePicker.SelectedTime.Value.Duration);
+			VERIFY_ARE_EQUAL(targetTimeSpan, timePicker.SelectedTime.Value);
 		});
 	}
 
@@ -289,16 +289,16 @@ public class TimePickerIntegrationTests
 			LOG_OUTPUT("Setting SelectedTime to 5:45 AM. Time should change to this value.");
 			timePicker.SelectedTime = time2;
 
-			VERIFY_ARE_EQUAL(time2.Duration, timePicker.Time.Duration);
+			VERIFY_ARE_EQUAL(time2, timePicker.Time);
 			VERIFY_IS_NOT_NULL(timePicker.SelectedTime);
-			VERIFY_ARE_EQUAL(time2.Duration, timePicker.SelectedTime.Value.Duration);
+			VERIFY_ARE_EQUAL(time2, timePicker.SelectedTime.Value);
 
 			LOG_OUTPUT("Setting Time to February 4:30 PM. SelectedTime should change to this value.");
 			timePicker.Time = time;
 
-			VERIFY_ARE_EQUAL(time.Duration, timePicker.Time.Duration);
+			VERIFY_ARE_EQUAL(time, timePicker.Time);
 			VERIFY_IS_NOT_NULL(timePicker.SelectedTime);
-			VERIFY_ARE_EQUAL(time.Duration, timePicker.SelectedTime.Value.Duration);
+			VERIFY_ARE_EQUAL(time, timePicker.SelectedTime.Value);
 
 			LOG_OUTPUT("Setting Time to the null sentinel value. SelectedTime should revert to null.");
 			TimeSpan nullTime = TimeSpan.FromTicks(-1);
@@ -355,7 +355,7 @@ public class TimePickerIntegrationTests
 		await RunOnUIThread(() =>
 		{
 			timePicker.MinuteIncrement = 5;
-			Assert.AreEqual(initialTimeRounded.Duration, timePicker.Time.Duration, "Setting TimePicker.MinuteIncrement should cause TimePicker.Time to get rounded");
+			Assert.AreEqual(initialTimeRounded, timePicker.Time, "Setting TimePicker.MinuteIncrement should cause TimePicker.Time to get rounded");
 		});
 
 		// Setting MinuteIncrement should result in TimeChanged being raised:
@@ -365,7 +365,7 @@ public class TimePickerIntegrationTests
 		await RunOnUIThread(() =>
 		{
 			timePicker.SelectedTime = timeToSet;
-			Assert.AreEqual(timeToSetRounded.Duration, timePicker.Time.Duration, "TimePicker.Time should get rounded based on TimePicker.MinuteIncrement");
+			Assert.AreEqual(timeToSetRounded, timePicker.Time, "TimePicker.Time should get rounded based on TimePicker.MinuteIncrement");
 		});
 
 		await DateTimePickerHelper.OpenDateTimePicker(timePicker);

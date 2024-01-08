@@ -23,9 +23,9 @@ partial class TimePickerFlyout
 	private const string UIA_DIALOG_DISMISS = nameof(UIA_DIALOG_DISMISS);
 
 	private const string s_strHourFormat = "{hour.integer(1)}";
-	private const long s_timeSpanTicksPerMinute = 60000000;
-	private const long s_timeSpanTicksPerHour = 3600000000;
-	//private const long s_timeSpanTicksPerDay = 86400000000;
+	private const long s_timeSpanTicksPerMinute = TimeSpan.TicksPerMinute;
+	private const long s_timeSpanTicksPerHour = TimeSpan.TicksPerHour;
+	//private const long s_timeSpanTicksPerDay = TimeSpan.TicksPerDay;
 
 	/// <summary>
 	/// Represents a control that allows a user to pick a time value.

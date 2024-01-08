@@ -67,12 +67,13 @@ partial class TimePicker
 
 	// Corresponding number of timespan ticks per minute, hour and day. Note that a tick is a 100 nanosecond
 	// interval.
-	private const long s_timeSpanTicksPerMinute = 60000000;
-	private const long s_timeSpanTicksPerHour = 3600000000;
-	private const long s_timeSpanTicksPerDay = 86400000000;
+	private const long s_timeSpanTicksPerMinute = TimeSpan.TicksPerMinute;
+	private const long s_timeSpanTicksPerHour = TimeSpan.TicksPerHour;
+	private const long s_timeSpanTicksPerDay = TimeSpan.TicksPerDay;
 
 	public TimePicker()
 	{
+		this.DefaultStyleKey = typeof(TimePicker);
 		m_is12HourClock = false;
 		m_reactionToSelectionChangeAllowed = false;
 		m_defaultTime = new TimeSpan(GetNullTimeSentinelValue());
