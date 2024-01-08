@@ -37,7 +37,7 @@ public class Given_RatingControl
 
 		// Re-add RatingControl
 		TestServices.WindowHelper.WindowContent = ratingControl;
-		await TestServices.WindowHelper.WaitForLoaded(ratingControl);
+		await TestServices.WindowHelper.WaitFor(() => ratingControl.IsLoaded);
 
 		// Tap RatingControl
 		ratingControl.Value = 1;
