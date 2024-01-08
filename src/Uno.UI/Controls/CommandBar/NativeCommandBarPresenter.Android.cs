@@ -19,7 +19,7 @@ namespace Uno.UI.Controls
 		{
 			base.OnLoaded();
 
-			var commandBar = TemplatedParent as CommandBar;
+			var commandBar = GetTemplatedParent() as CommandBar;
 			Content = commandBar?.GetRenderer(() => new CommandBarRenderer(commandBar)).Native;
 		}
 	}

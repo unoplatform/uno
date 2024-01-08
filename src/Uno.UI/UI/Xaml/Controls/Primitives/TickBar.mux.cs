@@ -52,12 +52,8 @@ public sealed partial class TickBar
 		Trace(L"BEGIN TickBar::ArrangeOverride()");
 #endif // TICKBAR_DBG
 
-		if (TemplatedParent == null)
-		{
-			throw new InvalidOperationException("Templated parent must be set");
-		}
-		var spParentSlider = TemplatedParent as Slider;
-		if (spParentSlider != null)
+		var spTemplatedParent = GetTemplatedParent() ?? throw new InvalidOperationException("Templated parent must be set");
+		if (spTemplatedParent is Slider spParentSlider)
 		{
 			// If tickFrequency <= 0, do nothing.
 			var tickFrequency = spParentSlider.TickFrequency;

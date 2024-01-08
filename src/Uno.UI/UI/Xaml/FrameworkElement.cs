@@ -265,6 +265,14 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private ManagedWeakReference _templatedParentWeakRef;
+		internal ManagedWeakReference GetTemplatedParentWeakRef() => _templatedParentWeakRef;
+		public override DependencyObject GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
+		private protected override void SetTemplatedParentImpl(DependencyObject parent)
+		{
+			_templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+		}
+
 		/// <summary>
 		/// Provides the behavior for the "Measure" pass of the layout cycle. Classes can override this method to define their own "Measure" pass behavior.
 		/// </summary>

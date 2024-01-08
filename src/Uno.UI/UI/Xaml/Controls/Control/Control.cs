@@ -259,11 +259,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (value != null)
 				{
-					if (_templatedRoot is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.SetValue(provider.Store.TemplatedParentProperty, this, DependencyPropertyValuePrecedences.Local);
-					}
-
 					RegisterSubView(value);
 
 					if (_templatedRoot != null)
@@ -536,7 +531,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (view is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.Parent = null;
-				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
@@ -580,7 +574,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (Template != null)
 				{
-					TemplatedRoot = Template.LoadContentCached();
+					TemplatedRoot = Template.LoadContentCached(this);
 				}
 				else
 				{
@@ -793,10 +787,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiousChanged))]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusChanged))]
 		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
-		private protected virtual void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args)
+		private protected virtual void OnCornerRadiusChanged(DependencyPropertyChangedEventArgs args)
 		{
 		}
 

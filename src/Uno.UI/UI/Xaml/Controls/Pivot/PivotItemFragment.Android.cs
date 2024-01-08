@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (UserVisibleHint && _created && _item != null)
 			{
 				_item.DataContext = _dataContext;
-				_item.TemplatedParent = _templatedParent;
+				_item.SetTemplatedParent(_templatedParent);
 			}
 		}
 

@@ -34,11 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: support for Header/Footer when inside a ListView
 		private bool HeaderFooterEnabled =>
 #if __ANDROID__ || __IOS__
-		TemplatedParent is not ListView
+			GetTemplatedParent() is not ListView;
 #else
-		true
+			true;
 #endif
-		;
 
 		internal ContentControl FooterContentControl { get; private set; }
 
@@ -164,34 +163,24 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
-			{
-				itemsControl.SetItemsPresenter(this);
-			}
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
+			if (IsLoaded)
 			{
-				itemsControl.SetItemsPresenter(this);
+				var itemsControl =
+					this.FindFirstParent<ItemsControl>() ??
+					// The items-control may not exist in the direct visual-tree,
+					// if it is defined within a popup/flyout, as in the case of ComboBox.
+					this.FindFirstParent<PopupPanel>()?.Popup?.FindFirstParent<ItemsControl>();
+
+				itemsControl?.SetItemsPresenter(this);
 			}
 		}
 
 		public ItemsPresenter()
 		{
-			// A content presenter does not propagate its own templated
-			// parent. The content's TemplatedParent has already been set by the
-			// content presenter to its own templated parent.
-
-			//TODO TEMPLATED PARENT
-			// PropagateTemplatedParent = false;
 		}
 
 		#region Padding DependencyProperty
@@ -275,7 +264,9 @@ namespace Microsoft.UI.Xaml.Controls
 				VisualTreeHelper.RemoveView(this, _itemsPanel);
 			}
 
+			(_itemsPanel as FrameworkElement)?.SetTemplatedParent(null);
 			_itemsPanel = panel;
+			(_itemsPanel as FrameworkElement)?.SetTemplatedParent(this);
 
 			if (_itemsPanel != null)
 			{

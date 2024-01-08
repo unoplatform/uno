@@ -23,7 +23,6 @@ namespace Uno.UI.DataBinding
 		private readonly DependencyObject _owner;
 
 		private Field _dataContextNative;
-		private Field _templatedParentNative;
 		private Field _dependencyPropertiesNative;
 
 		/// <summary>
@@ -37,7 +36,6 @@ namespace Uno.UI.DataBinding
 			this._owner = owner;
 
 			_store.RegisterPropertyChangedCallback(_store.DataContextProperty, Binder_DataContextChanged);
-			_store.RegisterPropertyChangedCallback(_store.TemplatedParentProperty, Binder_TemplatedParentChanged);
 
 			_props = DependencyProperty.GetPropertiesForType(owner.GetType());
 
@@ -81,16 +79,6 @@ namespace Uno.UI.DataBinding
 			}
 
 			_dataContextNative.Set(this, _store.GetValue(_store.DataContextProperty)?.ToString() ?? "<null>");
-		}
-
-		private void Binder_TemplatedParentChanged(DependencyObject sender, DependencyProperty dp)
-		{
-			if (_templatedParentNative == null)
-			{
-				_templatedParentNative = this.Class.GetField(TemplatedParentNativeField);
-			}
-
-			_templatedParentNative.Set(this, _store.GetValue(_store.TemplatedParentProperty)?.ToString() ?? "<null>");
 		}
 
 		[Java.Interop.ExportField(DataContextNativeField)]

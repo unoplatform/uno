@@ -15,26 +15,10 @@ namespace Microsoft.UI.Xaml
 	partial class DependencyPropertyDetailsCollection
 	{
 		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
-		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
 
 		private bool _bindingsSuspended;
 
-		/// <summary>
-		/// Applies the specified templated parent on the current <see cref="TemplateBinding"/> instances
-		/// </summary>
-		/// <param name="templatedParent"></param>
-		internal void ApplyTemplatedParent(FrameworkElement templatedParent)
-		{
-			var templateBindings = _templateBindings.Data;
-
-			for (int i = 0; i < templateBindings.Length; i++)
-			{
-				ApplyBinding(templateBindings[i], templatedParent);
-			}
-		}
-
-		public bool HasBindings =>
-			_bindings != ImmutableList<BindingExpression>.Empty || _templateBindings != ImmutableList<BindingExpression>.Empty;
+		public bool HasBindings => _bindings != ImmutableList<BindingExpression>.Empty;
 
 		/// <summary>
 		/// Applies the specified datacontext on the current <see cref="Binding"/> instances
@@ -138,13 +122,7 @@ namespace Microsoft.UI.Xaml
 
 				details.SetBinding(bindingExpression);
 
-				if (Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
-				{
-					_templateBindings = _templateBindings.Add(bindingExpression);
-
-					ApplyBinding(bindingExpression, TemplatedParentPropertyDetails.GetValue());
-				}
-				else
+				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
 					_bindings = _bindings.Add(bindingExpression);
 

@@ -296,19 +296,15 @@ namespace Uno.UI.Controls
 
 		private View GetSectionView(object source, DataTemplate template, View convertView)
 		{
-			var view = convertView;
-
-			if (view == null)
-			{
-				view = template != null ? ((Func<View>)template)() : new TextBlock()
+			var view =
+				convertView ??
+				template?.LoadContent(/* fixme@xy: inject tp */) ??
+				new TextBlock()
 				{
 					Text = source?.ToString()
 				};
-			}
 
-			var provider = view as IDataContextProvider;
-
-			if (provider != null)
+			if (view is IDataContextProvider provider)
 			{
 				provider.DataContext = source;
 			}

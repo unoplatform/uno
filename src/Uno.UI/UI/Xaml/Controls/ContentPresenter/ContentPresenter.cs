@@ -663,13 +663,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			SetImplicitContent();
-		}
-
 		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
 			if (ContentTemplateRoot != null)
@@ -708,8 +701,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				_contentTemplateRoot = value;
 
-				SynchronizeContentTemplatedParent();
-
 				if (_contentTemplateRoot != null)
 				{
 					RegisterContentTemplateRoot();
@@ -719,8 +710,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void SynchronizeContentTemplatedParent()
+		private void SynchronizeContentTemplatedParent() // fixme@xy: ?
 		{
+#if false
 			if (IsNativeHost)
 			{
 				// In this case, the ContentPresenter is not used as part of the child of a
@@ -760,6 +752,7 @@ namespace Microsoft.UI.Xaml.Controls
 					dependencyObject.SetParent(this);
 				}
 			}
+#endif
 		}
 
 		private void UpdateContentTransitions(TransitionCollection oldValue, TransitionCollection newValue)
@@ -809,9 +802,13 @@ namespace Microsoft.UI.Xaml.Controls
 				SetUpdateTemplate();
 			}
 
+#if false // fixme@xy: validate
 			// When the control is loaded, set the TemplatedParent
 			// as it may have been reset during the last unload.
 			SynchronizeContentTemplatedParent();
+#else
+			SetImplicitContent();
+#endif
 
 			UpdateBorder();
 
@@ -889,7 +886,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 			{
 				_dataTemplateUsedLastUpdate = dataTemplate;
-				ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+				ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? Content as View;
 				if (ContentTemplateRoot != null)
 				{
 					IsUsingDefaultTemplate = false;
@@ -922,44 +919,40 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var textBlock = new ImplicitTextBlock(this);
-
-			void setBinding(DependencyProperty property, string path)
-				=> textBlock.SetBinding(
-					property,
-					new Binding
-					{
-						Path = new PropertyPath(path),
-						Source = this,
-						Mode = BindingMode.OneWay
-					}
-				);
+			textBlock.SetTemplatedParent(this);
 
 			if (!IsNativeHost)
 			{
-				setBinding(TextBlock.TextProperty, nameof(Content));
-				setBinding(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
-				setBinding(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
-				setBinding(TextBlock.TextWrappingProperty, nameof(TextWrapping));
-				setBinding(TextBlock.MaxLinesProperty, nameof(MaxLines));
-				setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+				TemplateBind(TextBlock.TextProperty, nameof(Content));
+				TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
+				TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
+				TemplateBind(TextBlock.TextWrappingProperty, nameof(TextWrapping));
+				TemplateBind(TextBlock.MaxLinesProperty, nameof(MaxLines));
+				TemplateBind(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+
+				void TemplateBind(DependencyProperty property, string path) =>
+					textBlock.SetBinding(property, new Binding
+					{
+						Path = new PropertyPath(path),
+						RelativeSource = RelativeSource.TemplatedParent
+					});
 			}
 
 			ContentTemplateRoot = textBlock;
 			IsUsingDefaultTemplate = true;
 		}
 
-		private bool _isBoundImplicitelyToContent;
+		private bool _isBoundImplicitlyToContent;
 
 		private void SetImplicitContent()
 		{
-			if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
-			{
-				return;
-			}
+			// fixme@xy: can CP be used outside the scope of a ContentControl template?
+			//		^ such as with the case on ios/android, where we are presenting native control?
+			//		^ what do?
 
-			if (!(TemplatedParent is ContentControl))
+			if (GetTemplatedParent() is not ContentControl)
 			{
-				ClearImplicitBindinds();
+				ClearImplicitBindings();
 				return; // Not applicable: no TemplatedParent or it's not a ContentControl
 			}
 
@@ -967,7 +960,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
 			if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
 			{
-				ClearImplicitBindinds();
+				ClearImplicitBindings();
 				return; // Nope, there's a value somewhere
 			}
 
@@ -975,22 +968,18 @@ namespace Microsoft.UI.Xaml.Controls
 			var b = GetBindingExpression(ContentProperty);
 			if (b != null)
 			{
-				ClearImplicitBindinds();
+				ClearImplicitBindings();
 				return; // Yep, there's a binding: a value "will" come eventually
 			}
 
 			// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-			var binding =
-				new Binding(new PropertyPath("Content"), null)
-				{
-					RelativeSource = RelativeSource.TemplatedParent,
-				};
+			var binding = new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent };
 			SetBinding(ContentProperty, binding);
-			_isBoundImplicitelyToContent = true;
+			_isBoundImplicitlyToContent = true;
 
-			void ClearImplicitBindinds()
+			void ClearImplicitBindings()
 			{
-				if (_isBoundImplicitelyToContent)
+				if (_isBoundImplicitlyToContent)
 				{
 					SetBinding(ContentProperty, new Binding());
 				}

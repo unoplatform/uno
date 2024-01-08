@@ -232,6 +232,8 @@ namespace Microsoft.UI.Xaml.Data
 		internal bool IsFallbackValueSet
 			=> _flags.HasFlag(BindingFlags.FallbackValueSet);
 
+		internal bool IsTemplateBinding => RelativeSource?.Mode is RelativeSourceMode.TemplatedParent;
+
 		[Flags]
 		private enum BindingFlags
 		{

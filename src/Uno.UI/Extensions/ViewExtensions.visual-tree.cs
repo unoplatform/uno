@@ -3,11 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Uno.Extensions;
+
 
 #if __IOS__
 using UIKit;
@@ -86,29 +91,60 @@ static partial class ViewExtensions
 			value = default;
 			return false;
 		}
-		string FormatCornerRadius(CornerRadius x)
-		{
-			// format: uniform, [left,top,right,bottom]
-			if (x.TopLeft == x.TopRight && x.TopRight == x.BottomRight && x.BottomRight == x.BottomLeft) return $"{x.TopLeft}";
-			return $"[{x.TopLeft},{x.TopRight},{x.BottomRight},{x.BottomLeft}]";
-		}
-		string FormatThickness(Thickness x)
-		{
-			// format: uniform, [same-left-right,same-top-bottom], [left,top,right,bottom]
-			if (x.Left == x.Top && x.Top == x.Right && x.Right == x.Bottom) return $"{x.Left}";
-			if (x.Left == x.Right && x.Top == x.Bottom) return $"[{x.Left},{x.Top}]";
-			return $"[{x.Left},{x.Top},{x.Right},{x.Bottom}]";
-		}
+		//string FormatCornerRadius(CornerRadius x)
+		//{
+		//	// format: uniform, [left,top,right,bottom]
+		//	if (x.TopLeft == x.TopRight && x.TopRight == x.BottomRight && x.BottomRight == x.BottomLeft) return $"{x.TopLeft}";
+		//	return $"[{x.TopLeft},{x.TopRight},{x.BottomRight},{x.BottomLeft}]";
+		//}
+		//string FormatThickness(Thickness x)
+		//{
+		//	// format: uniform, [same-left-right,same-top-bottom], [left,top,right,bottom]
+		//	if (x.Left == x.Top && x.Top == x.Right && x.Right == x.Bottom) return $"{x.Left}";
+		//	if (x.Left == x.Right && x.Top == x.Bottom) return $"[{x.Left},{x.Top}]";
+		//	return $"[{x.Left},{x.Top},{x.Right},{x.Bottom}]";
+		//}
 		IEnumerable<string> GetDetails()
 		{
+			//if (x is UIElement uie)
+			//{
+			//	yield return $"TemplatedParent={uie.GetTemplatedParent()?.GetType().Name}";
+			//	yield return $"DataContext={uie.DataContext?.GetType().Name}";
+			//}
+			//if (x is ContentControl cc)
+			//{
+			//	yield return $"C={cc.Content?.GetType().Name}";
+			//	yield return $"CT={cc.ContentTemplate?.GetHashCode().ToString("X8", CultureInfo.InvariantCulture)}";
+			//	yield return $"CTS={cc.ContentTemplateSelector?.GetHashCode().ToString("X8", CultureInfo.InvariantCulture)}";
+			//}
+			//if (x is ContentPresenter cp)
+			//{
+			//	yield return $"C={cp.Content?.GetType().Name}";
+			//	yield return $"CT={cp.ContentTemplate?.GetHashCode().ToString("X8", CultureInfo.InvariantCulture)}";
+			//	yield return $"CTS={cp.ContentTemplateSelector?.GetHashCode().ToString("X8", CultureInfo.InvariantCulture)}";
+			//}
+
 			if (x is FrameworkElement fe)
 			{
 				yield return $"Actual={fe.ActualWidth}x{fe.ActualHeight}";
 				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
 			}
-			if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
-			if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
-			if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
+
+			if (x is ToggleButton tb)
+			{
+				yield return $"IsChecked={tb.IsChecked}";
+			}
+			if (x is SplitView sv)
+			{
+				yield return $"IsPaneOpen={sv.IsPaneOpen}";
+			}
+			if (x is TextBlock text)
+			{
+				yield return $"{text.Text}";
+			}
+			//if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
+			//if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
+			//if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
 
 			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
 			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";

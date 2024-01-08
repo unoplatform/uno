@@ -2100,35 +2100,21 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 		public static void FindParentCommandBarForElement(ICommandBarElement element, out CommandBar? parentCmdBar)
 		{
-			parentCmdBar = null;
-			var elementDO = element as DependencyObject;
-
-			CommandBar? parentCommandBar = null;
-			var itemsControl = ItemsControl.ItemsControlFromItemContainer(elementDO);
-			if (itemsControl is { })
+			if (element is DependencyObject elementAsDO &&
+				ItemsControl.ItemsControlFromItemContainer(elementAsDO) is { } ic &&
+				ic.GetTemplatedParent() is CommandBar tp)
 			{
-				var templatedParent = itemsControl.TemplatedParent;
-				parentCommandBar = templatedParent as CommandBar;
+				parentCmdBar = tp;
 			}
-
-			// If an element is collapsed initially, it isn't placed in the visual tree of its ItemsControl,
-			// meaning that its parent will instead be its logical parent.  To account for that circumstance,
-			// we'll explicitly walk the tree to find the parent command bar if we haven't found it yet.
-			if (parentCommandBar == null)
+			else
 			{
-				var currentElement = elementDO as DependencyObject;
-				while (currentElement is { })
-				{
-					if (currentElement is CommandBar cmdBar)
-					{
-						parentCommandBar = cmdBar;
-					}
-
-					currentElement = currentElement.GetParent() as DependencyObject;
-				}
+				// If an element is collapsed initially, it isn't placed in the visual tree of its ItemsControl,
+				// meaning that its parent will instead be its logical parent. To account for that circumstance,
+				// we'll explicitly walk the tree to find the parent command bar if we haven't found it yet.
+				parentCmdBar = (element as DependencyObject).GetParents()
+					.OfType<CommandBar>()
+					.FirstOrDefault();
 			}
-
-			parentCmdBar = parentCommandBar;
 		}
 
 		private void FindMovablePrimaryCommands(double availablePrimaryCommandsWidth, double primaryItemsControlDesiredWidth, out int primaryCommandsCountInTransition)

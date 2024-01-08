@@ -111,11 +111,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (flyout?._timePickerPresenter != null)
 			{
-				if (args.NewValue is IDependencyObjectStoreProvider binder)
-				{
-					binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
-				}
-
 				flyout._timePickerPresenter.Content = args.NewValue;
 			}
 		}

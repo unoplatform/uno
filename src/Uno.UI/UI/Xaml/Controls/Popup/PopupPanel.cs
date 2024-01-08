@@ -268,7 +268,7 @@ internal partial class PopupPanel : Panel
 			// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
 			// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
 			// rely on this workaround to close CommandBar's popup.
-			if (popup.TemplatedParent is CommandBar cb)
+			if (popup.GetTemplatedParent() is CommandBar cb)
 			{
 				cb.TryDismissInlineAppBarInternal();
 			}
@@ -299,7 +299,7 @@ internal partial class PopupPanel : Panel
 		// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
 		// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
 		// rely on this workaround to close CommandBar's popup.
-		if (Popup is { TemplatedParent: CommandBar { IsSticky: false } })
+		if (Popup?.GetTemplatedParent() is CommandBar { IsSticky: false })
 		{
 			return true;
 		}
