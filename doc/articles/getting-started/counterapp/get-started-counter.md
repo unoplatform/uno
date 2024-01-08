@@ -40,7 +40,7 @@ Use XAML for layout and MVVM for state management
 </div>
 
 <div class="col-md-6 col-xs-12 ">
-<a href="get-started-counter-csharp-mvvm.md">
+<a href="get-started-counter-csharp-mvux.md">
 <div class="alert alert-info alert-hover">
 
 #### C# Markup + MVUX
@@ -52,7 +52,7 @@ Use C# Markup for layout and MVUX for state management
 </div>
 
 <div class="col-md-6 col-xs-12 ">
-<a href="get-started-counter-csharp-mvux.md">
+<a href="get-started-counter-csharp-mvvm.md">
 <div class="alert alert-info alert-hover">
 
 #### C# Markup + MVVM
