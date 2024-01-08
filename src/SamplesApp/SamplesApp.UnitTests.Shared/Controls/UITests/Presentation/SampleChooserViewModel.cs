@@ -963,9 +963,6 @@ namespace SampleControl.Presentation
 				RecentSamples = recents;
 			}
 
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-
 			return container;
 		}
 
