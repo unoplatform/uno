@@ -149,6 +149,7 @@ namespace TestRepro
 			_View Build(object owner);
 		}
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private class _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0 : I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
