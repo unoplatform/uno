@@ -378,7 +378,7 @@ public class TimePickerIntegrationTests
 
 			var minuteItems = minuteLoopingSelector.Items;
 
-			Assert.AreEqual(12u, minuteItems.Count);
+			Assert.AreEqual(12, minuteItems.Count);
 			for (int i = 0; i < minuteItems.Count; i++)
 			{
 				var dayItem = minuteItems[i] as DatePickerFlyoutItem;
