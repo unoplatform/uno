@@ -4,7 +4,6 @@
 	<PropertyGroup>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
-		<UnoIsSkiaGtkHead>true</UnoIsSkiaGtkHead>
 	</PropertyGroup>
 
 </Project>
