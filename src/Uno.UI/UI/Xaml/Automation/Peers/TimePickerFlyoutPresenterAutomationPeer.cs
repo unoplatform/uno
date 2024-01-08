@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TimePickerFlyoutPresenter types to Microsoft UI Automation.

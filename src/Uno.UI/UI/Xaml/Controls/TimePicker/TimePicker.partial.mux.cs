@@ -15,16 +15,16 @@ using Uno.UI.Extensions;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.Foundation;
 using Uno.UI.DataBinding;
 using System.Threading.Tasks;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePicker
 {

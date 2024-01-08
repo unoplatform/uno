@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 
 // TODO Uno: Missing ValidateUIElementTree, CanOpenAndCloseUsingKeyboard tests
@@ -238,17 +237,16 @@ public class TimePickerIntegrationTests
 	{
 		await RunOnUIThread(() =>
 		{
-			var hourTextBlock = (TextBlock) (TreeHelper::GetVisualChildByName(timePicker, "HourTextBlock"));
-			var minuteTextBlock = (TextBlock) (TreeHelper::GetVisualChildByName(timePicker, "MinuteTextBlock"));
-			var periodTextBlock = (TextBlock) (TreeHelper::GetVisualChildByName(timePicker, "PeriodTextBlock"));
+			var hourTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "HourTextBlock"));
+			var minuteTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "MinuteTextBlock"));
+			var periodTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock"));
 
-			var validatePlaceholder = [](TextBlock ^ textBlock, Platform::String ^ placeholder)
-
+			void validatePlaceholder(TextBlock textBlock, string placeholder)
 			{
-				LOG_OUTPUT("Expected placeholder: \"%s\"", placeholder->Data());
-				LOG_OUTPUT("Actual text: \"%s\"", textBlock->Text->Data());
+				LOG_OUTPUT("Expected placeholder: \"%s\"", placeholder);
+				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
 
-				VERIFY_IS_TRUE(Platform::String::CompareOrdinal(placeholder, textBlock->Text) == 0);
+				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) == 0);
 			};
 
 			validatePlaceholder(hourTextBlock, "hour");

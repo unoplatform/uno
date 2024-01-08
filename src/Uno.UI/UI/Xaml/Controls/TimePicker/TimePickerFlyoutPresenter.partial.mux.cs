@@ -9,14 +9,14 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 //TODO:MZ: Replace all the DateTime with DateTimeOffset?
 partial class TimePickerFlyoutPresenter

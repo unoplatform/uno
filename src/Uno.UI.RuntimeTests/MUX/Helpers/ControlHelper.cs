@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -183,6 +184,28 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 				result = element.TransformToVisual(null).TransformPoint(offsetCenterLocal);
 			});
 			return result;
+		}
+
+		public static async Task EnsureFocused(Control control)
+		{
+			bool hasFocus = false;
+			var gotFocusRegistration = Private.Infrastructure.TestServices.CreateSafeEventRegistration<Control, RoutedEventHandler>("GotFocus");
+			gotFocusRegistration.Attach(control, (s, e) => hasFocus = true);
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				if (control.FocusState == FocusState.Unfocused)
+				{
+					control.Focus(FocusState.Programmatic);
+				}
+				else
+				{
+					hasFocus = true;
+				}
+			});
+
+			await TestServices.WindowHelper.WaitFor(() => hasFocus);
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
 }

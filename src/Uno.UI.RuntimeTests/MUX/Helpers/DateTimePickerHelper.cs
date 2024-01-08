@@ -2,10 +2,11 @@
 using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.Foundation;
 using Uno.UI.UI.Xaml.Controls.TestHooks;
 using static Private.Infrastructure.TestServices;
+using System.Globalization;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -65,5 +66,24 @@ internal static class DateTimePickerHelper
 
 		await ControlHelper.DoClickUsingTap(button);
 		await WindowHelper.WaitForIdle();
+	}
+	
+	internal static void SelectTimeInOpenTimePickerFlyout(Calendar timeToSelect, LoopingSelectorHelper.SelectionMode selectionMode)
+	{
+		xaml_primitives::LoopingSelector ^ hourLoopingSelector;
+		xaml_primitives::LoopingSelector ^ minuteLoopingSelector;
+		xaml_primitives::LoopingSelector ^ periodLoopingSelector;
+		GetHourMinutePeriodLoopingSelectorsFromOpenFlyout(hourLoopingSelector, minuteLoopingSelector, periodLoopingSelector);
+
+		int hourIndexToSelect = timeToSelect->Hour;
+		int minuteIndexToSelect = timeToSelect->Minute;
+		int periodIndeexToSelect = timeToSelect->Period - 1; // AM = 1, PM = 2
+
+		LoopingSelectorHelper::SelectItemByIndex(hourLoopingSelector, hourIndexToSelect, selectionMode);
+		LoopingSelectorHelper::SelectItemByIndex(minuteLoopingSelector, minuteIndexToSelect, selectionMode);
+		LoopingSelectorHelper::SelectItemByIndex(periodLoopingSelector, periodIndeexToSelect, selectionMode);
+
+		ControlHelper::ClickFlyoutCloseButton(hourLoopingSelector, true /* isAccept */);
+		TestServices::WindowHelper->WaitForIdle();
 	}
 }

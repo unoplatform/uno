@@ -10,12 +10,12 @@ using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePickerFlyout
 {

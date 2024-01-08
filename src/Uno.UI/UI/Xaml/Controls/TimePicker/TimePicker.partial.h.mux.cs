@@ -12,9 +12,9 @@ using DirectUI;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.Globalization;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePicker
 {

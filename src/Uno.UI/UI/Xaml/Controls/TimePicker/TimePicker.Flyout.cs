@@ -2,7 +2,7 @@
 using Uno;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePicker
 {

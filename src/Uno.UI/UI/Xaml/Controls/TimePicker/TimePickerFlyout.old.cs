@@ -1,9 +1,9 @@
 ﻿#if !UNO_REFERENCE_API
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePickerFlyout
 {
