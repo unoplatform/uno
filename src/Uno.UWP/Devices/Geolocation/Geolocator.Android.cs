@@ -132,6 +132,11 @@ public sealed partial class Geolocator
 
 	private static async Task<GeolocationAccessStatus> RequestAccessCore()
 	{
+		if (!IsLocationEnabled())
+		{
+			return GeolocationAccessStatus.Denied;
+		}
+
 		var status = GeolocationAccessStatus.Allowed;
 
 		if (!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
@@ -141,6 +146,7 @@ public sealed partial class Geolocator
 				: GeolocationAccessStatus.Denied;
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
+
 			if (status == GeolocationAccessStatus.Allowed)
 			{
 				BroadcastStatusChanged(PositionStatus.Ready);
@@ -166,6 +172,13 @@ public sealed partial class Geolocator
 		return status;
 	}
 
+	public static bool IsLocationEnabled()
+	{
+		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+		return locationManager?.IsLocationEnabled ?? false;
+	}
+
 	/// <summary>
 	/// Starts an asynchronous operation to retrieve the current location of the device.
 	/// </summary>
@@ -183,7 +196,7 @@ public sealed partial class Geolocator
 		{
 			TryInitialize();
 
-			if (_locationProvider is null || _locationManager is null)
+			if (string.IsNullOrWhiteSpace(_locationProvider) || _locationManager is null)
 			{
 				return Task.FromResult<Geoposition?>(null);
 			}
@@ -262,7 +275,7 @@ public sealed partial class Geolocator
 		if (_locationManager == null)
 		{
 			_locationManager = InitializeLocationProvider();
-			if (_locationManager is null || _locationProvider is null)
+			if (_locationManager is null || string.IsNullOrWhiteSpace(_locationProvider))
 			{
 				return;
 			}
@@ -298,6 +311,7 @@ public sealed partial class Geolocator
 
 	private LocationManager? InitializeLocationProvider()
 	{
+		_locationProvider = null;
 		var locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 
 		var criteriaForLocationService = new Criteria
@@ -305,15 +319,9 @@ public sealed partial class Geolocator
 			Accuracy = Accuracy.Coarse
 		};
 
-		var acceptableLocationProviders = locationManager?.GetProviders(criteriaForLocationService, true);
-
-		if (acceptableLocationProviders != null && acceptableLocationProviders.Any())
+		if (locationManager?.GetProviders(criteriaForLocationService, true) is { } acceptableLocationProviders)
 		{
-			_locationProvider = acceptableLocationProviders.First();
-		}
-		else
-		{
-			_locationProvider = string.Empty;
+			_locationProvider = acceptableLocationProviders.FirstOrDefault();
 		}
 
 		return locationManager;
