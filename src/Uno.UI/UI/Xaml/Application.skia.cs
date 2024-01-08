@@ -46,6 +46,8 @@ namespace Microsoft.UI.Xaml
 
 		internal ISkiaApplicationHost? Host { get; set; }
 
+		internal static SynchronizationContext ApplicationSynchronizationContext { get; private set; }
+
 		private void SetCurrentLanguage()
 		{
 			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
@@ -78,7 +80,7 @@ namespace Microsoft.UI.Xaml
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(
-				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
+				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
