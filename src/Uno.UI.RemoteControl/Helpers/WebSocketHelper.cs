@@ -18,7 +18,8 @@ namespace Uno.UI.RemoteControl.Helpers
 			var pool = ArrayPool<byte>.Shared;
 			var buff = pool.Rent(BufferSize);
 			var segment = new ArraySegment<byte>(buff);
-			using var mem = manager.GetStream();
+			using var mem = manager.GetStream() 
+				?? throw new InvalidOperationException($"Unable to get memory stream");
 
 			try
 			{
@@ -34,7 +35,7 @@ namespace Uno.UI.RemoteControl.Helpers
 					{
 						if (result.Count != 0)
 						{
-							mem.Write(buff, 0, result.Count);
+							await mem.WriteAsync(buff, 0, result.Count);
 						}
 
 						mem.Position = 0;
@@ -43,7 +44,7 @@ namespace Uno.UI.RemoteControl.Helpers
 					}
 					else
 					{
-						mem.Write(buff, 0, result.Count);
+						await mem.WriteAsync(buff, 0, result.Count);
 					}
 				}
 			}

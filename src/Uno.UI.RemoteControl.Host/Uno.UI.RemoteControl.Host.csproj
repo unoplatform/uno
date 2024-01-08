@@ -6,6 +6,7 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RollForward>minor</RollForward>
 		<Nullable>enable</Nullable>
+		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
@@ -17,6 +18,8 @@
 		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.5" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,6 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Server\Uno.UI.RemoteControl.Server.csproj" />
 	</ItemGroup>
 
