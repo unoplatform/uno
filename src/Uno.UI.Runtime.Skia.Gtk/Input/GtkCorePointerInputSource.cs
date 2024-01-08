@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Display;
+using Window = Gdk.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -626,7 +627,9 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 			eventSource = w.Parent;
 		}
 
-		((UnoGtkWindow)eventSource).Window.GetGeometry(out var x, out var y, out _, out _);
+		// GetGeometry returns different numbers between Windows and Linux.
+		// FrameExtents (and a bunch of other methods/properties) will include the border and the title bar on Linux
+		((UnoGtkWindow)eventSource).Window.GetOrigin(out var x, out var y);
 		return (x, y);
 	}
 }
