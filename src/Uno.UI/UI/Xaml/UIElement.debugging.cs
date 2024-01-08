@@ -260,6 +260,21 @@ namespace Microsoft.UI.Xaml
 			}
 			return sb.ToString();
 		}
+
+		internal string TreeGraph() => Uno.UI.Extensions.ViewExtensions.TreeGraph(this);
+
+		internal string TreeGraph(int depth)
+		{
+			View node = this;
+			foreach (var item in Uno.UI.Extensions.ViewExtensions.EnumerateAncestors(this))
+			{
+				if (item == null || 0 >= --depth) break;
+
+				node = item;
+			}
+
+			return Uno.UI.Extensions.ViewExtensions.TreeGraph(node);
+		}
 	}
 }
 #endif

@@ -33,6 +33,7 @@ using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 #else
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
@@ -247,6 +248,18 @@ namespace Uno.UI.Samples.Tests
 		private void OnStopTests(object sender, RoutedEventArgs e)
 		{
 			StopRunningTests();
+		}
+
+		private void DebugVT(object sender, RoutedEventArgs e)
+		{
+#if HAS_UNO
+			var tree = Private.Infrastructure.TestServices.WindowHelper.WindowContent.TreeGraph();
+
+			if (Debugger.IsAttached)
+			{
+				Debugger.Break();
+			}
+#endif
 		}
 
 		private void StopRunningTests()
