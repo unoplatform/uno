@@ -70,7 +70,6 @@ namespace Microsoft.UI.Xaml
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
 
-		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
@@ -180,17 +179,16 @@ namespace Microsoft.UI.Xaml
 		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
 		/// </summary>
 		/// <param name="originalObject"></param>
-		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty)
 		{
 			ObjectId = Interlocked.Increment(ref _objectIdCounter);
 
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty);
 
 			_dataContextProperty = dataContextProperty;
-			_templatedParentProperty = templatedParentProperty;
 
 			if (_trace.IsEnabled)
 			{
@@ -223,11 +221,11 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Determines if the dependency object automatically registers for inherited
-		/// properties such as <see cref="DataContextProperty"/> or <see cref="TemplatedParentProperty"/>.
+		/// properties such as <see cref="DataContextProperty"/>.
 		/// </summary>
 		/// <remarks>
-		/// This is used to avoid propagating the DataContext and TemplatedParent properties
-		/// for types that commonly do not expose inherited propertyes, such as visual states.
+		/// This is used to avoid propagating the DataContext property
+		/// for types that commonly do not expose inherited properties, such as visual states.
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
@@ -286,7 +284,7 @@ namespace Microsoft.UI.Xaml
 
 		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
-			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
+			if (propertyDetails == _properties.DataContextPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -1106,9 +1104,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// If the property is available on the current DependencyObject, update it.
 				// This will allow for it to be reset to is previous lower precedence.
-				if (
-					localProperty != _dataContextProperty &&
-					localProperty != _templatedParentProperty &&
+				if (localProperty != _dataContextProperty &&
 					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
 				)
 				{
@@ -1192,7 +1188,6 @@ namespace Microsoft.UI.Xaml
 
 		private InheritedPropertiesDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
 		{
-			_parentTemplatedParentProperty = parentProvider.Store.TemplatedParentProperty;
 			_parentDataContextProperty = parentProvider.Store.DataContextProperty;
 
 			// The propagation of the inherited properties is performed by setting the
@@ -1237,10 +1232,12 @@ namespace Microsoft.UI.Xaml
 
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+#if false // todo@xy: to verify https://github.com/unoplatform/uno/pull/15732; disabled for using deleted code
 					if (!IsTemplatedParentFrozen)
 					{
 						SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					}
+#endif
 				}
 			}
 			finally
@@ -1255,10 +1252,6 @@ namespace Microsoft.UI.Xaml
 			if (_parentDataContextProperty.UniqueId == property.UniqueId)
 			{
 				return (_dataContextProperty, _properties.DataContextPropertyDetails);
-			}
-			else if (_parentTemplatedParentProperty == property)
-			{
-				return (_templatedParentProperty, _properties.TemplatedParentPropertyDetails);
 			}
 			else
 			{
@@ -1476,8 +1469,7 @@ namespace Microsoft.UI.Xaml
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
 				if (propertyDetail == null
-					|| propertyDetail == _properties.DataContextPropertyDetails
-					|| propertyDetail == _properties.TemplatedParentPropertyDetails)
+					|| propertyDetail == _properties.DataContextPropertyDetails)
 				{
 					continue;
 				}

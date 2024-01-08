@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -22,11 +23,14 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{
+		private readonly bool _shouldInjectTemplatedParent;
+
 		public ControlTemplate() : this(null) { }
 
 		public ControlTemplate(Func<View?>? factory)
 			: base(factory)
 		{
+			_shouldInjectTemplatedParent = true;
 		}
 
 		/// <summary>
@@ -39,13 +43,32 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		public static implicit operator ControlTemplate(Func<View>? obj)
-			=> new ControlTemplate(obj);
+		public Type? TargetType { get; set; }
 
-		public Type? TargetType
+		internal View? LoadContentCached(Control templatedParent)
 		{
-			get;
-			set;
+			var root = base.LoadContentCachedCore(templatedParent);
+			if (_shouldInjectTemplatedParent && root is DependencyObject rootAsDO)
+			{
+				// Here we are in an alternative path,
+				// where custom factory method is provided without TemplatedParent propagation.
+				// So we have to correct here.
+				SetTemplatedParentRecursively(rootAsDO, templatedParent);
+
+				void SetTemplatedParentRecursively(DependencyObject view, Control templatedParent)
+				{
+					if (view is FrameworkElement fe)
+					{
+						fe.SetTemplatedParent(templatedParent);
+					}
+					foreach (var child in VisualTreeHelper.GetChildren(view))
+					{
+						SetTemplatedParentRecursively(child, templatedParent);
+					}
+				}
+			}
+
+			return root;
 		}
 	}
 }

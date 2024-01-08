@@ -31,10 +31,10 @@ namespace Microsoft.UI.Xaml.Media
 
 				if (unoViewGroup != null)
 				{
-					var newContentAsFrameworkElement = newView as IFrameworkElement;
+					var newContentAsFrameworkElement = newView as FrameworkElement;
 					if (newContentAsFrameworkElement != null)
 					{
-						newContentAsFrameworkElement.TemplatedParent = (unoViewGroup as IFrameworkElement)?.TemplatedParent;
+						newContentAsFrameworkElement.SetTemplatedParent((unoViewGroup as FrameworkElement)?.GetTemplatedParent());
 					}
 				}
 

@@ -244,7 +244,7 @@ namespace Microsoft.UI.Xaml
 			return count;
 		}
 
-		internal View? DequeueTemplate(FrameworkTemplate template)
+		internal View? DequeueTemplate(FrameworkTemplate template, DependencyObject? templatedParent)
 		{
 			var list = GetTemplatePool(template);
 
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType?.ToString() });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template._viewFactory?.Method.DeclaringType?.FullName });
 				}
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{_isPoolingEnabled}");
 				}
 
-				instance = ((IFrameworkTemplateInternal)template).LoadContent();
+				instance = ((IFrameworkTemplateInternal)template).LoadContent(templatedParent);
 
 				if (_isPoolingEnabled && instance is IFrameworkElement)
 				{
@@ -385,6 +385,7 @@ namespace Microsoft.UI.Xaml
 
 		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
+			// fixme@xy: add handling for TemplatedParentScope here ?if needed?
 			if (!_isPoolingEnabled)
 			{
 				return;
@@ -413,7 +414,8 @@ namespace Microsoft.UI.Xaml
 				{
 					// Make sure the TemplatedParent is disconnected
 					provider.Store.Parent = null;
-					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+					// fixme@xy: find replacement?
+					//provider.Store.ClearValue(provider.Store.TemplatedParntProperty, DependencyPropertyValuePrecedences.Local);
 				}
 				if (shouldCleanUpTemplateRoot)
 				{

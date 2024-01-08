@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
-	public delegate View? FrameworkTemplateBuilder(object? owner);
+	public delegate View? FrameworkTemplateBuilder(object? owner, DependencyObject? templatedParent);
 
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, _ => factory?.Invoke())
+			: this(null, (o, tp) => factory?.Invoke())
 		{
 		}
 
@@ -58,9 +58,6 @@ namespace Microsoft.UI.Xaml
 			_xamlScope = ResourceResolver.CurrentScope;
 		}
 
-		public static implicit operator Func<View?>(FrameworkTemplate? obj)
-			=> () => obj?._viewFactory?.Invoke(null);
-
 		/// <summary>
 		/// Loads a potentially cached template from the current template, see remarks for more details.
 		/// </summary>
@@ -70,7 +67,7 @@ namespace Microsoft.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View? LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) => FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
 
 		/// <summary>
 		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
@@ -84,23 +81,19 @@ namespace Microsoft.UI.Xaml
 		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
-		View? IFrameworkTemplateInternal.LoadContent()
+		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
 		{
-			View? view = null;
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-				if (_viewFactory != null)
-				{
-					view = _viewFactory(_ownerRef?.Target);
-				}
+				var view = _viewFactory?.Invoke(_ownerRef?.Target, templatedParent);
+
+				return view;
 			}
 			finally
 			{
 				ResourceResolver.PopScope();
 			}
-			return view;
-
 		}
 
 		public override bool Equals(object? obj)
