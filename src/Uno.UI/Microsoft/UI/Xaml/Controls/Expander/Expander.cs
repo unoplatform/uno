@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
-using Uno.Extensions;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
