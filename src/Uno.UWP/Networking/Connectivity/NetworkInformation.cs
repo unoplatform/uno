@@ -30,7 +30,7 @@ public static partial class NetworkInformation
 	/// <summary>
 	/// Gets a list of profiles for connections, active or otherwise, on the local machine.
 	/// </summary>
-	/// <returns>An array of ConnectionProfile objects.</returns>
+	/// <returns>An array of <see cref="ConnectionProfile" /> objects.</returns>
 	public static IReadOnlyList<ConnectionProfile> GetConnectionProfiles() => [ConnectionProfile.GetInternetConnectionProfile()];
 
 	/// <summary>
