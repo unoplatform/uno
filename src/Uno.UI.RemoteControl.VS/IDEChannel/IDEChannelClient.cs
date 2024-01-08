@@ -10,9 +10,9 @@ using StreamJsonRpc;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 
-namespace Uno.UI.RemoteControl.VS.IDEChannel;
+namespace Uno.UI.RemoteControl.VS.IdeChannel;
 
-internal class IDEChannelClient
+internal class IdeChannelClient
 {
 	private NamedPipeClientStream? _pipeServer;
 	private Guid _pipeGuid;
@@ -22,7 +22,7 @@ internal class IDEChannelClient
 	private IIdeChannelServer? _roslynServer;
 	private readonly ILogger _logger;
 
-	public IDEChannelClient(Guid pipeGuid, ILogger logger)
+	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
 		_logger = logger;
 		_pipeGuid = pipeGuid;

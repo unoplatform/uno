@@ -24,7 +24,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using StreamJsonRpc;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
-using Uno.UI.RemoteControl.VS.IDEChannel;
+using Uno.UI.RemoteControl.VS.IdeChannel;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -52,7 +52,7 @@ public class EntryPoint : IDisposable
 	private int RemoteControlServerPort;
 	private bool _closing;
 	private bool _isDisposed;
-	private IDEChannelClient? _iDEChannel;
+	private IdeChannelClient? _ideChannelClient;
 	private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
 	private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
 	private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
@@ -226,8 +226,8 @@ public class EntryPoint : IDisposable
 				_process.Kill();
 				_debugAction?.Invoke($"Terminated Remote Control server (pid: {_process.Id})");
 
-				_iDEChannel?.Dispose();
-				_iDEChannel = null;
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
 			}
 			catch (Exception e)
 			{
@@ -308,8 +308,8 @@ public class EntryPoint : IDisposable
 			_process.BeginOutputReadLine();
 			_process.BeginErrorReadLine();
 
-			_iDEChannel = new IDEChannelClient(pipeGuid, new Logger(this));
-			_iDEChannel.ConnectToHost();
+			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
+			_ideChannelClient.ConnectToHost();
 		}
 	}
 
