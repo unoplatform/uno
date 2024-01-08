@@ -7,6 +7,12 @@ using Windows.Foundation;
 using Uno.UI.UI.Xaml.Controls.TestHooks;
 using static Private.Infrastructure.TestServices;
 using System.Globalization;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Media;
+using System.Collections.Generic;
+using System;
+using Windows.Globalization;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -67,23 +73,63 @@ internal static class DateTimePickerHelper
 		await ControlHelper.DoClickUsingTap(button);
 		await WindowHelper.WaitForIdle();
 	}
-	
-	internal static void SelectTimeInOpenTimePickerFlyout(Calendar timeToSelect, LoopingSelectorHelper.SelectionMode selectionMode)
+
+	private static async Task<FlyoutPresenterType> GetOpenFlyoutPresenter<FlyoutPresenterType>()
+		where FlyoutPresenterType : class
 	{
-		xaml_primitives::LoopingSelector ^ hourLoopingSelector;
-		xaml_primitives::LoopingSelector ^ minuteLoopingSelector;
-		xaml_primitives::LoopingSelector ^ periodLoopingSelector;
-		GetHourMinutePeriodLoopingSelectorsFromOpenFlyout(hourLoopingSelector, minuteLoopingSelector, periodLoopingSelector);
+		FlyoutPresenterType flyoutPresenter = null;
+		await RunOnUIThread(() =>
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.WindowContent.XamlRoot);
+			VERIFY_IS_TRUE(popups.Count == 1);
+			var popup = popups[0];
+			flyoutPresenter = popup.Child as FlyoutPresenterType;
+		});
 
-		int hourIndexToSelect = timeToSelect->Hour;
-		int minuteIndexToSelect = timeToSelect->Minute;
-		int periodIndeexToSelect = timeToSelect->Period - 1; // AM = 1, PM = 2
+		return flyoutPresenter;
+	}
 
-		LoopingSelectorHelper::SelectItemByIndex(hourLoopingSelector, hourIndexToSelect, selectionMode);
-		LoopingSelectorHelper::SelectItemByIndex(minuteLoopingSelector, minuteIndexToSelect, selectionMode);
-		LoopingSelectorHelper::SelectItemByIndex(periodLoopingSelector, periodIndeexToSelect, selectionMode);
+	internal static async Task<TimePickerFlyoutPresenter> GetOpenTimePickerFlyoutPresenter()
+	{
+		return await GetOpenFlyoutPresenter<TimePickerFlyoutPresenter>();
+	}
 
-		ControlHelper::ClickFlyoutCloseButton(hourLoopingSelector, true /* isAccept */);
-		TestServices::WindowHelper->WaitForIdle();
+	internal static async Task<(LoopingSelector hourLoopingSelector, LoopingSelector minuteLoopingSelector, LoopingSelector periodLoopingSelector)> GetHourMinutePeriodLoopingSelectorsFromOpenFlyout()
+	{
+		LoopingSelector hourLoopingResult = null;
+		LoopingSelector minuteLoopingResult = null;
+		LoopingSelector periodLoopingResult = null;
+		await RunOnUIThread(async () =>
+		{
+			var timePickerFlyoutPresenter = await GetOpenTimePickerFlyoutPresenter();
+			THROW_IF_NULL(timePickerFlyoutPresenter);
+
+			// TimePicker does not name its LoopingSelectors, so we cannot find them by name.
+			// The best we can do is find them by type, and rely on their order in the tree to distinguish them.
+			List<LoopingSelector> loopingSelectors = new();
+			TreeHelper.GetVisualChildrenByType(timePickerFlyoutPresenter, ref loopingSelectors);
+			Assert.AreEqual(3, loopingSelectors.Count, "Expected to find 3 LoopingSelectors");
+			hourLoopingResult = loopingSelectors[0];
+			minuteLoopingResult = loopingSelectors[1];
+			periodLoopingResult = loopingSelectors[2];
+		});
+
+		return (hourLoopingResult, minuteLoopingResult, periodLoopingResult);
+	}
+
+	internal static async Task SelectTimeInOpenTimePickerFlyout(Windows.Globalization.Calendar timeToSelect, LoopingSelectorHelper.SelectionMode selectionMode)
+	{
+		(var hourLoopingSelector, var minuteLoopingSelector, var periodLoopingSelector) = await GetHourMinutePeriodLoopingSelectorsFromOpenFlyout();
+
+		int hourIndexToSelect = timeToSelect.Hour;
+		int minuteIndexToSelect = timeToSelect.Minute;
+		int periodIndeexToSelect = timeToSelect.Period - 1; // AM = 1, PM = 2
+
+		await LoopingSelectorHelper.SelectItemByIndex(hourLoopingSelector, hourIndexToSelect, selectionMode);
+		await LoopingSelectorHelper.SelectItemByIndex(minuteLoopingSelector, minuteIndexToSelect, selectionMode);
+		await LoopingSelectorHelper.SelectItemByIndex(periodLoopingSelector, periodIndeexToSelect, selectionMode);
+
+		await ControlHelper.ClickFlyoutCloseButton(hourLoopingSelector, true /* isAccept */);
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 }

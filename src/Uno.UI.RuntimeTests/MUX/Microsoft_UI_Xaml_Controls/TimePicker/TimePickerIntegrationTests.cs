@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using Windows.Globalization;
-using Windows.UI.Xaml;
 using static Private.Infrastructure.TestServices;
 
 // TODO Uno: Missing ValidateUIElementTree, CanOpenAndCloseUsingKeyboard tests
@@ -15,8 +18,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class TimePickerIntegrationTests
 {
+	private static Calendar CreateTime(int hours, int minutes, int period = 1)
+	{
+		var time = new Calendar();
+		time.Hour = hours;
+		time.Minute = minutes;
+		time.Period = period;
+		time.Nanosecond = 0;
+		time.Month = 1;
+		time.Day = 1;
+		time.Year = 2018;
+		return time;
+	}
+
+	private static TimeSpan CreateTimeSpan(int hours, int minutes, int period = 1)
+	{
+		return CreateTimeSpan(hours, minutes, 0, period);
+	}
+
+	private static TimeSpan CalendarToTimeSpan(Calendar calendar)
+	{
+		return CreateTimeSpan(calendar.Hour, calendar.Minute, calendar.Second, calendar.Period);
+	}
+
+	private static bool AreClose(long x, long y, long tolerance)
+	{
+		var diff = x - y;
+		return -tolerance < diff && diff < tolerance;
+	}
+
 	[TestMethod]
-	public async Task When_Default_Properties()
+	[RunsOnUIThread]
+	public void CanInstantiate()
+	{
+		var _ = new TimePicker();
+	}
+
+	[TestMethod]
+	public async Task VerifyDefaultProperties()
 	{
 		TimePicker timePicker = null;
 
@@ -192,7 +231,7 @@ public class TimePickerIntegrationTests
 	[TestMethod]
 	public async Task ValidateFlyoutPositioningAndSizing()
 	{
-		DateTimePickerHelper.ValidateDateTimePickerFlyoutPositioningAndSizing<TimePicker>();
+		await DateTimePickerHelper.ValidateDateTimePickerFlyoutPositioningAndSizing<TimePicker>();
 	}
 
 	[TestMethod]
@@ -209,20 +248,20 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
-	public async Task SelectingTimeSetsSelectedTimeAsync()
+	public async Task SelectingTimeSetsSelectedTime()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
-		var targetTime = CreateTimeSpan(4, 30, 2);
+		var targetTime = CreateTime(4, 30, 2);
 		targetTime.Second = 0;
 
 		LOG_OUTPUT("Selecting 4:30 PM.");
 		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		DateTimePickerHelper.SelectTimeInOpenTimePickerFlyout(targetTime, LoopingSelectorHelper.SelectionMode.Keyboard);
+		await DateTimePickerHelper.SelectTimeInOpenTimePickerFlyout(targetTime, LoopingSelectorHelper.SelectionMode.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread(() =>
+		await RunOnUIThread(() =>
 		{
 			var targetTimeSpan = CalendarToTimeSpan(targetTime);
 
@@ -233,29 +272,181 @@ public class TimePickerIntegrationTests
 		});
 	}
 
-	private async Task VerifyHasPlaceholder(TimePicker timePicker)
+	[TestMethod]
+	public async Task ValidateSelectedTimePropagatesToTime()
 	{
+		var timePicker = await SetupTimePickerTestAsync();
+		var time = CreateTimeSpan(4, 30, 2);
+		var time2 = CreateTimeSpan(5, 45, 1);
+
 		await RunOnUIThread(() =>
 		{
-			var hourTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "HourTextBlock"));
-			var minuteTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "MinuteTextBlock"));
-			var periodTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock"));
+			LOG_OUTPUT("Setting SelectedTime to null. Time should be the null sentinel value.");
+			timePicker.SelectedTime = null;
 
-			void validatePlaceholder(TextBlock textBlock, string placeholder)
-			{
-				LOG_OUTPUT("Expected placeholder: \"%s\"", placeholder);
-				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
+			VERIFY_ARE_EQUAL(-1, timePicker.Time.Ticks);
 
-				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) == 0);
-			};
+			LOG_OUTPUT("Setting SelectedTime to 5:45 AM. Time should change to this value.");
+			timePicker.SelectedTime = time2;
 
-			validatePlaceholder(hourTextBlock, "hour");
-			validatePlaceholder(minuteTextBlock, "minute");
-			validatePlaceholder(periodTextBlock, "AM");
+			VERIFY_ARE_EQUAL(time2.Duration, timePicker.Time.Duration);
+			VERIFY_IS_NOT_NULL(timePicker.SelectedTime);
+			VERIFY_ARE_EQUAL(time2.Duration, timePicker.SelectedTime.Value.Duration);
+
+			LOG_OUTPUT("Setting Time to February 4:30 PM. SelectedTime should change to this value.");
+			timePicker.Time = time;
+
+			VERIFY_ARE_EQUAL(time.Duration, timePicker.Time.Duration);
+			VERIFY_IS_NOT_NULL(timePicker.SelectedTime);
+			VERIFY_ARE_EQUAL(time.Duration, timePicker.SelectedTime.Value.Duration);
+
+			LOG_OUTPUT("Setting Time to the null sentinel value. SelectedTime should revert to null.");
+			TimeSpan nullTime = TimeSpan.FromTicks(-1);
+			timePicker.Time = nullTime;
+
+			VERIFY_IS_NULL(timePicker.SelectedTime);
 		});
 	}
 
-	private TimeSpan CreateTimeSpan(int hours, int minutes, int seconds = 0, int period = 1)
+	[TestMethod]
+	public async Task CanProgrammaticallyClearSelectedTime()
+	{
+		var timePicker = await SetupTimePickerTestAsync();
+
+		await VerifyHasPlaceholder(timePicker);
+
+		await RunOnUIThread(() =>
+		{
+			timePicker.SelectedTime = CreateTimeSpan(4, 30, 2);
+		});
+
+		await VerifyDoesNotHavePlaceholder(timePicker);
+
+		await RunOnUIThread(() =>
+		{
+			timePicker.SelectedTime = null;
+		});
+
+		await VerifyHasPlaceholder(timePicker);
+	}
+
+	[TestMethod]
+	public async Task ValidateMinuteIncrementProperty()
+	{
+		var timePicker = await SetupTimePickerTestAsync();
+
+		var timeChangedEvent = false;
+		var timeChangedRegistration = CreateSafeEventRegistration<TimePicker, EventHandler<TimePickerValueChangedEventArgs>>("TimeChanged");
+		timeChangedRegistration.Attach(timePicker, (s, e) => timeChangedEvent = true);
+
+		var initialTime = CreateTimeSpan(5, 12, 2); //5:12 PM
+		var initialTimeRounded = CreateTimeSpan(5, 10, 2); //5:10 PM
+
+		var timeToSet = CreateTimeSpan(7, 47, 1); //7:47 PM
+		var timeToSetRounded = CreateTimeSpan(7, 45, 1); //7:45 PM
+
+		await RunOnUIThread(() =>
+		{
+			timePicker.SelectedTime = initialTime;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		timeChangedEvent = false;
+		await RunOnUIThread(() =>
+		{
+			timePicker.MinuteIncrement = 5;
+			Assert.AreEqual(initialTimeRounded.Duration, timePicker.Time.Duration, "Setting TimePicker.MinuteIncrement should cause TimePicker.Time to get rounded");
+		});
+
+		// Setting MinuteIncrement should result in TimeChanged being raised:
+		await WindowHelper.WaitFor(() => timeChangedEvent);
+
+		// Setting Time should result in the value being rounded based on MinuteIncrement:
+		await RunOnUIThread(() =>
+		{
+			timePicker.SelectedTime = timeToSet;
+			Assert.AreEqual(timeToSetRounded.Duration, timePicker.Time.Duration, "TimePicker.Time should get rounded based on TimePicker.MinuteIncrement");
+		});
+
+		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The TimePickerFlyout should generate Minute items based on MinuteIncrement:
+		await RunOnUIThread(async () =>
+		{
+			(var hourLoopingSelector, var minuteLoopingSelector, var periodLoopingSelector) = await DateTimePickerHelper.GetHourMinutePeriodLoopingSelectorsFromOpenFlyout();
+
+			var minuteItems = minuteLoopingSelector.Items;
+
+			Assert.AreEqual(12u, minuteItems.Count);
+			for (int i = 0; i < minuteItems.Count; i++)
+			{
+				var dayItem = minuteItems[i] as DatePickerFlyoutItem;
+				Assert.IsNotNull(dayItem);
+
+				// The item's PrimaryText string should be the minute value as a 2 digit number (with a leading 0 as necessary).
+				var minuteValue = i * 5;
+				var expectedMinuteString = string.Format("{0:00}", minuteValue);
+				Assert.AreEqual(expectedMinuteString, dayItem.PrimaryText);
+			}
+		});
+
+		await ControlHelper.ClickFlyoutCloseButton(timePicker, true /* isAccept */);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	public async Task ValidateClockIdentifierProperty()
+	{
+		var timePicker = await SetupTimePickerTestAsync();
+
+		var initialTime = CreateTimeSpan(5, 15, 2); //5:15 PM
+
+		await RunOnUIThread(() =>
+		{
+			timePicker.SelectedTime = new TimeSpan?(initialTime);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		TextBlock hourTextBlock = null;
+		TextBlock minuteTextBlock = null;
+		TextBlock periodTextBlock = null;
+		await RunOnUIThread(() =>
+		{
+			hourTextBlock = (TextBlock)TreeHelper.GetVisualChildByName(timePicker, "HourTextBlock");
+			minuteTextBlock = (TextBlock)TreeHelper.GetVisualChildByName(timePicker, "MinuteTextBlock");
+			periodTextBlock = (TextBlock)TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock");
+			if (hourTextBlock == null || minuteTextBlock == null || periodTextBlock == null)
+			{
+				throw new Exception("Failed to find required TextBlock elements");
+			}
+
+			Assert.AreEqual("5", hourTextBlock.Text);
+			Assert.AreEqual("15", minuteTextBlock.Text);
+			Assert.AreEqual("PM", periodTextBlock.Text);
+
+			timePicker.ClockIdentifier = ClockIdentifiers.TwentyFourHour;
+		});
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await RunOnUIThread(() =>
+		{
+			// periodTextBlock should get removed from the tree when using a 24Hour clock.
+			Assert.IsNull(periodTextBlock.Parent);
+
+			Assert.AreEqual("17", hourTextBlock.Text);
+			Assert.AreEqual("15", minuteTextBlock.Text);
+		});
+	}
+
+	//private Button GetFlyoutButtonFromTimePicker(TimePicker timePicker)
+	//{
+	//	var templateRoot = VisualTreeHelper.GetChild(timePicker, 0) as FrameworkElement;
+	//	var flyoutButton = templateRoot?.FindName("FlyoutButton") as Button;
+	//	return flyoutButton;
+	//}
+
+	private static TimeSpan CreateTimeSpan(int hours, int minutes, int seconds, int period)
 	{
 		if (period != 1 && period != 2)
 		{
@@ -285,4 +476,57 @@ public class TimePickerIntegrationTests
 
 		return timeSpan;
 	}
+
+	private async Task VerifyHasPlaceholder(TimePicker timePicker)
+	{
+		await RunOnUIThread(() =>
+		{
+			var hourTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "HourTextBlock"));
+			var minuteTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "MinuteTextBlock"));
+			var periodTextBlock = (TextBlock)(TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock"));
+
+			void validatePlaceholder(TextBlock textBlock, string placeholder)
+			{
+				LOG_OUTPUT("Expected placeholder: \"%s\"", placeholder);
+				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
+
+				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) == 0);
+			};
+
+			validatePlaceholder(hourTextBlock, "hour");
+			validatePlaceholder(minuteTextBlock, "minute");
+			validatePlaceholder(periodTextBlock, "AM");
+		});
+	}
+
+	private async Task VerifyDoesNotHavePlaceholder(TimePicker timePicker)
+	{
+		await RunOnUIThread(() =>
+		{
+			var hourTextBlock = TreeHelper.GetVisualChildByName(timePicker, "HourTextBlock") as TextBlock;
+			var minuteTextBlock = TreeHelper.GetVisualChildByName(timePicker, "MinuteTextBlock") as TextBlock;
+			var periodTextBlock = TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock") as TextBlock;
+
+			void validateValue(TextBlock textBlock, string placeholder)
+			{
+				LOG_OUTPUT("Placeholder: \"%s\"", placeholder);
+				LOG_OUTPUT("Actual text: \"%s\"", textBlock.Text);
+
+				VERIFY_IS_TRUE(string.CompareOrdinal(placeholder, textBlock.Text) != 0);
+			};
+
+			validateValue(hourTextBlock, "hour");
+			validateValue(minuteTextBlock, "minute");
+			validateValue(periodTextBlock, "AM");
+		});
+	}
+
+	//	private void SetTime(TimePicker timePicker, TimeSpan time)
+	//	{
+	//#if WI_IS_FEATURE_PRESENTFeature_DateTimePickerNullVisualization
+	//        timePicker.SelectedTime = new Platform.Box<wf.TimeSpan>(time);
+	//#else
+	//		timePicker.Time = time;
+	//#endif
+	//	}
 }
