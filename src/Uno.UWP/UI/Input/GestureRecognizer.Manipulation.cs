@@ -11,7 +11,6 @@ using Windows.Foundation;
 using Windows.System;
 using Uno;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
@@ -429,7 +428,7 @@ namespace Windows.UI.Input
 				float scale, expansion;
 				if (_currents.HasPointer2)
 				{
-					rotation = _isRotateEnabled ? MathEx.ToDegree(_currents.Angle - _origins.Angle) : 0;
+					rotation = _isRotateEnabled ? Uno.Extensions.MathEx.ToDegree(_currents.Angle - _origins.Angle) : 0;
 					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
 					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
 
