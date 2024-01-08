@@ -260,30 +260,23 @@ namespace Windows.Globalization
 			get => _clock == ClockIdentifiers.TwentyFourHour || _time.Hour < 12 ? 1 : 2;
 			set
 			{
-				switch (value)
+				var currentPeriod = Period;
+				if (value != currentPeriod)
 				{
-					case 1 when _clock == ClockIdentifiers.TwentyFourHour:
-						break;
-
-					case 1 when _clock == ClockIdentifiers.TwelveHour && _time.Hour < 12:
-						break;
-
-					case 1 when _clock == ClockIdentifiers.TwelveHour:
-						AddHours(-12);
-						break;
-
-					case 2 when _clock == ClockIdentifiers.TwelveHour:
-						break;
-
-					case 2 when _clock == ClockIdentifiers.TwentyFourHour && _time.Hour < 12:
-						AddHours(12);
-						break;
-
-					case 2 when _clock == ClockIdentifiers.TwentyFourHour:
-						break;
-
-					default:
+					if ((value <= 0 || value > 2) ||
+						(value != 1 && _clock == ClockIdentifiers.TwentyFourHour))
+					{
 						throw new ArgumentOutOfRangeException(nameof(value));
+					}
+
+					if (value == 1)
+					{
+						AddHours(-12);
+					}
+					else
+					{
+						AddHours(12);
+					}
 				}
 			}
 		}
