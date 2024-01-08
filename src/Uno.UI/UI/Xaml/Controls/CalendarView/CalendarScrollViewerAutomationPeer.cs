@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 			spOwnerAsFrameworkElement = (FrameworkElement)spOwner;
 
 			DependencyObject spTemplatedParent;
-			spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).TemplatedParent;
+			spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).GetTemplatedParent();
 
 			if (spTemplatedParent is { })
 			{

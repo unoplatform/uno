@@ -653,7 +653,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// Uno specific: since we don't call this early enough, we have to comment out the condition
 		// if (GetChildren().Count == 0)
 		{
-			ContentControl pTemplatedParent = TemplatedParent as ContentControl;
+			ContentControl pTemplatedParent = GetTemplatedParent() as ContentControl;
 
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
@@ -811,13 +811,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnTemplatedParentChanged(e);
-
-		SetImplicitContent();
-	}
-
 	protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 	{
 		if (ContentTemplateRoot != null)
@@ -856,56 +849,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			_contentTemplateRoot = value;
 
-			SynchronizeContentTemplatedParent();
-
 			if (_contentTemplateRoot != null)
 			{
 				RegisterContentTemplateRoot();
 
 				UpdateContentTransitions(null, this.ContentTransitions);
-			}
-		}
-	}
-
-	private void SynchronizeContentTemplatedParent()
-	{
-		if (IsNativeHost)
-		{
-			// In this case, the ContentPresenter is not used as part of the child of a
-			// templated control, and we must not take the outer templated parent, but rather
-			// the immediate template parent (as if the native view was not wrapped).
-			// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
-			if (_contentTemplateRoot is IFrameworkElement binder)
-			{
-				binder.TemplatedParent = this.TemplatedParent;
-			}
-		}
-		else
-		{
-			if (_contentTemplateRoot is IFrameworkElement binder)
-			{
-				binder.TemplatedParent = FindTemplatedParent();
-
-				DependencyObject FindTemplatedParent()
-				{
-					// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-					if (_contentTemplateRoot is ImplicitTextBlock) return this;
-
-					// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
-					// but only if the content hasnt been overwritten yet. If the content has been overwritten,
-					// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
-					if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
-					{
-						return this.TemplatedParent;
-					}
-
-					return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
-				}
-			}
-			else if (_contentTemplateRoot is DependencyObject dependencyObject)
-			{
-				// Propagate binding context correctly
-				dependencyObject.SetParent(this);
 			}
 		}
 	}
@@ -958,10 +906,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			SetUpdateTemplate();
 		}
 
-		// When the control is loaded, set the TemplatedParent
-		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
-
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
 #endif
@@ -1009,10 +953,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			SetUpdateTemplate();
 		}
 #endif
-
-		// When the control is loaded, set the TemplatedParent
-		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
@@ -1102,7 +1042,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 		{
 			_dataTemplateUsedLastUpdate = dataTemplate;
-			ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+			ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? Content as View;
 			if (ContentTemplateRoot != null)
 			{
 				IsUsingDefaultTemplate = false;
@@ -1135,33 +1075,29 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		var textBlock = new ImplicitTextBlock(this);
-
-		void setBinding(DependencyProperty property, string path)
-			=> textBlock.SetBinding(
-				property,
-				new Binding
-				{
-					Path = new PropertyPath(path),
-					Source = this,
-					Mode = BindingMode.OneWay
-				}
-			);
+		textBlock.SetTemplatedParent(this);
 
 		if (!IsNativeHost)
 		{
-			setBinding(TextBlock.TextProperty, nameof(Content));
-			setBinding(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
-			setBinding(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
-			setBinding(TextBlock.TextWrappingProperty, nameof(TextWrapping));
-			setBinding(TextBlock.MaxLinesProperty, nameof(MaxLines));
-			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+			TemplateBind(TextBlock.TextProperty, nameof(Content));
+			TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
+			TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
+			TemplateBind(TextBlock.TextWrappingProperty, nameof(TextWrapping));
+			TemplateBind(TextBlock.MaxLinesProperty, nameof(MaxLines));
+			TemplateBind(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+
+			void TemplateBind(DependencyProperty property, string path) =>
+				textBlock.SetBinding(property, new Binding(path)
+				{
+					RelativeSource = RelativeSource.TemplatedParent
+				});
 		}
 
 		ContentTemplateRoot = textBlock;
 		IsUsingDefaultTemplate = true;
 	}
 
-	private bool _isBoundImplicitelyToContent;
+	private bool _isBoundImplicitlyToContent;
 
 	private void SetImplicitContent()
 	{
@@ -1170,9 +1106,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			return;
 		}
 
-		if (!(TemplatedParent is ContentControl))
+		if (GetTemplatedParent() is not ContentControl)
 		{
-			ClearImplicitBindinds();
+			ClearImplicitBindings();
 			return; // Not applicable: no TemplatedParent or it's not a ContentControl
 		}
 
@@ -1180,7 +1116,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
 		if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
 		{
-			ClearImplicitBindinds();
+			ClearImplicitBindings();
 			return; // Nope, there's a value somewhere
 		}
 
@@ -1188,22 +1124,17 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var b = GetBindingExpression(ContentProperty);
 		if (b != null)
 		{
-			ClearImplicitBindinds();
+			ClearImplicitBindings();
 			return; // Yep, there's a binding: a value "will" come eventually
 		}
 
 		// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-		var binding =
-			new Binding(new PropertyPath("Content"), null)
-			{
-				RelativeSource = RelativeSource.TemplatedParent,
-			};
-		SetBinding(ContentProperty, binding);
-		_isBoundImplicitelyToContent = true;
+		SetBinding(ContentProperty, new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
+		_isBoundImplicitlyToContent = true;
 
-		void ClearImplicitBindinds()
+		void ClearImplicitBindings()
 		{
-			if (_isBoundImplicitelyToContent)
+			if (_isBoundImplicitlyToContent)
 			{
 				SetBinding(ContentProperty, new Binding());
 			}

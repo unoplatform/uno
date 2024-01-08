@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -37,18 +38,12 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		public static implicit operator DataTemplate?(Func<View?>? obj)
-		{
-			if (obj == null)
-			{
-				return null;
-			}
+		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
 
-			return new DataTemplate(obj);
-		}
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public View? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
 
-		public View? LoadContent()
-			=> ((IFrameworkTemplateInternal)this).LoadContent();
+		internal View? LoadContentCached(DependencyObject? templatedParent = null) => base.LoadContentCachedCore(templatedParent);
 	}
 }
 

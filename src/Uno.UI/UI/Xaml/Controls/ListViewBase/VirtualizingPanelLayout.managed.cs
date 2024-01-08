@@ -223,13 +223,13 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling {GetMethodTag()} hasPopupPanelParent={hasPopupPanelParent} hasListViewParent={hasListViewParent}");
 			}
 
-			if (
-				ItemsControl == null
-				&& OwnerPanel.TemplatedParent is ItemsControl popupItemsControl
-			)
+			if (IsInsidePopup)
 			{
-				// This case is for an ItemsPresenter hosted in a Popup
-				ItemsControl = popupItemsControl;
+				// The items-control may not exist in the direct visual-tree,
+				// if it is defined within a popup/flyout, as in the case of ComboBox.
+				ItemsControl = OwnerPanel
+					.FindFirstParent<PopupPanel>()?.Popup
+					?.FindFirstParent<ItemsControl>();
 
 				// If measure has already happened when ItemsControl was null, it should be invalidated.
 				OwnerPanel.InvalidateMeasure();

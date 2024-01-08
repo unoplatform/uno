@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
-	public delegate View? FrameworkTemplateBuilder(object? owner);
+	public delegate View? FrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
 
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
@@ -40,8 +40,19 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, _ => factory?.Invoke())
+			: this(null, (o, s) =>
+			{
+				s.IsIgnored = true;
+				return factory?.Invoke();
+			})
 		{
+			// fixme@xy: locate the caller for this implementation
+			// and try to see if we can drop this overload
+			// because it won't inject the templated parent at all.
+
+			// ^update: we may be able to get away with this,
+			// since the TemplateCache(from winui, not here) mechanism may be used to re-inject the TP post creation.
+			// still we should explain why this overload is kept? (whos calling it)
 		}
 
 		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
@@ -58,9 +69,6 @@ namespace Microsoft.UI.Xaml
 			_xamlScope = ResourceResolver.CurrentScope;
 		}
 
-		public static implicit operator Func<View?>(FrameworkTemplate? obj)
-			=> () => obj?._viewFactory?.Invoke(null);
-
 		/// <summary>
 		/// Loads a potentially cached template from the current template, see remarks for more details.
 		/// </summary>
@@ -70,7 +78,7 @@ namespace Microsoft.UI.Xaml
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
-		internal View? LoadContentCached() => FrameworkTemplatePool.Instance.DequeueTemplate(this);
+		internal protected View? LoadContentCachedCore(DependencyObject? templatedParent) => FrameworkTemplatePool.Instance.DequeueTemplate(this, templatedParent);
 
 		/// <summary>
 		/// Manually return an unused template root created by <see cref="LoadContentCached"/> to the pool.
@@ -84,23 +92,34 @@ namespace Microsoft.UI.Xaml
 		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
-		View? IFrameworkTemplateInternal.LoadContent()
+		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
+		//View? IFrameworkTemplateInternal.LoadContent(TemplateMaterializationSettings settings)
 		{
-			View? view = null;
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-				if (_viewFactory != null)
+
+				var members = new List<DependencyObject>();
+				var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
+
+				var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+
+				if (view is { })
 				{
-					view = _viewFactory(_ownerRef?.Target);
+					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
 				}
+
+				if (view is FrameworkElement fe)
+				{
+					fe.IsTemplateRoot = true;
+				}
+
+				return view;
 			}
 			finally
 			{
 				ResourceResolver.PopScope();
 			}
-			return view;
-
 		}
 
 		public override bool Equals(object? obj)

@@ -58,9 +58,6 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-		internal void FreezeTemplatedParent() =>
-			((IDependencyObjectStoreProvider)this).Store.IsTemplatedParentFrozen = true;
-
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()

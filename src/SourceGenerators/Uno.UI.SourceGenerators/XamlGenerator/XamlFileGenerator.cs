@@ -896,11 +896,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (_isHotReloadEnabled)
 							{
+								// fixme@xy: find and update callee(s)
 								// Build an interface that can be used to hide the actual replaced
 								// implementation of a type during hot reload.
 								using (writer.BlockInvariant($"internal interface {hrInterfaceName}"))
 								{
-									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner);");
+									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings);");
 								}
 							}
 
@@ -916,7 +917,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 
-									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
 									{
 										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
@@ -929,9 +930,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										BuildCompiledBindingsInitializerForTemplate(writer);
 
-										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
+										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)"))
 										{
-											using (writer.BlockInvariant("if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)", kvp.Value.ReturnType))
+											using (writer.BlockInvariant("if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)"))
 											{
 												writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);");
 												writer.AppendLineIndented("__nameScope.Owner = d;");
@@ -3040,13 +3041,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendIndented(GenerateRootPhases(objectDefinition, closureName) ?? "");
 					}
 
+					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+					if (isInsideFrameworkTemplate && isFrameworkElement)
+					{
+						writer.AppendLineIndented($"{closureName}.SetTemplatedParent(__settings?.TemplatedParent);");
+						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({closureName});");
+					}
+
 					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);
 					if (componentDefinition is { } || // element can also be register for component by a descendant DO as its resource provider
 						HasXBindMarkupExtension(objectDefinition) ||
 						HasMarkupExtensionNeedingComponent(objectDefinition))
 					{
 						writer.AppendLineIndented($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
-						var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
 						if (!_isTopLevelDictionary || isInsideFrameworkTemplate)
 						{
 							componentDefinition ??= AddComponentForCurrentScope(objectDefinition);
@@ -5874,14 +5881,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var isItemsPanelTemplate = typeName == "ItemsPanelTemplate";
 
-				if (
-					typeName == "DataTemplate"
-					|| isItemsPanelTemplate
-					|| typeName == "ControlTemplate"
+				if (typeName
+					is "DataTemplate"
+					or "ItemsPanelTemplate"
+					or "ControlTemplate"
 
 					// This case is specific the custom ListView for iOS. Should be removed
 					// when the list rebuilt to be compatible.
-					|| typeName == "ListViewBaseLayoutTemplate"
+					or "ListViewBaseLayoutTemplate"
 				)
 				{
 					writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(");
@@ -5894,7 +5901,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var resourceOwner = CurrentResourceOwnerName;
 
-						writer.Append($"{resourceOwner} , __owner => ");
+						// fixme@xy?: do we need to branch here to skip templated-parent for the invalid types (DataTemplate and ListViewBaseLayoutTemplate)
+						writer.Append($"{resourceOwner}, (__owner, __settings) => ");
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
@@ -6511,7 +6519,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				? $"(({namespacePrefix}I{subclassName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{namespacePrefix}{subclassName}>())"
 				: $"new {namespacePrefix}{subclassName}()";
 
-			writer.AppendLineIndented($"{activator}.Build(__owner)");
+			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
 		}
 
 		private string GenerateConstructorParameters(INamedTypeSymbol? type)

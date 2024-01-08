@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -39,13 +40,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		public static implicit operator ControlTemplate(Func<View>? obj)
-			=> new ControlTemplate(obj);
+		public Type? TargetType { get; set; }
 
-		public Type? TargetType
+		internal View? LoadContentCached(Control templatedParent)
 		{
-			get;
-			set;
+			var root = base.LoadContentCachedCore(templatedParent);
+
+			return root;
 		}
 	}
 }
