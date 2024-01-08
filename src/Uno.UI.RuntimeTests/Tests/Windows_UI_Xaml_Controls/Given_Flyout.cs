@@ -56,16 +56,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-#if IS_UNO
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_LoadedAndUnloaded_Check_Binding()
 		{
 
 			var (flyout, content) = CreateFlyoutWithBindingMultipleChildren();
-
-			const double MarginValue = 105;
-			const int TargetWidth = 88;
 
 			var border = new Border()
 			{
