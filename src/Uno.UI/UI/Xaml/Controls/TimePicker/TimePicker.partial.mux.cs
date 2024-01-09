@@ -8,22 +8,22 @@
 //      the selection of times.
 
 using System;
-using CultureInfo = System.Globalization.CultureInfo;
+using System.Threading.Tasks;
 using DirectUI;
-using Uno.Disposables;
-using Uno.UI.Extensions;
-using Windows.Globalization;
-using Windows.Globalization.DateTimeFormatting;
-using Windows.System;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
-using Windows.Foundation;
+using Uno.Disposables;
 using Uno.UI.DataBinding;
-using System.Threading.Tasks;
+using Uno.UI.Extensions;
 using Uno.UI.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.Globalization;
+using Windows.Globalization.DateTimeFormatting;
+using Windows.System;
+using static Microsoft.UI.Xaml.Controls._Tracing;
+using CultureInfo = System.Globalization.CultureInfo;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -79,7 +79,6 @@ partial class TimePicker
 		m_reactionToSelectionChangeAllowed = false;
 		m_defaultTime = new TimeSpan(GetNullTimeSentinelValue());
 		m_currentTime = new TimeSpan(GetNullTimeSentinelValue());
-		InitPartial();
 		PrepareState();
 	}
 
@@ -434,12 +433,7 @@ partial class TimePicker
 
 		if (m_tpAsyncSelectionInfo == null)
 		{
-#if !__IOS__ && !__ANDROID__
 			var asyncOperation = SelectionExports.XamlControls_GetTimePickerSelection(this, m_tpFlyoutButton);
-#else
-            var asyncOperation = _flyout.ShowAtAsync(this);
-			m_tpAsyncSelectionInfo = asyncOperation;
-#endif
 			var getOperation = asyncOperation.AsTask();
 			await getOperation;
 			OnGetTimePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);

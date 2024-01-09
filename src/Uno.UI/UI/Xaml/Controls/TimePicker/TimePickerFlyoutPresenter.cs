@@ -7,10 +7,4 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TimePickerFlyoutPresenter : FlyoutPresenter
 {
-#if !UNO_REFERENCE_API
-	internal TimePickerFlyoutPresenter()
-	{
-		DefaultStyleKey = typeof(TimePickerFlyoutPresenter);
-	}
-#endif
 }

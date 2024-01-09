@@ -718,7 +718,7 @@
 	</ios:Style>
 
 	<!-- TimePicker -->
-	<android:Style TargetType="NativeTimePickerFlyoutPresenter">
+	<android:Style TargetType="TimePickerFlyoutPresenter" x:Key="NativeTimePickerFlyoutPresenterStyle">
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
@@ -743,7 +743,7 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-	<ios:Style TargetType="NativeTimePickerFlyoutPresenter">
+	<ios:Style TargetType="TimePickerFlyoutPresenter" x:Key="NativeTimePickerFlyoutPresenterStyle">
 		<Setter Property="Background"
 				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"

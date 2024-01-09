@@ -84,12 +84,14 @@ public class TimePickerIntegrationTests
 		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 		await TestServices.WindowHelper.WaitForIdle();
 
+#if !__ANDROID__ && !__IOS__
 		await TestServices.RunOnUIThread(() =>
 		{
 			var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
 			Assert.IsNotNull(timePickerFlyoutPresenter);
 			Assert.AreEqual(true, timePickerFlyoutPresenter.IsDefaultShadowEnabled);
 		});
+#endif
 	}
 
 	[TestMethod]
@@ -244,6 +246,9 @@ public class TimePickerIntegrationTests
 
 	[TestMethod]
 	[RequiresFullWindow]
+#if __ANDROID__ || __IOS__
+	[Ignore("This is only relevant for managed implementation")]
+#endif
 	public async Task ValidateFlyoutPositioningAndSizing()
 	{
 		await DateTimePickerHelper.ValidateDateTimePickerFlyoutPositioningAndSizing<TimePicker>();
@@ -263,6 +268,9 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
+#if __ANDROID__ || __IOS__
+	[Ignore("This is only relevant for managed implementation")]
+#endif
 	public async Task SelectingTimeSetsSelectedTime()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
@@ -346,6 +354,9 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
+#if __ANDROID__ || __IOS__
+	[Ignore("This is only relevant for managed implementation")]
+#endif
 	public async Task ValidateMinuteIncrementProperty()
 	{
 		var timePicker = await SetupTimePickerTestAsync();

@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class TimePickerFlyout
+partial class NativeTimePickerFlyout
 {
 	private readonly SerialDisposable _onLoad = new SerialDisposable();
 	private readonly SerialDisposable _onUnloaded = new SerialDisposable();
@@ -215,7 +215,7 @@ partial class TimePickerFlyout
 	{
 		var oldTime = Time;
 		_timeSelector?.SaveTime();
-		TimePicked?.Invoke(this, new TimePickedEventArgs(oldTime, Time));
+		OnTimePicked(new TimePickedEventArgs(oldTime, Time));
 		Hide(false);
 	}
 

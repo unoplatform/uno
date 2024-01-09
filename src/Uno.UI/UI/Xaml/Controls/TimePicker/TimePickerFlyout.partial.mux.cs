@@ -89,14 +89,20 @@ partial class TimePickerFlyout
 		_asyncOperationManager.Complete(spBoxedTsAsReference);
 
 		var spArgs = new TimePickedEventArgs(oldTimeSpan, newTimeSpan);
-		TimePicked?.Invoke(this, spArgs);
+		OnTimePicked(spArgs);
 
 		base.OnConfirmed();
 	}
 
+	private protected void OnTimePicked(TimePickedEventArgs args) => TimePicked?.Invoke(this, args);
+
 	protected override Control CreatePresenter()
 	{
 		_tpPresenter = new TimePickerFlyoutPresenter();
+		if (TimePickerFlyoutPresenterStyle is not null)
+		{
+			_tpPresenter.Style = TimePickerFlyoutPresenterStyle;
+		}
 		return _tpPresenter;
 	}
 
@@ -230,7 +236,7 @@ partial class TimePickerFlyout
 		}
 	}
 
-	private static TimeSpan GetDefaultTime()
+	internal static TimeSpan GetDefaultTime()
 	{
 		TimeSpan retTimeSpan = default;
 
@@ -276,12 +282,12 @@ partial class TimePickerFlyout
 		return retTimeSpan;
 	}
 
-	private static string GetDefaultClockIdentifier()
+	internal static string GetDefaultClockIdentifier()
 	{
 		var spFormatter = new DateTimeFormatter(s_strHourFormat);
 
 		return spFormatter.Clock;
 	}
 
-	private static int GetDefaultMinuteIncrement() => 1;
+	internal static int GetDefaultMinuteIncrement() => 1;
 }

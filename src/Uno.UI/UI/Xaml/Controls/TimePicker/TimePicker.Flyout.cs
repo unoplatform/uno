@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.UI;
 
@@ -71,48 +72,71 @@ partial class TimePicker
 				default(Style),
 				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
-
-	private Lazy<TimePickerFlyout> _lazyFlyout;
-
-	private TimePickerFlyout _flyout => _lazyFlyout.Value;
-
-
-	private void InitPartial()
+	internal static TimePickerFlyout CreateFlyout(TimePicker timePicker)
 	{
-#if __IOS__ || __ANDROID__
-		TimePickerFlyout CreateFlyout()
+		var flyout = timePicker.UseNativeStyle ?
+			new NativeTimePickerFlyout() :
+			new TimePickerFlyout();
+
+		if (timePicker.UseNativeStyle)
 		{
-			var f = UseNativeStyle
-				? new NativeTimePickerFlyout()
-				: CreateManagedTimePickerFlyout();
-
-			f.DatePicked += OnPicked;
-
-			return f;
-		}
-
-		_lazyFlyout = new Lazy<TimePickerFlyout>(CreateFlyout);
-#else
-		_lazyFlyout = new Lazy<TimePickerFlyout>(CreateManagedTimePickerFlyout);
-#endif
-
-		void OnPicked(TimePickerFlyout snd, TimePickedEventArgs evt)
-		{
-			SelectedTime = evt.NewTime;
-			Time = evt.NewTime;
-
-			if (evt.NewTime != evt.OldTime)
+			void OnPicked(PickerFlyoutBase snd, TimePickedEventArgs evt)
 			{
-				TimeChanged?.Invoke(this, new TimePickerValueChangedEventArgs(evt.NewTime, evt.OldTime));
+				timePicker.SelectedTime = evt.NewTime;
+				timePicker.Time = evt.NewTime;
+
+				if (evt.NewTime != evt.OldTime)
+				{
+					timePicker.TimeChanged?.Invoke(timePicker, new TimePickerValueChangedEventArgs(evt.NewTime, evt.OldTime));
+				}
+
+				flyout.TimePicked -= OnPicked;
 			}
-		}
 
-		TimePickerFlyout CreateManagedTimePickerFlyout()
-		{
-			var flyout = new TimePickerFlyout(); //TODO:MZ: { TimePickerFlyoutPresenterStyle = FlyoutPresenterStyle };
 			flyout.TimePicked += OnPicked;
-
-			return flyout;
 		}
+
+		flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;
+
+		return flyout;
 	}
+
+	//	private void InitPartial()
+	//	{
+	//#if __IOS__ || __ANDROID__
+	//		TimePickerFlyout CreateFlyout()
+	//		{
+	//			var f = UseNativeStyle
+	//				? new NativeTimePickerFlyout()
+	//				: CreateManagedTimePickerFlyout();
+
+	//			f.TimePicked += OnPicked;
+
+	//			return f;
+	//		}
+
+	//		_lazyFlyout = new Lazy<TimePickerFlyout>(CreateFlyout);
+	//#else
+	//		_lazyFlyout De= new Lazy<TimePickerFlyout>(CreateManagedTimePickerFlyout);
+	//#endif
+
+	//		void OnPicked(PickerFlyoutBase snd, TimePickedEventArgs evt)
+	//		{
+	//			SelectedTime = evt.NewTime;
+	//			Time = evt.NewTime;
+
+	//			if (evt.NewTime != evt.OldTime)
+	//			{
+	//				TimeChanged?.Invoke(this, new TimePickerValueChangedEventArgs(evt.NewTime, evt.OldTime));
+	//			}
+	//		}
+
+	//		TimePickerFlyout CreateManagedTimePickerFlyout()
+	//		{
+	//			var flyout = new TimePickerFlyout(); //TODO:MZ: { TimePickerFlyoutPresenterStyle = FlyoutPresenterStyle };
+	//			flyout.TimePicked += OnPicked;
+
+	//			return flyout;
+	//		}
+	//	}
 }

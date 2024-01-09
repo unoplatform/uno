@@ -33,7 +33,7 @@ internal static class SelectionExports
 
 		var spPlacementTargetAsFE = pPlacementTarget as FrameworkElement;
 
-		var spTimePickerFlyout = new TimePickerFlyout();
+		var spTimePickerFlyout = TimePicker.CreateFlyout(spTimePicker);
 
 		// Copy over all the relevant properties to show the
 		// Flyout with.

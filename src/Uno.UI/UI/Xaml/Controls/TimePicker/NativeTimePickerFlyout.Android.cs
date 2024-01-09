@@ -8,7 +8,7 @@ using static Android.App.TimePickerDialog;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class TimePickerFlyout
+partial class NativeTimePickerFlyout
 {
 	private UnoTimePickerDialog _dialog;
 	private TimeSpan _initialTime;
@@ -57,7 +57,7 @@ partial class TimePickerFlyout
 			SaveTime(time.RoundToMinuteInterval(MinuteIncrement));
 		}
 
-		TimePicked?.Invoke(this, new TimePickedEventArgs(oldTime, Time));
+		OnTimePicked(new TimePickedEventArgs(oldTime, Time));
 	}
 
 	private void ShowTimePicker(bool useSpinnerStyle)
@@ -85,7 +85,7 @@ partial class TimePickerFlyout
 		Hide(canCancel: false);
 	}
 
-	partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
+	//partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
 
 	public class OnSetTimeListener : Java.Lang.Object, IOnTimeSetListener
 	{

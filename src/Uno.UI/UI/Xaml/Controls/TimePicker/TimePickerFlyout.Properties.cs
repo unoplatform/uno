@@ -61,5 +61,23 @@ partial class TimePickerFlyout
 	/// <summary>
 	/// Occurs when the user has selected a time in the time picker flyout.
 	/// </summary>
-	public event TypedEventHandler<TimePickerFlyout, TimePickedEventArgs> TimePicked;
+	public event TypedEventHandler<TimePickerFlyout, TimePickedEventArgs>? TimePicked;
+
+#if HAS_UNO // Custom propery allowing overriding of presenter
+	public Style TimePickerFlyoutPresenterStyle
+	{
+		get => (Style)this.GetValue(TimePickerFlyoutPresenterStyleProperty);
+		set => this.SetValue(TimePickerFlyoutPresenterStyleProperty, value);
+	}
+
+	public static DependencyProperty TimePickerFlyoutPresenterStyleProperty { get; } =
+		DependencyProperty.Register(
+			nameof(TimePickerFlyoutPresenterStyle),
+			typeof(Style),
+			typeof(TimePickerFlyout),
+			new FrameworkPropertyMetadata(
+				default(Style),
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+				));
+#endif
 }
