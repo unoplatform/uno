@@ -828,6 +828,7 @@ public partial class TextBox
 		}
 	}
 
+	// TODO: remove this context menu when TextCommandBarFlyout is implemented
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
@@ -846,7 +847,7 @@ public partial class TextBox
 				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxPaste"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
 				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxUndo"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
 				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxRedo"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(SelectAll) } });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
 			}
 
 			_contextMenu.Items.Clear();
@@ -1375,18 +1376,11 @@ public partial class TextBox
 		public static SentinelAction Instance { get; } = new SentinelAction();
 	}
 
-	private sealed class TextBoxCommand : ICommand
+	private sealed class TextBoxCommand(Action action) : ICommand
 	{
-		private readonly Action _action;
-
-		public TextBoxCommand(Action action)
-		{
-			_action = action;
-		}
-
 		public bool CanExecute(object parameter) => true;
 
-		public void Execute(object parameter) => _action();
+		public void Execute(object parameter) => action();
 
 #pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
 		public event EventHandler CanExecuteChanged;
