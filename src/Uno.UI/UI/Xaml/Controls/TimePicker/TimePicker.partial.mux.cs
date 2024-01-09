@@ -22,8 +22,8 @@ using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using static Microsoft.UI.Xaml.Controls._Tracing;
 using CultureInfo = System.Globalization.CultureInfo;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 

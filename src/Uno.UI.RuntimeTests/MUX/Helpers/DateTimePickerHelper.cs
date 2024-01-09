@@ -4,7 +4,6 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Windows.Foundation;
-using Uno.UI.UI.Xaml.Controls.TestHooks;
 using static Private.Infrastructure.TestServices;
 using System.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,10 +13,15 @@ using System.Collections.Generic;
 using System;
 using Windows.Globalization;
 
+#if HAS_UNO
+using Uno.UI.Xaml.Controls.TestHooks;
+#endif
+
 namespace Uno.UI.RuntimeTests.MUX.Helpers;
 
 internal static class DateTimePickerHelper
 {
+#if HAS_UNO
 	internal static async Task ValidateDateTimePickerFlyoutPositioningAndSizing<T>()
 		where T : FrameworkElement, IDateTimePickerTestHooks, new()
 	{
@@ -60,6 +64,7 @@ internal static class DateTimePickerHelper
 
 		await ControlHelper.ClickFlyoutCloseButton(dateTimePicker, true /* isAccept */);
 	}
+#endif
 
 	internal static async Task OpenDateTimePicker(FrameworkElement dateTimePicker)
 	{

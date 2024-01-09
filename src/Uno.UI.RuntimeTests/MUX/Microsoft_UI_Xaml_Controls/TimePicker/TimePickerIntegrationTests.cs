@@ -244,6 +244,7 @@ public class TimePickerIntegrationTests
 		}
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
 #if __ANDROID__ || __IOS__
@@ -253,6 +254,7 @@ public class TimePickerIntegrationTests
 	{
 		await DateTimePickerHelper.ValidateDateTimePickerFlyoutPositioningAndSizing<TimePicker>();
 	}
+#endif
 
 	[TestMethod]
 	public async Task HasPlaceholderTextByDefault()

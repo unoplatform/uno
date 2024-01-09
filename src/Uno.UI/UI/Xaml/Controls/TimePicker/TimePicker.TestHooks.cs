@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-using Uno.UI.UI.Xaml.Controls.TestHooks;
+using Uno.UI.Xaml.Controls.TestHooks;
 
 namespace Microsoft.UI.Xaml.Controls;
 
