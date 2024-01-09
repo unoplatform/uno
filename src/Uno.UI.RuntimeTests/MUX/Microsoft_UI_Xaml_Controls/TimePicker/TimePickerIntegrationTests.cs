@@ -229,6 +229,7 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task ValidateFlyoutPositioningAndSizing()
 	{
 		await DateTimePickerHelper.ValidateDateTimePickerFlyoutPositioningAndSizing<TimePicker>();
