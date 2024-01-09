@@ -247,10 +247,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// TODO: port localized resources from WinUI
 				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCopy"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
 				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
-
-				// if we lose focus, we stop drawing the selection.
-				// If we then right click on the TextBlock, the selection should come back.
-				_contextMenu.Opened += (_, _) => UpdateSelectionRendering();
 			}
 
 			_contextMenu.Items.Clear();
