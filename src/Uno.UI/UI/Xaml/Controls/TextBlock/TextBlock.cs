@@ -503,12 +503,7 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnIsTextSelectionEnabledChanged()
-		{
-			Selection = new Range(0, 0);
-
-			OnIsTextSelectionEnabledChangedPartial();
-		}
+		private void OnIsTextSelectionEnabledChanged() => OnIsTextSelectionEnabledChangedPartial();
 
 		partial void OnIsTextSelectionEnabledChangedPartial();
 
@@ -819,7 +814,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ClearTextPartial();
 
-		#region Hyperlinks
+		#region pointer events
 
 #if __WASM__
 		// As on wasm the TextElements are UIElement, when the hosting TextBlock will capture the pointer on Pressed,
@@ -885,15 +880,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			that._isPressed = true;
-			if (that.IsTextSelectionEnabled)
-			{
-#if __SKIA__
-				var index = that.Inlines.GetIndexAt(point.Position, false);
-#else
-				var index = that.GetCharacterIndexAtPoint(point.Position);
-#endif
-				that.Selection = new Range(index, index);
-			}
 
 			if (that.FindHyperlinkAt(point.Position) is Hyperlink hyperlink)
 			{
@@ -905,6 +891,14 @@ namespace Microsoft.UI.Xaml.Controls
 				hyperlink.SetPointerPressed(e.Pointer);
 				e.Handled = true;
 				that.CompleteGesture(); // Make sure to mute Tapped
+			}
+			else if (that.IsTextSelectionEnabled)
+			{
+				var index = that.GetCharacterIndexAtPoint(point.Position);
+				that.Selection = new Range(index, index);
+
+				e.Handled = true;
+				that.Focus(FocusState.Pointer);
 			}
 		};
 
@@ -941,9 +935,13 @@ namespace Microsoft.UI.Xaml.Controls
 					// so we won't receive the CaptureLost. So make sure to AbortPointerPressed on the Hyperlink which made the capture.
 					that.AbortHyperlinkCaptures(e.Pointer);
 				}
+				else
+				{
+					e.Handled = true;
+				}
 			}
 
-			// e.Handled = true; ==> On UWP the pointer released is **NOT** handled
+			e.Handled |= that.IsTextSelectionEnabled;
 		};
 
 		private static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
@@ -973,11 +971,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (that._isPressed && that.IsTextSelectionEnabled)
 			{
-#if __SKIA__
-				var index = that.Inlines.GetIndexAt(point.Position, false);
-#else
 				var index = that.GetCharacterIndexAtPoint(point.Position);
-#endif
 				that.Selection = new Range(that.Selection.start, index);
 			}
 		};
@@ -1007,8 +1001,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-
-			global::System.Diagnostics.Debug.Assert(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) == null);
 
 			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
 			that._hyperlinkOver = null;
@@ -1135,7 +1127,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-#if !__SKIA__
 		private Hyperlink FindHyperlinkAt(Point point)
 		{
 			var characterIndex = GetCharacterIndexAtPoint(point);
@@ -1145,7 +1136,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return hyperlink;
 		}
-#endif
 #endif
 
 		#endregion

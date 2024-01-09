@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents;
 using SkiaSharp;
 using Microsoft.UI.Composition;
 using System.Numerics;
+using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
@@ -19,6 +24,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly TextVisual _textVisual;
 		private Action? _selectionHighlightColorChanged;
+		private MenuFlyout? _contextMenu;
+		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
 		public TextBlock()
 		{
@@ -29,10 +36,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
-			// UNO TODO: subscribiting to DoubleTappedEvent seems to break pointer events in some way
-			// even if the you subscribe with an empty handler (!!!). See VerifyNavigationViewItemExpandsCollapsesWhenChevronTapped
-			// for a test that fails.
-			// AddHandler(DoubleTappedEvent, new DoubleTappedEventHandler((s, e) => ((TextBlock)s).OnDoubleTapped(e)), true);
+			DoubleTapped += (s, e) => ((TextBlock)s).OnDoubleTapped(e);
+			RightTapped += (s, e) => ((TextBlock)s).OnRightTapped(e);
+			KeyDown += (s, e) => ((TextBlock)s).OnKeyDown(e);
+
+			GotFocus += (_, _) => UpdateSelectionRendering();
+			LostFocus += (_, _) => UpdateSelectionRendering();
 		}
 
 #if DEBUG
@@ -74,7 +83,15 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
 			RecalculateSubscribeToPointerEvents();
-			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
+			UpdateSelectionRendering();
+		}
+
+		private void UpdateSelectionRendering()
+		{
+			if (_inlines is { })
+			{
+				_inlines.RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
+			}
 		}
 
 		private void ApplyFlowDirection(float width)
@@ -105,8 +122,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Gets the line height of the TextBlock either 
-		/// based on the LineHeight property or the default 
+		/// Gets the line height of the TextBlock either
+		/// based on the LineHeight property or the default
 		/// font line height.
 		/// </summary>
 		/// <returns>Computed line height</returns>
@@ -133,28 +150,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private Hyperlink? FindHyperlinkAt(Point point)
-		{
-			var padding = Padding;
-			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false)?.span;
-
-			if (span == null)
-			{
-				return null;
-			}
-
-			var inline = span.Segment.Inline;
-
-			while ((inline = inline.GetParent() as Inline) != null)
-			{
-				if (inline is Hyperlink hyperlink)
-				{
-					return hyperlink;
-				}
-			}
-
-			return null;
-		}
+		private int GetCharacterIndexAtPoint(Point point) => Inlines.GetIndexAt(point, false);
 
 		partial void OnInlinesChangedPartial()
 		{
@@ -195,7 +191,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SetupInlines()
 		{
-			_inlines.RenderSelection = true;
 			_inlines.SelectionFound += t =>
 			{
 				var canvas = t.canvas;
@@ -206,21 +201,85 @@ namespace Microsoft.UI.Xaml.Controls
 					Style = SKPaintStyle.Fill
 				});
 			};
+
+			_inlines.FireDrawingEventsOnEveryRedraw = true;
+			_inlines.RenderSelection = IsTextSelectionEnabled;
 		}
 
-		// private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
-		// {
-		// 	if (IsTextSelectionEnabled)
-		// 	{
-		// 		var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
-		// 		if (nullableSpan.HasValue)
-		// 		{
-		// 			Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
-		// 		}
-		// 	}
-		// }
+		private void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			switch (args.Key)
+			{
+				case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+					CopySelectionToClipboard();
+					args.Handled = true;
+					break;
+				case VirtualKey.A when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+					SelectAll();
+					args.Handled = true;
+					break;
+			}
+		}
 
-		// The following should be moved to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			if (IsTextSelectionEnabled)
+			{
+				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
+				if (nullableSpan.HasValue)
+				{
+					Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
+				}
+			}
+		}
+
+		// TODO: remove this context menu when TextCommandBarFlyout is implemented
+		private void OnRightTapped(RightTappedRoutedEventArgs e)
+		{
+			e.Handled = true;
+
+			Focus(FocusState.Pointer);
+
+			if (_contextMenu is null)
+			{
+				_contextMenu = new MenuFlyout();
+
+				// TODO: port localized resources from WinUI
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCopy"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
+
+				// if we lose focus, we stop drawing the selection.
+				// If we then right click on the TextBlock, the selection should come back.
+				_contextMenu.Opened += (_, _) => UpdateSelectionRendering();
+			}
+
+			_contextMenu.Items.Clear();
+
+			if (Selection.start != Selection.end)
+			{
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+			}
+			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
+
+			_contextMenu.ShowAt(this, e.GetPosition(this));
+		}
+
+		public void CopySelectionToClipboard()
+		{
+			if (Selection.start != Selection.end)
+			{
+				var start = Math.Min(Selection.start, Selection.end);
+				var end = Math.Max(Selection.start, Selection.end);
+				var text = Text[start..end];
+				var dataPackage = new DataPackage();
+				dataPackage.SetText(text);
+				Clipboard.SetContent(dataPackage);
+			}
+		}
+
+		public void SelectAll() => Selection = new Range(0, Text.Length);
+
+		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
 		public SolidColorBrush SelectionHighlightColor
 		{
 			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
@@ -251,6 +310,17 @@ namespace Microsoft.UI.Xaml.Controls
 				(_textVisual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
 				(_textVisual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
 			);
+		}
+
+		private sealed class TextBlockCommand(Action action) : ICommand
+		{
+			public bool CanExecute(object? parameter) => true;
+
+			public void Execute(object? parameter) => action();
+
+#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
+			public event EventHandler? CanExecuteChanged;
+#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 		}
 	}
 }

@@ -22,16 +22,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TextBox
 {
-	private enum ContextMenuItem
-	{
-		Cut,
-		Copy,
-		Paste,
-		Undo,
-		Redo,
-		SelectAll
-	}
-
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 	private TextBoxView _textBoxView;
