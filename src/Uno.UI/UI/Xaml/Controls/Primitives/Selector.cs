@@ -82,6 +82,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			base.OnApplyTemplate();
 			m_tpScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
+			if (m_tpScrollViewer is { })
+			{
+				m_tpScrollViewer.TemplatedParentHandlesScrolling = true;
+			}
 		}
 
 		public static DependencyProperty SelectedItemProperty { get; } =

@@ -1322,6 +1322,16 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
+
+#if __WASM__
+			// On WASM, a large wheel scroll can be a large number of OnScroll events in sequence.
+			// In that case, the queue will be drowning with scroll events before any chance of layout
+			// updates. The ScrollContentPresenter will scroll smoothly since the native scrolling/rendering
+			// is on a separate thread, but the ScrollBars will be frozen until the end of the (long) scrolling
+			// duration.
+			_horizontalScrollbar?.Arrange(_horizontalScrollbar.LayoutSlot);
+			_verticalScrollbar?.Arrange(_verticalScrollbar.LayoutSlot);
+#endif
 		}
 
 		// Presenter to Control, i.e. OnPresenterZoomed
@@ -1602,9 +1612,18 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			base.OnKeyDown(args);
+
+			// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
+			// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
+			// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
+#if !__WASM__
 			var key = args.Key;
 
-			if (Presenter is null)
+			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
+			// but interestingly that doesn't seem to affect pointer wheel scrolling
+			// despite the generic name implying that it would stop all scrolling
+			if (Presenter is null || TemplatedParentHandlesScrolling)
 			{
 				return;
 			}
@@ -1675,6 +1694,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				return result;
 			}
+#endif
 		}
 #endif
 
