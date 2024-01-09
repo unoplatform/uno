@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using Windows.Globalization;
@@ -18,6 +19,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class TimePickerIntegrationTests
 {
+	private IDisposable _fluentStylesDisposable = null;
+
+	[TestInitialize]
+	public void Initialize()
+	{
+		_fluentStylesDisposable = StyleHelper.UseFluentStyles();
+	}
+
+	[TestCleanup]
+	public void Cleanup()
+	{
+		_fluentStylesDisposable?.Dispose();
+	}
+
 	private static Calendar CreateTime(int hours, int minutes, int period = 1)
 	{
 		var time = new Calendar();
