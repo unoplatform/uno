@@ -66,6 +66,7 @@ partial class TimePickerFlyoutPresenter
 
 	internal TimePickerFlyoutPresenter()
 	{
+		DefaultStyleKey = typeof(TimePickerFlyoutPresenter);
 		_is12HourClock = false;
 		_reactionToSelectionChangeAllowed = false;
 		_minuteIncrement = 0;

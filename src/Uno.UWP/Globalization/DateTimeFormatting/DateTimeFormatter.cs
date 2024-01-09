@@ -394,6 +394,12 @@ public sealed partial class DateTimeFormatter
 		foreach (var p in map)
 		{
 			result = result.Replace(p.Key, p.Value);
+
+		}
+
+		if (result.Contains("h") && Clock == ClockIdentifiers.TwentyFourHour)
+		{
+			result = result.Replace("h", "H");
 		}
 
 		return result;

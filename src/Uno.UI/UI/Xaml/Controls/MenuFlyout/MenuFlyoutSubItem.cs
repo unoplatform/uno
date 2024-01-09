@@ -377,7 +377,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var isTextScaleFactorEnabled = pParentMenuFlyoutPresenter.IsTextScaleFactorEnabledInternal;
 			pSubMenuFlyoutPresenter.IsTextScaleFactorEnabledInternal = isTextScaleFactorEnabled;
 
-			ElementSoundMode soundMode = ElementSoundPlayerService.GetEffectiveSoundMode(spThisAsDO as DependencyObject);
+			ElementSoundMode soundMode = ElementSoundPlayerService.Instance.GetEffectiveSoundMode(spThisAsDO as DependencyObject);
 
 			(spSubMenuFlyoutPresenterAsControl as Control).ElementSoundMode = soundMode;
 		}

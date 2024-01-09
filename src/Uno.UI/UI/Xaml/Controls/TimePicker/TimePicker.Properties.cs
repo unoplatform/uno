@@ -25,9 +25,11 @@ partial class TimePicker
 			new FrameworkPropertyMetadata(
 				defaultValue: (string)Windows.Globalization.ClockIdentifiers.TwelveHour,
 				options: FrameworkPropertyMetadataOptions.None,
-				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnClockIdentifierChanged((string)e.OldValue, (string)e.NewValue)
+				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnClockIdentifierChangedPartial((string)e.OldValue, (string)e.NewValue)
 			)
 		);
+
+	partial void OnClockIdentifierChangedPartial(string oldValue, string newValue);
 
 	/// <summary>
 	/// Gets or sets the content for the control's header.
