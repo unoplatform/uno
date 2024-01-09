@@ -11,11 +11,11 @@ uid: Uno.Workshop.Counter.CSharp.MVUX
 In this tutorial you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the **dotnet new** command
-- Add elements to the C# file, using [C# Markup](Uno.Extensions.Markup.Overview), to define the layout of the application
+- Add elements to the C# file, using [C# Markup](xref:Uno.Extensions.Markup.Overview), to define the layout of the application
 - Add code to the C# file to implement the application logic using the [Model-View-Update-eXtended (MVUX)](xref:Uno.Extensions.Mvux.Overview) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#. 
+To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#.
 
 [!INCLUDE [VS](include-create.md)]
 
@@ -46,7 +46,6 @@ Before completing the wizard, take a look through each of the sections and see w
 
 The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
-
 # [Command Line](#tab/cli)
 
 > [!NOTE] 
@@ -57,8 +56,6 @@ From the command line, run the following command:
 ```
 dotnet new unoapp -preset blank -presentation mvux -markup csharp -o Counter
 ```
-
-
 
 This will create a new folder called **Counter** containing the new application.
 
@@ -139,7 +136,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     ```
 
  - The final code for **MainPage.cs** should look like this:
-    
+
     ```csharp
     namespace Counter;
 
@@ -185,5 +182,3 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
 [!INCLUDE [View Model](include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVUX).
-
-
