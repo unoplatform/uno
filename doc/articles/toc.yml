@@ -179,7 +179,7 @@
       items:
       - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Natie Views with Mobile
+      - name: Native Views with Mobile
         href: native-views.md
       - name: Native Views with Skia 
         href: xref:Uno.Skia.Embedding.Native
