@@ -23,6 +23,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.Foundation;
 using Uno.UI.DataBinding;
 using System.Threading.Tasks;
+using Uno.UI.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -433,8 +434,12 @@ partial class TimePicker
 
 		if (m_tpAsyncSelectionInfo == null)
 		{
-			var asyncOperation = _flyout.ShowAtAsync(this);
+#if !__IOS__ && !__ANDROID__
+			var asyncOperation = SelectionExports.XamlControls_GetTimePickerSelection(this, m_tpFlyoutButton);
+#else
+            var asyncOperation = _flyout.ShowAtAsync(this);
 			m_tpAsyncSelectionInfo = asyncOperation;
+#endif
 			var getOperation = asyncOperation.AsTask();
 			await getOperation;
 			OnGetTimePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
