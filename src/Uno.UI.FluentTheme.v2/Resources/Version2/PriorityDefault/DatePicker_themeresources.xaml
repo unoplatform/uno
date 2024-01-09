@@ -473,10 +473,11 @@
                                         Width="{ThemeResource DatePickerSpacerThemeWidth}"
                                         Canvas.ZIndex="10000"
                                         Grid.Column="3" />
+                                    <!-- Uno specific: As MonochromaticOverlayPresenter is not supported yet, we remove ZIndex from HighlightRect and have it only semi-opaque for readability -->
                                     <Grid x:Name="HighlightRect"
-                                        Canvas.ZIndex="9999"
                                         Background="{ThemeResource DatePickerFlyoutPresenterHighlightFill}"
                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                        Opacity="0.5"
                                         Grid.Column="0"
                                         Grid.ColumnSpan="5"
                                         VerticalAlignment="Center"
