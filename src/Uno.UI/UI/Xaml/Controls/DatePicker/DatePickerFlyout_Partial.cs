@@ -71,10 +71,11 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Control CreatePresenter()
 		{
 			DatePickerFlyoutPresenter spFlyoutPresenter;
-			spFlyoutPresenter = new DatePickerFlyoutPresenter()
+			spFlyoutPresenter = new DatePickerFlyoutPresenter();
+			if (DatePickerFlyoutPresenterStyle is not null)
 			{
-				Style = DatePickerFlyoutPresenterStyle
-			};
+				spFlyoutPresenter.Style = DatePickerFlyoutPresenterStyle;
+			}
 			_tpPresenter = spFlyoutPresenter;
 			return _tpPresenter as Control;
 		}
