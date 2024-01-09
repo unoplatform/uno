@@ -21,5 +21,5 @@ partial class TimePickerFlyoutPresenter
 			nameof(IsDefaultShadowEnabled),
 			typeof(bool),
 			typeof(TimePickerFlyoutPresenter),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(TimePickerFlyoutPresenter.GetDefaultIsDefaultShadowEnabled()));
 }

@@ -575,25 +575,25 @@ partial class TimePickerFlyoutPresenter
 			strClock); /* Clock */
 	}
 
-	private DateTimeFormatter GetTimeFormatter(string strClockIdentifier)
-	{
-		// We can only use the cached formatter if there is a cached formatter, cached formatter's format is the same as the new one's
-		// and cached formatter's clock identifier is the same as the new one's.
-		if (!(_tpTimeFormatter is not null
-			&& strClockIdentifier == _strTimeFormatterClockIdentifier))
-		{
-			// We either do not have a cached formatter or it is stale. We need a create a new one and cache it along
-			// with its identifying info.
-			_tpTimeFormatter = null;
-			var spFormatter = CreateNewFormatterWithClock(
-				"shorttime",
-				strClockIdentifier);
-			_tpTimeFormatter = spFormatter;
-			_strTimeFormatterClockIdentifier = strClockIdentifier;
-		}
+	//private DateTimeFormatter GetTimeFormatter(string strClockIdentifier)
+	//{
+	//	// We can only use the cached formatter if there is a cached formatter, cached formatter's format is the same as the new one's
+	//	// and cached formatter's clock identifier is the same as the new one's.
+	//	if (!(_tpTimeFormatter is not null
+	//		&& strClockIdentifier == _strTimeFormatterClockIdentifier))
+	//	{
+	//		// We either do not have a cached formatter or it is stale. We need a create a new one and cache it along
+	//		// with its identifying info.
+	//		_tpTimeFormatter = null;
+	//		var spFormatter = CreateNewFormatterWithClock(
+	//			"shorttime",
+	//			strClockIdentifier);
+	//		_tpTimeFormatter = spFormatter;
+	//		_strTimeFormatterClockIdentifier = strClockIdentifier;
+	//	}
 
-		return _tpTimeFormatter;
-	}
+	//	return _tpTimeFormatter;
+	//}
 
 	// Sets our sentinel date to the given calendar. This date is 21st of July 2011 midnight.
 	// On this day there are no known daylight saving transitions.
@@ -1183,5 +1183,5 @@ partial class TimePickerFlyoutPresenter
 		return minuteIncrement;
 	}
 
-	private object GetDefaultIsDefaultShadowEnabled() => true;
+	private static object GetDefaultIsDefaultShadowEnabled() => true;
 }

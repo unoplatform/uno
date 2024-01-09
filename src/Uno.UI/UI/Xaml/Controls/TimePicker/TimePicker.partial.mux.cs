@@ -47,8 +47,8 @@ partial class TimePicker
 	private const int TIMEPICKER_SENTINELDATE_HOUR24 = 0;
 	private const int TIMEPICKER_COERCION_INDEX = 0;
 	private const int TIMEPICKER_COERCION_OFFSET = 12;
-	private const int TIMEPICKER_AM_INDEX = 0;
-	private const int TIMEPICKER_PM_INDEX = 1;
+	//private const int TIMEPICKER_AM_INDEX = 0;
+	//private const int TIMEPICKER_PM_INDEX = 1;
 	private const int TIMEPICKER_RTL_CHARACTER_CODE = 8207;
 	private const int TIMEPICKER_MINUTEINCREMENT_MIN = 0;
 	private const int TIMEPICKER_MINUTEINCREMENT_MAX = 9;
@@ -1583,20 +1583,20 @@ partial class TimePicker
 		return -1;
 	}
 
-	private TimeSpan GetCurrentTime()
-	{
-		TimeSpan currentTime;
-		if (m_currentTime.Ticks == GetNullTimeSentinelValue())
-		{
-			var calendar = CreateNewCalendar(s_strTwelveHourClock);
-			calendar.SetToNow();
-			var dateTime = calendar.GetDateTime();
-			m_currentTime = GetTimeSpanFromDateTime(dateTime);
-		}
+	//private TimeSpan GetCurrentTime()
+	//{
+	//	TimeSpan currentTime;
+	//	if (m_currentTime.Ticks == GetNullTimeSentinelValue())
+	//	{
+	//		var calendar = CreateNewCalendar(s_strTwelveHourClock);
+	//		calendar.SetToNow();
+	//		var dateTime = calendar.GetDateTime();
+	//		m_currentTime = GetTimeSpanFromDateTime(dateTime);
+	//	}
 
-		currentTime = m_currentTime;
-		return currentTime;
-	}
+	//	currentTime = m_currentTime;
+	//	return currentTime;
+	//}
 
 	private TimeSpan GetSelectedTime()
 	{
