@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
 
 namespace Uno.UI.UI.Xaml.Controls;
 
-internal class SelectionExports
+internal static class SelectionExports
 {
-	internal void XamlControls_GetTimePickerSelectionImpl(
+	internal static IAsyncOperation<TimeSpan?> XamlControls_GetTimePickerSelection(
 		TimePicker pSourceTimePicker,
-		object pPlacementTarget,
-		_Outptr_ IInspectable **ppSelectionResultOperation)
+		object pPlacementTarget)
 	{
 		// Pointer to the operation that this function will return to
 		// the caller (a on-page TimePicker)		
@@ -23,45 +26,34 @@ internal class SelectionExports
 		// IAsyncAction it will return.
 
 		// Collection of properties needed to be copied from
-		// the DatePicker into the DatePickerFlyout
-		string clockIdentifier;
-		TimeSpan ts = default;
-		int minuteInterval = 0;
-		string tring title;
-		var overlayMode = LightDismissOverlayMode.Off;
-		var soundMode = ElementSoundMode.Default;
+		// the DatePicker into the DatePickerFlyout		
 
 		// PickerFlyoutBase statics, used to retrieve title attached property.		
 		spTimePicker = pSourceTimePicker;
 
-		pPlacementTarget->QueryInterface<xaml::IFrameworkElement>(&spPlacementTargetAsFE));
-		IFCPTR(spPlacementTargetAsFE.Get());
+		var spPlacementTargetAsFE = pPlacementTarget as FrameworkElement;
 
 		var spTimePickerFlyout = new TimePickerFlyout();
 
 		// Copy over all the relevant properties to show the
 		// Flyout with.
-		clockIdentifier = spTimePicker.ClockIdentifier;
-		minuteInterval = spTimePicker.MinuteIncrement;
-		ts = spTimePicker.Time;
-		overlayMode = spTimePicker.LightDismissOverlayMode;
-		soundMode = PlatformHelpers.GetEffectiveSoundMode(spTimePickerAsDO);
+		var clockIdentifier = spTimePicker.ClockIdentifier;
+		var minuteInterval = spTimePicker.MinuteIncrement;
+		var ts = spTimePicker.Time;
+		var overlayMode = spTimePicker.LightDismissOverlayMode;
+		var soundMode = PlatformHelpers.GetEffectiveSoundMode(spTimePicker);
 
 		// See if the calling TimePicker has an attached Title, if not
 		// retrieve the default phrase.
-		wf::GetActivationFactory(
-			wrl_wrappers::HStringReference(RuntimeClass_Microsoft_UI_Xaml_Controls_Primitives_PickerFlyoutBase).Get(),
-			&spPickerFlyoutBaseStatics));
-		spPickerFlyoutBaseStatics->GetTitle(spTimePickerAsDO.Get(), title.GetAddressOf()));
+		var title = PickerFlyoutBase.GetTitle(spTimePicker);
 
-		if (title == nullptr)
+		if (title == null)
 		{
-			Private::FindStringResource(
-				TEXT_TIMEPICKERFLYOUT_TITLE,
-				title.GetAddressOf()));
+			title = ResourceAccessor.GetLocalizedStringResource("TEXT_TIMEPICKERFLYOUT_TITLE") ?? "";
 		}
 
-		spPickerFlyoutBaseStatics->SetTitle(spTimePickerFlyoutAsDO.Get(), title));
+		var spFlyoutBase = spTimePickerFlyout;
+		PickerFlyoutBase.SetTitle(spTimePickerFlyout, title);
 		spTimePickerFlyout.ClockIdentifier = clockIdentifier;
 		spTimePickerFlyout.MinuteIncrement = minuteInterval;
 		spTimePickerFlyout.Time = ts;
