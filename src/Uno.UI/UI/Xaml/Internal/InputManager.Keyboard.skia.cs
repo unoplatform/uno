@@ -52,13 +52,12 @@ partial class InputManager
 				return;
 			}
 
-			originalSource.RaiseEvent(
-				UIElement.KeyDownEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
-				{
-					CanBubbleNatively = false
-				}
-			);
+			var krea = new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
+			{
+				CanBubbleNatively = false
+			};
+			originalSource.RaiseEvent(UIElement.KeyDownEvent, krea);
+			args.Handled = krea.Handled;
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{

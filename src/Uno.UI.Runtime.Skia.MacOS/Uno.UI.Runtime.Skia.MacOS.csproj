@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_GTK</DefineConstants> -->
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<authors>Uno Platform</authors>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides macOS platform support for Skia in Uno Platform projects.</Description>
+		<Copyright>Copyright (C) 2015-2023 Uno Platform Inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.MacOS</PackageId>
+
+		<RootNamespace>Uno.UI.Runtime.Skia.MacOS</RootNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp.NativeAssets.macos" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" Version="2.8.2.3" />
+    <PackageReference Include="SkiaSharp.Harfbuzz" />
+    <PackageReference Include="SkiaSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+    <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+    <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+    <ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+		<Content Include="buildTransitive/*.targets">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+ 
+</Project>
