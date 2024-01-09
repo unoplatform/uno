@@ -16,7 +16,7 @@ Uno Platform is an [open-source project](https://github.com/unoplatform/Uno) wit
 
 #### What platforms can I target with Uno Platform?
 
-Uno Platform applications run on Web (via WebAssembly), Windows, Linux, mac Catalyst, iOS, Android. [Check supported platform versions.](xref:Uno.GettingStarted.Requirements)
+Uno Platform applications run on the Web (via WebAssembly), Windows, Linux, Mac Catalyst, iOS, and Android. [Check supported platform versions.](xref:Uno.GettingStarted.Requirements)
 
 #### Are Uno Platform applications native?
 
@@ -28,7 +28,7 @@ Yes. Unless configured otherwise, your application's UI renders exactly the same
 
 #### How is Uno Platform different from .NET MAUI?
 
-First, Uno Platform is available in production today to build single-codebase, pixel-perfect applications for Web, Desktop and Mobile. .NET MAUI is successor to Xamarin.Forms.
+First, Uno Platform is available in production today to build single-codebase, pixel-perfect applications for Web, Desktop, and Mobile. .NET MAUI is a successor to Xamarin.Forms.
 
 Second, Uno Platform can target additional platforms like Linux and the Web.
 
@@ -36,7 +36,7 @@ Third, Uno Platform aligns with WinUI, which uses a flavor of XAML most Windows 
 
 Fourth, Uno Platform provides an optional [Figma plugin](https://platform.uno/unofigma/) for pixel-perfect XAML export for Uno Platform apps.
 
-Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like `DataGrid`, `TreeView`, `TabView`, `NavigationView` and many others.
+Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like `DataGrid`, `TreeView`, `TabView`, `NavigationView`, and many others.
 
 At the practical level, we suggest you try both and see which works the best for your skill set and scenario.
 
@@ -58,7 +58,7 @@ No, there's no need to have an existing UWP or WinUI application, or have that s
 
 #### What 3rd parties support Uno Platform?
 
-Uno Platform is supported by a number of 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
+Uno Platform is supported by several 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart, and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
 
 #### Where can I get support?
 Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.  
