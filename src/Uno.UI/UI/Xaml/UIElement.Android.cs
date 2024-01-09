@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml
 	public partial class UIElement : BindableView
 	{
 		/// <summary>
-		/// Keeps the count of native children (non-UIElements), for clipping purpoess.
+		/// Keeps the count of native children (non-UIElements), for clipping purposes.
 		/// </summary>
 		private int _nativeChildrenCount;
 		private bool _nativeClipChildren;

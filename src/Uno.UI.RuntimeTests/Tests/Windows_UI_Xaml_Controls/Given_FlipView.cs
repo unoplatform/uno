@@ -176,6 +176,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		}
 
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_NativeChild_Clipped()
+		{
+			var flipView = new FlipView
+			{
+				Items =
+				{
+					new FlipViewItem {Content = "Inline item 1"},
+					new FlipViewItem {Content = "Inline item 2"},
+				}
+			};
+
+			WindowHelper.WindowContent = flipView;
+
+			await WindowHelper.WaitForLoaded(flipView);
+
+			var nativeChild = flipView.FindFirstChild<NativePagedView>();
+
+			Assert.IsNotNull(nativeChild);
+			Assert.IsTrue(flipView.ClipChildren);
+		}
+#endif
+
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
 			var renderer = new RenderTargetBitmap();
