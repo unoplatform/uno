@@ -6,60 +6,59 @@ using System.Threading.Tasks;
 using Microsoft.IO;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.RemoteControl.Helpers
+namespace Uno.UI.RemoteControl.Helpers;
+
+public static class WebSocketHelper
 {
-	public static class WebSocketHelper
+	const int BufferSize = 1 << 16;
+	private static readonly RecyclableMemoryStreamManager manager = new RecyclableMemoryStreamManager();
+
+	public static async Task<Frame?> ReadFrame(WebSocket socket, CancellationToken token)
 	{
-		const int BufferSize = 1 << 16;
-		private static readonly RecyclableMemoryStreamManager manager = new RecyclableMemoryStreamManager();
+		var pool = ArrayPool<byte>.Shared;
+		var buff = pool.Rent(BufferSize);
+		var segment = new ArraySegment<byte>(buff);
+		using var mem = manager.GetStream()
+			?? throw new InvalidOperationException($"Unable to get memory stream");
 
-		public static async Task<Frame?> ReadFrame(WebSocket socket, CancellationToken token)
+		try
 		{
-			var pool = ArrayPool<byte>.Shared;
-			var buff = pool.Rent(BufferSize);
-			var segment = new ArraySegment<byte>(buff);
-			using var mem = manager.GetStream() 
-				?? throw new InvalidOperationException($"Unable to get memory stream");
-
-			try
+			while (true)
 			{
-				while (true)
+				var result = await socket.ReceiveAsync(segment, token);
+				if (result.MessageType == WebSocketMessageType.Close)
 				{
-					var result = await socket.ReceiveAsync(segment, token);
-					if (result.MessageType == WebSocketMessageType.Close)
-					{
-						return null;
-					}
+					return null;
+				}
 
-					if (result.EndOfMessage)
-					{
-						if (result.Count != 0)
-						{
-							await mem.WriteAsync(buff, 0, result.Count);
-						}
-
-						mem.Position = 0;
-
-						return Frame.Read(mem);
-					}
-					else
+				if (result.EndOfMessage)
+				{
+					if (result.Count != 0)
 					{
 						await mem.WriteAsync(buff, 0, result.Count);
 					}
+
+					mem.Position = 0;
+
+					return Frame.Read(mem);
+				}
+				else
+				{
+					await mem.WriteAsync(buff, 0, result.Count);
 				}
 			}
-			finally
-			{
-				pool.Return(buff);
-			}
 		}
-
-		internal static async Task SendFrame(WebSocket webSocket, Frame frame, CancellationToken ct)
+		finally
 		{
-			using var stream = manager.GetStream();
-			frame.WriteTo(stream);
-
-			await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Length), WebSocketMessageType.Binary, true, ct);
+			pool.Return(buff);
 		}
+	}
+
+	internal static async Task SendFrame(WebSocket webSocket, Frame frame, CancellationToken ct)
+	{
+		using var stream = manager.GetStream();
+		frame.WriteTo(stream);
+
+		await webSocket.SendAsync(new ArraySegment<byte>(stream.GetBuffer(), 0, (int)stream.Length), WebSocketMessageType.Binary, true, ct);
 	}
 }
