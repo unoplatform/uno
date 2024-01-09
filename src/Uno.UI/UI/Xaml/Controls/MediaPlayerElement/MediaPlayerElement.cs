@@ -229,7 +229,7 @@ namespace Microsoft.UI.Xaml.Controls
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
-					newMediaPlayer.NaturalVideoDimensionChanged -= mpe.OnNaturalVideoDimensionChanged;
+					newMediaPlayer.NaturalVideoDimensionChanged += mpe.OnNaturalVideoDimensionChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
