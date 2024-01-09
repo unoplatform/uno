@@ -19,20 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class TimePickerIntegrationTests
 {
-	private IDisposable _fluentStylesDisposable = null;
-
-	[TestInitialize]
-	public void Initialize()
-	{
-		_fluentStylesDisposable = StyleHelper.UseFluentStyles();
-	}
-
-	[TestCleanup]
-	public void Cleanup()
-	{
-		_fluentStylesDisposable?.Dispose();
-	}
-
 	private static Calendar CreateTime(int hours, int minutes, int period = 1)
 	{
 		var time = new Calendar();
@@ -185,24 +171,29 @@ public class TimePickerIntegrationTests
 	[TestMethod]
 	public async Task ValidateFootprint()
 	{
-		TestServices.WindowHelper.SetWindowSizeOverride(new Size(500, 600));
-
-		const double expectedTimePickerWidth = 242;
-		const double expectedTimePickerWidth_WithWideHeader = 350;
-
-		const double expectedTimePickerHeight = 30;
-		const double expectedTimePickerHeight_WithHeader = 19 + 4 + expectedTimePickerHeight;
-
-		TimePicker timePicker = null;
-		TimePicker timePickerWithHeader = null;
-		TimePicker timePickerWithWideHeader = null;
-		TimePicker timePickerStretched = null;
-		TimePicker timePicker24Hour = null;
-
-		await RunOnUIThread(() =>
+		IDisposable fluentStylesDisposable = null;
+		await RunOnUIThread(() => fluentStylesDisposable = StyleHelper.UseFluentStyles());
+		try
 		{
-			var rootPanel = (StackPanel)XamlReader.Load(
-				@"<StackPanel xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" >
+
+			TestServices.WindowHelper.SetWindowSizeOverride(new Size(500, 600));
+
+			const double expectedTimePickerWidth = 242;
+			const double expectedTimePickerWidth_WithWideHeader = 350;
+
+			const double expectedTimePickerHeight = 30;
+			const double expectedTimePickerHeight_WithHeader = 19 + 4 + expectedTimePickerHeight;
+
+			TimePicker timePicker = null;
+			TimePicker timePickerWithHeader = null;
+			TimePicker timePickerWithWideHeader = null;
+			TimePicker timePickerStretched = null;
+			TimePicker timePicker24Hour = null;
+
+			await RunOnUIThread(() =>
+			{
+				var rootPanel = (StackPanel)XamlReader.Load(
+					@"<StackPanel xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" >
                         <TimePicker x:Name=""timePicker"" />
                         <TimePicker x:Name=""timePickerWithHeader"" Header=""H"" />
                         <TimePicker x:Name=""timePickerWithWideHeader"" >
@@ -214,33 +205,41 @@ public class TimePickerIntegrationTests
                         <TimePicker x:Name=""timePicker24Hour"" ClockIdentifier=""24HourClock"" />
                     </StackPanel>");
 
-			timePicker = (TimePicker)rootPanel.FindName("timePicker");
-			timePickerWithHeader = (TimePicker)rootPanel.FindName("timePickerWithHeader");
-			timePickerWithWideHeader = (TimePicker)rootPanel.FindName("timePickerWithWideHeader");
-			timePickerStretched = (TimePicker)rootPanel.FindName("timePickerStretched");
-			timePicker24Hour = (TimePicker)rootPanel.FindName("timePicker24Hour");
+				timePicker = (TimePicker)rootPanel.FindName("timePicker");
+				timePickerWithHeader = (TimePicker)rootPanel.FindName("timePickerWithHeader");
+				timePickerWithWideHeader = (TimePicker)rootPanel.FindName("timePickerWithWideHeader");
+				timePickerStretched = (TimePicker)rootPanel.FindName("timePickerStretched");
+				timePicker24Hour = (TimePicker)rootPanel.FindName("timePicker24Hour");
 
-			TestServices.WindowHelper.WindowContent = rootPanel;
-		});
-		await TestServices.WindowHelper.WaitForIdle();
-		await RunOnUIThread(() =>
+				TestServices.WindowHelper.WindowContent = rootPanel;
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+			await RunOnUIThread(() =>
+			{
+				// Verify Footprint of TimePicker:
+				VERIFY_ARE_EQUAL(expectedTimePickerWidth, timePicker.ActualWidth);
+				VERIFY_ARE_EQUAL(expectedTimePickerHeight, timePicker.ActualHeight);
+
+				// Verify Footprint of TimePicker with Header:
+				VERIFY_ARE_EQUAL(expectedTimePickerWidth, timePickerWithHeader.ActualWidth);
+				VERIFY_ARE_EQUAL(expectedTimePickerHeight_WithHeader, timePickerWithHeader.ActualHeight);
+
+				// Verify Footprint of TimePicker with wide Header:
+				VERIFY_ARE_EQUAL(expectedTimePickerWidth_WithWideHeader, timePickerWithWideHeader.ActualWidth);
+				VERIFY_ARE_EQUAL(expectedTimePickerHeight_WithHeader, timePickerWithWideHeader.ActualHeight);
+
+				// Verify Footprint of TimePicker with 24Hour Clock:
+				VERIFY_ARE_EQUAL(expectedTimePickerWidth, timePicker24Hour.ActualWidth);
+				VERIFY_ARE_EQUAL(expectedTimePickerHeight, timePicker24Hour.ActualHeight);
+			});
+		}
+		finally
 		{
-			// Verify Footprint of TimePicker:
-			VERIFY_ARE_EQUAL(expectedTimePickerWidth, timePicker.ActualWidth);
-			VERIFY_ARE_EQUAL(expectedTimePickerHeight, timePicker.ActualHeight);
-
-			// Verify Footprint of TimePicker with Header:
-			VERIFY_ARE_EQUAL(expectedTimePickerWidth, timePickerWithHeader.ActualWidth);
-			VERIFY_ARE_EQUAL(expectedTimePickerHeight_WithHeader, timePickerWithHeader.ActualHeight);
-
-			// Verify Footprint of TimePicker with wide Header:
-			VERIFY_ARE_EQUAL(expectedTimePickerWidth_WithWideHeader, timePickerWithWideHeader.ActualWidth);
-			VERIFY_ARE_EQUAL(expectedTimePickerHeight_WithHeader, timePickerWithWideHeader.ActualHeight);
-
-			// Verify Footprint of TimePicker with 24Hour Clock:
-			VERIFY_ARE_EQUAL(expectedTimePickerWidth, timePicker24Hour.ActualWidth);
-			VERIFY_ARE_EQUAL(expectedTimePickerHeight, timePicker24Hour.ActualHeight);
-		});
+			if (fluentStylesDisposable is not null)
+			{
+				await RunOnUIThread(() => fluentStylesDisposable.Dispose());
+			}
+		}
 	}
 
 	[TestMethod]
