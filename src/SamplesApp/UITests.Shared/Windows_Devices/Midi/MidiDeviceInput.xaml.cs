@@ -217,7 +217,7 @@ namespace UITests.Windows_Devices.Midi
 			if ((receivedMidiMessage.Type != MidiMessageType.TimingClock) && (receivedMidiMessage.Type != MidiMessageType.ActiveSensing))
 			{
 				// Use the Dispatcher to update the messages on the UI thread
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 
 					InputDeviceMessages.Insert(0, outputMessage.ToString());

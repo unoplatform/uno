@@ -47,7 +47,7 @@ namespace UITests.Windows_Networking
 		private string _isWlanConnectionProfile;
 		private string _isWwanConnectionProfile;
 
-		public NetworkInformationViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public NetworkInformationViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
@@ -144,7 +144,7 @@ namespace UITests.Windows_Networking
 		{
 			try
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => UpdateNetworkInformation());
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Normal, () => UpdateNetworkInformation());
 			}
 			catch (Exception ex)
 			{

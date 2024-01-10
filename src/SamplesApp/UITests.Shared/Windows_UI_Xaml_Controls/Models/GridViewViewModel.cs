@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 	internal class GridViewViewModel : ViewModelBase
 	{
 
-		public GridViewViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat coreDispatcher) : base(coreDispatcher)
 		{
 			SampleItems = GetSampleItems(coreDispatcher);
 		}
@@ -44,7 +44,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 
 	internal class GridViewItemViewModel : ViewModelBase
 	{
-		public GridViewItemViewModel(CoreDispatcher coreDispatcher, string name) : base(coreDispatcher)
+		public GridViewItemViewModel(Private.Infrastructure.UnitTestDispatcherCompat coreDispatcher, string name) : base(coreDispatcher)
 		{
 			Name = name;
 		}

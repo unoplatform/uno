@@ -40,7 +40,7 @@ namespace UITests.Windows_Gaming
 			Interval = TimeSpan.FromMilliseconds(100)
 		};
 
-		public GamepadReadingTestViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public GamepadReadingTestViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_checkTimer.Tick += CheckTimer_Tick;
 			Disposables.Add(Disposable.Create(() =>

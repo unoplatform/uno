@@ -12,7 +12,7 @@ namespace Uno.UI.Samples.Content.UITests.GridView
 {
 	internal class GridView_ComplexViewModel : ViewModelBase
 	{
-		public GridView_ComplexViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridView_ComplexViewModel(Private.Infrastructure.UnitTestDispatcherCompat coreDispatcher) : base(coreDispatcher)
 		{
 			SampleItems = GetSampleItems(coreDispatcher);
 		}
@@ -46,7 +46,7 @@ namespace Uno.UI.Samples.Content.UITests.GridView
 
 	internal class GridView_ComplexItemViewModel : ViewModelBase
 	{
-		public GridView_ComplexItemViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridView_ComplexItemViewModel(Private.Infrastructure.UnitTestDispatcherCompat coreDispatcher) : base(coreDispatcher)
 		{
 		}
 

@@ -25,6 +25,7 @@ using Uno.UI.Samples.Controls;
 using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
+using Private.Infrastructure;
 
 #if !WINAPPSDK
 using Uno.UI.Controls.Legacy;
@@ -266,7 +267,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 #if __SKIA__
 			// Workaround to avoid issue #7829
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, GenerateScreenshots);
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, GenerateScreenshots);
 #else
 			await GenerateScreenshots();
 #endif
@@ -337,7 +338,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			var tests = testNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
-			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _ = RunTestsCore(tests));
 
 			return id;
 

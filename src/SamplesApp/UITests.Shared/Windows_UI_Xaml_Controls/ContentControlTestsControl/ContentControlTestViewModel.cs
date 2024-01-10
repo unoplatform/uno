@@ -33,7 +33,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		public string Property3 { get; set; } = "Property3";
 		public string Property4 { get; set; } = "Property4";
 
-		public ContentControlTestViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ContentControlTestViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			SetChangeablePropertyToNull = new DelegateCommand(() => ChangeableProperty = null);
 

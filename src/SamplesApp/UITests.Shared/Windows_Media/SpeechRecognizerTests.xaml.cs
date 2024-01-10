@@ -44,7 +44,7 @@ namespace UITests.Windows_Media
 
 		private string _lastResult = "";
 
-		public SpeechRecognizerTestsViewModel(CoreDispatcher dispatcher)
+		public SpeechRecognizerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
 		{
 			_speechRecognizer.HypothesisGenerated += HypothesisGenerated;
@@ -76,7 +76,7 @@ namespace UITests.Windows_Media
 
 		private async void HypothesisGenerated(SpeechRecognizer sender, SpeechRecognitionHypothesisGeneratedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Normal, () =>
 			{
 				LastResult = args.Hypothesis.Text;
 			});

@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	{
 		private string _selectedItem;
 
-		public ListViewRefreshTemplateViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewRefreshTemplateViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			SampleItems = GetSampleItems();
 		}

@@ -50,7 +50,7 @@ namespace UITests.Windows_UI_Core
 		private CoreWindowActivationMode? _coreWindowActivationMode = Window.Current.CoreWindow.ActivationMode;
 		private string _windowVisibility = Window.Current.Visible ? "Visible" : "Hidden";
 
-		public WindowActivationViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public WindowActivationViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			CoreWindow.GetForCurrentThread().Activated += CoreWindowActivated;
 			XamlWindow.Current.Activated += WindowActivated;

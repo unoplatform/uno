@@ -12,7 +12,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Models
 	[Bindable]
 	internal class CopyToClipboardViewModel : ViewModelBase
 	{
-		public CopyToClipboardViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public CopyToClipboardViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

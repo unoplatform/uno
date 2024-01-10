@@ -44,7 +44,7 @@ namespace UITests.Shared.Windows_Devices
 			private double _angle;
 			private string _timestamp;
 
-			public HingeAngleSensorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public HingeAngleSensorTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 			}
@@ -126,7 +126,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void HingeAngleSensor_ReadingChanged(HingeAngleSensor sender, HingeAngleSensorReadingChangedEventArgs args)
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Normal, () =>
 				{
 					Angle = args.Reading.AngleInDegrees;
 					Timestamp = args.Reading.Timestamp.ToString("R");

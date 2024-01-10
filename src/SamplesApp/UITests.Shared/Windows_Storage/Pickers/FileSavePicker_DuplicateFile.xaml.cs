@@ -46,7 +46,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private string _errorMessage = string.Empty;
 		private string _statusMessage = string.Empty;
 
-		public FileSavePicker_DuplicateFileViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FileSavePicker_DuplicateFileViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 #if __WASM__
 			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;

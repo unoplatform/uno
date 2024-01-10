@@ -3,6 +3,7 @@ using Uno.UI.Samples.Controls;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation;
 
@@ -31,6 +32,6 @@ public sealed partial class Canvas_DependentAnimation : Page
 				}
 		};
 
-		_ = bouncingBall.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => storyboard.Begin());
+		_ = UnitTestDispatcherCompat.From(bouncingBall).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => storyboard.Begin());
 	}
 }

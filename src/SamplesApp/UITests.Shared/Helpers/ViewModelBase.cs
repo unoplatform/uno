@@ -9,28 +9,30 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Windows.UI.Core;
+using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
 using Microsoft.UI.Xaml;
+using SamplesApp;
 
 namespace Uno.UI.Samples.UITests.Helpers
 {
 	[Microsoft.UI.Xaml.Data.Bindable]
 	internal class ViewModelBase : INotifyPropertyChanged, IDisposable
 	{
-		public CoreDispatcher Dispatcher { get; }
+		public UnitTestDispatcherCompat Dispatcher { get; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected readonly CompositeDisposable Disposables = new CompositeDisposable();
 		protected readonly CancellationToken CT;
 
-		public ViewModelBase() : this(CoreWindow.GetForCurrentThread().Dispatcher)
+		public ViewModelBase() : this(UnitTestDispatcherCompat.From(App.MainWindow))
 		{
 		}
 
-		public ViewModelBase(CoreDispatcher dispatcher)
+		public ViewModelBase(UnitTestDispatcherCompat dispatcher)
 		{
 			Dispatcher = dispatcher;
 
@@ -57,7 +59,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 			else
 			{
-				var _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseEvent);
+				var _ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, RaiseEvent);
 			}
 
 			void RaiseEvent()

@@ -41,7 +41,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 
 	internal class ImageSourceUrlMsAppDataSchemeViewModel : ViewModelBase
 	{
-		public ImageSourceUrlMsAppDataSchemeViewModel(CoreDispatcher dispatcher)
+		public ImageSourceUrlMsAppDataSchemeViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
 		{
 		}

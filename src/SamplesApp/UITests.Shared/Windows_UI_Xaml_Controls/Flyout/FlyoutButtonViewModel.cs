@@ -9,7 +9,7 @@ namespace Uno.UI.Samples.Content.UITests.Flyout
 {
 	internal class FlyoutButonViewModel : ViewModelBase
 	{
-		public FlyoutButonViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FlyoutButonViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			DataBoundText = "Button not clicked";
 		}

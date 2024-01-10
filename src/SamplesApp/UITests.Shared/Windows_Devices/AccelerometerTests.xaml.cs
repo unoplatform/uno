@@ -18,6 +18,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Uno.UI.Samples.Controls;
 using Uno.Disposables;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -44,7 +45,7 @@ namespace UITests.Shared.Windows_Devices
 		private string _shakenTimestamp;
 		private string _sensorStatus;
 
-		public AccelerometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public AccelerometerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_accelerometer = Accelerometer.GetDefault();
 			if (_accelerometer != null)
@@ -174,7 +175,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				AccelerationX = args.Reading.AccelerationX;
 				AccelerationY = args.Reading.AccelerationY;

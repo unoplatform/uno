@@ -12,7 +12,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	{
 		private Visibility _lateVisibility = Visibility.Collapsed;
 
-		public DeferLoadStrategyViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public DeferLoadStrategyViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			var _ = dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,

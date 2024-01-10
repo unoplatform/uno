@@ -12,6 +12,7 @@ using Uno.Extensions;
 using System.ComponentModel;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -56,9 +57,9 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 		private Uri _filePathUri;
 
-		public ImageFilePathModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ImageFilePathModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
-			var unused = dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+			var unused = dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () =>
 			{
 				FilePath = await GetAndCreateFilePath(CancellationToken.None);
 			});

@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Windows.Graphics.Display;
+using Private.Infrastructure;
 
 #if __IOS__
 using UIKit;
@@ -62,7 +63,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 		{
 #if __SKIA__
 			// Workaround to avoid issue #7829
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, GenerateScreenshots);
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, GenerateScreenshots);
 #else
 			await GenerateScreenshots();
 #endif
@@ -109,7 +110,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 
 		private async void RenderBoder()
 		{
-			await this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+			await UnitTestDispatcherCompat.From(this)(UnitTestDispatcherCompat.Priority.Normal, async () =>
 				{
 					var result = new System.Text.StringBuilder();
 					try

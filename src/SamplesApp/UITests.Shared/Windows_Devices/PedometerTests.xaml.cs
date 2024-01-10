@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_Devices
 		private double _cumulativeStepsDurationInSeconds;
 		private string _timestamp;
 
-		public PedometerTestsViewModel(CoreDispatcher dispatcher) :
+		public PedometerTestsViewModel(UnitTestDispatcherCompat dispatcher) :
 			base(dispatcher)
 		{
 		}
@@ -143,7 +143,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Pedometer_ReadingChanged(Pedometer sender, PedometerReadingChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				CumulativeSteps = args.Reading.CumulativeSteps;
 				CumulativeStepsDurationInSeconds = args.Reading.CumulativeStepsDuration.TotalSeconds;

@@ -33,7 +33,7 @@ namespace UITests.Windows_Storage
 		public StorageFile _pickedFile = null;
 		private string _errorMessage;
 
-		public StorageFileOperationsTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public StorageFileOperationsTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

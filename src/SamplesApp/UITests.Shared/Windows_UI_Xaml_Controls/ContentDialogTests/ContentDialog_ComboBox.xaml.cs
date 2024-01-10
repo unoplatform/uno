@@ -44,7 +44,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 
 		internal class ComboBoxDialogViewModel : ViewModelBase
 		{
-			public ComboBoxDialogViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public ComboBoxDialogViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 			}

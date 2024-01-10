@@ -14,7 +14,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private string _header;
 		private const string HeaderText = "Please select:";
 
-		public ComboBoxViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ComboBoxViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
