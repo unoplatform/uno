@@ -208,7 +208,7 @@ namespace SamplesApp
 			{
 				Console.WriteLine("Starting dispatcher WatchDog...");
 
-				var dispatcher = _mainWindow!.Dispatcher;
+				var dispatcher = UnitTestDispatcherCompat.From(_mainWindow!);
 				var timeout = TimeSpan.FromSeconds(240);
 
 				Task.Run(async () =>
@@ -217,7 +217,7 @@ namespace SamplesApp
 					while (true)
 					{
 						var delayTask = Task.Delay(timeout);
-						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
+						var messageTask = dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.High, () => { }).AsTask();
 
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
 						{
