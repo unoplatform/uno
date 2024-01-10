@@ -10,10 +10,10 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" '$(UsingMicrosoftNETSdk)' != 'true' " />
-
 	<PropertyGroup>
-		<_UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</_UnoImportMicrosoftNETSdkTargets>
+		<UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</UnoImportMicrosoftNETSdkTargets>
+		<_UnoImportMicrosoftNETSdkTargets>false</_UnoImportMicrosoftNETSdkTargets>
+		<_UnoImportMicrosoftNETSdkTargets Condition=" $(UnoImportMicrosoftNETSdkTargets) == 'true' AND $(UsingMicrosoftNETSdk) != 'true' ">true</_UnoImportMicrosoftNETSdkTargets>
 
 		<IsAndroid>false</IsAndroid>
 		<IsIOS>false</IsIOS>
@@ -22,6 +22,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
 	</PropertyGroup>
+
+	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
 
 	 <Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
