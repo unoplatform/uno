@@ -47,6 +47,6 @@ internal static class PlatformHelpers
 	public static void RequestInteractionSoundForElement(ElementSoundKind soundToPlay, DependencyObject element) =>
 		ElementSoundPlayer.RequestInteractionSoundForElement(soundToPlay, element);
 
-	public static ElementSoundMode GetEffectiveSoundMode(DependencyObject element) => 
+	public static ElementSoundMode GetEffectiveSoundMode(DependencyObject element) =>
 		ElementSoundPlayer.GetEffectiveSoundMode(element);
 }

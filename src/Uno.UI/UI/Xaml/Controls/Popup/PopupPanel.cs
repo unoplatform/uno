@@ -136,6 +136,7 @@ internal partial class PopupPanel : Panel
 				Popup.AssociatedFlyout is TimePickerFlyout
 #if __ANDROID__ || __IOS__
 				&& Popup.AssociatedFlyout is not NativeDatePickerFlyout
+				&& Popup.AssociatedFlyout is not NativeTimePickerFlyout
 #endif
 				;
 

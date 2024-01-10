@@ -80,6 +80,11 @@ partial class TimePicker
 
 		if (timePicker.UseNativeStyle)
 		{
+#if __IOS__
+			flyout.Placement = timePicker.FlyoutPlacement;
+#endif
+			flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;
+
 			void OnPicked(PickerFlyoutBase snd, TimePickedEventArgs evt)
 			{
 				timePicker.SelectedTime = evt.NewTime;
@@ -95,8 +100,6 @@ partial class TimePicker
 
 			flyout.TimePicked += OnPicked;
 		}
-
-		flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;
 
 		return flyout;
 	}
