@@ -37,9 +37,10 @@ using Foundation;
 #endif
 
 using static Private.Infrastructure.TestServices;
-using static Uno.UI.Extensions.ViewExtensions;
 using Point = Windows.Foundation.Point;
-
+#if HAS_UNO
+using static Uno.UI.Extensions.ViewExtensions;
+#endif
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase // resources
