@@ -104,8 +104,8 @@ partial class TimePickerFlyoutPresenter
 
 	// This DateTimeFormatter will be used over and over when updating the
 	// FlyoutButton content property
-	private DateTimeFormatter? _tpTimeFormatter;
-	private string? _strTimeFormatterClockIdentifier;
+	//private DateTimeFormatter? _tpTimeFormatter;
+	//private string? _strTimeFormatterClockIdentifier;
 
 	// Properties pulled from owner TimePickerFlyout
 	private string _clockIdentifier = "";

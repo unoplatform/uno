@@ -34,8 +34,8 @@ partial class TimePickerFlyoutPresenter
 	private const int TIMEPICKER_SENTINELDATE_HOUR12 = 12;
 	private const int TIMEPICKER_SENTINELDATE_HOUR24 = 0;
 	private const int TIMEPICKER_COERCION_INDEX = 0;
-	private const int TIMEPICKER_AM_INDEX = 0;
-	private const int TIMEPICKER_PM_INDEX = 1;
+	//private const int TIMEPICKER_AM_INDEX = 0;
+	//private const int TIMEPICKER_PM_INDEX = 1;
 	private const int TIMEPICKER_RTL_CHARACTER_CODE = 8207;
 	private const int TIMEPICKER_MINUTEINCREMENT_MIN = 0;
 	private const int TIMEPICKER_MINUTEINCREMENT_MAX = 59;

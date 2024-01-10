@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			object? token = _eventInfo.GetAddMethod()!.Invoke(element, new object[] { handler });
 
-			return _last = Disposable.Create(() => 
+			return _last = Disposable.Create(() =>
 			{
 				// On Windows, token is EventRegistrationToken, on Uno, token is null
 #if WINAPPSDK
@@ -37,6 +37,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 		}
 
-		internal void Detach() => _last?.Dispose(); 
+		internal void Detach() => _last?.Dispose();
 	}
 }

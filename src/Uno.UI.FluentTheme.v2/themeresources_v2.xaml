@@ -15388,7 +15388,8 @@
                   </Grid.ColumnDefinitions>
                   <Rectangle x:Name="FirstPickerSpacing" Fill="{ThemeResource DatePickerFlyoutPresenterSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource DatePickerSpacerThemeWidth}" Canvas.ZIndex="10000" Grid.Column="1" />
                   <Rectangle x:Name="SecondPickerSpacing" Fill="{ThemeResource DatePickerFlyoutPresenterSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource DatePickerSpacerThemeWidth}" Canvas.ZIndex="10000" Grid.Column="3" />
-                  <Grid x:Name="HighlightRect" Canvas.ZIndex="9999" Background="{ThemeResource DatePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" Height="{ThemeResource DatePickerFlyoutPresenterHighlightHeight}" Margin="4,2,4,2" IsHitTestVisible="false" />
+                  <!-- Uno specific: As MonochromaticOverlayPresenter is not supported yet, we remove ZIndex from HighlightRect and have it only semi-opaque for readability -->
+                  <Grid x:Name="HighlightRect" Background="{ThemeResource DatePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" Opacity="0.5" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" Height="{ThemeResource DatePickerFlyoutPresenterHighlightHeight}" Margin="4,2,4,2" IsHitTestVisible="false" />
                   <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="{Binding ElementName=DayLoopingSelector,Path=(Grid.Column)}" SourceElement="{Binding ElementName=DayLoopingSelector}" ReplacementColor="{ThemeResource DatePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource DatePickerFlyoutPresenterHighlightHeight}" VerticalAlignment="Center" IsHitTestVisible="false" />
                   <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="{Binding ElementName=MonthLoopingSelector,Path=(Grid.Column)}" SourceElement="{Binding ElementName=MonthLoopingSelector}" ReplacementColor="{ThemeResource DatePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource DatePickerFlyoutPresenterHighlightHeight}" VerticalAlignment="Center" IsHitTestVisible="false" />
                   <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="{Binding ElementName=YearLoopingSelector,Path=(Grid.Column)}" SourceElement="{Binding ElementName=YearLoopingSelector}" ReplacementColor="{ThemeResource DatePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource DatePickerFlyoutPresenterHighlightHeight}" VerticalAlignment="Center" IsHitTestVisible="false" />
@@ -23209,7 +23210,9 @@
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
     <Setter Property="Background" Value="{ThemeResource DatePickerButtonBackground}" />
     <Setter Property="Foreground" Value="{ThemeResource TimePickerButtonForeground}" />
-    <Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
+    <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
+    <win:Setter Property="BorderBrush" Value="{ThemeResource DatePickerButtonBorderBrush}" />
+    <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource DatePickerBorderThemeThickness}" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -23238,9 +23241,10 @@
                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonForegroundPointerOver}" />
                                 </ObjectAnimationUsingKeyFrames>
-                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                <!-- Uno specific (LinearGradientBrush borders): Keep the same brush -->
+                                <win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushPointerOver}" />
-                                </ObjectAnimationUsingKeyFrames>
+                                </win:ObjectAnimationUsingKeyFrames>
                               </Storyboard>
                             </VisualState>
                             <VisualState x:Name="Pressed">
@@ -23254,6 +23258,10 @@
                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushPressed}" />
                                 </ObjectAnimationUsingKeyFrames>
+                                <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
+                                <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                </not_win:ObjectAnimationUsingKeyFrames>
                               </Storyboard>
                             </VisualState>
                             <VisualState x:Name="Disabled">
@@ -23267,6 +23275,10 @@
                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
                                   <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TimePickerButtonBorderBrushDisabled}" />
                                 </ObjectAnimationUsingKeyFrames>
+                                <!-- Uno specific (LinearGradientBrush borders): Hide bottom border overlay -->
+                                <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
+                                  <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                                </not_win:ObjectAnimationUsingKeyFrames>
                               </Storyboard>
                             </VisualState>
                           </VisualStateGroup>
@@ -23276,6 +23288,8 @@
                           </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" CornerRadius="{TemplateBinding CornerRadius}" />
+                        <!-- Uno specific (LinearGradientBrush borders): Simulates bottom border -->
+                        <not_win:Border x:Name="BottomBorderElement" BorderThickness="0,0,0,1" CornerRadius="{TemplateBinding CornerRadius}" BorderBrush="{ThemeResource UnoElevationBorderOverlayBrush}" />
                       </Grid>
                     </ControlTemplate>
                   </Setter.Value>
@@ -23370,10 +23384,11 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" x:Name="ThirdPickerHostColumn" />
                   </Grid.ColumnDefinitions>
-                  <Grid x:Name="HighlightRect" Canvas.ZIndex="9999" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Margin="4,2,4,2" IsHitTestVisible="false" />
-                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="0" Margin="3,0" SourceElement="{Binding ElementName=FirstPickerHost, Mode=OneTime}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
-                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="2" Margin="3,0" SourceElement="{Binding ElementName=SecondPickerHost}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
-                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="4" Margin="3,0" SourceElement="{Binding ElementName=ThirdPickerHost}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
+                  <!-- Uno specific: As MonochromaticOverlayPresenter is not supported yet, we remove ZIndex from HighlightRect and have it only semi-opaque for readability -->
+                  <Grid x:Name="HighlightRect" Opacity="0.5" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" CornerRadius="{TemplateBinding CornerRadius}" Grid.Column="0" Grid.ColumnSpan="5" VerticalAlignment="Center" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Margin="4,2,4,2" IsHitTestVisible="false" />
+                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="0" Margin="3,0" SourceElement="{Binding ElementName=FirstPickerHost, Mode=OneTime}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" Opacity="0" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
+                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="2" Margin="3,0" SourceElement="{Binding ElementName=SecondPickerHost}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" Opacity="0" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
+                  <primitives:MonochromaticOverlayPresenter Canvas.ZIndex="10000" Grid.Column="4" Margin="3,0" SourceElement="{Binding ElementName=ThirdPickerHost}" ReplacementColor="{ThemeResource TimePickerFlyoutPresenterHighlightForegroundColor}" Height="{ThemeResource TimePickerFlyoutPresenterHighlightHeight}" Background="{ThemeResource TimePickerFlyoutPresenterHighlightFill}" Opacity="0" CornerRadius="{TemplateBinding CornerRadius}" VerticalAlignment="Center" IsHitTestVisible="false" />
                   <Border x:Name="FirstPickerHost" Grid.Column="0" />
                   <Rectangle x:Name="FirstPickerSpacing" Canvas.ZIndex="10000" Fill="{ThemeResource TimePickerFlyoutPresenterSpacerFill}" HorizontalAlignment="Center" Width="{ThemeResource TimePickerSpacerThemeWidth}" Grid.Column="1" />
                   <Border x:Name="SecondPickerHost" Grid.Column="2" />
