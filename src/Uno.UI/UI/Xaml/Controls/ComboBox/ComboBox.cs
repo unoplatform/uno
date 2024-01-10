@@ -20,7 +20,6 @@ using Windows.System;
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
-using Debug = System.Diagnostics.Debug;
 #elif __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -827,7 +826,7 @@ namespace Microsoft.UI.Xaml.Controls
 				searchIndex = 0;
 			}
 
-			Debug.Assert(searchIndex >= 0);
+			global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
 
 			object item;
 			string strItem;
