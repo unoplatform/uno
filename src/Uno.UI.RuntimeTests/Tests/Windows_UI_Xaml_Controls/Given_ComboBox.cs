@@ -1054,6 +1054,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, dc.ItemSetCount);
 		}
 
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Closed(bool isTextSearchEnabled)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.Items.Add("Elephant");
+
+			// Assert the default value of IsTextSearchEnabled.
+			Assert.IsTrue(comboBox.IsTextSearchEnabled);
+
+			// Set the isTextSearchEnabled value being tested.
+			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
+
+			await UITestHelper.Load(comboBox);
+
+			comboBox.Focus(FocusState.Programmatic);
+
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			Assert.AreEqual(false, comboBox.IsDropDownOpen);
+			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+
+			var expectedSelectedIndex = isTextSearchEnabled ? 2 : -1;
+			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : null;
+			Assert.AreEqual(expectedSelectedIndex, comboBox.SelectedIndex);
+			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.Items.Add("Elephant");
+			comboBox.SelectedIndex = 3;
+
+			// Assert the default value of IsTextSearchEnabled.
+			Assert.IsTrue(comboBox.IsTextSearchEnabled);
+
+			// Set the isTextSearchEnabled value being tested.
+			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
+
+			comboBox.IsDropDownOpen = true;
+
+			await UITestHelper.Load(comboBox);
+
+			comboBox.Focus(FocusState.Programmatic);
+
+			Assert.AreEqual(3, comboBox.SelectedIndex);
+			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+
+			var expectedSelectedIndex = isTextSearchEnabled ? 2 : 3;
+			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : "Elephant";
+			Assert.AreEqual(expectedSelectedIndex, comboBox.SelectedIndex);
+			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
+
+			Assert.IsTrue(comboBox.IsDropDownOpen);
+			KeyboardHelper.Space();
+			Assert.AreEqual(isTextSearchEnabled, comboBox.IsDropDownOpen);
+
+			await Task.Delay(1100); // Make sure to wait enough so that HasSearchStringTimedOut becomes true.
+
+			KeyboardHelper.Space();
+
+			Assert.AreEqual(!isTextSearchEnabled, comboBox.IsDropDownOpen);
+		}
+
 		public sealed class TwoWayBindingClearViewModel : IDisposable
 		{
 			public enum Themes
