@@ -78,12 +78,12 @@ partial class NativeTimePickerFlyout
 		DependencyProperty.Register(
 			"Content",
 			typeof(IFrameworkElement),
-			typeof(TimePickerFlyout),
+			typeof(NativeTimePickerFlyout),
 			new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
 
 	private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
-		var flyout = dependencyObject as TimePickerFlyout;
+		var flyout = dependencyObject as NativeTimePickerFlyout;
 
 		if (flyout?._timePickerPresenter != null)
 		{
@@ -172,7 +172,7 @@ partial class NativeTimePickerFlyout
 		if (b != null && b.Command == null)
 		{
 			var wr = WeakReferencePool.RentWeakReference(this, this);
-			b.Command = new DelegateCommand(() => (wr.Target as TimePickerFlyout)?.Accept());
+			b.Command = new DelegateCommand(() => (wr.Target as NativeTimePickerFlyout)?.Accept());
 		}
 	}
 
@@ -183,7 +183,7 @@ partial class NativeTimePickerFlyout
 		if (b != null && b.Command == null)
 		{
 			var wr = WeakReferencePool.RentWeakReference(this, this);
-			b.Command = new DelegateCommand(() => (wr.Target as TimePickerFlyout)?.Dismiss());
+			b.Command = new DelegateCommand(() => (wr.Target as NativeTimePickerFlyout)?.Dismiss());
 		}
 	}
 
