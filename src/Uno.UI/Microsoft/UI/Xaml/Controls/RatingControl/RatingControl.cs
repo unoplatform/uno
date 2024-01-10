@@ -57,7 +57,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(RatingControl);
 
+#if HAS_UNO
+			// Ensure events are detached on Unload and reattached on Load
+			Loaded += RatingControl_Loaded;
 			Unloaded += RatingControl_Unloaded;
+#endif
 		}
 
 		// Uno specific: Unsubscribing events here instead of the destructor to ensure
@@ -1202,5 +1206,36 @@ namespace Microsoft.UI.Xaml.Controls
 			_uiSettings = _uiSettings ?? new UISettings();
 			return _uiSettings;
 		}
+
+#if HAS_UNO
+		private void RatingControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			RecycleEvents(true /* useSafeGet */);
+			AttachEvents();
+		}
+
+		private void AttachEvents()
+		{
+			if (m_backgroundStackPanel != null)
+			{
+				m_backgroundStackPanel.PointerCanceled += OnPointerCancelledBackgroundStackPanel;
+				m_backgroundStackPanel.PointerCaptureLost += OnPointerCaptureLostBackgroundStackPanel;
+				m_backgroundStackPanel.PointerMoved += OnPointerMovedOverBackgroundStackPanel;
+				m_backgroundStackPanel.PointerEntered += OnPointerEnteredBackgroundStackPanel;
+				m_backgroundStackPanel.PointerExited += OnPointerExitedBackgroundStackPanel;
+				m_backgroundStackPanel.PointerPressed += OnPointerPressedBackgroundStackPanel;
+				m_backgroundStackPanel.PointerReleased += OnPointerReleasedBackgroundStackPanel;
+			}
+
+			if (m_captionTextBlock != null)
+			{
+				m_captionTextBlock.SizeChanged += OnCaptionSizeChanged;
+			}
+
+			m_fontFamilyChangedToken = RegisterPropertyChangedCallback(Control.FontFamilyProperty, OnFontFamilyChanged);
+
+			IsEnabledChanged += OnIsEnabledChanged;
+		}
+#endif
 	}
 }
