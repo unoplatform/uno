@@ -63,8 +63,17 @@ partial class Window
 		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
 		if (!NativeWindowFactory.SupportsMultipleWindows)
 		{
+			if (_current is not null && _current != this)
+			{
+				throw new InvalidOperationException(
+					"Creating secondary windows on this platform is not allowed. " +
+					"Ensure you either use Window.Current only, or that you only create a single " +
+					"window instance and use it throughout your application.");
+			}
+
 			windowType = WindowType.CoreWindow;
 		}
+
 		_windowType = windowType;
 
 		_windowImplementation = windowType switch
