@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Private.Infrastructure;
 
 #if !HAS_UNO
 using Uno.Logging;

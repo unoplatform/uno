@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Uno.UI;
+using Private.Infrastructure;
 
 #if !HAS_UNO
 using Uno.Logging;

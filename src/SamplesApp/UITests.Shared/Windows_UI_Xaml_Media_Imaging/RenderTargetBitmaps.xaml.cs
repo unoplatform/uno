@@ -110,7 +110,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 
 		private async void RenderBoder()
 		{
-			await UnitTestDispatcherCompat.From(this)(UnitTestDispatcherCompat.Priority.Normal, async () =>
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () =>
 				{
 					var result = new System.Text.StringBuilder();
 					try

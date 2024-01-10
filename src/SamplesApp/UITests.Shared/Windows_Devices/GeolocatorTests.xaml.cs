@@ -205,7 +205,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs args)
 		{
-			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				PositionStatus = args.Status;
 			});
@@ -213,7 +213,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
 		{
-			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				TrackedGeoposition = args.Position;
 			});

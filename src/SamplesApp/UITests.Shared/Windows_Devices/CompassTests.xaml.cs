@@ -122,7 +122,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void Compass_ReadingChanged(Compass sender, CompassReadingChangedEventArgs args)
 			{
-				await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					HeadingMagneticNorth = args.Reading.HeadingMagneticNorth;
 					HeadingTrueNorth = args.Reading.HeadingTrueNorth ?? double.NaN;

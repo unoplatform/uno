@@ -279,5 +279,5 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		});
 
 	private async Task ExecuteOnUiThreadAsync(Action action) =>
-		await Dispatcher.RunAsync(UnitTestDispatcherCompat.Normal, () => action());
+		await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => action());
 }

@@ -44,7 +44,7 @@ namespace UITests.Windows_UI_ViewManagement
 
 		private async void UiSettings_ColorValuesChanged(UISettings sender, object args)
 		{
-			await Dispatcher.RunAsync(UnitT.Normal, () => UpdateColors());
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => UpdateColors());
 		}
 
 		public string AnimationsEnabled => GetValueSafe(() => _uiSettings.AnimationsEnabled);

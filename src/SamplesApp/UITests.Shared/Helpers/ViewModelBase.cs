@@ -59,7 +59,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 			else
 			{
-				var _ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, RaiseEvent);
+				var _ = Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, RaiseEvent);
 			}
 
 			void RaiseEvent()

@@ -10,6 +10,7 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.Midi;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices.Midi
 {
@@ -38,8 +39,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			deviceAutoDetectToggle.IsOn = true;
 
 			// Set up the MIDI input and output device watchers
-			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, inputDevices, InputDevices);
-			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, outputDevices, OutputDevices);
+			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), UnitTestDispatcherCompat.From(this), inputDevices, InputDevices);
+			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), UnitTestDispatcherCompat.From(this), outputDevices, OutputDevices);
 
 			// Start watching for devices
 			_midiInDeviceWatcher.Start();

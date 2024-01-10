@@ -129,7 +129,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Gyrometer_ReadingChanged(Gyrometer sender, GyrometerReadingChangedEventArgs args)
 		{
-			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				AngularVelocityX = args.Reading.AngularVelocityX;
 				AngularVelocityY = args.Reading.AngularVelocityY;

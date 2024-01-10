@@ -219,7 +219,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 				logText += $" ({args})";
 			}
 
-			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				EventLog.Insert(0, logText);
 			});

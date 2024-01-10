@@ -117,7 +117,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void Barometer_ReadingChanged(Barometer sender, BarometerReadingChangedEventArgs args)
 			{
-				await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					StationPressureInHectopascals = args.Reading.StationPressureInHectopascals;
 					Timestamp = args.Reading.Timestamp.ToString("R");
