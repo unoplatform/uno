@@ -10,7 +10,6 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml;
