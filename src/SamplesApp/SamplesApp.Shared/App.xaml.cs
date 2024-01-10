@@ -128,15 +128,6 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-
-#if !WINAPPSDK
-			var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
-				_ =>
-				{
-					Console.WriteLine("Done loading " + sw.Elapsed);
-				});
-#endif
-
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
 			{
@@ -161,6 +152,8 @@ namespace SamplesApp
 #endif
 
 			HandleLaunchArguments(e);
+
+			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
 #if __SKIA__ && DEBUG
