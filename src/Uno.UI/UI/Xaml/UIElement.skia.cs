@@ -13,7 +13,6 @@ using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
