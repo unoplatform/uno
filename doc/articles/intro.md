@@ -4,7 +4,7 @@ uid: Uno.Documentation.Intro
 
 # Uno Platform documentation
 
-Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop and embedded apps quickly.
+Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
 <br/>
 
@@ -23,7 +23,7 @@ Set up with your OS and IDE of choice.
 </div>
 
 <div class="col-md-6 col-xs-12 ">
-<a href="tutorials-intro.md">
+<a href="getting-started/counterapp/get-started-counter.md">
 <div class="alert alert-info alert-hover">
 
 #### How-tos and Tutorials
