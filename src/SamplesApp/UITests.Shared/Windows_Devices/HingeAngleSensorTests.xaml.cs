@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -44,7 +45,7 @@ namespace UITests.Shared.Windows_Devices
 			private double _angle;
 			private string _timestamp;
 
-			public HingeAngleSensorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public HingeAngleSensorTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 			}
@@ -126,7 +127,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void HingeAngleSensor_ReadingChanged(HingeAngleSensor sender, HingeAngleSensorReadingChangedEventArgs args)
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					Angle = args.Reading.AngleInDegrees;
 					Timestamp = args.Reading.Timestamp.ToString("R");

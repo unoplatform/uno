@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
+using Private.Infrastructure;
+
 #if XAMARIN
 using Microsoft.UI.Xaml.Controls;
 #else
@@ -16,9 +18,9 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 	internal class GridViewViewModel : ViewModelBase
 	{
 
-		public GridViewViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public GridViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
-			SampleItems = GetSampleItems(coreDispatcher);
+			SampleItems = GetSampleItems(dispatcher);
 		}
 
 		public object SampleItems { get; }
@@ -34,17 +36,17 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 			}
 		}
 
-		private GridViewItemViewModel[] GetSampleItems(CoreDispatcher coreDispatcher)
+		private GridViewItemViewModel[] GetSampleItems(UnitTestDispatcherCompat dispatcher)
 		{
 			var names = new[] { "Steve", "John", "Bob" };
-			return names.Select(name => new GridViewItemViewModel(coreDispatcher, name)).ToArray();
+			return names.Select(name => new GridViewItemViewModel(dispatcher, name)).ToArray();
 
 		}
 	}
 
 	internal class GridViewItemViewModel : ViewModelBase
 	{
-		public GridViewItemViewModel(CoreDispatcher coreDispatcher, string name) : base(coreDispatcher)
+		public GridViewItemViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher, string name) : base(dispatcher)
 		{
 			Name = name;
 		}

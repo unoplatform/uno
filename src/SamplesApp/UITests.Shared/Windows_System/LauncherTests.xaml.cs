@@ -31,7 +31,7 @@ namespace UITests.Shared.Windows_System
 		private string _error;
 		private LaunchQuerySupportStatus _supportResult;
 
-		public LauncherTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public LauncherTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

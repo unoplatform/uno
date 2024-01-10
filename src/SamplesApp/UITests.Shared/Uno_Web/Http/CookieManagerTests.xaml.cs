@@ -35,7 +35,7 @@ namespace UITests.Uno_Web.Http
 	{
 		private string _cookiesText = string.Empty;
 
-		public CookieManagerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public CookieManagerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

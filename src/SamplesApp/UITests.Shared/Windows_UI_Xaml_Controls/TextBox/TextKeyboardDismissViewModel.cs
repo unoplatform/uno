@@ -14,7 +14,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	internal class TextKeyboardDismissViewModel : ViewModelBase
 	{
-		public TextKeyboardDismissViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TextKeyboardDismissViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			HideField = new DelegateCommand(ExecuteHideField);
 		}

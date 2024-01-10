@@ -47,7 +47,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 			}
 		}
 
-		public ListViewGroupedViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewGroupedViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_rnd = new Random();
 

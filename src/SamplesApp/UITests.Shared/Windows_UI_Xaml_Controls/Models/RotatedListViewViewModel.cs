@@ -17,7 +17,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private int _selectedIndex = -1;
 
 
-		public RotatedListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public RotatedListViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			SampleItems = CreatePerson();
 			AddItem = GetOrCreateCommand(AddPerson);

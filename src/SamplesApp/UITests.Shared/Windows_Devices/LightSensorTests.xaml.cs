@@ -6,6 +6,7 @@ using Windows.Devices.Sensors;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 
 namespace UITests.Windows_Devices
 {
@@ -24,7 +25,7 @@ namespace UITests.Windows_Devices
 		private float _illuminance;
 		private string _timestamp;
 
-		public LightSensorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public LightSensorTestsViewModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_LightSensor = LightSensor.GetDefault();
 			if (_LightSensor != null)
@@ -101,7 +102,7 @@ namespace UITests.Windows_Devices
 
 		private async void LightSensor_ReadingChanged(LightSensor sender, LightSensorReadingChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				Illuminance = args.Reading.IlluminanceInLux;
 				Timestamp = args.Reading.Timestamp.ToString("R");

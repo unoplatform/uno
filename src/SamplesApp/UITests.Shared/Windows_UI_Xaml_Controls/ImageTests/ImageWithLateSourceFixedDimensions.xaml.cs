@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -26,7 +27,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 		{
 			this.InitializeComponent();
 
-			DataContext = new ImageWithLateSourceViewModel(Dispatcher);
+			DataContext = new ImageWithLateSourceViewModel(UnitTestDispatcherCompat.From(this));
 		}
 	}
 }

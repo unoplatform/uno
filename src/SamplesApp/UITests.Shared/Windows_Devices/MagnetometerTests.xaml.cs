@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -44,7 +45,7 @@ namespace UITests.Shared.Windows_Devices
 		private float _magneticFieldX;
 		private string _timestamp;
 
-		public MagnetometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public MagnetometerTestsViewModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_magnetometer = Magnetometer.GetDefault();
 			if (_magnetometer != null)
@@ -151,7 +152,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Magnetometer_ReadingChanged(Magnetometer sender, MagnetometerReadingChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				MagneticFieldX = args.Reading.MagneticFieldX;
 				MagneticFieldY = args.Reading.MagneticFieldY;

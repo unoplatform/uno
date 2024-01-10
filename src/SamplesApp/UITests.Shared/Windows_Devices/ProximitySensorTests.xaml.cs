@@ -9,6 +9,7 @@ using Windows.Devices.Sensors;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 
 namespace UITests.Windows_Devices;
 
@@ -64,7 +65,7 @@ internal class ProximitySensorTestsViewModel : ViewModelBase
 	private string _timestamp;
 	private bool _isDetected;
 
-	public ProximitySensorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+	public ProximitySensorTestsViewModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 	{
 	}
 
@@ -164,7 +165,7 @@ internal class ProximitySensorTestsViewModel : ViewModelBase
 
 	private async void ProximitySensor_ReadingChanged(ProximitySensor sender, ProximitySensorReadingChangedEventArgs args)
 	{
-		await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+		await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 		{
 			DistanceInMillimeters = args.Reading.DistanceInMillimeters;
 			Timestamp = args.Reading.Timestamp.ToString("R");

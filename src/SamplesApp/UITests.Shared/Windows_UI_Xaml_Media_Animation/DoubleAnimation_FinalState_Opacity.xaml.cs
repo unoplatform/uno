@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
@@ -54,8 +55,8 @@ If 'Set From' was selected, then rollback means back to value before animation, 
 			};
 
 			Status.Text = "Animating";
-			await Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			await UnitTestDispatcherCompat.From(this).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					var halfAnimation = (int)_duration.TotalMilliseconds / 2;

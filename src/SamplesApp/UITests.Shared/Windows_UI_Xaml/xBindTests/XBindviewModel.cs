@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_UI_Xaml.xBind
 			}
 		}
 
-		public XbindViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public XbindViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 	}

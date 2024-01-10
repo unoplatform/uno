@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
+using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
@@ -21,7 +22,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 
 		private void MyButton_OnClick(object sender, RoutedEventArgs e)
 		{
-			var t = Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+			var t = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal,
 				async () => await InvokeScriptAsync(MyWebView2, CancellationToken.None, GetReloadJavascript(), new string[] { "" })
 			);
 		}

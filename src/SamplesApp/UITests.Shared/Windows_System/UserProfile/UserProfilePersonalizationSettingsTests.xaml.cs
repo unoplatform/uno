@@ -48,7 +48,7 @@ namespace UITests.Windows_System.UserProfile
 	{
 		private UserProfilePersonalizationSettings _personalizationSettings;
 
-		public UserProfilePersonalizationSettingsTestsViewModel(CoreDispatcher dispatcher) :
+		public UserProfilePersonalizationSettingsTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) :
 			base(dispatcher)
 		{
 			_personalizationSettings = UserProfilePersonalizationSettings.Current;

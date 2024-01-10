@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
+using Private.Infrastructure;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -59,7 +60,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			_loadingSubscription.Disposable = cd;
 			var ct = cd.Token;
 
-			var t = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, SetImageVisible);
+			var t = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, SetImageVisible);
 
 			async void SetImageVisible()
 			{

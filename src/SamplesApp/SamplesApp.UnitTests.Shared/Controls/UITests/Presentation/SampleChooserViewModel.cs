@@ -75,6 +75,8 @@ namespace SampleControl.Presentation
 		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
 	new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White);
 
+		private readonly UnitTestDispatcherCompat _dispatcher;
+
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
 
@@ -93,6 +95,7 @@ namespace SampleControl.Presentation
 		{
 			Instance = this;
 			Owner = owner;
+			_dispatcher = UnitTestDispatcherCompat.From(owner);
 
 #if TRACK_REFS
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
@@ -214,8 +217,8 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			await _dispatcher.RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -294,8 +297,8 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.Dispatcher.RunAsync(
-					CoreDispatcherPriority.Normal,
+				await _dispatcher.RunAsync(
+					UnitTestDispatcherCompat.Priority.Normal,
 					async () =>
 					{
 						try
@@ -591,8 +594,8 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			var unused = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal, async () =>
+			var unused = _dispatcher.RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal, async () =>
 				{
 					await Task.Delay(200);
 
@@ -910,7 +913,7 @@ namespace SampleControl.Presentation
 				object vm;
 				if (constructors.Any(c => c.GetParameters().Length == 1))
 				{
-					vm = Activator.CreateInstance(newContent.ViewModelType, container.Dispatcher);
+					vm = Activator.CreateInstance(newContent.ViewModelType, UnitTestDispatcherCompat.From(container));
 				}
 				else
 				{

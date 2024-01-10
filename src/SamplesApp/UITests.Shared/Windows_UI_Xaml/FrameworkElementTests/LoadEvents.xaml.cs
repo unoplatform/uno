@@ -4,6 +4,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
@@ -38,7 +39,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 
 			_unloadTextParent = (Panel)block.Parent;
 
-			await block.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _unloadTextParent.Children.Remove(block));
+			await UnitTestDispatcherCompat.From(block).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _unloadTextParent.Children.Remove(block));
 		}
 
 		private async void OnUnloadTextUnloaded(object sender, RoutedEventArgs e)
@@ -47,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 			block.Text = "[OK] Unloaded event received";
 			block.Unloaded -= OnUnloadTextUnloaded;
 
-			await block.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _unloadTextParent.Children.Add(block));
+			await UnitTestDispatcherCompat.From(block).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _unloadTextParent.Children.Add(block));
 		}
 	}
 }
