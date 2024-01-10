@@ -6,6 +6,7 @@ using Uno.UI.Samples.UITests.Helpers;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
+using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
@@ -46,7 +47,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	{
 		private bool _isVisible;
 
-		public ItemViewModel(string item, CoreDispatcher dispatcher) : base(dispatcher)
+		public ItemViewModel(string item, UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

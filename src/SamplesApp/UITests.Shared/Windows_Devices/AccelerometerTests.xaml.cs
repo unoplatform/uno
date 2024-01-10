@@ -175,7 +175,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_ReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
 		{
-			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				AccelerationX = args.Reading.AccelerationX;
 				AccelerationY = args.Reading.AccelerationY;
@@ -186,7 +186,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Accelerometer_Shaken(Accelerometer sender, AccelerometerShakenEventArgs args)
 		{
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal,
 				() => ShakenTimestamp = args.Timestamp.ToString("R"));
 		}
 	}

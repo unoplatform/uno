@@ -16,7 +16,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages.GridView
 	internal class GridViewWithSelectionViewModel : ViewModelBase
 	{
 
-		public GridViewWithSelectionViewModel(Private.Infrastructure.UnitTestDispatcherCompat coreDispatcher) : base(coreDispatcher)
+		public GridViewWithSelectionViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			// TODO: restore commands
 			//Build(b => b

@@ -36,6 +36,7 @@ using RefreshInteractionRatioChangedEventArgs = Microsoft/* UWP don't rename */.
 using RefreshStateChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshStateChangedEventArgs;
 using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 #if HAS_UNO
 using IRefreshContainerPrivate = Microsoft.UI.Private.Controls.IRefreshContainerPrivate;
 using IRefreshInfoProvider = Microsoft.UI.Private.Controls.IRefreshInfoProvider;
@@ -53,6 +54,7 @@ namespace MUXControlsTestApp
 		private bool delayRefresh = true;
 		private bool containerHasHandler = true;
 		private int refreshCount = 0;
+		private UnitTestDispatcherCompat _dispatcher;
 
 		public RefreshContainerPage()
 		{
@@ -79,6 +81,7 @@ namespace MUXControlsTestApp
 
 		private void OnMainPageLoaded(object sender, RoutedEventArgs e)
 		{
+			_dispatcher = UnitTestDispatcherCompat.From(this);
 			this.RefreshContainer.Visualizer.RefreshStateChanged += RefreshVisualizer_RefreshStateChanged;
 			ResetStatesComboBox();
 			this.RefreshOnContainerButton.Click += RefreshOnContainerButton_Click;
@@ -320,29 +323,27 @@ namespace MUXControlsTestApp
 
 		async private void containerTimer_Tick(object sender, object e)
 		{
-			CoreDispatcher disp = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
-			if (disp.HasThreadAccess)
+			if (_dispatcher.HasThreadAccess)
 			{
 				containerTimer_TickImpl();
 			}
 			else
 			{
-				await disp.RunAsync(CoreDispatcherPriority.Normal, () =>
-				 {
-					 containerTimer_TickImpl();
-				 });
+				await _dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
+				{
+					containerTimer_TickImpl();
+				});
 			}
 		}
 		async private void visualizerTimer_Tick(object sender, object e)
 		{
-			CoreDispatcher disp = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
-			if (disp.HasThreadAccess)
+			if (_dispatcher.HasThreadAccess)
 			{
 				visualizerTimer_TickImpl();
 			}
 			else
 			{
-				await disp.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await _dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					visualizerTimer_TickImpl();
 				});

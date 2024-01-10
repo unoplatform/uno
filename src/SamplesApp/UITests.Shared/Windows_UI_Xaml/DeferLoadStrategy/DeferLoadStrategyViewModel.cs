@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
@@ -15,7 +16,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		public DeferLoadStrategyViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			var _ = dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					await Task.Delay(3000);
