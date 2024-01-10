@@ -51,6 +51,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _skipInlinesChangedTextSetter;
 		private Range _selection;
 
+		// end can be less than or equal to start when the selection starts ahead and then goes back
+		// see the selection in TextBox.skia.cs for more info
 		private Range Selection
 		{
 			get => _selection;
@@ -894,8 +896,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (that.IsTextSelectionEnabled)
 			{
+#if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char
+				var index = that.GetCharacterIndexAtPoint(point.Position, true);
+#else // TODO: add an option to get the closest char to point
 				var index = that.GetCharacterIndexAtPoint(point.Position);
-				that.Selection = new Range(index, index);
+#endif
+				if (index >= 0) // should always be true if above TODO is addressed
+				{
+					that.Selection = new Range(index, index);
+				}
 
 				e.Handled = true;
 				that.Focus(FocusState.Pointer);
@@ -971,8 +980,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (that._isPressed && that.IsTextSelectionEnabled)
 			{
+#if __SKIA__ // GetCharacterIndexAtPoint returns -1 if point isn't on any char. For pointers, we still want to get the closest char
+				var index = that.GetCharacterIndexAtPoint(point.Position, true);
+#else // TODO: add an option to get the closest char to point
 				var index = that.GetCharacterIndexAtPoint(point.Position);
-				that.Selection = new Range(that.Selection.start, index);
+#endif
+				if (index >= 0) // should always be true if above TODO is addressed
+				{
+					that.Selection = that.Selection with { end = index };
+				}
 			}
 		};
 

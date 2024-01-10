@@ -784,7 +784,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = displayBlock.Inlines.GetIndexAt(point.Position, false);
+			var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(point.Position, false, true));
 			if (_multiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -899,7 +899,7 @@ public partial class TextBox
 				// multiple left presses
 
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false);
+				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false, true));
 
 				if (_lastPointerDown.repeatedPresses == 1)
 				{
@@ -923,7 +923,7 @@ public partial class TextBox
 			{
 				// single click
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true);
+				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
 				Select(index, 0);
 				_lastPointerDown = (currentPoint, 0);
 			}
@@ -998,7 +998,7 @@ public partial class TextBox
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexAt(new Point(x, y), true);
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -1033,7 +1033,7 @@ public partial class TextBox
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexAt(new Point(x, y), true);
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length

@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private int GetCharacterIndexAtPoint(Point point) => Inlines.GetIndexAt(point, false);
+		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
 
 		partial void OnInlinesChangedPartial()
 		{
