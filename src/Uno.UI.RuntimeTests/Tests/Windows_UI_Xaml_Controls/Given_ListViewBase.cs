@@ -28,22 +28,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-#if NETFX_CORE
-using Uno.UI.Extensions;
-=======
-#if WINAPPSDK
->>>>>>> a87a5cfe75 (chore: adjust test)
-#elif __IOS__
-using Foundation;
-using UIKit;
-#elif __MACOS__
-using AppKit;
-#else
-=======
 #if !WINAPPSDK
->>>>>>> aa1f76ba50 (chore: post-rebase fix)
 using Uno.UI;
 #endif
 
