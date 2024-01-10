@@ -14,14 +14,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeer.EventsSource.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeer.EventsSource.set
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void RaiseAutomationEvent(global::Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void RaisePropertyChangedEvent(global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
 		{

@@ -255,13 +255,13 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[global::Uno.NotImplemented]
-		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
+		public void RaiseAutomationEvent(global::Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 		}
 
 		[global::Uno.NotImplemented]
-		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
+		public void RaisePropertyChangedEvent(global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
 		}
