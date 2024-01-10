@@ -129,7 +129,7 @@ namespace SamplesApp
 			var sw = Stopwatch.StartNew();
 
 #if !WINAPPSDK
-			var n = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+			var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
 				_ =>
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
