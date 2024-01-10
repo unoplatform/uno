@@ -6,9 +6,9 @@ using System.ComponentModel;
 using System.Linq;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[Markup.ContentProperty(Name = "Setters")]
 	public partial class Style

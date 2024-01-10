@@ -1,19 +1,19 @@
-#pragma warning disable CS0168 // Disable for unused TestCleanupWrapper
+﻿#pragma warning disable CS0168 // Disable for unused TestCleanupWrapper
 
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Windows.UI;
 
-namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
+namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 {
 	[TestClass]
 #if __MACOS__
@@ -386,8 +386,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 
 			await TestServices.RunOnUIThread(() =>
 			{
-				TestServices.VERIFY_THROWS_WINRT(() => GridLengthHelper.FromPixels(-1), typeof(ArgumentException));
-				TestServices.VERIFY_THROWS_WINRT(() => GridLengthHelper.FromPixels(-1), typeof(ArgumentException));
+				TestServices.VERIFY_THROWS_WINRT(() => new GridLength(-1), typeof(ArgumentException));
+				TestServices.VERIFY_THROWS_WINRT(() => new GridLength(-1), typeof(ArgumentException));
 			});
 		}
 
@@ -445,8 +445,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				var grid = new Grid();
 				var row = new RowDefinition();
 				var column = new ColumnDefinition();
-				row.Height = GridLengthHelper.FromPixels(s_rectSize);
-				column.Width = GridLengthHelper.FromPixels(s_rectSize);
+				row.Height = new GridLength(s_rectSize);
+				column.Width = new GridLength(s_rectSize);
 				grid.RowDefinitions.Add(row);
 				grid.ColumnDefinitions.Add(column);
 				child = new Rectangle();
@@ -476,8 +476,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				grid.Width = 400;
 				var column1 = new ColumnDefinition();
 				var column2 = new ColumnDefinition();
-				column1.Width = GridLengthHelper.FromValueAndType(100.25, GridUnitType.Pixel);
-				column2.Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star);
+				column1.Width = new GridLength(100.25, GridUnitType.Pixel);
+				column2.Width = new GridLength(1, GridUnitType.Star);
 				grid.ColumnDefinitions.Add(column1);
 				grid.ColumnDefinitions.Add(column2);
 				child = new Border();
@@ -554,8 +554,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 
 			await TestServices.RunOnUIThread(() =>
 			{
-				TestServices.VERIFY_THROWS_WINRT(() => GridLengthHelper.FromValueAndType(-1, GridUnitType.Star), typeof(ArgumentException));
-				TestServices.VERIFY_THROWS_WINRT(() => GridLengthHelper.FromValueAndType(-1, GridUnitType.Star), typeof(ArgumentException));
+				TestServices.VERIFY_THROWS_WINRT(() => new GridLength(-1, GridUnitType.Star), typeof(ArgumentException));
+				TestServices.VERIFY_THROWS_WINRT(() => new GridLength(-1, GridUnitType.Star), typeof(ArgumentException));
 			});
 		}
 
@@ -973,7 +973,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 					"</Grid>");
 
 				var root = new Grid();
-				root.Background = new SolidColorBrush(Windows.UI.Colors.Purple);
+				root.Background = new SolidColorBrush(Microsoft.UI.Colors.Purple);
 				root.Children.Add(grid);
 
 				TestServices.WindowHelper.WindowContent = root;
@@ -993,8 +993,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			{
 				grid.RowSpacing = 0;
 				grid.ColumnSpacing = 0;
-				grid.ColumnDefinitions[0].Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star);
-				grid.ColumnDefinitions[1].Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Star);
+				grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+				grid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "3");
@@ -1011,8 +1011,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			{
 				grid.RowSpacing = 0;
 				grid.ColumnSpacing = 0;
-				grid.ColumnDefinitions[0].Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto);
-				grid.ColumnDefinitions[1].Width = GridLengthHelper.FromValueAndType(50, GridUnitType.Pixel);
+				grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Auto);
+				grid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Pixel);
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison, "5");
@@ -1032,9 +1032,9 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				Border b = (Border)grid.Children[0];
 				TextBlock tb = (TextBlock)b.Child;
 				tb.Text = "hello world hello world hello world hello world hello world";
-				grid.ColumnDefinitions[0].Width = GridLengthHelper.FromValueAndType(1, GridUnitType.Auto);
+				grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Auto);
 				grid.ColumnDefinitions[0].MaxWidth = 50;
-				grid.ColumnDefinitions[1].Width = GridLengthHelper.FromValueAndType(50, GridUnitType.Pixel);
+				grid.ColumnDefinitions[1].Width = new GridLength(50, GridUnitType.Pixel);
 				grid.ColumnDefinitions[1].MaxWidth = 50;
 			});
 			await TestServices.WindowHelper.WaitForIdle();
@@ -1082,8 +1082,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			Console.WriteLine("Changing border properties: Grid.BorderThickness and Grid.Padding.");
 			await TestServices.RunOnUIThread(() =>
 			{
-				grid.BorderThickness = ThicknessHelper.FromLengths(20, 50, 0, 0);
-				grid.Padding = ThicknessHelper.FromLengths(10, 20, 30, 40);
+				grid.BorderThickness = new Thickness(20, 50, 0, 0);
+				grid.Padding = new Thickness(10, 20, 30, 40);
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -1196,7 +1196,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 					"</Grid>");
 
 				root = new Grid();
-				root.Background = new SolidColorBrush(Windows.UI.Colors.Purple);
+				root.Background = new SolidColorBrush(Microsoft.UI.Colors.Purple);
 				root.Children.Add(grid);
 
 				TestServices.WindowHelper.WindowContent = root;
@@ -1292,7 +1292,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 					"</Grid>");
 
 				root = new Grid();
-				root.Background = new SolidColorBrush(Windows.UI.Colors.Purple);
+				root.Background = new SolidColorBrush(Microsoft.UI.Colors.Purple);
 				root.Children.Add(grid);
 
 				TestServices.WindowHelper.WindowContent = root;
@@ -1343,5 +1343,5 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 		//	});
 		//}
 
-	}// Windows.UI.Xaml.Tests.Controls.Grid
+	}// Microsoft.UI.Xaml.Tests.Controls.Grid
 }

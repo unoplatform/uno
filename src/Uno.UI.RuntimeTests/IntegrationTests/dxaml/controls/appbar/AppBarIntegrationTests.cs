@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -16,17 +16,18 @@ using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests;
 using MUXControlsTestApp.Utilities;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Windows.UI.Tests.Enterprise
 {
@@ -2318,7 +2319,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});

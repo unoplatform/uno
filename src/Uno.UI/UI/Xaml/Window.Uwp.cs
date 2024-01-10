@@ -3,7 +3,7 @@
 
 using Windows.UI.ViewManagement;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 partial class Window
 {

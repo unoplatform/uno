@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_ViewManagement
 			CoreWindow.GetForCurrentThread().SizeChanged -= ApplicationViewSizing_SizeChanged;
 		}
 
-		void SetWindowSize_Click(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		void SetWindowSize_Click(System.Object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			ApplicationView
 				.GetForCurrentView()
@@ -40,7 +40,7 @@ namespace UITests.Windows_UI_ViewManagement
 					HeightInput.Value));
 		}
 
-		void SetMinWindowSize_Click(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		void SetMinWindowSize_Click(System.Object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			ApplicationView
 				.GetForCurrentView()
@@ -49,7 +49,7 @@ namespace UITests.Windows_UI_ViewManagement
 					HeightInput.Value));
 		}
 
-		void SetPreferredLaunchViewSize_Click(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		void SetPreferredLaunchViewSize_Click(System.Object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
 			ApplicationView.PreferredLaunchViewSize = new Size(WidthInput.Value, HeightInput.Value);
 		}

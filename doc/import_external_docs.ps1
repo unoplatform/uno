@@ -10,13 +10,13 @@ $external_docs = @{
     "uno.wasm.bootstrap" = "5ef2048d98df307c738186a5339eedcc4665be72"
     "uno.themes"         = "37e913dea361bcc13e20587184bb3691c6b31d3b"
     "uno.toolkit.ui"     = "1c53eb1bc97af01a352c90ba3a9b01b32ee64a87"
-    "uno.check"          = "ec524c077487a6156674c9f18fbe073eae025bbf"
+    "uno.check"          = "251e61153ef936748520ecbaa99e45e10970bab1"
     "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
-    "figma-docs"         = "abb770f1c853e9872d3826699d74107a5deb6538"
+    "figma-docs"         = "0e204b21d437478d89845b6b0edb212c3f482cbc"
     "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
-    "uno.extensions"     = "cf96acef5a0fbee45fbbe702a70c69a093de4530"
-    "workshops"          = "89f1d0678d01ca3225453afadc41150263abe54d"
+    "uno.extensions"     = "0cbe572c56e956bbf3d51cb1d51f36f513e0402f"
+    "workshops"          = "0c964f38df5a4b0f32cf36cd74591df3012b8e20"
 }
 
 $uno_git_url = "https://github.com/unoplatform/"

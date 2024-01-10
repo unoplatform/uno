@@ -1,9 +1,9 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using System.Linq;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests

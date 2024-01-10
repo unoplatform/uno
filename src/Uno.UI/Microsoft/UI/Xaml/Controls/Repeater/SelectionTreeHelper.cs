@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Controls;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal class SelectionTreeHelper
 	{

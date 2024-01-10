@@ -139,49 +139,49 @@ jobs:
         UITEST_TEST_TIMEOUT: '120s'
 
       net7_benchmarks:
-        SITE_SUFFIX: 'net7.0-UWP'
+        SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
-        UITEST_TEST_TIMEOUT: '120s'
+        UITEST_TEST_TIMEOUT: '15m'
 
       net7_uwp_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800s'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_01:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800s'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_02:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800s'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800s'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_01:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800s'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_02:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800s'
+        UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
@@ -199,6 +199,10 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
 
   - task: DownloadBuildArtifacts@0
     inputs:

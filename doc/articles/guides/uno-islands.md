@@ -105,7 +105,7 @@ Now we can use the data in the `MainPage.xaml`:
 
 ## How to use Uno Islands in blank Uno app
 
-The starting point for creating a Uno Islands-enabled application is to create a blank Uno Platform app. Both `Uno.WinUI`- and `Uno.UI`-based solutions are supported.
+The starting point for creating an Uno Islands-enabled application is to create a blank Uno Platform app. Both `Uno.WinUI`- and `Uno.UI`-based solutions are supported.
 
 ### Preparing solution
 

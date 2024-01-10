@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[TemplatePart(Name = PosterImageName, Type = typeof(Image))]
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
@@ -163,14 +163,14 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+					Microsoft.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					Microsoft.UI.Xaml.Window.Current.DisplayFullscreen(null);
 #endif
 
 #if __ANDROID__
@@ -220,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
-					oldMediaPlayer.VideoRatioChanged -= mpe.OnVideoRatioChanged;
+					oldMediaPlayer.NaturalVideoDimensionChanged -= mpe.OnNaturalVideoDimensionChanged;
 					oldMediaPlayer.Dispose();
 				}
 
@@ -229,14 +229,14 @@ namespace Windows.UI.Xaml.Controls
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
-					newMediaPlayer.VideoRatioChanged -= mpe.OnVideoRatioChanged;
+					newMediaPlayer.NaturalVideoDimensionChanged += mpe.OnNaturalVideoDimensionChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
 			};
 		}
 
-		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
+		private void OnNaturalVideoDimensionChanged(Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
@@ -362,6 +362,7 @@ namespace Windows.UI.Xaml.Controls
 			_layoutRoot = this.GetTemplateChild(LayoutRootName) as Grid;
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
+			_mediaPlayerPresenter?.SetOwner(this);
 
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;

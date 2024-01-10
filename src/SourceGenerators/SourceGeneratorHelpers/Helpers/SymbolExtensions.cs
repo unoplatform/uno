@@ -575,5 +575,26 @@ namespace Microsoft.CodeAnalysis
 			=> attribute.FindNamedArg(argName) is { IsNull: false, Kind: TypedConstantKind.Enum } arg && arg.Type!.Name == typeof(T).Name
 				? (T)arg.Value!
 				: default(T?);
+
+		/// <summary>
+		/// Returns the property type of a dependency-property or an attached dependency-property setter.
+		/// </summary>
+		/// <param name="propertyOrSetter">The dependency-property or the attached dependency-property setter</param>
+		/// <returns>The property type</returns>
+		public static INamedTypeSymbol? FindDependencyPropertyType(this ISymbol propertyOrSetter)
+		{
+			if (propertyOrSetter is IPropertySymbol dependencyProperty)
+			{
+				return dependencyProperty.Type.OriginalDefinition is { SpecialType: SpecialType.System_Nullable_T }
+					? (dependencyProperty.Type as INamedTypeSymbol)?.TypeArguments[0] as INamedTypeSymbol
+					: dependencyProperty.Type as INamedTypeSymbol;
+			}
+			else if (propertyOrSetter is IMethodSymbol { IsStatic: true, Parameters.Length: 2 } attachedPropertySetter)
+			{
+				return attachedPropertySetter.Parameters[1].Type as INamedTypeSymbol;
+			}
+
+			return null;
+		}
 	}
 }

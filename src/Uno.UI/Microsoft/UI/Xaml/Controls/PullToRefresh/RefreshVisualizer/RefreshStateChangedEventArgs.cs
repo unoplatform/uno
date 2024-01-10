@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RefreshVisualizerEventArgs.cpp, commit 11df1aa
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides event data for the RefreshVisualizer.RefreshStateChanged event.

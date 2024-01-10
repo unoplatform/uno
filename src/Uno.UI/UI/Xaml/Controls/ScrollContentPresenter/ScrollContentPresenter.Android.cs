@@ -6,7 +6,7 @@ using Windows.Foundation;
 using Uno.Disposables;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollContentPresenter
 	{

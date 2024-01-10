@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using DirectUI;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using AppBarToggleButton = Windows.UI.Xaml.Controls.AppBarToggleButton;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using AppBarToggleButton = Microsoft.UI.Xaml.Controls.AppBarToggleButton;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public partial class AppBarToggleButtonAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ToggleButtonAutomationPeer
+	public partial class AppBarToggleButtonAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ToggleButtonAutomationPeer
 	{
 		public AppBarToggleButtonAutomationPeer(AppBarToggleButton owner) : base(owner)
 		{

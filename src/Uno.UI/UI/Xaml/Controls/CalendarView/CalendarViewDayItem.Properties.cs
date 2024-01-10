@@ -1,7 +1,7 @@
-namespace Windows.UI.Xaml.Controls
+﻿namespace Microsoft.UI.Xaml.Controls
 {
 
-	public partial class CalendarViewDayItem //: global::Windows.UI.Xaml.Controls.Control
+	public partial class CalendarViewDayItem //: global::Microsoft.UI.Xaml.Controls.Control
 	{
 		public bool IsBlackout
 		{
@@ -32,16 +32,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty DateProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty DateProperty { get; } =
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(Date), typeof(global::System.DateTimeOffset),
-				typeof(global::Windows.UI.Xaml.Controls.CalendarViewDayItem),
+				typeof(global::Microsoft.UI.Xaml.Controls.CalendarViewDayItem),
 				new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
 
-		public static global::Windows.UI.Xaml.DependencyProperty IsBlackoutProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsBlackoutProperty { get; } =
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(IsBlackout), typeof(bool),
-				typeof(global::Windows.UI.Xaml.Controls.CalendarViewDayItem),
+				typeof(global::Microsoft.UI.Xaml.Controls.CalendarViewDayItem),
 				new FrameworkPropertyMetadata(default(bool)));
 	}
 }

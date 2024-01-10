@@ -153,4 +153,4 @@ https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-port
 
 ***
 
-[!include[getting-help](getting-help.md)]
+[!include[getting-help](../getting-help.md)]

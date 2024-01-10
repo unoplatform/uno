@@ -7,20 +7,24 @@ using System.Collections.Specialized;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
+using MUXControlsTestApp.Utilities;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 
-#if NETFX_CORE
+
+
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -28,9 +32,9 @@ using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
 
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 #elif __MACOS__
 using AppKit;
@@ -47,6 +51,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
+
+		private Style ComboBoxItemContainerStyle => _testsResources["ComboBoxItemContainerStyle"] as Style;
 
 		private Style ComboBoxWithSeparatorStyle => _testsResources["ComboBoxWithSeparatorStyle"] as Style;
 
@@ -690,8 +696,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				c.Add("2-Five");
 				c.Add("2-Six");
 
-				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("MySource") });
-				SUT.SetBinding(ComboBox.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
+				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("MySource") });
+				SUT.SetBinding(ComboBox.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
 
 				SUT.DataContext = new { MySource = c, SelectedItem = "One" };
 
@@ -732,8 +738,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -795,8 +801,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -885,6 +891,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(3, test[0].SelectedNumber);
 			Assert.AreEqual(3, comboBox.SelectedItem);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SelectedItem_Active_VisualState()
+		{
+			var source = Enumerable.Range(0, 10).ToArray();
+			var SUT = new ComboBox
+			{
+				ItemsSource = source,
+				ItemContainerStyle = ComboBoxItemContainerStyle,
+				ItemTemplate = CounterItemTemplate
+			};
+
+			SUT.SelectedItem = 2;
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+#if __SKIA__ || __WASM__ // Will fix on: https://github.com/unoplatform/uno/issues/14801
+			SUT.IsDropDownOpen = true;
+			await WindowHelper.WaitForIdle();
+			SUT.IsDropDownOpen = false;
+			await WindowHelper.WaitForIdle();
+#endif
+			var containerForTwo = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+			Assert.IsNotNull(containerForTwo);
+			var h = VisualStateHelper.GetCurrentVisualStateName(containerForTwo);
+			Assert.IsTrue(h.Contains("Selected"));
+
+			SUT.SelectedItem = 6;
+			await WindowHelper.WaitForIdle();
+
+			var containerForSix = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+			Assert.IsNotNull(containerForSix);
+
+			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForTwo).Contains("Normal"));
+			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForSix).Contains("Selected"));
 		}
 #endif
 

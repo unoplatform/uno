@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class ItemSelectedEventArgs : EventArgs
 	{

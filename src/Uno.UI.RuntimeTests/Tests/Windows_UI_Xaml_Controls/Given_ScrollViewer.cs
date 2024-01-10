@@ -7,12 +7,13 @@ using FluentAssertions.Execution;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
+using Microsoft.UI.Xaml.Input;
 using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
@@ -170,7 +171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				using var _ = new AssertionScope($"{name} [{width}x{height}]");
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 				sut.ViewportMeasureSize.Width.Should().Be(width, "ViewportMeasureSize.Width");
 				sut.ViewportMeasureSize.Height.Should().Be(height, "ViewportMeasureSize.Height");
 
@@ -227,6 +228,302 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(ContentWidth - PresenterActualWidth, SUT.ScrollableWidth);
 			;
 		}
+
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[TestMethod]
+		[DataRow(175, 175, 26, 26)]
+		// [DataRow(1, 0, 2, 2)] // https://github.com/unoplatform/uno/issues/13907
+		[DataRow(1, 150, 2, 22)]
+		[DataRow(16, 17, 2, 3)]
+		[DataRow(123, 456, 18, 68)]
+		[DataRow(96, 97, 14, 15)]
+		[DataRow(393, 277, 59, 42)]
+		public async Task When_ArrowKeys_Pressed(int width, int height, int horizontalDelta, int verticalDelta)
+		{
+			var border = new Border
+			{
+				Width = width,
+				Height = height,
+				Child = new ScrollViewer
+				{
+					VerticalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+					Content = new Border
+					{
+						// anything large enough to make it scrollable
+						Width = 2000,
+						Height = 2000,
+						Child = new ItemsControl() // any focusable element
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var SUT = border.FindVisualChildByType<ScrollViewer>();
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+
+			// Horizontal and vertical scrolling amounts should be independent, and each depend on the corresponding ActualSize dimension
+			Assert.AreEqual(verticalDelta * 2, SUT.VerticalOffset);
+			Assert.AreEqual(horizontalDelta * 2, SUT.HorizontalOffset);
+
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
+			Assert.AreEqual(horizontalDelta, SUT.HorizontalOffset);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_ScrollViewer_Pressed()
+		{
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = new ScrollViewer
+				{
+					VerticalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+					Content = new Border
+					{
+						// anything large enough to make it scrollable
+						Width = 2000,
+						Height = 2000,
+						Child = new ItemsControl() // any focusable element
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(border.GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(border.FindVisualChildByType<ItemsControl>(), FocusManager.GetFocusedElement(border.XamlRoot));
+		}
+
+		[TestMethod]
+		public async Task When_Home_End_PageDown_PageUp()
+		{
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = new ScrollViewer
+				{
+					VerticalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+					Content = new Border
+					{
+						// anything large enough to make it scrollable
+						Width = 2000,
+						Height = 2000,
+						Child = new ItemsControl() // any focusable element
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var SUT = border.FindVisualChildByType<ScrollViewer>();
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(175, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(350, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(175, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1825, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+		}
+
+		[TestMethod]
+		public async Task When_Args_Handled_Home_End_PageDown_PageUp()
+		{
+			var SUT = new ScrollViewer
+			{
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = new Border
+				{
+					// anything large enough to make it scrollable
+					Width = 2000,
+					Height = 2000,
+					Child = new ItemsControl() // any focusable element
+				}
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = SUT
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, keyDownCount);
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+		}
+
+		[TestMethod]
+		public async Task When_Args_Handled_ArrowKeys()
+		{
+			var SUT = new ScrollViewer
+			{
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = new Border
+				{
+					// anything large enough to make it scrollable
+					Width = 2000,
+					Height = 2000,
+					Child = new ItemsControl() // any focusable element
+				}
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = SUT
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.FindVisualChildByType<ScrollContentPresenter>().SetHorizontalOffset(999999);
+			SUT.FindVisualChildByType<ScrollContentPresenter>().SetVerticalOffset(999999);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
@@ -753,7 +1050,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Spacing = 5,
 				Children =
 				{
-					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
 					SUT,
 				},
 			};
@@ -826,7 +1123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Spacing = 5,
 				Children =
 				{
-					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
 					SUT,
 				},
 			};
@@ -862,7 +1159,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__ && !WINDOWS_UWP
+#if !__SKIA__ && !WINAPPSDK
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
@@ -947,7 +1244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_ReversedMouseWheel_Then_ScrollInReversedDirection()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			Assert.Inconclusive("Mouse pointer helper not supported on UWP.");
 #else
 			var sut = new ScrollViewer

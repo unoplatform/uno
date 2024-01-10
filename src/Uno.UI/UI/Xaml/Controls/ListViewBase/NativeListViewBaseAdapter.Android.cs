@@ -7,8 +7,8 @@ using Android.Views;
 using Uno.Client;
 using Uno.Extensions;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Linq;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -17,9 +17,9 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.UI.Core;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class NativeListViewBaseAdapter : RecyclerView.Adapter
 	{

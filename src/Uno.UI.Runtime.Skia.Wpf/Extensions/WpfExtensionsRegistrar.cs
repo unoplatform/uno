@@ -18,7 +18,7 @@ using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;

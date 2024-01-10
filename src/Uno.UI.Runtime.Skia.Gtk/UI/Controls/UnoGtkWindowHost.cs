@@ -10,8 +10,8 @@ using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
-using WinUI = Windows.UI.Xaml;
-using WinUIWindow = Windows.UI.Xaml.Window;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 

@@ -6,6 +6,7 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:views="using:Uno.UI.Tests.App.Views"
 			 xmlns:local="using:Uno.UI.Tests.App.Xaml"
+             xmlns:xbind="using:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls"
 			 mc:Ignorable="not_win">
 	<Application.Resources>
 		<ResourceDictionary>
@@ -31,6 +32,7 @@
 				</ResourceDictionary>
 				<local:Subclassed_Dictionary />
 				<local:Subclassed_Dictionary_With_Property Test="Test123"/>
+                <xbind:XBind_ResourceDictionary />
 			</ResourceDictionary.MergedDictionaries>
 			<ResourceDictionary.ThemeDictionaries>
 				<ResourceDictionary x:Key="Light">

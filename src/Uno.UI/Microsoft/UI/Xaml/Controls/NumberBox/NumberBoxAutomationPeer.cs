@@ -1,14 +1,14 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NumberBox.cpp, commit 8d856a3c9393d13d9d49a20d5cde984d1f5b397a
 
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public class NumberBoxAutomationPeer : AutomationPeer, IRangeValueProvider
 	{
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void RaiseValueChangedEvent(double oldValue, double newValue)
 		{
-			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Automation.RangeValuePatternIdentifiers", nameof(RangeValuePatternIdentifiers.ValueProperty)))
+			if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Automation.RangeValuePatternIdentifiers", nameof(RangeValuePatternIdentifiers.ValueProperty)))
 			{
 				RaisePropertyChangedEvent(RangeValuePatternIdentifiers.ValueProperty,
 							   oldValue,

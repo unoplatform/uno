@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 //// Copyright (c) Microsoft Corporation. All rights reserved.
 //// Licensed under the MIT License. See LICENSE in the project root for license information.
@@ -6,10 +6,10 @@ using System;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ContentDialog
 	{

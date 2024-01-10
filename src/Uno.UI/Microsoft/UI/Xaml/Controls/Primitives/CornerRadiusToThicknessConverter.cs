@@ -5,10 +5,10 @@
 #nullable enable
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Converts a CornerRadius to Thickness and also applies filters to extract only the specified fields, leaving the others set to 0.

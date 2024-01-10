@@ -15,7 +15,7 @@ namespace Uno.Roslyn
 		private readonly Func<INamedTypeSymbol?, string, bool> _isAttachedProperty;
 		private readonly Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly Func<INamedTypeSymbol, bool> _isTypeImplemented;
-		private readonly Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
+		private readonly Func<INamedTypeSymbol?, string, ISymbol?>? _findPropertyByOwnerSymbol;
 		private readonly Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
 		private readonly Func<INamedTypeSymbol?, string, IEventSymbol?>? _findEventType;
 
@@ -32,7 +32,7 @@ namespace Uno.Roslyn
 			_isAttachedProperty = Funcs.Create<INamedTypeSymbol?, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
 			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
 			_isTypeImplemented = Funcs.Create<INamedTypeSymbol, bool>(SourceIsTypeImplemented).AsLockedMemoized();
-			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsLockedMemoized();
+			_findPropertyByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, ISymbol?>(SourceFindPropertyByOwnerSymbol).AsLockedMemoized();
 			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsLockedMemoized();
 			_findEventType = Funcs.Create<INamedTypeSymbol?, string, IEventSymbol?>(SourceFindEventType).AsLockedMemoized();
 		}
@@ -94,7 +94,7 @@ namespace Uno.Roslyn
 
 		private static bool SourceIsAttachedProperty(INamedTypeSymbol? type, string name)
 		{
-			do
+			while (type != null && type.SpecialType != SpecialType.System_Object)
 			{
 				var property = type.GetPropertyWithName(name);
 				if (property?.GetMethod?.IsStatic ?? false)
@@ -109,12 +109,9 @@ namespace Uno.Roslyn
 				}
 
 				type = type?.BaseType;
-				if (type == null || type.SpecialType == SpecialType.System_Object)
-				{
-					return false;
-				}
+			};
 
-			} while (true);
+			return false;
 		}
 
 		public INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol type, string propertyName)
@@ -122,22 +119,18 @@ namespace Uno.Roslyn
 
 		private static INamedTypeSymbol SourceGetAttachedPropertyType(INamedTypeSymbol? type, string name)
 		{
-			do
+			while (type != null && type.SpecialType != SpecialType.System_Object)
 			{
 				var setMethod = type?.GetFirstMethodWithName("Set" + name);
-
-				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
+				if (setMethod?.FindDependencyPropertyType() is { } propertyType)
 				{
-					return (setMethod.Parameters[1].Type as INamedTypeSymbol)!;
+					return propertyType;
 				}
+
 				type = type?.BaseType;
+			}
 
-				if (type == null || type.SpecialType == SpecialType.System_Object)
-				{
-					throw new InvalidOperationException($"No valid setter found for attached property {name}");
-				}
-
-			} while (true);
+			throw new InvalidOperationException($"No valid setter found for attached property {name}");
 		}
 
 		public ITypeSymbol GetTypeByFullName(string fullName)
@@ -157,58 +150,36 @@ namespace Uno.Roslyn
 		private static bool SourceIsTypeImplemented(INamedTypeSymbol type)
 			=> type.GetAttributes().None(a => a.AttributeClass?.GetFullyQualifiedTypeExcludingGlobal() == XamlConstants.Types.NotImplementedAttribute);
 
-		public INamedTypeSymbol? FindPropertyTypeByOwnerSymbol(INamedTypeSymbol? type, string propertyName) => _findPropertyTypeByOwnerSymbol!(type, propertyName);
+		public ISymbol? FindPropertyByOwnerSymbol(INamedTypeSymbol? type, string propertyName) => _findPropertyByOwnerSymbol!(type, propertyName);
 
-		private INamedTypeSymbol? SourceFindPropertyTypeByOwnerSymbol(INamedTypeSymbol? type, string propertyName)
+		private ISymbol? SourceFindPropertyByOwnerSymbol(INamedTypeSymbol? type, string propertyName)
 		{
-			if (type != null && !string.IsNullOrEmpty(propertyName))
-			{
-				do
-				{
-					ThrowOnErrorSymbol(type);
-
-					var resolvedType = type;
-
-					var property = resolvedType.GetPropertyWithName(propertyName);
-					var setMethod = resolvedType.GetFirstMethodWithName("Set" + propertyName);
-
-					if (property != null)
-					{
-						if (property.Type.OriginalDefinition is { SpecialType: SpecialType.System_Nullable_T })
-						{
-							//TODO
-							return (property.Type as INamedTypeSymbol)?.TypeArguments[0] as INamedTypeSymbol;
-						}
-						else
-						{
-							return property.Type as INamedTypeSymbol;
-						}
-					}
-					else
-					{
-						if (setMethod != null)
-						{
-							return setMethod.Parameters.ElementAt(1).Type as INamedTypeSymbol;
-						}
-						else
-						{
-							var baseType = type.BaseType;
-
-							if (baseType == null || baseType.SpecialType == SpecialType.System_Object)
-							{
-								return null;
-							}
-
-							type = baseType;
-						}
-					}
-				} while (true);
-			}
-			else
+			if (string.IsNullOrEmpty(propertyName))
 			{
 				return null;
 			}
+
+			while (type != null && type.SpecialType != SpecialType.System_Object)
+			{
+				ThrowOnErrorSymbol(type);
+
+				if (type.GetPropertyWithName(propertyName) is { } property)
+				{
+					return property;
+				}
+				if (type.GetFirstMethodWithName("Set" + propertyName) is { } setter)
+				{
+					return setter;
+				}
+
+				type = type.BaseType;
+			};
+
+			return null;
 		}
+
+		public INamedTypeSymbol? FindPropertyTypeByOwnerSymbol(INamedTypeSymbol? type, string propertyName) =>
+			FindPropertyByOwnerSymbol(type, propertyName)?.FindDependencyPropertyType();
 
 		public string[] FindLocalizableDeclaredProperties(INamedTypeSymbol type) => _findLocalizableDeclaredProperties!(type);
 

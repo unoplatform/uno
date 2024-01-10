@@ -8,16 +8,16 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Uno.Disposables;
 using System.IO.Compression;
 using SkiaSharp;
 using System.Numerics;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Shapes
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
 			=> path.Geometry.TightBounds.ToRect();
 
-		private protected void Render(Windows.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		private protected void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
 			if (path is null)
 			{

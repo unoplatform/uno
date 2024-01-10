@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Numerics;
 using Uno.Disposables;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.UI;
-using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Microsoft/* UWP don't rename */.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class Brush
 	{

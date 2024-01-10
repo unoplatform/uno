@@ -40,16 +40,12 @@ Uno Platform provides integrated support for debugging your app on Windows, mac 
 1. In the debugger section of the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select `Debug (Chrome, WebAssembly)`
 1. In the status bar, ensure the `MyApp.Wasm.csproj` project is selected - by default `MyApp.sln` is selected.
 1. Press `F5` to start the debugging session
-1. Place a breakpoint inside the `OnClick` method
-1. Click the button in the app, and the breakpoint will hit
 
 # [**Skia GTK**](#tab/skiagtk)
 
 1. In the debugger section of the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select `Skia.GTK (Debug)`
 1. In the status bar, ensure the `MyApp.Skia.Gtk.csproj` project is selected - by default `MyApp.sln` is selected.
 1. Press `F5` to start the debugging session
-1. Place a breakpoint inside the `OnClick` method
-1. Click the button in the app, and the breakpoint will hit
 
 Note that C# Hot Reload is not available when running with the debugger. In order to use C# Hot Reload, run the app using the following:
 
@@ -121,6 +117,15 @@ You're all set!
 
 You can also find [additional VS Code topics](xref:Uno.vscode.additional), such as using snippets, updating existing apps to use VS Code
 
-## Explore
+## Next Steps
 
-Next, explore [Uno Platform features and architecture](xref:Uno.GetStarted.Explore).
+Now that you're Created and Debug the App.
+
+Learn more about:
+
+ - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
+ - [Hot Reload feature](xref:Uno.Features.HotReload)
+ - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
+ - [Troubleshooting](xref:Uno.UI.CommonIssues)
+ - [How-tos and Tutorials](xref:Uno.GettingStarted.Tutorial1) See real-world examples with working code.
+ - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>

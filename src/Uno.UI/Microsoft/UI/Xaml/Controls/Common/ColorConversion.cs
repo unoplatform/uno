@@ -2,7 +2,7 @@
 using System.Globalization;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal static class ColorConversion
 	{

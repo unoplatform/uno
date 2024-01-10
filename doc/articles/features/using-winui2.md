@@ -2,14 +2,11 @@
 uid: Uno.Features.WinUI2
 ---
 
-# Adding WinUI 2 to an Uno Platform application
+# Using Fluent styles in legacy apps
 
-The [WinUI 2 library](https://docs.microsoft.com/en-us/windows/apps/winui/winui2/) provides additional controls above those that are available in the UWP framework. This article explains how to use WinUI 2 controls in an Uno Platform application.
+> This article is only relevant for migration of **legacy UWP-based Uno Platform applications**. Modern template has Fluent styles included by default.
 
-> [!TIP]
-> If you're looking for information on [WinUI 3](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/), which is a total replacement for UWP XAML, read our [WinUI 3 explainer](../uwp-vs-winui3.md) or our [WinUI 3 upgrade guide](../updating-to-winui3.md).
-
-## Enabling WinUI 2 controls
+## Enabling Fluent styles
 
 1. In the `UWP` head project of your solution, install the [WinUI 2 NuGet package](https://www.nuget.org/packages/Microsoft.UI.Xaml).
 1. There's no extra package to install for non-Windows head projects - the WinUI 2 controls are already included in the `Uno.UI` NuGet package which is installed with the default Uno Platform template.

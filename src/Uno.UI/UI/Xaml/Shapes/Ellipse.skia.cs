@@ -1,10 +1,10 @@
 ﻿using Windows.Foundation;
 using Uno.Extensions;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
 using SkiaSharp;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Ellipse : Shape
 	{

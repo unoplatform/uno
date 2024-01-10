@@ -27,6 +27,15 @@
 		<Message Text="&lt;IsRCClientRemote&gt;$(_IsRCClientRemote)&lt;/IsRCClientRemote&gt;" Importance="High" />
 	</Target>
 
+	<!-- .NET 7 and earlier compatibility for .NET8 msbuild CLI `getProperty` equivalent -->
+	<Target Name="UnoVSCodeGetProjectProperties">
+		<Message Text='{%0a  "Properties": {%0a    "TargetFramework": "$(TargetFramework)",' Importance="High" />
+		<Message Text='    "TargetFrameworks": "$(TargetFrameworks)",' Importance="High" />
+		<Message Text='    "OutputPath": "$(OutputPath)",' Importance="High" />
+		<Message Text='    "AssemblyName": "$(AssemblyName)",' Importance="High" />
+		<Message Text='    "Configuration": "$(Configuration)"%0a  }%0a}' Importance="High" />
+	</Target>
+
 	<Target Name="InjectRemoteControlHost"
 			BeforeTargets="BeforeBuild"
 			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(IsRunningInsideVisualStudio)'!='true'">

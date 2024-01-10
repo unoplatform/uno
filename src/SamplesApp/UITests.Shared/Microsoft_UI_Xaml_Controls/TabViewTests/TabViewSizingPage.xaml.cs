@@ -1,19 +1,19 @@
 ﻿#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
 using System.Windows.Input;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 {

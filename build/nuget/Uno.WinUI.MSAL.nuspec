@@ -19,18 +19,20 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			
-			<!-- BEGIN UWP-specific -->
+
+			<!-- BEGIN UWP-specific
 			<group targetFramework="UAP10.0.19041">
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			<!-- END UWP-specific -->
+			END UWP-specific -->
 
-			<!-- BEGIN WinUI-specific
+
+			<!-- BEGIN WinUI-specific -->
 			<group targetFramework="net7.0-windows10.0.19041.0">
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
-			END WinUI-specific -->
+			<!-- END WinUI-specific -->
+			
 
 			<group targetFramework="net8.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -73,13 +75,13 @@
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net8.0\Uno.UI.MSAL.*" target="lib\net8.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
 
-		<!-- BEGIN UWP-specific -->
+		<!-- BEGIN UWP-specific
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.19041\Uno.UI.MSAL.*" target="lib\uap10.0.19041" />
-		<!-- END UWP-specific -->
+		END UWP-specific -->
 
-		<!-- BEGIN WinUI-specific
+		<!-- BEGIN WinUI-specific -->
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\net7.0-windows10.0.19041.0\Uno.UI.MSAL.*" target="lib\net7.0-windows10.0.19041.0" />
-		END WinUI-specific -->
+		<!-- END WinUI-specific -->
 
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-android\Uno.UI.MSAL.*" target="lib\net8.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-ios\Uno.UI.MSAL.*" target="lib\net8.0-ios" />

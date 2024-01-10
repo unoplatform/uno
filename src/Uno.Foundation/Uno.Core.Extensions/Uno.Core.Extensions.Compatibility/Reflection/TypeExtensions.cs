@@ -33,14 +33,14 @@ namespace Uno.Extensions
 			return type.IsAssignableFrom(instance);
 		}
 
-#if WINDOWS_UWP || WINPRT || XAMARIN
+#if WINAPPSDK || WINPRT || XAMARIN
 		public static IEnumerable<ConstructorInfo> GetConstructors(this TypeInfo type)
 		{
 			return type.DeclaredConstructors;
 		}
 #endif
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		/// <summary>
 		/// Gets whether null can be assigned to a variable of the given <see cref="type"/>
 		/// </summary>

@@ -4,14 +4,14 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 ## Migrating from Previous Releases of Uno Platform
 
-This article details the  migration steps required to migrate from one version to the next when breaking changes are being introduced.
+This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
 
 ### Uno Platform 5.0
 
 Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes.
 
 Additionally, this version:
-- Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS.
+- Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS. [Follow this guide](xref:Uno.Development.MigratingFromNet7ToNet8) to upgrade from .NET 7 to .NET 8.
 - Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, and netstandard2.0 for WebAssembly.
 - .NET 7.0 support for iOS, Android, Mac Catalyst, and macOS remains unchanged.
 - Updates the base Windows SDK version from 18362 to 19041.
@@ -39,7 +39,7 @@ Uno Platform 4.7 now brings the Uno Fluent Symbols font implicitly. You can remo
 
 ### Breaking change with ms-appx:/// resolution
 
-Uno Platform 4.7 brings a behavior breaking change where the library Assets feature introduced in Uno Platform 4.6 required assembly names to be lower cased.
+Uno Platform 4.7 brings a behavior-breaking change where the library Assets feature introduced in Uno Platform 4.6 required assembly names to be lowercase.
 
 If you had an asset in a nuget package or project named "MyProject", you previously had to write `ms-appx:///myproject/MyAsset.txt`. With 4.7, you'll need to write `ms-appx:///MyProject/MyAsset.txt`.
 
@@ -47,7 +47,7 @@ If you had an asset in a nuget package or project named "MyProject", you previou
 
 #### Breaking change with Android 13
 
-The introduction of Android 13 lead to a breaking change, as some Android members exposed to .NET where removed.
+The introduction of Android 13 led to a breaking change, as some Android members exposed to .NET were removed.
 
 You'll need to migrate from `BaseActivity.PrepareOptionsPanel` to `BaseActivity.PreparePanel` instead.
 
@@ -55,12 +55,12 @@ You'll need to migrate from `BaseActivity.PrepareOptionsPanel` to `BaseActivity.
 
 #### ElevatedView
 
-The built-in `ElevatedView` control has undergone a visual unification, which means existing apps may experience slightly different shadow visuals, especially on Android, which now supports the full range of colors including opacity. If you encounter visual discrepancies, please tweak the `Elevation` and `ShadowColor` properties to fit your needs.
+The built-in `ElevatedView` control has undergone a visual unification, which means existing apps may experience slightly different shadow visuals, especially on Android, which now supports the full range of colors, including opacity. If you encounter visual discrepancies, please tweak the `Elevation` and `ShadowColor` properties to fit your needs.
 
 ### Uno Platform 4.1
 
 #### Android 12 support
-Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
+Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Target Framework)` option in Visual Studio Android project properties.
 
 Additionally, here are some specific hints about the migration to Android 12:
 - If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
@@ -71,22 +71,22 @@ Additionally, here are some specific hints about the migration to Android 12:
             echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
         displayName: Select JDK 11
         ```
-    - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your android csproj:
+    - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your Android csproj:
         ```xml
         <PropertyGroup>
             <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
         </PropertyGroup>
         ```
-- The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the packages versions used by Uno Platform.
+- The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the package versions used by Uno Platform.
 
 
 ### Uno Platform 4.0
 
-Uno 4.0 introduces a set of binary and source breaking changes required to align with the Windows App SDK 1.0.
+Uno 4.0 introduces a set of binary and source-breaking changes required to align with the Windows App SDK 1.0.
 
 To migrate your application to Uno 4.0:
 - Update all `Uno.UI.*` nuget packages to 4.0
-- Add a package reference to `Uno.UI.Adapter.Microsoft.Extensions.Logging` to all your project heads (Except `.Desktop` for WinUI projects, and `.Windows` for UWP projects)
+- Add a package reference to `Uno.UI.Adapter.Microsoft.Extensions.Logging` to all your project heads (Except `.Desktop` for WinUI projects and `.Windows` for UWP projects)
 - In your `ConfigureLogging` method, add the following block at the end:
     ```csharp
     #if HAS_UNO
@@ -103,15 +103,15 @@ To migrate your application to Uno 4.0:
     - `Popup` is now correctly in the `Primitives` namespace
     - `FlyoutBase` event signatures
 - Uno.UI packages no longer depend on `Uno.Core`.
-  If you did depend on types or extensions provided by this package, you can take a direct dependency on it, or
-  use one of the sub packages created to limit the number of transitive dependencies.
+  If you did depend on types or extensions provided by this package, you can take a direct dependency on it or
+  use one of the sub-packages created to limit the number of transitive dependencies.
 - The `Uno.UI.DualScreen` package is now renamed as` Uno.UI.Foldable`
 
 ### Uno Platform 3.6 
 
 #### Optional upgrade for Microsoft.Extension.Logging
 
-Uno Platform 3.6 templates provide an updated version of the loggers to allow the use of updated `Microsoft.Extension.Logging.*` logging packages. It is not required for applications to upgrade to these newer loggers, yet those provide additional features particularly for iOS and WebAssembly.
+Uno Platform 3.6 templates provide an updated version of the loggers to allow the use of updated `Microsoft.Extension.Logging.*` logging packages. It is not required for applications to upgrade to these newer loggers, yet those provide additional features, particularly for iOS and WebAssembly.
 
 Here's how to upgrade:
 
@@ -199,7 +199,7 @@ Here's how to upgrade:
 
 Note that there are two new loggers:
 - `Uno.Extensions.Logging.OSLog` which provides the ability to log the the iOS system logs
-- `Uno.Extensions.Logging.WebAssembly.Console` which provides thread safe and colored logging to the browser debugger console
+- `Uno.Extensions.Logging.WebAssembly.Console` which provides thread-safe and colored logging to the browser debugger console
 
 #### Migrating WebAssembly projects to .NET 5
 
@@ -209,13 +209,13 @@ If your WebAssembly project is using the `netstandard2.0` TargetFramework, migra
 - Upgrade `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to `2.0.0` or later
 - Add a reference to the `Microsoft.Windows.Compatibility` package to `5.0.1`
 
-You may also want to apply the changes from the section above (logger updates) to benefits from the update to .NET 5.
+You may also want to apply the changes from the section above (logger updates) to benefit from the update to .NET 5.
 
 ### Uno Platform 2.x to Uno 3.0
 
 Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code and configuration.
 
-- **Android 8.0** is not supported anymore, you'll need to update to **Android 9.0** or **10.0**.
+- **Android 8.0** is not supported anymore. You'll need to update to **Android 9.0** or **10.0**.
 - For Android, you'll need to update the `Main.cs` file from:
     ```csharp
 	: base(new App(), javaReference, transfer)
@@ -229,4 +229,3 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
     - Remove `<WasmHead>true</WasmHead>`
     - You can remove `__WASM__` in `DefineConstants`
 - The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
-

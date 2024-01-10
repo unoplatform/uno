@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Windows.Foundation;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation;
 using System.Linq;
 
 using Windows.UI.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
 	{
@@ -150,6 +151,13 @@ namespace Windows.UI.Xaml.Controls
 			return base.ArrangeOverride(arrangeSize);
 		}
 
+		internal override void OnLayoutUpdated()
+		{
+			base.OnLayoutUpdated();
+
+			UpdateIsTextTrimmed();
+		}
+
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
@@ -196,5 +204,12 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial() => _textWrappingChanged = true;
 
 		partial void OnPaddingChangedPartial() => _paddingChangedChanged = true;
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed =
+				IsTextTrimmable &&
+				WindowManagerInterop.GetIsOverflowing(HtmlId);
+		}
 	}
 }

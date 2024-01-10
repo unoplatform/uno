@@ -10,16 +10,16 @@
 using System;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using Uno.Disposables;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.System;
 using System.Diagnostics;
 using SkiaSharp.SceneGraph;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.Text;
 using System.IO;
 
@@ -28,7 +28,7 @@ using SkiaSharp.Views.Windows;
 using Windows.UI.Core;
 #else
 using SkiaSharp.Views.UWP;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI

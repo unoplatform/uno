@@ -16,17 +16,17 @@
 
 		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
-
-		<!-- Disable automatic documentation generation as the step is executed explicitly through GenerateDoc -->
-		<BuildDocFx>false</BuildDocFx>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\src\Directory.Build.targets" Link="Directory.Build.targets" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<DocfxVersion>2.73.2</DocfxVersion>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.59.3" GeneratePathProperty="true" />
 		<PackageReference Include="MSBuildTasks" Version="1.5.0.235" />
 		<PackageReference Include="NUnit.Runners" Version="3.12.0" />
 	</ItemGroup>
@@ -168,9 +168,16 @@
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 		</ItemGroup>
 
+		<PropertyGroup>
+			<_ReplacedSHA>$(GitVersion_Sha)</_ReplacedSHA>
+
+			<!-- Use the VersionSource SHA to avoid conflicts for PR builds that span merges on master -->
+			<_ReplacedSHA Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</_ReplacedSHA>
+		</PropertyGroup>
+
 		<WriteLinesToFile
 			File="%(_Sha1Replace.Identity)"
-			Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(GitVersion_Sha)'))"
+			Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(_ReplacedSHA)'))"
 			Overwrite="true" />
 	</Target>
 
@@ -228,7 +235,7 @@
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
 				 Projects="..\src\Uno.UI-netcoremobile-only.slnf;..\src\Uno.UI-Reference-Only.slnf;..\src\Uno.UI-UnitTests-only.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
-				 Targets="Restore"
+				 Targets="Restore;Clean"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
 
@@ -249,7 +256,6 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
-
 		<MSBuild Properties="Configuration=Debug"
 				 Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
 				 Targets="Restore;Build"
@@ -258,7 +264,8 @@
 
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="powershell .\import_external_docs.ps1" WorkingDirectory="..\doc" />
-		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
+		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools docfx --version $(DocfxVersion)" Condition="!exists('$(MSBuildThisFileDirectory)\tools\docfx.exe')" />
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\docfx.exe ..\doc\docfx.json --debug -o $(OutputDir)\doc" />
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">

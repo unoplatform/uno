@@ -13,6 +13,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps
+
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 1. Modify the content of `MainPage`:
 
@@ -88,11 +89,29 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         }
         ```
 
+1. For WinUI 3 projects
+   - As an unpackaged WinUI 3 app doesn't contain a package.appxmanifest file, no further action is needed after adding the appropriate resources to the project.
+   - If you are working with a packaged WinUI 3 app, open the .wapproj's `package.appxmanifest` in a text editor and locate the following section:
+    ```xml
+    <Resources>
+        <Resource Language="x-generate"/>
+    </Resources>
+    ```
+    Replace it with elements for each of your supported languages. For example:    
+    ```xml
+    <Resources>
+        <Resource Language="en-US"/>
+        <Resource Language="es-ES"/>
+        <!-- Add more languages as needed -->
+    </Resources>
+    ```
+
 ## Get the complete code
 
 See the completed sample on GitHub: [LocalizationSamples/Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
 
 ## Additional Resources
+
 https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
 
 <br>

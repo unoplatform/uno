@@ -4,10 +4,10 @@
 
 using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 internal class NavigationViewItemsFactory : ElementFactory
 {
@@ -71,9 +71,9 @@ internal class NavigationViewItemsFactory : ElementFactory
 		// Accidentally adding a OS XAML NavigationViewItem to WinUI's NavigationView can cause unnecessary confusion for developers
 		// due to unexpected rendering, potentially without an easy way to understand what went wrong here. To help out developers,
 		// we are explicitly checking for this scenario here and throw a helpful error message so that they can quickly fix their app.
-		if (newContent is Windows.UI.Xaml.Controls.NavigationViewItemBase)
+		if (newContent is Microsoft.UI.Xaml.Controls.NavigationViewItemBase)
 		{
-			throw new InvalidOperationException("A NavigationView instance contains a Windows.UI.Xaml.Controls.NavigationViewItem. This control requires that its NavigationViewItems be of type Microsoft.UI.Xaml.Controls.NavigationViewItem.");
+			throw new InvalidOperationException("A NavigationView instance contains a Microsoft.UI.Xaml.Controls.NavigationViewItem. This control requires that its NavigationViewItems be of type Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.NavigationViewItem.");
 		}
 #endif
 

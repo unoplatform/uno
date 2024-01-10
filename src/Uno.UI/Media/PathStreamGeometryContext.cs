@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using System.Numerics;
 using System.Linq;
@@ -21,7 +21,7 @@ using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
 using Uno.UI;
 #elif __SKIA__
-using Path = Windows.UI.Composition.SkiaGeometrySource2D;
+using Path = Microsoft.UI.Composition.SkiaGeometrySource2D;
 #else
 using Path = System.Object;
 #endif

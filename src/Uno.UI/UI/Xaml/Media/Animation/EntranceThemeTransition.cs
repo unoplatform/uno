@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// EntranceThemeTransition : Based on WinRT EntranceThemeTransition
@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for FromHorizontalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromHorizontalOffsetProperty { get; } =
-			DependencyProperty.Register("FromHorizontalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40f));
+			DependencyProperty.Register("FromHorizontalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40.0));
 
 		#endregion
 
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		// Using a DependencyProperty as the backing store for FromVerticalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromVerticalOffsetProperty { get; } =
-			DependencyProperty.Register("FromVerticalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0f));
+			DependencyProperty.Register("FromVerticalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0.0));
 
 		#endregion
 

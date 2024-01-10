@@ -4,14 +4,14 @@ using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorPickerSlider : Slider
 	{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// We want the ColorPickerSlider to pick up everything for its default style from the Slider's default style,
 			// since its purpose is just to turn off keyboarding.  So we'll give it Slider's control name as its default style key
 			// instead of ColorPickerSlider.
-			DefaultStyleKey = typeof(Windows.UI.Xaml.Controls.Slider);
+			DefaultStyleKey = typeof(Microsoft.UI.Xaml.Controls.Slider);
 
 			ValueChanged += OnValueChangedEvent;
 		}
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			double minBound = 0;
 			double maxBound = 0;

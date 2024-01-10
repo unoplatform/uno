@@ -3,11 +3,11 @@
 
 // MUX Reference ImageIconSource.cpp & ImageIconSource.properties.cpp, tag winui3/release/1.4.2
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class ImageIconSource : IconSource
 {

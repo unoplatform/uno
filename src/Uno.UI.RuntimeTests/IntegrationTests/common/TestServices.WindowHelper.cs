@@ -1,14 +1,15 @@
-﻿using System;
+﻿
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -24,14 +25,14 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static Windows.UI.Xaml.Window _currentTestWindow;
+			private static Microsoft.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
 			public static XamlRoot XamlRoot { get; set; }
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Windows.UI.Xaml.Window CurrentTestWindow
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow
 			{
 				get
 				{
@@ -121,8 +122,9 @@ namespace Private.Infrastructure
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
-			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
-				CurrentTestWindow.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
+			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
+				? UnitTestDispatcherCompat.From(CurrentTestWindow)
+				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -182,7 +184,9 @@ namespace Private.Infrastructure
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();
 #else
-				if (element.Dispatcher.HasThreadAccess)
+				var dispatcher = UnitTestDispatcherCompat.From(element);
+
+				if (dispatcher.HasThreadAccess)
 				{
 					await Do();
 				}
@@ -190,7 +194,7 @@ namespace Private.Infrastructure
 				{
 					TaskCompletionSource<bool> cts = new();
 
-					_ = element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+					_ = dispatcher.RunAsync(() =>
 					{
 						try
 						{

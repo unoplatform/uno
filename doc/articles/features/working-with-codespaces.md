@@ -23,7 +23,7 @@ To create a new Codespace, visit this [GitHub section](https://github.com/codesp
    > Failure to make both ports public will prevent the app from starting properly.
 1. Codespaces will suggest to open a new browser window or as a preview window
 
-You can now use C# Hot Reload and XAML HotReload to develop your application.
+You can now use C# Hot Reload and XAML Hot Reload to develop your application.
 
 See [the VS Code Getting started](../get-started-vscode.md) documentation for additional details about developing with VS Code.
 

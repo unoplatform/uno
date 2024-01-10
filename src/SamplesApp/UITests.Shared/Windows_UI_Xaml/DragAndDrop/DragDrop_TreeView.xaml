@@ -24,5 +24,8 @@
 		<Button x:Name="bt2" Content="case2"/>
 		<Button x:Name="bt3" Content="case3"/>
 		<Button x:Name="focusbt" Content="focus"/>
+		<RadioButton x:Name="radio_disable" GroupName="radio" Content="Disable TextBox"/>
+		<RadioButton x:Name="radio_enable" GroupName="radio" Content="Enable TextBox"/>
+		<TextBlock x:Name="tb" Visibility="Collapsed"/>
 	</StackPanel>
 </Page>

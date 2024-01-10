@@ -5,18 +5,24 @@ using System.Threading.Tasks;
 using Uno.UI.Controls;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using AndroidX.ViewPager.Widget;
 using System.Collections.Specialized;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
 		private NativePagedView PagedView { get { return InternalItemsPanelRoot as NativePagedView; } }
 
+		partial void InitializePartial()
+		{
+			SetClipChildren(true);
+		}
+
 		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
+
 			if (PagedView != null && PagedView.Adapter == null)
 			{
 				PagedView.Adapter = new FlipViewAdapter()
@@ -27,8 +33,11 @@ namespace Windows.UI.Xaml.Controls
 				//Set CurrentItem in case SelectedIndex has changed prior to FlipView becoming visible
 				PagedView.CurrentItem = SelectedIndex;
 			}
+
 			PagedView?.Adapter.NotifyDataSetChanged();
+
 			base.UpdateItems(args);
+
 			RequestLayout();
 		}
 

@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 {
 	[TestClass]
-#if !IS_UNIT_TESTS && !NETFX_CORE
+#if !IS_UNIT_TESTS && !WINAPPSDK
 	[RuntimeTests.RunsOnUIThread]
 #endif
 	public class Given_Grid_And_Min_Max

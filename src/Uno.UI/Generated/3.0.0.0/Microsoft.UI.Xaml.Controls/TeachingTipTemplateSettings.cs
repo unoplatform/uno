@@ -6,15 +6,15 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TeachingTipTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class TeachingTipTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Thickness TopRightHighlightMargin
+		public global::Microsoft.UI.Xaml.Thickness TopRightHighlightMargin
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(TopRightHighlightMarginProperty);
+				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(TopRightHighlightMarginProperty);
 			}
 			set
 			{
@@ -24,11 +24,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Thickness TopLeftHighlightMargin
+		public global::Microsoft.UI.Xaml.Thickness TopLeftHighlightMargin
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Thickness)this.GetValue(TopLeftHighlightMarginProperty);
+				return (global::Microsoft.UI.Xaml.Thickness)this.GetValue(TopLeftHighlightMarginProperty);
 			}
 			set
 			{
@@ -38,11 +38,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Controls.IconElement IconElement
+		public global::Microsoft.UI.Xaml.Controls.IconElement IconElement
 		{
 			get
 			{
-				return (global::Windows.UI.Xaml.Controls.IconElement)this.GetValue(IconElementProperty);
+				return (global::Microsoft.UI.Xaml.Controls.IconElement)this.GetValue(IconElementProperty);
 			}
 			set
 			{
@@ -52,27 +52,27 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IconElementProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IconElement), typeof(global::Windows.UI.Xaml.Controls.IconElement),
+		public static global::Microsoft.UI.Xaml.DependencyProperty IconElementProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(IconElement), typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TopLeftHighlightMarginProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TopLeftHighlightMargin), typeof(global::Windows.UI.Xaml.Thickness),
+		public static global::Microsoft.UI.Xaml.DependencyProperty TopLeftHighlightMarginProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TopLeftHighlightMargin), typeof(global::Microsoft.UI.Xaml.Thickness),
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TopRightHighlightMarginProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TopRightHighlightMargin), typeof(global::Windows.UI.Xaml.Thickness),
+		public static global::Microsoft.UI.Xaml.DependencyProperty TopRightHighlightMarginProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(TopRightHighlightMargin), typeof(global::Microsoft.UI.Xaml.Thickness),
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

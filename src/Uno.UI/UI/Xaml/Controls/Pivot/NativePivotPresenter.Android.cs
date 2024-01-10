@@ -11,9 +11,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativePivotPresenter
 	{

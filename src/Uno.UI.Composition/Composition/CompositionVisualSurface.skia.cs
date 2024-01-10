@@ -11,7 +11,7 @@ using SkiaSharp;
 using Uno.UI.Composition;
 using Windows.Graphics.Display;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{

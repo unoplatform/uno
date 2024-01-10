@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Composition;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals
 {
 	// TODO Uno: This is currently a stub, as animated visuals are not properly supported
 	public partial class AnimatedChevronUpDownSmallVisualSource : IAnimatedVisualSource2

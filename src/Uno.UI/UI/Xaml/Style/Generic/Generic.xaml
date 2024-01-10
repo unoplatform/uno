@@ -16,8 +16,8 @@
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
-					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
-					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)"
+					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
@@ -34,7 +34,7 @@
 		</Setter>
 	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ContentControl -->
 	<Style TargetType="ContentControl">
 		<Setter Property="HorizontalContentAlignment"
 				Value="Left" />
@@ -143,7 +143,7 @@
 				Value="Normal" />
 	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.HyperlinkButton -->
 	<not_win:Style TargetType="HyperlinkButton">
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlHyperlinkTextBrush}" />
@@ -216,7 +216,7 @@
 		</Setter>
 	</not_win:Style>
 
-	<!--  Default style for Windows.UI.Xaml.Controls.TextBox  -->
+	<!--  Default style for Microsoft.UI.Xaml.Controls.TextBox  -->
 	<Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
 
 	<Style x:Key="XamlDefaultTextBox"
@@ -500,7 +500,7 @@
 		</Setter>
 	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBox -->
 	<not_win:Style x:Key="DefaultComboBoxStyle"
 				   TargetType="ComboBox">
 		<Setter Property="Padding"
@@ -815,7 +815,7 @@
 	<Style x:Key="XamlDefaultComboBox"  TargetType="ComboBox"
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ComboBoxItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ComboBoxItem -->
 	<not_win:Style x:Key="DefaultComboBoxItemStyle"
 				   TargetType="ComboBoxItem">
 		<Setter Property="Background"
@@ -988,7 +988,7 @@
 	<not_win:Style TargetType="ComboBoxItem"
 				   BasedOn="{StaticResource DefaultComboBoxItemStyle}" />
 
-	<!-- Style for Windows.UI.Xaml.Controls.ListViewItem -->
+	<!-- Style for Microsoft.UI.Xaml.Controls.ListViewItem -->
 	<not_win:Style TargetType="ListViewItem"
 				   x:Key="ListViewItemExpanded">
 		<Setter Property="FontFamily"
@@ -1420,7 +1420,7 @@
 	<not_win:Style TargetType="ListViewItem"
 				   BasedOn="{StaticResource ListViewItemExpanded}" />
 
-	<!-- Style for Windows.UI.Xaml.Controls.GridViewItem -->
+	<!-- Style for Microsoft.UI.Xaml.Controls.GridViewItem -->
 	<not_win:Style TargetType="GridViewItem"
 				   x:Key="GridViewItemExpanded">
 		<Setter Property="FontFamily"
@@ -1854,7 +1854,7 @@
 	<not_win:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.TimePicker -->
 	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
 	<not_win:Style TargetType="TimePicker">
 		<Setter Property="IsTabStop"
@@ -2807,7 +2807,7 @@
 	<not_win:Style TargetType="SplitView"
 				   BasedOn="{StaticResource DefaultSplitViewStyle}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Button -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Button -->
 	<Style x:Key="XamlDefaultButton"
 				   TargetType="Button">
 		<Setter Property="Background"
@@ -2922,7 +2922,7 @@
 	<Style TargetType="Button"
 		   BasedOn="{StaticResource XamlDefaultButton}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.ToggleButton -->
 	<Style x:Key="XamlDefaultToggleButton"
 				   TargetType="ToggleButton">
 		<Setter Property="Background"
@@ -3189,7 +3189,7 @@
 	<Style TargetType="PasswordBox"
 				BasedOn="{StaticResource XamlDefaultPasswordBox}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.CheckBox -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.CheckBox -->
 	<Style x:Key="XamlDefaultCheckBox" TargetType="CheckBox">
 		<Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
 		<Setter Property="Foreground" Value="{ThemeResource CheckBoxForegroundUnchecked}" />
@@ -3596,7 +3596,7 @@
 	<Style TargetType="CheckBox"
 		   BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.RadioButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.RadioButton -->
 	<Style x:Key="XamlDefaultRadioButton"
 				   TargetType="RadioButton">
 		<Setter Property="Background"
@@ -3774,7 +3774,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Slider -->
 	<not_win:Style TargetType="Thumb"
 				   x:Key="SliderThumbStyle">
 		<Setter Property="ManipulationMode"
@@ -4079,7 +4079,7 @@
 		</android:Setter>
 	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ListView -->
 	<not_win:Style TargetType="ListView">
 		<Setter Property="IsTabStop"
 				Value="False" />
@@ -4159,7 +4159,7 @@
 		</Setter>
 	</not_win:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.GridView -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.GridView -->
 	<not_win:Style TargetType="GridView">
 		<Setter Property="Padding"
 				Value="0,0,0,10" />
@@ -4250,7 +4250,7 @@
 		</Grid>
 	</ControlTemplate>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.PasswordBox -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.PasswordBox -->
 	<Style x:Key="XamlDefaultPasswordBox"
 				   TargetType="PasswordBox">
 		<Setter Property="MinWidth"
@@ -4579,7 +4579,7 @@
 		</Setter>
 	</not_win:Style>
 
-	<!-- Default UWP style for Windows.UI.Xaml.Controls.Frame -->
+	<!-- Default UWP style for Microsoft.UI.Xaml.Controls.Frame -->
 	<Style x:Key="XamlDefaultFrame"
 				   TargetType="Frame">
 		<Setter Property="HorizontalContentAlignment"
@@ -4610,7 +4610,7 @@
 	<Style TargetType="Frame"
 		   BasedOn="{StaticResource XamlDefaultFrame}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ProgressBar -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ProgressBar -->
 	<uwpOnly:Style x:Key="XamlDefaultProgressBar"
 				   TargetType="uwpOnly:ProgressBar">
 		<Setter Property="Foreground"
@@ -4651,7 +4651,7 @@
 		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ListViewHeaderItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ListViewHeaderItem -->
 	<Style TargetType="ListViewHeaderItem">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -4698,7 +4698,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.GridViewHeaderItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.GridViewHeaderItem -->
 	<Style TargetType="GridViewHeaderItem">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -4745,7 +4745,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.FlipViewItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.FlipViewItem -->
 	<Style TargetType="FlipViewItem">
 		<Setter Property="Background"
 				Value="Transparent" />
@@ -4774,7 +4774,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.ToggleSwitch -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.ToggleSwitch -->
 	<Style x:Key="XamlDefaultToggleSwitch"
 		   TargetType="ToggleSwitch">
 		<Setter Property="Foreground"
@@ -5157,7 +5157,7 @@
 	<Style TargetType="ToggleSwitch"
 		   BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
-	<!-- Default style for Windows.UI.Xaml.Pivot  -->
+	<!-- Default style for Microsoft.UI.Xaml.Pivot  -->
 	<Style x:Key="BaseContentControlStyle"
 		   TargetType="ContentControl">
 		<Setter Property="FontFamily"
@@ -5573,7 +5573,7 @@
 	<Style TargetType="Pivot"
 		   BasedOn="{StaticResource XamlDefaultPivot}" />
 
-	<!-- Default style for Windows.UI.Xaml.Controls.PivotItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.PivotItem -->
 	<Style TargetType="PivotItem">
 		<Setter Property="Background"
 				Value="{ThemeResource PivotItemBackground}" />
@@ -5615,7 +5615,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.PivotHeaderItem -->
 	<Style TargetType="PivotHeaderItem">
 		<Setter Property="FontSize"
 				Value="{ThemeResource PivotHeaderItemFontSize}" />
@@ -7292,7 +7292,7 @@
 		</Setter>
 	</Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.RepeatButton -->
 	<Style x:Name="XamlDefaultRepeatButton" TargetType="RepeatButton">
 		<Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
 		<Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
@@ -7730,7 +7730,7 @@
 	</Style>
 	<Thickness x:Key="FlipViewButtonBorderThemeThickness">0</Thickness>
 
-	<!-- Resources for Windows.UI.Xaml.Controls.FlipView -->
+	<!-- Resources for Microsoft.UI.Xaml.Controls.FlipView -->
 	<StaticResource x:Key="FlipViewBackground" ResourceKey="SystemControlPageBackgroundListLowBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBackground" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
@@ -7741,7 +7741,7 @@
 	<StaticResource x:Key="FlipViewNextPreviousButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBorderBrushPointerOver" ResourceKey="SystemControlForegroundTransparentBrush" />
 	<StaticResource x:Key="FlipViewNextPreviousButtonBorderBrushPressed" ResourceKey="SystemControlForegroundTransparentBrush" />
-	<!-- Resources for Windows.UI.Xaml.Controls.FlipViewItem -->
+	<!-- Resources for Microsoft.UI.Xaml.Controls.FlipViewItem -->
 
 	<StaticResource x:Key="FlipViewItemBackground" ResourceKey="SystemControlTransparentBrush" />
 
@@ -7756,7 +7756,7 @@
 	<SolidColorBrush x:Key="FlipViewButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
 
 
-	<!-- Default style for Windows.UI.Xaml.Controls.FlipView -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.FlipView -->
 	<netstdref:Style TargetType="FlipView">
 		<Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
 		<Setter Property="BorderThickness" Value="0" />
@@ -8036,7 +8036,7 @@
 		</Setter>
 	</netstdref:Style>
 
-	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.Thumb -->
+	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.Thumb -->
     <Style TargetType="Thumb">
         <Setter Property="Background" Value="{ThemeResource ThumbBackground}" />
         <Setter Property="BorderThickness" Value="1" />

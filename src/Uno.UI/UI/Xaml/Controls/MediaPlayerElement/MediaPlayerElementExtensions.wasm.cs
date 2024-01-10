@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 public static class MediaPlayerElementExtensions
 {
 	public static DependencyProperty AnonymousCORSProperty { get; } =

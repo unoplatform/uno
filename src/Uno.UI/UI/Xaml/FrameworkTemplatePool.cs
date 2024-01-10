@@ -6,16 +6,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Linq;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Uno.Buffers;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
@@ -41,16 +38,16 @@ using Font = AppKit.NSFont;
 using DependencyObject = System.Object;
 using AppKit;
 #elif METRO
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Provides an instance pool for FrameworkTemplates, when <see cref="FrameworkTemplate.LoadContentCached"/> is called.
@@ -72,7 +69,7 @@ namespace Windows.UI.Xaml
 	///	are strictly databound, but not if the control is using stateful code-behind. This is why this behavior can be disabled via <see cref="IsPoolingEnabled"/>
 	///	if the pooling interferes with the normal behavior of a control.
 	/// </remarks>
-	public class FrameworkTemplatePool
+	public partial class FrameworkTemplatePool
 	{
 		internal static FrameworkTemplatePool Instance { get; } = new FrameworkTemplatePool();
 		public static class TraceProvider
@@ -284,6 +281,63 @@ namespace Windows.UI.Xaml
 			return instances;
 		}
 
+		private Stack<object> _instancesToRecycle = new();
+
+		private void RaiseOnParentCollected(object instance)
+		{
+			var shouldEnqueue = false;
+
+			lock (_instancesToRecycle)
+			{
+				_instancesToRecycle.Push(instance);
+
+				shouldEnqueue = _instancesToRecycle.Count == 1;
+			}
+
+			if (shouldEnqueue)
+			{
+				NativeDispatcher.Main.Enqueue(Recycle);
+			}
+		}
+
+		private const int RecycleBatchSize = 32;
+
+		private void Recycle()
+		{
+			var array = ArrayPool<object>.Shared.Rent(RecycleBatchSize);
+
+			var count = 0;
+
+			var shouldRequeue = false;
+
+			lock (_instancesToRecycle)
+			{
+				while (_instancesToRecycle.TryPop(out var instance) && count < RecycleBatchSize)
+				{
+					array[count++] = instance;
+				}
+
+				shouldRequeue = _instancesToRecycle.Count > 0;
+			}
+
+			try
+			{
+				for (var x = 0; x < count; x++)
+				{
+					array[x].SetParent(null);
+				}
+			}
+			finally
+			{
+				ArrayPool<object>.Shared.Return(array, clearArray: true);
+			}
+
+			if (shouldRequeue)
+			{
+				NativeDispatcher.Main.Enqueue(Recycle);
+			}
+		}
+
 		/// <summary>
 		/// Manually return an unused template root to the pool.
 		/// </summary>
@@ -355,6 +409,8 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
+				InstanceTracker.Add(newParent, instance);
+
 				var index = list.FindIndex(e => ReferenceEquals(e.Control, instance));
 
 				if (index != -1)

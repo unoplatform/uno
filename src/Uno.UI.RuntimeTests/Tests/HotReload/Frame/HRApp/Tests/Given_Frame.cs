@@ -31,7 +31,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -55,7 +55,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -87,7 +87,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -134,7 +134,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -178,6 +178,67 @@ public class Given_Frame : BaseTestClass
 
 
 	/// <summary>
+	/// Checks that a simple change to a XAML element (change Text on TextBlock) will not be applied to
+	/// the currently visible page when HR is paused and that the change will be applied once HR is resumed
+	/// Open Page1
+	/// Pause HR
+	/// Change Page1 (no changes to Page1 UI)
+	/// Resume HR (changes applied to Page1 UI)
+	/// </summary>
+	[TestMethod]
+	[Ignore]
+	public async Task Check_Can_Change_Page1_Pause_ReloadCompleted_HR()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		UnitTestsUIContentHelper.Content = frame;
+
+		frame.Navigate(typeof(HR_Frame_Pages_Page1));
+
+		// Check the initial text of the TextBlock
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
+
+		// Pause HR
+		TypeMappings.Pause();
+		try
+		{
+			var waitingTask = TestingUpdateHandler.WaitForReloadCompleted();
+
+			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
+			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+				FirstPageTextBlockOriginalText,
+				FirstPageTextBlockChangedText,
+				async () =>
+				{
+					// Confirm that reload compeleted has fired
+					var uiUpdated = await waitingTask.WaitAsync(ct);
+					Assert.IsFalse(uiUpdated, "UI should not have updated whilst ui updates paused");
+					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
+				},
+				ct);
+		}
+		finally
+		{
+			// Resume HR
+			TypeMappings.Resume(false);
+		}
+
+		// Although HR has been un-paused (resumed) the UI should not have updated at this point
+		// due to false parameter passed to Resume method
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
+
+		// Force a refresh
+		Window.Current.ForceHotReloadUpdate();
+
+		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
+
+		// Check that the text has been updated
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
+	}
+
+
+	/// <summary>
 	/// Checks that a simple xaml change to the current page will be retained when
 	/// navigating forward to a new page and then going back to the original page	
 	/// Open Page1
@@ -190,7 +251,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -233,7 +294,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		// Navigate to Page1
@@ -278,7 +339,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		// Navigate to Page1

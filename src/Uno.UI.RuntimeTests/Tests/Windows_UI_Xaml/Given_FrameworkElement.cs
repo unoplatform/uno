@@ -8,17 +8,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Foundation.Metadata;
+
+
+
+
 
 
 #if __IOS__
@@ -32,7 +40,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -68,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("0", "-0", 0d, 0d)]
 		[DataRow("21", "42", 21d, 42d)]
 		[DataRow("+21", "+42", 21d, 42d)]
-#if NETFX_CORE // Those values only works on UWP, not on Uno
+#if WINAPPSDK // Those values only works on UWP, not on Uno
 		[DataRow("", "\n", double.NaN, double.NaN)]
 		[DataRow("abc", "0\n", double.NaN, 0d)]
 		[DataRow("∞", "-∞", double.NaN, double.NaN)]
@@ -131,7 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("-Infinity ")]
 		[DataRow("	Infinity")]
 		[ExpectedException(typeof(ArgumentException))]
-#if !NETFX_CORE
+#if !WINAPPSDK
 		[Ignore]
 #endif
 		public void When_Setting_Sizes_To_Invalid_Values_Then_Should_Throw(string variant)
@@ -143,6 +151,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.SetBinding(
 				FrameworkElement.WidthProperty,
 				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+		}
+
+		private sealed partial class MyPanel : Panel
+		{
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				var child = this.Children.Single();
+				if (child is FrameworkElement { Name: "second" } childAsFE)
+				{
+					childAsFE.HorizontalAlignment = HorizontalAlignment.Left;
+				}
+
+				if (child is FrameworkElement { Name: "third" } childAsFE2)
+				{
+					childAsFE2.HorizontalAlignment = HorizontalAlignment.Center;
+				}
+
+				child.Measure(availableSize);
+
+				return child.DesiredSize;
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				var child = this.Children.Single();
+				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+				return finalSize;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Alignment_Changes_During_Measure()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var first = new MyPanel()
+			{
+				Name = "first",
+				Width = 50,
+				Background = new SolidColorBrush(Colors.Gray),
+				Children =
+				{
+					new MyPanel()
+					{
+						Background = new SolidColorBrush(Colors.Pink),
+						Name = "second",
+						Width = 50,
+						Children =
+						{
+							new Grid()
+							{
+								Background = new SolidColorBrush(Colors.Green),
+								Name = "third",
+								Children =
+								{
+									new Rectangle()
+									{
+										Fill = new SolidColorBrush(Colors.Red),
+										Width = 20,
+										Height = 20,
+										Name = "rectangle",
+									},
+								},
+							},
+						}
+					},
+				}
+			};
+
+			await UITestHelper.Load(first);
+			var actualBitmap = await UITestHelper.ScreenShot(first);
+
+			var expected = new Border()
+			{
+				Width = 50,
+				Height = 20,
+				Background = new SolidColorBrush(Colors.Pink),
+				Child = new Border()
+				{
+					Width = 20,
+					Height = 20,
+					Background = new SolidColorBrush(Colors.Red),
+				}
+			};
+
+			await UITestHelper.Load(expected);
+			var expectedBitmap = await UITestHelper.ScreenShot(expected);
+
+			await ImageAssert.AreEqualAsync(actualBitmap, expectedBitmap);
 		}
 
 		[TestMethod]
@@ -212,7 +313,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(2, count);
 		}
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
@@ -221,7 +322,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Grid
 			{
 				Margin = new Thickness(0, 100, 0, 0),
-				BorderBrush = new SolidColorBrush(Windows.UI.Colors.DeepPink),
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
 				BorderThickness = new Thickness(5),
 				MinWidth = 100,
 				MinHeight = 100,
@@ -234,22 +335,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Children =
 				{
 					new TextBlock{Text = "Hello world"},
-					new Microsoft.UI.Xaml.Controls.ItemsRepeater
+					new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater
 						{
 							ItemsSource="0123456789",
 							ItemTemplate = new DataTemplate(() => new Border
 							{
-								BorderBrush= new SolidColorBrush(Windows.UI.Colors.Red),
+								BorderBrush= new SolidColorBrush(Microsoft.UI.Colors.Red),
 								Margin= new Thickness(5),
 								BorderThickness=new Thickness(5),
 								Width=300,
 								Child = new TextBlock
 								{
 									TextWrapping= TextWrapping.Wrap,
-									Foreground = new SolidColorBrush(Windows.UI.Colors.Chartreuse)
+									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
 								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 							}),
-							Layout = new Microsoft.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
+							Layout = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
 						}
 						.Apply(ir => Grid.SetRow(ir, 1))
 				}
@@ -379,7 +480,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
 #endif
 
-#if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
 			Assert.AreEqual(new Size(100, 15), content.DesiredSize);
 #endif
@@ -392,7 +493,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(10);
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			var ls1 = LayoutInformation.GetLayoutSlot(grid);
 			Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
 			var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
@@ -432,7 +533,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Right", "Top", null, null, 100d, 50d, null, null, "92;0;108;66|96;8;100;50|104;21;84;24")]
 		// Left/Bottom: Only sizes (width & height) defined
 		[DataRow("Left", "Bottom", null, null, 100d, 50d, null, null, "0;34;108;66|4;42;100;50|12;55;84;24")]
-#if NETFX_CORE // Those tests only works on UWP, not Uno yet
+#if WINAPPSDK // Those tests only works on UWP, not Uno yet
 		// Center: Only sizes (width & height) defined, but no breath space for margin
 		[DataRow("Center", "Center", null, null, 200d, 100d, null, null, "0;0;200;100|4;8;200;100|12;21;184;74")]
 		// Center: Only sizes(width & height) defined, but larger than available size
@@ -474,10 +575,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Name = "child",
 				Background = new SolidColorBrush(Colors.Blue),
 				Child = innerChild,
-				Margin = ThicknessHelper.FromLengths(4d, 8d, 4d, 8d),
-				BorderThickness = ThicknessHelper.FromLengths(3d, 6d, 3d, 6d),
+				Margin = new Thickness(4d, 8d, 4d, 8d),
+				BorderThickness = new Thickness(3d, 6d, 3d, 6d),
 				BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
-				Padding = ThicknessHelper.FromLengths(5d, 7d, 5d, 7d),
+				Padding = new Thickness(5d, 7d, 5d, 7d),
 			};
 
 			var childDecorator = new Border
@@ -571,8 +672,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_AreDimensionsConstrained_And_Margin()
 		{
 			const double setHeight = 45d;
-			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = ThicknessHelper.FromUniformLength(8) };
-#if !NETFX_CORE
+			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = new Thickness(8) };
+#if !WINAPPSDK
 			outerPanel.AreDimensionsConstrained = true;
 #endif
 			var innerView = new AspectRatioView { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
@@ -597,7 +698,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Negative_Margin_NonZero_Size()
 		{
-			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = ThicknessHelper.FromLengths(0, -16, 0, 0), Height = 120 };
+			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0), Height = 120 };
 
 			var hostPanel = new Grid();
 			hostPanel.Children.Add(SUT);
@@ -612,7 +713,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Negative_Margin_Zero_Size()
 		{
-			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = ThicknessHelper.FromLengths(0, -16, 0, 0) };
+			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0) };
 
 			var hostPanel = new Grid();
 			hostPanel.Children.Add(SUT);

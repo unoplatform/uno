@@ -4,9 +4,9 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Geolocation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 using ICommand = System.Windows.Input.ICommand;
 
@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_Devices
 
 		internal GeolocatorTestsViewModel ViewModel { get; private set; }
 
-		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			ViewModel = args.NewValue as GeolocatorTestsViewModel;
 		}
@@ -168,8 +168,10 @@ namespace UITests.Shared.Windows_Devices
 			}
 		}
 
-		private async void RequestAccess() =>
+		private async void RequestAccess()
+		{
 			GeolocationAccessStatus = await Geolocator.RequestAccessAsync();
+		}
 
 		private async void GetGeoposition()
 		{

@@ -2,7 +2,7 @@
 using System;
 using System.Threading;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Airbnb.Lottie;
 using Foundation;
 using System.Threading.Tasks;
@@ -104,16 +104,16 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				switch (player.Stretch)
 				{
-					case Windows.UI.Xaml.Media.Stretch.None:
+					case Microsoft.UI.Xaml.Media.Stretch.None:
 						_animation.ContentMode = _ViewContentMode.Center;
 						break;
-					case Windows.UI.Xaml.Media.Stretch.Uniform:
+					case Microsoft.UI.Xaml.Media.Stretch.Uniform:
 						_animation.ContentMode = _ViewContentMode.ScaleAspectFit;
 						break;
-					case Windows.UI.Xaml.Media.Stretch.Fill:
+					case Microsoft.UI.Xaml.Media.Stretch.Fill:
 						_animation.ContentMode = _ViewContentMode.ScaleToFill;
 						break;
-					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+					case Microsoft.UI.Xaml.Media.Stretch.UniformToFill:
 						_animation.ContentMode = _ViewContentMode.ScaleAspectFill;
 						break;
 				}

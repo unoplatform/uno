@@ -7,12 +7,12 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using _Debug = System.Diagnostics.Debug;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{

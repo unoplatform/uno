@@ -12,10 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Common;
 using Private.Infrastructure;
 #if USING_TAEF
@@ -175,7 +175,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static IList<T> FindDescendents<T>(DependencyObject root)
-#if WINDOWS_UWP
+#if WINAPPSDK
 			where T : DependencyObject
 #else
 			where T : class, DependencyObject
@@ -236,14 +236,14 @@ namespace MUXControlsTestApp.Utilities
 			return child;
 		}
 
-		public static IEnumerable<String> GetVisualStateGroupsName(FrameworkElement element)
+		public static IEnumerable<string> GetVisualStateGroupsName(FrameworkElement element)
 		{
 			var groups = VisualStateManager.GetVisualStateGroups(GetAndAssertFirstChildAsFrameworkElement(element));
 			return groups.Where(group => group != null && group.Name != null).
 				Select(group => group.Name);
 		}
 
-		public static IEnumerable<String> GetCurrentVisualStateName(FrameworkElement element)
+		public static IEnumerable<string> GetCurrentVisualStateName(FrameworkElement element)
 		{
 			var groups = VisualStateManager.GetVisualStateGroups(GetAndAssertFirstChildAsFrameworkElement(element));
 			return groups.Where(group => group != null && group.CurrentState != null).

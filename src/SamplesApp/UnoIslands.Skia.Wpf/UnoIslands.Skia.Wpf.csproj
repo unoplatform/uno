@@ -7,6 +7,8 @@
 		project may run with net6 only SDK installed
 		-->
 		<RollForward>Major</RollForward>
+
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-windows.props" />

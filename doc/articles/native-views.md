@@ -12,7 +12,7 @@ On WebAssembly, [Read this guide](xref:Uno.Interop.WasmJavaScript1) to learn how
 
 ## Adding native views in Skia
 
-On WebAssembly, integrating native JavaScript views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
+On Skia, integrating native views is done differently. [Read this guide](xref:Uno.Skia.Embedding.Native) to learn how.
 
 ## Native Views for iOS/Android/Catalyst
 
@@ -26,6 +26,7 @@ An example:
 Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 xmlns:android="http://uno.ui/android"
+xmlns:androidwidget="using:Android.Widget"
 mc:Ignorable="d android"
 ...
 
@@ -33,7 +34,7 @@ mc:Ignorable="d android"
 	<TextBlock Text="Rating" />
 	<android:Grid Background="Beige"
 				  Width="200">
-		<RatingBar />
+		<androidwidget:RatingBar />
 	</android:Grid>
 </StackPanel>
 ```

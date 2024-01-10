@@ -4,7 +4,7 @@
 
 #nullable enable
 
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Input
 {

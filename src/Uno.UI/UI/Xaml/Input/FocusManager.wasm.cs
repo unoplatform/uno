@@ -9,10 +9,10 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	public partial class FocusManager
 	{
@@ -73,6 +73,10 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
+		// The way focus management works natively (HTML live standard) is fundamentally different from
+		// WinUI focus management. In WinUI, elements gets focus when an explicit call is made (e.g.
+		// when a button is pressed, it focuses itself, etc.). However, in a browser, clicking on an
+		// html element will simply focus that element (assuming it's focusable).
 		internal static bool FocusNative(UIElement element)
 		{
 			if (_log.Value.IsEnabled(LogLevel.Debug))

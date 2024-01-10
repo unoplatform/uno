@@ -8,17 +8,9 @@ The Uno Platform provides a set of command-line templates to create cross-platfo
 
 To install the templates, type the following:
 
-# [**.NET 7**](#tab/net7)
-
 ```
 dotnet new install Uno.Templates
 ```
-# [**.NET 6**](#tab/net6)
-
-```
-dotnet new -i Uno.Templates
-```
-***
 
 To determine all parameters available for a template use `dotnet new [templatename] -h`.
 
@@ -26,9 +18,6 @@ To determine all parameters available for a template use `dotnet new [templatena
 > Installing the templates is done per dotnet CLI version. Meaning that the templates are installed for the version shown by `dotnet --version`. If you tried to use the templates with a version different than the one you used for installing, you'll get "No templates found matching: '<template-name>'." error.
 >
 > This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for the UI Test template.
-
-> [!NOTE]
-> When using .NET 6, use `dotnet new -i Uno.Templates` instead.
 
 [!include[getting-help](use-uno-check-inline.md)]
 
@@ -39,28 +28,28 @@ This template can be used to create a multi-platform application for iOS, Androi
 It comes with the **Blank** and **Recommended** presets.
 
 To create a blank template, using minimal dependencies:
+
 ```
 dotnet new unoapp -preset=blank -o test
 ```
 
 To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
+
 ```
 dotnet new unoapp -preset=recommended -o test
 ```
 
-> [!NOTE]
-> It is possible to create a .NET 6 template by using the `-tfm net6.0` parameter.
-
 More articles on WinUI 3:
 
- * [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
- * [Updating from UWP to WinUI 3.](updating-to-winui3.md)
+- [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
+- [Updating from UWP to WinUI 3.](updating-to-winui3.md)
 
 ## Uno Platform Blank Application (UWP)
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP
 
 A basic example:
+
 ```
 dotnet new unoapp-uwp -o MyApp
 ```
@@ -78,6 +67,7 @@ This template can be used to create a blank multi-platform application for iOS, 
 This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
 
 A basic example:
+
 ```
 dotnet new unoapp-uwp-net6 -o MyApp
 ```
@@ -99,6 +89,7 @@ See [this documentation](xref:Overview.Features) for more information.
 This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to be built separately, but cannot be differentiated.
 
 A basic example:
+
 ```
 dotnet new unolib -o MyUnoLib
 ```
@@ -113,12 +104,11 @@ dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
 ## Uno Platform Uno.UITest library
+
 This templates creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
 
-Considering you've created an application as follows:
-- `dotnet new unoapp -o MyApp`
+Considering you've created an application with `dotnet new unoapp -o MyApp`, you can then create a UI Tests library with these steps:
 
-To create a UI Tests library:
 - Create a folder name `MyApp\MyApp.UITests`
 - In that folder, run `dotnet new unoapp-uitest`
 
@@ -130,6 +120,8 @@ For additional information about UI Tests creation, visit the [Uno.UITest](https
 
 Using a command line or terminal, run the following command:
 
-`dotnet new -u Uno.Templates`
+```
+dotnet new -u Uno.Templates
+```
 
 [!include[getting-help](getting-help.md)]

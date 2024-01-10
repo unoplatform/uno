@@ -15,7 +15,7 @@ using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
 using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{

@@ -5,7 +5,7 @@
 
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// The OrientedSize structure is used to abstract the growth direction from

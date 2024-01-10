@@ -7,15 +7,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Uno.Collections;
-using Uno.Extensions;
 
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using static Uno.Extensions.Matrix3x2Extensions;
+using static Uno.Extensions.EnumerableExtensions;
 
 #if TRACE_HIT_TESTING
 using System.Runtime.CompilerServices;
@@ -35,11 +36,11 @@ using _ViewGroup = AppKit.NSView;
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
 #else
-using _View = Windows.UI.Xaml.UIElement;
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
+using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{

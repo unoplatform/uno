@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference XamlUICommand_Partial.cpp, tag winui3/release/1.4.2
 
@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Input;
+namespace Microsoft.UI.Xaml.Input;
 
 /// <summary>
 /// Provides a base class for defining the command behavior of an interactive

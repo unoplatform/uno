@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Linq;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentControlPages;
 using Windows_UI_Xaml_Controls;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -186,6 +186,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(comboBox.Items.Count == 0);
 			Assert.IsTrue(comboBox.SelectedIndex == -1);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FindName_ContentControl_Without_ContentTemplate()
+		{
+			var sut = new ContentControl
+			{
+				Width = 100,
+				Height = 100,
+				Content = new TextBox()
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+
+			Assert.IsNotNull(sut.FindName("ContentElement"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FindName_ContentControl_With_ContentTemplate()
+		{
+			var sut = new ContentControl
+			{
+				Width = 100,
+				Height = 100,
+				Content = new TextBox(),
+				ContentTemplate = new DataTemplate(() => new TextBlock())
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+
+			Assert.IsNull(sut.FindName("ContentElement"));
+		}
+#endif
 
 		private class SignInViewModel
 		{

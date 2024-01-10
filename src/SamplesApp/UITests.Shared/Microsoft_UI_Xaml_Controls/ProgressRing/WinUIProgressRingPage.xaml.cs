@@ -1,7 +1,7 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
@@ -14,7 +14,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
 			this.InitializeComponent();
 		}
 
-		private UIElement _loadUnloadProgressBar = new Microsoft.UI.Xaml.Controls.ProgressRing();
+		private UIElement _loadUnloadProgressBar = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing();
 
 		private void LoadUnload(object sender, RoutedEventArgs e)
 		{

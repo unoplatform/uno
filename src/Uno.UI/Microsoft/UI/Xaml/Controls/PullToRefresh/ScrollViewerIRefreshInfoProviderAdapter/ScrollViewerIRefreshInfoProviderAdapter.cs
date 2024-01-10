@@ -4,20 +4,20 @@
 // MUX Reference ScrollViewerIRefreshInfoProviderAdapter.cpp, commit de78834
 
 using System;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Disposables;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Composition.Interactions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.Controls._Tracing;
-using RefreshPullDirection = Microsoft.UI.Xaml.Controls.RefreshPullDirection;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
 
 #pragma warning disable CS0105 // Ignore duplicate namespace for WinUI build
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #pragma warning restore CS0105
 
 #if HAS_UNO_WINUI
@@ -298,7 +298,7 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 		}
 	}
 
-	private void OnScrollViewerViewChanging(object sender, Windows.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs args)
+	private void OnScrollViewerViewChanging(object sender, Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs args)
 	{
 		if (m_infoProvider is not null && m_infoProvider.IsInteractingForRefresh)
 		{

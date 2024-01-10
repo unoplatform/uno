@@ -6,7 +6,7 @@ using Uno.Foundation.Extensibility;
 using System.Threading;
 using Uno.UI.Runtime.Skia.Gtk;
 using Uno.Media.Playback;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SkiaSharpExample
 {

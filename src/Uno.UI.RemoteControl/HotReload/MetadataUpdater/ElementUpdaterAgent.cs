@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno;
 using System.Threading.Tasks;
 
@@ -52,6 +52,9 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// <summary>
 		/// This will get invoked whenever UpdateApplication is invoked 
 		/// but before any updates are applied to the visual tree. 
+		/// This is only invoked if 
+		///   a) there's no other update in progress
+		///   b) ui updating hasn't been paused
 		/// This is only invoked once per UpdateApplication, 
 		/// irrespective of the number of types the handler is registered for
 		/// </summary>
@@ -60,10 +63,25 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// <summary>
 		/// This will get invoked whenever UpdateApplication is invoked 
 		/// after all updates have been applied to the visual tree. 
+		/// This is only invoked if 
+		///   a) there's no other update in progress
+		///   b) ui updating hasn't been paused
 		/// This is only invoked once per UpdateApplication, 
 		/// irrespective of the number of types the handler is registered for
 		/// </summary>
 		public Action<Type[]?> AfterVisualTreeUpdate { get; set; } = _ => { };
+
+		/// <summary>
+		/// This will get invoked whenever UpdateApplication is invoked 
+		/// after all updates have been applied to the visual tree. 
+		/// This is always invoked, even if 
+		///   a) there's another update in progress
+		///   b) ui updating is paused
+		/// This is only invoked once per UpdateApplication, 
+		/// irrespective of the number of types the handler is registered for
+		/// Second parameter (bool) indicates whether the ui was updated or not
+		/// </summary>
+		public Action<Type[]?, bool> ReloadCompleted { get; set; } = (_, _) => { };
 
 		/// <summary>
 		/// This is invoked when a specific element is found in the tree. 
@@ -178,6 +196,13 @@ internal sealed class ElementUpdateAgent : IDisposable
 			methodFound = true;
 		}
 
+		if (GetHandlerMethod(handlerType, nameof(ElementUpdateHandlerActions.ReloadCompleted), new[] { typeof(Type[]), typeof(bool) }) is MethodInfo reloadCompleted)
+		{
+			_log($"Adding handler for {nameof(updateActions.ReloadCompleted)} for {handlerType}");
+			updateActions.ReloadCompleted = CreateHandlerAction<Action<Type[]?, bool>>(reloadCompleted);
+			methodFound = true;
+		}
+
 		if (GetHandlerMethod(handlerType, nameof(ElementUpdateHandlerActions.ElementUpdate), new[] { typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo elementUpdate)
 		{
 			_log($"Adding handler for {nameof(updateActions.ElementUpdate)} for {handlerType}");
@@ -229,7 +254,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 		if (!methodFound)
 		{
 			_log($"No invokable methods found on metadata handler type '{handlerType}'. " +
-				$"Allowed methods are BeforeVisualTreeUpdate, AfterVisualTreeUpdate, ElementUpdate, BeforeElementReplaced, AfterElementReplaced, CaptureState, RestoreState");
+				$"Allowed methods are BeforeVisualTreeUpdate, AfterVisualTreeUpdate, ElementUpdate, BeforeElementReplaced, AfterElementReplaced, CaptureState, RestoreState, ReloadCompleted");
 		}
 		else
 		{

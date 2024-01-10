@@ -11,7 +11,7 @@ using _UIImage = AppKit.NSImage;
 using _UIImageView = AppKit.NSImageView;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal partial class NativeImageView : _UIImageView
 {

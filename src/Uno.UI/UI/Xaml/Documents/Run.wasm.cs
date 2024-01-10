@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Run
 	{

@@ -8,7 +8,7 @@ Uno Platform automatically processes assets from your app's **Class Library Proj
 
 Support for automatic generation of assets multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
-Platform specific assets such as [`BundleResource`](https://learn.microsoft.com/en-us/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
+Platform-specific assets such as [`BundleResource`](https://learn.microsoft.com/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
 
 ## Supported asset types
 
@@ -31,14 +31,16 @@ At the moment, the following image file types are supported as `Content` assets:
 
 ## Adding an asset to your project
 
-This is just like adding an asset to any UWP project. Just make sure to add the asset to a shared project to make it available to all platforms.
+This is just like adding an asset to a WinUI project, except assets must be added to the shared project to make them available on all platforms.
 
-1. Add the image file to the `Assets` directory of a shared project.
-2. Set the build action to `Content`.
+1. Add an image file to the `Assets` directory of the solution's shared project.
+2. Select the item and set the build action to `Content`.
 
-Using the asset is done through the `ms-appx:///` scheme. 
+## Referencing an asset
 
-Here are a few examples:
+Use assets added to your shared project with the `ms-appx:///` scheme. 
+
+See the examples below for XAML:
 ```xml
 <!-- Relative path without a leading '/' uses assets from the library where the XAML is located -->
 <Image Source="Assets/MyImage.png" />
@@ -46,32 +48,37 @@ Here are a few examples:
 <Image Source="ms-appx:///[MyApp]/Assets/MyImage.png" />
 ```
 
-You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsync](file-management.md).
+You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsync](xref:Uno.Features.FileManagement#support-for-storagefilegetfilefromapplicationuriasync).
 
 ## Qualify an asset
 
-On UWP, you can use qualifiers to load different assets depending on scale, language, etc.
+When developing Windows apps, developers can load different assets at runtime based on attributes that qualify their visibility in the app UX. This allows you to tailor your app to different contexts to better suit users' hardware or language preferences.
 
-[Microsoft: Tailor your resources for language, scale, high contrast, and other qualifiers](https://docs.microsoft.com/en-us/windows/uwp/app-resources/tailor-resources-lang-scale-contrast)
+For instance, such **qualifiers** can selectively load different assets depending on scale, language, theme preferences, etc. This feature is notably useful when supporting high DPI screens or the norms of differing regions.
 
-You can do the same thing with Uno.UI, although only a subset of those qualifiers are supported.
+> [!NOTE]
+> To become more familiar with qualifiers, check out Microsoft's documentation for a conceptual overview of the feature:
+> [Microsoft: Tailor your resources for language, scale, high contrast, and other qualifiers](https://learn.microsoft.com/windows/apps/windows-app-sdk/mrtcore/tailor-resources-lang-scale-contrast)
 
-### Scale
+Uno Platform allows you to use this same feature on multiple platforms. However, a subset of those qualifiers currently has support.
+
+### Table of scales
 
 Not all scales are supported on all platforms:
 
-| Scale | UWP         | iOS      | Android |
-|-------|:-----------:|:--------:|:-------:|
-| `100` | scale-100   | @1x      | `mdpi`    |
-| `125` | scale-125   | N/A      | N/A     |
-| `150` | scale-150   | N/A      | `hdpi`    |
-| `200` | scale-200   | @2x      | `xhdpi`   |
-| `300` | scale-300   | @3x      | `xxhdpi`  |
-| `400` | scale-400   | N/A      | `xxxhdpi` |
+| Scale | WinUI       | iOS/MacCatalyst | Android |
+|-------|:-----------:|:---------------:|:-------:|
+| `100` | scale-100   | @1x             | mdpi    |
+| `125` | scale-125   | N/A             | N/A     |
+| `150` | scale-150   | N/A             | hdpi    |
+| `200` | scale-200   | @2x             | xhdpi   |
+| `300` | scale-300   | @3x             | xxhdpi  |
+| `400` | scale-400   | N/A             | xxxhdpi |
 
 We recommend including assets for each of these scales: `100`, `150`, `200`, `300` and `400`. Only compatible scales will be included to each platform.
 
-*Note: In the Android head project (via the csproj), you can set the `UseHighDPIResources` property to `False` in debug. In those cases, only assets with scale `100` (mdpi) and scale `150` (hdpi) will be included. This reduces deployment time when debugging as fewer assets are processed and transferred to the device or simulator.*
+> [!NOTE]
+> In the Android head project (via the csproj), you can set the `UseHighDPIResources` property to `False` in debug. In those cases, only assets with scale `100` (mdpi) and scale `150` (hdpi) will be included. This reduces deployment time when debugging as fewer assets are processed and transferred to the device or simulator.
 
 #### Examples
 
@@ -87,7 +94,7 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 
 ### Language
 
-Use it as you would on UWP, but keep in mind that some language/region combinations might not work on all platforms.
+Use it as you would on WinUI/UWP, but keep in mind that some language or region combinations might not work on all platforms.
 
 The following languages have been verified to work on all platforms:
 - `en`
@@ -112,6 +119,7 @@ The following languages have been verified to work on all platforms:
 
 ### Dark theme support
 
+> [!TIP]  
 > Supported on Android only
 
 A theme qualifier can be specified for the image loader to use an asset based on the current app theme.
@@ -125,7 +133,7 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 ### Custom (platform)
 
-Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on UWP, Uno Platform provides the `custom` qualifier.
+Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on WinUI/UWP, Uno Platform provides the `custom` qualifier.
 
 | Platform | Qualifier value |
 |----------|-----------------|
@@ -133,7 +141,7 @@ Sometimes, you might want to use a different asset depending on the platform. Be
 | iOS      | `ios`           |
 | Android  | `android`       |
 
-Because the `custom` qualifier doesn't have any special meaning on UWP, we have to interpret its value manually.
+Because the `custom` qualifier doesn't have any special meaning on WinUI/UWP, we have to interpret its value manually.
 
 On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
 
@@ -178,6 +186,6 @@ private void ConfigureUniversalImageLoader()
 }
 ```
 
-## iOS: referencing bundle images
+## iOS/MacCatalyst: referencing bundle images
 
-On iOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.
+On iOS/MacCatalyst, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.

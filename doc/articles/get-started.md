@@ -92,3 +92,11 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 † Rider [does not support .NET Android](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) on Linux at this time.
 
 ***
+
+## Next Steps
+
+Choose the IDE to Learn more about:
+
+ - [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+ - [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+ - [Rider](xref:Uno.GetStarted.Rider)

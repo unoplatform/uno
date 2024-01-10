@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.ListViewPages;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -16,13 +16,13 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.Extensions;
@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var initial_Depth_1 = 64;
 			var initial_Depth_2 = 96;
 
-			var treeView = new Microsoft.UI.Xaml.Controls.TreeView();
+			var treeView = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView();
 			treeView.ItemTemplate = TreeViewItemTemplate;
 			var testViewModelItems = Enumerable.Range(0, 2).Select(_ => Get_Depth_0_Item()).ToArray();
 			treeView.ItemsSource = testViewModelItems;

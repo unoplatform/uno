@@ -4,7 +4,7 @@
 
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal class MicaController
 	{
@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal static readonly Color LightThemeColor = Color.FromArgb(255, 243, 243, 243);
 		internal const float LightThemeTintOpacity = 0.5f;
 
-		internal bool SetTarget(Windows.UI.Xaml.Window xamlWindow)
+		internal bool SetTarget(Microsoft.UI.Xaml.Window xamlWindow)
 		{
 			// Uno specific: Actual Mica is not yet supported on any target.
 			return false;

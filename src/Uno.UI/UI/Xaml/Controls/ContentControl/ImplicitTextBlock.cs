@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A special textblock that will not inherit from the default style of a TextBlock. This type should not be used directly.

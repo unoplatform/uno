@@ -1,9 +1,9 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
+﻿using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {
 	public partial class SplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IInvokeProvider
 	{

@@ -1,18 +1,18 @@
-using System;
+﻿using System;
 using System.Linq;
 using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.Collections;
 
@@ -55,8 +55,8 @@ using Point = Windows.Foundation.Point;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #else
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
@@ -64,11 +64,11 @@ using nfloat = System.Double;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		Style Style { get; set; }
 
-		Windows.UI.Xaml.Media.Brush Background { get; set; }
+		Microsoft.UI.Xaml.Media.Brush Background { get; set; }
 
 		Transform RenderTransform { get; set; }
 
@@ -255,9 +255,17 @@ namespace Windows.UI.Xaml
 
 			// If element is a ContentControl with a view as Content, include the view and its children in the search,
 			// to better match Windows behaviour
-			var content =
-				(e as ContentControl)?.Content as IFrameworkElement ??
-				(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
+			IFrameworkElement content = null;
+			if (e is ContentControl contentControl &&
+				contentControl.Content is IFrameworkElement innerContent &&
+				contentControl.ContentTemplate is null) // Only include the Content view if there is no ContentTemplate.
+			{
+				content = innerContent;
+			}
+			else if (e is Controls.Primitives.Popup popup)
+			{
+				content = popup.Child as IFrameworkElement;
+			}
 
 			if (content != null)
 			{
@@ -273,7 +281,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
+			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
 			{
 				// Static version here to ensure that it's not used outside of this scope
 				// where we're ensuring that we're not taking a dependency on FlyoutBase statically.
@@ -444,7 +452,7 @@ namespace Windows.UI.Xaml
 				.SizeThatFits(view, new _Size(view.MeasuredWidth, view.MeasuredHeight).PhysicalToLogicalPixels())
 				.LogicalToPhysicalPixels();
 
-			Windows.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
+			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
 		}
 
 		/// <summary>
@@ -458,7 +466,7 @@ namespace Windows.UI.Xaml
 				.SizeThatFits(view, new _Size(measuredSize.Width, measuredSize.Height).PhysicalToLogicalPixels())
 				.LogicalToPhysicalPixels();
 
-			Windows.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
+			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
 		}
 #endif
 

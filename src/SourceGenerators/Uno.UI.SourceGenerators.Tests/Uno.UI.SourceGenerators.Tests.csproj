@@ -15,7 +15,7 @@
 		<!-- that are not yet published to NuGet.org -->
 		<!-- The latest on NuGet.org doesn't have the fix from https://github.com/dotnet/roslyn-sdk/pull/988 -->
 		<!-- which is very important for us -->
-		<RestoreAdditionalProjectSources Condition="'$(UNO_UWP_BUILD)'=='true'">https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
+		<RestoreAdditionalProjectSources Condition="'$(UNO_UWP_BUILD)'=='false'">https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 
 	</PropertyGroup>
 
@@ -34,8 +34,8 @@
 		<Compile Remove="**\*.xaml.cs" />
 		<None Include="**\*.xaml.cs" />
 
-		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" Condition="'$(UNO_UWP_BUILD)'=='true'" />
-		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,10 +46,10 @@
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23251.2" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23578.3" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="FluentAssertions" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='true'" />
-		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,12 +59,12 @@
 
 	<ItemGroup>
 		<Compile Remove="XamlCodeGeneratorTests\Out\**\*.cs" />
-		<EmbeddedResource Include="XamlCodeGeneratorTests\Out\**\*.cs" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<EmbeddedResource Include="XamlCodeGeneratorTests\Out\**\*.cs" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="MetadataUpdateTests\Scenarios\**" />
-		<Content Include="MetadataUpdateTests\Scenarios\**" CopyToOutputDirectory="PreserveNewest" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<Content Include="MetadataUpdateTests\Scenarios\**" CopyToOutputDirectory="PreserveNewest" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -281,8 +281,8 @@
 		</Content>
 	</ItemGroup>
 
-	<!-- Disabled as tests explicitly use UWP types -->
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+	<!-- Disabled as tests explicitly use WinUI types -->
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<Compile Remove="DependencyObjectGeneratorTests\Given_DependencyObjectGenerator.cs" />
 		<Compile Remove="DependencyPropertyGeneratorTests\Given_DependencyPropertyGenerator.cs" />
 		<Compile Remove="ImplementedRoutedEventsGeneratorTests\Given_ImplementedRoutedEventsGenerator.cs" />
@@ -293,6 +293,7 @@
 		<Compile Remove="XamlCodeGeneratorTests\Given_AttachedPropertyWithNoFuzzyMatching.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_Binding.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_Grid.cs" />
+		<Compile Remove="XamlCodeGeneratorTests\Given_HotReloadEnabledInBuild.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_MvvmGeneratedMembers.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_Parser.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\Given_ResourceDictionary.cs" />

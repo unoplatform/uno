@@ -1,13 +1,13 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
@@ -94,9 +94,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 			RemoveHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown));
-			RemoveHandler(PointerWheelChangedEvent, new KeyEventHandler(OnKeyDown));
+			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged));
 		}
 
-		private void OnKeyDown(object sender, KeyRoutedEventArgs args) => CancelNextNativeScroll = args.Handled;
+		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			// event got handled before it reached ScrollViewer, cancel scrolling
+			CancelNextNativeScroll = args.Handled;
+		}
 	}
 }

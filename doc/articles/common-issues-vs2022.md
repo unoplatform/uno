@@ -67,11 +67,6 @@ Event handlers [cannot be automatically](https://github.com/unoplatform/uno/issu
 
 A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml-xbind.md#examples). This feature allows to use a simpler syntax like `<Button Click="{x:Bind MyClick}" />` and declare a simple method `private void MyClick() { }` in the code-behind.
 
-### Abnormally long build times with using WebAssembly and WSL
-When building an application that uses native dependencies (such as Skia, SQLite) or using PG-AOT/AOT, using WSL 2 may cause abnormally long build times.
-
-You can migrate your WSL v2 installation into a v1, by [visiting this document](get-started-with-linux.md).
-
 ### WebAssembly: Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint
 
 This issue is caused by visual studio enforcing https connections for local content. You can work around this by either:

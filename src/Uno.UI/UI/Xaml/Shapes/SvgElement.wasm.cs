@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
-namespace Windows.UI.Xaml.Wasm
+namespace Microsoft.UI.Xaml.Wasm
 {
 	public partial class SvgElement : UIElement
 	{

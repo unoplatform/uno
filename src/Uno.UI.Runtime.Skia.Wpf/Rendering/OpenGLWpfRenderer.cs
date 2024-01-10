@@ -11,7 +11,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.Graphics.Display;
-using WinUI = Windows.UI.Xaml;
+using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;

@@ -10,14 +10,14 @@ using Uno.Extensions.Specialized;
 using System.Diagnostics;
 using Uno.UI;
 using Uno.Disposables;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class Selector : ItemsControl
 	{
@@ -82,6 +82,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnApplyTemplate();
 			m_tpScrollViewer = GetTemplateChild<ScrollViewer>("ScrollViewer");
+			if (m_tpScrollViewer is { })
+			{
+				m_tpScrollViewer.TemplatedParentHandlesScrolling = true;
+			}
 		}
 
 		public static DependencyProperty SelectedItemProperty { get; } =
@@ -354,8 +358,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedValuePathProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			name: nameof(SelectedValuePath),
 			propertyType: typeof(string),
 			ownerType: typeof(Selector),
@@ -368,8 +372,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedValueProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		public static global::Microsoft.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			name: nameof(SelectedValue),
 			propertyType: typeof(object),
 			ownerType: typeof(Selector),
@@ -404,7 +408,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty IsSynchronizedWithCurrentItemProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(IsSynchronizedWithCurrentItem),
 				typeof(bool?),
 				typeof(Selector),

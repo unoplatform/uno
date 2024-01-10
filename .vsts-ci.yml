@@ -44,6 +44,8 @@ resources:
   containers:
   - container: nv-bionic-wasm
     image: unoplatform/wasm-build:3.0
+    # Ensures that Chromium has enough room to avoid net::ERR_INSUFFICIENT_RESOURCES errors
+    options: "--shm-size=2gb"
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true

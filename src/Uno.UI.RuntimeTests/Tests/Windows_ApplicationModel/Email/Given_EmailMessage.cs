@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP || __IOS__ || __ANDROID__
+﻿#if WINAPPSDK || __IOS__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Linq;

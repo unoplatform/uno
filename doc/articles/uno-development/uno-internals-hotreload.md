@@ -41,6 +41,8 @@ static void BeforeVisualTreeUpdate(Type[]? updatedTypes);
 
 static void AfterVisualTreeUpdate(Type[]? updatedTypes);
 
+static void ReloadCompleted(Type[]? updatedTypes, bool uiUpdated);
+
 static void ElementUpdate(FrameworkElement, Type[]?);
 
 static void BeforeElementReplaced(FrameworkElement, FrameworkElement, Type[]?);

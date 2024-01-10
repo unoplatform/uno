@@ -82,8 +82,8 @@
         href: external/uno.themes/doc/cupertino-getting-started.md
       - name: How to use Windows Community Toolkit
         href: uno-community-toolkit.md
-      - name: How to add a splash screen
-        href: splash-screen.md
+      - name: How to manually add a splash screen
+        href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
         href: guides/native-frame-nav-tutorial.md
       - name: How to consume a web API
@@ -123,11 +123,12 @@
       href: xref:Uno.GetStarted.NextSteps
 
 - name: Overview
-  topicHref: xref:Uno.Documentation.Intro
   items:
     - name: Architecture
       topicHref: xref:Uno.Development.About
       items:
+        - name: Intro
+          href: xref:Uno.Documentation.Intro
         - name: Supported Platforms
           href: getting-started/requirements.md
           items:
@@ -176,11 +177,11 @@
 
     - name: Embedding
       items:
-      - name: Uno Islands
+      - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Adding native views for mobile
+      - name: Native Views with Mobile
         href: native-views.md
-      - name: Embedding Native Views for Skia
+      - name: Native Views with Skia 
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading
@@ -188,7 +189,9 @@
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
       - name: Upgrading to Uno 5.0
-        href: migrating-to-uno-5.md
+        href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 7 to .NET 8
+        href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
         href: migrating-from-xamarin-to-net6.md
       - name: Upgrading to WinUI 3.0
@@ -323,8 +326,8 @@
             href: uno-development/Internal-WeakEventHelper.md
           - name: Debugging Uno.UI Java code with Android studio
             href: uno-development/Uno-UI-Debugging-Android-Studio.md
-          - name: Converting the source tree to WinUI
-            href: uno-development/winui-conversion.md
+          - name: Converting the source tree to UWP
+            href: uno-development/uwp-conversion.md
           - name: Troubleshooting Memory Issues
             href: uno-development/troubleshooting-memory-issues.md
           - name: Troubleshooting Source Generation
@@ -461,7 +464,7 @@
           href: features/working-with-themes.md
         - name: User inputs - Keyboard, Pointers, Gestures, Manipulations, Drag and drop
           href: features/pointers-keyboard-and-other-user-inputs.md
-        - name: WinUI 2 controls
+        - name: Using Fluent styles in legacy apps
           href: features/using-winui2.md
         - name: x:Bind
           href: features/windows-ui-xaml-xbind.md
@@ -579,7 +582,7 @@
   href: external/uno.toolkit.ui/doc/toc.yml
   
 - name: Figma
-  topicHref: external/figma-docs/overview/getting-started-uno-figma.md
+  #topicHref: xref:Uno.Figma.GetStarted
   href: external/figma-docs/toc.yml
 
 - name: Tooling
@@ -594,8 +597,14 @@
       href: external/uno.resizetizer/doc/toc.yml
     - name: Uno.UITest
       href: external/uno.uitest/doc/toc.yml
-    - name: Visual Studio Code Extension
-      href: xref:Uno.vscode.additional
+    - name: VS Code Extension
+      items:
+      - name: Visual Studio Code Extension
+        href: xref:Uno.vscode.additional
+      - name: C# Dev Kit Support
+        href: xref:Uno.GetStarted.vscode.DevKit
+      - name: Omnisharp Support
+        href: xref:Uno.GetStarted.vscode.OmniSharp
     - name: Templates
       items:
       - name: Visual Studio Wizard

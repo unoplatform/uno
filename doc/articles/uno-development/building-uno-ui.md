@@ -8,14 +8,14 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 
 ## Prerequisites
 
-- Visual Studio 2022 (17.4.4 or later)
-    - `MAUI`
-    - `Xamarin development` (Under the MAUI optional components)
-    - `ASP.NET and Web Development`
-    - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
+- Visual Studio 2022 (17.8.1 or later)
+    - Select the **ASP.NET and Web Development** workload
+    - Select the **.NET Multi-Platform App UI development`** workload
+    - Select the **.NET desktop development** workload
+    - To build the UWP flavor of Uno, you'll need **UWP Development**, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
-- Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
+- Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET Android/iOS workloads
+- Install the version of the .NET SDK specified in [global.json](../../../global.json).
 
 ## Recommended Windows hardware
 
@@ -44,10 +44,10 @@ The step by step process is:
 1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.
 > [!NOTE]
 > This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
-1. By default the Uno.UI solution on the master branch is building using the UWP API set. If you want to build against the WinUI 3 API set, you can checkout the `generated/master/winui-autoconvert` branch. See [this section](winui-conversion.md) for details on this branch.
-1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
+1. By default the Uno.UI solution on the master branch is building using the WinUI API set. If you want to build against the UWP API set, you can checkout the `generated/master/uwp-autoconvert` branch. See [this section](xref:Uno.Contributing.UWPConversion) for details on this branch.
+1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed)
 1. Make a copy of the [`src/crosstargeting_override.props.sample`](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
-1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>`
+1. In `crosstargeting_override.props`, uncomment the line `<UnoTargetFrameworkOverride>xxx</UnoTargetFrameworkOverride>`
 1. Set the build target inside ``<UnoTargetFrameworkOverride></UnoTargetFrameworkOverride>`` to the identifier for the target platform you wish to build for (Identifiers for each platform are listed in the `crosstargeting_override.props` file), then save the file.
 1. In the `src` folder, look for the solution filter (`.slnf` file) corresponding to the target platform override you've set, which will be named `Uno.UI-[Platform]-only.slnf` (or the name listed in `crosstargeting_override.props` for the selected `UnoTargetFrameworkOverride`), and open it.
 1. To confirm that everything works:
@@ -127,7 +127,7 @@ To run the synchronization tool:
 - Go the the `uno\build` folder (not the `uno\src\build` folder)
 - Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions
 
-Note that as of Uno 3.10, the tool is manually run for the UWP part of the build and automatically run as part of the CI during the WinUI part of the build.
+Note that as of Uno 3.10, the tool is manually run for the WinUI part of the build and automatically run as part of the CI during the UWP part of the build.
 
 ### Android Resources ID generation
 

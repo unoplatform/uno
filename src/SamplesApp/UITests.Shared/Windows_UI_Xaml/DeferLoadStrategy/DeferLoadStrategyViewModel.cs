@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Samples.Presentation.SamplePages
 {

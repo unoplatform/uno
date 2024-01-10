@@ -3,13 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Collections.Specialized;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
-	using ItemsSourceView = Microsoft.UI.Xaml.Controls.ItemsSourceView;
-	using IKeyIndexMapping = Microsoft.UI.Xaml.Controls.IKeyIndexMapping;
+	using ItemsSourceView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsSourceView;
+	using IKeyIndexMapping = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IKeyIndexMapping;
 
 	class CustomItemsSource : CustomItemsSourceView
 	{

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public sealed partial class IndexPath : IStringable
 	{

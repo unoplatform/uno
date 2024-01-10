@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
@@ -19,12 +19,12 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 #endif
 		}
 
-		private void WebView2_NavigationStarting(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
+		private void WebView2_NavigationStarting(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
 		{
 			NavigationStartingTextBlock.Text = args.Uri.ToString();
 		}
 
-		private void WebView2_NavigationCompleted(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
+		private void WebView2_NavigationCompleted(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
 		{
 			//TODO: MZ: How to get the URI here?
 			//NavigationCompletedTextBlock.Text = sender.CoreWebView2.Ur;

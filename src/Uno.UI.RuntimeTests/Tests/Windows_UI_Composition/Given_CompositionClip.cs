@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 public static class Ext
 {
 	public static Color WithOpacity(this Color color, double opacity)
@@ -35,7 +35,7 @@ public static class Ext
 [TestClass]
 internal class Given_CompositionClip
 {
-#if __SKIA__ || WINDOWS_UWP
+#if __SKIA__ || WINAPPSDK
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_TransformElementClippedByParent_Then_ClippingAppliedPostRendering()

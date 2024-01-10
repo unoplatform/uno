@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Drawing;
 using ObjCRuntime;
 using Foundation;
 using UIKit;
 using CoreGraphics;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[Data.Bindable]
 	public partial class WindowView : UIView

@@ -5,8 +5,13 @@ IFS=$'\n\t'
 
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
-npm i chromedriver@102.0.0
-npm i puppeteer@14.1.0
+npm i chromedriver@119.0.0
+npm i puppeteer@21.6.1
+
+# Download chromium explicitly
+pushd ./node_modules/puppeteer
+npm install
+popd
 
 # install dotnet serve / Remove as needed
 dotnet tool uninstall dotnet-serve -g || true
@@ -16,9 +21,9 @@ export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
-export UNO_UITEST_CHROME_BINARY_PATH=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/puppeteer/.local-chromium/linux-991974/chrome-linux/chrome
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP
+export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
+export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP
 export UNO_UITEST_PLATFORM=Browser
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/wasm-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-wasm-automated-$SITE_SUFFIX.xml
@@ -42,6 +47,13 @@ then
 elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
 then
 		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests"
+fi
+
+if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ]; then
+	# The test results file only contains the re-run marker and no
+	# other test to rerun. We can skip this run.
+	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
+	exit 0
 fi
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
@@ -71,14 +83,27 @@ dotnet test \
 	-v m \
 	|| true
 
+## terminate dotnet serve
+kill %%
+
 ## Copy the results file to the results folder
 cp --backup=t $UNO_ORIGINAL_TEST_RESULTS $UNO_UITEST_SCREENSHOT_PATH
+
+## Find the string net::ERR_INSUFFICIENT_RESOURCES in any file inside the path $UNO_UITEST_SCREENSHOT_PATH
+## If found, show an error message then exit with code 1
+grep -r "net::ERR_INSUFFICIENT_RESOURCES" $UNO_UITEST_SCREENSHOT_PATH && (echo "Found net::ERR_INSUFFICIENT_RESOURCES in the test results, failing the build" && exit 1) || true
+
+# Copy dump files, if any
+mkdir $UNO_UITEST_SCREENSHOT_PATH/dumps || true
+cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.dmp $UNO_UITEST_SCREENSHOT_PATH/dumps || true
+cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.xml $UNO_UITEST_SCREENSHOT_PATH/dumps || true
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
-dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
-popd
 
-## terminate dotnet serve
-kill %%
+dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+
+## Fail the build when no test results could be read
+dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
+popd

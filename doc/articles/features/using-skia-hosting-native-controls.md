@@ -17,7 +17,7 @@ For instance, in a Skia.GTK app, you can add a control as follows:
 ```xml
 <ContentControl x:Name="MyControl">
     <ContentControl.Content>
-        <CheckBox xmlns="using:Gtk" />
+        <Button xmlns="using:Gtk" />
     </ContentControl.Content>
 </ContentControl>
 ```

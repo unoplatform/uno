@@ -2,7 +2,7 @@
 using Uno;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Represents a player for XAML control sounds.

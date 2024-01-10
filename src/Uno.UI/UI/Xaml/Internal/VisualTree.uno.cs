@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Core;
 

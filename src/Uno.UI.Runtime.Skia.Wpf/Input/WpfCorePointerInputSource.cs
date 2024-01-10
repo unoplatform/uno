@@ -1,10 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -100,89 +103,58 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		=> _hostControl.ReleaseMouseCapture();
 
 	#region Native events
-	private void HostOnMouseEnter(object sender, WpfMouseEventArgs args)
+	private void HostOnMouseEvent(WpfMouseEventArgs args, TypedEventHandler<object, PointerEventArgs>? @event, [CallerArgumentExpression(nameof(@event))] string eventName = "")
 	{
+		var current = SynchronizationContext.Current;
 		try
 		{
+			// Make sure WPF doesn't override our own SynchronizationContext.
+			if (Microsoft.UI.Xaml.Application.ApplicationSynchronizationContext is { } syncContext)
+			{
+				SynchronizationContext.SetSynchronizationContext(syncContext);
+			}
+
 			var eventArgs = BuildPointerArgs(args);
-			PointerEntered?.Invoke(this, eventArgs);
+			@event?.Invoke(this, eventArgs);
 			_previous = eventArgs;
 		}
 		catch (Exception e)
 		{
-			this.Log().Error("Failed to raise PointerEntered", e);
+			this.Log().Error($"Failed to raise {eventName}", e);
 		}
+		finally
+		{
+			SynchronizationContext.SetSynchronizationContext(current);
+		}
+	}
+	private void HostOnMouseEnter(object sender, WpfMouseEventArgs args)
+	{
+		HostOnMouseEvent(args, PointerEntered);
 	}
 
 	private void HostOnMouseLeave(object sender, WpfMouseEventArgs args)
 	{
-		try
-		{
-			var eventArgs = BuildPointerArgs(args);
-			PointerExited?.Invoke(this, eventArgs);
-			_previous = eventArgs;
-		}
-		catch (Exception e)
-		{
-			this.Log().Error("Failed to raise PointerExited", e);
-		}
+		HostOnMouseEvent(args, PointerExited);
 	}
 
 	private void HostOnMouseMove(object sender, WpfMouseEventArgs args)
 	{
-		try
-		{
-			var eventArgs = BuildPointerArgs(args);
-			PointerMoved?.Invoke(this, eventArgs);
-			_previous = eventArgs;
-		}
-		catch (Exception e)
-		{
-			this.Log().Error("Failed to raise PointerMoved", e);
-		}
+		HostOnMouseEvent(args, PointerMoved);
 	}
 
 	private void HostOnMouseDown(object sender, MouseButtonEventArgs args)
 	{
-		try
-		{
-			// IsInContact: true
-			var eventArgs = BuildPointerArgs(args);
-			PointerPressed?.Invoke(this, eventArgs);
-			_previous = eventArgs;
-		}
-		catch (Exception e)
-		{
-			this.Log().Error("Failed to raise PointerPressed", e);
-		}
+		HostOnMouseEvent(args, PointerPressed);
 	}
 
 	private void HostOnMouseUp(object sender, MouseButtonEventArgs args)
 	{
-		try
-		{
-			var eventArgs = BuildPointerArgs(args);
-			PointerReleased?.Invoke(this, eventArgs);
-			_previous = eventArgs;
-		}
-		catch (Exception e)
-		{
-			this.Log().Error("Failed to raise PointerReleased", e);
-		}
+		HostOnMouseEvent(args, PointerReleased);
 	}
 
 	private void HostOnMouseCaptureLost(object sender, WpfMouseEventArgs args)
 	{
-		try
-		{
-			var eventArgs = BuildPointerArgs(args);
-			PointerCaptureLost?.Invoke(this, eventArgs);
-			_previous = eventArgs;
-		}
-		catch (Exception e)
-		{
-			this.Log().Error("Failed to raise PointerCaptureLost", e);
-		}
+		HostOnMouseEvent(args, PointerCaptureLost);
 	}
 
 	private IntPtr OnWmMessage(IntPtr hwnd, int msg, IntPtr wparamOriginal, IntPtr lparamOriginal, ref bool handled)

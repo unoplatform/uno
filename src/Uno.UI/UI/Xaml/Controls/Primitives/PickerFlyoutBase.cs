@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class PickerFlyoutBase : FlyoutBase
 	{
 		public static DependencyProperty TitleProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.RegisterAttached(
+			Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 				"Title", typeof(string),
 				typeof(PickerFlyoutBase),
 				new FrameworkPropertyMetadata(default(string)));

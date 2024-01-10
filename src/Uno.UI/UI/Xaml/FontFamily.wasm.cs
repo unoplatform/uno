@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Uno;
 using Windows.Storage.Helpers;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class FontFamily
 	{

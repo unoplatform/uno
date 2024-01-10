@@ -2,16 +2,16 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // FocusHelper.cs
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using System;
 using System.Threading.Tasks;
 using Common;
-using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
 namespace Uno.UI.RuntimeTests.MUX.Input.Focus

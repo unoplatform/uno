@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
 using DateTime = System.DateTimeOffset;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutPresenter : Control
 	{
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 
 		//	//(Private.SetDefaultStyleKey(
 		//	//	spInnerInspectable,
-		//	//	"Microsoft.UI.Xaml.Controls.DatePickerFlyoutPresenter"));
+		//	//	"Microsoft/* UWP don't rename */.UI.Xaml.Controls.DatePickerFlyoutPresenter"));
 		//	spInnerInstance.DefaultStyleKey = typeof(DatePickerFlyoutPresenter);
 		//}
 

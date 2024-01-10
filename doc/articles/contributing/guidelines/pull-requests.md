@@ -17,22 +17,25 @@ Pull requests should all be made to the **master** branch.
 ### Updating your branch on top of the latest of the default branch
 
 Make sure to rebase your work on the latest default branch of the Uno repository, when working on a fork:
+
 - Add the official uno repository to your remotes:
-```bash
-git remote add uno-origin https://github.com/unoplatform/uno
-```
+    ```bash
+    git remote add uno-origin https://github.com/unoplatform/uno
+    ```
 - Fetch the official repository
-```bash
-git fetch uno-origin
-```
+    ```bash
+    git fetch uno-origin
+   ```
 - Rebase your work on the default branch
-```bash
-git rebase uno-origin/master
-```
+    ```bash
+    git rebase uno-origin/master
+    ```
 - Then push your branch to your fork:
-```bash
-git push -f
-```
+    ```bash
+    git push -f
+    ```
+
+**Commit/Pull Request Format**
 
 All commits **must** be in the [Conventional Commits format](../../uno-development/git-conventional-commits.md), otherwise the build will fail.
 
@@ -49,39 +52,17 @@ Make sure that:
    ```
 - If you're fixing a regression introduced by a PR that has not been released in a stable version yet, use the `reg` category. Example: `fix(reg): Fixing issue of previous PR`.
 
-**Commit/Pull Request Format**
-
-```
-Summary of the changes (Less than 80 chars)
- - Detail 1
- - Detail 2
-
-Addresses #bugnumber (in this specific format)
-```
+When opening a PR, you'll see the description is filled by a template. Make sure to read through the template and fill the missing parts in it.
 
 If you haven't [added tests](creating-tests.md) appropriate to your changes, the reviewers will probably ask you to add some.
 
 ## Reviewing
 
-Maintainers, contributors and the community can participate in reviewing pull-requests. We require `two approvals` before the pull-request can be merged. Please apply the appropriate labels to the pull-request when reviewing. If the pull-request requires minor touch ups, consider doing them in the GitHub editor rather than asking the initiator of the pull-request to do them for you.
+Maintainers, contributors, and the community can participate in reviewing pull-requests. We require `two approvals` before the pull-request can be merged. Please apply the appropriate labels to the pull-request when reviewing. If the pull-request requires minor touch ups, consider doing them in the GitHub editor rather than asking the initiator of the pull-request to do them for you.
 The history should be squashed to meaningful commits, and the branch should be rebased to a recent commit.
 
 ## Merging
 
-We typically don't merge pull-requests by hand, instead we rely on automation and a process of the pull-request initiator adding the `ready-for-merge` label. If the person who initiated the pull-request does not have permission to add a label then the reviewers can add it when the contribution is ready to ship:
-
-The automation logic is as follows:
-* When a pull-request to `master`
-* The `continuous integration tests` passes
-* Has `2 or more approvals`
-* There are `no requests for change`
-* Is labelled with `ready-to-merge`
-* Not labelled with `do-not-merge/breaking-changes` or `do-not-merge/work-in-progress`
-* It will be automatically merged.
-
-This logic is defined in [this file](https://github.com/unoplatform/Uno/blob/master/.mergify.yml).
-
-Once a pull-request meets the above criteria Mergify will automatically update the pull-request with the contents of master. If CI passes, then Mergify will merge that pull-request. If multiple pull-requests are mergeable open then Mergify will queue the mergeable pull requests and update them one at a time serially, merging if CI passes.
+Once a PR is reviewed and approved. One of the team members will merge it when it passes CI and is ready to merge.
 
 If the branch is within the `unoplatform/uno` repository then the branch will be automatically deleted after merging by the [delete-merged-branch](https://github.com/apps/delete-merged-branch) robot.
-

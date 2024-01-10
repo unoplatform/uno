@@ -2,9 +2,9 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Windows.Foundation;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal partial class SelectionNode
 	{

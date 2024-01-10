@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FrameworkPoolEditorRecycling;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using static Private.Infrastructure.TestServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -225,7 +225,7 @@ internal class Given_FrameworkTemplatePool
 			if (i > vm.Editors.Length - 1)
 			{
 				textBox.Focus(FocusState.Programmatic);
-				await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
+				await WindowHelper.WaitFor(() => Equals(FocusManager.GetFocusedElement(WindowHelper.XamlRoot), textBox));
 			}
 
 			AssertEditorContents();

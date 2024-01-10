@@ -10,9 +10,9 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using System.Collections.Specialized;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{

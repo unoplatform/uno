@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		internal static IEnumerable<Popup> GetOpenPopups(DependencyObject element)
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return VisualTreeHelper.GetOpenPopups(Window.Current);
 #else
 			return VisualTreeHelper.GetOpenPopupsForXamlRoot(GetXamlRoot(element));
@@ -100,7 +100,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		internal static XamlRoot GetXamlRoot(DependencyObject obj)
 		{
 			XamlRoot xamlRoot = default;
@@ -112,7 +112,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			{
 				xamlRoot = te.XamlRoot;
 			}
-			else if (obj is Windows.UI.Xaml.Controls.Primitives.FlyoutBase fb)
+			else if (obj is Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase fb)
 			{
 				xamlRoot = fb.XamlRoot;
 			}

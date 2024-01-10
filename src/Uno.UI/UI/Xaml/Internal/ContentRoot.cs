@@ -7,9 +7,9 @@
 using System;
 using Uno.UI.Xaml.Input;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 /*
     +----------------------------------------------------------------------------------+

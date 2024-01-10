@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Media;
-using _View = Windows.UI.Xaml.DependencyObject;
+using Microsoft.UI.Xaml.Media;
+using _View = Microsoft.UI.Xaml.DependencyObject;
 
 namespace Uno.UI.Extensions; // same as in ViewExtensions.visual-tree.cs
 
 internal static class VisualTreeExtensions // non-uno counterpart to src\Uno.UI\Extensions\ViewExtensions.visual-tree.cs
 {
+#if !WINAPPSDK
 	/// <summary>
 	/// Returns the first descendant of a specified type.
 	/// </summary>
@@ -69,6 +70,7 @@ internal static class VisualTreeExtensions // non-uno counterpart to src\Uno.UI\
 			}
 		}
 	}
+#endif
 
 	private static IEnumerable<_View> EnumerateChildren(this _View? reference)
 	{

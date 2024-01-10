@@ -4,5 +4,37 @@
 	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
+	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\AcrylicBrushTests\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\AcrylicBrushTests\**" />
+	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\AcrylicBrushTests\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\**" />
+	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\BrushesTests\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Windows_Phone\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Windows_Phone\**" />
+	<None Include="$(MSBuildThisFileDirectory)Windows_Phone\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
+	<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
+	<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
+	  
+	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
+	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
+
+	<Page Remove="$(MSBuildThisFileDirectory)Lottie\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Lottie\**" />
+	<None Include="$(MSBuildThisFileDirectory)Lottie\**" />
   </ItemGroup>
 </Project>

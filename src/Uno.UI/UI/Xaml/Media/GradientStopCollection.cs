@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	internal delegate void GradientStopAddedOrRemovedEventHandler(GradientStop addedOrRemovedGradientStop);
 

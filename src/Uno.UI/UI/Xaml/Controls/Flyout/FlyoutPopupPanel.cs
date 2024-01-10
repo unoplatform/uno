@@ -1,14 +1,14 @@
-#if !__UWP__
+﻿#if !__UWP__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// PopupPanel implementation for <see cref="FlyoutBase"/>.
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			_flyout._popup.AssociatedFlyout = flyout;
 			// Required for the dismiss handling
 			// This should however be customized depending of the Popup.DismissMode
-			Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 		}
 
 		protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference PipsPager.cpp, tag winui3/release/1.4.2
 
@@ -8,20 +8,20 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 #if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 #endif
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
-using ButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility;
+using ButtonVisibility = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPagerButtonVisibility;
 using System.Globalization;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that enables navigation within linearly paginated content using
@@ -194,10 +194,29 @@ public partial class PipsPager : Control
 	{
 		if (m_pipsPagerScrollViewer?.Presenter is { } presenter)
 		{
-			var canHorizontallyScroll = presenter.CanHorizontallyScroll;
-			presenter.CanHorizontallyScroll = true;
+			bool canScroll;
+			if (Orientation is Orientation.Horizontal)
+			{
+				canScroll = presenter.CanHorizontallyScroll;
+				presenter.CanHorizontallyScroll = true;
+			}
+			else
+			{
+				canScroll = presenter.CanVerticallyScroll;
+				presenter.CanVerticallyScroll = true;
+			}
+
 			var result = base.MeasureOverride(availableSize);
-			presenter.CanHorizontallyScroll = canHorizontallyScroll;
+
+			if (Orientation is Orientation.Horizontal)
+			{
+				presenter.CanHorizontallyScroll = canScroll;
+			}
+			else
+			{
+				presenter.CanVerticallyScroll = canScroll;
+			}
+
 			return result;
 		}
 

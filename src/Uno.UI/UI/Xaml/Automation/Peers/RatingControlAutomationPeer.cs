@@ -1,17 +1,17 @@
 ﻿using System;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers;
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 [Obsolete(
-	"The Windows.UI.Xaml.Controls version of this control is not supported. " +
-	"Please use Microsoft.UI.Xaml.Controls.RatingControl instead.")]
+	"The Microsoft.UI.Xaml.Controls version of this control is not supported. " +
+	"Please use Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.RatingControl instead.")]
 public partial class RatingControlAutomationPeer : FrameworkElementAutomationPeer
 {
 	public RatingControlAutomationPeer(RatingControl owner) : base(owner)
 	{
 		throw new NotImplementedException(
-			"The Windows.UI.Xaml.Controls version of this control is not supported. " +
-			"Please use Microsoft.UI.Xaml.Controls.RatingControl instead.");
+			"The Microsoft.UI.Xaml.Controls version of this control is not supported. " +
+			"Please use Microsoft" + /* UWP don't rename */ ".UI.Xaml.Controls.RatingControl instead.");
 	}
 }

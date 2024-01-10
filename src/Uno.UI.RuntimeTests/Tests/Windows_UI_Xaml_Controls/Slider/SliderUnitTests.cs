@@ -2,12 +2,12 @@
 // MUX reference SliderUnitTests.cpp
 
 #if HAS_UNO
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests;
 using static Private.Infrastructure.TestServices;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Tests.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Controls;
 
 [TestClass]
 [RunsOnUIThread]

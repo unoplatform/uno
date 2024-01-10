@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Documents
+namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Run
 	{
@@ -91,28 +91,7 @@ namespace Windows.UI.Xaml.Documents
 							break;
 						}
 
-						if (char.IsSymbol(text[i]))
-						{
-							symbolTypeface = SKFontManager.Default
-								.MatchCharacter(text[i]);
-
-							if (symbolTypeface is null)
-							{
-								// Under some Linux systems, the symbol may not be found
-								// in the default font and 
-								// we have to skip the character and continue segments
-								// evaluation.
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
-								}
-
-								i++;
-							}
-
-							break;
-						}
-						else if (i + 1 < text.Length
+						if (i + 1 < text.Length
 							&& char.IsSurrogate(text[i])
 							&& char.IsSurrogatePair(text[i], text[i + 1]))
 						{
@@ -139,6 +118,27 @@ namespace Windows.UI.Xaml.Documents
 
 								i++;
 							}
+							break;
+						}
+						else if (!fontInfo.SKFont.ContainsGlyph(text[i]))
+						{
+							symbolTypeface = SKFontManager.Default
+								.MatchCharacter(text[i]);
+
+							if (symbolTypeface is null)
+							{
+								// Under some Linux systems, the symbol may not be found
+								// in the default font and 
+								// we have to skip the character and continue segments
+								// evaluation.
+								if (this.Log().IsEnabled(LogLevel.Trace))
+								{
+									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
+								}
+
+								i++;
+							}
+
 							break;
 						}
 						i++;

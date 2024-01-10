@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Android.Animation;
@@ -33,7 +34,7 @@ using Uno.Helpers;
 
 namespace Uno.UI.Controls
 {
-	[Windows.UI.Xaml.Data.Bindable]
+	[Microsoft.UI.Xaml.Data.Bindable]
 	public class BindableImageView : ImageView, View.IOnTouchListener
 	{
 		private string _uriSource;
@@ -245,7 +246,7 @@ namespace Uno.UI.Controls
 			{
 				int resourceId;
 
-				if (int.TryParse(UriSource.Replace("res:///", ""), out resourceId))
+				if (int.TryParse(UriSource.Replace("res:///", ""), CultureInfo.InvariantCulture, out resourceId))
 				{
 					SetImageResource(resourceId);
 				}

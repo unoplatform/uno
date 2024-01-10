@@ -14,7 +14,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
 using Windows.UI.Core;
 using Windows.Storage;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
 using Uno.Extensions;
@@ -28,10 +28,12 @@ using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #endif
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
+using Microsoft.UI.Dispatching;
+using Private.Infrastructure;
 
 namespace SampleControl.Presentation
 {
@@ -70,8 +72,8 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
-		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
-	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
+		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
+	new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White);
 
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
@@ -98,9 +100,9 @@ namespace SampleControl.Presentation
 
 #if HAS_UNO
 			// Disable all pooling so that controls get collected quickly.
-			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
+			Microsoft.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
-#if NETFX_CORE
+#if WINAPPSDK
 			UseFluentStyles = true;
 #endif
 			InitializeCommands();
@@ -113,8 +115,9 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_ = UnitTestDispatcherCompat
+				.From(SamplesApp.App.MainWindow.Content)
+				.RunAsync(
 				async () =>
 				{
 					// Initialize favorites and recents list as soon as possible.
@@ -353,7 +356,7 @@ namespace SampleControl.Presentation
 					_log.Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
 
-				var target = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+				var target = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				foreach (var sample in tests)
 				{
@@ -522,8 +525,9 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					var unused = Window.Current.Dispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
+					UnitTestDispatcherCompat
+						.From(SamplesApp.App.MainWindow.Content)
+						.RunAsync(
 						async () =>
 						{
 							if (newContent != null)
@@ -658,7 +662,7 @@ namespace SampleControl.Presentation
 
 		private static Assembly[] GetAllAssembies()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			var assemblies = new List<Assembly>();
 
 			var files = Windows.ApplicationModel.Package.Current.InstalledLocation.GetFilesAsync().AsTask().Result;
@@ -825,25 +829,14 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task ShowTestInformation(CancellationToken ct)
-		{
-			var sample = CurrentSelectedSample;
-			if (sample != null)
-			{
-				var text = $@"
-query string: ?sample={sample.Categories.FirstOrDefault() ?? ""}/{sample.ControlName}
-view: {sample.ControlType.FullName}
-categories: {sample.Categories?.JoinBy(", ")}
-description: {sample.Description}";
-
-				await new MessageDialog(text.Trim(), sample.ControlName).ShowAsync();
-			}
-		}
-
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => sample.IsFavorite = isFavorite);
+			_ = UnitTestDispatcherCompat
+				.From(SamplesApp.App.MainWindow.Content)
+				.RunAsync(() => sample.IsFavorite = isFavorite);
+
+			await Task.Yield();
 		}
 
 		/// <summary>
@@ -969,9 +962,6 @@ description: {sample.Description}";
 
 				RecentSamples = recents;
 			}
-
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
 
 			return container;
 		}
@@ -1171,7 +1161,7 @@ description: {sample.Description}";
 			async
 #endif
 			Task GenerateBitmap(CancellationToken ct
-			, Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
+			, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
 			, StorageFile file
 			, FrameworkElement content
 			, (double MinWidth, double MinHeight, double Width, double Height) constraints)
@@ -1206,7 +1196,7 @@ description: {sample.Description}";
 				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
 
 				await Task.Yield();
-				targetBitmap = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				await targetBitmap.RenderAsync(element).AsTask(ct);
 

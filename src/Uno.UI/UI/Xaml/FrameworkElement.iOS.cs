@@ -7,12 +7,12 @@ using System.Text;
 using UIKit;
 using System.ComponentModel;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

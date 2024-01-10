@@ -23,7 +23,7 @@ public partial class StorageFileHelper
 		=> throw new NotImplementedException();
 #endif
 
-#if __SKIA__ || WINDOWS || WINDOWS_UWP || WINUI
+#if __SKIA__ || WINDOWS || WINAPPSDK || WINDOWS_UWP || WINUI
 	private static Task<bool> FileExistsInPackage(string fileName)
 	{
 		var executingPath = Assembly.GetExecutingAssembly().Location;

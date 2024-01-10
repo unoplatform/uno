@@ -14,7 +14,7 @@ Uno Platform currently supports targeting the following operating systems:
 - Web
   - WebAssembly (wasm)
 - Desktop
-  - Mac (maccatalyst)
+  - Mac (Mac Catalyst)
   - Windows
   - GTK
   - WPF
@@ -23,7 +23,7 @@ Uno Platform currently supports targeting the following operating systems:
 > [!NOTE] 
 > For most platforms the name of the command line argument is just the platform name (eg windows or ios). However, for WebAssembly, Mac and Linux Framebuffer, use the abbreviation in braces in the above list (ie wasm, maccatalyst or linux-fb).
 
-By default, when you create a new Uno Platform app, it will target the following platforms: Windows, iOS, Android, MacCatalyst, Gtk and Wasm.
+By default, when you create a new Uno Platform app, it will target the following platforms: Windows, iOS, Android, Mac Catalyst, Gtk and Wasm.
 
 The following command only selects the Windows platform:
 

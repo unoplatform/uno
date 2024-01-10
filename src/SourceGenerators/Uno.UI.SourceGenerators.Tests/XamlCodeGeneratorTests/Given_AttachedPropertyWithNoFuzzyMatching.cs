@@ -36,8 +36,8 @@ public class Given_AttachedPropertyWithNoFuzzyMatching
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -52,7 +52,7 @@ public class Given_AttachedPropertyWithNoFuzzyMatching
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net60Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.9.26"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net70Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 

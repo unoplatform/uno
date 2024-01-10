@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml.Input;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
+using Microsoft.UI.Xaml.Input;
 using System.Reflection;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 public class Given_CalendarView

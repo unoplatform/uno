@@ -5,10 +5,10 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
@@ -190,12 +190,6 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				DisplayBlock.Text = text;
-
-				if (text.EndsWith('\r'))
-				{
-					// this works around a bug in TextBlock where the last newline is not shown
-					DisplayBlock.Text += '\r';
-				}
 			}
 
 			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)

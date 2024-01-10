@@ -18,10 +18,10 @@ using Windows.System;
 #else
 using Microsoft.UI.Dispatching;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -57,7 +57,12 @@ partial class ClientHotReloadProcessor
 		}
 		try
 		{
-			return await TypeMappings.WaitForResume();
+			var waiter = TypeMappings.WaitForResume();
+			if (!waiter.IsCompleted)
+			{
+				return false;
+			}
+			return await waiter;
 		}
 		finally
 		{
@@ -69,16 +74,18 @@ partial class ClientHotReloadProcessor
 
 	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
 	{
-		if (!await ShouldReload())
-		{
-			return;
-		}
+		var handlerActions = ElementAgent?.ElementHandlerActions;
 
+		var uiUpdating = true;
 		try
 		{
-			UpdateGlobalResources(updatedTypes);
+			if (!await ShouldReload())
+			{
+				uiUpdating = false;
+				return;
+			}
 
-			var handlerActions = ElementAgent?.ElementHandlerActions;
+			UpdateGlobalResources(updatedTypes);
 
 			// Action: BeforeVisualTreeUpdate
 			// This is called before the visual tree is updated
@@ -178,7 +185,13 @@ partial class ClientHotReloadProcessor
 			{
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
 			}
+			uiUpdating = false;
 			throw;
+		}
+		finally
+		{
+			// Action: ReloadCompleted
+			_ = handlerActions?.Do(h => h.Value.ReloadCompleted(updatedTypes, uiUpdating)).ToArray();
 		}
 	}
 
@@ -268,7 +281,7 @@ partial class ClientHotReloadProcessor
 			}
 
 
-#if !(WINUI || WINDOWS_UWP)
+#if !(WINUI || WINAPPSDK || WINDOWS_UWP)
 			// Then find over updated types to find the ones that are implementing IXamlResourceDictionaryProvider
 			List<Uri> updatedDictionaries = new();
 
@@ -307,7 +320,7 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-#if !(WINUI || WINDOWS_UWP)
+#if !(WINUI || WINAPPSDK || WINDOWS_UWP)
 	/// <summary>
 	/// Refreshes ResourceDictionary instances that have been detected as updated
 	/// </summary>

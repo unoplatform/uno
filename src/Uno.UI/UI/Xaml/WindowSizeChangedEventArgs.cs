@@ -1,9 +1,9 @@
-#if HAS_UNO_WINUI
+﻿#if HAS_UNO_WINUI
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml
+namespace Microsoft/* UWP don't rename */.UI.Xaml
 {
 	public sealed partial class WindowSizeChangedEventArgs
 	{

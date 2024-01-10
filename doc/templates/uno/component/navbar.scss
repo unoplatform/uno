@@ -189,6 +189,34 @@
               border: none;
             }
 
+            &.menu-item a {
+              font-weight: 600;
+              padding: 6px 0;
+            }
+
+            &.spacing-top a {
+              margin-top: 15px;
+            }
+
+            &.column-title a {
+              border-bottom: 1px solid #3A3A3A;
+              font-weight: 700;
+              border-radius: 0;
+              margin-bottom: 8px;
+              padding-bottom: 14px;
+            }
+
+            &.header-menu-category a {
+              color: #7D7D7D;
+              font-weight: 700;
+              border-bottom: 1px solid #3A3A3A;
+              cursor: unset;
+              border-radius: 0;
+              margin-bottom: 8px;
+              padding-bottom: 14px;
+              width:100%
+            }
+
           }
 
           a {
@@ -298,7 +326,7 @@
 
     position: fixed;
     width: 100%;
-    margin: -16px 0 0 0;
+    margin: 0;
     padding: 0;
 
     padding-top: 67px;

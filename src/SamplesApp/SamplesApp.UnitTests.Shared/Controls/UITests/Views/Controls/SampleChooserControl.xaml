@@ -483,16 +483,24 @@
 
 					<!-- Info Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
+							x:Name="InfoButton"
 							Grid.Column="2"
-							Command="{Binding ShowTestInformationCommand}"
-							Content="i"
 							FontWeight="SemiBold"
 							FontSize="24"
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
 							Foreground="{StaticResource Color06Brush}"
-							Visibility="{Binding IsDebug}" />
+							Visibility="{Binding IsDebug}">
+						<Button.Content>
+							<SymbolIcon Symbol="Help" />
+						</Button.Content>
+						<Button.Flyout>
+							<Flyout>
+								<u:SampleInfoControl DataContext="{Binding CurrentSelectedSample}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
 
 					<!-- Previous Button -->
 					<Button Style="{StaticResource IconButtonStyle}"

@@ -16,11 +16,11 @@ stages:
       vmImage: '$(linuxVMImage)'
 
 - stage: convert_tree
-  displayName: WinUI Tree Conversion
+  displayName: UWP Tree Conversion
   dependsOn:
     - Setup
   jobs:
-  - template: .azure-devops-winui-convert.yml
+  - template: .azure-devops-uwp-convert.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -139,13 +139,13 @@ stages:
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
-- stage: uap_tests
-  displayName: Tests - UAP
+- stage: wasdk_tests
+  displayName: Tests - WinAppSDK  
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-uap.yml
+  - template: .azure-devops-wasdk.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 

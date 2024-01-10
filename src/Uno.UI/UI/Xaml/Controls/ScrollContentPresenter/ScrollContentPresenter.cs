@@ -17,10 +17,10 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
 	{
@@ -53,6 +53,20 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
+
+		internal double TargetHorizontalOffset =>
+#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
+			_pendingScrollTo?.horizontal ?? HorizontalOffset;
+#else
+			HorizontalOffset;
+#endif
+
+		internal double TargetVerticalOffset =>
+#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
+			_pendingScrollTo?.vertical ?? VerticalOffset;
+#else
+			VerticalOffset;
+#endif
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
@@ -241,26 +255,14 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else if (canScrollHorizontally && (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
-					var horizontalOffset = _pendingScrollTo?.horizontal ?? HorizontalOffset;
-#else
-					var horizontalOffset = HorizontalOffset;
-#endif
-
 					success = Set(
-						horizontalOffset: horizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
 						disableAnimation: false);
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
-					var verticalOffset = _pendingScrollTo?.vertical ?? VerticalOffset;
-#else
-					var verticalOffset = VerticalOffset;
-#endif
-
 					success = Set(
-						verticalOffset: verticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 						disableAnimation: false);
 				}
 

@@ -15,6 +15,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 				FeatureConfiguration.BindingExpression.HandleSetTargetValueExceptions = false;
 				var SUT = new Functions_Control();
 
+				Assert.AreEqual(string.Empty, SUT._PrivateInstanceProperty.Text);
 				Assert.AreEqual(string.Empty, SUT._InstanceProperty.Text);
 				Assert.AreEqual(string.Empty, SUT._StaticProperty.Text);
 				Assert.AreEqual(string.Empty, SUT._StaticPrivateProperty.Text);
@@ -44,6 +45,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 				SUT.ForceLoaded();
 
+				Assert.AreEqual("41", SUT._PrivateInstanceProperty.Text);
 				Assert.AreEqual("42", SUT._InstanceProperty.Text);
 				Assert.AreEqual("43", SUT._StaticProperty.Text);
 				Assert.AreEqual("44", SUT._StaticPrivateProperty.Text);

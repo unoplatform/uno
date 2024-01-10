@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal class DependencyPropertyDescriptor
 	{

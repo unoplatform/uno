@@ -1,4 +1,4 @@
-﻿#if HAS_UNO || HAS_UNO_WINUI
+﻿#if (HAS_UNO || HAS_UNO_WINUI) && !WINAPPSDK
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RelativePanelUnitTests.cs
@@ -7,8 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls

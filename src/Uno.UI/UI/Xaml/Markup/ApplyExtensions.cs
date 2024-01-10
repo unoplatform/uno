@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Helpers.Xaml
 {

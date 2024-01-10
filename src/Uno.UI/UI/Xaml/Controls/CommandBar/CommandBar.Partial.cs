@@ -19,16 +19,16 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml;
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
@@ -38,7 +38,7 @@ using Android.Views;
 
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CommandBar : IMenu
 	{
@@ -1696,7 +1696,7 @@ namespace Windows.UI.Xaml.Controls
 				var visibleBounds = new Rect();
 				var availableBounds = new Rect();
 
-				visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
+				visibleBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
 
 				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 				{
@@ -1898,7 +1898,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool GetShouldOverflowOpenInFullWidth()
 		{
-			var visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
+			var visibleBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
 
 			if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 			{

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 
@@ -8,13 +8,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Uno.Collections;
 using Uno.Helpers;
-using CRowDefinitionCollection = Windows.UI.Xaml.Controls.RowDefinitionCollection;
-using CColumnDefinitionCollection = Windows.UI.Xaml.Controls.ColumnDefinitionCollection;
+using CRowDefinitionCollection = Microsoft.UI.Xaml.Controls.RowDefinitionCollection;
+using CColumnDefinitionCollection = Microsoft.UI.Xaml.Controls.ColumnDefinitionCollection;
 
 using Xuint = System.Int32;
 using XFLOAT = System.Double;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Grid : Panel
 	{

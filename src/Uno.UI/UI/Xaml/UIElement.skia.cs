@@ -3,32 +3,31 @@
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
@@ -44,11 +43,6 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 
 			UpdateHitTest();
-		}
-
-		~UIElement()
-		{
-			Cleanup();
 		}
 
 		public bool UseLayoutRounding
@@ -375,17 +369,6 @@ namespace Windows.UI.Xaml
 			=> Visual.IsVisible = false;
 
 		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
-
-		private void Cleanup()
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				for (var i = 0; i < _children.Count; i++)
-				{
-					_children[i].SetParent(null);
-				}
-			}, NativeDispatcherPriority.Idle);
-		}
 
 #if DEBUG
 		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);

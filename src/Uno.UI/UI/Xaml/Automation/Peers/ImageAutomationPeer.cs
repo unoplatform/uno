@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Peers
+﻿namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ImageAutomationPeer : FrameworkElementAutomationPeer
 	{

@@ -5,19 +5,19 @@
 
 using Uno.UI.Samples.Controls;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Collections.ObjectModel;
 
-using RadioButtons = Microsoft.UI.Xaml.Controls.RadioButtons;
+using RadioButtons = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons;
 #if HAS_UNO
 using RadioButtonsTestHooks = Microsoft.UI.Private.Controls.RadioButtonsTestHooks;
 #endif
 using System.Collections;
-using Microsoft.UI.Xaml.Controls;
-using Windows.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 {
@@ -137,7 +137,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 					m_radioButtonItemCollection.Add(radioButton);
 				}
 
-				if (SourceComboBox.SelectedItem == ItemsComboBoxItem)
+				if (ReferenceEquals(SourceComboBox.SelectedItem, ItemsComboBoxItem))
 				{
 					UpdateRadioButtonsSource();
 				}
@@ -173,18 +173,18 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 			var index = getIndexToSelect();
 			if (index >= 0)
 			{
-				if (ItemTypeComboBox.SelectedItem == StringsComboBoxItem)
+				if (ReferenceEquals(ItemTypeComboBox.SelectedItem, StringsComboBoxItem))
 				{
-					if (SourceComboBox.SelectedItem == ItemsSourceComboBoxItem)
+					if (ReferenceEquals(SourceComboBox.SelectedItem, ItemsSourceComboBoxItem))
 					{
 						TestRadioButtons.SelectedItem = m_stringItemCollection[index];
 					}
-					else if (SourceComboBox.SelectedItem == ItemsComboBoxItem)
+					else if (ReferenceEquals(SourceComboBox.SelectedItem, ItemsComboBoxItem))
 					{
 						TestRadioButtons.SelectedItem = TestRadioButtons.Items[index];
 					}
 				}
-				else if (ItemTypeComboBox.SelectedItem == RadioButtonElementsComboBoxItem)
+				else if (ReferenceEquals(ItemTypeComboBox.SelectedItem, RadioButtonElementsComboBoxItem))
 				{
 					TestRadioButtons.SelectedItem = m_radioButtonItemCollection[index];
 				}
@@ -231,7 +231,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 				radioButton.IsChecked = (bool)CustomCheckedCheckBox.IsChecked;
 				m_radioButtonItemCollection.Insert(Int32.Parse(CustomIndexTextBox.Text), radioButton);
 
-				if (SourceComboBox.SelectedItem == ItemsComboBoxItem)
+				if (ReferenceEquals(SourceComboBox.SelectedItem, ItemsComboBoxItem))
 				{
 					UpdateRadioButtonsSource();
 				}
@@ -282,7 +282,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 			if (m_loaded)
 			{
 				var source = SourceComboBox.SelectedItem;
-				if (source == ItemsComboBoxItem)
+				if (ReferenceEquals(source, ItemsComboBoxItem))
 				{
 					TestRadioButtons.Items.Clear();
 					TestRadioButtons.ItemsSource = null;
@@ -291,7 +291,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 						TestRadioButtons.Items.Add(item);
 					}
 				}
-				else if (source == ItemsSourceComboBoxItem)
+				else if (ReferenceEquals(source, ItemsSourceComboBoxItem))
 				{
 					TestRadioButtons.ItemsSource = GetItemsCollection();
 					TestRadioButtons.Items.Clear();
@@ -301,7 +301,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 
 		private IEnumerable GetItemsCollection()
 		{
-			if (ItemTypeComboBox.SelectedItem == StringsComboBoxItem)
+			if (ReferenceEquals(ItemTypeComboBox.SelectedItem, StringsComboBoxItem))
 			{
 				InsertDisplayRadioButtonButton.IsEnabled = false;
 				return m_stringItemCollection;

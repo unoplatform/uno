@@ -6,15 +6,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class NameScope
 	{
-		public NameScope(string? @namespace, string className)
+		public NameScope(string? @namespace, string className, IXamlLocation? location)
 		{
 			Namespace = @namespace ?? string.Empty;
 			ClassName = className;
+			Location = location;
 		}
 
 		public string Name => $"{Namespace.Replace(".", "")}{ClassName}";
 		public string Namespace { get; private set; }
 		public string ClassName { get; private set; }
+		public IXamlLocation? Location { get; }
 
 		/// <summary>
 		/// Used to detect duplicate x:Name and report error for those.

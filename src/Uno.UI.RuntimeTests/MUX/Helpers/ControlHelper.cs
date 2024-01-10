@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Uno.Disposables;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 
@@ -134,7 +134,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 
 		public static void RemoveItem<T>(IList<T> items, T item)
 		{
-			var index = items.Safe().IndexOf(item);
+			var index = items?.IndexOf(item) ?? -1;
 			if (index == -1)
 			{
 				throw new ArgumentOutOfRangeException("The item was not in the collection.");

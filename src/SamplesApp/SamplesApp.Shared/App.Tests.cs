@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Immutable;
@@ -59,7 +59,7 @@ partial class App
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+			_ = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				async () =>
 				{
@@ -69,7 +69,7 @@ partial class App
 						var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 						if (statusBar != null)
 						{
-							_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+							_ = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 								Windows.UI.Core.CoreDispatcherPriority.Normal,
 								async () => await statusBar.HideAsync()
 							);
@@ -132,15 +132,15 @@ partial class App
 
 		if (!string.IsNullOrEmpty(screenshotsPath))
 		{
-			if (Windows.UI.Xaml.Window.Current is null)
+			if (Microsoft.UI.Xaml.Window.Current is null)
 			{
 				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 			}
 
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+			var n = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ =>
 				{
-					var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+					var n = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 						CoreDispatcherPriority.Normal,
 						async () =>
 						{

@@ -1,12 +1,10 @@
 ﻿using System.Numerics;
 using SkiaSharp;
-using Windows.UI.Composition;
-using Uno.Extensions;
+using Microsoft.UI.Composition;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media;
+
+partial class LineGeometry
 {
-	partial class LineGeometry
-	{
-		internal override SKPath GetSKPath() => CompositionGeometry.BuildLineGeometry(StartPoint.ToVector2(), EndPoint.ToVector2());
-	}
+	internal override SKPath GetSKPath() => CompositionGeometry.BuildLineGeometry(StartPoint.ToVector2(), EndPoint.ToVector2());
 }

@@ -1,9 +1,9 @@
 ﻿// MUX Reference Button_Partial.cpp, tag winui3/release/1.4.2
 
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Button : ButtonBase
 	{

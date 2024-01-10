@@ -52,8 +52,8 @@ namespace Windows.Media.Playback
 		void RaiseVideoFrameAvailable()
 			=> VideoFrameAvailable?.Invoke(this, new object());
 
-		void RaiseVideoRatioChanged(double videoRatio)
-			=> VideoRatioChanged?.Invoke(this, videoRatio);
+		void RaiseNaturalVideoDimensionChanged()
+			=> NaturalVideoDimensionChanged?.Invoke(this, null);
 
 		void RaiseVolumeChanged()
 			=> VolumeChanged?.Invoke(this, null);
@@ -112,8 +112,9 @@ namespace Windows.Media.Playback
 			void IMediaPlayerEventsExtension.RaiseVideoFrameAvailable()
 				=> _owner.RaiseVideoFrameAvailable();
 
-			void IMediaPlayerEventsExtension.RaiseVideoRatioChanged(double videoRatio)
-				=> _owner.RaiseVideoRatioChanged(videoRatio);
+			void IMediaPlayerEventsExtension.RaiseNaturalVideoDimensionChanged()
+				=> _owner.RaiseNaturalVideoDimensionChanged();
+
 			void IMediaPlayerEventsExtension.RaiseVolumeChanged()
 				=> _owner.RaiseVolumeChanged();
 

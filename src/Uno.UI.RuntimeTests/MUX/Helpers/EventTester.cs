@@ -12,10 +12,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
-namespace Microsoft.UI.Xaml.Tests.Common
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 {
 	[Flags]
 	public enum EventTesterOptions : int
@@ -335,7 +335,20 @@ namespace Microsoft.UI.Xaml.Tests.Common
 		public async Task<bool> WaitAsync(TimeSpan timeout)
 		{
 			var tcs = new TaskCompletionSource<bool>();
-			await Task.Factory.StartNew(() =>
+
+#if __WASM__
+			var sw = Stopwatch.StartNew();
+
+			var result = false;
+			while (!(result = this.resetEvent.WaitOne(0)) && sw.Elapsed < timeout)
+			{
+				Console.WriteLine("waiting...");
+				await Task.Delay(100);
+			}
+
+#else
+			Console.WriteLine("Before StartNew...");
+			await Task.Factory.StartNew(async () =>
 			{
 				try
 				{
@@ -346,7 +359,10 @@ namespace Microsoft.UI.Xaml.Tests.Common
 					tcs.SetResult(false);
 				}
 			});
+
 			var result = await tcs.Task;
+#endif
+
 			if (!result)
 			{
 				if (this.options.HasFlag(EventTesterOptions.CaptureWindowOnTimeout))
