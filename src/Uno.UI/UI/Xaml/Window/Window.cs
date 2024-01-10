@@ -31,7 +31,11 @@ namespace Microsoft.UI.Xaml;
 /// Represents an application window.
 /// </summary>
 [ContentProperty(Name = nameof(Content))]
-public partial class Window
+public
+#if !HAS_UNO_WINUI
+sealed
+#endif
+partial class Window
 {
 	private static readonly ConcurrentDictionary<AppWindow, Window> _appWindowMap = new();
 	private static Window? _current;

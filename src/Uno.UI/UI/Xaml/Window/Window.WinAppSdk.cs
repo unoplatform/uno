@@ -5,7 +5,7 @@ using Windows.UI.ViewManagement;
 
 namespace Microsoft.UI.Xaml;
 
-public sealed partial class Window
+partial class Window
 {
 #if HAS_UNO_WINUI
 	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)

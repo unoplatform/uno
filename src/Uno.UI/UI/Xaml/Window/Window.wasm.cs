@@ -4,7 +4,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
-public sealed partial class Window
+partial class Window
 {
 	[JSExport]
 	[Preserve]

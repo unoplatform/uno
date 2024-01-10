@@ -5,7 +5,7 @@ using Uno.UI.Controls;
 
 namespace Microsoft.UI.Xaml;
 
-public sealed partial class Window
+partial class Window
 {
 	/// <summary>
 	/// A function to generate a custom view controller which inherits from <see cref="RootViewController"/>.

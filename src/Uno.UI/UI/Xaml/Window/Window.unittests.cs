@@ -3,7 +3,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml;
 
-public sealed partial class Window
+partial class Window
 {
 	internal static void CleanupCurrentForTestsOnly() => _current = null;
 
