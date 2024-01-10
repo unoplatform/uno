@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using SkiaSharp;
 using Windows.UI.Composition;
-using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media
 {

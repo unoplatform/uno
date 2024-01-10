@@ -7,7 +7,6 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
-using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 

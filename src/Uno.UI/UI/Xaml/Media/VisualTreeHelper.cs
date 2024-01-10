@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Uno.Collections;
-using Uno.Extensions;
 
 using Uno.UI;
 using Uno.UI.Extensions;
@@ -16,6 +15,8 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using static Uno.Extensions.Matrix3x2Extensions;
+using static Uno.Extensions.EnumerableExtensions;
 
 #if TRACE_HIT_TESTING
 using System.Runtime.CompilerServices;
