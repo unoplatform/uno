@@ -11,11 +11,11 @@ uid: Uno.Features.Compass
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
-|---------------|-------|-------|-------|-------|-------|-------|-|
-| `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `ReadingChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
-| `ReportInterval`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
+|------------------|---------|---------|-----|------------|-------|--------------|--------------|
+| `GetDefault`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| `ReadingChanged` | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
+| `ReportInterval` | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
 
 ## Using Compass with Uno
 

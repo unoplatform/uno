@@ -14,9 +14,10 @@ uid: Uno.Features.WSPickers
 The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
-  - ✔  Supported
-  - 💬 Partially supported (see below for more details)
-  - ✖ Not supported
+
+* ✔  Supported
+* 💬 Partially supported (see below for more details)
+* ✖ Not supported
 
 | Picker         | UWP   | WebAssembly | Android | iOS    | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|--------|-------|-----|-----|
@@ -213,9 +214,9 @@ There are two implementations of file pickers available in WebAssembly - **File 
 
 The most powerful picker implementation on WebAssembly uses the <a href="https://wicg.github.io/file-system-access/" target="_blank">**File System Access API**</a>. This is not yet widely implemented across all browsers. See the following support tables for each picker:
 
-- <a href="https://caniuse.com/?search=showDirectoryPicker" target="_blank">`FolderPicker`</a>
-- <a href="https://caniuse.com/?search=showOpenFilePicker" target="_blank">`FileOpenPicker`</a>
-- <a href="https://caniuse.com/?search=showSaveFilePicker" target="_blank">`FileSavePicker`</a>
+-<a href="https://caniuse.com/?search=showDirectoryPicker" target="_blank">`FolderPicker`</a>
+-<a href="https://caniuse.com/?search=showOpenFilePicker" target="_blank">`FileOpenPicker`</a>
+-<a href="https://caniuse.com/?search=showSaveFilePicker" target="_blank">`FileSavePicker`</a>
 
 `FolderPicker` is only supported for this type of pickers.
 
@@ -321,14 +322,15 @@ Uno.WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration =
 
 The allowed values for the configuration are:
 
-- `FileSystemAccessApiWithFallback` - defaults to File System Access API, but falls back to download/upload pickers if not available
-- `FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
-- `DownloadUpload` - uses download/upload pickers only.
+-`FileSystemAccessApiWithFallback` - defaults to File System Access API, but falls back to download/upload pickers if not available
+-`FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
+-`DownloadUpload` - uses download/upload pickers only.
 
 ### Security considerations
+
 Browsers generally treat file opening/saving operations as sensitive operations, and the following message may appear when using this APIs:
 
-```
+```output
 SecurityError: Failed to execute 'showSaveFilePicker' on 'Window': Must be handling a user gesture to show a file picker.
 ```
 

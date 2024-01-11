@@ -1,0 +1,24 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: markdown_lint
+  displayName: 'Markdown Linting Validation'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    fetchDepth: 1
+    clean: true
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+
+  - bash: npm install -g markdownlint-cli
+    displayName: Install markdownlint-cli
+
+  - bash: markdownlint -c ./build/.markdownlint.json "doc/**/*.md"
+    displayName: Run Markdown Linter

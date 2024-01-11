@@ -13,8 +13,8 @@ Uno Platform provides two versions of the `ProgressRing` control:
 
 | Control            | iOS | macOS | Android | WASM | Skia (GTK, WPF, FrameBuffer, Tizen) |
 |--------------------|-----|-------|---------|------|-------------------------------------|
-| MUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                             |
-| WUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                             |
+| MUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                                   |
+| WUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                                   |
 
 ## Using the `Microsoft.UI.Xaml.Controls.ProgressRing`
 
@@ -26,6 +26,7 @@ This version comes with [WinUI 2.x and WinUI 3](https://docs.microsoft.com/en-us
 > To use the refreshed visual style, you must [reference the Lottie package](Lottie.md) in your projects, or the ring will not be displayed.
 
 ## Using the `Windows.UI.Xaml.Controls.ProgressRing`
+
 ![WUX `ProgressRing`](../Assets/features/progressring/wuxprogressring.png)
 
 This control works on all platforms and uses the native progress ring control by default, with the exception of Wasm where there is no native progress ring control.
@@ -62,4 +63,3 @@ To use the MUX `ProgressRing` on non-Skia targets and WUX `ProgressRing` on Skia
    </Grid>
 </Page>
 ```
-

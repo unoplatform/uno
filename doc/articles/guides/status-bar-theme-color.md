@@ -41,7 +41,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
         <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
     ```
 4. In `MainPage.xaml.cs`, expose the `MyCommandBar` which will be referenced in a later step:
-    ```cs
+    ```csharp
     public static MainPage Instance { get; private set; }
 
     public MainPage()
@@ -55,7 +55,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
     ```
 
 5. In `App.cs`, enable the native frame navigation to use the native style for `CommandBar`, instead of the UWP style. Make sure that the `#if ... #endif` block is before `this.InitializeComponent()`:
-    ```cs
+    ```csharp
     public App()
     {
         /***/
@@ -72,7 +72,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
 
 6. Subscribe to the `UISettings.ColorValuesChanged` event from `App.cs`:
     > Note that the instance of `UISettings` is kept to prevent it from being disposed when going out of scope, which would otherwise dispose the event subscription.
-    ```cs
+    ```csharp
     public sealed partial class App : Application
     {
         private UISettings _uiSettings;
@@ -117,7 +117,7 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
     ```
 
 7. Implement the `UpdateStatusBar()` method:
-    ```cs
+    ```csharp
     private void UpdateStatusBar()
     {
         // === 1. Determine the current theme from the background value,

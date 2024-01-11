@@ -25,14 +25,14 @@ This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a te
 
 #### Usage Example
 
-```cs
+```csharp
 <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
 ```
 
 #### Remarks
 
-* This mode hasn't been extensively tested.
-* We usually avoid using this mode, and prefer to use the Native one instead.
+- This mode hasn't been extensively tested.
+- We usually avoid using this mode, and prefer to use the Native one instead.
 
 ### Native
 
@@ -51,7 +51,7 @@ The rest of this document will exclusively cover this mode.
 
 #### Usage Example
 
-```cs
+```csharp
 <Style TargetType="CommandBar" BasedOn="{StaticResource NativeDefaultCommandBar}" />
 ```
 
@@ -106,8 +106,8 @@ Gets or sets a brush that describes the background of a control.
 
 #### Remarks
 
-* Only supports `SolidColorBrush`.
-* Changing the opacity through `SolidColorBrush.Opacity` is supported.
+- Only supports `SolidColorBrush`.
+- Changing the opacity through `SolidColorBrush.Opacity` is supported.
 
 ### Content
 
@@ -140,8 +140,9 @@ When `Content` is a `FrameworkElement`, it's displayed within the available area
 | Android  | 48px             |
 
 Please note that:
-* `HorizontalContentAlignment` and `VerticalContentAlignment` are ignored.
-* On **iOS**, the Content is automatically centered horizontally unless `HorizontalAlignment.Stretch` is used.
+
+- `HorizontalContentAlignment` and `VerticalContentAlignment` are ignored.
+- On **iOS**, the Content is automatically centered horizontally unless `HorizontalAlignment.Stretch` is used.
 
 ### Foreground
 
@@ -153,11 +154,10 @@ Gets or sets a brush that describes the foreground color.
 
 #### Remarks
 
-* This is typically used to change the Content`'s text color.
-* Only supports `SolidColorBrush`.
-* Setting this property will not affect any of the `CommandBar's` `AppBarButton` tint Color. If you need to change the `AppBarButton` tint, this is possible by setting the `ShowAsMonochrome` property to true as well as setting the Foreground`SolidColorBrush`on the`BitmapIcon`.
-* On`Android`, you can also enable a feature that will allow that the`SolidColorBrush`set on your `CommandBar` `Foreground` to update your`AppBarButton`s Tint. To enable this, set on your `App.xml.cs` the `FeatureConfiguration.AppBarButton.EnableBitmapIconTint` to **true**.
-
+- This is typically used to change the Content`'s text color.
+- Only supports `SolidColorBrush`.
+- Setting this property will not affect any of the `CommandBar's` `AppBarButton` tint Color. If you need to change the `AppBarButton` tint, this is possible by setting the `ShowAsMonochrome` property to true as well as setting the Foreground`SolidColorBrush`on the`BitmapIcon`.
+- On`Android`, you can also enable a feature that will allow that the`SolidColorBrush`set on your `CommandBar` `Foreground` to update your`AppBarButton`s Tint. To enable this, set on your `App.xml.cs` the `FeatureConfiguration.AppBarButton.EnableBitmapIconTint` to **true**.
 
 ### PrimaryCommands
 
@@ -169,8 +169,8 @@ Gets the collection of primary command elements for the `CommandBar`.
 
 #### Remarks
 
-* Only supports `AppBarButton`. `AppBarToggleButton` and `AppBarSeparator` are not supported.
-* Refer to  the `AppBarButton` section for details.
+- Only supports `AppBarButton`. `AppBarToggleButton` and `AppBarSeparator` are not supported.
+- Refer to  the `AppBarButton` section for details.
 
 ### SecondaryCommands
 
@@ -182,7 +182,7 @@ Gets the collection of secondary command elements for the `CommandBar`.
 
 #### Remarks
 
-* Only supported on **Android**.
+- Only supported on **Android**.
 
 ### Height
 
@@ -227,7 +227,7 @@ Gets or sets the back button foreground for the `CommandBar`.
 
 #### Remarks
 
-* Only supports `SolidColorBrush`.
+- Only supports `SolidColorBrush`.
 
 ### BackButtonIcon
 
@@ -239,7 +239,7 @@ Gets or sets the back button icon for the `CommandBar`.
 
 #### Remarks
 
-* Only supports `BitmapIcon`.
+- Only supports `BitmapIcon`.
 
 ### BackButtonTitle
 
@@ -269,8 +269,8 @@ Gets or sets the elevation of the `UIElement`.
 
 #### Remarks
 
-* This is usually only used on **Android**.
-* According to [Google's Material Design Guidelines](https://material.io/guidelines/material-design/elevation-shadows.html), the recommended elevation for `CommandBar` is **8**.
+- This is usually only used on **Android**.
+- According to [Google's Material Design Guidelines](https://material.io/guidelines/material-design/elevation-shadows.html), the recommended elevation for `CommandBar` is **8**.
 
 ### NavigationCommand
 
@@ -301,8 +301,8 @@ Gets or sets the subtitle for the `CommandBar`.
 
 #### Remarks
 
-* The subtitle is displayed below the native title (`Content` of type `string`).
-* The color of the subtitle currently can't be changed.
+- The subtitle is displayed below the native title (`Content` of type `string`).
+- The color of the subtitle currently can't be changed.
 
 ## Placement
 
@@ -310,10 +310,10 @@ On **iOS**, the same `UINavigationBar` instance is shared throughout all pages. 
 
 To ensure everything works properly, you must follow a few rules:
 
-* The `CommandBar` must stretch horizontally and be aligned with the top of your `Page`.
-* The `CommandBar` can't move (i.e., don't put it inside a `ScrollViewer`)
-* The `CommandBar` must be accessible as soon as the page is being navigated to (i.e., don't put it inside a `DataTemplate` or an `AsyncValuePresenter`).
-* There can only be one `CommandBar` per page.
+- The `CommandBar` must stretch horizontally and be aligned with the top of your `Page`.
+- The `CommandBar` can't move (i.e., don't put it inside a `ScrollViewer`)
+- The `CommandBar` must be accessible as soon as the page is being navigated to (i.e., don't put it inside a `DataTemplate` or an `AsyncValuePresenter`).
+- There can only be one `CommandBar` per page.
 
 ## Extensibility
 
@@ -358,10 +358,10 @@ Gets or sets a brush that describes the foreground color.
 
 #### Remarks
 
-* This changes the color of the `Content` (text) or `Icon`.
-* Only supports `SolidColorBrush`.
-* On **Android**, this only affects the color of `Icon`, not `Content` (text).
-* On **iOS**, the default value is blue.
+- This changes the color of the `Content` (text) or `Icon`.
+- Only supports `SolidColorBrush`.
+- On **Android**, this only affects the color of `Icon`, not `Content` (text).
+- On **iOS**, the default value is blue.
 
 ### Content
 
@@ -373,11 +373,11 @@ Gets or sets the content of a `ContentControl`.
 
 #### Remarks
 
-* When given a `string`, its text will be displayed instead of the icon.
-* When given a `FrameworkElement`:
-	* it will be displayed instead of the icon
-	* the native pressed state and tooltip (Android only) won't work
-* Make sure to set `Icon` to null, as it takes priority over `Content`.
+- When given a `string`, its text will be displayed instead of the icon.
+- When given a `FrameworkElement`:
+  - it will be displayed instead of the icon
+  - the native pressed state and tooltip (Android only) won't work
+- Make sure to set `Icon` to null, as it takes priority over `Content`.
 
 ### Icon
 
@@ -389,7 +389,7 @@ Gets or sets the graphic content of the app bar button.
 
 #### Remarks
 
-* Only supports `BitmapIcon` (with PNG).
+- Only supports `BitmapIcon` (with PNG).
 
 #### Recommended icon sizes (by scale)
 
@@ -425,9 +425,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 #### Remarks
 
-* When set to **false**, buttons are disabled and grayed out (semi-transparent).
-* You can't customize the disabled visual state of buttons.
-* On **Android**, the disabled visual state only works with `Icon` and not with `Content` (text).
+- When set to **false**, buttons are disabled and grayed out (semi-transparent).
+- You can't customize the disabled visual state of buttons.
+- On **Android**, the disabled visual state only works with `Icon` and not with `Content` (text).
 
 # Known issues
 
@@ -503,10 +503,10 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   The back button will display "Back" if:
 
-  * The previous page doesn't have a `CommandBar`.
-  * The previous page's `CommandBar` doesn't have a `Content` of type `string`.
-  * The previous page's `CommandBar` doesn't have a `CommandBarExtensions.BackButtonTitle`.
-  * The previous page's `CommandBar` has a title that's too long (more than 140pt).
+  - The previous page doesn't have a `CommandBar`.
+  - The previous page's `CommandBar` doesn't have a `Content` of type `string`.
+  - The previous page's `CommandBar` doesn't have a `CommandBarExtensions.BackButtonTitle`.
+  - The previous page's `CommandBar` has a title that's too long (more than 140pt).
 
 - > Why can't I overlap content over the CommandBar on iOS?
 
@@ -632,6 +632,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   _For attached properties, you need a special syntax in the Name column of a `.resw` file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
 
   More specifically :
+
   ```xml
 
   <CommandBar x:Uid="MyCommandBar"
@@ -639,6 +640,7 @@ Gets or sets a value indicating whether the user can interact with the control.
           ...
   </CommandBar>
   ```
+
   And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
 
 - > How can I put a ComboBox in my CommandBar?
@@ -704,18 +706,22 @@ Gets or sets a value indicating whether the user can interact with the control.
   However, you can change the color of all textual `AppBarButton`s globally using **Android** styles:
 
   **Colors.xml**
+
   ```xml
   <color name="red">#FFFF0000</color>
   ```
 
   **Styles.xml**
+
   ```xml
   <item name="android:actionMenuTextColor">@color/red</item>
   <item name="actionMenuTextColor">@color/red</item>
   ```
+
   If you need the button to display a different color to reflect being in a disabled state, you can add a selector in its own file, under res/color, like so:
 
   **PrimaryTextColorSelector.xml**
+
   ```xml
   <?xml version="1.0" encoding="utf-8"?>
   <selector xmlns:android="http://schemas.android.com/apk/res/android" >
@@ -725,6 +731,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```
 
   **Styles.xml**
+
   ```xml
   <item name="android:actionMenuTextColor">@color/PrimaryTextColorSelector</item>
   <item name="actionMenuTextColor">@color/PrimaryTextColorSelector</item>
@@ -756,6 +763,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   You can change the color of the ripple effect globally using Android styles:
 
   **Colors.xml**
+
   ```xml
   <!-- https://android.googlesource.com/platform/frameworks/support/+/415f740/v7/appcompat/res/values/colors_material.xml -->
   <color name="ripple_material_light">#20444444</color>
@@ -763,6 +771,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```
 
   **Styles.xml**
+  
    ```xml
   <item name="colorControlHighlight">@color/ripple_material_dark</item>
    ```

@@ -7,21 +7,21 @@ uid: Uno.Features.Gyrometer
 > [!TIP]
 > This article covers Uno-specific information for Gyrometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.gyrometer
 
- * The `Windows.Devices.Sensors.Gyrometer` class allows measuring angular velocity applied on the device.
+* The `Windows.Devices.Sensors.Gyrometer` class allows measuring angular velocity applied on the device.
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
-|---------------|-------|-------|-------|-------|-------|-------|-|
-| `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `ReadingChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖| ✖ |
-| `ReportInterval`     | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
+| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
+|------------------|---------|---------|-----|------------|-------|--------------|--------------|
+| `GetDefault`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| `ReadingChanged` | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
+| `ReportInterval` | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
 
 ## Using Gyrometer with Uno
- 
- * The `GetDefault` method is available on all targets and will return `null` on those which do not support `Gyrometer` or devices that do not have such a sensor.
- * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
- * `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in line with the behavior of Windows' `Gyrometer`.
+
+* The `GetDefault` method is available on all targets and will return `null` on those which do not support `Gyrometer` or devices that do not have such a sensor.
+* Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
+* `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in line with the behavior of Windows' `Gyrometer`.
 
 ## Example
 

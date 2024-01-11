@@ -40,7 +40,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
         </StackPanel>
         ```
     - `MainPage.xaml.cs`, `BlankPage1.xaml.cs`:
-        ```cs
+        ```csharp
         private void GotoNextPage(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(BlankPage1)); // in MainPage
         private void GotoNextPage(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(BlankPage2)); // in BlankPage1
         ```
@@ -60,12 +60,12 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 			</CommandBar.PrimaryCommands>
 		</CommandBar>
     - `BlankPage1.xaml.cs`, `BlankPage2.xaml.cs`:
-        ```cs
+        ```csharp
         private void NavigateBack(object sender, RoutedEventArgs e) => Frame.GoBack(); // in both pages
         ```
 
 6. Enable native frame navigation in `App.cs` or `App.xaml.cs`:
-    ```cs
+    ```csharp
     public App()
     {
         InitializeLogging();
@@ -79,7 +79,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
     }
     ```
 7. Add some extra setups for navigation:
-    ```cs
+    ```csharp
     protected override void OnLaunched(LaunchActivatedEventArgs e)
     {
         /* existing code... */

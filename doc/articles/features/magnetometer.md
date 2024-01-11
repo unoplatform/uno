@@ -7,7 +7,7 @@ uid: Uno.Features.Magnetometer
 > [!TIP]
 > This article covers Uno-specific information for Magnetometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.magnetometer
 
- * The `Windows.Devices.Sensors.Magnetometer` class allows measuring magnetic force affecting the device.
+* The `Windows.Devices.Sensors.Magnetometer` class allows measuring magnetic force affecting the device.
 
 ## Supported features
 
@@ -19,10 +19,10 @@ uid: Uno.Features.Magnetometer
 
 ## Using Magnetometer with Uno
 
- * The `GetDefault` method is available on all targets and will return `null` on those which do not support `Magnetometer` or devices which do not have such sensor.
- * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
- * `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of Windows' `Magnetometer`.
- * `DirectionalAccuracy` is not reported on iOS, so it will always return `Unknown`.
+* The `GetDefault` method is available on all targets and will return `null` on those which do not support `Magnetometer` or devices which do not have such sensor.
+* Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
+* `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in-line with the behavior of Windows' `Magnetometer`.
+* `DirectionalAccuracy` is not reported on iOS, so it will always return `Unknown`.
 
 ## Example
 

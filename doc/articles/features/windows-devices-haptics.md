@@ -21,7 +21,7 @@ The `SupportedFeedback` property returns the list of supported feedback types fo
 
 The following code snippet illustrates the usage of `VibrationDevice` and `SimpleHapticsController`:
 
-```
+```csharp
 var result = await VibrationDevice.RequestAccessAsync();
 if (result == VibrationAccessStatus.Allowed)
 {

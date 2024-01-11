@@ -36,7 +36,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         To localize a property, you need to add a string resource in each resource file using its `x:Uid` followed by a dot (`.`) and then the property name. eg: `MainPage_IntroText.Text`
         More on this in the resource steps that follow.
     - In `MainPage.xaml.cs`, add an `Page.Loaded` handler to change the text for `CodeBehindText`:
-        ```cs
+        ```csharp
         public MainPage()
         {
             this.InitializeComponent();
@@ -71,7 +71,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
     You can also set the starting culture to see the result, without having to modify the system language:
     - `App.cs` or `App.xaml.cs`:
-        ```cs
+        ```csharp
         public App()
         {
             InitializeLogging();

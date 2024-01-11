@@ -30,10 +30,10 @@ uid: Uno.Features.WAB
   // Android: add this class near the MainActivity, in the head project
   [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
   [IntentFilter(
-  	new[] {Android.Content.Intent.ActionView},
-  	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
+      new[] {Android.Content.Intent.ActionView},
+      Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
       // To be changed for a scheme specific to the application
-  	DataScheme = "myapplication")]
+      DataScheme = "myapplication")]
   public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBase
   {
       // Note: the name of this class is not important
@@ -57,11 +57,11 @@ For special needs, it is possible to create a custom implementation of the Web A
 
 public class MyBrokerImplementation : Uno.AuthenticationBroker.IWebAuthenticationBrokerProvider
 {
-	Uri GetCurrentApplicationCallbackUri() => [TODO]
+    Uri GetCurrentApplicationCallbackUri() => [TODO]
 
-	Task<WebAuthenticationResult> AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri, Uri callbackUri, CancellationToken ct)
+    Task<WebAuthenticationResult> AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri, Uri callbackUri, CancellationToken ct)
     {
-		[TODO]
+        [TODO]
     }
 }
 ```
@@ -104,10 +104,10 @@ On WebAssembly, it is possible to use an in-application `<iframe>` instead of op
    private async void LoginHidden_Click(object sender, RoutedEventArgs e)
    {
        // Set configuration to use the control as the iframe control
-   	WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId = loginWebView.GetHtmlId();
+       WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId = loginWebView.GetHtmlId();
        try
        {
-   		var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _startUri);
+           var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _startUri);
            [...]
        }
        finally
