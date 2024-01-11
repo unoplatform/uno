@@ -30,13 +30,13 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 			<PropertyGroup>
 				<IsAndroid>true</IsAndroid>
 				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
-				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'AndroidManifest.xml'))') ">Android\AndroidManifest.xml</AndroidManifest>
-				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'AndroidManifest.xml'))') ">Platforms\Android\AndroidManifest.xml</AndroidManifest>
+				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'AndroidManifest.xml'))) ">Android\AndroidManifest.xml</AndroidManifest>
+				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'AndroidManifest.xml'))) ">Platforms\Android\AndroidManifest.xml</AndroidManifest>
 			</PropertyGroup>
 
 			<ItemGroup>
-				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'environment.conf'))') " Include="Android\environment.conf" />
-				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists('$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'environment.conf'))') " Include="Platforms\Android\environment.conf" />
+				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'environment.conf'))) " Include="Android\environment.conf" />
+				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'environment.conf'))) " Include="Platforms\Android\environment.conf" />
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
