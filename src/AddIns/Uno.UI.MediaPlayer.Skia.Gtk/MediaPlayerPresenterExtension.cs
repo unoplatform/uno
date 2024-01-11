@@ -28,7 +28,7 @@ namespace Uno.UI.Media;
 
 public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
-	private MediaPlayerPresenter? _owner;
+	private MediaPlayerPresenter _owner;
 	private GtkMediaPlayer _player;
 
 	public uint NaturalVideoHeight => _player.NaturalVideoHeight;
