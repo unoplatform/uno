@@ -4,15 +4,41 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class Layout : DependencyObject
 	{
+		private readonly WeakEventManager _weakEventManager = new();
+
+		// Uno specific: ItemsRepeater uses a singleton StackLayout.
+		// Subscribing to MeasureInvalidated and failing to unsubscribe is a large memory leak.
+		// Unsubscribing for that in Unloaded failed, because subscription can happen before Loaded and in cases where Loaded/Unloaded are never raised.
+		// The fact that we subscribe in such case feels like a lifecycle bug related to applying templates (things are
+		// initiated in NavigationView.OnApplyTemplate, but probably that OnApplyTemplate call shouldn't have happened).
+		// For now, the only feasible solution is to have a weak event.
+		// NOTE that at the time of writing this, there is another bad subscription that happens early in ItemsRepeater constructor, which isn't the case on WinUI.
+		// However, fixing that bad subscription will still leak due to the lifecycle issue (at least, at the time of writing this).
+		internal event Action WeakMeasureInvalidated
+		{
+			add => _weakEventManager.AddEventHandler(value);
+			remove => _weakEventManager.RemoveEventHandler(value);
+		}
+
+		internal event Action WeakArrangeInvalidated
+		{
+			add => _weakEventManager.AddEventHandler(value);
+			remove => _weakEventManager.RemoveEventHandler(value);
+		}
+
+
 		public event TypedEventHandler<Layout, object> MeasureInvalidated;
 		public event TypedEventHandler<Layout, object> ArrangeInvalidated;
 
 		internal string LayoutId { get; set; }
+
+		public int GetMeasureInvalidatedCount() => MeasureInvalidated?.GetInvocationList().Length ?? 0;
 
 		internal static VirtualizingLayoutContext GetVirtualizingLayoutContext(LayoutContext context)
 		{
@@ -103,9 +129,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		protected void InvalidateMeasure()
-			=> MeasureInvalidated?.Invoke(this, null);
+		{
+			_weakEventManager.HandleEvent(nameof(WeakMeasureInvalidated));
+			MeasureInvalidated?.Invoke(this, null);
+		}
 
 		protected void InvalidateArrange()
-			=> ArrangeInvalidated?.Invoke(this, null);
+		{
+			_weakEventManager.HandleEvent(nameof(WeakArrangeInvalidated));
+			ArrangeInvalidated?.Invoke(this, null);
+		}
 	}
 }

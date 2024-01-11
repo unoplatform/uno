@@ -624,12 +624,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
 			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
 			{
-				layout.MeasureInvalidated += InvalidateMeasureForLayout;
-				layout.ArrangeInvalidated += InvalidateArrangeForLayout;
+				layout.WeakMeasureInvalidated += InvalidateMeasureForLayout;
+				layout.WeakArrangeInvalidated += InvalidateArrangeForLayout;
 				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					layout.MeasureInvalidated -= InvalidateMeasureForLayout;
-					layout.ArrangeInvalidated -= InvalidateArrangeForLayout;
+					layout.WeakMeasureInvalidated -= InvalidateMeasureForLayout;
+					layout.WeakArrangeInvalidated -= InvalidateArrangeForLayout;
 				});
 			}
 
@@ -845,12 +845,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			if (newValue != null)
 			{
 				newValue.InitializeForContext(GetLayoutContext());
-				newValue.MeasureInvalidated += InvalidateMeasureForLayout;
-				newValue.ArrangeInvalidated += InvalidateArrangeForLayout;
+				newValue.WeakMeasureInvalidated += InvalidateMeasureForLayout;
+				newValue.WeakArrangeInvalidated += InvalidateArrangeForLayout;
 				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
-					newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
+					newValue.WeakMeasureInvalidated -= InvalidateMeasureForLayout;
+					newValue.WeakArrangeInvalidated -= InvalidateArrangeForLayout;
 				});
 			}
 
@@ -913,12 +913,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		void InvalidateMeasureForLayout(Layout sender, object args)
+		void InvalidateMeasureForLayout(/*Layout sender, object args*/)
 		{
 			InvalidateMeasure();
 		}
 
-		void InvalidateArrangeForLayout(Layout sender, object args)
+		void InvalidateArrangeForLayout(/*Layout sender, object args*/)
 		{
 			InvalidateArrange();
 		}
