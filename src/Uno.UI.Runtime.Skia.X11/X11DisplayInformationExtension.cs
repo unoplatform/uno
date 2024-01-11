@@ -73,6 +73,7 @@ using System.Drawing;
 using System.Globalization;
 using Windows.Graphics.Display;
 using Avalonia.X11;
+using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
@@ -288,6 +289,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private unsafe DisplayInformationDetails? GetDisplayInformationXRandR1_3(IntPtr display, IntPtr window)
 		{
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
+			using var _1 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
 			XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 			XWindowAttributes windowAttrs = default;
@@ -306,11 +308,21 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var area = intersection.Height * intersection.Width;
 				if (area > bestArea)
 				{
+					if (crtcInfo != default)
+					{
+						X11Helper.XRRFreeCrtcInfo(crtcInfo);
+					}
 					bestArea = area;
 					crtcInfo = crtcInfo_;
 					crtc = crtc_;
 				}
+				else
+				{
+					X11Helper.XRRFreeCrtcInfo(crtcInfo_);
+				}
 			}
+
+			using var _2 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
 
 			if (crtcInfo == default || crtcInfo->noutput == 0)
 			{
@@ -322,9 +334,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the first one we find for the numbers
 
 			var outputInfo = X11Helper.XRRGetOutputInfo(display, new IntPtr(resources), *(IntPtr*)crtcInfo->outputs.ToPointer());
+			using var _3 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
 
 			X11Helper.XRRCrtcTransformAttributes* transformInfo = default;
 			X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
+			using var _4 = Disposable.Create(() => XLib.XFree(new IntPtr(transformInfo)));
 
 			// Assume no fancy transforms. We only support simple scaling transforms.
 			// e.g. for 1.5x1.5 we should see a similar affine transformation to:

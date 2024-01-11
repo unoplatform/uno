@@ -84,10 +84,19 @@ public static class X11Helper
 	public unsafe static extern XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
 
 	[DllImport(libX11Randr)]
+	public unsafe static extern void XRRFreeScreenResources(XRRScreenResources* resources);
+
+	[DllImport(libX11Randr)]
 	public unsafe static extern XRROutputInfo* XRRGetOutputInfo(IntPtr dpy, IntPtr resources, IntPtr output);
 
 	[DllImport(libX11Randr)]
+	public unsafe static extern void XRRFreeOutputInfo(XRROutputInfo* outputInfo);
+
+	[DllImport(libX11Randr)]
 	public unsafe static extern XRRCrtcInfo* XRRGetCrtcInfo(IntPtr dpy, IntPtr resources, IntPtr crtc);
+
+	[DllImport(libX11Randr)]
+	public unsafe static extern void XRRFreeCrtcInfo(XRRCrtcInfo* crtcInfo);
 
 	[DllImport(libX11Randr)]
 	public unsafe static extern int XRRGetCrtcTransform(IntPtr dpy, IntPtr crtc, ref XRRCrtcTransformAttributes* attributes);
