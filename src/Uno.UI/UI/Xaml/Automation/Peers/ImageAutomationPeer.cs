@@ -38,9 +38,7 @@ public partial class ImageAutomationPeer : FrameworkElementAutomationPeer
 		if (length == 0)
 		{
 			var image = Owner as Controls.Image;
-
-			//TODO UNO Description on Item is not implemented
-			return null;
+			return image.Description;
 		}
 
 		return null;
