@@ -27,7 +27,7 @@ This code uses the _IdentityServer_ demonstration endpoint with the following pa
 | Secret    | `secret`                                  |
 | Scopes    | `openid profile email api offline_access` |
 
->  Note: this endpoint allows any return URIs. It's acceptable for demo purposes, but production application will usually requires to register return addresses.
+> Note: this endpoint allows any return URIs. It's acceptable for demo purposes, but production application will usually requires to register return addresses.
 
 ## Step 0 - Install Uno + Create an Application
 
@@ -48,9 +48,9 @@ Add the following class in the project of the Android Head.
 ``` csharp
 [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop, Exported = true)]
 [IntentFilter(
-	new[] {Android.Content.Intent.ActionView},
-	Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
-	DataScheme = "oidc-auth")]
+ new[] {Android.Content.Intent.ActionView},
+ Categories = new[] {Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable},
+ DataScheme = "oidc-auth")]
 public class WebAuthenticationBrokerActivity : WebAuthenticationBrokerActivityBase
 {
 }
@@ -69,14 +69,14 @@ Add the `oidc-auth:` custom scheme in `Info.plist` file.
 ``` csharp
 <key>CFBundleURLTypes</key>
 <array>
-	<dict>
-		<key>CFBundleURLName</key>
-		<string>Authentication Callback</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-			<string>oidc-auth</string>
-		</array>
-	</dict>
+ <dict>
+  <key>CFBundleURLName</key>
+  <string>Authentication Callback</string>
+  <key>CFBundleURLSchemes</key>
+  <array>
+   <string>oidc-auth</string>
+  </array>
+ </dict>
 </array>
 ```
 
@@ -124,8 +124,8 @@ using IdentityModel.OidcClient;
 
 public MainPage()
 {
-	this.InitializeComponent();
-	PrepareClient();
+ this.InitializeComponent();
+ PrepareClient();
 }
 
 private OidcClient _oidcClient;
@@ -134,22 +134,22 @@ private Uri _logoutUrl;
 
 private async void PrepareClient()
 {
-	var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
+ var redirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().OriginalString;
 
-	// Create options for endpoint discovery
-	var options = new OidcClientOptions
-	{
-		Authority = "https://demo.duendesoftware.com/",
-		ClientId = "interactive.confidential",
-		ClientSecret = "secret",
-		Scope = "openid profile email api offline_access",
-		RedirectUri = redirectUri,
-		PostLogoutRedirectUri = redirectUri,
-	};
+ // Create options for endpoint discovery
+ var options = new OidcClientOptions
+ {
+  Authority = "https://demo.duendesoftware.com/",
+  ClientId = "interactive.confidential",
+  ClientSecret = "secret",
+  Scope = "openid profile email api offline_access",
+  RedirectUri = redirectUri,
+  PostLogoutRedirectUri = redirectUri,
+ };
 
     // Create the client. In production application, this is often created and stored
     // directly in the Application class.
-	_oidcClient = new OidcClient(options);
+ _oidcClient = new OidcClient(options);
 
     // Invoke Discovery and prepare a request state, containing the nonce.
     // This is done here to ensure the discovery mechanism is done before
@@ -157,7 +157,7 @@ private async void PrepareClient()
     // should be done during the handling of a user interaction (here it's the button click),
     // it will be too late to reach the discovery endpoint.
     // Not doing this could trigger popup blocker mechanisms in browsers.
-	_loginState = await _oidcClient.PrepareLoginAsync();
+ _loginState = await _oidcClient.PrepareLoginAsync();
     btnSignin.IsEnabled = true;
 
     // Same for logout url.
@@ -175,13 +175,13 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
 {
     var startUri = new Uri(_loginState.StartUrl);
 
-	// Important: there should be NO await before calling .AuthenticateAsync() - at least
-	// on WebAssembly, in order to prevent triggering the popup blocker mechanisms.
+ // Important: there should be NO await before calling .AuthenticateAsync() - at least
+ // on WebAssembly, in order to prevent triggering the popup blocker mechanisms.
     var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, startUri);
  
-	if(userResult.ResponseStatus != WebAuthenticationStatus.Success)
+ if(userResult.ResponseStatus != WebAuthenticationStatus.Success)
     {
-		txtAuthResult.Text = "Canceled";
+  txtAuthResult.Text = "Canceled";
         // Error or user cancellation
         return;
     }
@@ -189,28 +189,28 @@ private async void SignIn_Clicked(object sender, RoutedEventArgs e)
     // User authentication process completed successfully.
     // Now we need to get authorization tokens from the response
     var authenticationResult = await _oidcClient.ProcessResponseAsync(userResult.ResponseData, _loginState);
- 	
- 	if(authenticationResult.IsError)
+  
+  if(authenticationResult.IsError)
     {
         var errorMessage = authenticationResult.Error;
         // TODO: do something with error message
-		txtAuthResult.Text = $"Error {errorMessage}";
+  txtAuthResult.Text = $"Error {errorMessage}";
         return;
     }
 
- 	// That's completed. Here you have to token, ready to do something
- 	var token = authenticationResult.AccessToken;
- 	var refreshToken = authenticationResult.RefreshToken;
+  // That's completed. Here you have to token, ready to do something
+  var token = authenticationResult.AccessToken;
+  var refreshToken = authenticationResult.RefreshToken;
 
-	// TODO: make something useful with the tokens
-	txtAuthResult.Text = $"Success, token is {token}";
+ // TODO: make something useful with the tokens
+ txtAuthResult.Text = $"Success, token is {token}";
 }
 
 private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 {
-	// Important: there should be NO await before calling .AuthenticateAsync() - at least
-	// on WebAssembly, in order to prevent triggering the popup blocker mechanisms.
-	await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _logoutUrl);
+ // Important: there should be NO await before calling .AuthenticateAsync() - at least
+ // on WebAssembly, in order to prevent triggering the popup blocker mechanisms.
+ await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, _logoutUrl);
 }
 ```
 
@@ -234,8 +234,8 @@ On WebAssembly, it's important to configure the linker to prevent the removal of
   <assembly fullname="System.Net.Http" />
 
   <assembly fullname="System.Core">
-	<!-- This is required by JSon.NET and any expression.Compile caller -->
-	<type fullname="System.Linq.Expressions*" />
+ <!-- This is required by JSon.NET and any expression.Compile caller -->
+ <type fullname="System.Linq.Expressions*" />
   </assembly>
 </linker>
 ```

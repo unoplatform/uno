@@ -5,15 +5,25 @@ uid: Uno.Contributing.DebuggingUno
 # Debugging Uno.UI
 
 > [!Note]
+<<<<<<< HEAD
 > [Find instructions for building the Uno.UI solution here.](building-uno-ui.md) 
+=======
+> [Find instructions for building the Uno.UI solution here.](xref:Uno.Contributing.BuildingUno)
+>>>>>>> 7ee7368c0b (chore: Auto-fix)
 
 ## Debugging Uno.UI samples
 
 To debug the SamplesApp in the Uno.UI solution, which includes an extensive set of samples and test cases for the controls supported by Uno.UI, as well as non-UI features:
 
 1. Clone the repo, and ensure using a short target path, e.g. _D:\uno_ etc.  
+<<<<<<< HEAD
 This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
 2. Open the solution filter in Visual Studio for the target platform you wish to run on, [as detailed here](building-uno-ui.md).
+=======
+   > [!NOTE]
+   > This is required to avoid path length limitations in the .NET framework being used by Visual Studio.
+2. Open the solution filter in Visual Studio for the target platform you wish to run on, [as detailed here](xref:Uno.Contributing.BuildingUno).
+>>>>>>> 7ee7368c0b (chore: Auto-fix)
 3. Set `SamplesApp.[TargetPlatform]` as the selected Startup Project.
 4. Launch the samples app from Visual Studio.
 
@@ -23,7 +33,11 @@ See [this article](working-with-the-samples-apps.md) for more information on wor
 
 It's also easy to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
 
+<<<<<<< HEAD
 This is useful if you're debugging a problem that can't easily be reproduced outside the context of the app where it was discovered. 
+=======
+This is useful when debugging a problem that can't easily be reproduced outside the context of the app where it was discovered.
+>>>>>>> 7ee7368c0b (chore: Auto-fix)
 
 It can even speed up your development loop when working on a new feature or fixing a bug with a standalone repro, because a small 'Hello World' app builds considerably faster than the full SamplesApp.
 
@@ -39,12 +53,12 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
 5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->`.
 6. Replace the version number with the version being used by the application you wish to debug.
-7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). 
+7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia).
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
 1. Open [`FrameworkElement.cs`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/FrameworkElement.cs) in the Uno.UI solution.
-2. Right-click on the `FrameworkElement.cs` tab header in Visual Studio and choose 'Copy Full Path'. 
+2. Right-click on the `FrameworkElement.cs` tab header in Visual Studio and choose 'Copy Full Path'.
 3. Switch to the Visual Studio instance where your application is open.
 4. In your application solution, choose File->Open->File... or simply `Ctrl+O`, paste the path to `FrameworkElement.cs` into the file open dialog, and open `FrameworkElement.cs` in the application solution.
 5. Put a breakpoint in the `MeasureOverride()` method.
@@ -69,6 +83,7 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 It may happen that the package cache for the version you're debugging is corrupted, and the override is not working as intended.
 
 If this is the case:
+
 - In your debugged app, select another package version you've never debugged with
 - Make sure to build the app once to populate the nuget cache
 - Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia**) to replace the binaries with your debug ones
@@ -76,6 +91,7 @@ If this is the case:
 - Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the WinUI flavor [using this conversion tool](winui-conversion.md).
 
 ## Microsoft Source Link support
+
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to
 step into Uno.UI without downloading the repository.
 

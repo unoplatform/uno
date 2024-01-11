@@ -20,9 +20,11 @@ There are two ways to migrate an application to .NET 7.
    4. Optionally [convert your legacy Xamarin heads](updating-to-winui3.md) to use Uno.WinUI instead of Uno.UI
 
 ### Additional considerations
+
 Since .NET 7 breaks binary compatibility with Xamarin, most of the existing nuget packages that target `monoandroidXX`, `xamarinios10` and `xamarinmac20` (bindings to native SDKs are a good example) will not work properly and will need an updated version that are compatible with `net7.0-ios`, `net7.0-android`, `net7.0-maccatalyst` and `net7.0-macos`.
 
 ## Xamarin Support Policy
+
 As defined by [Microsoft support policy](https://dotnet.microsoft.com/en-us/platform/support/policy/xamarin) for Xamarin (as of 2022-08-25):
 
 > _Xamarin support will end on May 1, 2024 for all Xamarin SDKs. Android 13 and Xcode 14 SDKs (iOS and iPadOS 16, macOS 13) will be the final versions Xamarin will target._

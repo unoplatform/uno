@@ -5,40 +5,45 @@ uid: Uno.UI.CommonIssues.vs2022
 # Issues related to Visual Studio 2022 for Windows
 
 ### App builds in Visual Studio 2022 are taking a long time
+
 Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
 ### My app is not running as fast as I want
+
 There could be many reasons for being in this situation, but we've built a list of performance tips in [this article](xref:Uno.Development.Performance) that you can apply to your app. If you haven't found your answer, open a [discussion](https://github.com/unoplatform/uno/discussions) to tell us about it!
 
 ### C# Hot Reload troubleshooting
+
 C# Hot Reload is provided by Visual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
 
 If that is the case:
+
 - Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
 - WebAssembly does not support C# hot reload when debugging the application. You can start the app without the debugger instead.
 - Try recompiling the application completely (with the `Rebuild` command)
 
 More troubleshooting information is available [in this section](xref:Uno.Features.HotReload).
 
-### error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+### error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll
 
 See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
 ### Deploying an Android app takes a long time
 
 Android deployment requires a few considerations:
+
 - Android physical device
-    - Make sure to have a good cable (USB 3 or C) to have a good connection
-    - Avoid debugging through wifi
+  - Make sure to have a good cable (USB 3 or C) to have a good connection
+  - Avoid debugging through wifi
 - Android Emulators
-    - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/device-manager).
-    - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/hardware-acceleration))
-    - Try disabling `Fast Deployment` in your app configuration
+  - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/device-manager).
+  - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/hardware-acceleration))
+  - Try disabling `Fast Deployment` in your app configuration
         1. Open your project properties
-        1. In the android section search for `Fast Deployment` 
+        1. In the android section search for `Fast Deployment`
         1. uncheck all target platforms
 
-## Legacy issues 
+## Legacy issues
 
 ### The XAML editor shows `The type 'page' does not support direct content` message
 
@@ -47,7 +52,6 @@ This issue has been fixed in Visual Studio 17.8 and later.
 If you're using an earlier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
 
 To work around this issue, close all XAML editors, open a C# file and select the '[MyApp].Windows' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
-
 
 ### `InitializeComponent` or `x:Name` variable is not available in code-behind
 
@@ -70,9 +74,11 @@ A workaround is to use the [`x:Bind` to events feature](features/windows-ui-xaml
 ### WebAssembly: Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint
 
 This issue is caused by visual studio enforcing https connections for local content. You can work around this by either:
+
 - Removing the https endpoint in the `Properties/launchSettings.json` file
 - Unchecking the `Use SSL` option in the project's Debug launch profiles
 - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
 
-### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found.
+### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found
+
 This issue is present in Visual Studio 17.2 and 17.3, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).

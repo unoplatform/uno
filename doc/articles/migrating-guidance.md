@@ -14,8 +14,8 @@ Certain class definitions will need to have the [`partial` keyword](https://docs
 
 You'll need to do this for:
 
- - types that inherit from `FrameworkElement`, directly or indirectly
- - types that inherit directly from `DependencyObject`
+- types that inherit from `FrameworkElement`, directly or indirectly
+- types that inherit directly from `DependencyObject`
 
 Apart from adding `partial`, you don't need to worry about the generated code. You may however get misleading errors from Intellisense until the first time you try to compile the project, because the generated partial classes haven't been added yet.
 
@@ -29,8 +29,8 @@ This is relevant if you're targeting Android, iOS, and/or macOS, where Uno views
 
 Some common cases:
 
- - on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`. 
- - on Android, inside a control definition, references to the [`TextAlignment` enum](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://docs.microsoft.com/en-us/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Windows.UI.Xaml.TextAlignment`.
+- on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`.
+- on Android, inside a control definition, references to the [`TextAlignment` enum](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://docs.microsoft.com/en-us/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Windows.UI.Xaml.TextAlignment`.
 
 #### What do I do if I have a nested namespace with `Windows` in it?
 

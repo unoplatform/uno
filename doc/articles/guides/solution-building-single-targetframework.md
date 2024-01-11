@@ -18,17 +18,19 @@ Choose the section that covers your cases, whether you're using a solution built
 When using an Uno Platform 5.0 template, in the **Solution Explorer**, you'll find a folder named **Solution Items**, and a file named `solution-config.props.sample`.
 
 You can follow the directions specified in this file, or follow them here:
+
 - Right-click on the root item (your solution name) and **Open in file explorer**
 - Locate the `solution-config.props.sample` and make a copy named `solution-config.props` in the same folder
 - Back in Visual Studio, and for your convenience you can right-click on `Solution Items` and add `solution-config.props`
 
 Now that we have configured this file, let's say that you want to debug for WebAssembly:
+
 - In the `solution-config.props` file, uncomment the line that mentions `Wasm` or `WebAssembly` then save it.
 - For the change to take effect, close and reopen the solution, or restart Visual Studio.
 
 Repeat this process when changing your active development platform.
 
-> [!NOTE] 
+> [!NOTE]
 > The `solution-config.props` is automatically included in a `.gitignore` file to avoid having your CI environment build only for one target.
 
 ## Improve your own solution

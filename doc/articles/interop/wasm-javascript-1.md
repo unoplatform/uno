@@ -10,7 +10,7 @@ At the heart of Uno-WASM, there's a package called [`Uno.Wasm.Bootstrap`](https:
 
 It is possible to [add JavaScript files](https://github.com/unoplatform/Uno.Wasm.Bootstrap#support-for-additional-js-files) or [CSS  files](https://github.com/unoplatform/Uno.Wasm.Bootstrap#support-for-additional-css-files) into any Uno-WASM applications: they will be loaded automatically by the runtime. It is also possible to add any kind of downloadable assets as content.
 
-## HTML5 is a Rich and Powerful Platform.
+## HTML5 is a Rich and Powerful Platform
 
 Uno fully embraces HTML5 as its display backend when targeting WebAssembly (WASM). As a result, it is possible to integrate with almost any existing JavaScript library to extend the behavior of an app.
 
@@ -156,7 +156,7 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
 
-## Invoke JavaScript code From C#
+## Invoke JavaScript code From C #
 
 Whenever there's a need to invoke a JavaScript code in the browser, the `Uno.Foundation.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _extension methods_ on the elements.
 
@@ -173,7 +173,7 @@ await WebAssemblyRuntime.InvokeAsync(
 
 // Invoke javascript asynchronously and await returned string
 var str = await WebAssemblyRuntime.InvokeAsync(
-	"(async () => \"It works asynchronously!\")();");
+ "(async () => \"It works asynchronously!\")();");
 
 // Escape javascript data to prevent javascript script injection
 var escapedUserId = WebAssemblyRuntime.EscapeJS(userId);

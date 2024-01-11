@@ -22,6 +22,7 @@ Android, iOS, mac Catalyst, Linux, and WebAssembly.
 The following packages are available:
 
 # [WinUI / WinAppSDK](#tab/tabid-winui)
+
 - [Uno.CommunityToolkit.WinUI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI)
 - [Uno.CommunityToolkit.WinUI.Connectivity](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.Connectivity)
 - [Uno.CommunityToolkit.WinUI.DeveloperTools](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.DeveloperTools)
@@ -61,7 +62,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 ## Referencing the Windows Community Toolkit
 
-When using the default Uno Platform solution templates, in your shared class library, add the following: 
+When using the default Uno Platform solution templates, in your shared class library, add the following:
 
 # [WinUI / WinAppSDK](#tab/tabid-winui)
 
@@ -79,6 +80,7 @@ Add the following conditional references:
 ```
 
 If you already had a reference to the Community Toolkit, you should remove those lines:
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
@@ -103,6 +105,7 @@ Add the following conditional reference:
 You may need to replace `uap10.0.19041` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
 
 If you already had a reference to the community toolkit, you should remove those lines:
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
@@ -127,10 +130,9 @@ This means that there's an unconditional reference to Uno Platform's packages, a
  ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 
 > [!NOTE]
-> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`. 
-      
+> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`.
 
-2. Add a reference to the UWP UI Controls 
+2. Add a reference to the UWP UI Controls
 
 # [WinUI / WinAppSDK](#tab/tabid-winui)
 
@@ -150,7 +152,7 @@ This means that there's an unconditional reference to Uno Platform's packages, a
 
 ***
 
-## Task 2 - Add the DataGrid Control 
+## Task 2 - Add the DataGrid Control
 
 This control will create an easily organized grid that will allow you to create flexible columns and rows.
 

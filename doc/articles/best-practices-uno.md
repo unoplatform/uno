@@ -29,13 +29,15 @@ It's likely that some part of your application's code, be it C# code or XAML mar
 You can read more on the mechanics of platform-specific code [here for C#](platform-specific-csharp.md) and [here for XAML](platform-specific-xaml.md). You should also make sure you understand [an Uno Platform App solution structure](uno-app-solution-structure.md).
 
 The main goals where platform-specific code is concerned are to:
- * **Maximize maintainability by keeping as much code shared as possible.**
- * **Maximize readability by organizing your code in a consistent, legible way.**
+
+* **Maximize maintainability by keeping as much code shared as possible.**
+* **Maximize readability by organizing your code in a consistent, legible way.**
 
 Here are some tips to achieve that:
- * **Use [partial class](platform-specific-csharp.md#partial-class-definitions) definitions to mix shared code and platform-specific code in a single class.** Separating all platform-specific code into a dedicated partial definition is usually more readable than interleaving platform-specific `#if` blocks with shared code, particularly if the amount of platform-specific code is significant.
- * **Give partial definition files a platform-specific suffix.** Eg, for a `FormHighlighter` class, the shared partial definition would go in `FormHighlighter.cs`, the iOS-specific partial definition would go in `FormHighlighter.iOS.cs`, etc.
- * **(Optional) Consider putting platform-agnostic application layers in a separate .NET Standard project.** 'Thinking multi-platform' adds to the cognitive burden of reading and writing code, as well as the testing effort of verifying that it runs the same way on every platform. For this reason, some people prefer to split out platform-agnostic parts of the application into a separate .NET Standard project, eg 'pure' business logic which doesn't interact with the UI or with non-visual platform APIs. This project builds once as a single binary used on all platforms, giving a stronger guarantee that it will behave consistently everywhere. Enforcing that platform-agnostic separation does impose an architectural burden too, so it's a matter of personal preference.
+
+* **Use [partial class](platform-specific-csharp.md#partial-class-definitions) definitions to mix shared code and platform-specific code in a single class.** Separating all platform-specific code into a dedicated partial definition is usually more readable than interleaving platform-specific `#if` blocks with shared code, particularly if the amount of platform-specific code is significant.
+* **Give partial definition files a platform-specific suffix.** Eg, for a `FormHighlighter` class, the shared partial definition would go in `FormHighlighter.cs`, the iOS-specific partial definition would go in `FormHighlighter.iOS.cs`, etc.
+* **(Optional) Consider putting platform-agnostic application layers in a separate .NET Standard project.** 'Thinking multi-platform' adds to the cognitive burden of reading and writing code, as well as the testing effort of verifying that it runs the same way on every platform. For this reason, some people prefer to split out platform-agnostic parts of the application into a separate .NET Standard project, eg 'pure' business logic which doesn't interact with the UI or with non-visual platform APIs. This project builds once as a single binary used on all platforms, giving a stronger guarantee that it will behave consistently everywhere. Enforcing that platform-agnostic separation does impose an architectural burden too, so it's a matter of personal preference.
 
 ## Application architecture
 
@@ -43,9 +45,9 @@ You have a lot of choice when choosing an architecture for an Uno Platform appli
 
 Sometimes so much freedom can be paralyzing. To help you get started, we've created several reference applications especially for Uno Platform. These are working, real-world applications utilizing simple but effective architectural patterns for cross-platform development.
 
- * [**Ch9**](https://github.com/unoplatform/Uno.Ch9): browse content from Microsoft's publicly-available Channel 9 video feed.
- * [**UADO**](https://github.com/unoplatform/uado): Universal Azure DevOps Organizer
+* [**Ch9**](https://github.com/unoplatform/Uno.Ch9): browse content from Microsoft's publicly-available Channel 9 video feed.
+* [**UADO**](https://github.com/unoplatform/uado): Universal Azure DevOps Organizer
 
- ## Performance
+## Performance
 
  See a checklist of performance-related best practices [here](Uno-UI-Performance.md).

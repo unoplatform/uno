@@ -132,7 +132,6 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    }
    ```
 
-
 2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
    ``` xml
@@ -148,7 +147,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    
        <StackPanel Spacing="10" Padding="20">
          <TextBlock FontSize="15">
-   		   Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
+        Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
             <LineBreak />Picked Date/Time: <Run FontSize="20" FontWeight="Bold" Text="{Binding SelectedDateTime, ElementName=picker}" />
          </TextBlock>
          <TextBlock FontSize="20">Flatpickr control:</TextBlock>
@@ -231,10 +230,13 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    ![Final result](assets/flatpickr-final.gif)
 
 ## Troubleshooting
+
 If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
 
 ### My JavaScript control does not accept pointer input
+
 In the constructor of your wrapper control, add the following:
+
 ```
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
 // Uno reproduces this behavior, so we must set it here even if we're not using the background.
@@ -243,7 +245,9 @@ Background = new SolidColorBrush(Colors.Transparent);
 ```
 
 ### `TextBlock` content is not visible in browsers with the dark theme
+
 `TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
+
 ```
 <Page 
     ...

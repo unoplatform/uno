@@ -162,7 +162,6 @@ In order to better align with the behavior of the Silverlight version of the app
     </Grid>
     ```
 
-
 1. Review the **MainPage** XAML:
 
     As mentioned earlier, the **NavigationView** control can provide a similar navigation experience to that which is available within the Silverlight Business App template if `PaneDisplayMode="Top"`, and the **Frame** control is very similar to the Silverlight version. What may come as a surprise is that there is no out-of-the-box integration between **NavigationView** and **Frame** that synchronizes the selected navigation item with the content displayed and the back button. To achieve this, additional code must be written.

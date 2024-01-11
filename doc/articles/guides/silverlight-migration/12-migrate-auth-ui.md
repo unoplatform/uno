@@ -74,6 +74,7 @@ The next task will take a look at creating the **LoginForm**. As discussed above
 > [!TIP]
 > To learn more about the **ContentDialog** control, review the following resources:
 > *
+>
 > * [ContentDialog control](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
 > * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
 
@@ -290,6 +291,7 @@ Let's walk through the implementation.
 
     > [!TIP]
     > Although the **AuthenticationService.LoginUser** service is asynchronous, the code does not need to wait for it here - the **AuthenticationService.LoggedIn** and **AuthenticationService.LoginFailed** will communicate the state of the login. The `_ = AuthenticationService...` code uses a C# 7 feature called **Discards** to show the intention to ignore the result. You can learn more about **Discards** below:
+    >
     > * [Discards](https://docs.microsoft.com/dotnet/csharp/discards)
 
     Once again, **Bindings.Update** method is called to update the UI. Finally, `args.Cancel = true;` is used to ensure the dialog does not close.

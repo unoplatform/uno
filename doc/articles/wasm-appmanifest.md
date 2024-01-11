@@ -9,6 +9,7 @@ The `AppManifest.js` file contains settings for your WebAssembly application. It
 ## AppManifest properties
 
 The properties are :
+
 * **splashScreenImage**: defines the image that will be centered on the window during the application's loading time.
 * **splashScreenColor**: defines the background color of the splash screen.
 * **displayName**: defines the default name of the application in the browser's window title.

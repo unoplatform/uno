@@ -8,9 +8,9 @@ Before you start migrating a UWP-only application or library to be Uno compatibl
 
 The key questions to ask are:
 
- - what framework APIs is the code using?
- - what third-party dependencies does the code rely upon?
- - what general .NET functionality is used that may not be supported on specific platforms?
+- what framework APIs is the code using?
+- what third-party dependencies does the code rely upon?
+- what general .NET functionality is used that may not be supported on specific platforms?
 
 ## Controls and framework APIs
 
@@ -22,8 +22,8 @@ Once you migrate your code to Uno, unsupported API usages will be highlighted wi
 
 Look at the NuGet packages referenced by the code. For each package, ask:
 
- - is it supported on each platform you wish to target?
- - if not, is there an acceptable alternative?
+- is it supported on each platform you wish to target?
+- if not, is there an acceptable alternative?
 
 Third-party dependencies typically fall into one of a few categories:
 

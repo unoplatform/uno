@@ -12,25 +12,25 @@ For the DocFX tool used to build the docs website, see [more info here](docfx.md
 
 #### Key links
 
- * how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
- * WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
- * Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
+* how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
+* WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
+* Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
 
 #### Resources
 
 Some useful resources on writing good technical documentation:
 
- * [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/)
- * [Divio's Documentation System](https://documentation.divio.com/)
+* [ReactiveUI docs style guide](https://www.reactiveui.net/contribute/content-style-guide/)
+* [Divio's Documentation System](https://documentation.divio.com/)
 
 ## Writing step-by-step guides
 
 Step-by-step guides that address a particular problem or use case that multiple developers are likely to encounter.
 
- * For longer tutorials, it's fine to split the content over multiple pages.
- * Guides should always be accompanied by working code. Standalone applications should be added to the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) and linked to from the associated tutorial.
- * Use the [how-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md) as a starting point.
- * Structure guides as a series of clear, actionable steps. After carrying out every step as described, the user should end up with working code that demonstrates the objective of the guide (either a standalone sample, or a new feature in their existing app).
+* For longer tutorials, it's fine to split the content over multiple pages.
+* Guides should always be accompanied by working code. Standalone applications should be added to the [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) and linked to from the associated tutorial.
+* Use the [how-to template](https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md) as a starting point.
+* Structure guides as a series of clear, actionable steps. After carrying out every step as described, the user should end up with working code that demonstrates the objective of the guide (either a standalone sample, or a new feature in their existing app).
 
 ## Documenting features
 
@@ -61,21 +61,28 @@ Rarely, features are added to Uno Platform that aren't part of WinUI (`VisibleBo
 It's important to document these novel features when you add them, since they aren't covered anywhere else. Again, copy the [Uno-only feature template here](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) and fill in the sections.
 
 ## Updating the documentation from linked repositories
+
 The Uno Platform documentation is aggregated onto https://platform.uno/docs/articles/intro.html, including some repositories that are in the unoplatform GitHub organization.
 
 ### Updating the documentation for other repositories
+
 The CI includes a step to clones repositories at a specified commit or branch, and provides the path to the DocFX table of content.
 
 To include documentation (let's take Uno.Themes as an example):
-- Update your documentation in `Uno.Themes` repository, preferably in a folder named `doc`
-- Include a file named `toc.yml`, using this file as a template:
+
+* Update your documentation in `Uno.Themes` repository, preferably in a folder named `doc`
+* Include a file named `toc.yml`, using this file as a template:
+
   ```yml
   items:
   - name: Introduction to Uno Themes
     href: ../Readme.md
   ```
-- Once you have merged your changes into `Uno.Themes`' `main` (or the default branch), take the commit id and place it in the `doc/import_external_docs.ps1` of the uno repository, as follows:
+
+* Once you have merged your changes into `Uno.Themes`' `main` (or the default branch), take the commit id and place it in the `doc/import_external_docs.ps1` of the uno repository, as follows:
+
    ```
    @("https://github.com/unoplatform/uno.themes", "uno.themes", "INSERT_COMMIT_HASH_OR_BRANCH_NAME"),
    ```
-- Create a PR and validate that the content you added is appearing in the Uno Platform `toc.yml` where `external/uno.themes/` is visible. Ensure href path ends by `toc.yml` for all nodes to be visible.
+
+* Create a PR and validate that the content you added is appearing in the Uno Platform `toc.yml` where `external/uno.themes/` is visible. Ensure href path ends by `toc.yml` for all nodes to be visible.
