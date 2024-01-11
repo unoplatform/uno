@@ -54,16 +54,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			// TODO: Per https://github.com/unoplatform/uno/issues/2895#issuecomment-694212130
-			// This logging doesn't seem correct in that particular case.
-			// There is also another case when the element is collapsed. In this case, WinUI fires Loaded, but doesn't fire Loading.
-			if (!IsLoading && _log.IsEnabled(LogLevel.Error))
-			{
-				// TODO: **IMPORTANT BEFORE MERGE** Make sure all cases that hits this code path matches WinUI behavior.
-				// Then, this condition can be deleted then.
-				//_log.Error($"Element {this} is being loaded while not in loading state");
-			}
-
 			IsLoading = false;
 			IsLoaded = true;
 

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 // #define TRACE_EFFECTIVE_VIEWPORT
 
-#if !(IS_NATIVE_ELEMENT && __IOS__)
+#if !(IS_NATIVE_ELEMENT && __IOS__) && !UNO_HAS_ENHANCED_LIFECYCLE
 // On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
 // so avoid check of the '_isLayouted' flag
 #define CHECK_LAYOUTED
@@ -38,8 +38,11 @@ namespace Microsoft.UI.Xaml
 {
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
+#endif
+
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
 		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
@@ -74,7 +77,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if !IS_NATIVE_ELEMENT
+#if !IS_NATIVE_ELEMENT && !UNO_HAS_ENHANCED_LIFECYCLE // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
 		private partial void ReconfigureViewportPropagationPartial()
 			=> ReconfigureViewportPropagation();
 #endif
@@ -89,7 +92,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private void ReconfigureViewportPropagation(
 			bool isInternal = false,
-			IFrameworkElement_EffectiveViewport? child = null
+			IFrameworkElement_EffectiveViewport? child = null,
+			bool isLeavingTree = false
 #if TRACE_EFFECTIVE_VIEWPORT
 			, [CallerMemberName] string? caller = null)
 		{
@@ -98,7 +102,13 @@ namespace Microsoft.UI.Xaml
 		{
 			const string caller = "--unavailable--";
 #endif
-			if (IsEffectiveViewportEnabled)
+			if (
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				!isLeavingTree
+#else
+				IsLoaded
+#endif
+				&& IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
 				if (IsLoaded)

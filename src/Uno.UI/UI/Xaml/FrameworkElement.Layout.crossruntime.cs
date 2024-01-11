@@ -912,6 +912,8 @@ namespace Microsoft.UI.Xaml
 				this.ApplyStyles();
 			}
 
+			ReconfigureViewportPropagation();
+
 			m_firedLoadingEvent = false;
 		}
 
@@ -933,6 +935,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.Leave(@params);
+
+			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
 	}
 }

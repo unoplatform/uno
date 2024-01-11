@@ -1003,7 +1003,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			hostPanel.Children.Add(sut);
 
-			// TODO: **IMPORTANT BEFORE MERGE** does WinUI need this WaitForIdle call?
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, loadingCount, "loading");
@@ -1157,8 +1156,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = hostPanel;
 
 			await TestServices.WindowHelper.WaitForIdle();
-			// UNO TODO: **IMPORTANT BEFORE MERGE** The test gets flaky without the extra WaitForIdle. This doesn't sound right?
-			await TestServices.WindowHelper.WaitForIdle();
+
+			// NOTE: The following asserts are flaky on WinUI but not Uno.
+			// In WinUI, sometimes the above WaitForIdle isn't enough for Loaded to be raised.
 
 			Assert.IsTrue(success);
 			Assert.AreEqual(1, loadingCount, "loading");
@@ -1188,8 +1188,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, events.Count);
-			Assert.AreEqual("Unloaded", events[0]);
+			// NOTE: On WinUI, Unloaded is fired.
+			// In Uno, we only fire Unloaded if IsLoaded is true.
+			// See UIElement.Leave for more details.
+			Assert.AreEqual(0, events.Count);
+			//Assert.AreEqual("Unloaded", events[0]);
 
 			void Sut_Loading(FrameworkElement sender, object args)
 			{

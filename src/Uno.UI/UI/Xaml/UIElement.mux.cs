@@ -670,8 +670,21 @@ namespace Microsoft.UI.Xaml
 
 			if (IsActiveInVisualTree)
 			{
-				// TODO: Is Unloaded fired synchronously?
-				OnElementUnloaded();
+				if (IsLoaded)
+				{
+					// This doesn't match WinUI.
+					// On WinUI, Unloaded can be fired even if Loaded is not fired.
+					// However, currently this is problematic due to bugs in ContentControl.
+					// Mainly, when we set ContentControl.Content, the content is added as a direct child to ContentControl
+					// Then, at some point later, we'll need to attach the Content to ContentPresenter instead of ContentControl directly.
+					// This "re-attaching" of Content will cause it to leave the visual tree and fire unloaded, which is not correct.
+					// In WinUI, ContentControl works differently.
+					//
+					// Another reason why we may not want to match WinUI behavior is that we rely on Loaded/Unloaded for event subscriptions/unsubscriptions in many controls
+					// Matching WinUI behavior can make those control go into bad state and/or memory leaks in niche cases.
+					// This can be revisited in the future if it caused issues.
+					OnElementUnloaded();
+				}
 
 				var eventManager = this.GetContext().EventManager;
 				eventManager.RemoveRequest(this);

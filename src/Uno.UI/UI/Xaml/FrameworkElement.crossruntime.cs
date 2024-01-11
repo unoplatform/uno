@@ -191,15 +191,13 @@ namespace Microsoft.UI.Xaml
 
 		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible
 
-		private protected virtual void OnLoaded()
-		{
-			ReconfigureViewportPropagationPartial();
-		}
+		private protected virtual void OnLoaded() { }
 
 		partial void OnLoadingPartial();
 
 		private protected sealed override void OnFwEltUnloaded()
 		{
+			// TODO: Unloaded is fired asynchronously in WinUI.
 			void InvokeUnloaded()
 			{
 				// Raise event after invoking base in order to raise them bottom to top
@@ -238,10 +236,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnUnloadedPartial();
 
-		private protected virtual void OnUnloaded()
-		{
-			ReconfigureViewportPropagationPartial();
-		}
+		private protected virtual void OnUnloaded() { }
 
 		public override string ToString()
 		{
