@@ -71,6 +71,9 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
 		<!-- We remove WebView2 tests, as the installed version of Microsoft.UI.Xaml does not include this control -->
 		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Microsoft_UI_Xaml_Controls\Given_WebView2.cs" />
+		
+		<Compile Include="..\Uno.UI\Helpers\XamlHelper.cs" Link="Uno.UI\Helpers\XamlHelper.cs" />
+	
 	</ItemGroup>
 	
 	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.19041'">

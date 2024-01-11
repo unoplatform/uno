@@ -27,7 +27,14 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
-#if !WINAPPSDK
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using Foundation;
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
 using Uno.UI;
 #endif
 
@@ -37,10 +44,13 @@ using Foundation;
 
 using static Private.Infrastructure.TestServices;
 using Point = Windows.Foundation.Point;
+using Uno.UI.Helpers;
+
 #if HAS_UNO
 using static Uno.UI.Extensions.ViewExtensions;
 using Uno.UI.Helpers;
 #endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase // resources
@@ -514,7 +524,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(source[0]) as ListViewItem) != null);
 
 			Assert.IsNull(lvi.FindFirstDescendant<ListViewItem>());
-			Assert.IsNull(lvi.FindFirstAncestor<ListViewItem>());
+			Assert.IsNull(lvi.FindFirstParent<ListViewItem>());
 			Assert.AreEqual("SelfHostingListViewItem", lvi.Name);
 
 			var content = lvi.Content as Border;
