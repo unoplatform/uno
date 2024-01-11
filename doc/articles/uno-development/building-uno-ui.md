@@ -153,10 +153,10 @@ If you need to add a new `@(AndroidResource)` value to be used from C# code insi
 3. Open `obj\Debug\net6.0-android\Resource.designer.cs`, and find the
    field you need such as:
 
-```csharp
-// aapt resource value: 0x7F010000
-public static int foo = 2130771968;
-```
+    ```csharp
+    // aapt resource value: 0x7F010000
+    public static int foo = 2130771968;
+    ```
 
 4. Copy this field to the `Resource.designer.cs` checked into source
    control, such as: `src/Uno.UI/Resources/Resource.designer.g.Android.cs`

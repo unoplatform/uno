@@ -27,12 +27,12 @@ By default, when you create a new Uno Platform app, it will target the following
 
 The following command only selects the Windows platform:
 
-```
+```dotnetcli
 dotnet new unoapp -platforms windows
 ```
 
 To select multiple platforms, the `platforms` argument should be supplied multiple times. In the following example, the generated app will target Windows, Android and iOS:
 
-```
+```dotnetcli
 dotnet new unoapp -platforms windows -platforms android -platforms ios
 ```

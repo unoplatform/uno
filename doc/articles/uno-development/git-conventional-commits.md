@@ -8,7 +8,7 @@ Uno uses the [Conventional Commits format](https://www.conventionalcommits.org/e
 
 The Conventional Commits format is as follows:
 
-```
+```text
 <type>([optional scope]): <description>
 
 [optional body]
@@ -16,7 +16,7 @@ The Conventional Commits format is as follows:
 [optional footer(s)]
 ```
 
-### Type
+## Type
 
 Only certain _types_ are permitted, with the most common being:
 
@@ -27,13 +27,13 @@ Only certain _types_ are permitted, with the most common being:
 - `perf:` a commit that improves performance, without functional changes.
 - `chore:` a catch-all type for any other commits. For instance, if you're implementing a single feature and it makes sense to divide the work into multiple commits, you should mark one commit as `feat` and the rest as `chore`.
 
-### Scope
+## Scope
 
  The _scope_ optionally provides extra context. If you're fixing a `ListView` bug, for example, you might use `fix(listview)`.
 
  One scope with special meaning is `reg`, short for regression. This is used for fixes for bugs that weren't present in the most recent stable release.
 
-### Breaking changes
+## Breaking changes
 
 Breaking changes are indicated by putting `BREAKING CHANGE:` at the start of the message body, for any commit type. Optionally they may be emphasized by appending a `!` after the type and scope. The message body should provide appropriate guidance for developers affected by the breaking change.
 

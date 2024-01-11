@@ -27,6 +27,6 @@ Ensure that the application runs properly by building it in Visual Studio and ru
 
 Once you're done with debugging the templates, you can go back to the official templates with:
 
-```
+```dotnetcli
 dotnet new -i Uno.ProjectTemplates.Dotnet
 ```

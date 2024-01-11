@@ -14,7 +14,7 @@ Uno.Extensions.Authentication currently supports these types of authentication:
 
     No authentication is added to the application. This is the default for both blank and recommended presets.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -auth none
     ```
 
@@ -22,15 +22,15 @@ Uno.Extensions.Authentication currently supports these types of authentication:
 
     Provides a customized login experience for performing login, refresh, or logout. This is also the authentication type that is generated with the project template when Custom Authentication is selected. The other types are not supported yet at the moment but they're on the roadmap and will come to the wizard soon.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -auth custom
     ```
 
 - #### MSAL
 
-    [MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) (formerly AzureAD) stands for Microsoft Authentication Library, is part of the [Microsoft Identity Platform](https://learn.microsoft.com/en-gb/azure/active-directory/develop/v2-overview) and enables acquiring authentication tokens and access of protected APIs using OAuth2 and OpenID.
+    [MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) (formerly AzureAD) stands for Microsoft Authentication Library, is part of the [Microsoft Identity Platform](https://learn.microsoft.com/azure/active-directory/develop/v2-overview) and enables acquiring authentication tokens and access of protected APIs using OAuth2 and OpenID.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -auth msal
     ```
 
@@ -38,7 +38,7 @@ Uno.Extensions.Authentication currently supports these types of authentication:
 
     Also referred to as [OpenID Connect](https://openid.net/connect), is a simple identity layer using the OAuth 2.0 protocol.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -auth oidc
     ```
 
@@ -46,7 +46,7 @@ Uno.Extensions.Authentication currently supports these types of authentication:
 
     Web authentication is achieved via a web page that the app sends over to be opened in the browser and gets a token result once the login process is completed successfully.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -auth web
     ```
 

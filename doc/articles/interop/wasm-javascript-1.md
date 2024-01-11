@@ -88,7 +88,7 @@ public sealed partial class MyInputControl : FrameworkElement
 > [!NOTE]
 > When using `HtmlElementAttribute` in a WebAssembly-only library, importing the `Uno.WinUI.Runtime.WebAssembly` is required. If multiple targets frameworks are needed, you'll need to create a [cross-targeted library](../cross-targeted-libraries.md), as well as adding the `Uno.WinUI.Runtime.WebAssembly` library.
 
-Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the _Wasm_ platform. It is possible to use [conditional code](https://platform.uno/docs/articles/platform-specific-csharp.html) to use these methods in a multi-platform project.
+Once created, it is possible to interact directly with this element by calling helper methods available in Uno. Note that those methods are only available when targeting the *Wasm* platform. It is possible to use [conditional code](https://platform.uno/docs/articles/platform-specific-csharp.html) to use these methods in a multi-platform project.
 
 Here is a list of helper methods used to facilitate the integration with the HTML DOM:
 
@@ -156,9 +156,9 @@ Here is a list of helper methods used to facilitate the integration with the HTM
 
 * Finally, it is possible to invoke an arbitrary JavaScript code by using the static method `WebAssembleRuntime.InvokeJS()`. The script is directly executed in the context of the browser, giving the ability to perform anything that JavaScript can do. See next section for more details.
 
-## Invoke JavaScript code From C #
+## Invoke JavaScript code From C\#
 
-Whenever there's a need to invoke a JavaScript code in the browser, the `Uno.Foundation.WebAssemblyRuntime` static class should be used. There is also helpers you can call as _extension methods_ on the elements.
+Whenever there's a need to invoke a JavaScript code in the browser, the `Uno.Foundation.WebAssemblyRuntime` static class should be used. There is also helpers you can call as *extension methods* on the elements.
 
 ``` csharp
 // Invoke javascript synchronously
@@ -186,13 +186,13 @@ await MyControl.ExecuteJavascriptAsync("element.requestFullScreen();"); // async
 ```
 
 * `InvokeAsync` should return a [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or, be an `async` method.
-* Any Promise _rejected_ result will get translated into an `ApplicationException` exception.
+* Any Promise *rejected* result will get translated into an `ApplicationException` exception.
 * Remember to always use `InvariantCulture` when generating JavaScript for numbers. There's also a helper in [`Uno.Core`](https://www.nuget.org/packages/Uno.Core) called `.ToStringInvariant()`: this dependency is already present in any Uno projects in the namespace `Uno.Extensions`.
 * Calling the javascript `document.getElementById()` with the element's `HtmlId` will only work when the element is actually loaded in the DOM. So it's better to call the extensions `<element>.ExecuteJavascript()` or `<element>.ExecuteJavascriptAsync()`: they will work all the time.
 
 ## Invoke C# code From JavaScript
 
-There's 2 ways to _callback_ to managed C# code from JavaScript:
+There's 2 ways to *callback* to managed C# code from JavaScript:
 
 1. Use Mono to wrap a dotnet static method into a JavaScript function like this:JavaScript_:
 
@@ -204,7 +204,7 @@ There's 2 ways to _callback_ to managed C# code from JavaScript:
    const result = sumMethod(1, 2); // should return 3
    ```
 
-   _C#_:
+   *C#*:
 
    ``` csharp
    // In assembly "Assembly.Name"
@@ -219,14 +219,14 @@ There's 2 ways to _callback_ to managed C# code from JavaScript:
 
 2. Use HTML's `Event` or `CustomEvent` and dispatch them to managed code like this:
 
-   _JavaScript_:
+   *JavaScript*:
 
    ``` javascript
    // Generate a custom generic event from JavaScript/Typescript
    htmlElement.dispatchEvent(new Event("simpleEvent"));
    ```
 
-   _C#_:
+   *C#*:
 
    ``` csharp
    this.RegisterHtmlEventHandler("simpleEvent", (sender, evt)=> { [...] });

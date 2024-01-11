@@ -6,7 +6,7 @@ uid: Uno.GetStarted.AdditionalSetup.Linux
 
 - Install GTK3:
 
-    ```
+    ```bash
     sudo apt update
     sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
@@ -15,7 +15,7 @@ uid: Uno.GetStarted.AdditionalSetup.Linux
 
 - Install GTK3:
 
-    ```
+    ```bash
     sudo apt update
     sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```

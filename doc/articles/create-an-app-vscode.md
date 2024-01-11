@@ -6,7 +6,7 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 > [!NOTE]
 > Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.vscode).
 
-### Create the App
+## Create the App
 
 In a terminal, type the following to create a new project using [`dotnet new`](xref:Uno.GetStarted.dotnet-new) templates:
 

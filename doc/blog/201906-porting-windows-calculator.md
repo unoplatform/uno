@@ -57,7 +57,7 @@ There are multiple subtleties for building and using native code:
 - For Android, the integrated VS project does not automatically build for all target platforms (x86, armv7 and arm64), which means that [additional CI builds steps](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/.vsts-ci.Windows.yml#L37) have to be executed so the proper binaries are used all at once when creating the final APK. Also, standard project dependencies cannot be used (because of the multi ABI builds), and the [`AndroidNativeLibrary`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Droid/Calculator.Droid.csproj#L101) items must be added in the project.
 - For WebAssembly, the module needs to be built using the `-s SIDE_MODULE=1` support, with additional support for C++ standard library, as it is [not automatically added by emscripten](https://github.com/emscripten-core/emscripten/wiki/Linking#system-libraries) for dynamic modules.
 
-### Challenge #3: Converting the C++/CX code to C#
+### Challenge #3: Converting the C++/CX code to C\#
 
 The rest of the application is using Microsoft's C++/CX to use WinRT APIs and particularly WinUI APIs. This makes for a very C#-like code that can be converted to C# using a set of regular expressions that convert `::` to `.`, or `dynamic_cast<FrameworkElement>(fe)` to `((FrameworkElement)fe)`, and the rest of the WinRT API calls just match directly, as Uno provides the full APIs signatures of WinRT.
 

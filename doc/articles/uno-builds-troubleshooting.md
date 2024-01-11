@@ -53,13 +53,13 @@ To generate a binlog file from the command line:
 - Navigate to the folder of the project head
 - For UWP/iOS/Android/macOS projects, type the following:
 
-  ```
+  ```bash
   msbuild /r /bl MyProject.csproj
   ```
 
 - For other targets (.NET 5+, WebAssembly, Skia, etc...)
 
-  ```
+  ```dotnetcli
   dotnet build /bl MyProject.csproj
   ```
 

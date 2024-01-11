@@ -44,7 +44,7 @@ alias mlaunch=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mla
 
 3. At this point it's necessary to wait until the following line shows up in the terminal:
 
-    ```
+    ```console
     The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
     ```
 
@@ -83,7 +83,7 @@ $ mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit --arg
 
 At this point, it's necessary to wait until the following line shows up in the terminal:
 
-```
+```console
 The runtime has been configured to pause during startup and is awaiting a Diagnostics IPC ResumeStartup command from a Diagnostic Port
 ```
 
@@ -139,13 +139,13 @@ Then in the `Android` application folder, add the following two files:
 
 - `environment.device.txt`
 
-    ```
+    ```text
     DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend
     ```
 
 - `environment.emulator.txt`
 
-    ```
+    ```text
     DOTNET_DiagnosticPorts=10.0.2.2:9001,suspend
     ```
 
@@ -155,13 +155,13 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
 
 - Start the diagnostics router, in any folder:
 
-    ```
+    ```dotnetcli
     dotnet-dsrouter client-server -tcps 127.0.0.1:9001 -ipcc /tmp/uno-app --verbose debug
     ```
 
 - Start `dotnet-trace`, in the app folder or where you want your traces to be stored:
 
-    ```
+    ```dotnetcli
     dotnet-trace collect --diagnostic-port /tmp/uno-app --format speedscope -o uno-app-trace
     ```
 
@@ -169,7 +169,7 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
     > Running on a 32 bits device is not supported and will generate unusable traces in SpeedScope
 - Build the application with profiling enabled
 
-    ```
+    ```dotnetcli
     dotnet build -f net6.0-android -t:run -c Release -p:IsEmulator=true /p:RunAOTCompilation=true /p:AndroidEnableProfiler=true
     ```
 

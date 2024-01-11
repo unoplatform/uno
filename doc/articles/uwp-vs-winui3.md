@@ -37,21 +37,21 @@ This is possible because we ship two sets of the `Uno.UI` binaries, [one set](ht
 
 The questions below should help guide you to the best choice when creating a new Uno Platform application. Note that WinUI 3 is nearing release and some of the guidance here may change or become outdated rather rapidly.
 
-#### Do you use 3rd-party libraries?
+### Do you use 3rd-party libraries?
 
 While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us at our [Discord channel](https://discord.com/invite/eBHZSKG).
 
-#### Do you want to use .NET 5 or .NET 6/7/8 or later?
+### Do you want to use .NET 5 or .NET 6/7/8 or later?
 
 WinUI 3 applications using the Win32 application model can use .NET 5 and latest C# versions right now. Microsoft has announced they will not invest into moving UWP to .NET 5 or later. However, this does not change anything for Uno Platform users, as described in this [blog](https://platform.uno/blog/recent-uwp-and-net-5-net-6-news-and-uno-platform-plans/).
 
 Note that not all non-Windows platforms support .NET 5, see a [full support matrix here](net-version-support.md).
 
-#### Do you plan to publish on Windows?
+### Do you plan to publish on Windows?
 
 If Windows is one of your target platforms, then the [technical differences](#technical) discussed above apply. Probably the key question is, can your application run in the sandboxed 'UWP model', or is it better served by the unrestricted 'Win32 model'?
 
-#### Do you depend on features that aren't yet migrated to WinUI 3?
+### Do you depend on features that aren't yet migrated to WinUI 3?
 
 [Check the WinUI 3 roadmap](https://github.com/microsoft/microsoft-ui-xaml/blob/master/docs/roadmap.md#winui-30-feature-roadmap) for a list of features that won't be available in the initial supported release, like `InkCanvas`.
 

@@ -4,23 +4,23 @@ uid: Uno.ReleaseNotes.Legacy
 
 # Release notes
 
-### Features
+## Features
 
 - [Android] Support for `Application.Current.Exit`
 - Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
 
-### Breaking changes
+## Breaking changes
 
 - Uno is now built using VS2019 16.4, and does not support building applications with Visual Studio 2017.
   Linker errors may occur such as:
 
-  ```
+  ```console
   Java.Interop.Tools.Diagnostics.XamarinAndroidException: error XA2006: Could not resolve reference to 'System.Collections.Generic.Queue`1'
   (defined in assembly 'Uno.UI, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null') with scope 'mscorlib, Version=2.0.5.0,
   Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
   ```
 
-### Bug fixes
+## Bug fixes
 
 -
 
@@ -209,7 +209,7 @@ uid: Uno.ReleaseNotes.Legacy
   `TemplatedParent`'s `Content` when this one is a `ContentControl`.
   You can deactivate this behavior like this:
 
-  ```
+  ```csharp
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
 
@@ -482,9 +482,9 @@ uid: Uno.ReleaseNotes.Legacy
 - Fix invalid code generation for `x:Name` entries on `Style` in resources
 - [Wasm] Fix incorrect `TextBlock` measure with constrains
 - 151676 [iOS] The keyboard is closing when tap on the webview or toolbar
-- 151655 [TimePicker][iOS] First time you open time picker it initializes the existing value to current time
-- 151656 [TimePicker][iOS] Time picker always shows +1 minute than selected value
-- 151657 [DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
+- 151655 \[TimePicker][iOS] First time you open time picker it initializes the existing value to current time
+- 151656 \[TimePicker][iOS] Time picker always shows +1 minute than selected value
+- 151657 \[DatePicker][iOS] Date picker flyout displays 1 day earlier than selected value
 - 151430 [Android] Prevent touch event being dispatched to invisible view
 - Fixed overflow errors in Grid.Row/Column and Grid.RowSpan may fail in the Grid layouter.
 - 151547 Fix animation not applied correctly within transformed hierarchy
@@ -709,7 +709,7 @@ uid: Uno.ReleaseNotes.Legacy
 - Fix invalid Border Content type for macOS
 - Don't fail iOS ListView if item Content is null
 - [Wasm] Implement naive refresh for items manipulation in the ListViewBase
-- 3326 [iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
+- 3326 \[iOS][ItemsControl] ItemsControl in FlipView does not restore items properly
 - Fix NRE in Slider when no template is applied
 - Fix `Frame` does not unset `Page.Frame` when a page is removed
 - Add Wasm PlatformNotSupportedException for System.IO after CoreFX merge in mono
@@ -750,7 +750,7 @@ uid: Uno.ReleaseNotes.Legacy
 
 - Add base infrastructure platform for macOS
 - 136259 Add a behavior so that tap makes controls fade out
-- 135985 [Android], [iOS] ListViewBase Support [MultiSelectStates](https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396) on ListViewItem. This allows the item container to visually adapt when multiple selection is enabled or disabled.
+- 135985 [Android], [iOS] ListViewBase Support [MultiSelectStates](https://learn.microsoft.com/windows/apps/design/style/xaml-styles) on ListViewItem. This allows the item container to visually adapt when multiple selection is enabled or disabled.
 - #325 Add support for `NavigationView` control
 - Add support for `SymbolIcon` control for WebAssembly
 - Add support for `UIElement.Clip` for WebAssembly
@@ -789,7 +789,7 @@ uid: Uno.ReleaseNotes.Legacy
 - 103116 [iOS] Navigating to a _second_ local html file with `WebView` doesn't work.
 - 134573 CommandBar doesn't take the proper space on iOS phones in landscape
 - Image with partial size constraint now display properly under Wasm.
-- 138297 [iOS][TextBlock] Measurement is always different since we use Math.Ceiling
+- 138297 \[iOS][TextBlock] Measurement is always different since we use Math.Ceiling
 - 137204 [iOS] ListView - fix bug where item view is clipped
 - 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
 - Now supports internal object in resource dictionaries

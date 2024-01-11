@@ -2,7 +2,7 @@
 uid: Uno.Contributing.Internals.HotReload
 ---
 
-## Hot Reload Phases
+# Hot Reload Phases
 
 _This page details the internals of Hot Reload. To use Hot Reload, [head over here](xref:Uno.Features.HotReload)._
 
@@ -22,7 +22,7 @@ Uno core already registers a class with the MetadataUpdateHandler and has an Upd
 - for Type Replacement updates, it adds, or updates, values in mapping dictionaries it manages so that it's possible to translate between an original type and it's (current) replacement, and from a replacement type, back to the original type.
 - it triggers an update to the UI (a UI Update) which walks the visual tree looking for elements where the type has been replaced. If an element is of a type that has been replace, a new element is created and used to replace the original element in the tree.
 
-# Intercepting the UI Update
+## Intercepting the UI Update
 
 The main extensibility point for developers wanting to integrate with Hot Reload for Uno Platform applications is via the UI Update. The UI Update is the phase of Hot Reload where the visual tree is traversed and elements are updated according to the updated type information.
 
@@ -52,7 +52,7 @@ static void BeforeElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
 static void AfterElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
 ```
 
-# Pausing / Resuming UI Update
+## Pausing / Resuming UI Update
 
 Pausing and resuming UI Update is done by calling
 
@@ -60,6 +60,6 @@ Pausing and resuming UI Update is done by calling
 
 Note that pausing UI Updates doesn't stop the Hot Reload process. It only prevents the UI Update from running until UI Updates are resumed.
 
-# Waiting for Hot Reload to be applied
+## Waiting for Hot Reload to be applied
 
 // TODO: Give an example of how to await UI Updates (eg https://github.com/unoplatform/uno/blob/0340cc1394994cdbd525d61de611a0531c38bcc7/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/Tests/Given_Frame.cs#L9-L37)

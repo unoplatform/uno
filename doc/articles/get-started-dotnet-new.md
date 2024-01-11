@@ -8,7 +8,7 @@ The Uno Platform provides a set of command-line templates to create cross-platfo
 
 To install the templates, type the following:
 
-```
+```dotnetcli
 dotnet new install Uno.Templates
 ```
 
@@ -29,13 +29,13 @@ It comes with the **Blank** and **Recommended** presets.
 
 To create a blank template, using minimal dependencies:
 
-```
+```dotnetcli
 dotnet new unoapp -preset=blank -o test
 ```
 
 To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
 
-```
+```dotnetcli
 dotnet new unoapp -preset=recommended -o test
 ```
 
@@ -50,13 +50,13 @@ This template can be used to create a blank multi-platform application for iOS, 
 
 A basic example:
 
-```
+```dotnetcli
 dotnet new unoapp-uwp -o MyApp
 ```
 
 A more advanced example that will not generate the android and macOS heads:
 
-```
+```dotnetcli
 dotnet new unoapp-uwp -o MyApp -android=false -macos=false
 ```
 
@@ -68,13 +68,13 @@ This template uses a single project head for iOS, Android, macOS, and Mac Cataly
 
 A basic example:
 
-```
+```dotnetcli
 dotnet new unoapp-uwp-net6 -o MyApp
 ```
 
 A more advanced example that will not generate the android and macOS heads:
 
-```
+```dotnetcli
 dotnet new unoapp-uwp-net6 -o MyApp --Mobile=false
 ```
 
@@ -90,7 +90,7 @@ This template can be used to create a blank library. With this type of library, 
 
 A basic example:
 
-```
+```dotnetcli
 dotnet new unolib -o MyUnoLib
 ```
 
@@ -100,7 +100,7 @@ This template can be used to create a blank cross-runtime library, when platform
 
 A basic example:
 
-```
+```dotnetcli
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
@@ -121,7 +121,7 @@ For additional information about UI Tests creation, visit the [Uno.UITest](https
 
 Using a command line or terminal, run the following command:
 
-```
+```dotnetcli
 dotnet new -u Uno.Templates
 ```
 

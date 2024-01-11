@@ -8,7 +8,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
-
+>
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
@@ -66,7 +66,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     |MainPage_CodeBehindString|`String from code-behind`|`Texte provenant du code-behind`|
     > [!NOTE]
     > Make sure to hit Ctrl+S for both files, to save the changes.
-
+    >
     > [!IMPORTANT]
     > The `ResourceLoader` will search for resources in the current language, then the default language. The default language is defined by the MSBuild property `DefaultLanguage`, which defaults to `en`.
 

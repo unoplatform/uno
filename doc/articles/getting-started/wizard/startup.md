@@ -14,13 +14,13 @@ Both presets include the following platforms: Windows, Android, iOS, Mac Catalys
 
     Create an application with the *Blank* preset:
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -preset blank
     ```
 
     The *Blank* preset can be augmented by clicking `Customize` in the Visual Studio Wizard, or by specifying additional command line parameters to the `dotnet new` command. For example, this command will create a *Blank* application with the Uno.Toolkit.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -preset blank -toolkit
     ```
 
@@ -32,13 +32,13 @@ Both presets include the following platforms: Windows, Android, iOS, Mac Catalys
 
     Create an application with the *Recommended* preset:
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -preset recommended
     ```
 
     The *Recommended* preset can be augmented by clicking `Customize` in the Visual Studio Wizard, or by specifying additional command line parameters to the `dotnet new` command. For example, this command will create a *Blank* application with out the Uno.Toolkit.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -preset blank -toolkit false
     ```
 

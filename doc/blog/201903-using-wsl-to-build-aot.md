@@ -27,7 +27,7 @@ Here's what to do to, only once:
 - Install a stable [Mono toolchain](https://www.mono-project.com/download/stable/#download-lin)
   - Run the following to add a new apt source :
 
-  ```
+  ```bash
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys    3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
   echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
   sudo apt update
@@ -98,7 +98,7 @@ For each shell you're opening afterwards, you'll have to do the following:
 
 - Serve the resulting application
 
-  ```
+  ```bash
   cd `wslpath "C:\Users\my_user\source\repos\MyApp\MyApp.Wasm\bin\Release\netstandard2.0\dist\"`
   python3 server.py
   ```
