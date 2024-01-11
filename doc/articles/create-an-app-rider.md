@@ -6,7 +6,7 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 > [!NOTE]
 > Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.Rider).
-
+>
 > [!IMPORTANT]
 > As of Rider 2023.1, .NET 8 for mobile targets is not supported. To build and run mobile apps, use .NET 7 in your `TargetFrameworks`. See [this JetBrains article](https://rider-support.jetbrains.com/hc/en-us/articles/13244959138834) for more details.
 

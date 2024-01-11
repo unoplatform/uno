@@ -18,13 +18,13 @@
 
 1. Run the tool from the command prompt with the following command:
 
-    ```
+    ```bash
     uno-check
     ```
 
     If the above command fails, use the following:
 
-    ```
+    ```bash
     ~/.dotnet/tools/uno-check
     ```
 

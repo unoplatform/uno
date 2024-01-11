@@ -6,27 +6,27 @@ uid: Uno.Development.FAQ
 
 ## About Uno Platform
 
-#### What is the Uno Platform?
+### What is the Uno Platform?
 
 Uno Platform lets you write an application once in XAML and/or C#, and deploy it to [any target platform](getting-started/requirements.md). Read more [here](what-is-uno.md).
 
-#### Who makes Uno Platform?
+### Who makes Uno Platform?
 
 Uno Platform is an [open-source project](https://github.com/unoplatform/Uno) with many contributors. It was developed internally by [nventive](https://nventive.com) from 2013-2018, and has been open source since 2018. It's maintained by [Uno Platform](https://platform.uno).
 
-#### What platforms can I target with Uno Platform?
+### What platforms can I target with Uno Platform?
 
 Uno Platform applications run on the Web (via WebAssembly), Windows, Linux, Mac Catalyst, iOS, and Android. [Check supported platform versions.](xref:Uno.GettingStarted.Requirements)
 
-#### Are Uno Platform applications native?
+### Are Uno Platform applications native?
 
 Yes - Uno Platform taps into the native UI frameworks on most supported platforms, so your final product is a native app. [Read more about how Uno Platform works.](what-is-uno.md)
 
-#### Can applications look the same on all platforms?
+### Can applications look the same on all platforms?
 
 Yes. Unless configured otherwise, your application's UI renders exactly the same on all targeted platforms, to the pixel. Uno Platform achieves this by taking low-level control of the native visual primitives on the targeted platform. [Read more about how Uno works.](what-is-uno.md)
 
-#### How is Uno Platform different from .NET MAUI?
+### How is Uno Platform different from .NET MAUI?
 
 First, Uno Platform is available in production today to build single-codebase, pixel-perfect applications for Web, Desktop, and Mobile. .NET MAUI is a successor to Xamarin.Forms.
 
@@ -40,7 +40,7 @@ Finally, by extending the reach of WinUI across all supported platforms, it also
 
 At the practical level, we suggest you try both and see which works the best for your skill set and scenario.
 
-#### How is Uno Platform different from Blazor?
+### How is Uno Platform different from Blazor?
 
 Uno Platform applications are cross-platform, running on the web as well as mobile and desktop, equally, from a single codebase. Blazor is a feature of ASP.NET for primarily building web applications.
 
@@ -48,46 +48,50 @@ Uno Platform applications are written in C# and XAML markup, whereas Blazor appl
 
 Uno Platform and Blazor both make use of .NET's WebAssembly support to run natively in the browser.
 
-#### How is Uno Platform different from Flutter?
+### How is Uno Platform different from Flutter?
 
 Uno Platform and Flutter solve a similar problem - pixel-perfect applications on all target platforms. However, Uno Platform leverages decades of Microsoft's investment made into developer tooling .NET and C# programming language for developing applications.
 
-#### Do I need to have an existing UWP/WinUI app or skills to use Uno Platform?
+### Do I need to have an existing UWP/WinUI app or skills to use Uno Platform?
 
 No, there's no need to have an existing UWP or WinUI application, or have that specific skill set. The [Uno Platform templates](xref:Uno.GetStarted) make it easy to create a new project in Visual Studio or from the command line for anyone familiar with C# and XAML.
 
-#### What 3rd parties support Uno Platform?
+### What 3rd parties support Uno Platform?
 
 Uno Platform is supported by several 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart, and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
 
+<<<<<<< HEAD
 #### Where can I get support?
 <<<<<<< HEAD
 Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.
 =======
+=======
+### Where can I get support?
+>>>>>>> ebc23cdaec (chore: More progress)
 
 Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.  
 Paid support is also available and allows you to collaborate with our engineering team to ensure the success of your projects and address your GitHub issues faster. [Contact us for more details.](https://platform.uno/contact/)
 >>>>>>> 7ee7368c0b (chore: Auto-fix)
 
-#### How can I get involved?
+### How can I get involved?
 
 There are lots of ways to contribute to the Uno Platform and we appreciate all the help we get from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions. If you're interested, the [contributors' guide](uno-development/contributing-intro.md) is a great place to start.
 
-#### How can I report a bug?
+### How can I report a bug?
 
 If you think you've found a bug, please [log a new issue](https://github.com/unoplatform/Uno/issues) in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
 
 ## Features
 
-#### Is [Control X] supported by Uno Platform?
+### Is [Control X] supported by Uno Platform?
 
 Consult [the list of supported WinUI controls](implemented-views.md).
 
-#### What do I need to develop Uno Platform applications?
+### What do I need to develop Uno Platform applications?
 
 You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details.
 
-#### Can I use VB.NET for Uno Platform applications?
+### Can I use VB.NET for Uno Platform applications?
 
 Much like the new UI technologies from Microsoft, Uno Platform doesn’t support creation of new applications using VB.NET.
 
@@ -102,24 +106,24 @@ The best course of action is to do a POC and our team is happy to assist you in 
 
 ## Technologies
 
-#### What is WinUI 3?
+### What is WinUI 3?
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://learn.microsoft.com/en-us/windows/apps/winui/).
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://learn.microsoft.com/windows/apps/winui/).
 
-From [Microsoft](https://learn.microsoft.com/en-us/windows/apps/winui/):
+From [Microsoft](https://learn.microsoft.com/windows/apps/winui/):
 
 > WinUI is the path forward for all Windows apps—you can use it as the UI layer on your native UWP or Win32 app, or you can gradually modernize your desktop app, piece by piece, with XAML Islands.
 > All new XAML features will eventually ship as part of WinUI. The existing UWP XAML APIs that ship as part of the OS will no longer receive new feature updates. However, they will continue to receive security updates and critical fixes according to the Windows 10 support lifecycle.
 
 Read more about [Uno and WinUI 3](uwp-vs-winui3.md).
 
-#### What is Universal Windows Platform (UWP)?
+### What is Universal Windows Platform (UWP)?
 
 Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
 
 Visit Microsoft's documentation for a primer on UWP : https://learn.microsoft.com/en-us/windows/uwp/get-started/
 
-#### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
+### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
 
 Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms, MAUI).
 
@@ -129,6 +133,6 @@ The latter, however, provides full fidelity with the underlying platform, making
 
 The Uno Platform sits in the middle, using the power of XAML to provide the ability to custom draw and animate UI, while reusing key parts of the underlying UI Toolkit (such as chrome-less native text boxes) to provide native system interactions support and native accessibility features.
 
-#### What is XAML?
+### What is XAML?
 
 XAML stands for **eXtensible Application Markup Language**, and is used to provide a declarative way to define user interfaces. Its ability to provide a clear separation of concerns between the UI definition and application logic using data binding provides a good experience for small to very large applications where integrators can easily create UI without having to deal with C# code.
