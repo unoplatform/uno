@@ -62,7 +62,7 @@ $ xcrun simctl list devices
 
 Then reference the UDID of the simulator in the mlaunch command:
 
-```
+```bash
 $ mlaunch ... --device :v2:udid=50BCC90D-7E56-4AFB-89C5-3688BF345998 ...
 ```
 

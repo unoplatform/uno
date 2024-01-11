@@ -26,7 +26,7 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
 
     iii. Finally, before reopening Visual Studio, open the `.sln` file with your favorite text editor. Locate the line referencing your project, and update it to the new path. It should look something like:
 
- ```
+ ```sln
  Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker_OLD", "BugTracker_OLD\BugTracker_OLD.csproj", "{92E4C60C-336D-4DFB-B08D-80489617C1F2}"
  ```
 

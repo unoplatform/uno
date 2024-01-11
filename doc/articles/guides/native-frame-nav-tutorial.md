@@ -62,12 +62,14 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
               xmlns:skia="http://uno.ui/skia"
               mc:Ignorable="d skia"
               ...>
-        <!-- ...  -->
-        <CommandBar Grid.Row="0" Content="BlankPage1">
-   <CommandBar.PrimaryCommands>
-    <skia:AppBarButton Content="Back" Click="NavigateBack" />
-   </CommandBar.PrimaryCommands>
-  </CommandBar>
+            <!-- ...  -->
+            <CommandBar Grid.Row="0" Content="BlankPage1">
+                <CommandBar.PrimaryCommands>
+                    <skia:AppBarButton Content="Back" Click="NavigateBack" />
+               </CommandBar.PrimaryCommands>
+            </CommandBar>
+        ```
+
     - `BlankPage1.xaml.cs`, `BlankPage2.xaml.cs`:
 
         ```csharp
@@ -102,7 +104,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 
     private void ConfigureNavigation()
     {
-        #if __ANDROID__ || __WASM__
+    #if __ANDROID__ || __WASM__
         var frame = (Frame)_window.Content;
         var manager = Windows.UI.Core.SystemNavigationManager.GetForCurrentView();
 
@@ -111,25 +113,26 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
         // - uwp: show a `<-` back button on the title bar
         // - wasm: add a dummy entry in the browser back stack
         frame.Navigated += (s, e) => manager.AppViewBackButtonVisibility = frame.CanGoBack
-       ? Windows.UI.Core.AppViewBackButtonVisibility.Visible
-       : Windows.UI.Core.AppViewBackButtonVisibility.Collapsed;
+            ? Windows.UI.Core.AppViewBackButtonVisibility.Visible
+            : Windows.UI.Core.AppViewBackButtonVisibility.Collapsed;
 
-  // On some platforms, the back navigation request needs to be hooked up to the back navigation of the Frame.
-  // These requests can come from:
-  // - uwp: title bar back button
-  // - droid: CommandBar back button, os back button/gesture
-  // - wasm: browser back button
-  manager.BackRequested += (s, e) =>
-  {
-   if (frame.CanGoBack)
-   {
-    frame.GoBack();
+        // On some platforms, the back navigation request needs to be hooked up to the back navigation of the Frame.
+        // These requests can come from:
+        // - uwp: title bar back button
+        // - droid: CommandBar back button, os back button/gesture
+        // - wasm: browser back button
+        manager.BackRequested += (s, e) =>
+        {
+            if (frame.CanGoBack)
+            {
+                frame.GoBack();
 
-    e.Handled = true;
-   }
-  };
-        #endif
+                e.Handled = true;
+            }
+        };
+    #endif
     }
+    ```
 
 ## Additional Resources
 

@@ -237,7 +237,7 @@ If your JavaScript integration is not behaving properly, you can troubleshoot wi
 
 In the constructor of your wrapper control, add the following:
 
-```
+```csharp
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
 // Uno reproduces this behavior, so we must set it here even if we're not using the background.
 // Not doing this will lead to a `pointer-events: none` CSS style on the control.

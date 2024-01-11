@@ -75,7 +75,7 @@ In WASM, not all of the property conversions are currently supported (notably **
 
 > [!IMPORTANT]
 > There are some idiosyncrasies with Uno and WASM regarding the use of **x:Uid** - some properties must be defined in the XAML otherwise the resources won't be applied. This issue is documented by [Uno issue #921](https://github.com/unoplatform/uno/issues/921)
-
+>
 > [!NOTE]
 > To learn more about **x:Uid** and string localization in UWP, review the following resources:
 >
