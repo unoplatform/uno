@@ -9,7 +9,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
-using Uno.Testing;
 using Uno.UI.RuntimeTests;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;

@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
-using Uno.Testing;
 using Uno.UI.RuntimeTests;
 using Uno.UITest;
 
