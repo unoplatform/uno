@@ -64,9 +64,10 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		if (NativeWindow is X11Window x11Window)
-		{
-			XLib.XMapWindow(x11Window.Display, x11Window.Window);
-		}
+		// The window needs to be mapped earlier because it's used in DisplayInformationExtension
+		// if (NativeWindow is X11Window x11Window)
+		// {
+		// 	XLib.XMapWindow(x11Window.Display, x11Window.Window);
+		// }
 	}
 }

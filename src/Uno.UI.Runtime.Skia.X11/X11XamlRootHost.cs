@@ -53,7 +53,12 @@ internal partial class X11XamlRootHost : ISkiaApplicationHost, IXamlRootHost
 	}
 
 	public static TaskCompletionSource? GetTCSFromX11Window(X11Window window)
-		=> _windowToTCS.TryGetValue(window, out var tcs) ? tcs : null;
+	{
+		lock (_windowToTCSMutex)
+		{
+			return _windowToTCS.TryGetValue(window, out var tcs) ? tcs : null;
+		}
+	}
 
 	public static void CompleteWindowTasks()
 	{
@@ -141,6 +146,7 @@ internal partial class X11XamlRootHost : ISkiaApplicationHost, IXamlRootHost
 
 		_x11Window = new X11Window(display, window);
 
+		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
 		XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
 
@@ -151,6 +157,9 @@ internal partial class X11XamlRootHost : ISkiaApplicationHost, IXamlRootHost
 		}
 
 		InitializeX11EventsThread();
+
+		// The window must be mapped before DisplayExtensionExtension is initialized.
+		XLib.XMapWindow(display, window);
 
 		_renderer = new X11Renderer(this, _x11Window.Value);
 	}

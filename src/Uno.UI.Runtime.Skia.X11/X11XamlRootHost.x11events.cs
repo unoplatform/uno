@@ -105,10 +105,9 @@ internal partial class X11XamlRootHost
 				case XEventName.VisibilityNotify:
 					_visibilityCallback.Invoke(event_.VisibilityEvent.state != /* VisibilityFullyObscured */ 2);
 					break;
-				// TODO: We should be redrawing on Expose, but this causes an unknown crash when resizing a window
-				// case XEventName.Expose:
-				// 	((IXamlRootHost)_host).InvalidateRender();
-				// 	break;
+				case XEventName.Expose:
+					((IXamlRootHost)this).InvalidateRender();
+					break;
 				case XEventName.MotionNotify:
 					_pointerSource?.ProcessMotionNotifyEvent(event_.MotionEvent);
 					break;

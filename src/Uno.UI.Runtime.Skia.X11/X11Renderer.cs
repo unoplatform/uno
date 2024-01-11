@@ -1,30 +1,18 @@
 ﻿using System;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
 using Avalonia.X11;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	internal class X11Renderer
+	internal class X11Renderer(IXamlRootHost host, X11Window x11window)
 	{
 		private const int COLOR_DEPTH = 24;
 		private const int BITMAP_PAD = 32;
 
-		private readonly IXamlRootHost _host;
 		private SKBitmap? _bitmap;
 		private int renderCount;
-		private DisplayInformation? _displayInformation;
-
-		private X11Window _x11Window;
-
-		public X11Renderer(IXamlRootHost host, X11Window x11window)
-		{
-			_host = host;
-			_x11Window = x11window;
-		}
-
 		internal void InvalidateRender()
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -32,12 +20,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			_displayInformation ??= DisplayInformation.GetForCurrentView();
-
-			var scale = _displayInformation.RawPixelsPerViewPixel;
-
 			XWindowAttributes attributes = default;
-			XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+			XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
@@ -55,15 +39,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			using var surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
 			surface.Canvas.Clear(SKColors.Transparent);
-			surface.Canvas.Scale((float)scale);
 
-			if (_host.RootElement?.Visual is { } rootVisual)
+			if (host.RootElement?.Visual is { } rootVisual)
 			{
-				_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual);
+				host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual);
 			}
 
 			IntPtr ximage = X11Helper.XCreateImage(
-				display: _x11Window.Display,
+				display: x11window.Display,
 				visual: /* CopyFromParent */ 0,
 				depth: COLOR_DEPTH,
 				format: /* ZPixmap */ 2,
@@ -75,9 +58,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
 			X11Helper.XPutImage(
-				display: _x11Window.Display,
-				drawable: _x11Window.Window,
-				gc: X11Helper.XDefaultGC(_x11Window.Display, XLib.XDefaultScreen(_x11Window.Display)),
+				display: x11window.Display,
+				drawable: x11window.Window,
+				gc: X11Helper.XDefaultGC(x11window.Display, XLib.XDefaultScreen(x11window.Display)),
 				image: ximage,
 				srcx: 0,
 				srcy: 0,
@@ -94,7 +77,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 			XLib.XDestroyImage(ximage);
 
-			XLib.XFlush(_x11Window.Display); // unnecessary on most X11 implementations
+			XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
 		}
 	}
 }
