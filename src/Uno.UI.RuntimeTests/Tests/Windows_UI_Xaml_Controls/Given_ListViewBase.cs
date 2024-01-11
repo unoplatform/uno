@@ -22,7 +22,6 @@ using FluentAssertions.Execution;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
@@ -40,6 +39,7 @@ using static Private.Infrastructure.TestServices;
 using Point = Windows.Foundation.Point;
 #if HAS_UNO
 using static Uno.UI.Extensions.ViewExtensions;
+using Uno.UI.Helpers;
 #endif
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
