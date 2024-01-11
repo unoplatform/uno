@@ -17,15 +17,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private const int INITIAL_HEIGHT = 800;
 
 	private static bool _firstWindowCreated;
-	private static object _windowToTCSMutex = new();
-	private static Dictionary<X11Window, TaskCompletionSource> _windowToTCS = new();
+	private static object _x11WindowToXamlRootHostMutex = new();
+	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
+	
+	private readonly TaskCompletionSource _closed;
+	private readonly ApplicationView _applicationView;
+	private readonly Window _window;
 
 	private X11Window? _x11Window;
-
 	private X11Renderer? _renderer;
-
-	private Window _window;
-	private readonly ApplicationView _applicationView;
 
 	public X11Window X11Window => _x11Window!.Value;
 
@@ -38,13 +38,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
 
-		Initialize();
-
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
-		var tcs = GetTCSFromX11Window(X11Window);
-		tcs?.Task.ContinueWith(_ => _applicationView.PropertyChanged -= OnApplicationViewPropertyChanged);
+
+		_closed = new TaskCompletionSource();
+		Closed = _closed.Task;
+		Closed.ContinueWith(_ => _applicationView.PropertyChanged -= OnApplicationViewPropertyChanged);
+
+		Initialize();
 	}
+
+	public Task Closed { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
@@ -52,32 +56,32 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
 	}
 
-	public static TaskCompletionSource? GetTCSFromX11Window(X11Window window)
+	public static X11XamlRootHost? GetXamlRootHostFromX11Window(X11Window window)
 	{
-		lock (_windowToTCSMutex)
+		lock (_x11WindowToXamlRootHostMutex)
 		{
-			return _windowToTCS.TryGetValue(window, out var tcs) ? tcs : null;
+			return _x11WindowToXamlRootHost.TryGetValue(window, out var root) ? root : null;
 		}
 	}
 
-	public static void CompleteWindowTasks()
+	public static void CloseAllWindows()
 	{
-		lock (_windowToTCSMutex)
+		lock (_x11WindowToXamlRootHostMutex)
 		{
-			foreach (var taskCompletionSource in _windowToTCS.Values)
+			foreach (var host in _x11WindowToXamlRootHost.Values)
 			{
-				taskCompletionSource.SetResult();
+				host._closed.SetResult();
 			}
 
-			_windowToTCS.Clear();
+			_x11WindowToXamlRootHost.Clear();
 		}
 	}
 
 	public static bool AllWindowsDone()
 	{
-		lock (_windowToTCSMutex)
+		lock (_x11WindowToXamlRootHostMutex)
 		{
-			return _firstWindowCreated && _windowToTCS.Count == 0;
+			return _firstWindowCreated && _x11WindowToXamlRootHost.Count == 0;
 		}
 	}
 
@@ -86,13 +90,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	// of having a DisplayInformation instance per application view.
 	public static X11Window GetWindow()
 	{
-		lock (_windowToTCS)
+		lock (_x11WindowToXamlRootHost)
 		{
-			foreach (var pair in _windowToTCS)
+			foreach (var pair in _x11WindowToXamlRootHost)
 			{
-				if (pair.Value.Task.IsCompleted)
+				if (pair.Value._closed.Task.IsCompleted)
 				{
-					_windowToTCS.Remove(pair.Key);
+					_x11WindowToXamlRootHost.Remove(pair.Key);
 				}
 				else
 				{
@@ -106,19 +110,19 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		return default;
 	}
 
-	public static void TryCompleteWindowCompletionSource(X11Window x11window)
+	public static void Close(X11Window x11window)
 	{
-		lock (_windowToTCSMutex)
+		lock (_x11WindowToXamlRootHostMutex)
 		{
-			if (_windowToTCS.Remove(x11window, out var source))
+			if (_x11WindowToXamlRootHost.Remove(x11window, out var host))
 			{
-				source.SetResult();
+				host._closed.SetResult();
 			}
 			else
 			{
 				if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(X11XamlRootHost).Log().Error($"{nameof(TryCompleteWindowCompletionSource)} could not find X11Window {x11window}");
+					typeof(X11XamlRootHost).Log().Error($"{nameof(Close)} could not find X11Window {x11window}");
 				}
 			}
 		}
@@ -150,10 +154,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
 		XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
 
-		lock (_windowToTCSMutex)
+		lock (_x11WindowToXamlRootHostMutex)
 		{
 			_firstWindowCreated = true;
-			_windowToTCS[_x11Window.Value] = new TaskCompletionSource();
+			_x11WindowToXamlRootHost[_x11Window.Value] = this;
 		}
 
 		InitializeX11EventsThread();

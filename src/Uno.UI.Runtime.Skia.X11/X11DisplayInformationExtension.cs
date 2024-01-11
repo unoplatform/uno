@@ -71,10 +71,8 @@
 using System;
 using System.Drawing;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using Windows.Graphics.Display;
 using Avalonia.X11;
-using Uno.Foundation.Logging;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
@@ -85,6 +83,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		private readonly float? _scaleOverride;
 		private DisplayInformationDetails _details;
+		private DisplayInformation _owner;
 
 		private record DisplayInformationDetails(
 			uint ScreenWidthInRawPixels,
@@ -96,6 +95,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public X11DisplayInformationExtension(object owner, float? scaleOverride)
 		{
+			_owner = (DisplayInformation)owner;
 			_scaleOverride = scaleOverride;
 
 			if (float.TryParse(
@@ -109,16 +109,21 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			// initialization is redundant, just keeping the compiler happy
 			_details = new DisplayInformationDetails(default, default, default, default, default, default);
-			UpdateDetails();
+
+			var x11Window = X11XamlRootHost.GetWindow();
+			var host = X11XamlRootHost.GetXamlRootHostFromX11Window(x11Window);
+			host?.SetDisplayInformationExtension(this);
 		}
 
 		// TODO: this can probably be improved using the Xrandr extension
-		private void UpdateDetails()
+		internal void UpdateDetails()
 		{
 			var x11Window = X11XamlRootHost.GetWindow();
 			XWindowAttributes attributes = default;
 			XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 			var screen = attributes.screen;
+
+			var oldDetails = _details;
 
 			if (XLib.XRRQueryExtension(x11Window.Display, out _, out _) != 0 &&
 				XLib.XRRQueryVersion(x11Window.Display, out var major, out var minor) != 0 &&
@@ -152,6 +157,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 					Math.Sqrt(widthInInches * widthInInches + heightInInches * heightInInches)
 				);
 			}
+
+			if (_details != oldDetails)
+			{
+				_owner.NotifyDpiChanged();
+			}
 		}
 
 		public DisplayOrientations CurrentOrientation
@@ -171,10 +181,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public double? DiagonalSizeInInches => _details.DiagonalSizeInInches;
 
-		// TODO: The obvious way to implement this is through polling, but that looks like overkill.
-		public void StartDpiChanged() => this.Log().Error($"{nameof(StartDpiChanged)} not supported on MacOS.");
-
-		public void StopDpiChanged() => this.Log().Error($"{nameof(StopDpiChanged)} not supported on MacOS.");
+		public void StartDpiChanged() { }
+		public void StopDpiChanged() { }
 
 		private static float FloorScale(double rawDpi)
 			=> rawDpi switch
@@ -285,19 +293,22 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			XWindowAttributes windowAttrs = default;
 			XLib.XGetWindowAttributes(display, window, ref windowAttrs);
 			XLib.XTranslateCoordinates(display, window, root, windowAttrs.x, windowAttrs.y, out var rootx, out var rooty, out _);
-			var center = (x: rootx + windowAttrs.width / 2, y: rooty + windowAttrs.height / 2);
 
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
 			IntPtr crtc = default;
+			double bestArea = 1;
 			foreach (var crtc_ in new Span<IntPtr>(resources->crtcs.ToPointer(), resources->ncrtc)) {
 				var crtcInfo_ = X11Helper.XRRGetCrtcInfo(display, new IntPtr(resources), crtc_);
-				// We decide that the crtc we want is the one that contains the center of the window
-				if (center.x >= crtcInfo_->x && center.x <= crtcInfo_->x + crtcInfo_->width &&
-					center.y >= crtcInfo_->y && center.y <= crtcInfo_->y + crtcInfo_->height)
+				// We decide that the crtc we want is the one that overlaps the most with the window
+				var intersection = Rectangle.Intersect(
+					new Rectangle(crtcInfo_->x, crtcInfo_->y, (int)crtcInfo_->width, (int)crtcInfo_->height),
+					new Rectangle(rootx, rooty, windowAttrs.width, windowAttrs.height));
+				var area = intersection.Height * intersection.Width;
+				if (area > bestArea)
 				{
+					bestArea = area;
 					crtcInfo = crtcInfo_;
 					crtc = crtc_;
-					break;
 				}
 			}
 

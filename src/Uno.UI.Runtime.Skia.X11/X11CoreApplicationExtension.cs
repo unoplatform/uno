@@ -17,6 +17,6 @@ internal class X11CoreApplicationExtension : ICoreApplicationExtension
 	{
 		this.Log().Debug($"Application has requested an exit");
 
-		X11XamlRootHost.CompleteWindowTasks();
+		X11XamlRootHost.CloseAllWindows();
 	}
 }

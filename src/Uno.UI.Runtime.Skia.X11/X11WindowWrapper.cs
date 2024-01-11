@@ -21,8 +21,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		X11Manager.XamlRootMap.Register(xamlRoot, _host);
 
 		_windowToHost[window] = _host;
-		var tcs = X11XamlRootHost.GetTCSFromX11Window(_host.X11Window);
-		tcs?.Task.ContinueWith(task => _windowToHost.TryRemove(window, out _));
+		var host = X11XamlRootHost.GetXamlRootHostFromX11Window(_host.X11Window);
+		host?.Closed.ContinueWith(task => _windowToHost.TryRemove(window, out _));
 	}
 
 	public static X11XamlRootHost? GetHostFromWindow(Window window)
@@ -51,7 +51,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		if (NativeWindow is X11Window x11Window)
 		{
 			X11Manager.XamlRootMap.Unregister(_xamlRoot);
-			X11XamlRootHost.TryCompleteWindowCompletionSource(x11Window);
+			X11XamlRootHost.Close(x11Window);
 			XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
 		}
 

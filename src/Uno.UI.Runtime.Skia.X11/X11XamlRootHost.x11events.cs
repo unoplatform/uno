@@ -16,6 +16,7 @@ internal partial class X11XamlRootHost
 	private Thread? _eventsThread;
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
+	private X11DisplayInformationExtension? _displayInformationExtension;
 	private Action<Size> _resizeCallback;
 	private Action _closeCallback;
 	private Action<bool> _focusCallback;
@@ -50,6 +51,15 @@ internal partial class X11XamlRootHost
 		_keyboardSource = keyboardSource;
 	}
 
+	public void SetDisplayInformationExtension(X11DisplayInformationExtension extension)
+	{
+		if (_displayInformationExtension is not null)
+		{
+			throw new InvalidOperationException($"{nameof(X11DisplayInformationExtension)} is set twice.");
+		}
+		_displayInformationExtension = extension;
+	}
+
 	[DoesNotReturn]
 	private void Run()
 	{
@@ -80,6 +90,7 @@ internal partial class X11XamlRootHost
 			{
 				this.Log().Trace($"XLIB EVENT: {event_.type}");
 			}
+			Console.WriteLine($"XLIB EVENT: {event_.type}");
 
 			switch (event_.type)
 			{
@@ -94,6 +105,7 @@ internal partial class X11XamlRootHost
 					break;
 				case XEventName.ConfigureNotify:
 					var configureEvent = event_.ConfigureEvent;
+					_displayInformationExtension?.UpdateDetails();
 					QueueEvent(this, () => _resizeCallback.Invoke(new Size(configureEvent.width, configureEvent.height)));
 					break;
 				case XEventName.FocusIn:
