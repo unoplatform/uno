@@ -26,6 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.UsePickerFlyoutTheme = true;
 
 			Opening += OnOpening;
+			Opened += OnOpened;
 
 			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime?>(this, () => default);
 		}
@@ -77,6 +78,13 @@ namespace Microsoft.UI.Xaml.Controls
 				spFlyoutPresenter.Style = DatePickerFlyoutPresenterStyle;
 			}
 			_tpPresenter = spFlyoutPresenter;
+			
+			// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
+			if (_tpPresenter is FrameworkElement presenter)
+			{
+				presenter.Opacity = 0.0;
+			}
+
 			return _tpPresenter as Control;
 		}
 
@@ -90,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
 		{
 			_tpTarget = target;
-			base.ShowAtCore(target, null);
+			//base.ShowAtCore(target, null);
 			return _asyncOperationManager.Start(target);
 		}
 
@@ -133,7 +141,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnOpened()
+		private void OnOpened(object sender, object args)
 		{
 			//wrl.ComPtr<UIElement> spFlyoutPresenterAsUIE;
 			Control spFlyoutPresenterAsControl = _tpPresenter as Control;
@@ -163,6 +171,12 @@ namespace Microsoft.UI.Xaml.Controls
 				//spFlyoutBase = GetComposableBase();
 				spFlyoutBase = this;
 				spFlyoutBase.PlaceFlyoutForDateTimePicker(point);
+
+				// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
+				if (_tpPresenter is FrameworkElement presenter)
+				{
+					presenter.Opacity = 1.0;
+				}
 			}
 
 			//Hook up OnAcceptClick and OnDismissClick event handlers:

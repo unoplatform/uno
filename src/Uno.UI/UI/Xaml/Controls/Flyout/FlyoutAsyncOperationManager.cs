@@ -123,8 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//IFC(spAsyncOp->StartOperation(m_pAssociatedFlyoutNoRef));
 			spAsyncOp.StartOperation(m_pAssociatedFlyoutNoRef);
 
-			//pTarget = m_tpTargetForDeferredShowAt;
-			//IFC(SetPtrValue(m_tpTargetForDeferredShowAt, pTarget));
+			m_tpTargetForDeferredShowAt = pTarget;
 
 			// UNO-TODO: TEMPORARY DISABLE THIS FEATURE
 			// m_isShowAtForCurrentOperationDeferred = true; 
