@@ -38,8 +38,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		internal string LayoutId { get; set; }
 
-		public int GetMeasureInvalidatedCount() => MeasureInvalidated?.GetInvocationList().Length ?? 0;
-
 		internal static VirtualizingLayoutContext GetVirtualizingLayoutContext(LayoutContext context)
 		{
 			switch (context)
