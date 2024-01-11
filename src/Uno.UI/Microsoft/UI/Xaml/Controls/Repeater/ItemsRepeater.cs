@@ -845,6 +845,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			if (newValue != null)
 			{
 				newValue.InitializeForContext(GetLayoutContext());
+				// Uno specific: See comment above WeakMeasureInvalidated declaration.
 				newValue.WeakMeasureInvalidated += InvalidateMeasureForLayout;
 				newValue.WeakArrangeInvalidated += InvalidateArrangeForLayout;
 				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
