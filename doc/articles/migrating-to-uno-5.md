@@ -6,6 +6,7 @@ uid: Uno.Development.MigratingToUno5
 Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes. You can find a list of these changes below.
 
 Additionally, this version:
+
 - Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS. [Follow this guide](xref:Uno.Development.MigratingFromNet7ToNet8) to upgrade from .NET 7 to .NET 8.
 - Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, .NET 6 (iOS/Android/Catalyst), and netstandard2.0 for WebAssembly.
 - .NET 7.0 support for iOS, Android, Mac Catalyst, and macOS remains unchanged.
@@ -21,21 +22,22 @@ This change ensures that the XAML parser will only look for types in an explicit
 
 In order to resolve types properly in a conditional XAML namespace, make use of the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
 
-
 #### Enabling Hot Reload
 
 Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is needed to restore the feature in your existing app.
 
-
 - If your project is built using a shared class library, you'll need to add the following lines to the `csproj`:
+
     ```xml
     <ItemGroup>
         <PackageReference Include="Uno.WinUI.DevServer" Version="$UnoWinUIVersion$" Condition="'$(Configuration)'=='Debug'" />
     </ItemGroup>
     ```
+
     > [!NOTE]
     > If your application is using the UWP API set (Uno.UI packages) you'll need to use the `Uno.UI.DevServer` package instead.
 - Then, in your `App.cs` file, add the following:
+
     ```csharp
     using Uno.UI;
 
@@ -52,7 +54,7 @@ Note that Hot Reload has changed to be based on C#, which means that changes don
 
 If your current project is built on Xamarin.* targets, you can upgrade by [following this guide](xref:Uno.Development.MigratingFromXamarinToNet6).
 
-### Migrating from net6.0-* to net7.0-*
+### Migrating from net6.0-*to net7.0-*
 
 There are no significant changes needed to upgrade to .NET 7 for applications (iOS, Android, Catalyst), aside from replacing all occurrences of `net6.0` to `net7.0` or `net8.0` in all your `csproj` files.
 
@@ -61,6 +63,7 @@ For libraries that are depending on `net6.0-android/ios/maccatalyst`, depending 
 ### Migrating WebAssembly from `netstandard2.0` to `net7.0` or `net8.0`
 
 Migrating from `netstandard2.0` WebAssembly apps to `net7.0` or `net8.0` requires:
+
 - Replacing all occurrences of `netstandard2.0` to `net7.0` or `net8.0` in all your `csproj` files
 - Upgrading `Uno.Wasm.Bootstrap*` packages to version `7.0.x` or `8.0.x`, depending on your chosen target framework.
 
@@ -79,35 +82,32 @@ public App()
     host.Run();
 }
 ```
+
 #### Migrating `ApplicationData` on Skia targets
 
 Previously, `ApplicationData` was stored directly in `Environment.SpecialFolder.LocalApplicationData` folder, and all Uno Platform apps shared this single location. Starting with Uno Platform 5.0, application data are stored in application-specific folders under the `LocalApplicationData` root. For more details see the [docs](features/applicationdata.md). To perform the initial migration of existing data you need to make sure to copy the files from the root of the `LocalApplicationData` folder to `ApplicationData.Current.LocalFolder` manually using `System.IO`.
-
 
 #### Updating the Windows SDK from 18362 to 19041
 
 If your existing libraries or UWP/WinAppSDK projects are targeting the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurrences of `18362` to `19041` in all your solution's `csproj`, `.targets`, `.props`, and `.wapproj` files.
 
-
 #### The Uno.[UI|WinUI].RemoteControl package is deprecated
 
-The `Uno.[UI|WinUI].RemoteControl` is deprecated and should be replaced by `Uno.WinUI.DevServer` (or `Uno.WinUI.DevServer` if you're using UWP). 
+The `Uno.[UI|WinUI].RemoteControl` is deprecated and should be replaced by `Uno.WinUI.DevServer` (or `Uno.WinUI.DevServer` if you're using UWP).
 
 This is not a required change, as the package `Uno.[UI|WinUI].RemoteControl` transitively uses `Uno.WinUI.DevServer`, but the package will eventually be phased out.
 
-
 ## List of other breaking changes
 
-#### `ShouldWriteErrorOnInvalidXaml` now defaults to true.
+#### `ShouldWriteErrorOnInvalidXaml` now defaults to true
 
 Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
 
 #### ResourceDictionary now requires an explicit Uri reference
 
-
 Resources dictionaries are now required to be explicitly referenced by URI to be considered during resource resolution. Applications that are already running properly on WinAppSDK should not be impacted by this change.
 
-The reason for this change is the alignment of the inclusion behavior with WinUI, which does not automatically place dictionaries as ambiently available. 
+The reason for this change is the alignment of the inclusion behavior with WinUI, which does not automatically place dictionaries as ambiently available.
 
 This behavior can be disabled by using `FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries`, by setting the value `true`.
 
@@ -119,11 +119,11 @@ This property was incorrectly located on `FrameworkElement` but its behavior has
 
 This method has been removed as it is not available in WinUI. You can migrate code using this method to use the `FrameworkElement.Loaded` event instead.
 
-#### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace.
+#### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace
 
 These controls were present in both the `Windows.UI.Xaml` and `Microsoft.UI.Xaml`. Those are now located in the `Microsoft.UI.Xaml` namespace for the UWP version of Uno (Uno.UI).
 
-#### Move `AnimatedVisualPlayer`, `IAnimatedVisualSource `, and `IThemableAnimatedVisualSource` from WUX to MUX and `Microsoft.Toolkit.Uwp.UI.Lottie` namespace to `CommunityToolkit.WinUI.Lottie`
+#### Move `AnimatedVisualPlayer`, `IAnimatedVisualSource`, and `IThemableAnimatedVisualSource` from WUX to MUX and `Microsoft.Toolkit.Uwp.UI.Lottie` namespace to `CommunityToolkit.WinUI.Lottie`
 
 This change moves the `AnimatedVisualPlayer` to the appropriate namespace for WinUI, aligned with the WinAppSDK version of the Windows Community Toolkit.
 
@@ -131,12 +131,11 @@ This change moves the `AnimatedVisualPlayer` to the appropriate namespace for Wi
 
 `SimpleOrientationSensor` on Android now raises events from a background thread and needs to be explicitly dispatched to the UI thread as needed.
 
-
-#### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`.
+#### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`
 
 These legacy classes have been removed. Use the [`CommunityToolkit.Mvvm`](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) package instead.
 
-#### `SolidColorBrushHelper` isn't available in UWP, so we are making it internal.
+#### `SolidColorBrushHelper` isn't available in UWP, so we are making it internal
 
 This type is not present in WinUI, use `new SolidColorBrush(xxx)` instead.
 
@@ -144,10 +143,9 @@ This type is not present in WinUI, use `new SolidColorBrush(xxx)` instead.
 
 The method has been removed.
 
-#### `DependencyObjectGenerator` no longer generated an empty ApplyCompiledBindings method.
+#### `DependencyObjectGenerator` no longer generated an empty ApplyCompiledBindings method
 
 These methods have been unused since Uno 3.0 and have been removed.
-
 
 #### `EasingFunctionBase` API is now aligned with WinUI
 
@@ -169,11 +167,9 @@ This change is a rename for an identifier typo. Renaming the invocation to the n
 
 Timeline does not implement `IDisposable` anymore. This class was not supposed to be disposable and has been removed.
 
-
 #### `GridExtensions` and `PanelExtensions` are removed
 
 These legacy classes have been removed.
-
 
 #### `GetLeft`, `GetTop`, `SetLeft`, `SetTop`, `GetZIndex`, and `SetZIndex` overloads that take DependencyObject are now removed
 

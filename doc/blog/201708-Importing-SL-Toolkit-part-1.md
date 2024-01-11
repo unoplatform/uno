@@ -18,6 +18,7 @@ Also, the point of this exercise is to walk through a migration process from a S
 ## Importing the Silverlight TreeView control source
 
 To migrate a control from Silverlight, there are a few things to do:
+
 - Create a cross targeted project using the **Cross-Platform library** template from the [Uno Platform VS Add-in](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022)
 - Replace Silverlight namespaces with UWP namespaces and selectively import the `TreeView` source files and dependencies
 - Adjust the code for slightly changed APIs
@@ -37,6 +38,7 @@ It will then be possible to create an installable NuGet package using the contex
 The process of importing the source is somewhat straightforward. Microsoft, in all its XAML variants, kept many of the APIs signature-compatible. This means that in a large majority of cases, [simply changing the namespaces](https://github.com/unoplatform/uno.UI.Toolkit.SL/commit/d4da7a8ff33da6c9d45bebafa8c8ca65f6182612#diff-b35234eeeb3bdb81d82b850985bf37b3L9) from `System.Windows` to `Windows.UI` is making the code compatible with UWP.
 
 Here are some examples:
+
 - `System.Windows.Controls` -> `Windows.UI.Xaml.Controls`
 - `System.Windows.Input` -> `Windows.Devices.Input`
 - `System.Windows.Media` -> `Windows.UI.Xaml.Media`
@@ -52,6 +54,7 @@ After the first pass of changing namespaces, and importing dependent files, we e
 When trying to resolve the API differences when moving from UWP, after adjusting the namespaces, the first low hangings are the ones that are slightly different. For instance, it can be member visibility differences, or just name updates.
 
 Some examples:
+
 - `FrameworkElement.OnApplyTemplate` has been moved from `public` to `protected`
 - The `PropertyMetadata` does not have a constructor that only contains a `PropertyChangedCallback` parameter
 - `GeneralTransform.Transform` is called `GeneralTransform.TransformPoint`
@@ -93,23 +96,23 @@ To be able to test the imported code, we can create a sample application using [
 
 ```xml
 <controls:TreeView Margin="5">
-	<controls:TreeViewItem Header="Controls">
-	<controls:TreeViewItem Header="AutoCompleteBox">
-		<controls:TreeViewItem Header="Properties" />
-	</controls:TreeViewItem>
-	<controls:TreeViewItem Header="Expander" />
-		<controls:TreeViewItem Header="NumericUpDown" />
-	</controls:TreeViewItem>
-	<controls:TreeViewItem Header="Layout">
-		<controls:TreeViewItem Header="DockPanel" />
-		<controls:TreeViewItem Header="WrapPanel" />
-		<controls:TreeViewItem Header="Viewbox" />
-	</controls:TreeViewItem>
-	<controls:TreeViewItem Header="Charting">
-		<controls:TreeViewItem Header="ColumnSeries" />
-		<controls:TreeViewItem Header="LineSeries" />
-		<controls:TreeViewItem Header="PieSeries" />
-	</controls:TreeViewItem>
+ <controls:TreeViewItem Header="Controls">
+ <controls:TreeViewItem Header="AutoCompleteBox">
+  <controls:TreeViewItem Header="Properties" />
+ </controls:TreeViewItem>
+ <controls:TreeViewItem Header="Expander" />
+  <controls:TreeViewItem Header="NumericUpDown" />
+ </controls:TreeViewItem>
+ <controls:TreeViewItem Header="Layout">
+  <controls:TreeViewItem Header="DockPanel" />
+  <controls:TreeViewItem Header="WrapPanel" />
+  <controls:TreeViewItem Header="Viewbox" />
+ </controls:TreeViewItem>
+ <controls:TreeViewItem Header="Charting">
+  <controls:TreeViewItem Header="ColumnSeries" />
+  <controls:TreeViewItem Header="LineSeries" />
+  <controls:TreeViewItem Header="PieSeries" />
+ </controls:TreeViewItem>
 </controls:TreeView>
 ```
 
@@ -118,6 +121,7 @@ and test it first on Windows, then iOS, Android and WebAssembly.
 ## Next steps
 
 When running the sample, a few things stand out:
+
 - The `TreeView` is displaying content properly
 - The nodes expand and collapse properly
 - The glyph next to the nodes changes state once, but does not animate back

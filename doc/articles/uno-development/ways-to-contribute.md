@@ -12,25 +12,26 @@ The Uno Platform is an ongoing effort. Bug reports and feature requests are impo
 
 ### Report a bug by opening an issue
 
-If you think you've found a bug, the first thing to do is [search the existing issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug) to check if it's already been reported. If it has been opened, provide additional commentary so we know more users are being affected. 
-
+If you think you've found a bug, the first thing to do is [search the existing issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug) to check if it's already been reported. If it has been opened, provide additional commentary so we know more users are being affected.
 
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
 **Providing a minimal project, stripped off as much code as possible, with steps to reproduce the problem (typed or screen-capture) is ideal.**
 
-Here are questions you can consider before you file a bug to make sure you're not missing any important information. The bug submission template will also ask for this information. 
+Here are questions you can consider before you file a bug to make sure you're not missing any important information. The bug submission template will also ask for this information.
 
-Pre-Submission check: 
+Pre-Submission check:
+
 1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
-2. Did you check the the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed? 
-3. Does the issue exist on the UWP / WinUI project (in which case it is not an Uno Platform issue) 
+2. Did you check the the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed?
+3. Does the issue exist on the UWP / WinUI project (in which case it is not an Uno Platform issue)
 
-Issue Filing [via logging a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).: 
+Issue Filing [via logging a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).:
+
 1. Did you include the snippet of the broken code in the issue?
 2. What are the *EXACT* steps to reproduce this problem?
 3. What specific Uno Platform version or build are you using?
 4. What operating system are you using?
-5. What platform(s) are you targeting that are experiencing the issue? Is it working on some platform(s) and not on others. 
+5. What platform(s) are you targeting that are experiencing the issue? Is it working on some platform(s) and not on others.
 6. What IDE and version are you using?
 
 [Log a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md)
@@ -59,9 +60,9 @@ We love to see the community grow, and whether you're trying Uno for the first t
 
 You can:
 
- - write a blog post
- - present Uno at a local user group
- - share your open-source Uno projects
+- write a blog post
+- present Uno at a local user group
+- share your open-source Uno projects
 
 Whatever you do, let us know [through Twitter](https://twitter.com/unoplatform) or via info@platform.uno.
 
@@ -71,7 +72,7 @@ The UWP framework and WinUI are pretty big, but many hands make light work. We w
 
 ### Diving into the code
 
-The [contributor's guide](contributing-intro.md) has plenty of resources to help you get up and running with Uno's code, including a [guide to building and debugging Uno.UI](debugging-uno-ui.md), and a [guide to Uno's internals](uno-internals-overview.md). 
+The [contributor's guide](contributing-intro.md) has plenty of resources to help you get up and running with Uno's code, including a [guide to building and debugging Uno.UI](debugging-uno-ui.md), and a [guide to Uno's internals](uno-internals-overview.md).
 
 ### Finding an issue to work on
 
@@ -84,9 +85,10 @@ In either case, once you're ready, leave a comment on the issue indicating that 
 ### Getting down to work
 
 The [contributor's guide](contributing-intro.md) has the information you need. The most important points are:
- - Work in [your own fork of Uno](https://help.github.com/en/github/getting-started-with-github/fork-a-repo)
- - Be sure to use the [Conventional Commits format](git-conventional-commits.md)
- - Once you're done, you'll probably need to [add a test](../contributing/guidelines/creating-tests.md)
+
+- Work in [your own fork of Uno](https://help.github.com/en/github/getting-started-with-github/fork-a-repo)
+- Be sure to use the [Conventional Commits format](git-conventional-commits.md)
+- Once you're done, you'll probably need to [add a test](../contributing/guidelines/creating-tests.md)
 
 ### Creating a PR
 

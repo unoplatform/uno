@@ -10,7 +10,7 @@ Enter Uno Platform. Hello “Rich Internet Applications (RIA)” again!
 
 There are a number of pages of Silverlight migration documentation to help you with migration – accompanying source code, techniques and considerations you need to make when migrating your Silverlight application.
 
-## Table of contents:
+## Table of contents
 
 * [Silverlight to Uno Migration Introduction](guides/silverlight-migration/00-overview.md)
 * [Create the Uno solution for UWP and WASM](guides/silverlight-migration/01-create-uno-solution.md)

@@ -78,7 +78,9 @@ This feature is about storing the current value that can be read through the C# 
 Backing fields are automatically generated and maintained current through `FrameworkPropertyMetadata.BackingFieldUpdateCallback` which is invoked when the highest precedence value of a `DependencyProperty` is changed.
 
 ## GeneratedDependencyProperty options
+
 Other attribute properties are available on `GeneratedDependencyProperty` to include:
+
 - `PropertyChangedCallback` to force the inclusion of a property changed callback method and fail the build if there is none
 - `CoerceCallback` to force the inclusion of a coerce callback method and fail the build if there is none
 - `Options` to specify which `FrameworkPropertyMetadataOptions` to use
@@ -89,7 +91,9 @@ Other attribute properties are available on `GeneratedDependencyProperty` to inc
 ## Benchmarks
 
 ### WebAssembly, using the interpreter (Uno.Wasm.Bootstrap 1.3.0-dev.42)
+
 Before DP caching:
+
 ```
 SimpleDPBenchmark.DP_Write: InProcess(Toolchain=InProcessToolchain, IterationCount=5, LaunchCount=1, WarmupCount=1)
 Runtime = ; GC = 
@@ -117,7 +121,6 @@ Skewness = 0.6, Kurtosis = 1.39, MValue = 2
 [85.486 us ; 87.593 us) | @
 ---------------------------------------------------
 ```
-
 
 After DP caching:
 

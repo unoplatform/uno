@@ -7,16 +7,12 @@ uid: Uno.Blog.UnderTheHoodDependencyObjectGeneration
 [Previously](https://medium.com/@unoplatform/talkin-bout-my-generation-how-the-uno-platform-generates-code-part-1-under-the-hood-7664d83c4f90) we looked at how the [Uno Platform](https://platform.uno/) turns XAML mark-up files into C# code.  In this article, I'll talk about another way Uno uses code generation, allowing us to make native Android and iOS views conform to UWP's API, and tackle the thorny problem of [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance).
 
 ## Wanting it all
+
 Part of the power of Uno on Android and iOS is the ability to easily mix UWP view types with purely native views. This is possible because, in Uno, all views inherit from the native base view type: [View](https://developer.android.com/reference/android/view/View) on Android, [UIView](https://developer.apple.com/documentation/uikit/uiview) on iOS.
-
-
 
 But as I alluded to in an earlier article, this poses a challenge for reproducing UWP's inheritance hierarchy. UIElement is the primitive view type in UWP, but it in turn derives from the DependencyObject class. `DependencyObject` is the base class for anything that has `DependencyProperties`, that is, anything that supports databinding. That includes all views, as well as some non-view framework types like [Transforms](https://docs.microsoft.com/en-us/windows/uwp/design/layout/transforms) and [Brushes](https://docs.microsoft.com/en-us/windows/uwp/design/style/brushes).
 
-
-
 We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `DependencyObject.` C# doesn't permit multiple inheritance, so what do we do? Since we can't change the iOS or Android frameworks, we opted instead within Uno to make `DependencyObject` an [interface](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/index). That allows an Uno `FrameworkElement` to be a `UIView` and at the same time to be a `DependencyObject`. But that alone isn't enough.
-
 
 What if you have code like this in your app?
 
@@ -46,7 +42,6 @@ What if you have code like this in your app?
     }
 ````
 
-
 We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact, if it's just an interface, then the code won't compile, because the interface hasn't been implemented.
 
 Luckily `DependencyObject` isn't _just_ an interface in Uno, and the code above will compile as-is on Android and iOS, just as it does on UWP. Code generation makes it happen. Here's some programmer art to illustrate the point. The detailed explanation is below.
@@ -63,6 +58,7 @@ We face a weaker form of this problem - wanting to have two base types - in othe
 We successfully addressed both of these problems by using code generation to implement mixins in C#.
 
 ## Mixing things up
+
 Most statically-typed languages don't permit multiple base classes on account of the added complexity it brings, a.k.a. the ['diamond problem'](https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem). (C++ is a notable exception.) In dynamically-typed languages, however, it's quite common to bolt on extra functionality to a class in a reusable way with [mixins](https://en.wikipedia.org/wiki/Mixin).
 
 C#, as a statically-typed language, doesn't support mixins as a first-class language feature. Code generation allows us to simulate it, though. Uno  uses code generation to add mixins in (at least) two different ways.
@@ -106,6 +102,7 @@ The T4 approach is well-tested and works well in this scenario. It has a couple 
 For that reason, in order to have a mixin to implement `DependencyObject`'s features, we went with something a little more complex and a little more magical.
 
 ## DependencyObjectGenerator - Making the magic happen
+
 The release of [Roslyn](https://github.com/dotnet/roslyn), aka the '.NET Compiler Platform', was a boon to code generation. With Roslyn, Microsoft open-sourced the C# compiler, but they also exposed a powerful API for code analysis. With Roslyn it's easy to access all the syntactic and semantic information that the compiler possesses.
 
 To leverage this power for code generation, we created the [Uno.SourceGeneration](https://github.com/unoplatform/uno.SourceGeneration) package. Like the Uno Platform, it's free and open source. It creates a build task and allows you to easily add generated code based on Roslyn's analysis of your solution. This might be partial class definitions which augment existing types, or it might be entirely new classes.
@@ -117,36 +114,36 @@ Since the generator has a full set of semantic information from Roslyn, it can d
 Here's a [small snippet](https://github.com/unoplatform/uno/blob/74ba91756c446107e7394e0423527de273154f5d/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs#L218-L250) of code from `DependencyObjectGenerator`:
 
 ```` csharp
-			private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
-			{
-				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
-				var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
-				var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
-				var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
-				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => t == _iFrameworkElementSymbol);
-				var hasOverridesAttachedToWindowAndroid = isAndroidView &&
-					typeSymbol
-					.GetMethods()
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None(m => m.Name == "OnAttachedToWindow");
+   private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+   {
+    var isAndroidView = typeSymbol.Is(_androidViewSymbol);
+    var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
+    var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
+    var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
+    var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => t == _iFrameworkElementSymbol);
+    var hasOverridesAttachedToWindowAndroid = isAndroidView &&
+     typeSymbol
+     .GetMethods()
+     .Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
+     .None(m => m.Name == "OnAttachedToWindow");
 
-				if (isAndroidView || isAndroidActivity || isAndroidFragment)
-				{
-					if (!isAndroidActivity && !isAndroidFragment)
-					{
-						WriteRegisterLoadActions(typeSymbol, builder);
-					}
+    if (isAndroidView || isAndroidActivity || isAndroidFragment)
+    {
+     if (!isAndroidActivity && !isAndroidFragment)
+     {
+      WriteRegisterLoadActions(typeSymbol, builder);
+     }
 
-					builder.AppendLine($@"
+     builder.AppendLine($@"
 #if {hasOverridesAttachedToWindowAndroid} //Is Android view (that doesn't already override OnAttachedToWindow)
 #if {isUnoViewGroup} //Is UnoViewGroup
-					// Both methods below are implementation of abstract methods
-					// which are called from onAttachedToWindow in Java.
-					protected override void OnNativeLoaded()
-					{{
-						_loadActions.ForEach(a => a.Item1());
-						BinderAttachedToWindow();
-					}}
+     // Both methods below are implementation of abstract methods
+     // which are called from onAttachedToWindow in Java.
+     protected override void OnNativeLoaded()
+     {{
+      _loadActions.ForEach(a => a.Item1());
+      BinderAttachedToWindow();
+     }}
 ````
 
 In this method we have an [INamedTypeSymbol](https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.inamedtypesymbol?view=roslyn-dotnet), an object from Roslyn that encapsulates information about a type. We've already determined that `typeSymbol` implements `DependencyObject`; here we check if it's an Android `View` and, if so override the loaded method. You can notice that we're also checking that the type doesn't _already_ override the same method, so we don't accidentally generate code that clashes with authored code and causes a compiler error. All this goes on under the hood without user intervention, whenever your app compiles.

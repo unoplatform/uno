@@ -31,14 +31,14 @@ top of [WebAssembly](https://webassembly.org/).
 
 There are a few things that need to be done to get your app running:
 
--  At compile time, Uno parses XAML files into C\# code, creating the
+- At compile time, Uno parses XAML files into C\# code, creating the
    information needed to build the app's visual tree;
 
--  It implements a
+- It implements a
    complete [databinding](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview) engine,
    optimized for static type-checking where possible;
 
--  It implements the views and controls in the
+- It implements the views and controls in the
    [UWP framework](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/controls-by-function),
    using each platform's native UI framework as a basis.
 
@@ -51,7 +51,7 @@ Before I end this introductory post, I want to briefly lay out the
 philosophy of Uno, which has guided our major architectural decisions as
 we've built this thing.
 
--   **Leverage existing tools**
+- **Leverage existing tools**
 
     > We stand on the shoulders of  giants. Microsoft's tooling is a
     > treat to work with:
@@ -61,7 +61,7 @@ we've built this thing.
     > those tools and then deploy it to iOS, Android, and ultimately
     > to the web.
 
--   **Create rich, responsive UIs**
+- **Create rich, responsive UIs**
 
     > Bland apps don't quite cut it these days. Strong support for
     > animations, templating, and custom visual effects is a must.
@@ -70,20 +70,20 @@ we've built this thing.
     > area](https://www.cnet.com/pictures/phones-with-notches/),
     > your app's layout had better be responsive.
 
--   **Let views do views**
+- **Let views do views**
 
     > Separation of model, view and presentation keeps your code
     > loosely coupled and easy to maintain. Features like
     > databinding and attached properties let you write clean,
     > elegant MVVM-style code.
 
--   **Native inter-compatibility (leave an escape hatch)**
+- **Native inter-compatibility (leave an escape hatch)**
 
     > 100% code reuse is the ideal, but it should also be easy to
     > access functionality specific to a single platform, or to
     > incorporate native third-party libraries.
 
--   **Performance is a feature**
+- **Performance is a feature**
 
     > The slow antelope gets eaten, and the slow app gets 1-star
     > ratings. We've done a lot of optimization on the basis of

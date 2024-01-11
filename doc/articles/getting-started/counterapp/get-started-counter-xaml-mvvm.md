@@ -6,7 +6,6 @@ uid: Uno.Workshop.Counter.XAML.MVVM
 
 [Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM)  
 
-
 [!INCLUDE [Intro](include-intro.md)]
 
 In this tutorial you will learn how to:

@@ -11,7 +11,6 @@ You can use the dotnet cli templates to create an Uno solution with just the pro
 >
 > * [Getting Started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
 
-
 1. Open a command line prompt and navigate to the location you wish to create the Uno solution.
 
 1. To install the Uno dotnet cli templates, enter the following command:

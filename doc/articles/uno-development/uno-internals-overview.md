@@ -4,11 +4,11 @@ uid: Uno.Contributing.Overview
 
 # How Uno Platform works
 
-This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno. 
+This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno.
 
 ## What Uno Platform does
 
-Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI/UWP types and supports the WinUI/UWP XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus, it allows app code written for UWP to be built and run on Android, iOS, mac Catalyst, in the browser via WebAssembly, Linux, and on macOS. 
+Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI/UWP types and supports the WinUI/UWP XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus, it allows app code written for UWP to be built and run on Android, iOS, mac Catalyst, in the browser via WebAssembly, Linux, and on macOS.
 
 > [!NOTE]
 > While UWP supports authoring app code in C++ as well as C#, Uno Platform only supports C#.
@@ -41,14 +41,14 @@ WinUI has a very large API surface area, and not all features in it have been im
 [global::Uno.NotImplemented]
 public  bool ExitDisplayModeOnAccessKeyInvoked
 {
-	get
-	{
-		return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
-	}
-	set
-	{
-		this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
-	}
+ get
+ {
+  return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
+ }
+ set
+ {
+  this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
+ }
 }
 #endif
 ```

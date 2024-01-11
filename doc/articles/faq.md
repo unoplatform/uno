@@ -61,13 +61,16 @@ No, there's no need to have an existing UWP or WinUI application, or have that s
 Uno Platform is supported by several 3rd-party packages and libraries, including advanced controls from Microsoft Windows Community Toolkit, Syncfusion, LightningChart, and Infragistics; graphics processing with SkiaSharp; presentation and navigation with Prism, ReactiveUI, and MVVMCross; local database management with SQLite; and more. [See the full list of supported 3rd-party libraries.](xref:Uno.Development.SupportedLibraries)
 
 #### Where can I get support?
+
 Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.  
 Paid support is also available and allows you to collaborate with our engineering team to ensure the success of your projects and address your GitHub issues faster. [Contact us for more details.](https://platform.uno/contact/)
 
 #### How can I get involved?
+
 There are lots of ways to contribute to the Uno Platform and we appreciate all the help we get from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions. If you're interested, the [contributors' guide](uno-development/contributing-intro.md) is a great place to start.
 
 #### How can I report a bug?
+
 If you think you've found a bug, please [log a new issue](https://github.com/unoplatform/Uno/issues) in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
 
 ## Features
@@ -113,7 +116,8 @@ Universal Windows Platform (UWP) is an API created by Microsoft and first introd
 Visit Microsoft's documentation for a primer on UWP : https://learn.microsoft.com/en-us/windows/uwp/get-started/
 
 #### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
-Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms, MAUI). 
+
+Multiple techniques can be used to render UI, ranging from rendering pixels in a Frame Buffer (Avalonia), to rendering only using platform-provided controls (Xamarin.Forms, MAUI).
 
 While the former provides a high flexibility in terms of rendering fidelity and the ability to add new platforms, it has the drawback of not following the platform native behaviors. For instance, interactions with text boxes, has to be re-implemented completely in order to match the native behavior, and has to be updated regularly to follow platform updates. This approach also makes it very difficult to integrate native UI components "in-canvas", such as Map or Browser controls.
 

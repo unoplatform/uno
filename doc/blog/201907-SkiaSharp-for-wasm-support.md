@@ -15,6 +15,7 @@ You can find the source code for [skiasharp-wasm.platform.uno](https://skiasharp
 Inside of the `Uno.SkiaSharp.Views` package you'll find support for the [SKXamlCanvas](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.uwp.skxamlcanvas?view=skiasharp-views-uwp-1.68.0) UWP control which enables drawing using Skia in a specific section of the XAML visual tree. You can experiment with `SKXamlCanvas` by playing with [this sample](https://github.com/unoplatform/uno.Samples/tree/master/UI/SkiaSharpTest)  in our samples repository. Alternatively, you can take it for a spin with the following XAML and Code Behind.
 
 XAML:
+
 ```xml
 <Grid>
     <skia:SKXamlCanvas x:Name="test" PaintSurface="OnPaintSurface" />

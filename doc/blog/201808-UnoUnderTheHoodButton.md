@@ -4,7 +4,6 @@ uid: Uno.Blog.UnderTheHoodButton
 
 # Pushing the right buttons: How Uno implements views
 
-
 In a [previous article](./201808-UnoUnderTheHoodIntro.md), I outlined the three main jobs of the [Uno Platform](https://platform.uno/) in order to run a UWP app on iOS, Android, and in the browser:
 
 1. Parse XAML files;
@@ -13,17 +12,14 @@ In a [previous article](./201808-UnoUnderTheHoodIntro.md), I outlined the three 
 
 3. Implement the suite of views in the [UWP framework](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/controls-by-function) for each platform.
 
-
-
 In this article I want to focus on that last point. How does Uno implement UWP's views? As a case study I'm going to use that humbly ubiquitous UI control, the button.
 
 ## The number goes up
 
 I present the simplest interactive application imaginable, one step above 'Hello World':
 
-
-
 XAML:
+
 ```` xml
 <Page x:Class="UnoExtTestbed.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -40,7 +36,6 @@ XAML:
     </StackPanel>
 </Page>
 ````
-
 
 code-behind:
 
@@ -68,13 +63,11 @@ namespace UnoExtTestbed
 }
 ````
 
-
 I made a blank app using the [Uno Solution template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) and put this code on the main page. Whenever the [Button](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.button) is clicked, the number goes up. Add a bit more chrome and we could have a [viral hit](https://en.wikipedia.org/wiki/Cow_Clicker).
 
 Note that the XAML is useful here but not obligatory, either on UWP or Uno. We could have defined and created all our views in C#, had we really wanted to. That flexibility is handy to have.
 
 ## Exhibit A - the visual tree
-
 
 ![Visual tree Uwp](Assets/Button/visualtree-uwp.png)
 *Visual tree information for UWP*
@@ -98,14 +91,9 @@ Let's keep the visual aids rolling. We'll create an empty class inheriting from 
 
 Like the visual tree, the platform-specific inheritance chains are pretty similar (identical in fact) at the 'leafward' end, and  diverge a bit at the root. Let's focus on where they diverge: after the UIElement class, the [base view type](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.uielement) in UWP.
 
-
-
 On UWP, `UIElement` inherits from [DependencyObject](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.dependencyobject), the base class for types which support data-binding using [DependencyProperty](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview) values.
 
-
-
 In Uno.Android and Uno.iOS, any `UIElement` is an instance of the native base view type ([Android.Views.View](https://developer.android.com/reference/android/view/View) and [UIKit.UIView](https://developer.apple.com/documentation/uikit/uiview) respectively, mapped to managed types via the magic of [Xamarin](https://visualstudio.microsoft.com/xamarin/)). So views defined in XAML are also native views. This means, for example, that it's possible to incorporate native views that know nothing about Uno directly into your app's XAML. The following works on iOS:
-
 
 ```` xml
 <Page x:Class="UnoExtTestbed.MainPage"
@@ -152,7 +140,5 @@ The `ToggleSwitch` with the default style looks the same on all platforms, both 
 ## What if I don't like buttons?
 
 In fact `UIElement` implements primitive interaction events like [PointerPressed](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.uielement.pointerpressed), `PointerReleased`, etc, so all views in Uno can handle touches/clicks, not just `Button`. (The big advantage of using `Button`, apart from the MVVM-friendly `Command` property, is that it implements [visual states](https://docs.microsoft.com/en-us/previous-versions/windows/apps/jj819808(v=win.10)) to animate your button with.)
-
-
 
 There's plenty more to talk about, like the way that UWP's API is hooked into each platform's native input detection, or the way that layouting is done, but that's all for now. [Try out](https://github.com/unoplatform/uno.QuickStart) Uno, and [hit us up](https://gitter.im/uno-platform/Lobby) if you have any questions.

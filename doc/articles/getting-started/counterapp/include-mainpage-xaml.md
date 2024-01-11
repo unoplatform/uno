@@ -1,5 +1,4 @@
 
-
 The layout for the **MainPage** is defined in the **MainPage.xaml** file. This file contains the XAML markup that defines the layout of the application.
 
 ```xml
