@@ -18,6 +18,8 @@ namespace Uno.UI.Media;
 
 public partial class GtkMediaPlayer
 {
+	private static object s_lock = new();
+
 	private Task? _initializationTask;
 	private MediaPlayerElement? _mpe;
 	private static ConditionalWeakTable<object, WeakReference<GtkMediaPlayer>> _playerMap = new();
@@ -81,7 +83,16 @@ public partial class GtkMediaPlayer
 					this.Log().Debug($"Creating VideoView");
 				}
 
-				_videoView = new VideoView();
+				// This code path is executed on a ThreadPool thread.
+				// So, when multiple media players are created, we will be executing this concurrently.
+				// This causes an issue with GtkSharp type registration where it logs that VideoView type is already registered.
+				// Note: Looking at GtkSharp code, it's using locks for type registration which implies the intent for that path is to be thread-safe.
+				// But for some reason, this is buggy in GtkSharp and is not really thread-safe.
+				// For now, we ensure thread-safety ourselves by locking here.
+				lock (s_lock)
+				{
+					_videoView = new VideoView();
+				}
 
 				_videoViewMap.Add(_videoView, new WeakReference<GtkMediaPlayer>(this));
 
