@@ -318,19 +318,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public static DependencyProperty IsEditableProperty { get; } =
-			DependencyProperty.Register(
-				nameof(IsEditable),
-				typeof(bool),
-				typeof(ComboBox),
-				new FrameworkPropertyMetadata(false));
-
-		public bool IsEditable
-		{
-			get => (bool)this.GetValue(IsEditableProperty);
-			set => this.SetValue(IsEditableProperty, value);
-		}
-
 		public static DependencyProperty IsTextSearchEnabledProperty { get; } =
 			DependencyProperty.Register(
 				nameof(IsTextSearchEnabled),

@@ -68,7 +68,20 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MaxDropDownHeight
 		// Skipping already declared property LightDismissOverlayMode
 		// Skipping already declared property IsTextSearchEnabled
-		// Skipping already declared property IsEditable
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool IsEditable
+		{
+			get
+			{
+				return (bool)this.GetValue(IsEditableProperty);
+			}
+			set
+			{
+				this.SetValue(IsEditableProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property IsDropDownOpen
 		// Skipping already declared property HeaderTemplate
 		// Skipping already declared property Header
@@ -108,7 +121,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
 		// Skipping already declared property IsDropDownOpenProperty
-		// Skipping already declared property IsEditableProperty
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsEditableProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(IsEditable), typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
 		// Skipping already declared property IsTextSearchEnabledProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property MaxDropDownHeightProperty
