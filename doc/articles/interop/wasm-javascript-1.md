@@ -18,7 +18,7 @@ Uno fully embraces HTML5 as its display backend when targeting WebAssembly (WASM
 
 In the HTML world, everything running in the browser is assets that must be downloaded from a server. To integrate existing JavaScript frameworks, they can be either download those from another location on the Internet (usually from a CDN service) or embed and deployed with the app.
 
-The Uno Bootstrapper can automatically embed any asset and deploy them with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a _Uno Wasm_ project:
+The Uno Bootstrapper can automatically embed any asset and deploy them with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a *Uno Wasm* project:
 
 1. **JavaScript files** should be in the `WasmScripts`  folder: they will be copied to the output folder and loaded automatically by the bootstrapper when the page loads. **They must be marked with the `EmbeddedResources` build action**:
 
@@ -30,7 +30,7 @@ The Uno Bootstrapper can automatically embed any asset and deploy them with the 
    </ItemGroup>
    ```
 
-2. **CSS Style files** should be in the `WasmCSS` folder: they will be copied to the output folder and referenced in the _HTML head_ of the application. **They must be marked with the `EmbeddedResources` build action**.
+2. **CSS Style files** should be in the `WasmCSS` folder: they will be copied to the output folder and referenced in the *HTML head* of the application. **They must be marked with the `EmbeddedResources` build action**.
 
    ``` xml
    <!-- .csproj file -->

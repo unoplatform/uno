@@ -27,7 +27,7 @@ To use MSAL into an Uno project, follow the following steps:
        .Build();
    ```
 
-4. Where you are using the _Interactive_ mode (`_app.AcquireTokenInteractive`), add another call to `.WithUnoHelpers()` like this:
+4. Where you are using the *Interactive* mode (`_app.AcquireTokenInteractive`), add another call to `.WithUnoHelpers()` like this:
 
    ``` csharp
    var authResult = await _app.AcquireTokenInteractive(scopes)
@@ -71,9 +71,9 @@ Particularities for WASM:
     >
     > You'll also need to register addresses for the other environments and adjust the code to use the right IDs & URIs. The redirect Uri must always be on the same hostname & port or otherwise it won't work.
 
-  * Optionally, a file in the Wasm project `wwwroot/authentication/login-callback.htm` with empty content (you could display a message like « _Please wait while the authentication process completes_ » for slower browsers).
+  * Optionally, a file in the Wasm project `wwwroot/authentication/login-callback.htm` with empty content (you could display a message like « *Please wait while the authentication process completes* » for slower browsers).
 
-* Token cache is _in-memory_ for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
+* Token cache is *in-memory* for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
 
 ## Other things
 

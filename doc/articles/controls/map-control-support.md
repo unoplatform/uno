@@ -98,7 +98,7 @@ For the detailed procedure for Windows, please follow this link: https://msdn.mi
   + Application type
 + Hit *Create* and get the key
 
-The key will be set as the value for the parameter _MapServiceToken_ for the MapControl object.
+The key will be set as the value for the parameter *MapServiceToken* for the MapControl object.
 
 ### Android
 
@@ -119,7 +119,7 @@ The key will be set as the value for the parameter _MapServiceToken_ for the Map
 
 **Note:** For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
 
-_For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: https://developers.google.com/maps/documentation/android-api/signup#release-cert_
+*For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: <https://developers.google.com/maps/documentation/android-api/signup#release-cert>*
 
 ## Configure your application
 
