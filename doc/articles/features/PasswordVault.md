@@ -9,7 +9,7 @@ uid: Uno.Features.PasswordVault
 <!-- Leave the info tip below in place, and add a link to the UWP documentation for the feature or control you're documenting. If the feature has no UWP equivalent, you should be using the Uno-only feature template: .feature-template-uno-only.md -->
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordvault
+> This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordvault
 
 * The `PasswordVault` is a credentials manager that is persisted using a secured storage.
 * `PasswordCredential` is used to manipulate passwords in the vault.
@@ -57,10 +57,10 @@ So currently we preferred to **not** implement the `PasswordVault`. It will thro
 ## PasswordCredential
 
 This class is implemented, however it never hides the password like the UWP does.
-This means that the[`RetrievePassword`](https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,
+This means that the[`RetrievePassword`](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,
 but we recommend to still use it in order to ensure cross-platform compatibility.
 
-The [`Properties`](https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordcredential.properties#Windows_Security_Credentials_PasswordCredential_Properties) is not implemented.
+The [`Properties`](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.properties#Windows_Security_Credentials_PasswordCredential_Properties) is not implemented.
 
 ## Sample
 

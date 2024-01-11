@@ -10,9 +10,9 @@ uid: Uno.Blog.UnderTheHoodDependencyObjectGeneration
 
 Part of the power of Uno on Android and iOS is the ability to easily mix UWP view types with purely native views. This is possible because, in Uno, all views inherit from the native base view type: [View](https://developer.android.com/reference/android/view/View) on Android, [UIView](https://developer.apple.com/documentation/uikit/uiview) on iOS.
 
-But as I alluded to in an earlier article, this poses a challenge for reproducing UWP's inheritance hierarchy. UIElement is the primitive view type in UWP, but it in turn derives from the DependencyObject class. `DependencyObject` is the base class for anything that has `DependencyProperties`, that is, anything that supports databinding. That includes all views, as well as some non-view framework types like [Transforms](https://docs.microsoft.com/en-us/windows/uwp/design/layout/transforms) and [Brushes](https://docs.microsoft.com/en-us/windows/uwp/design/style/brushes).
+But as I alluded to in an earlier article, this poses a challenge for reproducing UWP's inheritance hierarchy. UIElement is the primitive view type in UWP, but it in turn derives from the DependencyObject class. `DependencyObject` is the base class for anything that has `DependencyProperties`, that is, anything that supports databinding. That includes all views, as well as some non-view framework types like [Transforms](https://learn.microsoft.com/windows/uwp/design/layout/transforms) and [Brushes](https://learn.microsoft.com/windows/uwp/design/style/brushes).
 
-We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `DependencyObject.` C# doesn't permit multiple inheritance, so what do we do? Since we can't change the iOS or Android frameworks, we opted instead within Uno to make `DependencyObject` an [interface](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/index). That allows an Uno `FrameworkElement` to be a `UIView` and at the same time to be a `DependencyObject`. But that alone isn't enough.
+We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `DependencyObject.` C# doesn't permit multiple inheritance, so what do we do? Since we can't change the iOS or Android frameworks, we opted instead within Uno to make `DependencyObject` an [interface](https://learn.microsoft.com/dotnet/csharp/programming-guide/interfaces/index). That allows an Uno `FrameworkElement` to be a `UIView` and at the same time to be a `DependencyObject`. But that alone isn't enough.
 
 What if you have code like this in your app?
 
@@ -66,7 +66,7 @@ C#, as a statically-typed language, doesn't support mixins as a first-class lang
 I'll start with the simpler approach: using 'T4' templates. To quote Microsoft's documentation:
 > In Visual Studio, a T4 text template is a mixture of text blocks and control logic that can generate a text file. The control logic is written as fragments of program code in Visual C# or Visual Basic. In Visual Studio 2015 Update 2 and later, you can use C# version 6.0 features in T4 templates directives. The generated file can be text of any kind, such as a web page, or a resource file, or program source code in any language.
 
-*Source:* https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2017
+*Source:* https://learn.microsoft.com/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2017
 
 T4 templates ('.tt files') have been around for quite a while. They're essentially a mix of static text (which is C# code, in our case) and conditional logic. Here's a snippet:
 
@@ -91,7 +91,7 @@ namespace <#= mixin.NamespaceName #>
 �
 ````
 
-That's from the [template](https://github.com/unoplatform/uno/blob/be4f4e938a861d5802c228efc314c1f3ea314027/src/Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt#L30-L46) which adds `IFrameworkElement` functionality in Uno. It implements properties like `Width`/`Height`, `Opacity`, `Style`, etc. At compile time, the template runs and creates a [partial class](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) with those members for `ScrollContentPresenter` and several other classes (including `FrameworkElement` itself).
+That's from the [template](https://github.com/unoplatform/uno/blob/be4f4e938a861d5802c228efc314c1f3ea314027/src/Uno.UI/UI/Xaml/IFrameworkElementImplementation.iOS.tt#L30-L46) which adds `IFrameworkElement` functionality in Uno. It implements properties like `Width`/`Height`, `Opacity`, `Style`, etc. At compile time, the template runs and creates a [partial class](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) with those members for `ScrollContentPresenter` and several other classes (including `FrameworkElement` itself).
 
 The T4 approach is well-tested and works well in this scenario. It has a couple of limitations though:
 
@@ -146,7 +146,7 @@ Here's a [small snippet](https://github.com/unoplatform/uno/blob/74ba91756c44610
      }}
 ````
 
-In this method we have an [INamedTypeSymbol](https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.inamedtypesymbol?view=roslyn-dotnet), an object from Roslyn that encapsulates information about a type. We've already determined that `typeSymbol` implements `DependencyObject`; here we check if it's an Android `View` and, if so override the loaded method. You can notice that we're also checking that the type doesn't _already_ override the same method, so we don't accidentally generate code that clashes with authored code and causes a compiler error. All this goes on under the hood without user intervention, whenever your app compiles.
+In this method we have an [INamedTypeSymbol](https://learn.microsoft.com/dotnet/api/microsoft.codeanalysis.inamedtypesymbol?view=roslyn-dotnet), an object from Roslyn that encapsulates information about a type. We've already determined that `typeSymbol` implements `DependencyObject`; here we check if it's an Android `View` and, if so override the loaded method. You can notice that we're also checking that the type doesn't _already_ override the same method, so we don't accidentally generate code that clashes with authored code and causes a compiler error. All this goes on under the hood without user intervention, whenever your app compiles.
 
 The end result is that `DependencyObject` can be used almost exactly the same way with Uno as with UWP, even though it's an interface and not a class! There are edge cases: some generic constraints won't work the same way, for example. But in general it works remarkably well.
 

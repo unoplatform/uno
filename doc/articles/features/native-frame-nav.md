@@ -10,8 +10,8 @@ This article discusses the particularities of the native `Frame` navigation in d
 
 It is recommended to be familiar with the concept of navigation in UWP, here are some good starting points:
 
-- [Navigation design basics for Windows apps](https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigation-basics)
-- [`Windows.UI.Xaml.Controls.Frame`](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.Frame)
+- [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/uwp/design/basics/navigation-basics)
+- [`Windows.UI.Xaml.Controls.Frame`](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Frame)
 
 ## Native Frame Navigation
 

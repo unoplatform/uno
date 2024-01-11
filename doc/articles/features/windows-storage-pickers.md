@@ -188,7 +188,7 @@ While the `SuggestedStartLocation` has no effect, it must be set for UWP. You mu
 
 ## Picker configuration
 
-File pickers have various configuration options that customize the experience (see the <a href="https://docs.microsoft.com/en-us/uwp/api/windows.storage.pickers.fileopenpicker" target="_blank">UWP documentation</a> for full list of properties). Not all options are supported on all target platforms, in which case these are ignored.
+File pickers have various configuration options that customize the experience (see the <a href="https://learn.microsoft.com/uwp/api/windows.storage.pickers.fileopenpicker" target="_blank">UWP documentation</a> for full list of properties). Not all options are supported on all target platforms, in which case these are ignored.
 
 To set which file type extensions you want to allow, use the `FileTypeFilter` property on `FileOpenPicker` and `FolderPicker`, and the `FileTypeChoices` property on `FileSavePicker`. Extensions must be in the format ".xyz" (starting with a dot). For `FileOpenPicker` and `FolderPicker` you can also include "*" (star) entry, which represents the fact that any file extension is allowed.
 
@@ -230,7 +230,7 @@ In case the **File System Access API** is not available in the browser, Uno Plat
 
 For the upload picker, the browser triggers a file picker dialog and Uno Platform then copies the selected files into temporary storage of the app. The `StorageFile` instance you receive is private for your application and the changes are not reflected in the original file. To save the changes, you need to trigger the "download picker".
 
-For the download picker, the experience requires the use of [`CachedFileManager`](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterwards, calling `CompleteUpdatesAsync` opens the download dialog which allows the user to save the file.
+For the download picker, the experience requires the use of [`CachedFileManager`](https://learn.microsoft.com/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterwards, calling `CompleteUpdatesAsync` opens the download dialog which allows the user to save the file.
 
 The `CachedFileManager` class works transparently with both the **Download picker** and the **File System Access API**, which means you can write a single snippet of code that handles both scenarios correctly:
 

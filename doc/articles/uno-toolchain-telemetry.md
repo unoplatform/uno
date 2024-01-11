@@ -9,7 +9,7 @@ that collects usage information. It is important that the Uno Platform Team unde
 
 The collected data is anonymous.
 
-The telemetry behavior is based on the [.NET Core telemetry feature](https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry).
+The telemetry behavior is based on the [.NET Core telemetry feature](https://learn.microsoft.com/dotnet/core/tools/telemetry).
 
 ## Scope
 

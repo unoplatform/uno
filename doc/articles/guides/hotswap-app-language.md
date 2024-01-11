@@ -161,7 +161,7 @@ See the completed sample on GitHub: [RuntimeCultureSwitching](https://github.com
 
 ## Additional Resources
 
-https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
+https://learn.microsoft.com/windows/uwp/design/globalizing/globalizing-portal
 
 <br>
 

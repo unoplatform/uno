@@ -94,7 +94,7 @@ Image assets are also supported directly by the Uno Platform, though some of the
 
 ## Connecting the C++ and C# together
 
-This part is the heart of the porting effort that makes use of [P/Invoke](https://docs.microsoft.com/en-us/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke?view=vs-2019).
+This part is the heart of the porting effort that makes use of [P/Invoke](https://learn.microsoft.com/cpp/dotnet/how-to-call-native-dlls-from-managed-code-using-pinvoke?view=vs-2019).
 
 ### Challenge #6: Mono for WebAssembly Dynamic and Static Linking support
 

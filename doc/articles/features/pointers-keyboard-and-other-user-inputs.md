@@ -210,7 +210,7 @@ The table and sections below describe supported functionality and limitations fo
 
 1. There is no standard type for **WebLink** (nor **ApplicationLink**) on this platform.
    They are copied to the external app as raw **Text**, and converted back as **WebLink** or **ApplicationLink**) from raw text from the external app
-   when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)](https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring) returns true.
+   when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)](https://learn.microsoft.com/dotnet/api/system.uri.iswellformeduristring) returns true.
 2. The image content seems to not being readable by common apps, only another Uno app is able to read it properly.
 
 ### Drag and Drop Data Format Considerations

@@ -68,7 +68,7 @@ When a link with the custom scheme gets executed, the browser will navigate to a
 
 ### UWP
 
-Works according to Windows docs, see [Microsoft Docs](https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation)
+Works according to Windows docs, see [Microsoft Docs](https://learn.microsoft.com/windows/uwp/launch-resume/handle-uri-activation)
 
 ## Handling protocol activation
 

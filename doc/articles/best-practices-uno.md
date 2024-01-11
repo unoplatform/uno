@@ -41,7 +41,7 @@ Here are some tips to achieve that:
 
 ## Application architecture
 
-You have a lot of choice when choosing an architecture for an Uno Platform application. Since it uses the WinUI contract, Uno Platform supports several features which lend themselves to a [model/view/view-model (MVVM) approach](https://docs.microsoft.com/en-us/windows/uwp/data-binding/data-binding-and-mvvm), like data binding and dependency properties; but you're perfectly free to use any approach you like best.
+You have a lot of choice when choosing an architecture for an Uno Platform application. Since it uses the WinUI contract, Uno Platform supports several features which lend themselves to a [model/view/view-model (MVVM) approach](https://learn.microsoft.com/windows/uwp/data-binding/data-binding-and-mvvm), like data binding and dependency properties; but you're perfectly free to use any approach you like best.
 
 Sometimes so much freedom can be paralyzing. To help you get started, we've created several reference applications especially for Uno Platform. These are working, real-world applications utilizing simple but effective architectural patterns for cross-platform development.
 

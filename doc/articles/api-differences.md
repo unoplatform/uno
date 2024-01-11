@@ -30,7 +30,7 @@ This is as transparent as possible to the application developer. For example, if
 
 ### iOS is AOT-only
 
-.NET code [must be Ahead-Of-Time (AOT) compiled to run on iOS](https://docs.microsoft.com/en-us/xamarin/ios/internals/limitations), as a fundamental platform limitation. As a result, a few APIs that require runtime code generation (eg `System.Reflection.Emit`) do not work. This includes code that uses the `dynamic` keyword.
+.NET code [must be Ahead-Of-Time (AOT) compiled to run on iOS](https://learn.microsoft.com/xamarin/ios/internals/limitations), as a fundamental platform limitation. As a result, a few APIs that require runtime code generation (eg `System.Reflection.Emit`) do not work. This includes code that uses the `dynamic` keyword.
 
 ### WebAssembly is single-threaded
 

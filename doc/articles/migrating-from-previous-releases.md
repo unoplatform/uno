@@ -87,7 +87,7 @@ Additionally, here are some specific hints about the migration to Android 12:
         </PropertyGroup>
         ```
 
-- The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the package versions used by Uno Platform.
+- The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://learn.microsoft.com/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the package versions used by Uno Platform.
 
 ### Uno Platform 4.0
 

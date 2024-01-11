@@ -70,7 +70,7 @@ In this example note how the properties `FontSize` and `Foreground` are selectiv
 
 Platform-specific XAML also allows you to exclude a parent element and all its children. This is especially useful for cases where children are already part of a namespace but need to be excluded on certain platforms.
 
-Consider the following XAML which is using the Windows Community Toolkit's [Blur](https://docs.microsoft.com/en-us/windows/communitytoolkit/animations/blur) animation. While this runs for UWP, it is not currently supported in the Uno Platform and needs to be conditionally disabled. It isn't possible to add something like `<win:interactivity:Interaction.Behaviors>` to disable the behavior itself. Instead, the entire `Grid` is disabled on any platforms except Windows and child elements will be disabled along with it.
+Consider the following XAML which is using the Windows Community Toolkit's [Blur](https://learn.microsoft.com/windows/communitytoolkit/animations/blur) animation. While this runs for UWP, it is not currently supported in the Uno Platform and needs to be conditionally disabled. It isn't possible to add something like `<win:interactivity:Interaction.Behaviors>` to disable the behavior itself. Instead, the entire `Grid` is disabled on any platforms except Windows and child elements will be disabled along with it.
 
 ```xml
 <Page x:Class="HelloWorld.MainPage"
@@ -173,7 +173,7 @@ In this example, types prefixed in the `android` XAML namespace will be looked u
 
 ## XAML Conditional Methods
 
-You can use standard WinUI conditional XAML prefixes with Uno Platform, [as documented here](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/conditional-xaml).
+You can use standard WinUI conditional XAML prefixes with Uno Platform, [as documented here](https://learn.microsoft.com/windows/uwp/debug-test-perf/conditional-xaml).
 
 Currently the following conditional methods are supported:
 

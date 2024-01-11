@@ -60,12 +60,12 @@ uid: Uno.ReleaseNotes.Legacy
 - Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`. To modify the background color of the Overlay see Popup.md, DatePicker.md, TimePicker.md and Flyout.md
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
 - Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
-- Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
+- Add support for WinUI 2.3 [`NumberBox`](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - Add support of the `UIElement.RightTapped` event (The context menu won't appear anymore on WASM, except for the `TextBox`)
 - Add support of the `UIElement.Holding` event
 - [macOS] Support for `ScrollViewer`
 - [macOS] Support for `LinearGradientBrush`
-- Add support for [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3) control.
+- Add support for [TwoPaneView](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3) control.
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
 - Add support for Surface Duo through the `Uno.UI.DualScreen` package

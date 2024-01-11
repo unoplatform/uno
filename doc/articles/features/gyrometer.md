@@ -5,7 +5,7 @@ uid: Uno.Features.Gyrometer
 # Gyrometer
 
 > [!TIP]
-> This article covers Uno-specific information for Gyrometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.gyrometer
+> This article covers Uno-specific information for Gyrometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.devices.sensors.gyrometer
 
 * The `Windows.Devices.Sensors.Gyrometer` class allows measuring angular velocity applied on the device.
 

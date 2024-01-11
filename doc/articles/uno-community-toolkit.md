@@ -4,7 +4,7 @@ uid: Uno.Development.CommunityToolkit
 
 # How to use Windows Community Toolkit
 
-The [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
+The [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
 
 This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported Windows Community Toolkit controls.
 

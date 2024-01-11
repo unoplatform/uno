@@ -2,7 +2,7 @@
 
 ## Summary
 
-For details on MessageDialog implementation and usage, see the [MSDN documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.popups.messagedialog).
+For details on MessageDialog implementation and usage, see the [MSDN documentation](https://learn.microsoft.com/uwp/api/windows.ui.popups.messagedialog).
 
 ### Device-specific implementation quirks
 

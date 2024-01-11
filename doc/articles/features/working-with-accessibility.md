@@ -7,7 +7,7 @@ uid: Uno.Features.Accessibility
 Windows uses the UI Automation framework to provide accessibility information to screen readers.
 
 > Microsoft UI Automation is an accessibility framework for Windows. It provides programmatic access to most UI elements on the desktop. It enables assistive technology products, such as screen readers, to provide information about the UI to end users and to manipulate the UI by means other than standard input. UI Automation also allows automated test scripts to interact with the UI.\
-[UI Automation Overview](https://docs.microsoft.com/en-us/windows/desktop/WinAuto/uiauto-uiautomationoverview)
+[UI Automation Overview](https://learn.microsoft.com/windows/desktop/WinAuto/uiauto-uiautomationoverview)
 
 Uno.UI implements a subset of UWP's UI Automation APIs, to make your applications work with each platform's built-in screen reader or accessibility support:
 
@@ -15,7 +15,7 @@ Uno.UI implements a subset of UWP's UI Automation APIs, to make your application
 |----------|----------|-----------|-----------|------------------------------|
 | Narrator | TalkBack | VoiceOver | VoiceOver | OS or Web Browser Integrated |
 
-Read [this guide](https://docs.microsoft.com/en-us/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
+Read [this guide](https://learn.microsoft.com/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
 
 - `AutomationProperties.AutomationId`
 - `AutomationProperties.Name`

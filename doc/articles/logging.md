@@ -242,7 +242,7 @@ System.InvalidOperationException: A suitable constructor for type 'Microsoft.Ext
 ```
 
 If you are getting the above exception when running on iOS and the Linker Behavior is set to "Link All" it is likely that the IL linker is removing some logging classes.
-See [Linking Xamarin.iOS Apps](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/linker?tabs=macos)
+See [Linking Xamarin.iOS Apps](https://learn.microsoft.com/xamarin/ios/deploy-test/linker?tabs=macos)
 
 One option is to use `linkskip` file to exclude the assemblies causing issues.
 Add the following to your `mtouch` arguments:
@@ -252,7 +252,7 @@ Add the following to your `mtouch` arguments:
 --linkskip=Microsoft.Extensions.Options
 ```
 
-The other option is to add a [custom linker definition file](https://docs.microsoft.com/en-us/xamarin/cross-platform/deploy-test/linker)
+The other option is to add a [custom linker definition file](https://learn.microsoft.com/xamarin/cross-platform/deploy-test/linker)
 
 ```
 <linker> 

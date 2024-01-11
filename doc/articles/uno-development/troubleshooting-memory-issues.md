@@ -98,4 +98,4 @@ var myItem = new Grid(){ Tag = grid };
 grid.Children.Add(myItem);
 ```
 
-For Xamarin.iOS specifically, see [this article about performance tuning](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/performance).
+For Xamarin.iOS specifically, see [this article about performance tuning](https://learn.microsoft.com/xamarin/ios/deploy-test/performance).

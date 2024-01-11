@@ -43,7 +43,7 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
    Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore
    ```
 
-- For Android, ensure that you are running hardware accelerated emulators. See [this documentation for details](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows).
+- For Android, ensure that you are running hardware accelerated emulators. See [this documentation for details](https://learn.microsoft.com/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows).
 
 ## Adding a new test
 
@@ -133,6 +133,6 @@ The Uno.UI solution will build, and the UI tests will run. You may need to adjus
 
 ## Uno.UITest
 
-[`Uno.UITest`](https://github.com/unoplatform/Uno.UITest) is a standalone UI testing framework with an API very similar to the [Xamarin.UITest framework](https://docs.microsoft.com/en-us/appcenter/test-cloud/frameworks/uitest/), allowing tests written for 'Xamarin.UITest' to be imported with little or no modifications and additionally run on Uno WebAssembly apps.
+[`Uno.UITest`](https://github.com/unoplatform/Uno.UITest) is a standalone UI testing framework with an API very similar to the [Xamarin.UITest framework](https://learn.microsoft.com/appcenter/test-cloud/frameworks/uitest/), allowing tests written for 'Xamarin.UITest' to be imported with little or no modifications and additionally run on Uno WebAssembly apps.
 
-On Android and iOS, `Uno.UITest` is actually a thin wrapper over `Xamarin.UITest`, this means for example that you can [use the REPL](https://docs.microsoft.com/en-us/appcenter/test-cloud/frameworks/uitest/#using-the-repl) while authoring a test.
+On Android and iOS, `Uno.UITest` is actually a thin wrapper over `Xamarin.UITest`, this means for example that you can [use the REPL](https://learn.microsoft.com/appcenter/test-cloud/frameworks/uitest/#using-the-repl) while authoring a test.

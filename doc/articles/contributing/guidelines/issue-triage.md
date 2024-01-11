@@ -136,7 +136,7 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 >
 > Specific things I'd like to learn about are what Android API level you are using and if you are testing in a simulator or on a device.
 >
-> Could you please provide a test case that reproduces the issue and provide [logs from `logcat`](https://docs.microsoft.com/en-us/xamarin/android/deploy-test/debugging/android-debug-log?tabs=windows)?
+> Could you please provide a test case that reproduces the issue and provide [logs from `logcat`](https://learn.microsoft.com/xamarin/android/deploy-test/debugging/android-debug-log?tabs=windows)?
 
 ### needs template
 

@@ -5,7 +5,7 @@ uid: Uno.Features.WAMCalls
 # Phone calls
 
 > [!TIP]
-> This article covers Uno-specific information for `PhoneCallManager`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.applicationmodel.calls.phonecallmanager?view=winrt-22000
+> This article covers Uno-specific information for `PhoneCallManager`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.applicationmodel.calls.phonecallmanager?view=winrt-22000
 
 * `Windows.ApplicationModel.Calls.PhoneCallManager` allows apps to present a phone call UI to the user to allow them to initiate a call.
 * The current call state can be checked using `IsCallActive` and `IsCallIncoming` properties.

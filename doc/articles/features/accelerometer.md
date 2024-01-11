@@ -5,7 +5,7 @@ uid: Uno.Features.Accelerometer
 # Accelerometer
 
 > [!TIP]
-> This article covers Uno-specific information for Accelerometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/windows/uwp/devices-sensors/use-the-accelerometer
+> This article covers Uno-specific information for Accelerometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/windows/uwp/devices-sensors/use-the-accelerometer
 
 * The `Windows.Devices.Sensors.Accelerometer` class allows measuring the linear acceleration of the device along three X, Y, and Z-axis.
 
