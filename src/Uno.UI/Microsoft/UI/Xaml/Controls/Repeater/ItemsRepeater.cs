@@ -11,6 +11,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -624,12 +625,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
 			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
 			{
-				layout.WeakMeasureInvalidated += InvalidateMeasureForLayout;
-				layout.WeakArrangeInvalidated += InvalidateArrangeForLayout;
+				var weakRef = WeakReferencePool.RentSelfWeakReference(this);
+				var measureHandler = CreateWeakInvalidateMeasureForLayout(weakRef);
+				var arrangeHandler = CreateWeakInvalidateArrangeForLayout(weakRef);
+
+				layout.MeasureInvalidated += measureHandler;
+				layout.ArrangeInvalidated += arrangeHandler;
 				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					layout.WeakMeasureInvalidated -= InvalidateMeasureForLayout;
-					layout.WeakArrangeInvalidated -= InvalidateArrangeForLayout;
+					layout.MeasureInvalidated -= measureHandler;
+					layout.ArrangeInvalidated -= arrangeHandler;
+					WeakReferencePool.ReturnWeakReference(this, weakRef);
 				});
 			}
 
@@ -643,6 +649,24 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 #endif
 		}
+
+		private static TypedEventHandler<Layout, object> CreateWeakInvalidateMeasureForLayout(ManagedWeakReference target)
+			=> (snd, args) =>
+			{
+				if (target.Target is ItemsRepeater ir)
+				{
+					ir.InvalidateMeasureForLayout(snd, args);
+				}
+			};
+
+		private static TypedEventHandler<Layout, object> CreateWeakInvalidateArrangeForLayout(ManagedWeakReference target)
+			=> (snd, args) =>
+			{
+				if (target.Target is ItemsRepeater ir)
+				{
+					ir.InvalidateArrangeForLayout(snd, args);
+				}
+			};
 
 		private void OnUnloaded(object sender, RoutedEventArgs args)
 		{
@@ -845,14 +869,27 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			if (newValue != null)
 			{
 				newValue.InitializeForContext(GetLayoutContext());
-				// Uno specific: Using Weak[Measure|Arrange]Invalidated instaed of [Measure|Arrange]Invalidated.
-				// See comment above WeakMeasureInvalidated declaration.
-				newValue.WeakMeasureInvalidated += InvalidateMeasureForLayout;
-				newValue.WeakArrangeInvalidated += InvalidateArrangeForLayout;
+				// Uno specific: Using weak subscription..
+				// ItemsRepeater uses a singleton StackLayout.
+				// Subscribing to MeasureInvalidated and failing to unsubscribe is a large memory leak.
+				// Unsubscribing for that in Unloaded failed, because subscription can happen before Loaded and in cases where Loaded/Unloaded are never raised.
+				// The fact that we subscribe in such case feels like a lifecycle bug related to applying templates (things are
+				// initiated in NavigationView.OnApplyTemplate, but probably that OnApplyTemplate call shouldn't have happened).
+				// For now, the only feasible solution is to have a weak event subscription.
+				// NOTE that at the time of writing this, there is another bad subscription that happens early in ItemsRepeater constructor, which isn't the case on WinUI.
+				// However, fixing that bad subscription will still leak due to the lifecycle issue (at least, at the time of writing this).
+
+				var weakRef = WeakReferencePool.RentSelfWeakReference(this);
+				var measureHandler = CreateWeakInvalidateMeasureForLayout(weakRef);
+				var arrangeHandler = CreateWeakInvalidateArrangeForLayout(weakRef);
+
+				newValue.MeasureInvalidated += measureHandler;
+				newValue.ArrangeInvalidated += arrangeHandler;
 				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					newValue.WeakMeasureInvalidated -= InvalidateMeasureForLayout;
-					newValue.WeakArrangeInvalidated -= InvalidateArrangeForLayout;
+					newValue.MeasureInvalidated -= measureHandler;
+					newValue.ArrangeInvalidated -= arrangeHandler;
+					WeakReferencePool.ReturnWeakReference(this, weakRef);
 				});
 			}
 
@@ -915,12 +952,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		void InvalidateMeasureForLayout(/*Layout sender, object args*/)
+		void InvalidateMeasureForLayout(Layout sender, object args)
 		{
 			InvalidateMeasure();
 		}
 
-		void InvalidateArrangeForLayout(/*Layout sender, object args*/)
+		void InvalidateArrangeForLayout(Layout sender, object args)
 		{
 			InvalidateArrange();
 		}
