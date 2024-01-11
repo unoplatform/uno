@@ -67,20 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property MaxDropDownHeight
 		// Skipping already declared property LightDismissOverlayMode
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsTextSearchEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsTextSearchEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsTextSearchEnabledProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsTextSearchEnabled
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsEditable
@@ -142,14 +129,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsTextSearchEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextSearchEnabled), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ComboBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsTextSearchEnabledProperty
 		// Skipping already declared property LightDismissOverlayModeProperty
 		// Skipping already declared property MaxDropDownHeightProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
