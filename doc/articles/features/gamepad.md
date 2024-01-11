@@ -65,8 +65,6 @@ if (GamepadButtons.A == (reading.Buttons & GamepadButtons.A))
 }
 ```
 
-
-
 See Gamepad in action
 ---------------------------
 

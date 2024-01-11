@@ -24,15 +24,15 @@ Notes:
 
    To get a fully reliable shape on all platforms, you should only
    use the _fill_ part of the shape.
-   
+
    All shapes on _Wasm_ platform (including `Rectangle`) are rendered as `SVG` elements.
-   
+
 2. Stretching modes `UniformToFill` and `Uniform` will behave like
    `Fill` for ellipses.
-   
+
 3. On _Wasm_, only the `Data=` text format is implemented.
    On other platforms, you can use either the _data_ or the geometries.
-   
+
 4. Rectangles on _Android_ and _iOS_ are rendered as a simple border.
 
 ## Implemented Shapes properties
@@ -124,4 +124,3 @@ Where you can use which brushes
 | `Foreground` (`TextBlock`)                   | Yes             | No                   | Yes (Wasm only) |
 | `Fill` (Shapes)                              | Yes             | Yes (except on Wasm) | Yes             |
 | `Stroke` (Shapes)                            | Yes             | No                   | Yes (Wasm only) |
-

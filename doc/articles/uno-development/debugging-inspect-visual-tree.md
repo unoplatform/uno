@@ -64,7 +64,7 @@ The method returns the visual tree from a certain 'height' above the target elem
 ![ShowLocalVisualTree() on iOS](assets/debugging-inspect-visual-tree/iOS-ShowLocalVisualTree.jpg)
 
 Similarly to the `ShowLocalVisualTree` method, there is also the `TreeGraph` method that produces a tree with more details suited for troubleshooting visual/layout issue:
-```cs
+```csharp
 using Uno.UI.Extensions;
 ...
 
@@ -82,7 +82,7 @@ The advantage of this over `ShowLocalVisualTree` is the ability to customize the
 > - [`DebugVTNode\GetDetails()` method in Toolkit](https://github.com/unoplatform/uno.toolkit.ui/blob/main/src/Uno.Toolkit.UI/Helpers/VisualTreeHelperEx.cs)
 > - [`DescribeVTNode\GetDetails()` method in Uno](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Extensions/ViewExtensions.visual-tree.cs)
 
-```cs
+```csharp
 var tree = this.TreeGraph(Describe);
 ...
 
@@ -136,7 +136,7 @@ private static IEnumerable<string> DescribeDetails(object x)
 
 ### Retrieving the visual tree of a flyout/popup
 You can add a slight delay before dumping the visual tree, giving you time to open the flyout:
-```cs
+```csharp
 private async void DebugVT(object sender, RoutedEventArgs e)
 {
     // ample time to click on the flyout

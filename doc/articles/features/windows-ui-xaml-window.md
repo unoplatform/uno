@@ -13,7 +13,7 @@ uid: Uno.Features.WinUIWindow
 
 WinUI and UWP does not support the ability to provide a background color for `Window`, but Uno provides such an API through:
 
-```
+```csharp
 #if HAS_UNO
 Uno.UI.Xaml.WindowHelper.SetBackground(Window.Current, new SolidColorBrush(Colors.Red));
 #endif

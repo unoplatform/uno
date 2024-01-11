@@ -10,7 +10,7 @@ uid: Uno.Features.ProtocolActivation
 
 Declare your custom URL scheme in `info.plist` in the platform head:
 
-```
+```xml
 <key>CFBundleURLTypes</key>
 <array>
     <dict>
@@ -28,7 +28,7 @@ Declare your custom URL scheme in `info.plist` in the platform head:
 
 Register your protocol on the `MainActivity` with the `[IntentFilter]` attribute:
 
-```
+```xml
 [IntentFilter(
     new [] {
         Android.Content.Intent.ActionView
@@ -54,7 +54,7 @@ WASM implementation uses the [`Navigator.registerProtocolHandler` API](https://d
 
 To register the custom theme, call the WASM specific `Uno.Helpers.ProtocolActivation` API when appropriate to let the user confirm URI handler association:
 
-```
+```csharp
 #if __WASM__
    Uno.Helpers.ProtocolActivation.RegisterCustomScheme(
       "web+myscheme", 
@@ -66,7 +66,6 @@ The first argument is the scheme name, the second is the base URL of your applic
 
 When a link with the custom scheme gets executed, the browser will navigate to a your URL with additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
 
-
 ### UWP
 
 Works according to Windows docs, see [Microsoft Docs](https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation)
@@ -75,16 +74,16 @@ Works according to Windows docs, see [Microsoft Docs](https://docs.microsoft.com
 
 Custom URI activation can be handled by overriding the `OnActivated` method in `App.cs` or `App.xaml.cs`:
 
-```
+```csharp
 protected override void OnActivated(IActivatedEventArgs e)
 {
     // Note: Ensure the root frame is created
     
     if (e.Kind == ActivationKind.Protocol)
     {
-    	var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-    	var uri = protocolActivatedEventArgs.Uri;
-    	// do something
+        var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
+        var uri = protocolActivatedEventArgs.Uri;
+        // do something
     }
 }
 ```

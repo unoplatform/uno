@@ -302,7 +302,7 @@
       - name: Guidelines for issue triage
         href: contributing/guidelines/issue-triage.md
       - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: contributing/guidelines/implementing-a-new winui-winrt-feature.md
+        href: contributing/guidelines/implementing-a-new-winui-winrt-feature.md
       - name: Adding documentation
         href: uno-development/doc-on-docs.md
       - name: DocFX

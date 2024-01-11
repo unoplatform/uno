@@ -6,6 +6,7 @@ uid: Uno.Features.Localization
 
 > [!TIP]
 > Relevant tutorials on this topic:
+>
 > - [How to localize text resources](xref:Uno.Tutorials.Localization)
 > - [How to change app language at runtime](xref:Uno.Tutorials.ChangeAppLanguage)
 
@@ -19,7 +20,9 @@ can be used with the `x:Uid="/myResources/MyResource"` format, see [how to facto
 Note that the default language can be defined using the `DefaultLanguage` msbuild property, using an IETF Language Tag (e.g. `en` or `fr-FR`).
 
 By default, the app will use the operating system's language first, falling back to the `DefaultLanguage` second. If you would like to change localization at the app level, you can use the [`ApplicationLanguages.PrimaryLanguageOverride`](https://learn.microsoft.com/en-us/uwp/api/windows.globalization.applicationlanguages.primarylanguageoverride?view=winrt-22621) property:
-```cs
+
+```csharp
 ApplicationLanguages.PrimaryLanguageOverride = "fr-CA"; // or, any IETF language tag
 ```
+
 Note that changing the `PrimaryLanguageOverride` will not retroactively update any loaded pages. You will need to reload the page or navigate to a new one.

@@ -50,21 +50,21 @@ await webView.ExecuteScriptAsync("eval({'test': 1})"); // Returns a string conta
 
 ```javascript
 function postWebViewMessage(message){
-	try{
-		if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
-			// Windows
-			chrome.webview.postMessage(message);
-		} else if (window.hasOwnProperty("unoWebView")) {
-			// Android
-			unoWebView.postMessage(JSON.stringify(message));
-		} else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-			// iOS and macOS
-			webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
-		}
-	}
-	catch (ex){
-		alert("Error occurred: " + ex);
-	}
+    try{
+        if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
+            // Windows
+            chrome.webview.postMessage(message);
+        } else if (window.hasOwnProperty("unoWebView")) {
+            // Android
+            unoWebView.postMessage(JSON.stringify(message));
+        } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
+            // iOS and macOS
+            webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
+        }
+    }
+    catch (ex){
+        alert("Error occurred: " + ex);
+    }
 }
 
 // Usage:
@@ -79,7 +79,7 @@ To receive the message in C#, subscribe to the `WebMessageReceived` event:
 ```csharp
 webView.WebMessageReceived += (s, e) =>
 {
-	Debug.WriteLine(e.WebMessageAsJson);
+    Debug.WriteLine(e.WebMessageAsJson);
 };
 ```
 
@@ -92,9 +92,9 @@ To load local web content bundled with the application, you can use the `SetVirt
 ```csharp
 await webView.EnsureCoreWebView2Async();
 webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
-	"UnoNativeAssets",
-	"WebContent",
-	CoreWebView2HostResourceAccessKind.Allow);
+    "UnoNativeAssets",
+    "WebContent",
+    CoreWebView2HostResourceAccessKind.Allow);
 webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
 ```
 
@@ -115,10 +115,10 @@ The web files can reference each other in a relative path fashion, for example, 
 ```html
 <html>
 <head>
-	<script src="js/site.js" type="text/javascript"></script>
+    <script src="js/site.js" type="text/javascript"></script>
 </head>
 <body>
-	...
+    ...
 </body>
 </html>
 ```

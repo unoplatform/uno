@@ -27,13 +27,13 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## How to use Hot Reload
 
-# [**Visual Studio 2022**](#tab/vswin)
+### [**Visual Studio 2022**](#tab/vswin)
 
 - Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
 - Start your application (with or without the debugger, depending on the supported features below)
 - Make changes to your XAML or C# code, save your file then press the red flame icon in the toolbar or use `Alt+F10`
 
-# [**Visual Studio Code**](#tab/vscode)
+### [**Visual Studio Code**](#tab/vscode)
 
 - Setup your environment by following our [getting started guide](xref:Uno.GetStarted.vscode)
 - Start the application (with or without the debugger, depending on the supported features below)
@@ -47,7 +47,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## Supported features
 
-# [**Skia**](#tab/skia)
+### [**Skia**](#tab/skia)
 
 Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
 
@@ -57,7 +57,7 @@ Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. T
   - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# or XAML)
   - Adding new C# or XAML files to a project is not yet supported
 
-# [**WebAssembly**](#tab/wasm)
+### [**WebAssembly**](#tab/wasm)
 
 WebAssembly is currently providing both full and partial Hot Reload support, depending on the IDE.
 
@@ -72,7 +72,7 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
   - Hot Reload is not supported when using the debugger
 
-# [**iOS, Android Catalyst**](#tab/mobile)
+### [**iOS, Android Catalyst**](#tab/mobile)
 
 Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
 
@@ -83,7 +83,7 @@ Mobile targets are currently using a limited version of XAML Hot Reload and do n
 - In both VS and VS Code, C# Hot Reload is not yet supported
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
-# [**WinAppSDK**](#tab/winappsdk)
+### [**WinAppSDK**](#tab/winappsdk)
 
 Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
 
@@ -96,7 +96,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - The file named `RemoteControlGenerator\RemoteControl.g.cs` in the analyzers node for your project contains the connection information, verify that the information host addresses and the port number.
 - WinAppSDK on Windows-specific issues
-    - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
+  - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 - If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
 
   ```xml
@@ -140,8 +140,8 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
-    - Ensure you have the latest version of the Visual Studio extension installed.
-    - Rebuild the app until the number is different than zero.
+  - Ensure you have the latest version of the Visual Studio extension installed.
+  - Rebuild the app until the number is different than zero.
 
 ### VS Code
 

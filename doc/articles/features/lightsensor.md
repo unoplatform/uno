@@ -7,7 +7,7 @@ uid: Uno.Features.LightSensor
 > [!TIP]
 > This article covers Uno-specific information for LightSensor. For a full description of the feature and instructions on using it, consult the [UWP documentation](https://learn.microsoft.com/windows/uwp/devices-sensors/use-the-light-sensor).
 
- * The `Windows.Devices.Sensors.LightSensor` class allows measuring the illuminance in LUX. 
+* The `Windows.Devices.Sensors.LightSensor` class allows measuring the illuminance in LUX.
 
 ## Supported features
 
@@ -18,8 +18,8 @@ uid: Uno.Features.LightSensor
 | `ReportInterval` |   ✔   |   ✔   | ✖ | ✖ | ✖ | ✖ |
 
 ## Using LightSensor with Uno
- 
- * The `GetDefault` method is available on all targets and will return `null` on those which do not support `LightSensor` or devices that do not have such a sensor.
+
+* The `GetDefault` method is available on all targets and will return `null` on those which do not support `LightSensor` or devices that do not have such a sensor.
 * Ensure to unsubscribe from the `ReadingChanged` events when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
 
 ## Examples

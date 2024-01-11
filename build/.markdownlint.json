@@ -1,0 +1,9 @@
+{
+	"default": true,
+	"line-length": false,
+	"commands-show-output": false,
+	"no-bare-urls": false,
+	"no-inline-html": false,
+	"no-duplicate-heading": false,
+	"no-emphasis-as-heading": false
+}
