@@ -30,6 +30,9 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// </summary>
 public static class X11Helper
 {
+	private const string libX11 = "libX11.so.6";
+	private const string libX11Randr = "libXrandr.so.2";
+
 	public static readonly IntPtr CurrentTime = IntPtr.Zero;
 	public static readonly IntPtr None = IntPtr.Zero;
 	public static readonly IntPtr AnyPropertyType = IntPtr.Zero;
@@ -43,37 +46,142 @@ public static class X11Helper
 	public const string TARGETS = "TARGETS";
 	public const string CLIPBOARD = "CLIPBOARD";
 	public const string PRIMARY = "PRIMARY";
-	public const string XA_INTEGER = "XA_INTEGER";
-	public const string XA_ATOM = "XA_ATOM";
+	public const string XA_INTEGER = "INTEGER";
+	public const string XA_ATOM = "ATOM";
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
 	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern int XPutImage(IntPtr display, IntPtr drawable, IntPtr gc, IntPtr image,
 		int srcx, int srcy, int destx, int desty, uint width, uint height);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern IntPtr XCreateImage(IntPtr display, IntPtr visual, uint depth, int format, int offset,
 		IntPtr data, uint width, uint height, int bitmap_pad, int bytes_per_line);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern int XPending(IntPtr display);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern IntPtr XDefaultGC(IntPtr display, int screen_number);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern int XWidthMMOfScreen(IntPtr screen);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern int XWidthOfScreen(IntPtr screen);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern int XHeightMMOfScreen(IntPtr screen);
 
-	[DllImport("libX11.so.6")]
+	[DllImport(libX11)]
 	public static extern int XHeightOfScreen(IntPtr screen);
+
+	[DllImport(libX11Randr)]
+	public unsafe static extern XRRScreenResources* XRRGetScreenResourcesCurrent(IntPtr dpy, IntPtr window);
+
+	[DllImport(libX11Randr)]
+	public unsafe static extern XRROutputInfo* XRRGetOutputInfo(IntPtr dpy, IntPtr resources, IntPtr output);
+
+	[DllImport(libX11Randr)]
+	public unsafe static extern XRRCrtcInfo* XRRGetCrtcInfo(IntPtr dpy, IntPtr resources, IntPtr crtc);
+
+	[DllImport(libX11Randr)]
+	public unsafe static extern int XRRGetCrtcTransform(IntPtr dpy, IntPtr crtc, ref XRRCrtcTransformAttributes* attributes);
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XRROutputInfo
+	{
+		public IntPtr timestamp;
+		public IntPtr crtc;
+		public IntPtr name;
+		public int    nameLen;
+		public IntPtr mm_width;
+		public IntPtr mm_height;
+		public ushort connection;
+		public ushort subpixel_order;
+		public int    ncrtc;
+		public IntPtr crtcs;
+		public int    nclone;
+		public IntPtr clones;
+		public int    nmode;
+		public int    npreferred;
+		public IntPtr modes;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XRRScreenResources
+	{
+		public IntPtr timestamp;
+		public IntPtr configTimestamp;
+		public int    ncrtc;
+		public IntPtr crtcs;
+		public int    noutput;
+		public IntPtr outputs;
+		public int    nmode;
+		public IntPtr modes;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XRRModeInfo
+	{
+		public IntPtr	id;
+		public uint	    width;
+		public uint	    height;
+		public IntPtr	dotClock;
+		public uint	    hSyncStart;
+		public uint	    hSyncEnd;
+		public uint	    hTotal;
+		public uint	    hSkew;
+		public uint	    vSyncStart;
+		public uint	    vSyncEnd;
+		public uint	    vTotal;
+		public IntPtr   name;
+		public uint	    nameLength;
+		public IntPtr	modeFlags;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XRRCrtcInfo {
+		public IntPtr	    timestamp;
+		public int		    x, y;
+		public uint         width, height;
+		public IntPtr	    mode;
+		public ushort	    rotation;
+		public int		    noutput;
+		public IntPtr       outputs;
+		public ushort	    rotations;
+		public int		    npossible;
+		public IntPtr       possible;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XRRCrtcTransformAttributes {
+		public XTransform	pendingTransform;
+		public IntPtr       pendingFilter;
+		public int		    pendingNparams;
+		public IntPtr       pendingParams;
+		public XTransform	currentTransform;
+		public IntPtr       currentFilter;
+		public int		    currentNparams;
+		public IntPtr       currentParams;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct XTransform
+	{
+		public int _1_1;
+		public int _1_2;
+		public int _1_3;
+		public int _2_1;
+		public int _2_2;
+		public int _2_3;
+		public int _3_1;
+		public int _3_2;
+		public int _3_3;
+	}
+
 }

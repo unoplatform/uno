@@ -41,6 +41,7 @@ namespace Avalonia.X11
 	public unsafe static class XLib
 	{
 		private const string libX11 = "libX11.so.6";
+		private const string libX11Randr = "libXrandr.so.2";
 
 		[DllImport(libX11)]
 		public static extern IntPtr XOpenDisplay(IntPtr display);
@@ -86,6 +87,10 @@ namespace Avalonia.X11
 			ref XEvent send_event);
 
 		[DllImport(libX11)]
+		public static extern int XQueryTree(IntPtr display, IntPtr window, out IntPtr root_return,
+			out IntPtr parent_return, out IntPtr children_return, out int nchildren_return);
+
+		[DllImport(libX11)]
 		public static extern int XFree(IntPtr data);
 
 		[DllImport(libX11)]
@@ -110,6 +115,9 @@ namespace Avalonia.X11
 		[DllImport(libX11)]
 		public static extern int XSetWMProtocols(IntPtr display, IntPtr window, IntPtr[] protocols, int count);
 
+		[DllImport(libX11)]
+		public static extern bool XTranslateCoordinates(IntPtr display, IntPtr src_w, IntPtr dest_w, int src_x,
+			int src_y, out int intdest_x_return, out int dest_y_return, out IntPtr child_return);
 
 		[DllImport(libX11)]
 		public static extern int XDefaultScreen(IntPtr display);
@@ -185,5 +193,25 @@ namespace Avalonia.X11
 
 		[DllImport(libX11)]
 		public static extern IntPtr XSetLocaleModifiers(string modifiers);
+
+		[DllImport(libX11Randr)]
+		public static extern int XRRQueryExtension (IntPtr dpy,
+			out int event_base_return,
+			out int error_base_return);
+
+		[DllImport(libX11Randr)]
+		public static extern int XRRQueryVersion(IntPtr dpy,
+			out int major_version_return,
+			out int minor_version_return);
+
+		[DllImport(libX11Randr)]
+		public static extern XRRMonitorInfo*
+			XRRGetMonitors(IntPtr dpy, IntPtr window, bool get_active, out int nmonitors);
+
+		[DllImport(libX11Randr)]
+		public static extern IntPtr* XRRListOutputProperties(IntPtr dpy, IntPtr output, out int count);
+
+		[DllImport(libX11Randr)]
+		public static extern int XRRGetOutputProperty(IntPtr dpy, IntPtr output, IntPtr atom, int offset, int length, bool _delete, bool pending, IntPtr req_type, out IntPtr actual_type, out int actual_format, out int nitems, out long bytes_after, out IntPtr prop);
 	}
 }
