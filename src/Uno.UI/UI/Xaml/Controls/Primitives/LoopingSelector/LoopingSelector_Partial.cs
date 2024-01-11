@@ -1795,6 +1795,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			FrameworkElement spPanelAsFE;
 			UIElement spThisAsUI;
 
+#if HAS_UNO // Uno specific: Due to lifecycle differences, the ScrollViewer is may not be initialized at this point.
+			// If ViewportHeight is 0, we would temporarily size the panel incorrectly, which could cause the selected
+			// item to be changed.
+			if (_tpScrollViewer is null || _tpScrollViewer.ViewportHeight == 0)
+			{
+				return;
+			}
+#endif
+
 			var shouldLoop = false;
 			shouldLoop = ShouldLoop;
 			//QueryInterface(__uuidof(UIElement), &spThisAsUI);
