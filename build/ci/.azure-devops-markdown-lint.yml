@@ -20,5 +20,5 @@ jobs:
   - bash: npm install -g markdownlint-cli
     displayName: Install markdownlint-cli
 
-  - bash: markdownlint -c ./build/.markdownlint.json "doc/**/*.md"
+  - bash: markdownlint "doc/**/*.md"
     displayName: Run Markdown Linter
