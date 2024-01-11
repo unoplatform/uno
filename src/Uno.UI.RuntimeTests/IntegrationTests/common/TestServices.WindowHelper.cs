@@ -34,11 +34,15 @@ namespace Private.Infrastructure
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow
+			{
+				get => UnitTestsUIContentHelper.CurrentTestWindow;
+				set => UnitTestsUIContentHelper.CurrentTestWindow = value;
+			}
 
 			public static bool UseActualWindowRoot
 			{
-				get => UnitTestsUIContentHelper.UseActualWindowRoot; 
+				get => UnitTestsUIContentHelper.UseActualWindowRoot;
 				set => UnitTestsUIContentHelper.UseActualWindowRoot = value;
 			}
 
