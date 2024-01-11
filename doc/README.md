@@ -136,7 +136,7 @@ Markdown linting for the docs is done as part of a GitHub Action.
 If you'd like to perform the same check locally, you can run:
 
 * `npm install -g markdownlint-cli` to install the markdownlint CLI
-* `markdownlint -c ./.markdownlint.json "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
+* `markdownlint "doc/**/*.md"` to lint all the markdown files in the `doc` folder.
 
 You can also install the [markdownlint Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint) to easily check markdown linting and style while writing documentation.
 
