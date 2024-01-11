@@ -165,10 +165,10 @@ public class Given_SystemFocusVisual
 
 		var focusVisual = focusVisualLayer.Children.First();
 
-		var focusTransform = focusVisual.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var focusTransform = focusVisual.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
 		var focusPoint = focusTransform.TransformPoint(default);
 
-		var buttonTransform = button.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var buttonTransform = button.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
 		var buttonPoint = buttonTransform.TransformPoint(default);
 
 		Assert.AreEqual(focusPoint.X, buttonPoint.X);
