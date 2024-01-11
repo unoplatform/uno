@@ -48,7 +48,6 @@ using Uno.UI.Helpers;
 
 #if HAS_UNO
 using static Uno.UI.Extensions.ViewExtensions;
-using Uno.UI.Helpers;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
