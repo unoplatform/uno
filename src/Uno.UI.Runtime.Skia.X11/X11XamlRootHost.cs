@@ -11,7 +11,7 @@ using Avalonia.X11;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-internal partial class X11XamlRootHost : ISkiaApplicationHost, IXamlRootHost
+internal partial class X11XamlRootHost : IXamlRootHost
 {
 	private const int INITIAL_WIDTH = 900;
 	private const int INITIAL_HEIGHT = 800;

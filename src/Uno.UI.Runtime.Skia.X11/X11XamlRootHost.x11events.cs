@@ -94,19 +94,19 @@ internal partial class X11XamlRootHost
 					break;
 				case XEventName.ConfigureNotify:
 					var configureEvent = event_.ConfigureEvent;
-					_resizeCallback.Invoke(new Size(configureEvent.width, configureEvent.height));
+					QueueEvent(this, () => _resizeCallback.Invoke(new Size(configureEvent.width, configureEvent.height)));
 					break;
 				case XEventName.FocusIn:
-					_focusCallback.Invoke(true);
+					QueueEvent(this, () => _focusCallback.Invoke(true));
 					break;
 				case XEventName.FocusOut:
-					_focusCallback.Invoke(false);
+					QueueEvent(this, () => _focusCallback.Invoke(false));
 					break;
 				case XEventName.VisibilityNotify:
-					_visibilityCallback.Invoke(event_.VisibilityEvent.state != /* VisibilityFullyObscured */ 2);
+					QueueEvent(this, () => _visibilityCallback.Invoke(event_.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 					break;
 				case XEventName.Expose:
-					((IXamlRootHost)this).InvalidateRender();
+					QueueEvent(this, () => ((IXamlRootHost)this).InvalidateRender());
 					break;
 				case XEventName.MotionNotify:
 					_pointerSource?.ProcessMotionNotifyEvent(event_.MotionEvent);
