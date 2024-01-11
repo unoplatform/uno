@@ -2,6 +2,8 @@
 uid: Uno.Development.NetVersionSupport
 ---
 
+<!-- markdownlint-disable MD001 -->
+
 # .NET version support
 
 This page lists supported .NET versions and [C# language versions](https://learn.microsoft.com/dotnet/csharp/language-reference/configure-language-version) for different target platforms.
