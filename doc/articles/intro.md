@@ -4,6 +4,8 @@ uid: Uno.Documentation.Intro
 
 # Uno Platform documentation
 
+<!-- markdownlint-disable MD001 -->
+
 Uno Platform is an open-source .NET platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
 <br/>
