@@ -260,7 +260,7 @@ Let's walk through the implementation.
 
     > [!TIP]
     > As noted in the Microsoft documentation:
-    > _If your data does not undergo fine-grained changes, and if it's likely to be updated as part of a specific action, then you can make your bindings one-time, and force a manual update at any time with a call to **Update**._
+    > *If your data does not undergo fine-grained changes, and if it's likely to be updated as part of a specific action, then you can make your bindings one-time, and force a manual update at any time with a call to **Update**.*
 
 1. To add support for the login when the **OK** (or Primary) button is clicked, update the **ContentDialog_PrimaryButtonClick** method as follows:
 

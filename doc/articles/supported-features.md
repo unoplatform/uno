@@ -63,7 +63,7 @@ uid: Uno.Development.SupportedFeatures
 
 ### Responsive Design
 
-- Layout constraints [Min/Max][Width/Height]
+- Layout constraints \[Min/Max][Width/Height]
 - Binding SourceTriggers (TextBox immediate vs. focus lost interactions)
 - DependencyProperty Inheritance (Color, text style propagation)
 

@@ -12,7 +12,7 @@ Before reading it, you should first read the documentation of [ListViewBase aime
 
 `ListViewBase` is the base class of `ListView` and `GridView`. The remainder of the article will refer to 'ListView', the more commonly used of the two derived controls, for ease of reading, but most of the information is applicable to `GridView` as well since a large part of the implementation is shared.
 
-`ListView` is a specialized type of [`ItemsControl`](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.itemscontrol) designed for showing large numbers of items. `ListView` is by default _virtualized_, meaning that it only materializes view containers for those items which are visible or about to be visible within the scroll viewport. When items disappear from view, their containers are _recycled_ and reused for newly appearing views. Correctly-functioning virtualization is the key to good scroll performance.
+`ListView` is a specialized type of [`ItemsControl`](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.itemscontrol) designed for showing large numbers of items. `ListView` is by default *virtualized*, meaning that it only materializes view containers for those items which are visible or about to be visible within the scroll viewport. When items disappear from view, their containers are *recycled* and reused for newly appearing views. Correctly-functioning virtualization is the key to good scroll performance.
 
 Other important features of `ListView`:
 
@@ -73,7 +73,7 @@ The 'life cycle' of view creation and positioning of the `ListView` largely take
     1. `UpdateLayout()` => `UnfillLayout()`. `UnfillLayout()` takes a direction, and trims materialized item containers that are not visible starting from the **opposite** direction. So to take the example above: `UnfillLayout()` would start with item 0, and see that it lies entirely outside the viewport (`-20 < 0`), so it would dematerialize it, returning it to the recycler to be reused. It would then consider item 1, see that it is partially visible (`60 > 0`), and terminate at that point. `UnfillLayout()` is particularly important during scrolling (see below).
 2. List is arranged.
     1. Android framework => `VirtualizingPanelLayout.OnLayoutChildren()` => `VirtualizingPanelLayout.UpdateLayout()`.
-    2. `UpdateLayout()` does _not_ call `ScrapLayout()` from within the arrange pass. This is because item dimensions should not have changed since the measure. It does however call `FillLayout()` and `UnfillLayout()` again. This is because the dimensions available to the list itself _might_ be different from the ones it was measured with.
+    2. `UpdateLayout()` does *not* call `ScrapLayout()` from within the arrange pass. This is because item dimensions should not have changed since the measure. It does however call `FillLayout()` and `UnfillLayout()` again. This is because the dimensions available to the list itself *might* be different from the ones it was measured with.
 3. List is scrolled.
     1. Android framework => `VirtualizingPanelLayout.ScrollVerticallyBy()` (or `ScrollHorizontallyBy()`).
     1. `ScrollVerticallyBy()` => `ScrollBy()`.

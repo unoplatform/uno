@@ -18,7 +18,7 @@ This article will document the usage of `IdentityModel.OidcClient` into an Uno a
 
 ## Demo Endpoint
 
-This code uses the _IdentityServer_ demonstration endpoint with the following parameters:
+This code uses the *IdentityServer* demonstration endpoint with the following parameters:
 
 | Field     | Value                                     |
 | --------- | ----------------------------------------- |
@@ -37,7 +37,7 @@ For platforms supporting it, the custom protocol "oidc-auth:" will be used.
 
 ## Step 1 - Add Reference to OidcClient package
 
-Add the package [`IdentityModel.OidcClient`](https://www.nuget.org/packages/IdentityModel.OidcClient) to all relevant _head_ projects of the solution.
+Add the package [`IdentityModel.OidcClient`](https://www.nuget.org/packages/IdentityModel.OidcClient) to all relevant *head* projects of the solution.
 
 ## Step 2 - Prepare for Return Uri
 
@@ -80,7 +80,7 @@ Add the `oidc-auth:` custom scheme in `Info.plist` file.
 </array>
 ```
 
-Alternatively, you can use the editor integrated in Visual Studio to set it, in the _advanced_ tab:
+Alternatively, you can use the editor integrated in Visual Studio to set it, in the *advanced* tab:
 
 ![Return Url in iOS](../Assets/features/authenticationbroker/return-url-editor.png)
 
@@ -90,7 +90,7 @@ There's nothing special for UWP. Any return Uri will work.  You can force it to 
 
 **WebAssembly**
 
-There's nothing special for WASM. The default _return Uri_ of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
+There's nothing special for WASM. The default *return Uri* of the platform (`WebAuthenticationBroker.GetCurrentApplicationCallbackUri()`) will work with this sample and will default to `<origin>/authentication-callback`. It should be something like `http://localhost:5000/authentication-callback` when running locally using Kestrel.
 
 ## Step 3 - Prepare the UI
 
@@ -218,7 +218,7 @@ private async void SignOut_Clicked(object sender, RoutedEventArgs e)
 
 **IMPORTANT FOR WEBASSEMBLY**
 
-On WebAssembly, it's important to configure the linker to prevent the removal of some important part of the _OIDC Connect_ client library:
+On WebAssembly, it's important to configure the linker to prevent the removal of some important part of the *OIDC Connect* client library:
 
 `LinkerConfig.xml`:
 
