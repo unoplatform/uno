@@ -20,7 +20,7 @@ Uno Platform provides two versions of the `ProgressRing` control:
 
 ![MUX `ProgressRing`](../Assets/features/progressring/muxprogressring.png)
 
-This version comes with [WinUI 2.x and WinUI 3](https://docs.microsoft.com/en-us/windows/apps/winui/winui2/release-notes/winui-2.4#progressring) and is using an `<AnimatedVisualPlayer />` in its Control Template. It is also designed to be a replacement for the legacy version, where a custom template should work unchanged with this control.
+This version comes with [WinUI 2.x and WinUI 3](https://learn.microsoft.com/windows/apps/winui/winui2/release-notes/winui-2.4#progressring) and is using an `<AnimatedVisualPlayer />` in its Control Template. It is also designed to be a replacement for the legacy version, where a custom template should work unchanged with this control.
 
 > [!IMPORTANT]
 > To use the refreshed visual style, you must [reference the Lottie package](Lottie.md) in your projects, or the ring will not be displayed.

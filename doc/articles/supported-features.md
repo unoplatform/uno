@@ -162,8 +162,8 @@ uid: Uno.Development.SupportedFeatures
 
 ## WinUI Specific Controls (Pre 3.0)
 
-- [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
-- [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
+- [NumberBox](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
+- [TwoPaneView](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
 
 ### Non-UI Features
 

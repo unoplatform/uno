@@ -48,7 +48,7 @@ You may be asked to generate a binlog from the command line, as it includes more
 To generate a binlog file from the command line:
 
 - Open a :
-  - [Visual Studio Developer command prompt](https://docs.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell) on Windows
+  - [Visual Studio Developer command prompt](https://learn.microsoft.com/visualstudio/ide/reference/command-prompt-powershell) on Windows
   - A terminal window on Linux or macOS
 - Navigate to the folder of the project head
 - For UWP/iOS/Android/macOS projects, type the following:

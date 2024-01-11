@@ -15,7 +15,7 @@ First, let's get the lay of the land.
 
 Uno is a cross-platform UI framework. You write an app in C\#
 and [UWP-flavoured XAML
-markup](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/). It
+markup](https://learn.microsoft.com/windows/uwp/xaml-platform/). It
 runs on Windows because it's a UWP app. With Uno, it runs on Android,
 iOS, and (for the brave) in the browser via WebAssembly as well.
 
@@ -35,11 +35,11 @@ There are a few things that need to be done to get your app running:
    information needed to build the app's visual tree;
 
 - It implements a
-   complete [databinding](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview) engine,
+   complete [databinding](https://learn.microsoft.com/windows/uwp/xaml-platform/dependency-properties-overview) engine,
    optimized for static type-checking where possible;
 
 - It implements the views and controls in the
-   [UWP framework](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/controls-by-function),
+   [UWP framework](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/controls-by-function),
    using each platform's native UI framework as a basis.
 
 Each of those items warrants a post on its own, so I'll move on before
@@ -55,8 +55,8 @@ we've built this thing.
 
     > We stand on the shoulders of  giants. Microsoft's tooling is a
     > treat to work with:
-    > [Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/edit-and-continue),
-    > [Live Visual Tree](https://docs.microsoft.com/en-us/visualstudio/debugger/inspect-xaml-properties-while-debugging),
+    > [Edit and Continue](https://learn.microsoft.com/visualstudio/debugger/edit-and-continue),
+    > [Live Visual Tree](https://learn.microsoft.com/visualstudio/debugger/inspect-xaml-properties-while-debugging),
     > the list goes on. The promise of Uno is to build your app with
     > those tools and then deploy it to iOS, Android, and ultimately
     > to the web.
@@ -92,4 +92,4 @@ we've built this thing.
 
 That's a good place to stop. In the next post I'll take up the tale of
 my favorite UI
-control: [ListView and GridView](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/listview-and-gridview).
+control: [ListView and GridView](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/listview-and-gridview).

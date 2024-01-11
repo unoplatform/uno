@@ -4,11 +4,11 @@ uid: Uno.Tutorials.AzureStaticWepApps
 
 # Hosting Uno Platform WebAssembly apps on Azure Static Web Apps
 
-Deploying and hosting of Uno Platform WebApps can be accomplished using [Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/overview).
+Deploying and hosting of Uno Platform WebApps can be accomplished using [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/overview).
 
 This Azure service allows the publication of GitHub and Azure DevOps Git repositories to a service specialized for static web apps. It uses GitHub Actions or Azure DevOps to build and publish the application. The integration also supports the creation of temporary environments for Pull Requests, giving the ability to perform validations while a Pull Request is opened.
 
-You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
+You can review [the Azure documentation](https://learn.microsoft.com/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
 
 ## Publishing Uno Platform WebAssembly app on Azure
 
@@ -58,11 +58,11 @@ Here is how to publish an app from GitHub, using Uno Platform:
 
 ## Configuring Deep Linking with Fallback Routes
 
-Azure Static Web Apps provides the [ability to configure many parts](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration) of the application's behavior, and one particular feature is very useful to enable deep linking in applications.
+Azure Static Web Apps provides the [ability to configure many parts](https://learn.microsoft.com/azure/static-web-apps/configuration) of the application's behavior, and one particular feature is very useful to enable deep linking in applications.
 
-You will need to [enable fallback routes](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes) in your application this way:
+You will need to [enable fallback routes](https://learn.microsoft.com/azure/static-web-apps/configuration#fallback-routes) in your application this way:
 
-- In the `wwwroot` folder, [create a file named `staticwebapp.config.json`](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#file-location), with the following content:
+- In the `wwwroot` folder, [create a file named `staticwebapp.config.json`](https://learn.microsoft.com/azure/static-web-apps/configuration#file-location), with the following content:
 
   ```json
   {

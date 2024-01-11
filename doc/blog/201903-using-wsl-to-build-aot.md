@@ -12,7 +12,7 @@ Since the introduction of [AOT](https://www.mono-project.com/docs/advanced/aot/)
 
 For those reasons, and a few others, the work that the Mono team is currently doing to support a mixed AOT/Interpreter Mode is going to play an important role to strike a good balance between payload size and performance.
 
-At present time, the mono-wasm AOT tool chain is only compatible with Linux, and even though it will eventually support other platforms, it is required to setup a Linux machine or use the excellent [Windows 10 Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+At present time, the mono-wasm AOT tool chain is only compatible with Linux, and even though it will eventually support other platforms, it is required to setup a Linux machine or use the excellent [Windows 10 Subsystem for Linux](https://learn.microsoft.com/windows/wsl/install-win10).
 
 For those of you that have yet to experience WSL, Microsoft has added the ability for Windows to run native 64-Bits Linux binaries, untouched, non-virtualized. This means that most of the linux-compatible tooling, including mono, is able to run properly as if it were running on top of an actual Linux kernel.
 
@@ -22,7 +22,7 @@ We're going to setup a WSL environment to build an Uno Platform application usin
 
 Here's what to do to, only once:
 
-- Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on a Windows 10 box
+- Install [WSL](https://learn.microsoft.com/windows/wsl/install-win10) on a Windows 10 box
 - Install [Ubuntu 18.04 or later](https://www.microsoft.com/en-ca/p/ubuntu-1804-lts/9n9tngvndl3q)
 - Install a stable [Mono toolchain](https://www.mono-project.com/download/stable/#download-lin)
   - Run the following to add a new apt source :

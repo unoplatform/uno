@@ -5,7 +5,7 @@ uid: Uno.Features.ProximitySensor
 # Proximity sensor
 
 > [!TIP]
-> This article covers Uno-specific information for `ProximitySensor`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.ProximitySensor
+> This article covers Uno-specific information for `ProximitySensor`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.devices.sensors.ProximitySensor
 
 * The `Windows.Devices.Sensors.ProximitySensor` class allows measuring distance of an object in millimeters.
 

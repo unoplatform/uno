@@ -47,7 +47,7 @@ This is the **recommended** approach to building the Uno.UI solution. It will bu
 
 Building for a single target platform is considerably faster, much less RAM-intensive, and generally more reliable.
 
-It involves two things - setting an override for the target framework that will be picked up by the (normally multi-targeted) projects inside the Uno solution; and opening a preconfigured [solution filter](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions) which will only load the projects needed for the current platform.
+It involves two things - setting an override for the target framework that will be picked up by the (normally multi-targeted) projects inside the Uno solution; and opening a preconfigured [solution filter](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) which will only load the projects needed for the current platform.
 
 The step by step process is:
 

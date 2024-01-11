@@ -31,7 +31,7 @@ To be able to build the control in a reusable way, in a NuGet package, we need t
 
 This project will contain all the XAML files and C# source files required for the `TreeView` to function properly. It uses the excellent [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) msbuild extensions to cross targeted library with minimal efforts, using the new and improved _sdk-style_ project format, and simplifies the creation of NuGet packages.
 
-It will then be possible to create an installable NuGet package using the context menu [Pack option](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-visual-studio#run-the-pack-command) on the project.
+It will then be possible to create an installable NuGet package using the context menu [Pack option](https://learn.microsoft.com/nuget/quickstart/create-and-publish-a-package-using-visual-studio#run-the-pack-command) on the project.
 
 ### Importing the source
 

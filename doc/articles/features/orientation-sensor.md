@@ -5,7 +5,7 @@ uid: Uno.Features.OrientationSensor
 # Orientation sensor
 
 > [!TIP]
-> This article covers Uno-specific information for SimpleOrientationSensor. For a full description of the feature and instructions on using it, consult the UWP documentation: <https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.simpleOrientationSensor>
+> This article covers Uno-specific information for SimpleOrientationSensor. For a full description of the feature and instructions on using it, consult the UWP documentation: <https://learn.microsoft.com/uwp/api/windows.devices.sensors.simpleOrientationSensor>
 
 * The `Windows.Devices.Sensors.SimpleOrientationSensor` class allows you to determine the general orientation of the device.
 

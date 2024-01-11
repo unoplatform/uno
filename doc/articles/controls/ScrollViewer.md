@@ -4,7 +4,7 @@ uid: Uno.Controls.ScrollViewer
 
 # ScrollViewer in Uno.UI
 
-The `ScrollViewer` represents a scrollable area that can contain other visible elements. For more info about its usage, [please refer the microsoft documentation](https://docs.microsoft.com/en-us/windows/winui/api/microsoft.ui.xaml.controls.scrollviewer?view=winui-3.0)
+The `ScrollViewer` represents a scrollable area that can contain other visible elements. For more info about its usage, [please refer the microsoft documentation](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.scrollviewer?view=winui-3.0)
 
 ## ScrollViewer visual diagram
 

@@ -4,7 +4,7 @@ uid: Uno.Tutorials.StatusBarThemeColor
 
 # How to update StatusBar color based on dark/light theme
 
-The [`UISettings.ColorValuesChanged` event](https://docs.microsoft.com/en-us/uwp/api/windows.ui.viewmanagement.uisettings.colorvalueschanged) can be used to listen for notifications when dark mode is enabled or disabled at the system level.
+The [`UISettings.ColorValuesChanged` event](https://learn.microsoft.com/uwp/api/windows.ui.viewmanagement.uisettings.colorvalueschanged) can be used to listen for notifications when dark mode is enabled or disabled at the system level.
 
 ## Example
 
@@ -166,5 +166,5 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
 
 This is just one way to show how it could be done. Alternatively, depending on the application, the following options can also be considered:
 
-- [Attached Property](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/attached-properties-overview) on the `CommandBar` (when multiple pages are used)
+- [Attached Property](https://learn.microsoft.com/windows/uwp/xaml-platform/attached-properties-overview) on the `CommandBar` (when multiple pages are used)
 - Xaml Grid/Border/Image that goes under the StatusBar (with `WindowManagerFlags.TranslucentStatus` on Android, no additional change on iOS)

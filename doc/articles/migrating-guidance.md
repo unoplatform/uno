@@ -10,7 +10,7 @@ This article explains adjustments that may need to be made to UWP-only code for 
 
 ### Add 'partial' to some class definitions
 
-Certain class definitions will need to have the [`partial` keyword](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/partial-type) added. This is because Uno [generates additional code at compile-time](./uno-development/uno-internals-overview.md#dependencyobject-implementation-generator) to support them properly.
+Certain class definitions will need to have the [`partial` keyword](https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/partial-type) added. This is because Uno [generates additional code at compile-time](./uno-development/uno-internals-overview.md#dependencyobject-implementation-generator) to support them properly.
 
 You'll need to do this for:
 
@@ -29,12 +29,12 @@ This is relevant if you're targeting Android, iOS, and/or macOS, where Uno views
 
 Some common cases:
 
-- on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`.
-- on Android, inside a control definition, references to the [`TextAlignment` enum](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://docs.microsoft.com/en-us/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Windows.UI.Xaml.TextAlignment`.
+- on iOS, inside a control definition, references to [`Window.Current`](https://learn.microsoft.com/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://learn.microsoft.com/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`.
+- on Android, inside a control definition, references to the [`TextAlignment` enum](https://learn.microsoft.com/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://learn.microsoft.com/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Windows.UI.Xaml.TextAlignment`.
 
 #### What do I do if I have a nested namespace with `Windows` in it?
 
-If, for example, your control is defined in the `CoolControls` namespace, and you've also defined a `CoolControls.Windows` namespace, then the above will give a compilation error. You'll need to use the [`global` keyword](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/namespace-alias-qualifier), eg `global::Windows.UI.Xaml.Window.Current`.
+If, for example, your control is defined in the `CoolControls` namespace, and you've also defined a `CoolControls.Windows` namespace, then the above will give a compilation error. You'll need to use the [`global` keyword](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/namespace-alias-qualifier), eg `global::Windows.UI.Xaml.Window.Current`.
 
 ## Adjust for unsupported runtime features
 

@@ -4,7 +4,7 @@ uid: Uno.Controls.CommandBar
 
 # CommandBar
 
-The `CommandBar` in **Uno** is designed to be used the same way you would use the `CommandBar` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.commandbar).
+The `CommandBar` in **Uno** is designed to be used the same way you would use the `CommandBar` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.commandbar).
 
 This document exists to highlight some of the differences you might encounter when working with the native mode of `CommandBar` on either **iOS** or **Android**.
 
@@ -323,7 +323,7 @@ On **iOS** a `CommandBarHelper` is available for this purpose, you only have to 
 
 # AppBarButton
 
-The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbarbutton).
+The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.appbarbutton).
 
 When `AppBarButton` is used within a native `CommandBar`, its control template is completely ignored and can't be customized.
 
@@ -629,7 +629,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 - > How can I localize CommandBarExtensions.BackButtonTitle?
 
-  _For attached properties, you need a special syntax in the Name column of a `.resw` file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
+  _For attached properties, you need a special syntax in the Name column of a `.resw` file._ Ref: [Microsoft documentation](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
 
   More specifically :
 

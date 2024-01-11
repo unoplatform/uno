@@ -17,7 +17,7 @@ Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, 
 Two paths are available:
 
 - Applications built with Uno.UI's [Skia.WPF](xref:Uno.Skia.Gtk) and [Skia.GTK](xref:Uno.Skia.Wpf) heads, which support run on Windows 7 and above.
-- Running apps built with WinAppSDK or WinUI run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041). Lower versions can be targeted.
+- Running apps built with WinAppSDK or WinUI run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://learn.microsoft.com/windows/uwp/whats-new/windows-10-build-19041). Lower versions can be targeted.
 
 ## Android
 

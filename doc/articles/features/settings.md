@@ -5,7 +5,7 @@ uid: Uno.Features.Settings
 # Settings
 
 > [!TIP]
-> This article covers Uno-specific information for managing user preferences. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/windows/uwp/get-started/settings-learning-track
+> This article covers Uno-specific information for managing user preferences. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/windows/uwp/get-started/settings-learning-track
 
 * Settings API allows you to store the preferences of the user and preserve them across the launches of the application.
 

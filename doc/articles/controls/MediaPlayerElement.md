@@ -4,7 +4,7 @@ uid: Uno.Controls.MediaPlayerElement
 
 # MediaPlayerElement
 
-See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.mediaplayerelement) on MSDN
+See [MediaPlayerElement](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.mediaplayerelement) on MSDN
 
 ## Media formats
 

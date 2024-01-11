@@ -14,7 +14,7 @@ Several base classes and helper classes are written in native Java code. These a
 
 The Xamarin.Android framework gives complete access to the Android API from managed C#, so why write anything in Java? The reason is performance. The interop between Java and C# can be costly, and instrumented profiling identified that certain virtual methods when overridden in C# and called in heavily-used paths (eg measure and arrange) imposed a measurable performance penalty. Over time, these 'hot' methods have been lowered to Java classes, particularly the `UnoViewGroup` class.
 
-The `Uno.UI.BindingHelper.Android` project builds these Java types, and wraps them in a [Xamarin binding library](https://docs.microsoft.com/en-us/xamarin/android/platform/binding-java-library/), making them available via C#.
+The `Uno.UI.BindingHelper.Android` project builds these Java types, and wraps them in a [Xamarin binding library](https://learn.microsoft.com/xamarin/android/platform/binding-java-library/), making them available via C#.
 
 ## UIElement inherits from ViewGroup
 

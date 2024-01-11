@@ -6,7 +6,7 @@ uid: Uno.Contributing.ThemeResource
 
 This article looks at the way theme resources are handled under the hood, including the way that resource assignations are resolved, and the way that assigned resources are updated, for example when the active theme changes in the running application (from light to dark or vice versa). It's aimed at Uno Platform contributors looking to better understand the internals of the feature.
 
-From hereon, an understanding of the contract and consumer-visible behavior of [XAML resources](https://docs.microsoft.com/en-us/windows/apps/design/style/xaml-resource-dictionary) and [ThemeResource markup extensions](https://docs.microsoft.com/en-us/windows/apps/design/style/xaml-theme-resources) is assumed. Review those links if you need a refresher on how the feature is expected to behave.
+From hereon, an understanding of the contract and consumer-visible behavior of [XAML resources](https://learn.microsoft.com/windows/apps/design/style/xaml-resource-dictionary) and [ThemeResource markup extensions](https://learn.microsoft.com/windows/apps/design/style/xaml-theme-resources) is assumed. Review those links if you need a refresher on how the feature is expected to behave.
 
 ## Resource resolution
 

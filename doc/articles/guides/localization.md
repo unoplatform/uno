@@ -34,8 +34,8 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
         > Note:
         >
-        > - The [`x:Name`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-name-attribute) is used to make the element accessible from the code-behind with that same name.
-        > - The [`x:Uid`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-uid-directive) is used for localization.
+        > - The [`x:Name`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-name-attribute) is used to make the element accessible from the code-behind with that same name.
+        > - The [`x:Uid`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-uid-directive) is used for localization.
         To localize a property, you need to add a string resource in each resource file using its `x:Uid` followed by a dot (`.`) and then the property name. eg: `MainPage_IntroText.Text`
         More on this in the resource steps that follow.
 
@@ -122,7 +122,7 @@ See the completed sample on GitHub: [LocalizationSamples/Localization](https://g
 
 ## Additional Resources
 
-https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
+https://learn.microsoft.com/windows/uwp/design/globalizing/globalizing-portal
 
 <br>
 

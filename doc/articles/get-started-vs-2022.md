@@ -47,7 +47,7 @@ It is possible to build and debug Skia+GTK projects under WSL, if you choose to 
 
 To setup your environment for WSL:
 
-- Install [WSL Ubuntu 22.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+- Install [WSL Ubuntu 22.04 or later](https://learn.microsoft.com/windows/wsl/install-win10)
 - Install the prerequisites for Linux mentioned below, in your installed distribution using the Ubuntu shell
 
 > [!NOTE]

@@ -75,7 +75,7 @@ Here's what to look for:
 
    This message indicates that the binding engine will fall back on reflection based code, which is generally slow. To compensate for this, Uno use the `BindableTypeProvidersSourceGenerator`, which generates static non-generic code to avoid reflection operations during binding operations.
    This attribute is inherited and is generally used on ViewModel based classes.
-- [`x:Phase`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-phase-attribute)
+- [`x:Phase`](https://learn.microsoft.com/windows/uwp/xaml-platform/x-phase-attribute)
   - For `ListView` instances with large templates, consider the use of x:Phase to reduce the number of bindings processed during item materialization.
   - It is only supported for items inside `ListViewItem` templates, it will be ignored for others.
   - It is also supported as `not_win:Phase` on controls that do not have bindings. This feature is not supported by UWP.
