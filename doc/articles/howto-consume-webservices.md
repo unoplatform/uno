@@ -18,7 +18,7 @@ Throughout the how-to, there will be notes on recommended practices and tips tha
 
 > [!TIP]
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
-
+>
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
 
@@ -509,8 +509,8 @@ At this point, you have implemented a simple breed search service. Now, it is ti
 
 In this sample application, you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task, you will be creating the base view model that will be used in the following task to create the view model for the main page.
 
-    > [!TIP]
-    > If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
+> [!TIP]
+> If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
 
 1. To add a base view-model class, in the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 

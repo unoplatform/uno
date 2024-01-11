@@ -15,7 +15,7 @@ The vast majority of the time, development in Uno.UI should be done in C#. Howev
 * Open the build.gradle file located in the 'app' folder. (Note there are two build.gradle files.)
 * Add the following lines to the build file:
 
-```
+```gradle
 sourceSets {
         main.java.srcDirs += 'C:/<Your Uno repository>/Uno.UI.BindingHelper.Android/Uno/UI'
     }

@@ -4,15 +4,15 @@ uid: Uno.UI.CommonIssues.vs2022
 
 # Issues related to Visual Studio 2022 for Windows
 
-### App builds in Visual Studio 2022 are taking a long time
+## App builds in Visual Studio 2022 are taking a long time
 
 Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
-### My app is not running as fast as I want
+## My app is not running as fast as I want
 
 There could be many reasons for being in this situation, but we've built a list of performance tips in [this article](xref:Uno.Development.Performance) that you can apply to your app. If you haven't found your answer, open a [discussion](https://github.com/unoplatform/uno/discussions) to tell us about it!
 
-### C# Hot Reload troubleshooting
+## C# Hot Reload troubleshooting
 
 C# Hot Reload is provided by Visual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
 
@@ -24,11 +24,11 @@ If that is the case:
 
 More troubleshooting information is available [in this section](xref:Uno.Features.HotReload).
 
-### error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll
+## error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll
 
 See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-references) to solve this issue.
 
-### Deploying an Android app takes a long time
+## Deploying an Android app takes a long time
 
 Android deployment requires a few considerations:
 
@@ -36,8 +36,8 @@ Android deployment requires a few considerations:
   - Make sure to have a good cable (USB 3 or C) to have a good connection
   - Avoid debugging through wifi
 - Android Emulators
-  - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/device-manager).
-  - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/en-us/dotnet/maui/android/emulator/hardware-acceleration))
+  - Use an Android x86_64 emulator. If not, [create a new one](https://learn.microsoft.com/dotnet/maui/android/emulator/device-manager).
+  - Ensure that you have either Hyper-V or AEHD enabled. (See [Microsoft's documentation](https://learn.microsoft.com/dotnet/maui/android/emulator/hardware-acceleration))
   - Try disabling `Fast Deployment` in your app configuration
         1. Open your project properties
         1. In the android section search for `Fast Deployment`

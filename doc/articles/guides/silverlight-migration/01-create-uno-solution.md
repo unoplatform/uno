@@ -67,7 +67,7 @@ As part of the continuing evolution of desktop development on Windows, Microsoft
 >
 > * For WinUI 2.5, see [Fluent-styled controls](https://platform.uno/docs/articles/features/fluent-styles.html)
 > * For WinUI 3, see [Uno Platform 3.3 – Day 0 support for WinUI 3 Preview 3, Android 11](https://platform.uno/blog/uno-platform-3-3-day-0-support-for-winui-3-preview-3-android-11/).
-
+>
 > [!TIP]
 > You can learn more about the Windows UI Library here:
 >
@@ -106,7 +106,7 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
 
     > [!NOTE]
     > Visual Studio will prompt to reload the project when you update the **Target version**.
-
+    >
     > [!TIP]
     > If you do not see the desired version in the dropdown, you will need to install the appropriate version of the SDK using the Visual Studio Installer:
     >

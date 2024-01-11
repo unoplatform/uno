@@ -12,7 +12,7 @@ uid: Uno.GettingStarted.UsingWizard.Themes
 
     This is included in the recommended preset, but not in the blank preset.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -tests unit
     ```
 
@@ -24,19 +24,19 @@ uid: Uno.GettingStarted.UsingWizard.Themes
 
     This is included in the recommended preset, but not in the blank preset.
 
-    ```
+    ```dotnetcli
     dotnet new unoapp -tests ui
     ```
 
 You can include both types of tests by including the parameter multiple times:
 
-```
+```dotnetcli
 dotnet new unoapp -tests ui -tests unit
 ```
 
 Alternatively, to include no tests, use the `none` parameter:
 
-```
+```dotnetcli
 dotnet new unoapp -tests none
 ```
 

@@ -68,7 +68,7 @@ Here's what to look for:
   - Add the `Windows.UI.Xaml.BindableAttribute` or `System.ComponentModel.BindableAttribute` on non-DependencyObject classes.
     - When data binding to classes not inheriting from `DependencyObject`, in Debug configuration only, the following message may appear:
 
-   ```
+   ```console
    The Bindable attribute is missing and the type [XXXX] is not known by the MetadataProvider.
    Reflection was used instead of the binding engine and generated static metadata. Add the Bindable  attribute to prevent this message and performance issues.
    ```
@@ -110,14 +110,14 @@ Here's what to look for:
   <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
  </ItemGroup>
     ```
- You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/en-us/xamarin/android/internals/garbage-collection#configuration) for more details.
+ You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics. See the [.NET GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) for more details.
 - The size of the application can be reduced by:
   - Enabling the [IL Linker](features/using-il-linker-webassembly.md)
   - Enabling [XAML Resources Trimming](features/resources-trimming.md)
 
 ## Android specifics
 
-- Adjust the [GC configuration](https://learn.microsoft.com/en-us/xamarin/android/internals/garbage-collection#configuration) by modifying the `environment.conf` file with parameters matching your application
+- Adjust the [GC configuration](https://learn.microsoft.com/xamarin/android/internals/garbage-collection#configuration) by modifying the `environment.conf` file with parameters matching your application
 - [Enable Startup Tracing](https://devblogs.microsoft.com/dotnet/performance-improvements-in-dotnet-maui/#record-a-custom-aot-profile) by running the following:
 
  ```bash
@@ -129,7 +129,7 @@ Here's what to look for:
 
  This will produce a `custom.aprof` in your project directory. Move the file to the `Android` folder and add the following to your `csproj`:
 
- ```
+ ```xml
  <ItemGroup>
   <AndroidAotProfile Include="Android/custom.aprof" />
  </ItemGroup>

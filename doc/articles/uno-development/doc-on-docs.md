@@ -10,13 +10,13 @@ We have a few different fill-in-the-blanks style templates, linked below.
 
 For the DocFX tool used to build the docs website, see [more info here](docfx.md).
 
-#### Key links
+## Key links
 
 * how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
 * WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
 * Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
 
-#### Resources
+## Resources
 
 Some useful resources on writing good technical documentation:
 
@@ -81,7 +81,7 @@ To include documentation (let's take Uno.Themes as an example):
 
 * Once you have merged your changes into `Uno.Themes`' `main` (or the default branch), take the commit id and place it in the `doc/import_external_docs.ps1` of the uno repository, as follows:
 
-   ```
+   ```powershell
    @("https://github.com/unoplatform/uno.themes", "uno.themes", "INSERT_COMMIT_HASH_OR_BRANCH_NAME"),
    ```
 

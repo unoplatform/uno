@@ -11,7 +11,7 @@ This includes [`Card`](https://github.com/unoplatform/uno.toolkit.ui/blob/main/s
 
 This is included by default in the recommended preset, but not in the blank preset.
 
-```
+```dotnetcli
 dotnet new unoapp -toolkit
 ```
 
@@ -23,7 +23,7 @@ dotnet new unoapp -toolkit
 
 Adds support for embedding .NET MAUI controls and third party libraries into an application. This is not included in either the blank or recommended presets.
 
-```
+```dotnetcli
 dotnet new unoapp -maui
 ```
 
@@ -33,20 +33,20 @@ Adds an ASP.NET Core Server project to the solution, which hosts the WASM projec
 
 This is included by default in the recommended preset, but not in the blank preset.
 
-```
+```dotnetcli
 dotnet new unoapp -server
 ```
 
 ### PWA Manifest
 
-Includes a PWA ([Progressive Web Apps](https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium)) manifest that enables easy installation of the WASM web-target as an app in the running device.
+Includes a PWA ([Progressive Web Apps](https://learn.microsoft.com/microsoft-edge/progressive-web-apps-chromium)) manifest that enables easy installation of the WASM web-target as an app in the running device.
 
 This is included by default in both the blank and recommended presets.
 
 > [!NOTE]
 > As this is a WASM feature it will be disabled (Wizard), or ignored (dotnet new), if WASM is not selected as one of the output target platforms.
 
-```
+```dotnetcli
 dotnet new unoapp -pwa
 ```
 
@@ -54,7 +54,7 @@ dotnet new unoapp -pwa
 
 Enables Uno Platform debugging in Visual Studio Code. This is included by default in both the blank and recommended presets.
 
-```
+```dotnetcli
 dotnet new unoapp -vscode
 ```
 
@@ -66,7 +66,7 @@ It adds a *Directory.Packages.props* file which enables configuring the dependen
 
 This is included by default in both the blank and recommended presets.
 
-```
+```dotnetcli
 dotnet new unoapp -cpm
 ```
 
@@ -75,6 +75,6 @@ dotnet new unoapp -cpm
 Enables multi-threading in the WASM project.  
 This option is only available if WASM is selected as one of the output target platforms. This is not enabled in either blank or recommended presets.
 
-```
+```dotnetcli
 dotnet new unoapp -wasm-multi-threading
 ```

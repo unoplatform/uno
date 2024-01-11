@@ -92,7 +92,7 @@ We'll also comment out the support for `Cursor` adjustments, as the property is 
 
 ## Creating the sample app
 
-To be able to test the imported code, we can create a sample application using [the Uno Platform VS add-in](), reference our imported project and add a simple sample like this one:
+To be able to test the imported code, we can create a sample application using the Uno Platform VS add-in, reference our imported project and add a simple sample like this one:
 
 ```xml
 <controls:TreeView Margin="5">

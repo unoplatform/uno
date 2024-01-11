@@ -43,11 +43,7 @@ While the new templates simplify adding a splash screen, this article covers how
 
 * In the `.Windows` project, open the file `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
 
-* Make sure the value for `Preview Images > Splash Screen` is set to:
-
-    ```
-    Assets\SplashScreen.png
-    ```
+* Make sure the value for `Preview Images > Splash Screen` is set to `Assets\SplashScreen.png`
 
     ![uwp-splash-screen](Assets/uwp-splash-screen.JPG)
 
@@ -89,16 +85,16 @@ While the new templates simplify adding a splash screen, this article covers how
 
   * This is not always done automatically and may occur if `splash.xml` was created and added outside the IDE.
 
-        ```xml
-        <ItemGroup>
-            <AndroidResource Include="Resources\drawable\splash.xml" />
-        </ItemGroup>
-        ```
+    ```xml
+    <ItemGroup>
+      <AndroidResource Include="Resources\drawable\splash.xml" />
+    </ItemGroup>
+    ```
 
     > [!TIP]
     > After modifying `splash.xml`, you may run into errors like these while trying to debug:
     >
-    > ```
+    > ```console
     > Resources\drawable-mdpi\SplashScreen.png : error APT2126: file not found.
     > Resources\drawable-hdpi\SplashScreen.png : error APT2126: file not found.
     > ```
@@ -123,27 +119,27 @@ While the new templates simplify adding a splash screen, this article covers how
 
   * Enable the **Is initial View Controller**-flag on the **View Controller**.
 
-        ![`viewcontroller-imageview`](Assets/viewcontroller-imageview.png)
+    ![`viewcontroller-imageview`](Assets/viewcontroller-imageview.png)
 
   * To have an image fill the screen, set your constraints as below
 
-        ![ios-constraints](Assets/ios-constraints.png)
+    ![ios-constraints](Assets/ios-constraints.png)
 
   * Set the **Content Mode** to **Aspect Fit**
 
-        ![ios-content-fit](Assets/ios-content-fit.png)
+    ![ios-content-fit](Assets/ios-content-fit.png)
 
   * In the **Properties** > **Storyboard Document** window, select the **Can be Launch Screen** checkbox.
 
-        ![can-be-launch](Assets/can-be-launch.png)
+    ![can-be-launch](Assets/can-be-launch.png)
 
 * Close the designer and open the `.storyboard` file.
 
   * Add your image path to the `Image View`
 
-        ``` xml
-        <imageView ... image="Assets/SplashScreen">
-        ```
+    ``` xml
+    <imageView ... image="Assets/SplashScreen">
+    ```
 
 * Open `info.plist` and update the `UILaunchStoryboardName` value to `LaunchScreen`.
 
@@ -160,24 +156,24 @@ While the new templates simplify adding a splash screen, this article covers how
 
 #### Standard properties for splash screens
 
-        | Property | Description | Notes |
-        |----------|-------------|-----|
-        | `splashScreenImage` | Location of the splash screen image. | You currently need to set an explicit scale for the image |
-        | `splashScreenColor` | A background color for the splash screen. | Any values assigned to the theme-aware properties are ignored unless this property is set to `transparent`. <br><br>If the theme-aware properties are unassigned, the default browser background color will be used instead. |
+| Property | Description | Notes |
+|----------|-------------|-----|
+| `splashScreenImage` | Location of the splash screen image. | You currently need to set an explicit scale for the image |
+| `splashScreenColor` | A background color for the splash screen. | Any values assigned to the theme-aware properties are ignored unless this property is set to `transparent`. <br><br>If the theme-aware properties are unassigned, the default browser background color will be used instead. |
 
 * Example:
 
-         ```js
-        var UnoAppManifest = {
-            splashScreenImage: "Assets/SplashScreen.scale-200.png",
-            splashScreenColor: "transparent",
-            displayName: "SplashScreenSample"
-        }
-        ```
+    ```js
+    var UnoAppManifest = {
+        splashScreenImage: "Assets/SplashScreen.scale-200.png",
+        splashScreenColor: "transparent",
+        displayName: "SplashScreenSample"
+    }
+    ```
 
     > [!NOTE]
     > The section below contains optional properties. If nothing is assigned to them, the value of `splashScreenColor` will be used under both themes as the background color.
-
+    >
     > [!TIP]
     > The `splashScreenColor` property allows you to set the background color for the splash screen. If you want to make the splash screen theme-aware, you must either omit this property or set it to `transparent`.
 
@@ -187,10 +183,10 @@ While the new templates simplify adding a splash screen, this article covers how
 
 #### Optional: Properties for theme-aware splash screens
 
-        | Property | Description | Notes |
-        |---------------------------|-------------|-----|
-        |`lightThemeBackgroundColor`| Splash screen background to be used if a system light theme is enabled. | Default value is `#F3F3F3` |
-        |`darkThemeBackgroundColor` | Splash screen background to be used if a system dark theme is enabled.  | Default value is `#202020` |
+| Property | Description | Notes |
+|---------------------------|-------------|-----|
+|`lightThemeBackgroundColor`| Splash screen background to be used if a system light theme is enabled. | Default value is `#F3F3F3` |
+|`darkThemeBackgroundColor` | Splash screen background to be used if a system dark theme is enabled.  | Default value is `#202020` |
 
 ## See also
 

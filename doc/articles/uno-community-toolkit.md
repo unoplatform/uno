@@ -11,7 +11,7 @@ This tutorial will walk through adding and implementing the DataGrid control but
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample)
 
-> [!Tip]
+> [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](xref:Uno.GetStarted).
 
 ## NuGet Packages for Uno Platform
@@ -116,7 +116,7 @@ If you already had a reference to the community toolkit, you should remove those
 
 If your're getting an error like this one :
 
-```
+```console
 Controls\TextBox\Themes\Generic.xaml : Xaml Internal Error error WMC9999: 
 Type universe cannot resolve assembly: Uno.UI, Version=255.255.255.255, 
 Culture=neutral, PublicKeyToken=null.
@@ -129,8 +129,8 @@ This means that there's an unconditional reference to Uno Platform's packages, a
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 
-> [!NOTE]
-> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`.
+    > [!NOTE]
+    > For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`.
 
 2. Add a reference to the UWP UI Controls
 

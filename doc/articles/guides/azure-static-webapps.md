@@ -16,7 +16,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
 
 - In a new repository, create an Uno Platform app using the following command:
 
-    ```
+    ```bash
     cd <repository-name>
     dotnet new -i Uno.Templates
     dotnet new unoapp -o MyApp

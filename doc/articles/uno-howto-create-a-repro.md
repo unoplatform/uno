@@ -2,9 +2,9 @@
 uid: Uno.Development.Create-Repro
 ---
 
-This documentation describes the steps needed to create a "repro" or reproduction project, which will help the community and maintainers troubleshoot issues that you may find when developing with Uno Platform.
+# How to create a reproduction project (aka "repro")
 
-## How to create a reproduction project (aka "repro")
+This documentation describes the steps needed to create a "repro" or reproduction project, which will help the community and maintainers troubleshoot issues that you may find when developing with Uno Platform.
 
 The goal of a repro app is to find the **smallest possible piece of code that demonstrates the problem**, with the least dependencies possible. This is needed to make the resolution as fast as possible, as the Uno Platform team and community members do not have access to your projects sources nor understand your own expertise domain.
 
