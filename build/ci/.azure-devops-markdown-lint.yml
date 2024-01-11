@@ -17,7 +17,7 @@ jobs:
     inputs:
       versionSpec: '18.x'
 
-  - bash: npm install -g markdownlint-cli
+  - bash: npm install -g markdownlint-cli@0.38.0
     displayName: Install markdownlint-cli
 
   - bash: markdownlint "doc/**/*.md"
