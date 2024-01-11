@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.System;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-
 using DateTime = System.DateTimeOffset;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -78,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 				spFlyoutPresenter.Style = DatePickerFlyoutPresenterStyle;
 			}
 			_tpPresenter = spFlyoutPresenter;
-			
+
 			// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
 			if (_tpPresenter is FrameworkElement presenter)
 			{
