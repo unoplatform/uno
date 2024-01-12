@@ -597,34 +597,52 @@ namespace SampleControl.Presentation
 			var unused = _dispatcher.RunAsync(
 				UnitTestDispatcherCompat.Priority.Normal, async () =>
 				{
-					await Task.Delay(200);
+					// Delay the search to allow the user to type more characters
+					await Task.Delay(400);
 
-					if (!currentSearch.IsCancellationRequested)
+					if (currentSearch.IsCancellationRequested)
 					{
-						FilteredSamples = UpdateSearch(search, Categories);
+						return;
 					}
+
+					var results = await SearchAsync(search, Categories, currentSearch.Token);
+
+					if (results is null || currentSearch.IsCancellationRequested)
+					{
+						return;
+					}
+
+					FilteredSamples = results;
 				}
 			);
 		}
 
-		private List<SampleChooserContent> UpdateSearch(string search, List<SampleChooserCategory> categories)
+		private async Task<List<SampleChooserContent>> SearchAsync(string search, List<SampleChooserCategory> categories, CancellationToken cancellationToken)
 		{
 			if (string.IsNullOrEmpty(search))
 			{
-				return new List<SampleChooserContent>();
+				return [];
 			}
 
-			var starts = categories
-				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
+			return await Task.Run(() =>
+			{
+				var starts = categories
+					.SelectMany(cat => cat.SamplesContent)
+					.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
 
-			var contains = categories
-				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => !starts.Contains(content) && content.ControlName.Contains(search));
+				if (cancellationToken.IsCancellationRequested)
+				{
+					return null;
+				}
 
-			// Order the results by showing the "start with" results
-			// followed by results that "contain" the search term
-			return starts.Concat(contains).ToList();
+				var contains = categories
+					.SelectMany(cat => cat.SamplesContent)
+					.Where(content => content.ControlName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+
+				// Order the results by showing the "start with" results
+				// followed by results that "contain" the search term
+				return starts.Concat(contains).Distinct().ToList();
+			});
 		}
 
 		public void TryOpenSample()
