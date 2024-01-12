@@ -13,14 +13,14 @@ Unhandled exception. System.TypeInitializationException: The type initializer fo
 ---> System.DllNotFoundException: Gtk: libgtk-3-0.dll, libgtk-3.so.0, libgtk-3.0.dylib, gtk-3.dll
 ```
 
-# [**Windows**](#tab/windows)
+## [**Windows**](#tab/windows)
 
 [!include[windows-setup](additional-windows-setup-inline.md)]
 
-# [**Linux**](#tab/linux)
+## [**Linux**](#tab/linux)
 
 [!include[linux-setup](additional-linux-setup-inline.md)]
 
-# [**macOS**](#tab/macos)
+## [**macOS**](#tab/macos)
 
 [!include[macos-setup](additional-macos-setup-inline.md)]

@@ -22,7 +22,7 @@ And declare your `MenuFlyoutItem` as follow
 
 ```xml
 <MenuFlyoutItem Text="Destructive action"
-    toolkit:MenuFlyoutItemExtensions.IsDestructive="True" />
+                toolkit:MenuFlyoutItemExtensions.IsDestructive="True" />
 ```
 
 ## UICommand - Destructive style

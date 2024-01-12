@@ -8,7 +8,7 @@ The current Uno.UI source tree is based on WinUI, and the CI uses a specific ste
 
 ## Using the auto-generated synchronized branch
 
-The Uno CI automatically maintains a UWP-converted branch of the tree after every push to tracked branches, in order to get started faster when debugging UWP related issues. The branch is maintained as `generated\[branch]\uwp-autoconvert`.
+The Uno CI automatically maintains a UWP-converted branch of the tree after every push to tracked branches, in order to get started faster when debugging UWP-related issues. The branch is maintained as `generated\[branch]\uwp-autoconvert`.
 
 You can checkout this branch locally to get started faster.
 
