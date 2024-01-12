@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -215,7 +216,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				Child = (sut = new ItemsRepeater
 				{
 					ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item #{i}"),
-					Layout = new StackLayout { Orientation = Orientation.Horizontal },
+					Layout = new StackLayout(),
 					ItemTemplate = new DataTemplate(() => new Border
 					{
 						Width = 100,
@@ -243,6 +244,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			await TestServices.WindowHelper.WaitForIdle();
 
 			evt.GetValue(sut).Should().NotBeNull("because the IR should have invalidated its measure, causing a layout pass driving to invoke the ViewportManagerWithPlatformFeatures.EnsureScroller which should have re-added handler");
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_UnloadAndReload_Then_StillListenToCollectionChanged()
+		{
+			var sut = default(ItemsRepeater);
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 3).Select(i => $"Item #{i}"));
+			var root = new Border
+			{
+				Child = (sut = new ItemsRepeater
+				{
+					ItemsSource = source,
+					Layout = new StackLayout(),
+					ItemTemplate = new DataTemplate(() => new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+					})
+				})
+			};
+
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			sut.Children.Count.Should().Be(3);
+
+			// Unload the IR
+			root.Child = new TextBlock { Text = "IR unloaded" };
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Load again IR
+			root.Child = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Assert reload state
+			sut.Children.Count.Should().Be(3);
+
+			// Add an item
+			source.Add("Additional item");
+			await TestServices.WindowHelper.WaitForIdle();
+			sut.Children.Count.Should().Be(4);
+
+			// Edit an item
+			source[1] = "Item #1 - Edited";
+			await TestServices.WindowHelper.WaitForIdle();
+			sut.Children.FirstOrDefault(g => g.DataContext as string == "Item #1 - Edited").Should().NotBeNull();
+
+			// Remove an item
+			source.RemoveAt(2);
+			await TestServices.WindowHelper.WaitForIdle();
+			sut.Children.Count(elt => elt.ActualOffset.X >= 0).Should().Be(3);
+
+			// Clear the collection
+			source.Clear();
+			await TestServices.WindowHelper.WaitForIdle();
+			sut.Children.Count(elt => elt.ActualOffset.X >= 0).Should().Be(0);
 		}
 #endif
 	}
