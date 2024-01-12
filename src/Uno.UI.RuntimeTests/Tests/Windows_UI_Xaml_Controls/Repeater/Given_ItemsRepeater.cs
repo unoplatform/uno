@@ -127,7 +127,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __ANDROID__
+#elif __ANDROID__ || __SKIA__
 		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_NestedIRSlowlyChangeViewport_Then_MaterializedNeededItems()
