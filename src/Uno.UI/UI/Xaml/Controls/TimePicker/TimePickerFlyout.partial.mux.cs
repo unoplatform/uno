@@ -117,6 +117,13 @@ partial class TimePickerFlyout
 
 	private void OnOpening(object pSender, object pArgs)
 	{
+#if __IOS__ || __ANDROID__ // Avoid OnOpening initialization for native flyouts.
+		if (this is NativeTimePickerFlyout)
+		{
+			return;
+		}
+#endif
+
 		MUX_ASSERT(_tpPresenter is not null, "Expected non-null presenter");
 
 		var lastInputDeviceType = XamlRoot.VisualTree.ContentRoot.InputManager.LastInputDeviceType;

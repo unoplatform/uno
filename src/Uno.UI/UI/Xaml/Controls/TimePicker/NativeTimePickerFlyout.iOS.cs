@@ -17,7 +17,7 @@ partial class NativeTimePickerFlyout
 	private readonly SerialDisposable _onUnloaded = new SerialDisposable();
 	internal protected TimePickerSelector? _timeSelector;
 	internal protected FrameworkElement? _headerUntapZone;
-	private TimePickerFlyoutPresenter? _timePickerPresenter;
+	private FlyoutPresenter? _timePickerPresenter;
 	private bool _isInitialized;
 
 	protected override void InitializePopupPanel()
@@ -99,11 +99,15 @@ partial class NativeTimePickerFlyout
 
 	protected override Control CreatePresenter()
 	{
-		_timePickerPresenter = new TimePickerFlyoutPresenter()
+		_timePickerPresenter = new NativeTimePickerFlyoutPresenter()
 		{
 			Content = Content,
-			Style = TimePickerFlyoutPresenterStyle
 		};
+
+		if (TimePickerFlyoutPresenterStyle is { } style)
+		{
+			_timePickerPresenter.Style = style;
+		}
 
 		void onLoad(object sender, RoutedEventArgs e)
 		{
