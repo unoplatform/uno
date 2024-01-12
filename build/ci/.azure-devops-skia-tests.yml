@@ -111,7 +111,7 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-gtk-samples-app-UWP
+    SamplesAppArtifactName: skia-gtk-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
@@ -220,7 +220,7 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-wpf-samples-app-UWP
+    SamplesAppArtifactName: skia-wpf-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
