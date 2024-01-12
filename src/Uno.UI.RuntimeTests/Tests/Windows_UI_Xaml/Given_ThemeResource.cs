@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Windows.UI;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -70,7 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_DefaultForeground_Non_Fluent() => await When_DefaultForeground(Colors.Black, Colors.White);
+		public async Task When_DefaultForeground_Fluent() => await When_DefaultForeground(Colors.Black, Colors.White);
 #endif
 
 		[TestMethod]
@@ -78,92 +72,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_DefaultForeground_Fluent()
+		public async Task When_DefaultForeground_Non_Fluent()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				await When_DefaultForeground(Color.FromArgb(228, 0, 0, 0), Colors.White);
-			}
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_DefaultForeground(Color.FromArgb(228, 0, 0, 0), Colors.White);
 		}
 
 		[TestMethod]
 		public async Task When_AppLevel_Resource_CheckBox_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
-			using (StyleHelper.UseFluentStyles())
-			{
-				var SUT = new When_AppLevel_Resource_CheckBox_Override();
+			var SUT = new When_AppLevel_Resource_CheckBox_Override();
 
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
 
-				var normalRectangle = SUT.cb01.FindName("NormalRectangle") as Rectangle;
+			var normalRectangle = SUT.cb01.FindName("NormalRectangle") as Rectangle;
 
-				Assert.IsNotNull(normalRectangle);
+			Assert.IsNotNull(normalRectangle);
 
-				// Validation for early ThemeResource resolution in Storyboard timeline
-				Assert.AreEqual(Colors.Yellow, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
+			// Validation for early ThemeResource resolution in Storyboard timeline
+			Assert.AreEqual(Colors.Yellow, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
 
-				SUT.cb01.IsChecked = true;
+			SUT.cb01.IsChecked = true;
 
-				// Validation for late (OnLoaded) ThemeResource resolution in Storyboard timeline
-				Assert.AreEqual(Colors.Red, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
-			}
+			// Validation for late (OnLoaded) ThemeResource resolution in Storyboard timeline
+			Assert.AreEqual(Colors.Red, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
 		}
 
 		[TestMethod]
 		public async Task When_AppLevel_Resource_SplitButton_Override()
 		{
 			// Use fluent styles to rely on known Theme Resources
-			using (StyleHelper.UseFluentStyles())
-			{
-				var SUT = new When_AppLevel_Resource_SplitButton_Override();
+			var SUT = new When_AppLevel_Resource_SplitButton_Override();
 
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
 
-				var contentPresenter = SUT.sb01.FindName("ContentPresenter") as ContentPresenter;
+			var contentPresenter = SUT.sb01.FindName("ContentPresenter") as ContentPresenter;
 
-				Assert.IsNotNull(contentPresenter);
+			Assert.IsNotNull(contentPresenter);
 
-				var color = contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty);
+			var color = contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty);
 
-				SUT.sb01.IsEnabled = false;
+			SUT.sb01.IsEnabled = false;
 
-				// Validation for late (OnLoaded) ThemeResource resolution in Setter value
-				Assert.AreEqual(Colors.Yellow, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
-				Assert.AreNotEqual(color, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
-			}
+			// Validation for late (OnLoaded) ThemeResource resolution in Setter value
+			Assert.AreEqual(Colors.Yellow, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
+			Assert.AreNotEqual(color, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
 		}
 
 		[TestMethod]
 		public async Task When_ThemeResource_Style_Switch()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				var SUT = new When_ThemeResource_Style_Switch_Page();
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
+			var SUT = new When_ThemeResource_Style_Switch_Page();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
 
-				var color = ((SolidColorBrush)SUT.TestButton.Background).Color;
+			var color = ((SolidColorBrush)SUT.TestButton.Background).Color;
 
-				Assert.AreEqual(Colors.Blue, color);
+			Assert.AreEqual(Colors.Blue, color);
 
-				SUT.TestButton.Style = (Style)SUT.Resources["SecondButtonStyle"];
+			SUT.TestButton.Style = (Style)SUT.Resources["SecondButtonStyle"];
 
-				await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-				color = ((SolidColorBrush)SUT.TestButton.Background).Color;
+			color = ((SolidColorBrush)SUT.TestButton.Background).Color;
 
-				Assert.AreEqual(Colors.Red, color);
-			}
+			Assert.AreEqual(Colors.Red, color);
 		}
 
 		[TestMethod]
 		public async Task When_Theme_Changed()
 		{
-			using var _ = StyleHelper.UseFluentStyles();
-
 			var control = new ThemeResource_Theme_Changing_Override();
 			WindowHelper.WindowContent = control;
 

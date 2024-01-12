@@ -452,33 +452,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Fluent_And_Theme_Changed()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var comboBox = new ComboBox
 			{
-				var comboBox = new ComboBox
-				{
-					ItemsSource = new[] { 1, 2, 3 },
-					PlaceholderText = "Select..."
-				};
+				ItemsSource = new[] { 1, 2, 3 },
+				PlaceholderText = "Select..."
+			};
 
-				WindowHelper.WindowContent = comboBox;
-				await WindowHelper.WaitForLoaded(comboBox);
+			WindowHelper.WindowContent = comboBox;
+			await WindowHelper.WaitForLoaded(comboBox);
 
-				var placeholderTextBlock = comboBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
+			var placeholderTextBlock = comboBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
 
-				Assert.IsNotNull(placeholderTextBlock);
+			Assert.IsNotNull(placeholderTextBlock);
 
-				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+			var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
-				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 
-				using (ThemeHelper.UseDarkTheme())
-				{
-					Assert.AreEqual(darkThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
-				}
-
-				Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
+			using (ThemeHelper.UseDarkTheme())
+			{
+				Assert.AreEqual(darkThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 			}
+
+			Assert.AreEqual(lightThemeForeground, (placeholderTextBlock.Foreground as SolidColorBrush)?.Color);
 		}
 
 		[TestMethod]
@@ -1091,12 +1088,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
-		public async Task When_Mouse_Opened_And_Closed_Fluent()
+		public async Task When_Mouse_Opened_And_Closed_Uwp()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				await When_Mouse_Opened_And_Closed();
-			}
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_Mouse_Opened_And_Closed();
 		}
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)

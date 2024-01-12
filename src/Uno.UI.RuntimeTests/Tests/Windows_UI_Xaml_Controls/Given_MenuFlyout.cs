@@ -1,28 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.Extensions;
-using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
-using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 #if !HAS_UNO_WINUI
@@ -79,73 +66,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Add_MenuFlyoutSeparator_To_MenuBarItem()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var menuBarItem = new MenuBarItem
 			{
-				var menuBarItem = new MenuBarItem
-				{
-					Title = "File",
-				};
+				Title = "File",
+			};
 
-				var flyoutItem1 = new MenuFlyoutItem { Text = "Open..." };
-				var flyoutItem2 = new MenuFlyoutItem { Text = "Save..." };
-				var flyoutSeparator = new MenuFlyoutSeparator();
+			var flyoutItem1 = new MenuFlyoutItem { Text = "Open..." };
+			var flyoutItem2 = new MenuFlyoutItem { Text = "Save..." };
+			var flyoutSeparator = new MenuFlyoutSeparator();
 
-				var menuBar = new MenuBar
-				{
-					Items =
+			var menuBar = new MenuBar
+			{
+				Items =
 				{
 					menuBarItem
 				}
-				};
+			};
 
-				var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
-				Grid.SetRow(contentSpacer, 1);
+			var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
+			Grid.SetRow(contentSpacer, 1);
 
-				var hostPanel = new Grid
-				{
-					Children =
+			var hostPanel = new Grid
+			{
+				Children =
 				{
 					menuBar,
 					contentSpacer
 				},
-					RowDefinitions =
+				RowDefinitions =
 				{
 					new RowDefinition {Height = GridLength.Auto},
 					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
 				}
-				};
+			};
 
-				WindowHelper.WindowContent = hostPanel;
-				await WindowHelper.WaitForLoaded(hostPanel);
+			WindowHelper.WindowContent = hostPanel;
+			await WindowHelper.WaitForLoaded(hostPanel);
 
-				menuBarItem.Items.Add(flyoutItem1);
-				menuBarItem.Items.Add(flyoutSeparator);
-				menuBarItem.Items.Add(flyoutItem2);
+			menuBarItem.Items.Add(flyoutItem1);
+			menuBarItem.Items.Add(flyoutSeparator);
+			menuBarItem.Items.Add(flyoutItem2);
 
-				var peer = new MenuBarItemAutomationPeer(menuBarItem);
-				try
-				{
-					peer.Invoke();
+			var peer = new MenuBarItemAutomationPeer(menuBarItem);
+			try
+			{
+				peer.Invoke();
 
-					await WindowHelper.WaitForLoaded(flyoutItem1);
-					await WindowHelper.WaitForLoaded(flyoutSeparator);
-					await WindowHelper.WaitForLoaded(flyoutItem2);
+				await WindowHelper.WaitForLoaded(flyoutItem1);
+				await WindowHelper.WaitForLoaded(flyoutSeparator);
+				await WindowHelper.WaitForLoaded(flyoutItem2);
 
-					var flyoutItem1Bounds = flyoutItem1.GetRelativeBounds(menuBarItem);
-					var flyoutSeparatorBounds = flyoutSeparator.GetRelativeBounds(menuBarItem);
-					var flyoutItem2Bounds = flyoutItem2.GetRelativeBounds(menuBarItem);
+				var flyoutItem1Bounds = flyoutItem1.GetRelativeBounds(menuBarItem);
+				var flyoutSeparatorBounds = flyoutSeparator.GetRelativeBounds(menuBarItem);
+				var flyoutItem2Bounds = flyoutItem2.GetRelativeBounds(menuBarItem);
 
-					Assert.IsTrue(flyoutItem1Bounds.Height > 0);
-					Assert.IsTrue(flyoutSeparatorBounds.Height > 0);
-					Assert.IsTrue(flyoutItem2Bounds.Height > 0);
+				Assert.IsTrue(flyoutItem1Bounds.Height > 0);
+				Assert.IsTrue(flyoutSeparatorBounds.Height > 0);
+				Assert.IsTrue(flyoutItem2Bounds.Height > 0);
 
-					Assert.IsTrue(flyoutItem1Bounds.Y < flyoutSeparatorBounds.Y);
-					Assert.IsTrue(flyoutSeparatorBounds.Y < flyoutItem2Bounds.Y);
-				}
-				finally
-				{
-					peer.Collapse();
-				}
+				Assert.IsTrue(flyoutItem1Bounds.Y < flyoutSeparatorBounds.Y);
+				Assert.IsTrue(flyoutSeparatorBounds.Y < flyoutItem2Bounds.Y);
+			}
+			finally
+			{
+				peer.Collapse();
 			}
 		}
 
@@ -153,78 +137,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
+			var menuBarItem = new MenuBarItem
 			{
-				var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
-				var menuBarItem = new MenuBarItem
-				{
-					Title = "File",
-					Items =
+				Title = "File",
+				Items =
 				{
 					flyoutItem,
 					new MenuFlyoutItem { Text = "Don't open..."}
 				}
-				};
+			};
 
-				var menuBar = new MenuBar
-				{
-					Items =
+			var menuBar = new MenuBar
+			{
+				Items =
 				{
 					menuBarItem
 				}
-				};
+			};
 
-				var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
-				Grid.SetRow(contentSpacer, 1);
+			var contentSpacer = new Border { Background = new SolidColorBrush(Colors.Tomato), Margin = new Thickness(20) };
+			Grid.SetRow(contentSpacer, 1);
 
-				var hostPanel = new Grid
-				{
-					Children =
+			var hostPanel = new Grid
+			{
+				Children =
 				{
 					menuBar,
 					contentSpacer
 				},
-					RowDefinitions =
+				RowDefinitions =
 				{
 					new RowDefinition {Height = GridLength.Auto},
 					new RowDefinition {Height = new GridLength(1, GridUnitType.Star)}
 				}
-				};
+			};
 
-				WindowHelper.WindowContent = hostPanel;
-				await WindowHelper.WaitForLoaded(hostPanel);
+			WindowHelper.WindowContent = hostPanel;
+			await WindowHelper.WaitForLoaded(hostPanel);
 
-				var peer = new MenuBarItemAutomationPeer(menuBarItem);
-				try
-				{
-					peer.Invoke();
+			var peer = new MenuBarItemAutomationPeer(menuBarItem);
+			try
+			{
+				peer.Invoke();
 
-					await WindowHelper.WaitForLoaded(flyoutItem);
+				await WindowHelper.WaitForLoaded(flyoutItem);
 
-					var menuBarItemBounds = menuBarItem.GetOnScreenBounds();
+				var menuBarItemBounds = menuBarItem.GetOnScreenBounds();
 
-					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
+				var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
 
-					var menuBarBounds = menuBar.GetOnScreenBounds();
+				var menuBarBounds = menuBar.GetOnScreenBounds();
 
-					Assert.AreEqual(32, menuBarItemBounds.Height, 1);
+				Assert.AreEqual(32, menuBarItemBounds.Height, 1);
 
-					var expectedY = 39.0;
+				var expectedY = 39.0;
 #if __ANDROID__
-					if (!FeatureConfiguration.Popup.UseNativePopup)
-					{
-						// If using managed popup, the expected offset must be adjusted for the status bar
-						expectedY += menuBarBounds.Y;
-					}
+				if (!FeatureConfiguration.Popup.UseNativePopup)
+				{
+					// If using managed popup, the expected offset must be adjusted for the status bar
+					expectedY += menuBarBounds.Y;
+				}
 #endif
 
-					Assert.AreEqual(5, flyoutItemBounds.X, 3);
-					Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
-				}
-				finally
-				{
-					peer.Collapse();
-				}
+				Assert.AreEqual(5, flyoutItemBounds.X, 3);
+				Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
+			}
+			finally
+			{
+				peer.Collapse();
 			}
 		}
 

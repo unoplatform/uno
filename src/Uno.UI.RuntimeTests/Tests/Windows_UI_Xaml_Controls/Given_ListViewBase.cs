@@ -19,14 +19,12 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if !WINAPPSDK
 using Uno.UI;
@@ -2923,12 +2921,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemTemplateSelector_Set_And_Fluent()
+		public async Task When_ItemTemplateSelector_Set_And_Uwp()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				await When_ItemTemplateSelector_Set();
-			}
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_ItemTemplateSelector_Set();
 		}
 
 		[TestMethod]

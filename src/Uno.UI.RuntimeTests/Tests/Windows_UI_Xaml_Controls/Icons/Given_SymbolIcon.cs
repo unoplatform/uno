@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 
@@ -64,12 +64,10 @@ public class Given_SymbolIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_Fluent()
+	public async Task When_Themed_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed();
 	}
 
 	[TestMethod]
@@ -107,11 +105,9 @@ public class Given_SymbolIcon
 	}
 
 	[TestMethod]
-	public async Task When_Themed_TextBlock_Fluent()
+	public async Task When_Themed_TextBlock_Uwp()
 	{
-		using (StyleHelper.UseFluentStyles())
-		{
-			await When_Themed_TextBlock();
-		}
+		using var _ = StyleHelper.UseUwpStyles();
+		await When_Themed_TextBlock();
 	}
 }
