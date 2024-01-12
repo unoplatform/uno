@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 				using var colorSpace = CGColorSpace.CreateDeviceRGB();
 				using var context = new CGBitmapContext(
-					buffer!.Value.Pointer,
+					buffer!.Pointer,
 					width,
 					height,
 					_bitsPerComponent,

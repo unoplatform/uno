@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 	{
 #if !__ANDROID__
 		// This is to avoid LOH array allocations
-		private unsafe struct UnmanagedArrayOfBytes : IDisposable
+		private unsafe class UnmanagedArrayOfBytes
 		{
 			public nint Pointer;
 			public int Length { get; }
@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				Length = length;
 				Pointer = Marshal.AllocHGlobal(length);
+				GC.AddMemoryPressure(length);
 			}
 
 			public byte this[int index]
@@ -48,9 +49,10 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				}
 			}
 
-			public void Dispose()
+			~UnmanagedArrayOfBytes()
 			{
 				Marshal.FreeHGlobal(Pointer);
+				GC.RemoveMemoryPressure(Length);
 			}
 		}
 
@@ -225,7 +227,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #if !__ANDROID__
 				unsafe
 				{
-					var mem = new UnmanagedMemoryManager<byte>((byte*)_buffer.Value.Pointer.ToPointer(), _bufferSize);
+					var mem = new UnmanagedMemoryManager<byte>((byte*)_buffer.Pointer.ToPointer(), _bufferSize);
 					return Task.FromResult<IBuffer>(new Buffer(mem.Memory.Slice(0, _bufferSize)));
 				}
 #else
@@ -236,16 +238,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
-#endif
-
-#if !__ANDROID__
-		~RenderTargetBitmap()
-		{
-			if (_buffer.HasValue)
-			{
-				_buffer.Value.Dispose();
-			}
-		}
 #endif
 
 		#region Misc static helpers
@@ -261,13 +253,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #else
 		private static void EnsureBuffer(ref UnmanagedArrayOfBytes? buffer, int length)
 		{
-			if (buffer is null)
+			if (buffer is null || buffer.Length < length)
 			{
-				buffer = new UnmanagedArrayOfBytes(length);
-			}
-			else if (buffer.Value.Length < length)
-			{
-				buffer.Value.Dispose();
 				buffer = new UnmanagedArrayOfBytes(length);
 			}
 		}
