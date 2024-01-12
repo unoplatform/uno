@@ -53,7 +53,7 @@ The template will create a new solution with a number of projects. The main proj
 
 From the command line, run the following command:
 
-```bash
+```dotnetcli
 dotnet new unoapp -preset blank -presentation mvux -markup csharp -o Counter
 ```
 
@@ -61,7 +61,7 @@ This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
 
-```bash
+```dotnetcli
 dotnet new unoapp -h
 ```
 

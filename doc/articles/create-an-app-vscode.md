@@ -10,7 +10,7 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 In a terminal, type the following to create a new project using [`dotnet new`](xref:Uno.GetStarted.dotnet-new) templates:
 
-```bash
+```dotnetcli
 dotnet new unoapp -o MyApp --preset=blank -platforms android ios maccatalyst wasm gtk --vscode
 ```
 
