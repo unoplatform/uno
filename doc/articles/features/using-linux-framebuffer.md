@@ -18,7 +18,7 @@ There are restrictions for the support for the Framebuffer:
 
 Create a new app using
 
-```bash
+```dotnetcli
 dotnet new unoapp -o MyApp
 ```
 
@@ -26,7 +26,7 @@ You'll get a set of projects, including one named `MyApp.Skia.Linux.FrameBuffer`
 
 You can build this app by navigating to the `MyApp.Skia.Linux.FrameBuffer` and type the following:
 
-```bash
+```dotnetcli
 dotnet run
 ```
 
@@ -48,7 +48,7 @@ Once the application is running, you can exit the application with:
 
 You can create a standalone publication folder using the following:
 
-```bash
+```dotnetcli
 dotnet publish -c Release -r linux-x64 --self-contained true
 ```
 

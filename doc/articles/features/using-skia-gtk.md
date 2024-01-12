@@ -32,7 +32,7 @@ Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode), [Vis
 
 Once done, you can create a new app with [`dotnet new`](xref:Uno.GetStarted.dotnet-new) using:
 
-```bash
+```dotnetcli
 dotnet new unoapp --preset=blank -o MyApp
 ```
 
