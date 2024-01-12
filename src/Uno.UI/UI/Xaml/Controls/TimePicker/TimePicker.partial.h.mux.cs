@@ -103,7 +103,7 @@ partial class TimePicker
 
 	// Events and references used to respond to Window.Activated
 	private readonly SerialDisposable m_windowActivatedHandler = new();
-	private readonly SerialDisposable m_loadedEventHandler = new();
+	// private readonly SerialDisposable m_loadedEventHandler = new();
 
 	// The default Time value if no Time is set.
 	private TimeSpan m_defaultTime;

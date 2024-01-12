@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
-namespace Uno.UI.UI.Xaml.Controls;
+namespace Uno.UI.Xaml.Controls;
 
 internal static class SelectionExports
 {

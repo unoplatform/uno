@@ -130,8 +130,8 @@ public class TimePickerIntegrationTests
 			{
 				LOG_OUTPUT("CanFireTimeChangedEvent: TimePickerValueChanged event fired.");
 
-				VERIFY_ARE_EQUAL(args.OldTime.Value.TotalMinutes, timeSpanOriginal.TotalMinutes);
-				VERIFY_ARE_EQUAL(args.NewTime.Value.TotalMinutes, timeSpanNew.TotalMinutes);
+				VERIFY_ARE_EQUAL(args.OldTime.TotalMinutes, timeSpanOriginal.TotalMinutes);
+				VERIFY_ARE_EQUAL(args.NewTime.TotalMinutes, timeSpanNew.TotalMinutes);
 
 				timeChangedEventFired = true;
 			});

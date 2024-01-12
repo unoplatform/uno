@@ -16,14 +16,13 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
-using Uno.UI.Extensions;
-using Uno.UI.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.System;
-using CultureInfo = System.Globalization.CultureInfo;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using CultureInfo = System.Globalization.CultureInfo;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -80,10 +79,13 @@ partial class TimePicker
 		m_defaultTime = new TimeSpan(GetNullTimeSentinelValue());
 		m_currentTime = new TimeSpan(GetNullTimeSentinelValue());
 		PrepareState();
+		this.Unloaded += OnUnloaded;
 	}
 
-	//TODO:MZ: Do this on Unloaded
-	~TimePicker()
+#if HAS_UNO // Uno specific: This section replaces the destrcuctor in WinUI
+	private void OnUnloaded(object sender, RoutedEventArgs e) => Destruct();
+
+	private void Destruct()
 	{
 		// This will ensure the pending async operation
 		// completes and closes the open dialog
@@ -92,16 +94,18 @@ partial class TimePicker
 			/*VERIFYHR*/
 			m_tpAsyncSelectionInfo.Cancel();
 		}
-		if (m_loadedEventHandler.Disposable is not null)
-		{
-			m_loadedEventHandler.Disposable = null;
-		}
+
+		//if (m_loadedEventHandler.Disposable is not null)
+		//{
+		//	m_loadedEventHandler.Disposable = null;
+		//}
 
 		if (m_windowActivatedHandler.Disposable is not null)
 		{
 			m_windowActivatedHandler.Disposable = null;
 		}
 	}
+#endif
 
 	private void PrepareState()
 	{
