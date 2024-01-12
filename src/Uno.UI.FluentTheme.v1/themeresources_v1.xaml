@@ -15998,7 +15998,12 @@
                         </Flyout.FlyoutPresenterStyle>
                         <controls:ItemsRepeaterScrollHost>
                           <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <controls:ItemsRepeater AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsOverflowHost" />
+                            <controls:ItemsRepeater AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsOverflowHost">
+                              <!-- Uno specific: This matches Fluent v2 version and avoids a memory leak related to the use of the singleton StackLayout in ItemsRepeater -->
+                              <controls:ItemsRepeater.Layout>
+                                <controls:StackLayout />
+                              </controls:ItemsRepeater.Layout>
+                            </controls:ItemsRepeater>
                           </ScrollViewer>
                         </controls:ItemsRepeaterScrollHost>
                       </Flyout>
