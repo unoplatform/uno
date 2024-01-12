@@ -143,6 +143,13 @@ partial class TimePickerFlyout
 
 	private void OnOpened(object pSender, object pArgs)
 	{
+#if __IOS__ || __ANDROID__ // Avoid OnOpened initialization for native flyouts.
+		if (this is NativeTimePickerFlyout)
+		{
+			return;
+		}
+#endif
+
 		string strAutomationName;
 
 		if (_tpTarget is not null)

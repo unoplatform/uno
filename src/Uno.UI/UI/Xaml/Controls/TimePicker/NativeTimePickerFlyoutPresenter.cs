@@ -4,6 +4,6 @@ internal partial class NativeTimePickerFlyoutPresenter : FlyoutPresenter
 {
 	public NativeTimePickerFlyoutPresenter()
 	{
-		DefaultStyleKey = typeof(NativeDatePickerFlyoutPresenter);
+		DefaultStyleKey = typeof(NativeTimePickerFlyoutPresenter);
 	}
 }
