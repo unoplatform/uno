@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TimePickerValueChangedEventArgs
 {
-	internal TimePickerValueChangedEventArgs(TimeSpan? oldTime, TimeSpan? newTime)
+	internal TimePickerValueChangedEventArgs(TimeSpan oldTime, TimeSpan newTime)
 	{
 		OldTime = oldTime;
 		NewTime = newTime;
@@ -16,11 +16,11 @@ public partial class TimePickerValueChangedEventArgs
 	/// <summary>
 	/// Gets the time previously selected in the picker.
 	/// </summary>
-	public TimeSpan? OldTime { get; }
+	public TimeSpan OldTime { get; }
 
 	/// <summary>
 	/// Gets the new time selected in the picker.
 	/// </summary>
-	public TimeSpan? NewTime { get; }
+	public TimeSpan NewTime { get; }
 
 }

@@ -1732,6 +1732,14 @@
 		</Events>
 
 		<Fields>
+			<!-- BEGIN TimePicker -->
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::HourTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::MinuteTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
+			<!-- END TimePicker -->
 		</Fields>
 
 		<Properties>
@@ -1751,6 +1759,15 @@
 			<Member fullName="System.Void Uno.Media.Playback.IMediaPlayerEventsExtension.RaiseVideoRatioChanged(System.Double videoRatio)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.add_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.remove_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
+
+			<!-- BEGIN TimePicker -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs..ctor(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePicker.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnTimeChanged(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
+			<!-- END TimePicker -->
 		</Methods>
 	</IgnoreSet>
 	  <!--
