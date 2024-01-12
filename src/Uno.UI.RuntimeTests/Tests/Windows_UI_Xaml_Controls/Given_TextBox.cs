@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.UI;
+
 using Color = Windows.UI.Color;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
@@ -187,31 +189,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Fluent_And_Theme_Changed()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var textBox = new TextBox
 			{
-				var textBox = new TextBox
-				{
-					PlaceholderText = "Enter..."
-				};
+				PlaceholderText = "Enter..."
+			};
 
-				WindowHelper.WindowContent = textBox;
-				await WindowHelper.WaitForLoaded(textBox);
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
 
-				var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
-				Assert.IsNotNull(placeholderTextContentPresenter);
+			var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+			Assert.IsNotNull(placeholderTextContentPresenter);
 
-				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+			var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
-				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 
-				using (ThemeHelper.UseDarkTheme())
-				{
-					Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
-				}
-
-				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+			using (ThemeHelper.UseDarkTheme())
+			{
+				Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 			}
+
+			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 		}
 
 		[TestMethod]
