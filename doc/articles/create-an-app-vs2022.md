@@ -35,7 +35,7 @@ To create an Uno Platform app:
 
 ## Debug the App
 
-# [**Windows**](#tab/windows)
+### [**Windows**](#tab/windows)
 
 To run the **Windows** (WinAppSDK) head:
 
@@ -44,7 +44,7 @@ To run the **Windows** (WinAppSDK) head:
 - Press the `MyApp.Windows` button to deploy the app
 - If you've not enabled Developer Mode, the Settings app should open to the appropriate page. Turn on Developer Mode and accept the disclaimer.
 
-# [**WebAssembly**](#tab/wasm)
+### [**WebAssembly**](#tab/wasm)
 
 To run the **WebAssembly** (Wasm) head:
 
@@ -52,14 +52,14 @@ To run the **WebAssembly** (Wasm) head:
 - Press the `MyApp.Wasm` button to deploy the app
 - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 (see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started)
 
-# [**ASP.NET Hosted WebAssembly**](#tab/wasm-hosted)
+### [**ASP.NET Hosted WebAssembly**](#tab/wasm-hosted)
 
 To run the ASP.NET Hosted **WebAssembly** (Server) head:
 
 - Right click on the `MyApp.Server` project, select **Set as startup project**
 - Press the `MyApp.Server` button to deploy the app
 
-# [**iOS**](#tab/iOS)
+### [**iOS**](#tab/iOS)
 
 To debug for **iOS**:
 
@@ -78,7 +78,7 @@ To debug for **iOS**:
     > [!NOTE]
     > If no iOS devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
 
-# [**Android**](#tab/Android)
+### [**Android**](#tab/Android)
 
 To debug the **Android** platform:
 
@@ -88,7 +88,7 @@ To debug the **Android** platform:
     > [!NOTE]
     > If no android devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
 
-# [**Skia+GTK**](#tab/skiagtk)
+### [**Skia+GTK**](#tab/skiagtk)
 
 To debug your **Skia+GTK** head:
 

@@ -6,7 +6,6 @@
 	"no-inline-html": false,
 	"no-duplicate-heading": false,
 	"no-emphasis-as-heading": false,
-	"MD025": false,
 	"MD041": false,
 	"MD051": false
 }

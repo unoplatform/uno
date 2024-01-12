@@ -19,7 +19,7 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 
 [!INCLUDE [VS](include-create.md)]
 
-# [Visual Studio](#tab/vs)
+## [Visual Studio](#tab/vs)
 
 > [!NOTE]
 > If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
@@ -46,7 +46,7 @@ Before completing the wizard, take a look through each of the sections and see w
 
 The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
-# [Command Line](#tab/cli)
+## [Command Line](#tab/cli)
 
 > [!NOTE]
 > If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).

@@ -51,7 +51,7 @@ You can usually reduce this by performing `Build > Clean Solution` before zippin
 
 However, sometimes that still may not be enough. In such case, you can leverage the `git` tool and a `.gitignore` file to further reduce the size of the solution.
 
-# [**Windows (Visual Studio)**](#tab/windows-vs)
+### [**Windows (Visual Studio)**](#tab/windows-vs)
 
 If you're inside of Visual Studio 2022:
 
@@ -64,7 +64,7 @@ If you're inside of Visual Studio 2022:
 
 Once done, you can zip the folder and send it to github in your issue or discussion.
 
-# [**Windows (Console)**](#tab/windows-console)
+### [**Windows (Console)**](#tab/windows-console)
 
 Using the command prompt:
 
@@ -78,7 +78,7 @@ Using the command prompt:
 
 Once done, you can send the `sample.zip` to github in your issue or discussion.
 
-# [**macOS / Linux**](#tab/nix)
+### [**macOS / Linux**](#tab/nix)
 
 Using a terminal:
 

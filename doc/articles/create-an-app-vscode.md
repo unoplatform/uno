@@ -37,13 +37,13 @@ Next, open the project using Visual Studio Code:
 
 Uno Platform provides integrated support for debugging your app on Windows, mac and Linux.
 
-# [**WebAssembly**](#tab/Wasm)
+### [**WebAssembly**](#tab/Wasm)
 
 1. In the debugger section of the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select `Debug (Chrome, WebAssembly)`
 1. In the status bar, ensure the `MyApp.Wasm.csproj` project is selected - by default `MyApp.sln` is selected.
 1. Press `F5` to start the debugging session
 
-# [**Skia GTK**](#tab/skiagtk)
+### [**Skia GTK**](#tab/skiagtk)
 
 1. In the debugger section of the [activity bar](https://code.visualstudio.com/docs/getstarted/userinterface) select `Skia.GTK (Debug)`
 1. In the status bar, ensure the `MyApp.Skia.Gtk.csproj` project is selected - by default `MyApp.sln` is selected.
@@ -65,7 +65,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
     dotnet run
     ```
 
-# [**Android**](#tab/androiddebug)
+### [**Android**](#tab/androiddebug)
 
 * In the status bar, select the `MyApp.Mobile` project - by default `MyApp.sln` is selected.
 
@@ -79,7 +79,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 * Finally, in the debugger side menu, select the `Uno Platform Mobile` profile
 * Either press `F5` or press the green arrow to start the debugging session.
 
-# [**iOS**](#tab/iosdebug)
+### [**iOS**](#tab/iosdebug)
 
 > [!NOTE]
 > Debugging for iOS is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.
@@ -99,7 +99,7 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
 > [!TIP]
 > When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
 
-# [**Mac Catalyst**](#tab/catalystdebug)
+### [**Mac Catalyst**](#tab/catalystdebug)
 
 > [!NOTE]
 > Debugging for Mac Catalyst is only possible when running locally (or remotely through [Remote SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)) on a macOS machine.

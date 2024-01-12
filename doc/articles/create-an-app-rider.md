@@ -26,7 +26,7 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 ## Debug the App
 
-# [**Android**](#tab/android)
+### [**Android**](#tab/android)
 
 Set Android as your startup project. Run.
 ![run-android-rider](Assets/quick-start/run-android-rider.png)
@@ -34,7 +34,7 @@ Set Android as your startup project. Run.
 > [!NOTE]
 > Whether you're using a physical device or the emulator, the app will install but will not automatically open. You will have to manually open it.
 
-# [**WebAssembly**](#tab/wasm)
+### [**WebAssembly**](#tab/wasm)
 
 Select Wasm as your startup project then run.
 
@@ -45,7 +45,7 @@ A new browser window will automatically run your application.
 > [!NOTE]
 > There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 
-# [**Catalyst**](#tab/catalyst)
+### [**Catalyst**](#tab/catalyst)
 
 You will be able to build the Catalyst project, by selecting one of the project with the apple logo.
 
@@ -53,17 +53,17 @@ You will be able to build the Catalyst project, by selecting one of the project 
 
 Alternatively, you can use a tool like VNC to run the simulator on a mac.  
 
-# [**WinUI/WinAppSDK**](#tab/winui)
+### [**WinUI/WinAppSDK**](#tab/winui)
 
 You will be able to build the Windows project.
 
 ![run-winappsdk-rider](Assets/quick-start/run-winappsdk-rider.png)  
 
-# [**Skia Gtk**](#tab/gtk)
+### [**Skia Gtk**](#tab/gtk)
 
 Select the Skia.Gtk project, then Run.
 
-# [**Skia WPF**](#tab/wpf)
+### [**Skia WPF**](#tab/wpf)
 
 Select the Skia.WPF project, then Run.
 

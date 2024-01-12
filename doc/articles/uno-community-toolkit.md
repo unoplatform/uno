@@ -21,7 +21,7 @@ Android, iOS, mac Catalyst, Linux, and WebAssembly.
 
 The following packages are available:
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
 - [Uno.CommunityToolkit.WinUI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI)
 - [Uno.CommunityToolkit.WinUI.Connectivity](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.Connectivity)
@@ -41,7 +41,7 @@ The following packages are available:
 
 These package ids are for Uno Platform (non-Windows) projects. For WinUI 3 projects, you should use the equivalent packages published by Microsoft (`CommunityToolkit.WinUI`, `CommunityToolkit.WinUI.UI.Controls` etc).
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
 - [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
 - [Uno.Microsoft.Toolkit.Parsers](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Parsers)
@@ -64,7 +64,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 When using the default Uno Platform solution templates, in your shared class library, add the following:
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
 Add the following conditional references:
 
@@ -87,7 +87,7 @@ If you already had a reference to the Community Toolkit, you should remove those
 </ItemGroup>
 ```
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
 Add the following conditional reference:
 
@@ -134,7 +134,7 @@ This means that there's an unconditional reference to Uno Platform's packages, a
 
 2. Add a reference to the UWP UI Controls
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
    In XAML:  
     ```xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"```  
@@ -142,7 +142,7 @@ This means that there's an unconditional reference to Uno Platform's packages, a
    In C#:  
     ```using CommunityToolkit.WinUI.UI.Controls;```
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
    In XAML:  
     ```xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"```  
