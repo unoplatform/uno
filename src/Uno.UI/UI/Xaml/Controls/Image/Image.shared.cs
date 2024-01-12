@@ -30,7 +30,11 @@ partial class Image
 	/// <summary>
 	/// Returns an Empty string as the Description for the Image.
 	/// </summary>
-	internal string Description
+	internal
+#if __MACOS__ || __IOS__
+		new
+#endif
+		string Description
 	{
 		// UNO TODO: Description on Image is not implemented
 		get => string.Empty;
