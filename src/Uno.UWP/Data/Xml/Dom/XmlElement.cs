@@ -18,10 +18,10 @@ namespace Windows.Data.Xml.Dom
 
 		public string TagName => _backingElement.Name;
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingElement.Prefix;
-			set => _backingElement.Prefix = value.ToString()!;
+			set => _backingElement.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

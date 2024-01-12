@@ -14,10 +14,10 @@ namespace Windows.Data.Xml.Dom
 			_backingDocumentFragment = backingDocumentFragment;
 		}
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingDocumentFragment.Prefix;
-			set => _backingDocumentFragment.Prefix = value.ToString()!;
+			set => _backingDocumentFragment.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

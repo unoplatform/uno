@@ -14,10 +14,10 @@ namespace Windows.Data.Xml.Dom
 			_backingEntityReference = backingEntityReference;
 		}
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingEntityReference.Prefix;
-			set => _backingEntityReference.Prefix = value.ToString()!;
+			set => _backingEntityReference.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

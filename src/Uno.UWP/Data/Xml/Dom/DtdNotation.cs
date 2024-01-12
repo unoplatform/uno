@@ -18,10 +18,10 @@ namespace Windows.Data.Xml.Dom
 
 		public object? SystemId => _backingNotation.SystemId;
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingNotation.Prefix;
-			set => _backingNotation.Prefix = value.ToString()!;
+			set => _backingNotation.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

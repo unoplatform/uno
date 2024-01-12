@@ -32,7 +32,7 @@ namespace Uno.UI.Tasks.Assets
 
 		public string? AndroidAssetsPrefix { get; set; }
 
-		public string IosAppManifest { get; set; } = null!;
+		public string? IosAppManifest { get; set; }
 
 		[Required]
 		public string DefaultLanguage { get; set; } = null!;
@@ -172,7 +172,7 @@ namespace Uno.UI.Tasks.Assets
 			}
 
 			RetargetedAssets = retargetdAssets.ToArray();
-			PartialAppManifests = GenerateFontPartialManifest(fontAssets, IosAppManifest);
+			PartialAppManifests = GenerateFontPartialManifest(fontAssets, IosAppManifest!);
 		}
 
 

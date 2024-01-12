@@ -14,10 +14,10 @@ namespace Windows.Data.Xml.Dom
 			_backingProcessingInstruction = backingProcessingInstruction;
 		}
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingProcessingInstruction.Prefix;
-			set => _backingProcessingInstruction.Prefix = value.ToString()!;
+			set => _backingProcessingInstruction.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

@@ -20,10 +20,10 @@ namespace Windows.Data.Xml.Dom
 
 		public XmlNamedNodeMap Notations => (XmlNamedNodeMap)_owner.Wrap(_backingDocumentType.Notations);
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingDocumentType.Prefix;
-			set => _backingDocumentType.Prefix = value.ToString()!;
+			set => _backingDocumentType.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

@@ -34,10 +34,10 @@ namespace Windows.Data.Xml.Dom
 
 		public XmlDomImplementation Implementation => (XmlDomImplementation)Wrap(_backingDocument.Implementation);
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingDocument.Prefix;
-			set => _backingDocument.Prefix = value.ToString()!;
+			set => _backingDocument.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

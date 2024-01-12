@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Calls
 					"PhoneCallManager was used too early in the application lifetime. " +
 					"Android app context needs to be available.");
 			}
-			_telephonyManager = (TelephonyManager)ContextHelper.Current!
+			_telephonyManager = (TelephonyManager)ContextHelper.Current
 				.GetSystemService(Context.TelephonyService)!;
 #pragma warning disable CS0618 // TelephonyManager is obsolete in API 31
 #pragma warning disable CA1422 // Validate platform compatibility

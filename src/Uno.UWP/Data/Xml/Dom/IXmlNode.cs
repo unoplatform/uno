@@ -28,7 +28,7 @@ namespace Windows.Data.Xml.Dom
 
 		IXmlNode? ParentNode { get; }
 
-		object Prefix { get; set; }
+		object? Prefix { get; set; }
 
 		IXmlNode? PreviousSibling { get; }
 

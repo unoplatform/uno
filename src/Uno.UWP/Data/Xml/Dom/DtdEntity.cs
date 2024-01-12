@@ -20,10 +20,10 @@ namespace Windows.Data.Xml.Dom
 
 		public object? SystemId => _backingEntity.SystemId;
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingEntity.Prefix;
-			set => _backingEntity.Prefix = value.ToString()!;
+			set => _backingEntity.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

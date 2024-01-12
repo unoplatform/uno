@@ -24,10 +24,10 @@ namespace Windows.Data.Xml.Dom
 
 		public string Name => _backingAttribute.Name;
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingAttribute.Prefix;
-			set => _backingAttribute.Prefix = value.ToString()!;
+			set => _backingAttribute.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue

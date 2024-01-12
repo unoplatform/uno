@@ -22,10 +22,10 @@ namespace Windows.Data.Xml.Dom
 
 		public uint Length => (uint)_backingText.Length;
 
-		public object Prefix
+		public object? Prefix
 		{
 			get => _backingText.Prefix;
-			set => _backingText.Prefix = value.ToString()!;
+			set => _backingText.Prefix = value?.ToString()!;
 		}
 
 		public object? NodeValue
