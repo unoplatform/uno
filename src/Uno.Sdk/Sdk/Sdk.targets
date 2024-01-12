@@ -11,7 +11,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
-	<!-- <Import Project="Uno.CrossTargetting.targets" Condition=" '$(EnableUnoCrossTargetting)' == 'true' " /> -->
 
 	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
 		<DebugType>portable</DebugType>
