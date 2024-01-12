@@ -38,8 +38,13 @@ using AppKit;
 using Uno.UI;
 #endif
 
+#if __IOS__
+using Foundation;
+#endif
+
 using static Private.Infrastructure.TestServices;
 using Point = Windows.Foundation.Point;
+using Uno.UI.Helpers;
 
 #if HAS_UNO
 using static Uno.UI.Extensions.ViewExtensions;
@@ -318,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SelectorItem si = null;
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
-			var tb = si.FindFirstChild<TextBlock>();
+			var tb = si.FindFirstDescendant<TextBlock>();
 			Assert.AreEqual("item 0", tb?.Text);
 		}
 
@@ -517,8 +522,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ListViewItem lvi = null;
 			await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(source[0]) as ListViewItem) != null);
 
-			Assert.IsNull(lvi.FindFirstChild<ListViewItem>(includeCurrent: false));
-			Assert.IsNull(lvi.FindFirstParent<ListViewItem>(includeCurrent: false));
+			Assert.IsNull(lvi.FindFirstDescendant<ListViewItem>());
+			Assert.IsNull(lvi.FindFirstParent<ListViewItem>());
 			Assert.AreEqual("SelfHostingListViewItem", lvi.Name);
 
 			var content = lvi.Content as Border;
@@ -1334,15 +1339,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = page;
 				await WindowHelper.WaitForIdle();
 
-				var list = page.FindFirstChild<ListView>();
+				var list = page.FindFirstDescendant<ListView>();
 				Assert.IsNotNull(list);
 
 				for (int i = 0; i < 3; i++)
 				{
 					ListViewItem lvi = null;
 					await WindowHelper.WaitFor(() => (lvi = list.ContainerFromItem(i) as ListViewItem) != null);
-					var sp = lvi.FindFirstChild<StackPanel>();
-					var tb = sp?.FindFirstChild<TextBlock>();
+					var sp = lvi.FindFirstDescendant<StackPanel>();
+					var tb = sp?.FindFirstDescendant<TextBlock>();
 					Assert.IsNotNull(tb);
 					Assert.AreEqual("OuterContextText", tb.Text);
 				}
@@ -2039,7 +2044,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using var scope = new AssertionScope();
 
-			var scroll = list.FindFirstChild<ScrollViewer>();
+			var scroll = list.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(scroll);
 
 			dataContextChanged.Should().BeLessThan(5, $"dataContextChanged {dataContextChanged}");
@@ -2098,7 +2103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using var scope = new AssertionScope();
 
-			var scroll = list.FindFirstChild<ScrollViewer>();
+			var scroll = list.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(scroll);
 
 			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
@@ -2157,7 +2162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using var scope = new AssertionScope();
 
-			var scroll = list.FindFirstChild<ScrollViewer>();
+			var scroll = list.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(scroll);
 			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
 
@@ -2832,17 +2837,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(list);
 
 			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(0) as ListViewItem);
-			var text1 = container1.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			var text1 = container1.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
 			Assert.IsNotNull(text1);
 			Assert.AreEqual(text1.Text, "Selectable A");
 
 			var container2 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(1) as ListViewItem);
-			var text2 = container2.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			var text2 = container2.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
 			Assert.IsNotNull(text2);
 			Assert.AreEqual(text2.Text, "Selectable B");
 
 			var container3 = await WindowHelper.WaitForNonNull(() => list.ContainerFromIndex(2) as ListViewItem);
-			var text3 = container3.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
+			var text3 = container3.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate");
 			Assert.IsNotNull(text3);
 			Assert.AreEqual(text3.Text, "Selectable C");
 		}
@@ -2982,7 +2987,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var secondContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(1) as ListViewItem);
 			await WindowHelper.WaitForLoaded(secondContainer);
 
-			var tb = secondContainer.FindFirstChild<TextBlock>();
+			var tb = secondContainer.FindFirstDescendant<TextBlock>();
 			Assert.AreEqual("bbb", tb.Text);
 
 			foreach (var item in itemsSource)
@@ -3034,7 +3039,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await Task.Delay(5); // The key to reproing the bug is to trigger a relayout asynchronously, while the disappear animation is still in flight
 				var viewToModify = SUT.ContainerFromIndex(3) as ListViewItem;
 				Assert.IsNotNull(viewToModify);
-				var border = viewToModify.FindFirstChild<Border>(b => b.Name == "ItemBorder");
+				var border = viewToModify.FindFirstDescendant<Border>(b => b.Name == "ItemBorder");
 				Assert.IsNotNull(border);
 				border.Width += 20;
 
@@ -3118,10 +3123,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var redLeader = SUT.ContainerFromIndex(0) as ListViewItem;
 			var greenLeader = SUT.ContainerFromIndex(1) as ListViewItem;
-			var redGrid = redLeader.FindFirstChild<CounterGrid>();
-			var greenGrid = greenLeader.FindFirstChild<CounterGrid>();
+			var redGrid = redLeader.FindFirstDescendant<CounterGrid>();
+			var greenGrid = greenLeader.FindFirstDescendant<CounterGrid>();
 
-			var sv = SUT.FindFirstChild<ScrollViewer>();
+			var sv = SUT.FindFirstDescendant<ScrollViewer>();
 
 			sv.ChangeView(null, 100, null, disableAnimation: true);
 			await Task.Delay(20);
@@ -3231,9 +3236,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			var sv = SUT.FindFirstChild<ScrollViewer>();
+			var sv = SUT.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(sv);
-			var panel = SUT.FindFirstChild<ItemsStackPanel>();
+			var panel = SUT.FindFirstDescendant<ItemsStackPanel>();
 			for (int i = 100; i <= 1000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
@@ -3260,7 +3265,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
-			var textBlock = firstContainer.FindFirstChild<TextBlock>(t => t.Name == "DisplayStringTextBlock");
+			var textBlock = firstContainer.FindFirstDescendant<TextBlock>(t => t.Name == "DisplayStringTextBlock");
 			Assert.AreEqual("Item 1", textBlock.Text);
 
 			Assert.AreEqual(0, sv.VerticalOffset);
@@ -3292,9 +3297,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			var sv = SUT.FindFirstChild<ScrollViewer>();
+			var sv = SUT.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(sv);
-			var panel = SUT.FindFirstChild<ItemsStackPanel>();
+			var panel = SUT.FindFirstDescendant<ItemsStackPanel>();
 			for (int i = 100; i <= 1000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
@@ -3321,7 +3326,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var firstContainer = await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(0) as ListViewItem);
-			var textBlock = firstContainer.FindFirstChild<TextBlock>(t => t.Name == "DisplayStringTextBlock");
+			var textBlock = firstContainer.FindFirstDescendant<TextBlock>(t => t.Name == "DisplayStringTextBlock");
 			Assert.AreEqual("Item 0", textBlock.Text);
 
 			Assert.AreEqual(0, sv.VerticalOffset);
@@ -3765,7 +3770,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(1000);
 
 			// check the listview doesnt already have all items materialized
-			var count = lv.NativePanel?.GetChildren().Count();
+			var count = lv.NativePanel?.EnumerateChildren().Count();
 			Assert.IsTrue(count < source.Length, $"Native ListView is not {(count.HasValue ? $"virtualized (count={count})" : "loaded")}.");
 
 			// scroll to bottom
@@ -3774,7 +3779,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// check if the last item is now materialized
-			var materialized = lv.NativePanel.GetChildren()
+			var materialized = lv.NativePanel.EnumerateChildren()
 				.Reverse()
 #if __ANDROID__
 				.Select(x => (x as ListViewItem)?.Content as int?)
@@ -3883,7 +3888,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var children =
 #if __ANDROID__ || __IOS__
 				sut is ListView lv
-					? lv.NativePanel.GetChildren()
+					? lv.NativePanel.EnumerateChildren()
 					: sut.ItemsPanelRoot.Children;
 #else
 				sut.ItemsPanelRoot.Children;
@@ -3894,7 +3899,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			bool IsVisible(object x) => x is UIElement uie
 				? uie.Visibility == Visibility.Visible
 #if __IOS__
-				: !(x as UIView)?.Hidden ?? false;
+				: !(x as UIKit.UIView)?.Hidden ?? false;
 #else
 				: false;
 #endif
@@ -4146,6 +4151,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow("GridView")]
+		[DataRow("ListView")]
+		public async Task When_Header_With_HeaderTemplate_Only_One_Header_Created(string listViewBaseType)
+		{
+			var SUT = XamlHelper.LoadXaml<ListViewBase>($$"""
+				<{{listViewBaseType}}>
+					<{{listViewBaseType}}.HeaderTemplate>
+						<DataTemplate>
+							<TextBlock x:Name="HeaderTemplateRoot" Text="{Binding}" />
+						</DataTemplate>
+					</{{listViewBaseType}}.HeaderTemplate>
+				</{{listViewBaseType}}>
+			""");
+			SUT.Header = "Header";
+
+			await UITestHelper.Load(SUT);
+
+			var roots = SUT.EnumerateDescendants()
+				.OfType<TextBlock>()
+				.Where(x => x.Name == "HeaderTemplateRoot")
+				.ToArray();
+
+			Assert.AreEqual(1, roots.Length);
+			Assert.AreEqual((string)SUT.Header, roots[0].Text);
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
@@ -4181,7 +4214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var exploredTextBlocks = new HashSet<TextBlock>();
 			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 			{
-				var tb = listViewItem.FindFirstChild<TextBlock>();
+				var tb = listViewItem.FindFirstDescendant<TextBlock>();
 				exploredTextBlocks.Add(tb);
 				Assert.AreEqual(Colors.Black, ((SolidColorBrush)tb.Foreground).Color);
 			}
@@ -4193,7 +4226,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var seenNewTextBlock = false;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 				{
-					var tb = listViewItem.FindFirstChild<TextBlock>();
+					var tb = listViewItem.FindFirstDescendant<TextBlock>();
 					seenNewTextBlock |= exploredTextBlocks.Add(tb);
 					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
 				}
@@ -4292,7 +4325,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(GetListViewHeader()?.DataContext, page.DataContext);
 			}
 
-			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
+			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, global::Foundation.NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
 #endif
 	}
@@ -4699,6 +4732,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				base.OnItemsChanged(e);
 				ItemsChangedAction?.Invoke();
+			}
+		}
+
+		public class ViewItem : List<string>
+		{
+			public string Name { get; set; }
+
+			public override string ToString()
+			{
+				return Name;
 			}
 		}
 	}
