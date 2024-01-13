@@ -1321,11 +1321,16 @@ namespace Microsoft.UI.Xaml.Controls
 				if (combo.IsPopupFullscreen)
 				{
 					// Size : Note we set both Min and Max to match the UWP behavior which alter only those
-					//        properties. The MinHeight is not set to allow the the root child control to specificy
-					//		  one and provide a VerticalAlignment.
+					//        properties.
 					child.MinWidth = available.Width;
 					child.MaxWidth = available.Width;
 					child.MaxHeight = available.Height;
+					if (child.GetMinMax().min.Height == 0)
+					{
+						// If the root child control specifies a min height, the MinHeight is not set to allow that min height to be used
+						// and let the child provide a VerticalAlignment.
+						child.MinHeight = available.Height;
+					}
 				}
 				else
 				{
