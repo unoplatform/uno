@@ -1580,8 +1580,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							new Setter(FlyoutPresenter.BorderThicknessProperty, new Thickness(0)),
 
 							// remove limit from default style
-							new Setter(FlyoutPresenter.MaxWidthProperty, double.NaN),
-							new Setter(FlyoutPresenter.MaxHeightProperty, double.NaN),
+							new Setter(FlyoutPresenter.MaxWidthProperty, double.PositiveInfinity),
+							new Setter(FlyoutPresenter.MaxHeightProperty, double.PositiveInfinity),
 
 							// full stretch
 							new Setter(FlyoutPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch),

@@ -38,14 +38,6 @@
 										Value="Stretch" />
 								<Setter Property="VerticalContentAlignment"
 										Value="Stretch" />
-								<Setter Property="MinWidth"
-										Value="NaN" />
-								<Setter Property="MinHeight"
-										Value="NaN" />
-								<Setter Property="MaxWidth"
-										Value="NaN" />
-								<Setter Property="MaxHeight"
-										Value="NaN" />
 								<Setter Property="Template">
 									<Setter.Value>
 										<ControlTemplate TargetType="FlyoutPresenter">

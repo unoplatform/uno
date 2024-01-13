@@ -72,6 +72,25 @@ namespace Microsoft.UI.Xaml
 			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
 		}
 
+		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
+		internal void ValidateValue(object value)
+		{
+			if (this == FrameworkElement.MaxWidthProperty ||
+				this == FrameworkElement.MinWidthProperty ||
+				this == FrameworkElement.MaxHeightProperty ||
+				this == FrameworkElement.MinHeightProperty)
+			{
+				if (value is double doubleValue)
+				{
+					//negative values and NaN are not allowed for these properties
+					if (double.IsNaN(doubleValue) || doubleValue < 0)
+					{
+						throw new ArgumentException($"Property '{_name}' cannot be set to {doubleValue}. It must not be NaN or negative.");
+					}
+				}
+			}
+		}
+
 		/// <summary>
 		/// Provides a unique identifier for the dependency property lookup
 		/// </summary>
