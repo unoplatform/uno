@@ -647,9 +647,10 @@ namespace SampleControl.Presentation
 
 		public void TryOpenSample()
 		{
-			if (FilteredSamples.Count is 1)
+			if (FilteredSamples is { } samples
+				&& samples.Count is 1)
 			{
-				SelectedSearchSample = FilteredSamples[0];
+				SelectedSearchSample = samples[0];
 			}
 		}
 
