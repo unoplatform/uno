@@ -113,6 +113,7 @@ namespace Microsoft.UI.Xaml
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
+		private static readonly HashtableEx _ancestorsDictionary = new HashtableEx(usePooling: false);
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -1587,7 +1588,7 @@ namespace Microsoft.UI.Xaml
 			// properties.
 
 			// Ancestors is a local cache to avoid walking up the tree multiple times.
-			var ancestors = new AncestorsDictionary();
+			var ancestors = _ancestorsDictionary;
 
 			// This alias is used to avoid the resolution of the underlying WeakReference during the
 			// call to IsAncestor.
@@ -1634,12 +1635,22 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// Explicit dispose to return HashtableEx's internal array to the pool
-			// without having to rely on GC's finalizers.
-			ancestors.Dispose();
+			ancestors.Clear();
 		}
 
-		private static bool IsAncestor(DependencyObject? instance, AncestorsDictionary map, object ancestor)
+		private static bool TryGetIsAncestor(HashtableEx map, object ancestor, out bool isAncestor)
+		{
+			if (map.TryGetValue(ancestor, out var value))
+			{
+				isAncestor = (bool)value!;
+				return true;
+			}
+
+			isAncestor = false;
+			return false;
+		}
+
+		private static bool IsAncestor(DependencyObject? instance, HashtableEx map, object ancestor)
 		{
 #if DEBUG
 			var hashSet = new HashSet<DependencyObject>(Uno.ReferenceEqualityComparer<DependencyObject>.Default);
@@ -1651,7 +1662,7 @@ namespace Microsoft.UI.Xaml
 
 			bool isAncestor = false;
 
-			if (ancestor != null && !map.TryGetValue(ancestor, out isAncestor))
+			if (ancestor != null && !TryGetIsAncestor(map, ancestor, out isAncestor))
 			{
 				// Max iterations for ancestor lookup
 				var iterations = 1000;
@@ -1700,7 +1711,7 @@ namespace Microsoft.UI.Xaml
 					isAncestor = false;
 				}
 
-				map.Set(ancestor, isAncestor);
+				map[ancestor] = isAncestor;
 			}
 
 			return isAncestor;
