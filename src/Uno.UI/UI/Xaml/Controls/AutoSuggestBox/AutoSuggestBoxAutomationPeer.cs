@@ -35,10 +35,5 @@ public partial class AutoSuggestBoxAutomationPeer
 	/// Sends a request to submit the auto-suggest query to the AutoSuggestBox associated with the automation peer.
 	/// </summary>
 	public void Invoke()
-	{
-		//UNO TODO: Implement ProgrammaticSubmitQuery on AutoSuggestBox
-
-		//IUIElement owner = Owner;
-		//(owner as AutoSuggestBox).ProgrammaticSubmitQuery();
-	}
+		=> (Owner as AutoSuggestBox).ProgrammaticSubmitQuery();
 }
