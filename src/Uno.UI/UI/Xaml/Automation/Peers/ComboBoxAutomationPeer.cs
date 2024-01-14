@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ComboBoxAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 
+using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls;
 
@@ -63,7 +64,7 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 	public void SetValue(string value)
 	{
 		// UIA_E_INVALIDOPERATION
-		throw new System.InvalidOperationException();
+		throw new InvalidOperationException();
 	}
 
 	public void Close()
@@ -92,7 +93,6 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 		return returnValue;
 	}
-
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.ComboBox;
