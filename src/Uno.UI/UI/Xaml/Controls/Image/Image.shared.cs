@@ -26,4 +26,17 @@ partial class Image
 			OnSourceChanged(Source, forceReload: true);
 		}
 	}
+
+	/// <summary>
+	/// Returns an Empty string as the Description for the Image.
+	/// </summary>
+	internal
+#if __MACOS__ || __IOS__
+		new
+#endif
+		string Description
+	{
+		// UNO TODO: Description on Image is not implemented
+		get => string.Empty;
+	}
 }
