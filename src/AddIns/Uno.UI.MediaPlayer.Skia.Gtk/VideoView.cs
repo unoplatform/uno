@@ -391,7 +391,7 @@ namespace Uno.UI.Media
 			if (_videoWindow is not null)
 			{
 				_videoWindow.Hide();
-				_videoWindow.Destroy();
+				_videoWindow.Dispose();
 				_videoWindow = null;
 			}
 		}
