@@ -1739,6 +1739,12 @@
 			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
 			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
 			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::FlyoutButtonPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::HourTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::MinuteTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
 			<!-- END TimePicker -->
 		</Fields>
 
@@ -1767,6 +1773,12 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickedEventArgs..ctor(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePicker.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnTimeChanged(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
 			<!-- END TimePicker -->
 		</Methods>
 	</IgnoreSet>
