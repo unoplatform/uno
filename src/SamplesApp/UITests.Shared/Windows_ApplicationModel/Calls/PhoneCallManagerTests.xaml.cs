@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_ApplicationModel.Calls
 {
@@ -39,7 +40,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Calls
 
 		private async void UpdateCallState()
 		{
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				IsCallActiveCheckBox.IsChecked = PhoneCallManager.IsCallActive;
 				IsCallIncomingCheckBox.IsChecked = PhoneCallManager.IsCallIncoming;

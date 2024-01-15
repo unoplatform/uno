@@ -28,7 +28,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 
 	internal class Focus_FocusVisualViewModel : ViewModelBase
 	{
-		public Focus_FocusVisualViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public Focus_FocusVisualViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

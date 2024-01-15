@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-
+using Private.Infrastructure;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
@@ -25,7 +25,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 		{
 			this.InitializeComponent();
 
-			DataContext = new ImageFilePathModel(Dispatcher);
+			DataContext = new ImageFilePathModel(UnitTestDispatcherCompat.From(this));
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private string _selectedItem = "3";
 		public ObservableCollection<string> InitialyEmptyStringList { get; } = new ObservableCollection<string>();
 
-		public ListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			VariableLengthItemsLong = CreateVariableLengthItemsLong().ToArray();
 			VariableLengthItemsLongLazy = CreateVariableLengthItemsLong();

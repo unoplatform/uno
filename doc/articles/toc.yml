@@ -200,15 +200,8 @@
     - name: Migrating
       items:
       - name: Xamarin Forms
-        items:
-          - name: Migrating Custom Controls
-            href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
-          - name: Migrating Custom-Drawn Controls
-            href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
-          - name: Migrating Animations
-            href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
-          - name: Migrating Renderers
-            href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
+        topicHref: xref:Uno.XamarinFormsMigration.Overview
+        href: guides/xf-migration/toc.yml
       - name: WPF
         items:
           - name: Migrating WPF Apps to Web

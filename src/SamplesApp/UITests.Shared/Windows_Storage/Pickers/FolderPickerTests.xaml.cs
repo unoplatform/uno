@@ -37,7 +37,7 @@ namespace UITests.Windows_Storage.Pickers
 
 		private StorageFolder _pickedFolder = null;
 
-		public FolderPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FolderPickerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

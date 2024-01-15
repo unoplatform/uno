@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Input
 			OriginalKey = key;
 			KeyboardModifiers = modifiers;
 			_keyStatus = keyStatus;
-			UnicodeKey = unicodeKey;
+			UnicodeKey = unicodeKey ?? MapToChar(key, modifiers);
 		}
 
 		public bool Handled { get; set; }
@@ -48,8 +48,21 @@ namespace Microsoft.UI.Xaml.Input
 
 		/// <summary>
 		/// This gets the the Unicode Key associated with the event. This is not limited to the
-		/// VirtualKey options. Currently, this is only implemented for skia.
+		/// VirtualKey options. Currently, this is implemented for Skia and pretty much approximated on other platforms.
 		/// </summary>
 		internal char? UnicodeKey { get; }
+
+		private static char? MapToChar(VirtualKey key, VirtualKeyModifiers modifiers)
+		{
+			return (key, modifiers) switch
+			{
+				(VirtualKey.Space, VirtualKeyModifiers.None) => ' ',
+				( >= VirtualKey.Number0 and <= VirtualKey.Number9, VirtualKeyModifiers.None) => (char)key,
+				( >= VirtualKey.A and <= VirtualKey.Z, VirtualKeyModifiers.None) => char.ToLowerInvariant((char)key),
+				( >= VirtualKey.A and <= VirtualKey.Z, VirtualKeyModifiers.Shift) => (char)key,
+				(VirtualKey.Back, VirtualKeyModifiers.None) => (char)key,
+				_ => null,
+			};
+		}
 	}
 }

@@ -8,6 +8,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Windows_ApplicationModel.DataTransfer
 {
@@ -39,7 +40,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 		private string _webLink = null;
 		private bool? _setDarkTheme = null;
 
-		public DataTransferManagerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public DataTransferManagerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			if (DataTransferManager.IsSupported())
 			{
@@ -218,7 +219,7 @@ namespace UITests.Windows_ApplicationModel.DataTransfer
 				logText += $" ({args})";
 			}
 
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				EventLog.Insert(0, logText);
 			});

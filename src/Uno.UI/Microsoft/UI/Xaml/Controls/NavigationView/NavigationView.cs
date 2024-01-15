@@ -4511,8 +4511,8 @@ public partial class NavigationView : ContentControl
 		var coreTitleBar = m_coreTitleBar;
 		if (coreTitleBar != null)
 		{
-			coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
-			coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
+			coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged;
+			coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged;
 		}
 	}
 

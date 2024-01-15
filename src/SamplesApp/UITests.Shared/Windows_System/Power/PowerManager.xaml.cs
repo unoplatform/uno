@@ -7,6 +7,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using UwpPowerManager = Windows.System.Power.PowerManager;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_System.Power;
 
@@ -278,5 +279,5 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		});
 
 	private async Task ExecuteOnUiThreadAsync(Action action) =>
-		await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
+		await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => action());
 }

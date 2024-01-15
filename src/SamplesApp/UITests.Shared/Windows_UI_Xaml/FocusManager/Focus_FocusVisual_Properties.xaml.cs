@@ -52,7 +52,7 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 
 		private bool _isCycling = false;
 
-		public FocusVisualPropertiesViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FocusVisualPropertiesViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_timer.Tick += CycleFocus;
 

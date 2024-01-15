@@ -633,12 +633,12 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				});
 			}
 
-			if (_dataSourceSubscriptionsRevoker.Disposable is null && ItemsSource is ItemsSourceView itemsSource)
+			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
 			{
-				itemsSource.CollectionChanged += OnItemsSourceViewChanged;
+				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
-					itemsSource.CollectionChanged -= OnItemsSourceViewChanged;
+					m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
 				});
 			}
 #endif

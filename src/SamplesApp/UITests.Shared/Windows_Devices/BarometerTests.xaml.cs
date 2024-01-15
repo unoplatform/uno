@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -38,7 +39,7 @@ namespace UITests.Shared.Windows_Devices
 			private double _stationPressureInHectopascals;
 			private string _timestamp;
 
-			public BarometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public BarometerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 				_barometer = Barometer.GetDefault();
@@ -116,7 +117,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void Barometer_ReadingChanged(Barometer sender, BarometerReadingChangedEventArgs args)
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					StationPressureInHectopascals = args.Reading.StationPressureInHectopascals;
 					Timestamp = args.Reading.Timestamp.ToString("R");

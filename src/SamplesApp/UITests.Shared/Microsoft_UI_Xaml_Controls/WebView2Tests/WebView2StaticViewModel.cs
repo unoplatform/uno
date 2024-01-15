@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
@@ -20,7 +21,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 		private string _webSource;
 		private int _nextLink = 0;
 
-		public WebView2StaticViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public WebView2StaticViewModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

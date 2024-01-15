@@ -45,7 +45,7 @@ namespace UITests.Windows_Devices.Haptics
 
 		private SimpleHapticsController? _simpleHapticsController;
 
-		public VibrationDeviceTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public VibrationDeviceTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

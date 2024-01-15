@@ -23,6 +23,7 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
+using Uno.UI.Controls;
 #elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -324,6 +325,13 @@ namespace Microsoft.UI.Xaml
 			{
 				for (var x = 0; x < count; x++)
 				{
+#if __ANDROID__
+					if (((View)array[x]).Parent is BindableView bindableView)
+					{
+						bindableView.RemoveView((View)array[x]);
+					}
+#endif
+
 					array[x].SetParent(null);
 				}
 			}

@@ -21,7 +21,7 @@ namespace UITests.Shared.Windows_UI_StartScreen
 		private ObservableCollection<JumpListItem> _items = new ObservableCollection<JumpListItem>();
 		private NewJumpListItem _newItem = new NewJumpListItem();
 
-		public JumpListTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public JumpListTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			IsSupported = JumpList.IsSupported();
 		}

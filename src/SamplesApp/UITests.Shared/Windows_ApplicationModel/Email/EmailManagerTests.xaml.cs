@@ -49,7 +49,7 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 		private string _body = "";
 		private string _errorMessage = "";
 
-		public EmailManagerViewModel(CoreDispatcher dispatcher)
+		public EmailManagerViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
 		{
 		}

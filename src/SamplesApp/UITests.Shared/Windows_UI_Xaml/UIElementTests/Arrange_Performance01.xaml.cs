@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -31,8 +32,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		private void OnTest01(object sender, RoutedEventArgs e)
 		{
-			var _ = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			var _ = UnitTestDispatcherCompat.From(this).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					var sw = Stopwatch.StartNew();

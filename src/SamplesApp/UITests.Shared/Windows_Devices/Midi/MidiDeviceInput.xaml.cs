@@ -23,6 +23,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Windows_Devices.Midi
 {
@@ -53,7 +54,7 @@ namespace UITests.Windows_Devices.Midi
 			_midiInPorts = new List<MidiInPort>();
 
 			// Set up the MIDI input device watcher
-			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, inputDevices, InputDevices);
+			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), UnitTestDispatcherCompat.From(this), inputDevices, InputDevices);
 
 			// Start watching for devices
 			_midiInDeviceWatcher.Start();
@@ -217,7 +218,7 @@ namespace UITests.Windows_Devices.Midi
 			if ((receivedMidiMessage.Type != MidiMessageType.TimingClock) && (receivedMidiMessage.Type != MidiMessageType.ActiveSensing))
 			{
 				// Use the Dispatcher to update the messages on the UI thread
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 
 					InputDeviceMessages.Insert(0, outputMessage.ToString());

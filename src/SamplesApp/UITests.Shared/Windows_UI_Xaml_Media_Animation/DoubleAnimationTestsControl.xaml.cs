@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
@@ -213,7 +214,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 		private Action Dispatch(Func<CancellationToken, Task> action) => () =>
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () =>
 			{
 				try
 				{

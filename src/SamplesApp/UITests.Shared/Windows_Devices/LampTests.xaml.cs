@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_Devices
 		private Lamp _lamp = null;
 		private string _lampStatus;
 
-		public LampTestsViewModel(CoreDispatcher dispatcher) :
+		public LampTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) :
 			base(dispatcher)
 		{
 		}

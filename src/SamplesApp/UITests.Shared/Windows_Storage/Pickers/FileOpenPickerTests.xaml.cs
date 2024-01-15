@@ -39,7 +39,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		private StorageFile[] _pickedFiles = null;
 
-		public FileOpenPickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FileOpenPickerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 #if __WASM__
 			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;

@@ -10,7 +10,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl
 		private long _gridColumnAlternating;
 		private object _gridWidthAlternatingNull;
 
-		public GridTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public GridTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			ObserveGridColumnAlternating();
 		}

@@ -10,7 +10,7 @@ internal class ImageViewViewModel : ViewModelBase
 {
 	public IEnumerable<Item> Items { get; private set; }
 
-	public ImageViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+	public ImageViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 	{
 		Items = new List<Item>()
 		{

@@ -29,7 +29,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		private static readonly ILogger _log = Uno.Extensions.LogExtensionPoint.Log(typeof(ImageWithLateSourceViewModel));
 #endif
 
-		public ImageWithLateSourceViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ImageWithLateSourceViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

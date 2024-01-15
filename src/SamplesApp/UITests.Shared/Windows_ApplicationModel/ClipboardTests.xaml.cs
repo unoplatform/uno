@@ -44,7 +44,7 @@ namespace UITests.Windows_ApplicationModel
 		private string _lastContentChangedDate = "";
 		private string _text = "";
 
-		public ClipboardTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ClipboardTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			Disposables.Add(Disposable.Create(() =>
 			{

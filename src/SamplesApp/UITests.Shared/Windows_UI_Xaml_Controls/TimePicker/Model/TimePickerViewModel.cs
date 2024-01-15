@@ -14,7 +14,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Model
 	{
 		private TimeSpan _time = new TimeSpan(12, 0, 0);
 
-		public TimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TimePickerViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

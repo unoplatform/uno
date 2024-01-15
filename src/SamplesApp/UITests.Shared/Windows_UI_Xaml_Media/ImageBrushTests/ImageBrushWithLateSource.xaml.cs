@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
@@ -24,7 +25,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 		{
 			this.InitializeComponent();
 
-			DataContext = new ImageWithLateSourceViewModel(Dispatcher);
+			DataContext = new ImageWithLateSourceViewModel(UnitTestDispatcherCompat.From(this));
 		}
 	}
 }

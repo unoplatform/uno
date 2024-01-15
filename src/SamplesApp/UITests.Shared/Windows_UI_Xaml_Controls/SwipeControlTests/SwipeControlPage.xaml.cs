@@ -837,7 +837,7 @@ namespace MUXControlsTestApp
 		//                 lstAsyncEventMessage.Add(msgHead);
 		//             }
 
-		//             var ignored = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, AppendAsyncEventMessage);
+		//             var ignored = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, AppendAsyncEventMessage);
 		//         }
 		//     }
 

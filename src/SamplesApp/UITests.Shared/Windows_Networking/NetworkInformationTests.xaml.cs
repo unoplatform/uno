@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Windows_Networking
 {
@@ -47,7 +48,7 @@ namespace UITests.Windows_Networking
 		private string _isWlanConnectionProfile;
 		private string _isWwanConnectionProfile;
 
-		public NetworkInformationViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public NetworkInformationViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 
@@ -144,7 +145,7 @@ namespace UITests.Windows_Networking
 		{
 			try
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => UpdateNetworkInformation());
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => UpdateNetworkInformation());
 			}
 			catch (Exception ex)
 			{

@@ -53,7 +53,11 @@ public partial class GtkMediaPlayer : FrameworkElement
 			this.Log().Debug("Collecting GtkMediaPlayer");
 		}
 
-		_videoView?.Dispose();
+		GLib.Idle.Add(() =>
+		{
+			_videoView?.Dispose();
+			return false;
+		});
 
 		// Freeing those resources currently crash the app with an access violation exception.
 		//_mediaPlayer?.Dispose();

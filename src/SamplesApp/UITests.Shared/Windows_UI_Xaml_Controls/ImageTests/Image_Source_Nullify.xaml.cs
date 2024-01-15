@@ -42,7 +42,7 @@ internal class ImageSourceNullifyViewModel : ViewModelBase
 {
 	private ImageSource _testImageSource;
 
-	public ImageSourceNullifyViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+	public ImageSourceNullifyViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 	{
 		LoadImageCommand = new DelegateCommand(() =>
 		{

@@ -12,7 +12,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	{
 		private string _selectedName = "";
 
-		public ListViewSelectionsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewSelectionsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

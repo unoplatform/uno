@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,9 +30,12 @@ namespace UITests.Windows_UI_Xaml.Performance
 		volatile bool breakTest = false;
 		const int max = 600;
 
+		private readonly UnitTestDispatcherCompat _dispatcher;
+
 		public Performance_Dopes()
 		{
 			this.InitializeComponent();
+			_dispatcher = UnitTestDispatcherCompat.From(this);
 		}
 
 		private void StartTestST()
@@ -109,12 +113,12 @@ namespace UITests.Windows_UI_Xaml.Performance
 					}
 				}
 
-				_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => loop());
+				_ = _dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Low, () => loop());
 			};
 
 			sw.Start();
 
-			_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => loop());
+			_ = _dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => loop());
 		}
 
 		private void StartTestReuseST()
@@ -197,12 +201,12 @@ namespace UITests.Windows_UI_Xaml.Performance
 					}
 				}
 
-				_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => loop());
+				_ = _dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Low, () => loop());
 			};
 
 			sw.Start();
 
-			_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => loop());
+			_ = _dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Low, () => loop());
 		}
 
 		private void SetControlsAtStart()

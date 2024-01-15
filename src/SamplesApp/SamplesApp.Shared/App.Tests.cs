@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Private.Infrastructure;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -59,8 +60,8 @@ partial class App
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_ = UnitTestDispatcherCompat.From(Microsoft.UI.Xaml.Window.Current).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					try
@@ -69,8 +70,8 @@ partial class App
 						var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 						if (statusBar != null)
 						{
-							_ = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-								Windows.UI.Core.CoreDispatcherPriority.Normal,
+							_ = UnitTestDispatcherCompat.From(Microsoft.UI.Xaml.Window.Current).RunAsync(
+								UnitTestDispatcherCompat.Priority.Normal,
 								async () => await statusBar.HideAsync()
 							);
 						}
@@ -132,16 +133,16 @@ partial class App
 
 		if (!string.IsNullOrEmpty(screenshotsPath))
 		{
-			if (Microsoft.UI.Xaml.Window.Current is null)
+			if (MainWindow is null)
 			{
 				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 			}
 
-			var n = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+			var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
 				_ =>
 				{
-					var n = Microsoft.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
+					var n = UnitTestDispatcherCompat.From(MainWindow).RunAsync(
+						UnitTestDispatcherCompat.Priority.Normal,
 						async () =>
 						{
 							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));

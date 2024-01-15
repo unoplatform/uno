@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System.Threading.Tasks;
+using Private.Infrastructure;
 
 #if !WINAPPSDK
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -64,7 +65,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			_midiOutPorts = new List<IMidiOutPort>();
 
 			// Set up the MIDI output device watcher
-			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, outputDevices, OutputDevices);
+			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), UnitTestDispatcherCompat.From(this), outputDevices, OutputDevices);
 
 			// Start watching for devices
 			_midiOutDeviceWatcher.Start();

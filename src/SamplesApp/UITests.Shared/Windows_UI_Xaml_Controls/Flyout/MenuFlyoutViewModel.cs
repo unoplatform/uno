@@ -11,7 +11,7 @@ namespace Uno.UI.Samples.Content.UITests.MenuFlyout
 	{
 		private string _selectedOption = string.Empty;
 
-		public MenuFlyoutViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public MenuFlyoutViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

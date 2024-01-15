@@ -12,7 +12,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ToggleSwitchControl.Models
 		private bool _isOn = true;
 		private bool _isOn2 = true;
 
-		public ToggleSwitchViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ToggleSwitchViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

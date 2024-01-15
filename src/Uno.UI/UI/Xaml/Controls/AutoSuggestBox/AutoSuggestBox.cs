@@ -537,5 +537,14 @@ namespace Microsoft.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
+
+		internal void ProgrammaticSubmitQuery()
+		{
+			//UNO TODO: Implement ProgrammaticSubmitQuery on AutoSuggestBox
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"ProgrammaticSubmitQuery on AutoSuggestBox is not yet implemented.");
+			}
+		}
 	}
 }

@@ -75,6 +75,8 @@ namespace SampleControl.Presentation
 		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
 	new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White);
 
+		private readonly UnitTestDispatcherCompat _dispatcher;
+
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
 
@@ -93,6 +95,7 @@ namespace SampleControl.Presentation
 		{
 			Instance = this;
 			Owner = owner;
+			_dispatcher = UnitTestDispatcherCompat.From(owner);
 
 #if TRACK_REFS
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
@@ -214,8 +217,8 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			await _dispatcher.RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -294,8 +297,8 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.Dispatcher.RunAsync(
-					CoreDispatcherPriority.Normal,
+				await _dispatcher.RunAsync(
+					UnitTestDispatcherCompat.Priority.Normal,
 					async () =>
 					{
 						try
@@ -591,44 +594,63 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			var unused = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal, async () =>
+			var unused = _dispatcher.RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal, async () =>
 				{
-					await Task.Delay(200);
+					// Delay the search to allow the user to type more characters
+					await Task.Delay(400);
 
-					if (!currentSearch.IsCancellationRequested)
+					if (currentSearch.IsCancellationRequested)
 					{
-						FilteredSamples = UpdateSearch(search, Categories);
+						return;
 					}
+
+					var results = await SearchAsync(search, Categories, currentSearch.Token);
+
+					if (results is null || currentSearch.IsCancellationRequested)
+					{
+						return;
+					}
+
+					FilteredSamples = results;
 				}
 			);
 		}
 
-		private List<SampleChooserContent> UpdateSearch(string search, List<SampleChooserCategory> categories)
+		private async Task<List<SampleChooserContent>> SearchAsync(string search, List<SampleChooserCategory> categories, CancellationToken cancellationToken)
 		{
 			if (string.IsNullOrEmpty(search))
 			{
-				return new List<SampleChooserContent>();
+				return [];
 			}
 
-			var starts = categories
-				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
+			return await Task.Run(() =>
+			{
+				var starts = categories
+					.SelectMany(cat => cat.SamplesContent)
+					.Where(content => content.ControlName.StartsWith(search, StringComparison.OrdinalIgnoreCase));
 
-			var contains = categories
-				.SelectMany(cat => cat.SamplesContent)
-				.Where(content => !starts.Contains(content) && content.ControlName.Contains(search));
+				if (cancellationToken.IsCancellationRequested)
+				{
+					return null;
+				}
 
-			// Order the results by showing the "start with" results
-			// followed by results that "contain" the search term
-			return starts.Concat(contains).ToList();
+				var contains = categories
+					.SelectMany(cat => cat.SamplesContent)
+					.Where(content => content.ControlName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+
+				// Order the results by showing the "start with" results
+				// followed by results that "contain" the search term
+				return starts.Concat(contains).Distinct().ToList();
+			});
 		}
 
 		public void TryOpenSample()
 		{
-			if (FilteredSamples.Count is 1)
+			if (FilteredSamples is { } samples
+				&& samples.Count is 1)
 			{
-				SelectedSearchSample = FilteredSamples[0];
+				SelectedSearchSample = samples[0];
 			}
 		}
 
@@ -910,7 +932,7 @@ namespace SampleControl.Presentation
 				object vm;
 				if (constructors.Any(c => c.GetParameters().Length == 1))
 				{
-					vm = Activator.CreateInstance(newContent.ViewModelType, container.Dispatcher);
+					vm = Activator.CreateInstance(newContent.ViewModelType, UnitTestDispatcherCompat.From(container));
 				}
 				else
 				{
