@@ -982,6 +982,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_WASM_Tab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_FocusCycle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5975,6 +5979,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManager_GetFocus_Automated.xaml.cs">
       <DependentUpon>FocusManager_GetFocus_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_WASM_Tab.xaml.cs">
+      <DependentUpon>Focus_WASM_Tab.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_FocusCycle.xaml.cs">
       <DependentUpon>Focus_FocusCycle.xaml</DependentUpon>
