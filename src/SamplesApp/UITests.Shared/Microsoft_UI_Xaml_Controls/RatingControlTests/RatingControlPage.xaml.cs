@@ -118,12 +118,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RatingControlTests
 			return child;
 		}
 
-
-		protected
-#if !WINAPPSDK
-			internal
-#endif
-			override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		// Uno specific: Unlike WinUI, we unsubscribe on Unloaded because we don't get OnNavigatedFrom.
+		// See point #2 in https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
+		private void TestRatingControl_Unloaded(object sender, RoutedEventArgs e)
 		{
 			_dt.Tick -= DispatcherTimer_Tick; // prevent leaks since the dispatcher holds a pointer to this
 		}

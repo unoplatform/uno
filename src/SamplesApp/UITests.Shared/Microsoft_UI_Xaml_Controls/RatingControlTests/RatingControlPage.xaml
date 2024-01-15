@@ -11,7 +11,8 @@
 
 	<StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<!-- this guy is out of the Scroller because it's where I do panning tests: [and having nested pannable things is NOT WHAT SHOULD BE DONE!] -->
-		<muxcontrols:RatingControl x:Name="TestRatingControl" AutomationProperties.Name="TestRatingControl" Loaded="TestRatingControl_Loaded" PlaceholderValue="2.5"/>
+		<!-- Uno specific: TestRatingControl_Unloaded -->
+		<muxcontrols:RatingControl x:Name="TestRatingControl" AutomationProperties.Name="TestRatingControl" Loaded="TestRatingControl_Loaded" Unloaded="TestRatingControl_Unloaded"  PlaceholderValue="2.5"/>
 		<ScrollViewer Height="500" Grid.Column="0">
 			<StackPanel x:Name="mainStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
 				<TextBlock Text="Test Not Started" x:Name="TestTextBlockControl" AutomationProperties.Name="TestTextBlockControl"/>
