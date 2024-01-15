@@ -15,6 +15,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private int renderCount;
 		internal void InvalidateRender()
 		{
+			using var __ = X11Helper.XLock(x11window.Display);
+
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"Render {renderCount++}");

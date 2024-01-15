@@ -46,7 +46,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		_displayInformation = DisplayInformation.GetForCurrentView();
 
 		// Set this on startup in case a different global default was set beforehand
-		PointerCursor = new(CoreCursorType.Arrow, 0);
+		PointerCursor = new(CoreCursorType.IBeam, 0);
 	}
 
 	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
@@ -90,6 +90,8 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 				// CoreCursorType.Custom => CursorFontShape.XC_arrow,
 				_ => CursorFontShape.XC_arrow
 			};
+
+			using var _ = X11Helper.XLock(_host.X11Window.Display);
 
 			if (_cursor is { } c)
 			{

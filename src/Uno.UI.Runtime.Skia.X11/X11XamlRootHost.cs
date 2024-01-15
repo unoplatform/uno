@@ -53,6 +53,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		// might need to explicitly set _NET_WM_NAME as well?
+		using var _ = X11Helper.XLock(X11Window.Display);
 		XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
 	}
 
@@ -131,6 +132,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private void Initialize()
 	{
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
+
+		using var _ = X11Helper.XLock(display);
+
 		if (display == IntPtr.Zero)
 		{
 			this.Log().Error("XLIB ERROR: Cannot connect to X server");

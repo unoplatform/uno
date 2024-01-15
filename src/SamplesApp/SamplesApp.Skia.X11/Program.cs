@@ -12,6 +12,10 @@ namespace SkiaSharpExample
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
+			// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
+			// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
+			X11Helper.XInitThreads();
+
 			// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls.
 			setlocale(/* LC_ALL */ 6, "");
 			if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)

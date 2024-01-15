@@ -94,7 +94,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 	// If this scenario is confirmed to be non-existent, we can remove the mutex.
 	// This will need to be evaluated if we decide to give each window its own UI thread.
 	private readonly X11Window _x11Window;
-	private readonly object _windowMutex = new object();
+	private readonly object _windowMutex = new object(); // ALWAYS LOCK BEFORE XLock
 
 	private volatile bool _currentlyOwningClipboard;
 	// these are only valid if CurrentlyOwningClipboard. However, reading outdated values is benign, so no lock needed for now
@@ -110,6 +110,9 @@ internal class X11ClipboardExtension : IClipboardExtension
 	private X11ClipboardExtension()
 	{
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
+
+		using var _ = X11Helper.XLock(display);
+
 		if (display == IntPtr.Zero)
 		{
 			this.Log().Error("XLIB ERROR: Cannot connect to X server");
@@ -156,6 +159,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 	{
 		lock (_windowMutex)
 		{
+			using var _ = X11Helper.XLock(_x11Window.Display);
+
 			_ownershipTimestamp = GetTimestamp();
 			// TODO: should we also acquire CLIPBOARD?
 			// Utilities and apps are conflicted on this. xsel and xclip use PRIMARY.
@@ -183,6 +188,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 	/// <remarks>We need an additional target parameter to support the recursive MULTIPLE</remarks>
 	private bool SwitchTargets(IntPtr requestor, IntPtr target, IntPtr property)
 	{
+		using var __ = X11Helper.XLock(_x11Window.Display);
+
 		if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TIMESTAMP))
 		{
 			/* Return timestamp used to acquire ownership if target is TIMESTAMP */
@@ -296,12 +303,15 @@ internal class X11ClipboardExtension : IClipboardExtension
 			{
 				lock (_windowMutex)
 				{
+					using var _ = X11Helper.XLock(_x11Window.Display);
 					return X11Helper.XPending(_x11Window.Display) > 0;
 				}
 			});
 
 			lock (_windowMutex)
 			{
+				var xLock = X11Helper.XLock(_x11Window.Display);
+
 				XLib.XNextEvent(_x11Window.Display, out var event_);
 
 				this.Log().Trace($"XSEL EVENT: {event_.type}");
@@ -378,6 +388,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 						break;
 					// TODO: implement INCR
 				}
+
+				xLock.Dispose();
 			}
 		}
 		// ReSharper disable once FunctionNeverReturns
@@ -385,6 +397,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 	public DataPackageView GetContent()
 	{
+		using var _ = X11Helper.XLock(_x11Window.Display);
+
 		if (_currentlyOwningClipboard)
 		{
 			return _clipboardData;
@@ -436,6 +450,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			lock (_windowMutex)
 			{
+				using var _ = X11Helper.XLock(_x11Window.Display);
 				return XLib.XGetSelectionOwner(_x11Window.Display, X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD)) != IntPtr.Zero;
 			}
 		}
@@ -445,6 +460,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 	{
 		lock (_windowMutex)
 		{
+			using var __ = X11Helper.XLock(_x11Window.Display);
+
 			if (!HasOwner)
 			{
 				this.Log().Error($"Found the X11 clipboard to be owner-less.");
@@ -513,6 +530,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 	{
 		lock (_windowMutex)
 		{
+			using var _ = X11Helper.XLock(_x11Window.Display);
+
 			if (!HasOwner)
 			{
 				this.Log().Error($"Found the X11 clipboard to be owner-less.");
@@ -628,6 +647,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 	private string WaitForText(IntPtr format)
 	{
+		using var _ = X11Helper.XLock(_x11Window.Display);
+
 		var bytes = WaitForBytes(format);
 		if (_textFormats.TryGetValue(XLib.GetAtomName(_x11Window.Display, format), out var enc))
 		{

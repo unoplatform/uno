@@ -22,6 +22,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Avalonia.X11;
+using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -68,8 +69,23 @@ public static class X11Helper
 	[DllImport(libX11)]
 	public static extern IntPtr XDefaultGC(IntPtr display, int screen_number);
 
+	[DllImport(libX11Randr)]
+	public static extern int XInitThreads();
+
+	[DllImport(libX11Randr)]
+	public static extern void XLockDisplay(IntPtr display);
+
+	[DllImport(libX11Randr)]
+	public static extern void XUnlockDisplay(IntPtr display);
+
 	[DllImport(libX11)]
 	public static extern int XWidthMMOfScreen(IntPtr screen);
+
+	public static IDisposable XLock(IntPtr display)
+	{
+		XLockDisplay(display);
+		return Disposable.Create(() => XUnlockDisplay(display));
+	}
 
 	[DllImport(libX11)]
 	public static extern int XWidthOfScreen(IntPtr screen);
@@ -192,5 +208,4 @@ public static class X11Helper
 		public int _3_2;
 		public int _3_3;
 	}
-
 }

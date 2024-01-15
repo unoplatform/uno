@@ -120,11 +120,22 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		internal void UpdateDetails()
 		{
 			var x11Window = X11XamlRootHost.GetWindow();
+
+			var oldDetails = _details;
+			var xLock = X11Helper.XLock(x11Window.Display);
+			using var __ = Disposable.Create(() =>
+			{
+				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
+				xLock.Dispose();
+				if (_details != oldDetails)
+				{
+					_owner.NotifyDpiChanged();
+				}
+			});
+
 			XWindowAttributes attributes = default;
 			XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 			var screen = attributes.screen;
-
-			var oldDetails = _details;
 
 			if (XLib.XRRQueryExtension(x11Window.Display, out _, out _) != 0 &&
 				XLib.XRRQueryVersion(x11Window.Display, out var major, out var minor) != 0 &&
@@ -157,11 +168,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 					(ResolutionScale)(int)(flooredScale * 100.0),
 					Math.Sqrt(widthInInches * widthInInches + heightInInches * heightInInches)
 				);
-			}
-
-			if (_details != oldDetails)
-			{
-				_owner.NotifyDpiChanged();
 			}
 		}
 
@@ -288,8 +294,10 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		// 2009 spec, notably does not use monitors. Relies on "transforms" which may or may not be be part of RandR 1.2
 		private unsafe DisplayInformationDetails? GetDisplayInformationXRandR1_3(IntPtr display, IntPtr window)
 		{
+			using var _1 = X11Helper.XLock(display);
+
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
-			using var _1 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
+			using var _2 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
 			XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 			XWindowAttributes windowAttrs = default;
@@ -322,7 +330,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 			}
 
-			using var _2 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
+			using var _3 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
 
 			if (crtcInfo == default || crtcInfo->noutput == 0)
 			{
@@ -334,11 +342,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the first one we find for the numbers
 
 			var outputInfo = X11Helper.XRRGetOutputInfo(display, new IntPtr(resources), *(IntPtr*)crtcInfo->outputs.ToPointer());
-			using var _3 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
+			using var _4 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
 
 			X11Helper.XRRCrtcTransformAttributes* transformInfo = default;
 			X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
-			using var _4 = Disposable.Create(() => XLib.XFree(new IntPtr(transformInfo)));
+			using var _5 = Disposable.Create(() => XLib.XFree(new IntPtr(transformInfo)));
 
 			// Assume no fancy transforms. We only support simple scaling transforms.
 			// e.g. for 1.5x1.5 we should see a similar affine transformation to:

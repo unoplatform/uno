@@ -77,12 +77,22 @@ internal partial class X11XamlRootHost
 			(IntPtr)EventMask.VisibilityChangeMask |
 			(IntPtr)EventMask.NoEventMask;
 
+		X11Helper.XLockDisplay(X11Window.Display);
 		XLib.XSelectInput(X11Window.Display, X11Window.Window, mask);
+		X11Helper.XUnlockDisplay(X11Window.Display);
 
 		while (true)
 		{
 			// can probably be optimized with epoll but at the cost of thread preemption
-			SpinWait.SpinUntil(() => X11Helper.XPending(X11Window.Display) > 0);
+			SpinWait.SpinUntil(() =>
+			{
+				X11Helper.XLockDisplay(X11Window.Display);
+				var o = X11Helper.XPending(X11Window.Display) > 0;
+				X11Helper.XUnlockDisplay(X11Window.Display);
+				return o;
+			});
+
+			var xLock = X11Helper.XLock(X11Window.Display);
 
 			XLib.XNextEvent(X11Window.Display, out var event_);
 
@@ -147,6 +157,8 @@ internal partial class X11XamlRootHost
 					}
 					break;
 			}
+
+			xLock.Dispose();
 		}
 		// ReSharper disable once FunctionNeverReturns
 	}

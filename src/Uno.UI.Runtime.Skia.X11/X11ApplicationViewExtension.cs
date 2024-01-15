@@ -27,6 +27,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				Window.GetFromAppWindow(appWindow) is { } window &&
 				X11WindowWrapper.GetHostFromWindow(window) is { } host)
 			{
+				using var _ = X11Helper.XLock(host.X11Window.Display);
+
 				IntPtr wm_state = X11Helper.GetAtom(host.X11Window.Display, X11Helper._NET_WM_STATE);
 				IntPtr wm_fullscreen = X11Helper.GetAtom(host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN);
 
@@ -63,6 +65,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				Window.GetFromAppWindow(appWindow) is { } window &&
 				X11WindowWrapper.GetHostFromWindow(window) is { } host)
 			{
+				using var _ = X11Helper.XLock(host.X11Window.Display);
 				XLib.XResizeWindow(host.X11Window.Display, host.X11Window.Window, (int)size.Width, (int)size.Height);
 			}
 			return false;
