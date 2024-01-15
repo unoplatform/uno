@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Uno.Extensions.System;
 using Uno.UI.Runtime.Skia.Extensions.System.LauncherHelpers;
 using Windows.System;
+using Uno.Extensions.System;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Extensions.System
