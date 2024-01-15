@@ -90,7 +90,6 @@ internal partial class X11XamlRootHost
 			{
 				this.Log().Trace($"XLIB EVENT: {event_.type}");
 			}
-			Console.WriteLine($"XLIB EVENT: {event_.type}");
 
 			switch (event_.type)
 			{
