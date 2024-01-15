@@ -34,6 +34,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 			m_stringItemCollection = new ObservableCollection<string>();
 			m_radioButtonItemCollection = new ObservableCollection<RadioButton>();
 			this.Loaded += RadioButtonsPage_Loaded;
+			this.Unloaded += RadioButtonsPage_Unloaded;
 			this.SecondTestRadioButton.SelectedItem = this.TheRadioButton;
 		}
 
@@ -49,6 +50,13 @@ namespace UITests.Microsoft_UI_Xaml_Controls.RadioButtonsTests
 			SetNumberOfItemsButton_Click(null, null);
 			UpdateRadioButtonsSource();
 			UpdateDisplayRadioButton();
+		}
+
+		private void RadioButtonsPage_Unloaded(object sender, RoutedEventArgs e)
+		{
+#if HAS_UNO
+			RadioButtonsTestHooks.LayoutChanged -= RadioButtonsTestHooks_LayoutChanged;
+#endif
 		}
 
 		private void RadioButtonsTestHooks_LayoutChanged(RadioButtons sender, object args)
