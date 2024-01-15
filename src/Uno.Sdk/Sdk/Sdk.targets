@@ -1,0 +1,31 @@
+<!--
+***********************************************************************************************
+WARNING:
+DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+created a backup copy. Incorrect changes to this file will make it
+impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (C) Uno Platform Inc. All rights reserved.
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
+
+	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+		<DebugType>portable</DebugType>
+		<DebugSymbols>True</DebugSymbols>
+
+		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Removes native usings to avoid Ambiguous reference -->
+		<Using Remove="@(Using->HasMetadata('Platform'))" />
+	</ItemGroup>
+</Project>
