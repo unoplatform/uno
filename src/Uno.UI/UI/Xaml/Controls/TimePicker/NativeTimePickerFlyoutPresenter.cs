@@ -1,4 +1,5 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+﻿#if __ANDROID__ || __IOS__
+namespace Microsoft.UI.Xaml.Controls;
 
 internal partial class NativeTimePickerFlyoutPresenter : FlyoutPresenter
 {
@@ -7,3 +8,4 @@ internal partial class NativeTimePickerFlyoutPresenter : FlyoutPresenter
 		DefaultStyleKey = typeof(NativeTimePickerFlyoutPresenter);
 	}
 }
+#endif
