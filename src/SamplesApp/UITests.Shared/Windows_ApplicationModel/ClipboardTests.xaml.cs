@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.Storage.Streams;
 
 namespace UITests.Windows_ApplicationModel
 {
@@ -148,14 +149,26 @@ namespace UITests.Windows_ApplicationModel
 		{
 			var dataPackageView = Clipboard.GetContent();
 
-			foreach (var format in new [] { "image/png", "image/jpeg" })
+			var formats = new[]
+			{
+				"image/png",
+				"image/jpeg"
+			};
+
+			foreach (var format in formats)
 			{
 				if (dataPackageView.Contains(format))
 				{
 					if (await dataPackageView.GetDataAsync("image/png") is byte[] bytes)
 					{
+						var ims = new InMemoryRandomAccessStream();
+						DataWriter dataWriter = new DataWriter(ims);
+						dataWriter.WriteBytes(bytes);
+						await dataWriter.StoreAsync();
+						ims.Seek(0);
+
 						var bitmapImage = new BitmapImage();
-						bitmapImage.SetSource(new MemoryStream(bytes));
+						bitmapImage.SetSource(ims);
 						Bitmap = bitmapImage;
 						return;
 					}
