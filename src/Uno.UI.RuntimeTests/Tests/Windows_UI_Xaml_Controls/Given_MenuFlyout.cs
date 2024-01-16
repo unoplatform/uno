@@ -422,5 +422,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Toggle_Item_HasToggle()
+		{
+			var toggleItem = new ToggleMenuFlyoutItem();
+			Assert.IsTrue(toggleItem.HasToggle());
+		}
+
+		[TestMethod]
+		public async Task When_Menu_Contains_Toggle()
+		{
+			var menu = new MenuFlyout();
+			menu.Items.Add(new MenuFlyoutItem() { Text = "Text" });
+
+			var trigger = new Button();
+			TestServices.WindowHelper.WindowContent = trigger;
+			await TestServices.WindowHelper.WaitForLoaded(trigger);
+
+			await ValidateToggleAsync(false);
+
+			var toggleItem = new ToggleMenuFlyoutItem() { Text = "Toggle!" };
+			menu.Items.Add(toggleItem);
+			await ValidateToggleAsync(true);
+
+			menu.Items.Remove(toggleItem);
+			await ValidateToggleAsync(false);
+
+			async Task ValidateToggleAsync(bool expected)
+			{
+				menu.ShowAt(trigger);
+				await TestServices.WindowHelper.WaitForIdle();
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+				var popup = popups[0];
+				Assert.IsInstanceOfType(popup.Child, typeof(MenuFlyoutPresenter));
+				var presenter = (MenuFlyoutPresenter)popup.Child;
+				Assert.AreEqual(expected, presenter.GetContainsToggleItems());
+				popup.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+		}
 	}
 }
