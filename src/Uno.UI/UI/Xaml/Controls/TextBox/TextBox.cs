@@ -170,6 +170,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			OnUnloadedPartial();
+		}
+
+		partial void OnUnloadedPartial();
+
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			UpdateButtonStates();
