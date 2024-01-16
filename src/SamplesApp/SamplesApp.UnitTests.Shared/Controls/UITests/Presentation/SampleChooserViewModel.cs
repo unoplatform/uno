@@ -146,7 +146,12 @@ namespace SampleControl.Presentation
 		/// <returns></returns>
 		private void ShowNewSection(CancellationToken ct, Section section)
 		{
-			Console.WriteLine($"Section changed: {section}");
+			Console.WriteLine($"{DateTime.Now.TimeOfDay}: Section changed: {section}");
+			var gcMemInfo = GC.GetGCMemoryInfo();
+			Console.WriteLine($"{DateTime.Now.TimeOfDay}: PauseTimePercentage: {gcMemInfo.PauseTimePercentage}%");
+			Console.WriteLine($"{DateTime.Now.TimeOfDay}: Last PauseDuration: {gcMemInfo.PauseDurations[0]}");
+			var totalMemory = GC.GetTotalMemory(forceFullCollection: false);
+			Console.WriteLine($"{DateTime.Now.TimeOfDay}: Total memory: {totalMemory / 1024.0 / 1024.0}MBs");
 
 			switch (section)
 			{
