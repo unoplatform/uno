@@ -548,11 +548,13 @@
 
 					<!-- Dark theme check box -->
 					<CheckBox Grid.Column="9"
+							  Width="64"
+							  MinWidth="64"
 							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
 
-					<Button Grid.Column="10">
+					<Button Grid.Column="10" Margin="8,0">
 						<SymbolIcon Symbol="More" />
 						<Button.Flyout>
 							<MenuFlyout>
