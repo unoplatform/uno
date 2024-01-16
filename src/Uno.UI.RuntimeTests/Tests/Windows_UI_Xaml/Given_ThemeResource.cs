@@ -64,7 +64,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_DefaultForeground_Fluent() => await When_DefaultForeground(Colors.Black, Colors.White);
+		public async Task When_DefaultForeground_Non_Fluent()
+		{
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_DefaultForeground(Colors.Black, Colors.White);
+		}
 #endif
 
 		[TestMethod]
@@ -72,9 +76,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_DefaultForeground_Non_Fluent()
+		public async Task When_DefaultForeground_Fluent()
 		{
-			using var _ = StyleHelper.UseUwpStyles();
 			await When_DefaultForeground(Color.FromArgb(228, 0, 0, 0), Colors.White);
 		}
 
