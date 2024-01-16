@@ -1,16 +1,16 @@
-﻿
-using System.Reflection.Metadata;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.Helpers;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+﻿#nullable enable
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_DataTemplate : BaseTestClass
+[RunsInSecondaryApp]
+public class Given_DataTemplate : BaseHotReloadTestClass
 {
 	/// <summary>
 	/// Change the Text of a TextBlock inside a UserControl, where the UserControl 
@@ -33,11 +33,10 @@ public class Given_DataTemplate : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_DataTemplate>(
-			originalText,
-			updatedText,
-			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 0),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile<HR_Frame_Pages_DataTemplate>(originalText, updatedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 0);
+		}
 
 		// Validate that content been returned to the original text
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);

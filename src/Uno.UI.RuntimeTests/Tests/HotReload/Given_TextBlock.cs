@@ -1,23 +1,17 @@
 ﻿#nullable disable
 
 using System;
-using System.Formats.Asn1;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft/* UWP don't rename */.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.Disposables;
-using Uno.UI.RemoteControl;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
-using Uno.UI.RuntimeTests.Tests.HotReload;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_TextBlock : BaseTestClass
+[RunsInSecondaryApp]
+public class Given_TextBlock : BaseHotReloadTestClass
 {
 	public const string SimpleTextChange = " (changed)";
 
@@ -48,10 +42,9 @@ public class Given_TextBlock : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-			FirstPageTextBlockOriginalText,
-			FirstPageTextBlockChangedText,
-			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile<HR_Frame_Pages_Page1>(FirstPageTextBlockOriginalText, FirstPageTextBlockChangedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText);
+		}
 	}
 }

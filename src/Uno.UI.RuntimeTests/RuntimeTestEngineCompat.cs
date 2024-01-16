@@ -10,10 +10,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
+using Uno.Foundation.Logging;
 using Uno.UI.RuntimeTests.Helpers;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Uno.Logging
 {
+	// TODO: Remove on next update of runtime test engine
 	internal static class LoggerExtensions
 	{
 		public static void Info(this ILogger log, string message) => log.Log(LogLevel.Information, message);
@@ -22,11 +25,12 @@ namespace Uno.Logging
 
 namespace Uno.Extensions
 {
+	// Reroutes the LogExtensionPoint this is referenced and initialized by the application
 	internal static class LogExtensionPoint
 	{
-		public static ILogger Log(this Type type) => NullLogger.Instance; // TODO
+		public static ILogger Log(this Type type) => Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory?.CreateLogger(type.FullName ?? type.Name) as ILogger ?? NullLogger.Instance;
 
-		public static ILoggerFactory AmbientLoggerFactory => null!; // TODO
+		public static ILoggerFactory AmbientLoggerFactory => Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory as ILoggerFactory ?? NullLoggerFactory.Instance;
 	}
 }
 
@@ -46,7 +50,7 @@ namespace Uno.UI.RuntimeTests
 
 	partial class UnitTestsControl
 	{
-		partial void ConstructPartial(); // TODO: Remove
+		partial void ConstructPartial(); // TODO: Remove on next update of runtime test engine
 
 		partial void ConstructPartial()
 		{
@@ -65,7 +69,7 @@ namespace Uno.UI.RuntimeTests
 
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
 
-			// TODO: remove!
+			// TODO: Remove on next update of runtime test engine
 			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
 #if HAS_UNO
 				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;

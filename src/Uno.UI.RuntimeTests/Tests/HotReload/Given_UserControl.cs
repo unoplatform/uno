@@ -1,16 +1,16 @@
-﻿
-using System.Reflection.Metadata;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.Helpers;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+﻿#nullable enable
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_UserControl : BaseTestClass
+[RunsInSecondaryApp]
+public class Given_UserControl : BaseHotReloadTestClass
 {
 	public const string SimpleTextChange = " (changed)";
 
@@ -34,11 +34,10 @@ public class Given_UserControl : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockOriginalText, 2); // The user control textblock is the third one on page1
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_UC1>(
-			UserControl1TextBlockOriginalText,
-			UserControl1TextBlockChangedText,
-			() => frame.ValidateTextOnChildTextBlock(UserControl1TextBlockChangedText, 2),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile<HR_Frame_Pages_UC1>(UserControl1TextBlockOriginalText, UserControl1TextBlockChangedText, ct))
+		{
+			await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockChangedText, 2);
+		}
 
 		// Validate that the page has been returned to the original text
 		await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockOriginalText, 2);
@@ -63,11 +62,10 @@ public class Given_UserControl : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockOriginalText, 2); // The user control textblock is the third one on page1
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_UC1>(
-			UserControl1TextBlockOriginalText,
-			UserControl1TextBlockChangedText,
-			() => frame.ValidateTextOnChildTextBlock(UserControl1TextBlockChangedText, 2),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile<HR_Frame_Pages_UC1>(UserControl1TextBlockOriginalText, UserControl1TextBlockChangedText, ct))
+		{
+			await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockChangedText, 2);
+		}
 
 		// Validate that the page has been returned to the original text
 		await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockOriginalText, 2);

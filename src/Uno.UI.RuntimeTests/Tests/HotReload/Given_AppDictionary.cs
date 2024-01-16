@@ -1,20 +1,24 @@
-﻿
+﻿#nullable enable
+
 using System;
-using System.Reflection.Metadata;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.Helpers;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 using Windows.UI;
-using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_Dictionary : BaseTestClass
+[RunsInSecondaryApp]
+public class Given_Dictionary : BaseHotReloadTestClass
 {
+	private const string _appResources = "Tests/HotReload/Views/AppResources.xaml";
+	private const string _subDictionary = "Tests/HotReload/Views/SubResourceDictionary.xaml";
+
 	[TestMethod]
 	public async Task When_Change_AppResource_String()
 	{
@@ -32,12 +36,10 @@ public class Given_Dictionary : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateProjectFileAndRevert(
-			"AppResources.xaml",
-			originalText,
-			updatedText,
-			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 0),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile(_appResources, originalText, updatedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 0);
+		}
 
 		// Validate that content been returned to the original text
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);
@@ -62,12 +64,10 @@ public class Given_Dictionary : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateProjectFileAndRevert(
-			"AppResources.xaml",
-			originalText,
-			updatedText,
-			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 0),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile(_appResources, originalText, updatedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 0);
+		}
 
 		// Validate that content been returned to the original text
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);
@@ -105,12 +105,10 @@ public class Given_Dictionary : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateChildElement<FrameworkElement>(e => ValidateColor(e, Colors.Red));
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateProjectFileAndRevert(
-			"AppResources.xaml",
-			originalText,
-			updatedText,
-			() => UnitTestsUIContentHelper.Content.ValidateChildElement<FrameworkElement>(e => ValidateColor(e, Colors.Blue)),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile(_appResources, originalText, updatedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateChildElement<FrameworkElement>(e => ValidateColor(e, Colors.Blue));
+		}
 
 		// Validate that content been returned to the original text
 		await UnitTestsUIContentHelper.Content.ValidateChildElement<FrameworkElement>(e => ValidateColor(e, Colors.Red));
@@ -135,12 +133,10 @@ public class Given_Dictionary : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 1);
 
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateProjectFileAndRevert(
-			"SubResourceDictionary.xaml",
-			originalText,
-			updatedText,
-			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 1),
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile(_subDictionary, originalText, updatedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 1);
+		}
 
 		// Validate that content been returned to the original text
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 1);
@@ -165,15 +161,12 @@ public class Given_Dictionary : BaseTestClass
 		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 0);
 
 		// Check the updated text of the TextBlock
-		for (int i = 0; i < 15; i++)
+		for (var i = 0; i < 15; i++)
 		{
-			await HotReloadHelper.UpdateProjectFileAndRevert(
-				"AppResources.xaml",
-				originalText,
-				updatedText(i),
-				() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText(i), 0),
-				ct);
-
+			await using (await HotReloadHelper.UpdateSourceFile(_appResources, originalText, updatedText(i), ct))
+			{
+				await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText(i), 0);
+			}
 		}
 
 		// Validate that content been returned to the original text

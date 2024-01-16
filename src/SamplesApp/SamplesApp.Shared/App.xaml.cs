@@ -80,14 +80,19 @@ namespace SamplesApp
 
 #if __SKIA__
 			ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1024, 768);
+
+			// Manual initialize connection to the dev-server is required within the Uno project
+			Uno.UI.RemoteControl.RemoteControlClient.Initialize(typeof(App));
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout = TimeSpan.FromSeconds(300);
+			Uno.UI.RuntimeTests.Internal.Helpers.DevServer.SetDefaultPath(@"..\..\..\..\..\Uno.UI.RemoteControl.Host\bin\Debug\net8.0\Uno.UI.RemoteControl.Host.dll");
 #endif
 
 			ConfigureFeatureFlags();
 			ParseCommandLineFeatureFlags();
-
+			 
 			AssertIssue1790ApplicationSettingsUsable();
 			AssertApplicationData();
-
+			
 			this.InitializeComponent();
 
 #if !WINAPPSDK
@@ -461,7 +466,11 @@ namespace SamplesApp
 				builder.AddFilter("Microsoft", LogLevel.Warning);
 
 				// RemoteControl and HotReload related
-				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Trace);
+				builder.AddFilter("Uno.UI.RuntimeTests.HotReload", LogLevel.Debug);
+				builder.AddFilter("Uno.UI.RuntimeTests.Internal.Helpers", LogLevel.Debug); // DevServer and SecondaryApp
+				builder.AddFilter("Uno.UI.RuntimeTests.HotReloadHelper", LogLevel.Trace); // Helper used by tests in secondary app instances (non debuggable)
+				builder.AddFilter("Uno.UI.RuntimeTests.UnitTestsControl", LogLevel.Information); // Dumps the runner status
 
 				// Adjust logging when debugging the Given_HotReloadWorkspace tests
 				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);

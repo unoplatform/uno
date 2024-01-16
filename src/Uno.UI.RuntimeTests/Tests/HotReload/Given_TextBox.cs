@@ -1,11 +1,17 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#nullable enable
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_TextBox : BaseTestClass
+[RunsInSecondaryApp]
+public class Given_TextBox : BaseHotReloadTestClass
 {
 	public const string SimpleTextChange = " (changed)";
 
@@ -22,7 +28,7 @@ public class Given_TextBox : BaseTestClass
 	/// of specific controls (in this case the Text property of a TextBox
 	/// </summary>
 	[TestMethod]
- 	[Ignore("This doesn't work on the CI pipeline")]
+	[Ignore("This doesn't work on the CI pipeline")]
 	public async Task When_Changing_TextBox()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
@@ -41,14 +47,10 @@ public class Given_TextBox : BaseTestClass
 
 		await UnitTestsUIContentHelper.Content.ValidateChildElement<TextBox>(tb => Assert.AreEqual(tb.Text, text));
 
-
 		// Check the updated text of the TextBlock
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-			FirstPageTextBlockOriginalText,
-			FirstPageTextBlockChangedText,
-			//()=>Task.CompletedTask,
-			async () => await UnitTestsUIContentHelper.Content.ValidateChildElement<TextBox>(tb => Assert.AreEqual(text, tb.Text)),
-			ct);
-		//Assert.Fail("test");
+		await using (await HotReloadHelper.UpdateSourceFile<HR_Frame_Pages_Page1>(FirstPageTextBlockOriginalText, FirstPageTextBlockChangedText, ct))
+		{
+			await UnitTestsUIContentHelper.Content.ValidateChildElement<TextBox>(tb => Assert.AreEqual(text, tb.Text));
+		}
 	}
 }

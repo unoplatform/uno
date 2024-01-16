@@ -1,11 +1,17 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#nullable enable
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_ScrollViewer : BaseTestClass
+[RunsInSecondaryApp]
+public class Given_ScrollViewer : BaseHotReloadTestClass
 {
 	public const string SimpleTextChange = " (changed)";
 
@@ -37,15 +43,11 @@ public class Given_ScrollViewer : BaseTestClass
 
 
 		await frame.ValidateTextOnChildTextBlock(UserControl1TextBlockOriginalText);
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Scroll>(
-			UserControl1TextBlockOriginalText,
-			UserControl1TextBlockChangedText,
-			async () =>
-			{
-				var updatedScroll = await (frame.Content as FrameworkElement)!.ScrollOffset();
-				Assert.AreEqual(scroll, updatedScroll.VerticalOffset, "Updated scroll not correct");
-			},
-			ct);
+		await using (await HotReloadHelper.UpdateSourceFile<HR_Frame_Pages_Scroll>(UserControl1TextBlockOriginalText, UserControl1TextBlockChangedText, ct))
+		{
+			var updatedScroll = await (frame.Content as FrameworkElement)!.ScrollOffset();
+			Assert.AreEqual(scroll, updatedScroll.VerticalOffset, "Updated scroll not correct");
+		}
 
 		var finalScroll = await (frame.Content as FrameworkElement)!.ScrollOffset();
 		Assert.AreEqual(scroll, finalScroll.VerticalOffset, "Final scroll not correct");

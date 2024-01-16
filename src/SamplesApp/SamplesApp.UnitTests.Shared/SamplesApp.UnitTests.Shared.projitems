@@ -53,7 +53,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\SampleHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\ThicknessHelper2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\IsExternalInit.cs" />
-	    <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\RuntimeTestEngineCompat.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleChooserControl.xaml">

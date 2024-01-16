@@ -1,9 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#nullable enable
+
 using Uno.UI.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
-public class BaseTestClass
+public class BaseHotReloadTestClass
 {
 	[TestInitialize]
 	public void InitHotReload()
@@ -13,5 +14,4 @@ public class BaseTestClass
 		// Make sure type mappings is running
 		TypeMappings.Resume();
 	}
-
 }
