@@ -4,13 +4,11 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Core;
-
-#if !__SKIA__
 using FluentAssertions;
-#endif
 
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -18,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_Window
 	{
-#if !WINAPPSDK && !__SKIA__
+#if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_CreateNewWindow()
@@ -29,12 +27,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				return;
 			}
 
+			if (NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test can only run in an environment without multiwindow support");
+			}
+
 			var act = () => new Window(WindowType.DesktopXamlSource);
 			act.Should().Throw<InvalidOperationException>();
 		}
-#endif
 
-#if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_Create_Multiple_Windows()
@@ -43,6 +44,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Assert.Inconclusive("This test can only be run in a full-fledged app");
 				return;
+			}
+
+			if (!NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test can only run in an environment with multiwindow support");
 			}
 
 			var startingNumberOfWindows = ApplicationHelper.Windows.Count;
@@ -55,6 +61,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var endNumberOfWindows = ApplicationHelper.Windows.Count;
 			Assert.AreEqual(startingNumberOfWindows, endNumberOfWindows);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Close_Non_Activated_Window()
+		{
+			if (!CoreApplication.IsFullFledgedApp)
+			{
+				Assert.Inconclusive("This test can only be run in a full-fledged app");
+				return;
+			}
+
+			if (!NativeWindowFactory.SupportsMultipleWindows)
+			{
+				Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+			}
+
+			var sut = new Window(WindowType.DesktopXamlSource);
+			bool closedFired = false;
+			sut.Closed += (s, e) => closedFired = true;
+			sut.Close();
+
+			Assert.IsTrue(closedFired);
 		}
 #endif
 	}
