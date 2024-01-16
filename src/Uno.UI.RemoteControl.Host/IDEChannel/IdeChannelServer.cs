@@ -6,11 +6,8 @@ namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
 internal class IdeChannelServer : IIdeChannelServer
 {
-	private IServiceProvider _serviceProvider;
-
-	public IdeChannelServer(IServiceProvider serviceProvider)
+	public IdeChannelServer()
 	{
-		_serviceProvider = serviceProvider;
 	}
 
 	public event EventHandler<IdeMessage>? MessageFromIDE;
