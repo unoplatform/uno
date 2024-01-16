@@ -68,6 +68,7 @@ using System.Diagnostics.CodeAnalysis;
 // ReSharper disable ArrangeThisQualifier
 // ReSharper disable NotAccessedField.Global
 #pragma warning disable 649
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 
 namespace Avalonia.X11
 {
@@ -1887,9 +1888,7 @@ namespace Avalonia.X11
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-#pragma warning disable CA1815 // Override equals and operator equals on value types
 	public unsafe struct XImage
-#pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
 		public int width, height; /* size of image */
 		public int xoffset; /* number of pixels offset in X direction */

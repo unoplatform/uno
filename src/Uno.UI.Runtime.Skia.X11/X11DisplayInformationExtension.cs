@@ -134,7 +134,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			});
 
 			XWindowAttributes attributes = default;
-			XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
+			var _1 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
 			var screen = attributes.screen;
 
 			if (XLib.XRRQueryExtension(x11Window.Display, out _, out _) != 0 &&
@@ -299,9 +299,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
 			using var _2 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
-			XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
+			var _3 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 			XWindowAttributes windowAttrs = default;
-			XLib.XGetWindowAttributes(display, window, ref windowAttrs);
+			var _4 = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
 			XLib.XTranslateCoordinates(display, window, root, windowAttrs.x, windowAttrs.y, out var rootx, out var rooty, out _);
 
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
@@ -330,7 +330,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 			}
 
-			using var _3 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
+			using var _5 = Disposable.Create(() => X11Helper.XRRFreeCrtcInfo(crtcInfo));
 
 			if (crtcInfo == default || crtcInfo->noutput == 0)
 			{
@@ -342,11 +342,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// the first one we find for the numbers
 
 			var outputInfo = X11Helper.XRRGetOutputInfo(display, new IntPtr(resources), *(IntPtr*)crtcInfo->outputs.ToPointer());
-			using var _4 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
+			using var _6 = Disposable.Create(() => X11Helper.XRRFreeOutputInfo(outputInfo));
 
 			X11Helper.XRRCrtcTransformAttributes* transformInfo = default;
-			X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
-			using var _5 = Disposable.Create(() => XLib.XFree(new IntPtr(transformInfo)));
+			var _7 = X11Helper.XRRGetCrtcTransform(display, crtc, ref transformInfo);
+			using var _8 = Disposable.Create(() =>
+			{
+				var _ = XLib.XFree(new IntPtr(transformInfo));
+			});
 
 			// Assume no fancy transforms. We only support simple scaling transforms.
 			// e.g. for 1.5x1.5 we should see a similar affine transformation to:

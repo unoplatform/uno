@@ -23,7 +23,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			XWindowAttributes attributes = default;
-			XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
+			var _1 = XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
@@ -59,7 +59,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				bitmap_pad: BITMAP_PAD,
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
-			X11Helper.XPutImage(
+			var _2 = X11Helper.XPutImage(
 				display: x11window.Display,
 				drawable: x11window.Window,
 				gc: X11Helper.XDefaultGC(x11window.Display, XLib.XDefaultScreen(x11window.Display)),
@@ -77,9 +77,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var ptr = (XImage*)ximage.ToPointer();
 				ptr->data = IntPtr.Zero;
 			}
-			XLib.XDestroyImage(ximage);
+			var _3 = XLib.XDestroyImage(ximage);
 
-			XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
+			var _4 = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
 		}
 	}
 }

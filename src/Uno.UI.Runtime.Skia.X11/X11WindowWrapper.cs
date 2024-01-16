@@ -42,8 +42,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		if (NativeWindow is X11Window x11Window)
 		{
 			using var _ = X11Helper.XLock(x11Window.Display);
-			XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
-			XLib.XSetInputFocus(x11Window.Display, x11Window.Window, RevertTo.None,  X11Helper.CurrentTime);
+			var _1 = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+			var _2 = XLib.XSetInputFocus(x11Window.Display, x11Window.Window, RevertTo.None,  X11Helper.CurrentTime);
 		}
 	}
 
@@ -53,8 +53,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		{
 			X11Manager.XamlRootMap.Unregister(_xamlRoot);
 			X11XamlRootHost.Close(x11Window);
-			using var _ = X11Helper.XLock(x11Window.Display);
-			XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
+			using var _1 = X11Helper.XLock(x11Window.Display);
+			var _2 = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
 		}
 
 		RaiseClosed();

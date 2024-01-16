@@ -118,7 +118,9 @@ public static class X11Helper
 	public unsafe static extern int XRRGetCrtcTransform(IntPtr dpy, IntPtr crtc, ref XRRCrtcTransformAttributes* attributes);
 
 	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 	public struct XRROutputInfo
+#pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
 		public IntPtr timestamp;
 		public IntPtr crtc;
@@ -138,7 +140,9 @@ public static class X11Helper
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 	public struct XRRScreenResources
+#pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
 		public IntPtr timestamp;
 		public IntPtr configTimestamp;
@@ -151,7 +155,9 @@ public static class X11Helper
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 	public struct XRRModeInfo
+#pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
 		public IntPtr	id;
 		public uint	    width;
@@ -170,7 +176,10 @@ public static class X11Helper
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct XRRCrtcInfo {
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct XRRCrtcInfo
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
 		public IntPtr	    timestamp;
 		public int		    x, y;
 		public uint         width, height;
@@ -184,7 +193,10 @@ public static class X11Helper
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct XRRCrtcTransformAttributes {
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct XRRCrtcTransformAttributes
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
 		public XTransform	pendingTransform;
 		public IntPtr       pendingFilter;
 		public int		    pendingNparams;
@@ -196,7 +208,9 @@ public static class X11Helper
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
 	public struct XTransform
+#pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
 		public int _1_1;
 		public int _1_2;

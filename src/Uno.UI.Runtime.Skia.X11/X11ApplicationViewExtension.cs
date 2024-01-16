@@ -27,7 +27,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				Window.GetFromAppWindow(appWindow) is { } window &&
 				X11WindowWrapper.GetHostFromWindow(window) is { } host)
 			{
-				using var _ = X11Helper.XLock(host.X11Window.Display);
+				using var _1 = X11Helper.XLock(host.X11Window.Display);
 
 				IntPtr wm_state = X11Helper.GetAtom(host.X11Window.Display, X11Helper._NET_WM_STATE);
 				IntPtr wm_fullscreen = X11Helper.GetAtom(host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN);
@@ -51,8 +51,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				XEvent xev = default;
 				xev.ClientMessageEvent = xclient;
-				XLib.XSendEvent(host.X11Window.Display, XLib.XDefaultRootWindow(host.X11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
-				XLib.XFlush(host.X11Window.Display);
+				var _2 = XLib.XSendEvent(host.X11Window.Display, XLib.XDefaultRootWindow(host.X11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+				var _3 = XLib.XFlush(host.X11Window.Display);
 			}
 
 			return true;
@@ -65,8 +65,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				Window.GetFromAppWindow(appWindow) is { } window &&
 				X11WindowWrapper.GetHostFromWindow(window) is { } host)
 			{
-				using var _ = X11Helper.XLock(host.X11Window.Display);
-				XLib.XResizeWindow(host.X11Window.Display, host.X11Window.Window, (int)size.Width, (int)size.Height);
+				using var _1 = X11Helper.XLock(host.X11Window.Display);
+				var _2 = XLib.XResizeWindow(host.X11Window.Display, host.X11Window.Window, (int)size.Width, (int)size.Height);
 			}
 			return false;
 		}

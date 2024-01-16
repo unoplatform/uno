@@ -91,14 +91,14 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 				_ => CursorFontShape.XC_arrow
 			};
 
-			using var _ = X11Helper.XLock(_host.X11Window.Display);
+			using var _1 = X11Helper.XLock(_host.X11Window.Display);
 
 			if (_cursor is { } c)
 			{
-				XLib.XFreeCursor(_host.X11Window.Display, c);
+				var _2 = XLib.XFreeCursor(_host.X11Window.Display, c);
 			}
 			_cursor = XLib.XCreateFontCursor(_host.X11Window.Display, shape);
-			XLib.XDefineCursor(_host.X11Window.Display, _host.X11Window.Window, _cursor.Value);
+			var _3 = XLib.XDefineCursor(_host.X11Window.Display, _host.X11Window.Window, _cursor.Value);
 		}
 	}
 
@@ -142,9 +142,6 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 	private void RaisePointerReleased(PointerEventArgs args)
 		=> PointerReleased?.Invoke(this, args);
 
-	private void RaisePointerCancelled(PointerEventArgs args)
-		=> PointerCancelled?.Invoke(this, args);
-
 	private void RaisePointerWheelChanged(PointerEventArgs args)
 		=> PointerWheelChanged?.Invoke(this, args);
 
@@ -153,9 +150,6 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 
 	private void RaisePointerEntered(PointerEventArgs args)
 		=> PointerEntered?.Invoke(this, args);
-
-	private VirtualKeyModifiers GetCurrentModifiersState()
-		=> _keyboardInputSource?.Invoke() ?? VirtualKeyModifiers.None;
 
 	private void LogNotSupported([CallerMemberName] string member = "")
 		=> this.Log().Debug($"{member} not supported on Skia for X11.");

@@ -108,7 +108,7 @@ namespace Avalonia.X11
 			if (ptr == IntPtr.Zero)
 				return null;
 			var s = Marshal.PtrToStringAnsi(ptr);
-			XFree(ptr);
+			var _ = XFree(ptr);
 			return s;
 		}
 

@@ -54,7 +54,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		// might need to explicitly set _NET_WM_NAME as well?
 		using var _ = X11Helper.XLock(X11Window.Display);
-		XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
+		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
 	}
 
 	public static X11XamlRootHost? GetXamlRootHostFromX11Window(X11Window window)
@@ -133,7 +133,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
 
-		using var _ = X11Helper.XLock(display);
+		using var _1 = X11Helper.XLock(display);
 
 		if (display == IntPtr.Zero)
 		{
@@ -150,13 +150,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr window = XLib.XCreateSimpleWindow(display, XLib.XRootWindow(display, screen), 0, 0, (int)size.Width, (int)size.Height, 0,
 			XLib.XBlackPixel(display, screen), XLib.XWhitePixel(display, screen));
 
-		XLib.XFlush(display); // unnecessary on most Xlib implementations
+		var _2 = XLib.XFlush(display); // unnecessary on most Xlib implementations
 
 		_x11Window = new X11Window(display, window);
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
+		var _3 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -167,7 +167,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		InitializeX11EventsThread();
 
 		// The window must be mapped before DisplayExtensionExtension is initialized.
-		XLib.XMapWindow(display, window);
+		var _4 = XLib.XMapWindow(display, window);
 
 		_renderer = new X11Renderer(this, _x11Window.Value);
 	}
