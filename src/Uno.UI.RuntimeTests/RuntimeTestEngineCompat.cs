@@ -12,16 +12,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Foundation.Logging;
 using Uno.UI.RuntimeTests.Helpers;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
-
-namespace Uno.Logging
-{
-	// TODO: Remove on next update of runtime test engine
-	internal static class LoggerExtensions
-	{
-		public static void Info(this ILogger log, string message) => log.Log(LogLevel.Information, message);
-	}
-}
 
 namespace Uno.Extensions
 {
@@ -50,8 +40,6 @@ namespace Uno.UI.RuntimeTests
 
 	partial class UnitTestsControl
 	{
-		partial void ConstructPartial(); // TODO: Remove on next update of runtime test engine
-
 		partial void ConstructPartial()
 		{
 			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
@@ -68,14 +56,6 @@ namespace Uno.UI.RuntimeTests
 			base.OnLoaded();
 
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
-
-			// TODO: Remove on next update of runtime test engine
-			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
-#if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
-#else
-				false;
-#endif
 		}
 	}
 }
