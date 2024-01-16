@@ -413,6 +413,20 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		public bool UseRtl
+		{
+			get => Owner.FlowDirection == FlowDirection.RightToLeft;
+			set
+			{
+				var newValue = value ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+				if (newValue != Owner.FlowDirection)
+				{
+					Owner.FlowDirection = newValue;
+					RaisePropertyChanged();
+				}
+			}
+		}
+
 		public bool UseDarkTheme
 		{
 			get => _useDarkTheme;
