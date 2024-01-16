@@ -115,10 +115,14 @@ partial class TimePicker
 					var value = (int)e;
 
 					if (value < 1)
+					{
 						return 1;
+					}
 
 					if (value > 30)
+					{
 						return 30;
+					}
 
 					return value;
 				}));

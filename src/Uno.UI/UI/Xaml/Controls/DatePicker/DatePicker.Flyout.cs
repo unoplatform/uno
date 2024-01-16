@@ -109,10 +109,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DatePickerFlyout CreateManagedDatePickerFlyout()
 			{
-				var flyout = new DatePickerFlyout()
+				var flyout = new DatePickerFlyout();
+
+				if (FlyoutPresenterStyle is { } style)
 				{
-					DatePickerFlyoutPresenterStyle = FlyoutPresenterStyle
-				};
+					flyout.DatePickerFlyoutPresenterStyle = style;
+				}
+
 				flyout.DatePicked += OnPicked;
 
 				return flyout;

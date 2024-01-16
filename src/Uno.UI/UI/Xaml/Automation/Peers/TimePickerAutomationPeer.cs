@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 
 public partial class TimePickerAutomationPeer : FrameworkElementAutomationPeer
 {
-	private string UIA_AP_TIMEPICKER = nameof(UIA_AP_TIMEPICKER);
+	private const string UIA_AP_TIMEPICKER = nameof(UIA_AP_TIMEPICKER);
 
 	public TimePickerAutomationPeer(TimePicker owner) : base(owner)
 	{

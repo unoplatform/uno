@@ -97,7 +97,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
 		{
 			_tpTarget = target;
-			//base.ShowAtCore(target, null);
 			return _asyncOperationManager.Start(target);
 		}
 

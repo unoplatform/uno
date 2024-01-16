@@ -74,16 +74,26 @@ partial class TimePicker
 
 	internal static TimePickerFlyout CreateFlyout(TimePicker timePicker)
 	{
-		var flyout = timePicker.UseNativeStyle ?
+		var useNativeStyle =
+#if __IOS__ || __ANDROID__
+			timePicker.UseNativeStyle;
+#else
+			false;
+#endif
+
+		var flyout = useNativeStyle ?
 			new NativeTimePickerFlyout() :
 			new TimePickerFlyout();
 
-		if (timePicker.UseNativeStyle)
+		if (useNativeStyle)
 		{
 #if __IOS__
 			flyout.Placement = timePicker.FlyoutPlacement;
 #endif
-			flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;
+			if (timePicker.FlyoutPresenterStyle is not null)
+			{
+				flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;
+			}
 
 			void OnPicked(PickerFlyoutBase snd, TimePickedEventArgs evt)
 			{
@@ -103,43 +113,4 @@ partial class TimePicker
 
 		return flyout;
 	}
-
-	//	private void InitPartial()
-	//	{
-	//#if __IOS__ || __ANDROID__
-	//		TimePickerFlyout CreateFlyout()
-	//		{
-	//			var f = UseNativeStyle
-	//				? new NativeTimePickerFlyout()
-	//				: CreateManagedTimePickerFlyout();
-
-	//			f.TimePicked += OnPicked;
-
-	//			return f;
-	//		}
-
-	//		_lazyFlyout = new Lazy<TimePickerFlyout>(CreateFlyout);
-	//#else
-	//		_lazyFlyout De= new Lazy<TimePickerFlyout>(CreateManagedTimePickerFlyout);
-	//#endif
-
-	//		void OnPicked(PickerFlyoutBase snd, TimePickedEventArgs evt)
-	//		{
-	//			SelectedTime = evt.NewTime;
-	//			Time = evt.NewTime;
-
-	//			if (evt.NewTime != evt.OldTime)
-	//			{
-	//				TimeChanged?.Invoke(this, new TimePickerValueChangedEventArgs(evt.NewTime, evt.OldTime));
-	//			}
-	//		}
-
-	//		TimePickerFlyout CreateManagedTimePickerFlyout()
-	//		{
-	//			var flyout = new TimePickerFlyout(); //TODO:MZ: { TimePickerFlyoutPresenterStyle = FlyoutPresenterStyle };
-	//			flyout.TimePicked += OnPicked;
-
-	//			return flyout;
-	//		}
-	//	}
 }
