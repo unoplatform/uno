@@ -6,21 +6,21 @@ uid: Uno.Contributing.ThemeResource
 
 This article looks at the way theme resources are handled under the hood, including the way that resource assignations are resolved, and the way that assigned resources are updated, for example when the active theme changes in the running application (from light to dark or vice versa). It's aimed at Uno Platform contributors looking to better understand the internals of the feature.
 
-From hereon, an understanding of the contract and consumer-visible behavior of [XAML resources](https://docs.microsoft.com/en-us/windows/apps/design/style/xaml-resource-dictionary) and [ThemeResource markup extensions](https://docs.microsoft.com/en-us/windows/apps/design/style/xaml-theme-resources) is assumed. Review those links if you need a refresher on how the feature is expected to behave.
+From hereon, an understanding of the contract and consumer-visible behavior of [XAML resources](https://learn.microsoft.com/windows/apps/design/style/xaml-resource-dictionary) and [ThemeResource markup extensions](https://learn.microsoft.com/windows/apps/design/style/xaml-theme-resources) is assumed. Review those links if you need a refresher on how the feature is expected to behave.
 
 ## Resource resolution
 
-When a theme resource or static resource assignation is resolved, the framework looks through all ResourceDictionaries that are in scope from the point of assignation, in a defined order, for a resource with a matching key. 
+When a theme resource or static resource assignation is resolved, the framework looks through all ResourceDictionaries that are in scope from the point of assignation, in a defined order, for a resource with a matching key.
 
 ### Priority of ResourceDictionaries
 
 Scope and priority are determined by the following rules:
 
- - if the `{ThemeResource}` assignation is itself inside a dictionary, other than inside a template, then the containing dictionary is checked first.
- - if the assignation is on a `frameworkElement` or the logical child of a `frameworkElement`, and the `frameworkElement` is in the visual tree, then the `Resources` of the `frameworkElement` and its visual ancestors are checked in order, outwards from the `frameworkElement`. This typically occurs when the element is first loaded into the visual tree, or when the active theme changes (see below).
- - the `Application.Resources` dictionary is checked next.
- - if the XAML containing the assignation comes from an external assembly (ie a class library), then next the dictionaries within that assembly are checked. (Note that Uno's behavior departs somewhat from UWP here, because only the `Themes/Generic.xaml` dictionary from that assembly should be checked - see [issue #4424](https://github.com/unoplatform/uno/issues/4424).)
- - finally, 'system level' resources are checked. This simply means the resources that are defined within the Uno.UI assembly.
+- if the `{ThemeResource}` assignation is itself inside a dictionary, other than inside a template, then the containing dictionary is checked first.
+- if the assignation is on a `frameworkElement` or the logical child of a `frameworkElement`, and the `frameworkElement` is in the visual tree, then the `Resources` of the `frameworkElement` and its visual ancestors are checked in order, outwards from the `frameworkElement`. This typically occurs when the element is first loaded into the visual tree, or when the active theme changes (see below).
+- the `Application.Resources` dictionary is checked next.
+- if the XAML containing the assignation comes from an external assembly (ie a class library), then next the dictionaries within that assembly are checked. (Note that Uno's behavior departs somewhat from UWP here, because only the `Themes/Generic.xaml` dictionary from that assembly should be checked - see [issue #4424](https://github.com/unoplatform/uno/issues/4424).)
+- finally, 'system level' resources are checked. This simply means the resources that are defined within the Uno.UI assembly.
 
 ### Searching within a ResourceDictionary
 
@@ -28,10 +28,10 @@ Resolving a resource within a `ResourceDictionary` is a somewhat complex operati
 
 The matching resource is determined according to the following priority:
 
- - the key-value pairs directly added to the `ResourceDictionary` are considered first.
- - ResourceDictionaries in the `MergedDictionaries` collection are searched, in reverse order, in other words the last dictionary added has first priority.
- - The `ResourceDictionary` in `ThemeDictionaries` whose key matches the active theme will be searched. This will either be the dictionary whose key exactly matches the active theme (eg "Dark" key when dark theme is active), or the "Default"-keyed dictionary if it exists and no exact match is found. Note that if an exact-match dictionary is found, the "Default" dictionary will be ignored, even if the resource key is not found within the exact-match dictionary.
- - finally, if the search was initiated from consumer code, eg via indexing or the public `TryGetValue()` method, then system level resources will be checked, as defined above. 
+- the key-value pairs directly added to the `ResourceDictionary` are considered first.
+- ResourceDictionaries in the `MergedDictionaries` collection are searched, in reverse order, in other words the last dictionary added has first priority.
+- The `ResourceDictionary` in `ThemeDictionaries` whose key matches the active theme will be searched. This will either be the dictionary whose key exactly matches the active theme (eg "Dark" key when dark theme is active), or the "Default"-keyed dictionary if it exists and no exact match is found. Note that if an exact-match dictionary is found, the "Default" dictionary will be ignored, even if the resource key is not found within the exact-match dictionary.
+- finally, if the search was initiated from consumer code, eg via indexing or the public `TryGetValue()` method, then system level resources will be checked, as defined above.
 
 Searching for a resource is a very frequently performed operation and a bottleneck during page loading, and as such is heavily optimized within `ResourceDictionary`, via caching, dedicated internal resource keys, and other mechanisms. It may also be optimized 'outside' `ResourceDictionary` by using a tool to create a single flat merged dictionary out of multiple top-level ControlName.xaml files, which is faster to search (`O(1)`) than many nested MergedDictionaries.
 
@@ -53,7 +53,7 @@ In case 1., we create a `ResourceBinding`, an internal Uno-only type that inheri
 
 In case 2. we can't create a binding because we don't have a dependency property to bind to. The best we can do in this case is to do a one-time resolution of the value.
 
-In case 3., the details of the ThemeResource reference are captured on the `Setter` (via the `ApplyThemeResourceUpdateValues()` extension method). When the setter is later applied, either within a `Style` or within a `VisualState`, then the ThemeResource assignation will be applied according to either case 1. or case 2. depending on whether the target property is a DependencyProperty or not. 
+In case 3., the details of the ThemeResource reference are captured on the `Setter` (via the `ApplyThemeResourceUpdateValues()` extension method). When the setter is later applied, either within a `Style` or within a `VisualState`, then the ThemeResource assignation will be applied according to either case 1. or case 2. depending on whether the target property is a DependencyProperty or not.
 
 In cases 1. and 3., at the time of registration we capture the 'context'. This is an instance of `XamlParseContext`, which captures the assembly in which the ThemeResource reference is declared, and is used to determine the scope which should be used when resolving it.
 
@@ -73,7 +73,7 @@ Note that changing the active theme is something that we expect to happen relati
 
 #### Updating resource bindings
 
-Resource bindings are managed by `DependencyObjectStore`. It checks if any properties of its parent instance are resource-bound, by checking if it has a non-empty resource bindings list. 
+Resource bindings are managed by `DependencyObjectStore`. It checks if any properties of its parent instance are resource-bound, by checking if it has a non-empty resource bindings list.
 
 If so, for each binding, it tries to re-resolve the correct theme value from the ResourceDictionaries currently in its scope. If it can, it will then set the value, with the correct precedence as captured when the binding was created.
 

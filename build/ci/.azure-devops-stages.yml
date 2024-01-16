@@ -11,6 +11,10 @@ stages:
     parameters:
       vmImage: '$(linuxVMImage)'
 
+  - template: .azure-devops-markdown-lint.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
   - template: .azure-devops-pipeline-validations.yml
     parameters:
       vmImage: '$(linuxVMImage)'

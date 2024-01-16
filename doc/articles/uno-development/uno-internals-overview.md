@@ -4,11 +4,11 @@ uid: Uno.Contributing.Overview
 
 # How Uno Platform works
 
-This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno. 
+This article explores how Uno works in detail, with a focus on information that's useful for contributors to Uno.
 
 ## What Uno Platform does
 
-Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI/UWP types and supports the WinUI/UWP XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus, it allows app code written for UWP to be built and run on Android, iOS, mac Catalyst, in the browser via WebAssembly, Linux, and on macOS. 
+Uno Platform is a cross-platform projection of Microsoft's WinUI framework (and its preview iteration, UWP). Uno mirrors WinUI/UWP types and supports the WinUI/UWP XAML dialect, as well as handling several additional aspects of the app contract like assets and string resources. Thus, it allows app code written for UWP to be built and run on Android, iOS, mac Catalyst, in the browser via WebAssembly, Linux, and on macOS.
 
 > [!NOTE]
 > While UWP supports authoring app code in C++ as well as C#, Uno Platform only supports C#.
@@ -24,9 +24,9 @@ Uno Platform aims to be a 1:1 match for WinUI (and UWP), in API surface (types, 
 
 ## Uno.WinUI as a class library
 
-Certain aspects of the framework are not tied in any way to the platform that Uno happens to be running on. These include support for the [`DependencyProperty` system and data-binding](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview), and style and resource resolution. The code that implements these features is fully shared across all platforms.
+Certain aspects of the framework are not tied in any way to the platform that Uno happens to be running on. These include support for the [`DependencyProperty` system and data-binding](https://learn.microsoft.com/windows/uwp/xaml-platform/dependency-properties-overview), and style and resource resolution. The code that implements these features is fully shared across all platforms.
 
-Other parts of the framework are implemented using a mix of shared and platform-specific code, such as view types (ie types inheriting from [`UIElement`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.uielement)). There is a tendency for high-level controls, which are typically built by composition of simpler visual primitives, to be implemented mainly by shared code - [`NavigationView`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/NavigationView) is a good example. The primitives themselves, such as [`TextBlock`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/TextBlock), [`Image`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/Image), or [`Shape`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Shapes), contain a much higher proportion of platform-specific code as they need to call into per-platform rendering APIs.
+Other parts of the framework are implemented using a mix of shared and platform-specific code, such as view types (ie types inheriting from [`UIElement`](https://learn.microsoft.com/uwp/api/windows.ui.xaml.uielement)). There is a tendency for high-level controls, which are typically built by composition of simpler visual primitives, to be implemented mainly by shared code - [`NavigationView`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/NavigationView) is a good example. The primitives themselves, such as [`TextBlock`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/TextBlock), [`Image`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Controls/Image), or [`Shape`](https://github.com/unoplatform/uno/tree/master/src/Uno.UI/UI/Xaml/Shapes), contain a much higher proportion of platform-specific code as they need to call into per-platform rendering APIs.
 
 The layouting system is implemented in shared code as much as possible, for cross-platform consistency; however it's nonetheless tied into the underlying native layout cycle on each platform.
 
@@ -41,14 +41,14 @@ WinUI has a very large API surface area, and not all features in it have been im
 [global::Uno.NotImplemented]
 public  bool ExitDisplayModeOnAccessKeyInvoked
 {
-	get
-	{
-		return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
-	}
-	set
-	{
-		this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
-	}
+ get
+ {
+  return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
+ }
+ set
+ {
+  this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
+ }
 }
 #endif
 ```

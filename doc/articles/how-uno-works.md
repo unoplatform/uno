@@ -54,7 +54,7 @@ The codebase of an Uno Platform application is a mix of XAML markup, C# code, im
 
 ### Binaries
 
-The C# code is the easy part - [.NET runs pretty much everywhere](https://docs.microsoft.com/en-us/dotnet/core/introduction). On iOS, Android, macOS, and Mac Catalyst, Uno.WinUI is using .NET for Mobile (previously known as [Xamarin Native](https://dotnet.microsoft.com/apps/xamarin), and is not Xamarin.Forms or MAUI). On the web, it uses .NET running in [WebAssembly](https://webassembly.org/), and on Linux, it's running under .NET 7 or later.
+The C# code is the easy part - [.NET runs pretty much everywhere](https://learn.microsoft.com/dotnet/core/introduction). On iOS, Android, macOS, and Mac Catalyst, Uno.WinUI is using .NET for Mobile (previously known as [Xamarin Native](https://dotnet.microsoft.com/apps/xamarin), and is not Xamarin.Forms or MAUI). On the web, it uses .NET running in [WebAssembly](https://webassembly.org/), and on Linux, it's running under .NET 7 or later.
 
 The compiled binaries also include the output of the XAML parser, as described in the next section.
 

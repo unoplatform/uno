@@ -4,7 +4,7 @@ uid: Uno.Development.NativeStyles
 
 # Using platform-native control styles
 
-By default, controls in Uno Platform applications are rendered exactly the same way on every target platform. But for Android and iOS, an additional set of 'native' [control styles](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles) are included, which customize the [templates of the controls](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates) to make them look and behave natively. In fact, the native high-level equivalents of each control are placed inside the native control template.
+By default, controls in Uno Platform applications are rendered exactly the same way on every target platform. But for Android and iOS, an additional set of 'native' [control styles](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles) are included, which customize the [templates of the controls](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates) to make them look and behave natively. In fact, the native high-level equivalents of each control are placed inside the native control template.
 
 ## About native control styles
 

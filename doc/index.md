@@ -2,6 +2,7 @@
 uid: front-page
 ---
 
+<!-- markdownlint-disable MD041 -->
 
 <section class="intro">
 <h1>Uno Platform Documentation</h1>

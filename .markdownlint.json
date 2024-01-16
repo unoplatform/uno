@@ -1,0 +1,13 @@
+{
+	"default": true,
+	"line-length": false,
+	"commands-show-output": false,
+	"no-bare-urls": false,
+	"no-inline-html": false,
+	"no-duplicate-heading": false,
+	"no-emphasis-as-heading": false,
+	// First line in a file should be a top-level heading - false positive for include files.
+	"MD041": false,
+	// Link fragments should be valid - false positive for docfx tabs
+	"MD051": false
+}

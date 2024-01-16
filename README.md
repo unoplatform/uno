@@ -18,7 +18,7 @@ The Uno Platform is an Open-source platform for building single codebase native 
 
 It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
 
-Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
+Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
 Visit [our documentation](doc/articles/intro.md) for more details.
 
@@ -46,10 +46,10 @@ For a larger example and features demo:
     * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls:
-    * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
+    * [Control Templating](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
-    * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles)
-    * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation)
+    * [Styling](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles)
+    * [Rich Animations](https://learn.microsoft.com/windows/uwp/design/motion/xaml-animation)
 * UWP/WinUI Code Support:
     * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
     * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
@@ -69,9 +69,9 @@ For a larger example and features demo:
     * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
     * Any UWP project
 * Responsive Design:
-    * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
+    * [Visual State Manager](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.VisualStateManager)
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/)
-    * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
+    * [Adaptive Triggers](https://learn.microsoft.com/uwp/api/Microsoft.UI.Xaml.AdaptiveTrigger)
 * Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/platform-specific-xaml.md)
     * Any of the existing Xamarin iOS/Android libraries available
@@ -89,11 +89,11 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Community Toolkit Labs App](https://toolkitlabs.dev/)
 * [SkiaSharp fork for the Uno Platform](https://skiasharp-wasm.platform.uno/), Skia is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library ([Source](https://github.com/unoplatform/Uno.SkiaSharp)).
 * The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/) ([Source](https://github.com/unoplatform/uno.WindowsCommunityToolkit)).
-* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/unoplatform/uno.LottieSample)).
+* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/unoplatform/uno.LottieSample)).
 * The [Uno.RoslynQuoter](https://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/unoplatform/uno.RoslynQuoter)).
 * The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/unoplatform/uno.BikeSharing360_MobileApps)).
 * The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/unoplatform/uno.WindowsStateTriggers)).
-* The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
+* The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://learn.microsoft.com/ef/core/), [SQLite](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
 * The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/unoplatform/uno.Wasm.WebSockets)).
 * A [WebAssembly AOT RayTracer](https://raytracer-mono-aot.platform.uno/).
 * The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/unoplatform/uno.Xaml-Controls-Gallery)).

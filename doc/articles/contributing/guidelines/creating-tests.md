@@ -12,9 +12,9 @@ This guide offers an overview of the various types of tests used within Uno, and
 
 The 'TLDR' rule of thumb for adding tests is:
 
- * if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](../../uno-development/creating-mocked-tests.md);
- * if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](../../uno-development/creating-runtime-tests.md);
- * if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](../../uno-development/creating-ui-tests.md).
+- if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](../../uno-development/creating-mocked-tests.md);
+- if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](../../uno-development/creating-runtime-tests.md);
+- if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](../../uno-development/creating-ui-tests.md).
 
 ## Types of tests
 
@@ -30,22 +30,22 @@ These are the main types of tests in Uno:
 
  All these tests are run on each CI build, and all tests must pass before a PR can be merged.
 
- ### UI tests
+### UI tests
 
- Uno's UI tests use the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) testing harness, which mimics the [`Xamarin.UITest` API](https://docs.microsoft.com/en-us/appcenter/test-cloud/uitest/) and extends it to WebAssembly. These tests run out-of-process and interact with a running app (the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared)) to confirm that it behaves correctly on each supported platform.
+ Uno's UI tests use the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) testing harness, which mimics the [`Xamarin.UITest` API](https://learn.microsoft.com/appcenter/test-cloud/uitest/) and extends it to WebAssembly. These tests run out-of-process and interact with a running app (the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared)) to confirm that it behaves correctly on each supported platform.
 
 UI tests can mimic the actions of a user:
 
- - tapping buttons and other UI elements
- - entering keyboard input
- - scrolling, swiping, and other gestures
+- tapping buttons and other UI elements
+- entering keyboard input
+- scrolling, swiping, and other gestures
 
- They can verify assertions about the state of the app:
+They can verify assertions about the state of the app:
 
-  - text labels
-  - any DependencyProperty value
-  - onscreen bounds of a view element
-  - comparing screenshots at different stages of the app, and asserting equality or inequality
+- text labels
+- any DependencyProperty value
+- onscreen bounds of a view element
+- comparing screenshots at different stages of the app, and asserting equality or inequality
 
 A complete set of instructions for authoring UI tests is available [here](../../uno-development/working-with-the-samples-apps.md).
 
@@ -100,7 +100,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl;
 [SampleControlInfo(ignoreInSnapshotTests: true)]
 public sealed partial class CheckBox_Button_With_CanExecute_Changing : UserControl
 {
-	...
+  ...
 }
 ```
 
@@ -111,11 +111,11 @@ Skip screenshot comparison for UI tests:
 [AutoRetry]
 public void TimePicker_Flyout()
 {
-	Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
+  Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
 
-	...
+  ...
 
-	TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+  TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
 ```
 
 ## Which type of test should I create?

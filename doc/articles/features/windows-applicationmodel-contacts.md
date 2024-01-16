@@ -15,7 +15,7 @@ The `ContactPicker` class allows picking contacts from the OS contact store.
 
 To check whether the class is supported on the target platform, use `IsSupportedAsync()` method:
 
-```
+```csharp
 if (await ContactPicker.IsSupportedAsync())
 {
     // you can use ContactPicker
@@ -30,7 +30,7 @@ To pick contacts call either the `PickContactAsync()` or `PickContactsAsync()` m
 
 Your app must declare `android.permission.READ_CONTACTS` permission:
 
-```
+```csharp
 [assembly: UsesPermission("android.permission.READ_CONTACTS")]
 ```
 
@@ -38,7 +38,7 @@ Your app must declare `android.permission.READ_CONTACTS` permission:
 
 Your app must declare `http://tizen.org/privilege/contact.read` and `http://tizen.org/privilege/appmanager.launch` permissions in the app manifest:
 
-```
+```csharp
 <privileges>
     <privilege>http://tizen.org/privilege/contact.read</privilege>
     <privilege>http://tizen.org/privilege/appmanager.launch</privilege>

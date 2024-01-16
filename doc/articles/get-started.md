@@ -4,7 +4,7 @@ uid: Uno.GetStarted
 
 ## Get Started
 
-Uno Platform allows you to create single-codebase, cross-platform applications that run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time. 
+Uno Platform allows you to create single-codebase, cross-platform applications that run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time.
 
 The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials.
 
@@ -20,9 +20,9 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 
 **Choose the IDE you want to use:**
 
- - [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
- - [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
- - [Rider](xref:Uno.GetStarted.Rider)
+- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Rider](xref:Uno.GetStarted.Rider)
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
@@ -37,9 +37,8 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | Linux (Skia-Gtk)                  | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
 | Windows 7+ (Skia-WPF)             | ✔️                                              | ✔️                                         | ✔️                                                   | ✔️                                              |
 
-
-* † You will need to be connected to a Mac to run and debug iOS apps from Windows.
-* †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
+- † You will need to be connected to a Mac to run and debug iOS apps from Windows.
+- †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 
 # [**macOS**](#tab/macos)
 
@@ -47,8 +46,8 @@ You can use **Visual Studio Code** or **JetBrains Rider**, to build Uno Platform
 
 **Choose the IDE you want to use:**
 
- - [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
- - [Get started with Rider](xref:Uno.GetStarted.Rider)
+- [Get started with VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Get started with Rider](xref:Uno.GetStarted.Rider)
 
 To help you choose the appropriate IDE, the following table shows the compatibility of different development environments with various target platforms:
 
@@ -63,11 +62,10 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | Linux (Skia-Gtk)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
 | Windows 7+ (Skia-WPF)             | ❌                                       | ✔️                                                   | ❌                                               |
 
-
 # [**Linux**](#tab/linux)
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
- 
+
 **Choose the IDE you want to use:**
 
 - [Get started with Visual Studio Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
@@ -86,7 +84,6 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | Linux (Skia-Gtk)                  | ✔️                                        | ✔️                                                     | ✔️                                                |
 | Windows 7+ (Skia-WPF)             | ❌                                        | ❌                                                     | ❌                                                |
 
-
 **Notes:**
 
 † Rider [does not support .NET Android](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) on Linux at this time.
@@ -97,6 +94,6 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 Choose the IDE to Learn more about:
 
- - [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
- - [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
- - [Rider](xref:Uno.GetStarted.Rider)
+- [Visual Studio 2022](xref:Uno.GetStarted.vs2022)
+- [VS Code, Codespaces and GitPod](xref:Uno.GetStarted.vscode)
+- [Rider](xref:Uno.GetStarted.Rider)

@@ -4,7 +4,7 @@ uid: Uno.Contributing.CodeStyle
 
 # Guidelines for Code style
 
-Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform/uno/blob/master/.editorconfig)) to maintain consistent coding styles and settings in our codebase, such as indent style, tab width, end of line characters, encoding, and more. Most IDEs should respect the `EditorConfig` settings by default when applying formatting. We typically observe the [Microsoft C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with one notable exception - Uno uses Tabs. If you install this [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=mynkow.FormatdocumentonSave) it will automatically format your contributions upon file save.
+Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform/uno/blob/master/.editorconfig)) to maintain consistent coding styles and settings in our codebase, such as indent style, tab width, end of line characters, encoding, and more. Most IDEs should respect the `EditorConfig` settings by default when applying formatting. We typically observe the [Microsoft C# Coding Conventions](https://learn.microsoft.com/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with one notable exception - Uno uses Tabs. If you install this [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=mynkow.FormatdocumentonSave) it will automatically format your contributions upon file save.
 
 ## Refactoring
 
@@ -18,7 +18,7 @@ This section describes some recurring patterns and practices you'll see in Uno c
 
 ### Partial classes
 
-[Partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) are used extensively in Uno. The two main use cases for partial classes are [platform-specific code](../../platform-specific-csharp.md) and [generated code](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs).
+[Partial class definitions](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) are used extensively in Uno. The two main use cases for partial classes are [platform-specific code](../../platform-specific-csharp.md) and [generated code](../../uno-development/uno-internals-overview.md#generated-notimplemented-stubs).
 
 However, in some cases where it makes sense, partial class files are also used for logical separation of code. If you're implementing a type that owns a lot of dependency properties, consider putting these in a separate partial, to avoid cluttering up the file where the actual business logic is with DP boilerplate. Another use case for a partial is a nested class with a large definition.
 
@@ -26,11 +26,11 @@ However, in some cases where it makes sense, partial class files are also used f
 
 Uno uses lightweight `IDisposables` widely for robust lifetime management. The most commonly used types for this purpose are `SerialDisposable`, `CompositeDisposable`, `CancellationDisposable` and `DisposableAction`.
 
-If you've used the `Reactive Extensions` framework, these names [might be familiar](https://docs.microsoft.com/en-us/previous-versions/dotnet/reactive-extensions/hh229090(v=vs.103)), and in fact these disposables behave identically to their Rx equivalents. (However, they've been transplanted into [Uno.Core](https://github.com/unoplatform/Uno.Core), to avoid having to take a dependency on `System.Reactive`.)
+If you've used the `Reactive Extensions` framework, these names [might be familiar](https://learn.microsoft.com/previous-versions/dotnet/reactive-extensions/hh229090(v=vs.103)), and in fact these disposables behave identically to their Rx equivalents. (However, they've been transplanted into [Uno.Core](https://github.com/unoplatform/Uno.Core), to avoid having to take a dependency on `System.Reactive`.)
 
 ### Extension methods
 
-[Extension methods](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods) are used throughout the Uno.UI codebase to add reusable functionality to existing types, particularly types coming from the Xamarin bindings. Extension methods should be defined in a dedicated class, with the naming convention `[TypeName]Extensions.cs`, where `TypeName` is the name of the type either being returned or passed as the `this` parameter.
+[Extension methods](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods) are used throughout the Uno.UI codebase to add reusable functionality to existing types, particularly types coming from the Xamarin bindings. Extension methods should be defined in a dedicated class, with the naming convention `[TypeName]Extensions.cs`, where `TypeName` is the name of the type either being returned or passed as the `this` parameter.
 
 The [Uno.Core library](https://github.com/unoplatform/Uno.Core) already defines a number of extensions to the standard .NET types, so you should check those first to see if they do what you need.
 

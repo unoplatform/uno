@@ -2,8 +2,8 @@ parameters:
   vmImage: ''
 
 jobs:
-- job: spell_checking
-  displayName: 'Spell Checking Validation'
+- job: markdown_lint
+  displayName: 'Markdown Linting Validation'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -18,8 +18,8 @@ jobs:
       versionSpec: '18.x'
 
   # Keep that version in sync with documentation at doc/README.md
-  - bash: npm install -g cspell@8.3.2
-    displayName: Install cSpell
+  - bash: npm install -g markdownlint-cli@0.38.0
+    displayName: Install markdownlint-cli
 
-  - bash: cspell --config ./build/cSpell.json "doc/**/*.md" "doc/**/toc.yml" --no-progress
-    displayName: Run Spell Checking
+  - bash: markdownlint "doc/**/*.md"
+    displayName: Run Markdown Linter

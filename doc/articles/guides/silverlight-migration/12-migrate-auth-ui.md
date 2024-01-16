@@ -74,6 +74,7 @@ The next task will take a look at creating the **LoginForm**. As discussed above
 > [!TIP]
 > To learn more about the **ContentDialog** control, review the following resources:
 > *
+>
 > * [ContentDialog control](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
 > * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
 
@@ -259,7 +260,7 @@ Let's walk through the implementation.
 
     > [!TIP]
     > As noted in the Microsoft documentation:
-    > _If your data does not undergo fine-grained changes, and if it's likely to be updated as part of a specific action, then you can make your bindings one-time, and force a manual update at any time with a call to **Update**._
+    > *If your data does not undergo fine-grained changes, and if it's likely to be updated as part of a specific action, then you can make your bindings one-time, and force a manual update at any time with a call to **Update**.*
 
 1. To add support for the login when the **OK** (or Primary) button is clicked, update the **ContentDialog_PrimaryButtonClick** method as follows:
 
@@ -290,6 +291,7 @@ Let's walk through the implementation.
 
     > [!TIP]
     > Although the **AuthenticationService.LoginUser** service is asynchronous, the code does not need to wait for it here - the **AuthenticationService.LoggedIn** and **AuthenticationService.LoginFailed** will communicate the state of the login. The `_ = AuthenticationService...` code uses a C# 7 feature called **Discards** to show the intention to ignore the result. You can learn more about **Discards** below:
+    >
     > * [Discards](https://docs.microsoft.com/dotnet/csharp/discards)
 
     Once again, **Bindings.Update** method is called to update the UI. Finally, `args.Cancel = true;` is used to ensure the dialog does not close.

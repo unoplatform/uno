@@ -13,13 +13,13 @@ The functionality of this class is available only on Android. On other platforms
 
 To be able to set wallpaper and lock screen image, add the following permission to the Android project head:
 
-```
+```csharp
 [assembly: UsesPermission("android.permission.SET_WALLPAPER")]
 ```
 
 To set the wallpaper, use the following code snippet:
 
-```
+```csharp
 using Windows.System.UserProfile;
 
 private async Task<bool> SetWallpaperAsync(StorageFile imageFile) 

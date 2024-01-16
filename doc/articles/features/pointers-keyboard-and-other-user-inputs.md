@@ -44,7 +44,6 @@ User inputs are usually propagated using `RoutedEvents`. See Uno's [routed event
 | `Drop`                        | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.drop) |
 | `DropCompleted`               | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.dropcompleted) |
 
-
 Notes:
 
 1. **Focus** events:
@@ -65,6 +64,7 @@ Notes:
 
 These events are the base for all other pointing device related events (i.e. Manipulation, Gesture and drag and dop events).
 They are directly linked to the native events of each platform:
+
 * `Touches[Began|Moved|Ended|Cancelled]` on iOS
 * `dispatchTouchEvent` and `dispatchGenericMotionEvent` on Android
 * `pointer[enter|leave|down|up|move|cancel]` on WebAssembly
@@ -83,23 +83,28 @@ of the scrolling (cf. [documentation](https://developer.apple.com/documentation/
 ### Known limitations for pointer events
 
 As those events are tightly coupled to the native events, Uno has to make some compromises:
+
 * On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`),
   multiple managed events are raised from a single native event. These have multiple effects:
-	* On UWP if you have a control A and a nested control B, you will get:
-		```
-		B.PointerEnter
-		A.PointerEnter
-		B.PointerPressed
-		A.PointerPressed
-		```
-	  but with UNO you will get:
-		```
-		B.PointerEnter
-		B.PointerPressed
-		A.PointerEnter
-		A.PointerPressed
-		```
-	* If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
+  * On UWP if you have a control A and a nested control B, you will get:
+
+    ```output
+    B.PointerEnter
+    A.PointerEnter
+    B.PointerPressed
+    A.PointerPressed
+    ```
+
+    but with UNO you will get:
+
+    ```output
+    B.PointerEnter
+    B.PointerPressed
+    A.PointerEnter
+    A.PointerPressed
+    ```
+
+  * If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
 * On Android with a mouse or a pen, the `PointerEnter` and `PointerExit` are going to be raised without taking clipping in consideration.
   This means that you will get the enter earlier and the exit later than on other platform.
 * On Android if you have an element with a `RenderTransform` which overlaps one of its sibling element,
@@ -134,9 +139,9 @@ but Uno does not rely on native `[got|lost]pointercapture` events.
 
 To differentiate between mouse and touch device type for pointer events, include the following in your app's `Info.plist`:
 
-```
-<key>UIApplicationSupportsIndirectInputEvents</key>
-<true/>
+```xml
+  <key>UIApplicationSupportsIndirectInputEvents</key>
+  <true/>
 ```
 
 Without this key the current version of iPadOS reports mouse interaction as normal touch.
@@ -161,7 +166,7 @@ While the browser context menu enabled on `TextBox` and `PasswordBox` by default
 
 To manually disable the context menu on a `UIElement` which represents a HTML `<input>`, you can manually set the `context-menu-disabled` CSS class:
 
-```
+```csharp
 #if __WASM__
 
 MyInputElement.SetCssClasses("context-menu-disabled");
@@ -190,6 +195,7 @@ The table and sections below describe supported functionality and limitations fo
 * "Link" may refer to WebLink, ApplicationLink or Uri formats
 
 #### Wasm Limitations
+
 1. When dragging content from external app to uno, you cannot retrieve the content from the `DataPackage` before the `Drop` event.
    This a limitations of web browsers.
    Any attempt to read it before the `Drop` will result into a timeout exception after a hard coded delay of 10 seconds.
@@ -204,7 +210,7 @@ The table and sections below describe supported functionality and limitations fo
 
 1. There is no standard type for **WebLink** (nor **ApplicationLink**) on this platform.
    They are copied to the external app as raw **Text**, and converted back as **WebLink** or **ApplicationLink**) from raw text from the external app
-   when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)](https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring) returns true.
+   when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)](https://learn.microsoft.com/dotnet/api/system.uri.iswellformeduristring) returns true.
 2. The image content seems to not being readable by common apps, only another Uno app is able to read it properly.
 
 ### Drag and Drop Data Format Considerations

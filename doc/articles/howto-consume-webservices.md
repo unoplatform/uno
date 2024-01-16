@@ -18,7 +18,7 @@ Throughout the how-to, there will be notes on recommended practices and tips tha
 
 > [!TIP]
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
-
+>
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
 
@@ -80,7 +80,6 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
 1. In the right pane of the **Manage Packages for Solution** page, select every project and click **Install**.
 
     ![Install System.Text.Json nuget package](Assets/how-to-webservice/json-install.png)
-
 
 1. To workaround a Visual studio issue regarding the XAML editor, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it.
 
@@ -510,8 +509,8 @@ At this point, you have implemented a simple breed search service. Now, it is ti
 
 In this sample application, you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task, you will be creating the base view model that will be used in the following task to create the view model for the main page.
 
-    > [!TIP]
-    > If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
+> [!TIP]
+> If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
 
 1. To add a base view-model class, in the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 
@@ -1674,7 +1673,6 @@ In this task, you will add the favorites capability to the Main view-model.
     There is a bit more going on in this method, but it follows a familiar pattern. If we have a **selectedBreed**, we set the **IsBusy** property and then use the **ImageApi** to retrieve a collection of images for the breed. If we find any (some breeds don't have images... you would show a message in a production app), we just grab the first image that is returned. We then call the **FavoritesApi** to add the image. We then check the **response** value and, if successful, use the ID that was returned via the **response** to retrieve the new **Favorite**. We then insert the favorite at the beginning of our **Favorites** collection.
 
     You should notice the use of the `.ConfigureAwait(false)` code throughout to ensure the UI is not blocked. You will also notice the use of the **DispatchAsync** helper to ensure the **CollectionChanged** event raised by the insertion is raised on the UI thread so any bound control updates correctly.
-
 
 1. Finally, to add support for deleting a favorite, locate the **// Insert DeleteFavorite below here** comment and replace it with the following code:
 
