@@ -15,6 +15,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Hosting;
 #pragma warning disable CS0649
 namespace Uno.UI.Runtime.Skia.Gtk.Extensions;
 
@@ -31,7 +32,7 @@ internal static class GtkExtensionsRegistrar
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new GtkKeyboardInputSource());
-		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource());
+		ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), h => new GtkCorePointerInputSource(h));
 		ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));

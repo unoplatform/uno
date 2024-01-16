@@ -18,6 +18,7 @@ using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 using Window = Gdk.Window;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -31,6 +32,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 	private readonly Logger _log;
 	private readonly bool _isTraceEnabled;
+
+	private readonly UnoGtkWindowHost _host;
 
 	internal const Gdk.EventMask RequestedEvents =
 		Gdk.EventMask.EnterNotifyMask
@@ -56,7 +59,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	public GtkCorePointerInputSource()
+	public GtkCorePointerInputSource(IXamlRootHost host)
 	{
 		_log = this.Log();
 		_isTraceEnabled = _log.IsEnabled(LogLevel.Trace);
@@ -64,6 +67,15 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		if (GtkHost.Current?.MainWindow is not { } window)
 		{
 			throw new InvalidOperationException("Main window is not set");
+		}
+
+		if (host is UnoGtkWindowHost h)
+		{
+			_host = h;
+		}
+		else
+		{
+			throw new InvalidOperationException($"{nameof(GtkCorePointerInputSource)} only supports {nameof(UnoGtkWindowHost)} as an {nameof(IXamlRootHost)}.");
 		}
 
 		_window = window;
@@ -358,7 +370,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	#region Convert helpers
 	private PointerEventArgs? AsPointerArgs(object o, EventTouch evt)
 	{
-		var (windowX, windowY) = GetWindowCoordinates(o);
+		var (windowX, windowY) = GetWindowCoordinates();
 		var x = evt.XRoot - windowX;
 		var y = evt.YRoot - windowY;
 
@@ -377,7 +389,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		// Usually, that's the native overlay (which embodies the entire window, minus the titlebar). However,
 		// if another overlay (e.g. TextBox) raises an event, we still want the coordinates relative to the
 		// top-left of the window. This method makes that adjustment
-		var (windowX, windowY) = GetWindowCoordinates(o);
+		var (windowX, windowY) = GetWindowCoordinates();
 
 		var dev = EventHelper.GetSourceDevice(evt); // We use GetSourceDevice (and not GetDevice) in order to get the TouchScreen device
 		var type = evt.Type;
@@ -389,12 +401,12 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		var y = rootY - windowY;
 
 		return AsPointerArgs(
-			dev, GetDeviceType(dev), 1u,
-			type, time,
-			rootX, rootY,
-			x, y,
-			state,
-			evt);
+		dev, GetDeviceType(dev), 1u,
+		type, time,
+		rootX, rootY,
+		x, y,
+		state,
+		evt);
 	}
 
 	private PointerEventArgs? AsPointerArgs(
@@ -612,24 +624,22 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		PointerWheelChanged?.Invoke(this, ptArgs);
 	}
 
-	private static (int x, int y) GetWindowCoordinates(object eventSource)
+	private (int x, int y) GetWindowCoordinates()
 	{
-		// Calling GetGeometry on any window reference such as e.Window or (o as Widget).window will return wrong
+		// Calling GetGeometry or GetOrigin on any window reference such as e.Window or (o as Widget).Window will return wrong
 		// values (usually just 0). Only UnoGtkWindow.Window will give us what we need.
-		while (eventSource is not UnoGtkWindow)
-		{
-			if (eventSource is not Widget w)
-			{
-				// we should never get here, we went all the way to the top and didn't find the UnoGtkWindow.
-				throw new InvalidOperationException("Gtk widget has no UnoGtkWindow parent.");
-			}
-
-			eventSource = w.Parent;
-		}
 
 		// GetGeometry returns different numbers between Windows and Linux.
 		// FrameExtents (and a bunch of other methods/properties) will include the border and the title bar on Linux
-		((UnoGtkWindow)eventSource).Window.GetOrigin(out var x, out var y);
+		((UnoGtkWindow)(_host.RootContainer)).Window.GetOrigin(out var x, out var y);
+
+		// Window.GetOrigin returns shifted numbers on WSL, most likely due to window decoration differences
+		// that might not be present on Linux itself. It might be because of differences between Gnome vs
+		// non-Gnome desktops.
+		var allocation = _host.EventBox.Allocation;
+		x += allocation.X;
+		y += allocation.Y;
+
 		return (x, y);
 	}
 }
