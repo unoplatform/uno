@@ -81,6 +81,80 @@ namespace Uno.Analyzers.Tests
 		}
 
 		[TestMethod]
+		public async Task When_EventAddNotImplemented()
+		{
+			var test =
+				"""
+					using System;
+					using System.Collections.Generic;
+					using System.Linq;
+					using System.Text;
+					using System.Threading.Tasks;
+					using System.Diagnostics;
+
+					namespace Uno
+					{
+						public class TestClass 
+						{ 
+							[NotImplemented]
+							public event Action MyEvent;
+						}
+					}
+
+					namespace ConsoleApplication1
+					{
+					    class TypeName
+					    {
+					        public TypeName()
+					        {
+					           var a = new Uno.TestClass();
+							   [|a.MyEvent|] += delegate { };
+					        }
+					    }
+					}
+				""" + UnoNotImplementedAtribute;
+
+			await Verify.VerifyAnalyzerAsync(test);
+		}
+
+		[TestMethod]
+		public async Task When_EventRemoveNotImplemented()
+		{
+			var test =
+				"""
+					using System;
+					using System.Collections.Generic;
+					using System.Linq;
+					using System.Text;
+					using System.Threading.Tasks;
+					using System.Diagnostics;
+
+					namespace Uno
+					{
+						public class TestClass 
+						{ 
+							[NotImplemented]
+							public event Action MyEvent;
+						}
+					}
+
+					namespace ConsoleApplication1
+					{
+					    class TypeName
+					    {
+					        public TypeName()
+					        {
+					           var a = new Uno.TestClass();
+							   [|a.MyEvent|] -= delegate { };
+					        }
+					    }
+					}
+				""" + UnoNotImplementedAtribute;
+
+			await Verify.VerifyAnalyzerAsync(test);
+		}
+
+		[TestMethod]
 		public async Task When_SinglePlatform_Included()
 		{
 			var test = """
