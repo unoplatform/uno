@@ -159,5 +159,5 @@ Learn more about:
 - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
 - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
 - [Troubleshooting](xref:Uno.UI.CommonIssues)
-- <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
+- <a href="../implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
 - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
