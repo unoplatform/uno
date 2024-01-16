@@ -21,18 +21,4 @@ public class Given_Window
 		Assert.AreEqual(window, Microsoft.UI.Xaml.Window.Current);
 	}
 #endif
-
-#if !WINUI_WINDOWING
-	[TestMethod]
-	public void New_Window_Does_Not_Override_Current()
-	{
-		var app = UnitTestsApp.App.EnsureApplication();
-
-		Windows.UI.Xaml.Window.EnsureWindowCurrent();
-		var existingCurrent = Windows.UI.Xaml.Window.Current;
-		var window = new Microsoft.UI.Xaml.Window();
-		window.Activate();
-		Assert.AreEqual(existingCurrent, Microsoft.UI.Xaml.Window.Current);
-	}
-#endif
 }

@@ -54,7 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 			var endNumberOfWindows = ApplicationHelper.Windows.Count;
-			Assert.AreEqual(startingNumberOfWindows, endNumberOfWindows)
+			Assert.AreEqual(startingNumberOfWindows, endNumberOfWindows);
 		}
 #endif
 	}
