@@ -75,6 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(RelativePanel), 15)]
 		[DataRow(typeof(FlipView), 15)]
 		[DataRow(typeof(DatePicker), 15)]
+		[DataRow(typeof(TimePicker), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(CalendarView), 15)]
 #endif
