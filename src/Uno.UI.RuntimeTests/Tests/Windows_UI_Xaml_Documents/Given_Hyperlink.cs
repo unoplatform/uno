@@ -48,7 +48,7 @@ public class Given_Hyperlink
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is only supported on skia")]
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF")]
@@ -99,7 +99,7 @@ public class Given_Hyperlink
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is only supported on skia")]
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF", "#66FFFFFF")]

@@ -67,7 +67,7 @@
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
 		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
-		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
@@ -101,10 +101,14 @@
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.19041.0'">
+		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">
 		<TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
-		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
+		<DefineConstants>$(DefineConstants);NETFX_CORE;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
 	<Target Name="_UnoOverrideNuget"
