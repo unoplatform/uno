@@ -1,10 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.Host.IdeChannel;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -33,9 +35,12 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						if (context.RequestServices.GetService<IConfiguration>() is { } configuration)
 						{
-							using (var server = new RemoteControlServer(configuration))
+							using (var server = new RemoteControlServer(
+								configuration,
+								context.RequestServices.GetService<IIdeChannelServerProvider>() ?? throw new InvalidOperationException("IIDEChannelServerProvider is required"),
+								context.RequestServices))
 							{
-								await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+								await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
 							}
 						}
 						else
