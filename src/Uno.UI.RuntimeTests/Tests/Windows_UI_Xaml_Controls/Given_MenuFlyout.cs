@@ -423,6 +423,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_Toggle_Item_HasToggle()
 		{
@@ -462,5 +463,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForIdle();
 			}
 		}
+#endif
 	}
 }
