@@ -192,7 +192,7 @@ public class TimePickerIntegrationTests
 			TimePicker timePickerStretched = null;
 			TimePicker timePicker24Hour = null;
 
-			await RunOnUIThread(() =>
+			await RunOnUIThread(async () =>
 			{
 				var rootPanel = (StackPanel)XamlReader.Load(
 					@"<StackPanel xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"" xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml"" >
@@ -214,6 +214,7 @@ public class TimePickerIntegrationTests
 				timePicker24Hour = (TimePicker)rootPanel.FindName("timePicker24Hour");
 
 				TestServices.WindowHelper.WindowContent = rootPanel;
+				await TestServices.WindowHelper.WaitForLoaded(rootPanel);
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
