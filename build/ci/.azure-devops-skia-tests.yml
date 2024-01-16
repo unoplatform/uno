@@ -91,6 +91,17 @@ jobs:
       ArtifactName: skia-framebuffer-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.X11/SamplesApp.Skia.X11.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+    displayName: Build X11 Head
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.X11\bin\Release\net7.0
+      ArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container
+
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
@@ -344,4 +355,111 @@ jobs:
       testRunTitle: 'Uno Islands Skia WPF Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+
+##
+## X11
+##
+
+- job: Skia_X11_Screenshot_Tests
+  displayName: 'Run Skia X11 Snapshot Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmMacImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-x11-samples-app-UWP
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+        dotnet SamplesApp.Skia.X11.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-x11-screenshots
+
+    displayName: Run Skia X11 Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+- job: Skia_X11_Runtime_Tests_Build
+  displayName: 'Run Skia X11 Runtime Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmMacImage }}
+
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+
+      WinUI:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UnoEnableHRuntimeTests: true
+
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
+  steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug -p:UnoDisableNet8=true
+    displayName: Build HR dependencies
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        dotnet SamplesApp.Skia.X11.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml
+
+    displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
+    env:
+      UnoEnableHRuntimeTests: $(UnoEnableHRuntimeTests)
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+      SamplesAppArtifactName: $(SamplesAppArtifactName)
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia X11 $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
       failTaskOnFailedTests: true
