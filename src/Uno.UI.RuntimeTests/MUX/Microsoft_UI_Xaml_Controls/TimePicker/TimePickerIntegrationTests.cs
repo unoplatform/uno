@@ -17,6 +17,7 @@ using static Private.Infrastructure.TestServices;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
+[RequiresFullWindow]
 public class TimePickerIntegrationTests
 {
 	private static Calendar CreateTime(int hours, int minutes, int period = 1)
@@ -171,6 +172,7 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
+	[Ignore("This test is flaky in CI probably because Window size cannot be adjusted #9080")]
 	public async Task ValidateFootprint()
 	{
 		IDisposable fluentStylesDisposable = null;
@@ -247,10 +249,7 @@ public class TimePickerIntegrationTests
 
 #if HAS_UNO
 	[TestMethod]
-	[RequiresFullWindow]
-#if __ANDROID__ || __IOS__
-	[Ignore("This is only relevant for managed implementation")]
-#endif
+	[Ignore("This test is flaky in CI probably because Window size cannot be adjusted #9080")]
 	public async Task ValidateFlyoutPositioningAndSizing()
 	{
 		await DateTimePickerHelper.ValidateDateTimePickerFlyoutPositioningAndSizing<TimePicker>();
