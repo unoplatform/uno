@@ -752,13 +752,16 @@ namespace Uno.UI.Samples.Tests
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 
-					var cleanupActions = new List<Func<Task>>();
 					var sw = new Stopwatch();
 					var canRetry = true;
 
 					while (canRetry)
 					{
 						canRetry = false;
+						var cleanupActions = new List<Func<Task>>
+						{
+							CloseRemainingPopupsAsync
+						};
 
 						try
 						{
@@ -961,6 +964,21 @@ namespace Uno.UI.Samples.Tests
 					_ = ReportMessage("Stopped by user.", false);
 					return; // finish processing
 				}
+			}
+
+			async Task CloseRemainingPopupsAsync()
+			{
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+					if (popups.Count > 0)
+					{
+						foreach (var popup in popups)
+						{
+							popup.IsOpen = false;
+						}
+					}
+				});
 			}
 
 			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)
