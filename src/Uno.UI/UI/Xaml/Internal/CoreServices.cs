@@ -38,9 +38,7 @@ namespace Uno.UI.Xaml.Core
 			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
 			NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
 
-			if (CoreServices.Instance.MainVisualTree?.RootElement is { } root &&
-				CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is { } windowContentRoot && windowContentRoot.GetOwnerWindow() is { } window &&
-				window.Bounds.Size is { Width: not 0, Height: not 0 } windowSize)
+			if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
 			{
 				root.UpdateLayout();
 
