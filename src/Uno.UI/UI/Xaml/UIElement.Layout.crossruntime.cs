@@ -61,16 +61,14 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void InvalidateParentMeasureDirtyPath()
 		{
+			if (IsVisualTreeRoot)
+			{
+				XamlRoot?.InvalidateMeasure();
+			}
 			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
 			{
-				if (!parent.IsVisualTreeRoot)
-				{
-					parent.InvalidateMeasureDirtyPath();
-					return;
-				}
+				parent.InvalidateMeasureDirtyPath();
 			}
-
-			XamlRoot?.InvalidateMeasure();
 		}
 
 		public void InvalidateArrange()
@@ -117,17 +115,15 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void InvalidateParentArrangeDirtyPath()
 		{
-			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
+			if (IsVisualTreeRoot)
 			{
-				if (!parent.IsVisualTreeRoot)
-				{
-					parent.InvalidateArrangeDirtyPath();
-					return;
-				}
+				XamlRoot?.InvalidateArrange();
 			}
 
-			//TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
-			XamlRoot?.InvalidateArrange();
+			if (this.GetParent() is UIElement parent) //TODO: Should this use VisualTree.GetParent as fallback? https://github.com/unoplatform/uno/issues/8978
+			{
+				parent.InvalidateArrangeDirtyPath();
+			}
 		}
 
 		public void Measure(Size availableSize)
