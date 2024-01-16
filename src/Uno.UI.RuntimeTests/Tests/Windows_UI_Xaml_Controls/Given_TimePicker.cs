@@ -42,6 +42,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// This tests whether the looping selector does not unexpectedly
 			// change the time when the flyout is opened and closed.
 			var timePicker = new TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = false;
+#endif
 			var expectedTime = new TimeSpan(15, 0, 0);
 			timePicker.Time = expectedTime;
 			timePicker.SelectedTime = expectedTime;
