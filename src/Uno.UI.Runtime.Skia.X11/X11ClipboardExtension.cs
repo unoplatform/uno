@@ -269,7 +269,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 			unsafe
 			{
 				var atomsSpan = new Span<IntPtr>(atomsArray.ToPointer(), (int)length);
-				for (var i = 0; i < length; i+= 2)
+				for (var i = 0; i < length; i += 2)
 				{
 					var target_ = atomsSpan[i];
 					var prop = atomsSpan[i + 1];
@@ -326,6 +326,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 					continue;
 				}
 
+				// TODO: implement INCR
 				switch (event_.type)
 				{
 					case XEventName.SelectionClear:
@@ -390,7 +391,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 								IntPtr.Zero, ref xev);
 						}
 						break;
-					// TODO: implement INCR
 				}
 
 				xLock.Dispose();

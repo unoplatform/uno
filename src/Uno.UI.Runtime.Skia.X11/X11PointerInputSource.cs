@@ -87,8 +87,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 				CoreCursorType.Wait => CursorFontShape.XC_watch, // this works better with XFCE than XC_exchange
 				CoreCursorType.Person => CursorFontShape.XC_gumby, // sidenote: turns out this gumby is an ancient tv character
 				CoreCursorType.Pin => CursorFontShape.XC_dot, // eh, not really
-				// CoreCursorType.Custom => CursorFontShape.XC_arrow,
-				_ => CursorFontShape.XC_arrow
+				_ => CursorFontShape.XC_arrow // including CoreCursorType.Custom
 			};
 
 			using var _1 = X11Helper.XLock(_host.X11Window.Display);

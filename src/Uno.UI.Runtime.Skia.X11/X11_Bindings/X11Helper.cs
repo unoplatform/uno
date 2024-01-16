@@ -125,17 +125,17 @@ public static class X11Helper
 		public IntPtr timestamp;
 		public IntPtr crtc;
 		public IntPtr name;
-		public int    nameLen;
+		public int nameLen;
 		public IntPtr mm_width;
 		public IntPtr mm_height;
 		public ushort connection;
 		public ushort subpixel_order;
-		public int    ncrtc;
+		public int ncrtc;
 		public IntPtr crtcs;
-		public int    nclone;
+		public int nclone;
 		public IntPtr clones;
-		public int    nmode;
-		public int    npreferred;
+		public int nmode;
+		public int npreferred;
 		public IntPtr modes;
 	}
 
@@ -146,11 +146,11 @@ public static class X11Helper
 	{
 		public IntPtr timestamp;
 		public IntPtr configTimestamp;
-		public int    ncrtc;
+		public int ncrtc;
 		public IntPtr crtcs;
-		public int    noutput;
+		public int noutput;
 		public IntPtr outputs;
-		public int    nmode;
+		public int nmode;
 		public IntPtr modes;
 	}
 
@@ -159,20 +159,20 @@ public static class X11Helper
 	public struct XRRModeInfo
 #pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
-		public IntPtr	id;
-		public uint	    width;
-		public uint	    height;
-		public IntPtr	dotClock;
-		public uint	    hSyncStart;
-		public uint	    hSyncEnd;
-		public uint	    hTotal;
-		public uint	    hSkew;
-		public uint	    vSyncStart;
-		public uint	    vSyncEnd;
-		public uint	    vTotal;
-		public IntPtr   name;
-		public uint	    nameLength;
-		public IntPtr	modeFlags;
+		public IntPtr id;
+		public uint width;
+		public uint height;
+		public IntPtr dotClock;
+		public uint hSyncStart;
+		public uint hSyncEnd;
+		public uint hTotal;
+		public uint hSkew;
+		public uint vSyncStart;
+		public uint vSyncEnd;
+		public uint vTotal;
+		public IntPtr name;
+		public uint nameLength;
+		public IntPtr modeFlags;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -180,16 +180,16 @@ public static class X11Helper
 	public struct XRRCrtcInfo
 #pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
-		public IntPtr	    timestamp;
-		public int		    x, y;
-		public uint         width, height;
-		public IntPtr	    mode;
-		public ushort	    rotation;
-		public int		    noutput;
-		public IntPtr       outputs;
-		public ushort	    rotations;
-		public int		    npossible;
-		public IntPtr       possible;
+		public IntPtr timestamp;
+		public int x, y;
+		public uint width, height;
+		public IntPtr mode;
+		public ushort rotation;
+		public int noutput;
+		public IntPtr outputs;
+		public ushort rotations;
+		public int npossible;
+		public IntPtr possible;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -197,14 +197,14 @@ public static class X11Helper
 	public struct XRRCrtcTransformAttributes
 #pragma warning restore CA1815 // Override equals and operator equals on value types
 	{
-		public XTransform	pendingTransform;
-		public IntPtr       pendingFilter;
-		public int		    pendingNparams;
-		public IntPtr       pendingParams;
-		public XTransform	currentTransform;
-		public IntPtr       currentFilter;
-		public int		    currentNparams;
-		public IntPtr       currentParams;
+		public XTransform pendingTransform;
+		public IntPtr pendingFilter;
+		public int pendingNparams;
+		public IntPtr pendingParams;
+		public XTransform currentTransform;
+		public IntPtr currentFilter;
+		public int currentNparams;
+		public IntPtr currentParams;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

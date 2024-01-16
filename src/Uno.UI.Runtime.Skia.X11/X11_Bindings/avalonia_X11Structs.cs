@@ -960,17 +960,17 @@ namespace Avalonia.X11
 	{
 		RRScreenChangeNotify = 1 << 0,
 
-/* V1.2 additions */
+		/* V1.2 additions */
 		RRCrtcChangeNotifyMask = 1 << 1,
 		RROutputChangeNotifyMask = 1 << 2,
 		RROutputPropertyNotifyMask = 1 << 3,
 
-/* V1.4 additions */
+		/* V1.4 additions */
 		RRProviderChangeNotifyMask = 1 << 4,
 		RRProviderPropertyNotifyMask = 1 << 5,
 		RRResourceChangeNotifyMask = 1 << 6,
 
-/* V1.6 additions */
+		/* V1.6 additions */
 		RRLeaseNotifyMask = 1 << 7
 	}
 

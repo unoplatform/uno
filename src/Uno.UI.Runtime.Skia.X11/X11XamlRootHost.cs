@@ -19,7 +19,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private static bool _firstWindowCreated;
 	private static object _x11WindowToXamlRootHostMutex = new();
 	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
-	
+
 	private readonly TaskCompletionSource _closed;
 	private readonly ApplicationView _applicationView;
 	private readonly Window _window;

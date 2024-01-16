@@ -140,9 +140,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			if (XLib.XRRQueryExtension(x11Window.Display, out _, out _) != 0 &&
 				XLib.XRRQueryVersion(x11Window.Display, out var major, out var minor) != 0 &&
 				(major > 1 || (major == 1 && minor >= 3)) &&
-				GetDisplayInformationXRandR1_3(x11Window.Display, x11Window.Window) is { }  details)
+				GetDisplayInformationXRandR1_3(x11Window.Display, x11Window.Window) is { } details)
 			{
-					_details = details;
+				_details = details;
 			}
 			else // naive implementation from xdpyinfo
 			{
@@ -307,7 +307,8 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
 			IntPtr crtc = default;
 			double bestArea = 1;
-			foreach (var crtc_ in new Span<IntPtr>(resources->crtcs.ToPointer(), resources->ncrtc)) {
+			foreach (var crtc_ in new Span<IntPtr>(resources->crtcs.ToPointer(), resources->ncrtc))
+			{
 				var crtcInfo_ = X11Helper.XRRGetCrtcInfo(display, new IntPtr(resources), crtc_);
 				// We decide that the crtc we want is the one that overlaps the most with the window
 				var intersection = Rectangle.Intersect(

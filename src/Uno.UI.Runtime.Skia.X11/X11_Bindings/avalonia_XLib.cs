@@ -195,7 +195,7 @@ namespace Avalonia.X11
 		public static extern IntPtr XSetLocaleModifiers(string modifiers);
 
 		[DllImport(libX11Randr)]
-		public static extern int XRRQueryExtension (IntPtr dpy,
+		public static extern int XRRQueryExtension(IntPtr dpy,
 			out int event_base_return,
 			out int error_base_return);
 
