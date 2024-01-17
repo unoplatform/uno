@@ -72,14 +72,14 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs (UnmanagedType.I1)]
-	internal static partial bool uno_application_is_fullscreen();
+	internal static partial bool uno_application_is_full_screen();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs (UnmanagedType.I1)]
-	internal static partial bool uno_application_enter_fullscreen();
+	internal static partial bool uno_application_enter_full_screen();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_application_exit_fullscreen();
+	internal static partial void uno_application_exit_full_screen();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]

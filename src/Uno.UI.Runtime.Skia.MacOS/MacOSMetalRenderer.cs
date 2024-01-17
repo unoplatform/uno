@@ -46,7 +46,7 @@ internal static class MacOSMetalRenderer
 		}
 	}
 
-	private static readonly ConstructorInfo? _rt = typeof(GRBackendRenderTarget).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new[] { typeof(nint), typeof(bool) }, null);
+	private static readonly ConstructorInfo? _rt = typeof(GRBackendRenderTarget).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, [typeof(nint), typeof(bool)], null);
 
 	private static bool _firstDraw = true;
 
@@ -59,7 +59,7 @@ internal static class MacOSMetalRenderer
 			Window.Current.OnNativeSizeChanged(new Size(size.Width, size.Height));
 			_firstDraw = false;
 		}
-		Console.WriteLine($"MacSkiaHost.Draw {size.Width}x{size.Height} texture: {texture} FullScreen: {NativeUno.uno_application_is_fullscreen()}");
+		Console.WriteLine($"MacSkiaHost.Draw {size.Width}x{size.Height} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
 
 		// note: size is doubled for retina displays
 		var info = new GRMtlTextureInfoNative() { Texture = texture };

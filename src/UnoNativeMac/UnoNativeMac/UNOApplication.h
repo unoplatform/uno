@@ -19,11 +19,10 @@ void uno_application_set_icon(const char *path);
 bool uno_application_open_url(const char *url);
 bool uno_application_query_url_support(const char *url);
 
-bool uno_application_enter_fullscreen(void);
-void uno_application_exit_fullscreen(void);
+bool uno_application_enter_full_screen(void);
+void uno_application_exit_full_screen(void);
 
-bool uno_application_is_fullscreen(void);
-void uno_application_toggle_fullscreen(void);
+bool uno_application_is_full_screen(void);
 
 typedef bool (*application_can_exit_fn_ptr)(void);
 application_can_exit_fn_ptr uno_get_application_can_exit_callback(void);

@@ -1,4 +1,4 @@
-# Gtk-less Uno
+# Gtk-less Uno for macOS
 
 ## Requirements
 
@@ -7,7 +7,7 @@
 ## Pros
 
 * Less dependencies
-  * Removing GTK3+ (native, requires seperate installation)
+  * Removing GTK3+ (native, requires separate installation)
   * Removing GtkSharp (no release supports arm64 correctly)
   * Removing Silk.NET on macOS (not needed for Metal)
 

@@ -16,7 +16,8 @@ using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-public partial class MacSkiaHost : SkiaHost, ISkiaApplicationHost, Uno.UI.Hosting.IXamlRootHost {
+public partial class MacSkiaHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost
+{
 
 	private readonly Func<Application> _appBuilder;
 
@@ -25,7 +26,7 @@ public partial class MacSkiaHost : SkiaHost, ISkiaApplicationHost, Uno.UI.Hostin
 
 	static unsafe MacSkiaHost()
 	{
-		MacOSMetalRenderer.Register();				// must be intialized first to load libSkiaSharp
+		MacOSMetalRenderer.Register();				// must be initialized first to load libSkiaSharp
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
@@ -42,7 +43,7 @@ public partial class MacSkiaHost : SkiaHost, ISkiaApplicationHost, Uno.UI.Hostin
 		MacOSUnoCorePointerInputSource.Register();	// work in progress
 		MacOSUnoKeyboardInputSource.Register();
 		
-		// TODO - implement Uno.UI.Xaml.Controls.Extensions.IOverlayTextBoxViewExtension
+		// Uno.UI.Xaml.Controls.Extensions.IOverlayTextBoxViewExtension is not required
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)

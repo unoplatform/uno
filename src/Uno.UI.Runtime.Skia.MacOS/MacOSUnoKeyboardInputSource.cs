@@ -56,13 +56,13 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 				typeof(MacOSUnoKeyboardInputSource).Log().Trace($"OnRawKeyDown '${key}', mods: '{mods}', scanCode: {scanCode}");
 			}
 
-			var keydown = Instance.KeyDown;
-			if (keydown is null)
+			var keyDown = Instance.KeyDown;
+			if (keyDown is null)
 			{
 				return 0;
 			}
 			var args = CreateArgs(key, mods, scanCode);
-			keydown.Invoke(Instance, args);
+			keyDown.Invoke(Instance, args);
 			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)
@@ -82,13 +82,13 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 				typeof(MacOSUnoKeyboardInputSource).Log().Trace($"OnRawKeyUp '${key}', mods: '{mods}', scanCode: {scanCode}");
 			}
 
-			var keyup = Instance.KeyUp;
-			if (keyup is null)
+			var keyUp = Instance.KeyUp;
+			if (keyUp is null)
 			{
 				return 0;
 			}
 			var args = CreateArgs(key, mods, scanCode);
-			keyup.Invoke(Instance, args);
+			keyUp.Invoke(Instance, args);
 			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)

@@ -43,7 +43,7 @@ bool uno_application_query_url_support(const char *url)
     return [[NSWorkspace sharedWorkspace] URLForApplicationToOpenURL:u] != nil;
 }
 
-bool uno_application_is_fullscreen(void)
+bool uno_application_is_full_screen(void)
 {
     NSWindow *win = [[NSApplication sharedApplication] keyWindow];
     // keyWindow might not be set, yet - so we return false
@@ -57,7 +57,7 @@ bool uno_application_is_fullscreen(void)
     return result;
 }
 
-bool uno_application_enter_fullscreen(void)
+bool uno_application_enter_full_screen(void)
 {
     NSWindow *win = [[NSApplication sharedApplication] keyWindow];
     bool result = win;
@@ -71,7 +71,7 @@ bool uno_application_enter_fullscreen(void)
     return result;
 }
 
-void uno_application_exit_fullscreen(void)
+void uno_application_exit_full_screen(void)
 {
     NSWindow *win = [[NSApplication sharedApplication] keyWindow];
     if (win && (win.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen) {

@@ -28,7 +28,6 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 	// maybe adding something like below to the interface (with a default implementation that does nothing) ?
 	public void Customize(FileOpenPicker picker)
 	{
-		Console.WriteLine("yah!");
 		// TODO: call native code
 	}
 

@@ -27,6 +27,6 @@ internal class MacOSCoreApplicationExtension : ICoreApplicationExtension
 	public void Exit() => NativeUno.uno_application_quit();
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	// System.Boolean is not blitable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
+	// System.Boolean is not blittable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
 	internal static int AppCanExit() => Instance.CanExit ? 1 : 0;
 }
