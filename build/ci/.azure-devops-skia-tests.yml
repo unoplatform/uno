@@ -189,7 +189,7 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/gtk-install-macos.yml
+  - template: templates/gtk-install-windows.yml
 
   - script: |
       # Build source generators for hot reload runtime tests
