@@ -10,7 +10,7 @@ using Verify = XamlSourceGeneratorVerifier;
 public class Given_NoFuzzyMatching
 {
 	[TestMethod]
-	public async Task TestAttachedPropertyVisibleBoundsPadding()
+	public async Task TestVisibleBoundsPadding()
 	{
 		var xamlFile = new XamlFile("MainPage.xaml", """
 			<Page x:Class="TestRepro.MainPage"
