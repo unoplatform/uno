@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+    <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup Condition="exists('..\UnoAppWinUILinuxValidation.Windows')">
+    <EmbeddedResource Include="..\UnoAppWinUILinuxValidation.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+    <Content Include="..\UnoAppWinUILinuxValidation.Windows\Images\StoreLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="5.1.0-dev.1447" />
+    <!-- Keep RemoteControl (instead of devserver) as-is for backward compatibility testing -->
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.1.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.1.0-dev.1447" />
+    <PackageReference Include="Uno.WinUI.Lottie" Version="5.1.0-dev.1447" />
+    <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UnoAppWinUILinuxValidation\UnoAppWinUILinuxValidation.csproj" />
+  </ItemGroup>
+  <Import Project="..\UnoAppWinUILinuxValidation.Base\base.props" />
+</Project>

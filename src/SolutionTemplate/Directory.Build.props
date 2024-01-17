@@ -1,0 +1,4 @@
+<Project>
+	<!-- File is intentionally empty and not referencing parent Directory.Build.props -->
+	<!-- We don't want our Directory.Build.props in src to affect building the templates. -->
+</Project>
