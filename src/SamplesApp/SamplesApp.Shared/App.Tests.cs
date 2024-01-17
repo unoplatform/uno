@@ -12,6 +12,10 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
+#if __SKIA__ || __MACOS__
+using System.CommandLine;
+#endif
+
 namespace SamplesApp;
 
 partial class App
@@ -122,58 +126,72 @@ partial class App
 		}
 	}
 
-
 	private bool HandleAutoScreenshots(string args)
 	{
 #if __SKIA__ || __MACOS__
-		var argsArr = args.Split(';');
-		var runAutoScreenshotsParam = argsArr.FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
-
-		var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
-
-		var totalGroupsParam = argsArr.FirstOrDefault(a => a.StartsWith("--total-groups"));
-		var totalGroups = int.Parse(totalGroupsParam?.Split('=').LastOrDefault() ?? "1");
-		if (totalGroups < 1)
+		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
+		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
+		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
+		var rootCommand = new RootCommand
 		{
-			throw new ArgumentException("Total groups must be >= 1");
-		}
+			autoScreenshotsOption,
+			totalGroupsOption,
+			currentGroupIndexOption,
+		};
 
-		var currentGroupIndexParam = argsArr.FirstOrDefault(a => a.StartsWith("--current-group-index"));
-		var currentGroupIndex = int.Parse(currentGroupIndexParam?.Split('=').LastOrDefault() ?? "0");
-		if (currentGroupIndex < 0 || currentGroupIndex >= totalGroups)
+		bool? commandReturn = null;
+
+		rootCommand.SetHandler<string, int, int>((screenshotsPath, totalGroups, currentGroupIndex) =>
 		{
-			throw new ArgumentException("Group index is out of range.");
-		}
-
-		Console.WriteLine($"Screenshots path: {screenshotsPath}");
-		Console.WriteLine($"Total groups: {totalGroups}");
-		Console.WriteLine($"Current group index: {currentGroupIndex}");
-
-		if (!string.IsNullOrEmpty(screenshotsPath))
-		{
-			if (MainWindow is null)
+			if (totalGroups < 1)
 			{
-				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
+				throw new ArgumentException("Total groups must be >= 1");
 			}
 
-			var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
-				_ =>
+			if (currentGroupIndex < 0 || currentGroupIndex >= totalGroups)
+			{
+				throw new ArgumentException("Group index is out of range.");
+			}
+
+			Console.WriteLine($"Screenshots path: {screenshotsPath}");
+			Console.WriteLine($"Total groups: {totalGroups}");
+			Console.WriteLine($"Current group index: {currentGroupIndex}");
+
+			if (!string.IsNullOrEmpty(screenshotsPath))
+			{
+				if (MainWindow is null)
 				{
-					var n = UnitTestDispatcherCompat.From(MainWindow).RunAsync(
-						UnitTestDispatcherCompat.Priority.Normal,
-						async () =>
-						{
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, totalGroups, currentGroupIndex, () => System.Environment.Exit(0));
-						}
-					);
+					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
+				}
 
-				});
+				var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
+					_ =>
+					{
+						var n = UnitTestDispatcherCompat.From(MainWindow).RunAsync(
+							UnitTestDispatcherCompat.Priority.Normal,
+							async () =>
+							{
+								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, totalGroups, currentGroupIndex, () => System.Environment.Exit(0));
+							}
+						);
 
-			return true;
-		}
-#endif
+					});
 
+				commandReturn = true;
+			}
+			else
+			{
+				commandReturn = false;
+			}
+		}, autoScreenshotsOption, totalGroupsOption, currentGroupIndexOption);
+
+
+		rootCommand.Invoke(args);
+		Console.WriteLine($"Returning {commandReturn}");
+		return commandReturn!.Value;
+#else
 		return false;
+#endif
 	}
 
 	private bool TryNavigateToLaunchSample(string args)

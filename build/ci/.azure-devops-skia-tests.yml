@@ -139,7 +139,7 @@ jobs:
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots;--total-groups=$(SnapshotGroupCount);--current-group-index=$(SNAPSHOT_GROUP)
+        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots --total-groups=$(SnapshotGroupCount) --current-group-index=$(SNAPSHOT_GROUP)
 
     displayName: Run Skia GTK Snapshot Tests
 

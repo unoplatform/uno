@@ -111,6 +111,10 @@
 		<DefineConstants>$(DefineConstants);NETFX_CORE;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(CI_Build)'!=''">
+		<DefineConstants>$(DefineConstants);IS_CI</DefineConstants>
+	</PropertyGroup>
+
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
 		  DependsOnTargets="BuiltProjectOutputGroup"
