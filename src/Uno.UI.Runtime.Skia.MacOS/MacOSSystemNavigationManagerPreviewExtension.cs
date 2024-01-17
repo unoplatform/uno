@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using Windows.UI.Core.Preview;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Extensibility;
 using Uno.UI.Core.Preview;

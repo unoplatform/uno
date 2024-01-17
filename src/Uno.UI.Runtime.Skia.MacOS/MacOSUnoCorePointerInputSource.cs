@@ -115,7 +115,7 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 		}
 		catch (Exception e)
 		{
-			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
+			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
 		}
 		finally

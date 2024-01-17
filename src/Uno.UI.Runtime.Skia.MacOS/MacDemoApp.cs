@@ -9,9 +9,9 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 internal class AppHead : Application {
@@ -26,12 +26,12 @@ internal class AppHead : Application {
 		Windows.ApplicationModel.Package.Current.Logo = new Uri("/Users/poupou/git/external/uno/uno/src/SamplesApp/SamplesApp.Shared/Assets/square44x44logo.scale-200.png");
 	}
 
-	protected internal override void OnLaunched(Windows.ApplicationModel.Activation.LaunchActivatedEventArgs args)
+	protected internal override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
 	{
 #if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
 		_window = new Window();
 #else
-		_window = Windows.UI.Xaml.Window.Current;
+		_window = Microsoft.UI.Xaml.Window.Current;
 #endif
 
 		// Do not repeat app initialization when the Window already has content,
@@ -59,7 +59,7 @@ internal class AppHead : Application {
 		_window.Activate();
 	}
 
-	void OnNavigationFailed(object sender, Windows.UI.Xaml.Navigation.NavigationFailedEventArgs e)
+	void OnNavigationFailed(object sender, Microsoft.UI.Xaml.Navigation.NavigationFailedEventArgs e)
 	{
 		throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
 	}
@@ -76,7 +76,7 @@ internal class AppHead : Application {
 	}
 }
 
-public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page
+public sealed partial class MainPage : Microsoft.UI.Xaml.Controls.Page
 {
 	UISettings settings = new();
 
@@ -107,7 +107,7 @@ public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page
 	public void InitializeComponent()
 	{
 		ColorValuesChanged(settings, null!);
-		var tb = new Windows.UI.Xaml.Controls.TextBlock
+		var tb = new Microsoft.UI.Xaml.Controls.TextBlock
 		{
 			Text = "Bonjour ♥️ Uno!",
 			FontSize = 96,

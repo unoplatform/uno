@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;

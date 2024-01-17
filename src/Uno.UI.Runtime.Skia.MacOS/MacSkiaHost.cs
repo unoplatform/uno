@@ -6,8 +6,8 @@ using System.IO;
 using Windows.ApplicationModel;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 using Uno.Foundation.Logging;
 using Uno.Runtime.Skia;
@@ -153,7 +153,9 @@ public partial class MacSkiaHost : SkiaHost, ISkiaApplicationHost, Uno.UI.Hostin
 	}
 
 	// `argc` and `argv` parameters are ignored by macOS, see https://developer.apple.com/documentation/appkit/1428499-nsapplicationmain?language=objc
+#pragma warning disable CA1806
 	protected override void RunLoop() => NativeMac.NSApplicationMain(argc: 0, argv: nint.Zero);
+#pragma warning restore CA1806
 
 	public void InvalidateRender()
 	{

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using SkiaSharp;
 
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Logging;
 
