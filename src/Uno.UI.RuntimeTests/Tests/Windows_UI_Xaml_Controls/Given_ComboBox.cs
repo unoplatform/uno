@@ -991,12 +991,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-#if __SKIA__ || __WASM__ // Will fix on: https://github.com/unoplatform/uno/issues/14801
-			SUT.IsDropDownOpen = true;
-			await WindowHelper.WaitForIdle();
-			SUT.IsDropDownOpen = false;
-			await WindowHelper.WaitForIdle();
-#endif
 			var containerForTwo = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
 			Assert.IsNotNull(containerForTwo);
 			var h = VisualStateHelper.GetCurrentVisualStateName(containerForTwo);
