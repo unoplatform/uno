@@ -16,6 +16,8 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private IDisposable? _directManipulationHandlerSubscription;
 
+		private bool m_isPointerLeftButtonPressed;
+
 		internal bool m_templatedParentHandlesMouseButton;
 
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
