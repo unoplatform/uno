@@ -375,7 +375,7 @@
             - name: ComboBox
               href: controls/ComboBox.md
             - name: CommandBar
-              href: controls/commandbar.md
+              href: controls/CommandBar.md
             - name: ContentDialog
               href: controls/ContentDialog.md
             - name: Flyout
@@ -476,7 +476,7 @@
       - name: Accelerometer
         href: features/accelerometer.md
       - name: Android TV
-        href: features/android-tv.md  
+        href: features/android-tv.md
       - name: App Actions
         href: features/windows-ui-startscreen.md
       - name: App Close Handler
