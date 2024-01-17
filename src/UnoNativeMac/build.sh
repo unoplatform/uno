@@ -1,6 +1,6 @@
 #!/bin/bash
 
 cd UnoNativeMac
-getSkiaSharpDylib.sh
+./getSkiaSharpDylib.sh
 cd ..
 xcodebuild
