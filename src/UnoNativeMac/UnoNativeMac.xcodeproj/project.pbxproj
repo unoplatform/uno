@@ -38,6 +38,7 @@
 		D116C63C2AC793C0004B975F /* UNOCursor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOCursor.h; sourceTree = "<group>"; };
 		D116C63D2AC79876004B975F /* UNOCursor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOCursor.m; sourceTree = "<group>"; };
 		D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = UnoNativeMac/libSkiaSharp.dylib; sourceTree = "<group>"; };
+		D13AB8AC2B58566400693F8E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		D1A0651C2A70664A00101BE6 /* UNOMetalViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOMetalViewDelegate.h; sourceTree = "<group>"; };
 		D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOMetalViewDelegate.m; sourceTree = "<group>"; };
 		D1A0651F2A8467B200101BE6 /* UNOApplication.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOApplication.h; sourceTree = "<group>"; };
@@ -76,6 +77,7 @@
 		D1F2489C2A67288B008A609E = {
 			isa = PBXGroup;
 			children = (
+				D13AB8AC2B58566400693F8E /* Config.xcconfig */,
 				D1F248A72A67288B008A609E /* UnoNativeMac */,
 				D1F248A62A67288B008A609E /* Products */,
 				D13AB8A62B5839B200693F8E /* Frameworks */,
@@ -311,6 +313,7 @@
 		};
 		D1F248AF2A67288B008A609E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D13AB8AC2B58566400693F8E /* Config.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
@@ -331,6 +334,7 @@
 		};
 		D1F248B02A67288B008A609E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D13AB8AC2B58566400693F8E /* Config.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
