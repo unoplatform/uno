@@ -32,6 +32,8 @@ public partial class TextBox
 		SelectAll
 	}
 
+	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
+
 	private TextBoxView _textBoxView;
 
 	private readonly Rectangle _caretRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
