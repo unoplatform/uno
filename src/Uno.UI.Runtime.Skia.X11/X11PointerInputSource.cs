@@ -30,7 +30,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 	private readonly DisplayInformation _displayInformation;
 	private Func<VirtualKeyModifiers>? _keyboardInputSource;
 	private readonly X11XamlRootHost _host;
-	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0); // initialization is not needed, we're just keeping the compiler happy
+	private CoreCursor _pointerCursor;
 	private IntPtr? _cursor;
 
 	public X11PointerInputSource(IXamlRootHost host)
@@ -46,7 +46,8 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		_displayInformation = DisplayInformation.GetForCurrentView();
 
 		// Set this on startup in case a different global default was set beforehand
-		PointerCursor = new(CoreCursorType.IBeam, 0);
+		PointerCursor = new(CoreCursorType.Arrow, 0);
+		_pointerCursor = PointerCursor; // initialization is not needed, we're just keeping the compiler happy
 	}
 
 	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
