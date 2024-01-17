@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		D116C63E2AC79876004B975F /* UNOCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = D116C63D2AC79876004B975F /* UNOCursor.m */; };
-		D1A065192A70544700101BE6 /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1A065182A70544700101BE6 /* libSkiaSharp.dylib */; };
+		D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; };
+		D13AB8A92B5839B200693F8E /* libSkiaSharp.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */; };
 		D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = D1A0651F2A8467B200101BE6 /* UNOApplication.h */; };
 		D1A065222A84688000101BE6 /* UNOApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A065212A84688000101BE6 /* UNOApplication.m */; };
@@ -19,10 +20,24 @@
 		D1F248AB2A67288B008A609E /* UnoNativeMac.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F248AA2A67288B008A609E /* UnoNativeMac.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		D13AB8AA2B5839B200693F8E /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D13AB8A92B5839B200693F8E /* libSkiaSharp.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		D116C63C2AC793C0004B975F /* UNOCursor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOCursor.h; sourceTree = "<group>"; };
 		D116C63D2AC79876004B975F /* UNOCursor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOCursor.m; sourceTree = "<group>"; };
-		D1A065182A70544700101BE6 /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = ../../git/external/uno/uno/src/Uno.UI.Runtime.Skia.MacOS/bin/Debug/net8.0/runtimes/osx/native/libSkiaSharp.dylib; sourceTree = "<group>"; };
+		D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = UnoNativeMac/libSkiaSharp.dylib; sourceTree = "<group>"; };
 		D1A0651C2A70664A00101BE6 /* UNOMetalViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOMetalViewDelegate.h; sourceTree = "<group>"; };
 		D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOMetalViewDelegate.m; sourceTree = "<group>"; };
 		D1A0651F2A8467B200101BE6 /* UNOApplication.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOApplication.h; sourceTree = "<group>"; };
@@ -43,17 +58,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1A065192A70544700101BE6 /* libSkiaSharp.dylib in Frameworks */,
+				D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D1A065172A70544700101BE6 /* Frameworks */ = {
+		D13AB8A62B5839B200693F8E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D1A065182A70544700101BE6 /* libSkiaSharp.dylib */,
+				D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -63,7 +78,7 @@
 			children = (
 				D1F248A72A67288B008A609E /* UnoNativeMac */,
 				D1F248A62A67288B008A609E /* Products */,
-				D1A065172A70544700101BE6 /* Frameworks */,
+				D13AB8A62B5839B200693F8E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -118,6 +133,7 @@
 				D1F248A12A67288B008A609E /* Headers */,
 				D1F248A22A67288B008A609E /* Sources */,
 				D1F248A32A67288B008A609E /* Frameworks */,
+				D13AB8AA2B5839B200693F8E /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -135,7 +151,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					D1F248A42A67288B008A609E = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -211,9 +227,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -228,7 +246,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				LIBRARY_SEARCH_PATHS = /Users/poupou/git/external/uno/uno/src/Uno.UI.Runtime.Skia.MacOS/bin/Debug/net8.0/runtimes/osx/native/;
+				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -270,9 +288,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -281,7 +301,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				LIBRARY_SEARCH_PATHS = /Users/poupou/git/external/uno/uno/src/Uno.UI.Runtime.Skia.MacOS/bin/Debug/net8.0/runtimes/osx/native/;
+				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -293,9 +313,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/UnoNativeMac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -308,9 +333,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/UnoNativeMac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
