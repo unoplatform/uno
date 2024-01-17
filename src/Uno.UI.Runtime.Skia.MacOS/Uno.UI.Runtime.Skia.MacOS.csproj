@@ -34,6 +34,14 @@
     <PackageReference Include="SkiaSharp" />
   </ItemGroup>
 
+  <Target Name="BuildUnoNativeMac" BeforeTargets="Compile">
+    <Exec Command="$(MSBuildThisFileDirectory)../UnoNativeMac/build.sh" WorkingDirectory="$(MSBuildThisFileDirectory)../UnoNativeMac/" />
+  </Target>
+
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)../UnoNativeMac/build/Release/libUnoNativeMac.*" Visible="False" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
     <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
