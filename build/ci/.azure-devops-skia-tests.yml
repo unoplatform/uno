@@ -156,7 +156,7 @@ jobs:
   timeoutInMinutes: 60
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmImage }}
 
   strategy:
     matrix:
