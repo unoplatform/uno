@@ -13,17 +13,15 @@ internal class IdeChannelServerProvider : IIdeChannelServerProvider
 {
 	private readonly ILogger _logger;
 	private readonly IConfiguration _configuration;
-	private readonly IServiceProvider _serviceProvider;
 	private readonly Task<IdeChannelServer?> _initializeTask;
 	private NamedPipeServerStream? _pipeServer;
 	private IdeChannelServer? _ideChannelServer;
 	private JsonRpc? _rpcServer;
 
-	public IdeChannelServerProvider(ILogger<IdeChannelServerProvider> logger, IConfiguration configuration, IServiceProvider serviceProvider)
+	public IdeChannelServerProvider(ILogger<IdeChannelServerProvider> logger, IConfiguration configuration)
 	{
 		_logger = logger;
 		_configuration = configuration;
-		_serviceProvider = serviceProvider;
 
 		_initializeTask = Task.Run(Initialize);
 	}
@@ -50,7 +48,7 @@ internal class IdeChannelServerProvider : IIdeChannelServerProvider
 			_logger.LogDebug("IDE Connected");
 		}
 
-		_ideChannelServer = new IdeChannelServer(_serviceProvider);
+		_ideChannelServer = new IdeChannelServer();
 		_ideChannelServer.MessageFromIDE += OnMessageFromIDE;
 		_rpcServer = JsonRpc.Attach(_pipeServer, _ideChannelServer);
 
