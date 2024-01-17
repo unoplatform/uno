@@ -63,6 +63,18 @@ namespace Microsoft.UI.Xaml
 			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
+			if (ownerType == typeof(FrameworkElement))
+			{
+				if (name is
+					nameof(FrameworkElement.MaxHeight) or
+					nameof(FrameworkElement.MinHeight) or
+					nameof(FrameworkElement.MinWidth) or
+					nameof(FrameworkElement.MaxWidth))
+				{
+					_flags |= Flags.ValidateNotNegativeAndNotNaN;
+				}
+			}
+
 			_uniqueId = Interlocked.Increment(ref _globalId);
 
 			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
@@ -75,10 +87,7 @@ namespace Microsoft.UI.Xaml
 		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
 		internal void ValidateValue(object value)
 		{
-			if (this == FrameworkElement.MaxWidthProperty ||
-				this == FrameworkElement.MinWidthProperty ||
-				this == FrameworkElement.MaxHeightProperty ||
-				this == FrameworkElement.MinHeightProperty)
+			if ((_flags & Flags.ValidateNotNegativeAndNotNaN) != 0)
 			{
 				if (value is double doubleValue)
 				{
@@ -544,6 +553,8 @@ namespace Microsoft.UI.Xaml
 			/// Set when the property type is declared in Uno.UI
 			/// </summary>
 			IsUnoType = (1 << 4),
+
+			ValidateNotNegativeAndNotNaN = (1 << 5),
 		}
 	}
 }
