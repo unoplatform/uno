@@ -3,6 +3,13 @@ parameters:
   vmMacImage: ''
   poolName: ''
 
+  snapshotGroups:
+    - 0
+    - 1
+    - 2
+
+  snapshotGroupCount: 3
+
 jobs:
 - job: Skia_Tests_Build
   displayName: 'Build Skia Samples App UI Tests'
@@ -106,13 +113,20 @@ jobs:
   timeoutInMinutes: 60
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: skia-gtk-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    SnapshotGroupCount: ${{ parameters.snapshotGroupCount }}
+
+  strategy:
+    matrix:
+      ${{ each testGroup in parameters.snapshotGroups }}:
+        Group_${{ testGroup }}:
+          SNAPSHOT_GROUP: ${{ testGroup }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -121,11 +135,11 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/gtk-install-macos.yml
+  - template: templates/gtk-install-windows.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots;--total-groups=$(SnapshotGroupCount);--current-group-index=$(SNAPSHOT_GROUP)
 
     displayName: Run Skia GTK Snapshot Tests
 

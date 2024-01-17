@@ -126,10 +126,28 @@ partial class App
 	private bool HandleAutoScreenshots(string args)
 	{
 #if __SKIA__ || __MACOS__
-		var runAutoScreenshotsParam =
-		args.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+		var argsArr = args.Split(';');
+		var runAutoScreenshotsParam = argsArr.FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
 
 		var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
+
+		var totalGroupsParam = argsArr.FirstOrDefault(a => a.StartsWith("--total-groups"));
+		var totalGroups = int.Parse(totalGroupsParam?.Split('=').LastOrDefault() ?? "1");
+		if (totalGroups < 1)
+		{
+			throw new ArgumentException("Total groups must be >= 1");
+		}
+
+		var currentGroupIndexParam = argsArr.FirstOrDefault(a => a.StartsWith("--current-group-index"));
+		var currentGroupIndex = int.Parse(currentGroupIndexParam?.Split('=').LastOrDefault() ?? "0");
+		if (currentGroupIndex < 0 || currentGroupIndex >= totalGroups)
+		{
+			throw new ArgumentException("Group index is out of range.");
+		}
+
+		Console.WriteLine($"Screenshots path: {screenshotsPath}");
+		Console.WriteLine($"Total groups: {totalGroups}");
+		Console.WriteLine($"Current group index: {currentGroupIndex}");
 
 		if (!string.IsNullOrEmpty(screenshotsPath))
 		{
@@ -145,7 +163,7 @@ partial class App
 						UnitTestDispatcherCompat.Priority.Normal,
 						async () =>
 						{
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
+							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, totalGroups, currentGroupIndex, () => System.Environment.Exit(0));
 						}
 					);
 

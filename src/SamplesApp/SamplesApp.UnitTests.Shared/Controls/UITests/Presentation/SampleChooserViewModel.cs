@@ -286,7 +286,7 @@ namespace SampleControl.Presentation
 			"Animations.EasingDoubleKeyFrame_CompositeTransform",
 		};
 
-		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", Action doneAction = null)
+		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", int totalGroups = 1, int currentGroupIndex = 0, Action doneAction = null)
 		{
 			try
 			{
@@ -303,7 +303,7 @@ namespace SampleControl.Presentation
 					{
 						try
 						{
-							await RecordAllTestsInner(folderName, ct, doneAction);
+							await RecordAllTestsInner(folderName, totalGroups, currentGroupIndex, ct, doneAction);
 						}
 						finally
 						{
@@ -320,7 +320,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task RecordAllTestsInner(string folderName, CancellationToken ct, Action doneAction = null)
+		private async Task RecordAllTestsInner(string folderName, int totalGroups, int currentGroupIndex, CancellationToken ct, Action doneAction = null)
 		{
 			try
 			{
@@ -361,8 +361,15 @@ namespace SampleControl.Presentation
 
 				var target = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
-				foreach (var sample in tests)
+				for (int i = 0; i < tests.Length; i++)
 				{
+					if ((i % totalGroups) != currentGroupIndex)
+					{
+						continue;
+					}
+
+					var sample = tests[i];
+
 					try
 					{
 #if TRACK_REFS
