@@ -326,23 +326,21 @@ namespace Microsoft.UI.Xaml
 
 		internal static UIElement GetElementFromHandle(IntPtr handle)
 		{
-			var gcHandle = GCHandle.FromIntPtr(handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (handle != IntPtr.Zero)
 			{
-				return element;
+				var gcHandle = GCHandle.FromIntPtr(handle);
+
+				if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+				{
+					return element;
+				}
 			}
-
-			return null;
-		}
-
-		internal static UIElement GetElementFromHandle(int handle)
-		{
-			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			else
 			{
-				return element;
+				if (typeof(UIElement).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					typeof(UIElement).Log().Debug($"Unable to get element handle for uninitialized handle");
+				}
 			}
 
 			return null;
