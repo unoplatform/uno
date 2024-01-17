@@ -116,7 +116,7 @@ public partial class TextBox
 		}
 		else
 		{
-			global::System.Diagnostics.Debug.Assert(!IsSkiaTextBox || _selection.length == 0);
+			global::System.Diagnostics.Debug.Assert(!_isSkiaTextBox || _selection.length == 0);
 			_historyIndex++;
 			_history.RemoveAllAt(_historyIndex);
 			_history.Add(new HistoryRecord(
@@ -169,7 +169,7 @@ public partial class TextBox
 		if (ContentElement != null)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
-			if (!IsSkiaTextBox)
+			if (!_isSkiaTextBox)
 			{
 				if (ContentElement.Content != displayBlock)
 				{
@@ -249,7 +249,7 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial(FocusState focusState)
 	{
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			TextBoxView?.OnFocusStateChanged(focusState);
 		}
@@ -275,7 +275,7 @@ public partial class TextBox
 		TrySetCurrentlyTyping(false);
 		_selectionEndsAtTheStart = false;
 		_selection = (start, length);
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			TextBoxView?.Select(start, length);
 		}
@@ -293,19 +293,19 @@ public partial class TextBox
 
 	public int SelectionStart
 	{
-		get => IsSkiaTextBox ? _selection.start : TextBoxView?.GetSelectionStart() ?? 0;
+		get => _isSkiaTextBox ? _selection.start : TextBoxView?.GetSelectionStart() ?? 0;
 		set => Select(start: value, length: SelectionLength);
 	}
 
 	public int SelectionLength
 	{
-		get => IsSkiaTextBox ? _selection.length : TextBoxView?.GetSelectionLength() ?? 0;
+		get => _isSkiaTextBox ? _selection.length : TextBoxView?.GetSelectionLength() ?? 0;
 		set => Select(SelectionStart, value);
 	}
 
 	internal void UpdateDisplaySelection()
 	{
-		if (IsSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
 			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
 			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
@@ -316,7 +316,7 @@ public partial class TextBox
 
 	private void UpdateScrolling()
 	{
-		if (IsSkiaTextBox && _contentElement is ScrollViewer sv)
+		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
 			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 
@@ -335,7 +335,7 @@ public partial class TextBox
 
 	partial void OnKeyDownPartial(KeyRoutedEventArgs args)
 	{
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			OnKeyDownInternal(args);
 			return;
@@ -788,7 +788,7 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (IsSkiaTextBox && _isPressed)
+		if (_isSkiaTextBox && _isPressed)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
@@ -831,7 +831,7 @@ public partial class TextBox
 		base.OnRightTapped(e);
 		e.Handled = true;
 
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
 			if (_contextMenu is null)
 			{
@@ -896,7 +896,7 @@ public partial class TextBox
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
 		TrySetCurrentlyTyping(false);
-		if (IsSkiaTextBox
+		if (_isSkiaTextBox
 			&& args.GetCurrentPoint(null) is var currentPoint
 			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
 		{
@@ -1164,7 +1164,7 @@ public partial class TextBox
 
 	partial void OnTextChangedPartial()
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
 			if (_pendingSelection is { } selection)
 			{
@@ -1184,7 +1184,7 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial2(FocusState focusState)
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
 			// this is needed so that we UpdateScrolling after the button appears/disappears.
 			UpdateLayout();
@@ -1197,7 +1197,7 @@ public partial class TextBox
 
 	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
 			if (_currentlyTyping)
 			{
@@ -1224,7 +1224,7 @@ public partial class TextBox
 
 	partial void CutSelectionToClipboardPartial()
 	{
-		if (IsSkiaTextBox)
+		if (_isSkiaTextBox)
 		{
 			if (_currentlyTyping)
 			{
@@ -1270,7 +1270,7 @@ public partial class TextBox
 
 	public void Undo()
 	{
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			return;
 		}
@@ -1310,7 +1310,7 @@ public partial class TextBox
 
 	public void Redo()
 	{
-		if (!IsSkiaTextBox)
+		if (!_isSkiaTextBox)
 		{
 			return;
 		}
