@@ -4249,6 +4249,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/15093")]
+#endif
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.
