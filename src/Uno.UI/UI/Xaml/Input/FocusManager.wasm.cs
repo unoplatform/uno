@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno;
 using Uno.Foundation;
@@ -11,6 +12,8 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Input
 {
@@ -44,10 +47,30 @@ namespace Microsoft.UI.Xaml.Input
 				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() focusedElement={GetFocusedElement()}, element={element}, searching for focusable parent control");
 			}
 
-			foreach (var parent in element.GetParents())
+			foreach (var candidate in element.GetAllParents())
 			{
 				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
-				if (parent is TextBlock textBlock && textBlock.IsFocusable)
+
+				// Special handling for RootVisual - which is not focusable on managed side
+				// but is focusable on native side. The purpose of this trick is to allow
+				// us to recognize, that the page was focused by tabbing from the address bar
+				// and focusing the first focusable element on the page instead.
+				if (candidate is RootVisual rootVisual)
+				{
+					var firstFocusable = FocusManager.FindFirstFocusableElement(rootVisual);
+					if (firstFocusable is FrameworkElement frameworkElement)
+					{
+						if (_log.Value.IsEnabled(LogLevel.Debug))
+						{
+							_log.Value.LogDebug(
+								$"Root visual focused - caused by browser keyboard navigation to the page, " +
+								$"moving focus to actual first focusable element - {frameworkElement?.ToString() ?? "[null]"}.");
+						}
+						frameworkElement.Focus(FocusState.Keyboard);
+					}
+					break;
+				}
+				else if (candidate is TextBlock textBlock && textBlock.IsFocusable)
 				{
 					// Focusable TextBlock parent, we can move focus to it.
 					var focusManager = VisualTree.GetFocusManagerForElement(textBlock);
@@ -58,14 +81,23 @@ namespace Microsoft.UI.Xaml.Input
 					_skipNativeFocus = false;
 					break;
 				}
+				else if (candidate is TextBoxView textBoxView)
+				{
+					if (textBoxView.FindFirstParent<TextBox>() is { IsFocusable: true } tb)
+					{
+						var focusManager = VisualTree.GetFocusManagerForElement(tb);
+						focusManager?.UpdateFocus(new FocusMovement(tb, FocusNavigationDirection.None, FocusState.Pointer));
+						break;
+					}
+				}
 				else if (
-					parent is FrameworkElement fe &&
+					candidate is FrameworkElement fe &&
 					(!fe.AllowFocusOnInteraction || !fe.IsTabStop))
 				{
 					// Stop propagating, this element does not want to receive focus.
 					break;
 				}
-				else if (parent is Control control && control.IsFocusable)
+				else if (candidate is Control control && control.IsFocusable)
 				{
 					ProcessControlFocused(control);
 					break;
@@ -135,26 +167,6 @@ namespace Microsoft.UI.Xaml.Input
 			}
 			else if (focused != null)
 			{
-				// Special handling for RootVisual - which is not focusable on managed side
-				// but is focusable on native side. The purpose of this trick is to allow
-				// us to recognize, that the page was focused by tabbing from the address bar
-				// and focusing the first focusable element on the page instead.
-				if (focused is RootVisual rootVisual)
-				{
-					var firstFocusable = FocusManager.FindFirstFocusableElement(rootVisual);
-					if (firstFocusable is FrameworkElement frameworkElement)
-					{
-						if (_log.Value.IsEnabled(LogLevel.Debug))
-						{
-							_log.Value.LogDebug(
-								$"Root visual focused - caused by browser keyboard navigation to the page, " +
-								$"moving focus to actual first focusable element - {frameworkElement?.ToString() ?? "[null]"}.");
-						}
-						frameworkElement.Focus(FocusState.Keyboard);
-					}
-					return;
-				}
-
 				ProcessElementFocused(focused);
 			}
 			else
