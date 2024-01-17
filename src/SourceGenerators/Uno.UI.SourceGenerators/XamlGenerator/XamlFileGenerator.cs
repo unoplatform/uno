@@ -5071,7 +5071,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// FIXME: UWP throws on undefined numerical value for some enum type like <StackPanel Orientation="2" />, but not on some others (eg: user-defined enums)".
 					// Setting the same Orientation to 2 in code behind is fine however...
 					// Given the logic is not well understood, we are ignoring this behavior here.
-					if (if (flags.Any(x => x.DefinedName == null && !x.IsValidNumeric)))
+					if (flags.Any(x => x.DefinedName == null && !x.IsValidNumeric))
 					{
 						throw new Exception($"Failed to create a '{propertyTypeWithoutGlobal}' from the text '{value}'.");
 					}
