@@ -546,32 +546,36 @@
 									   Margin="10,0" />
 					</Button>
 
-					<!-- Log Dump Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
-							VerticalAlignment="Center"
-							Grid.Column="7"
-							Command="{Binding LogViewDumpCommand}"
-							Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
-						<u:PathControl Style="{StaticResource Icon_LogDump}"
-									   VerticalContentAlignment="Center"
-									   HorizontalContentAlignment="Center"
-									   Margin="0,4,10,0" />
-					</Button>
-
-					<!-- Fluent styles check box -->
-					<CheckBox Content="FL"
-							  Grid.Column="8"
-							  IsChecked="{Binding UseFluentStyles, Mode=TwoWay}"
-							  Style="{x:Null}"/>
 					<!-- Dark theme check box -->
 					<CheckBox Grid.Column="9"
+							  Width="64"
+							  MinWidth="64"
 							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
 
-					<!-- Fluent styles check box -->
-					<CheckBox x:Name="RTLCheckBox" Content="RTL"
-							  Grid.Column="10" />
+					<Button Grid.Column="10" Margin="8,0">
+						<SymbolIcon Symbol="More" />
+						<Button.Flyout>
+							<MenuFlyout>
+								<ToggleMenuFlyoutItem Text="Use Fluent styles" IsChecked="{Binding UseFluentStyles, Mode=TwoWay}">
+									<ToggleMenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE790;" />
+									</ToggleMenuFlyoutItem.Icon>
+								</ToggleMenuFlyoutItem>
+								<ToggleMenuFlyoutItem Text="Flow text right-to-left" IsChecked="{Binding UseRtl, Mode=TwoWay}">
+									<ToggleMenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
+									</ToggleMenuFlyoutItem.Icon>
+								</ToggleMenuFlyoutItem>
+								<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
+									<MenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
+									</MenuFlyoutItem.Icon>
+								</MenuFlyoutItem>
+							</MenuFlyout>
+						</Button.Flyout>
+					</Button>
 				</Grid>
 
 				<!-- Sample Content -->
