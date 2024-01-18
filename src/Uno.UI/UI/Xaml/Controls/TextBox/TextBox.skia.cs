@@ -1209,7 +1209,16 @@ public partial class TextBox
 				// we will already get a new action from the setter, so we don't need to commit another one here.
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
-			_pendingSelection = (selectionStart + clipboardText.Length, 0);
+
+			if (Text == newText)
+			{
+				// OnTextChanged won't fire, so we immediately change the selection
+				Select(selectionStart + clipboardText.Length, 0);
+			}
+			else
+			{
+				_pendingSelection = (selectionStart + clipboardText.Length, 0);
+			}
 		}
 	}
 
