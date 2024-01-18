@@ -514,18 +514,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
+		private INamedTypeSymbol? SearchNamespaces(string name, string[] namespaces)
+		{
+			foreach (var @namespace in namespaces)
+			{
+				if (_metadataHelper.FindTypeByFullName(@namespace + "." + name) is INamedTypeSymbol type)
+				{
+					return type;
+				}
+			}
+
+			return null;
+		}
+
 		private INamedTypeSymbol? SearchClrNamespaces(string name)
 		{
 			if (_clrNamespaces != null)
 			{
-				// Search first using the default namespace
-				foreach (var clrNamespace in _clrNamespaces)
-				{
-					if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
-					{
-						return type;
-					}
-				}
+				return SearchNamespaces(name, _clrNamespaces);
 			}
 
 			return null;
@@ -604,9 +610,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					namespaceUrl = ns.Namespace.Substring(0, indexOfQuestionMark);
 				}
 
-				if (namespaceUrl.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
+				if (_knownNamespaces.TryGetValue(namespaceUrl, out var knownNamespaces))
 				{
-					return SearchClrNamespaces(fields[1]);
+					return SearchNamespaces(fields[1], knownNamespaces);
 				}
 
 				var nsName = GetTrimmedNamespace(namespaceUrl);
