@@ -4,14 +4,14 @@ uid: Uno.Development.CommunityToolkit
 
 # How to use Windows Community Toolkit
 
-The [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
+The [Windows Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.
 
 This tutorial will walk through adding and implementing the DataGrid control but the steps can be followed for any of the Uno ported Windows Community Toolkit controls.
 
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample)
-
-> [!Tip]
+>
+> [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](xref:Uno.GetStarted).
 
 ## NuGet Packages for Uno Platform
@@ -21,7 +21,8 @@ Android, iOS, mac Catalyst, Linux, and WebAssembly.
 
 The following packages are available:
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
+
 - [Uno.CommunityToolkit.WinUI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI)
 - [Uno.CommunityToolkit.WinUI.Connectivity](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.Connectivity)
 - [Uno.CommunityToolkit.WinUI.DeveloperTools](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.DeveloperTools)
@@ -40,7 +41,7 @@ The following packages are available:
 
 These package ids are for Uno Platform (non-Windows) projects. For WinUI 3 projects, you should use the equivalent packages published by Microsoft (`CommunityToolkit.WinUI`, `CommunityToolkit.WinUI.UI.Controls` etc).
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
 - [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
 - [Uno.Microsoft.Toolkit.Parsers](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Parsers)
@@ -61,9 +62,9 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 ## Referencing the Windows Community Toolkit
 
-When using the default Uno Platform solution templates, in your shared class library, add the following: 
+When using the default Uno Platform solution templates, in your shared class library, add the following:
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
 Add the following conditional references:
 
@@ -79,13 +80,14 @@ Add the following conditional references:
 ```
 
 If you already had a reference to the Community Toolkit, you should remove those lines:
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
 </ItemGroup>
 ```
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
 Add the following conditional reference:
 
@@ -103,6 +105,7 @@ Add the following conditional reference:
 You may need to replace `uap10.0.19041` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
 
 If you already had a reference to the community toolkit, you should remove those lines:
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
@@ -113,7 +116,7 @@ If you already had a reference to the community toolkit, you should remove those
 
 If your're getting an error like this one :
 
-```
+```console
 Controls\TextBox\Themes\Generic.xaml : Xaml Internal Error error WMC9999: 
 Type universe cannot resolve assembly: Uno.UI, Version=255.255.255.255, 
 Culture=neutral, PublicKeyToken=null.
@@ -126,13 +129,12 @@ This means that there's an unconditional reference to Uno Platform's packages, a
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 
-> [!NOTE]
-> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`. 
-      
+    > [!NOTE]
+    > For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`.
 
-2. Add a reference to the UWP UI Controls 
+2. Add a reference to the UWP UI Controls
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
    In XAML:  
     ```xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"```  
@@ -140,7 +142,7 @@ This means that there's an unconditional reference to Uno Platform's packages, a
    In C#:  
     ```using CommunityToolkit.WinUI.UI.Controls;```
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
    In XAML:  
     ```xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"```  
@@ -150,7 +152,7 @@ This means that there's an unconditional reference to Uno Platform's packages, a
 
 ***
 
-## Task 2 - Add the DataGrid Control 
+## Task 2 - Add the DataGrid Control
 
 This control will create an easily organized grid that will allow you to create flexible columns and rows.
 

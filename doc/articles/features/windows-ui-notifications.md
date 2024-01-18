@@ -15,7 +15,7 @@ macOS supports numeric and textual badges (as opposed to UWP) but does not suppo
 
 iOS allows for numeric badges only. It is also necessary to request user permission prior to executing the badge notification for the first time (this request can be executed when appropriate for your application):
 
-```
+```csharp
 #if __IOS__
 UNUserNotificationCenter.Current
     .RequestAuthorization(

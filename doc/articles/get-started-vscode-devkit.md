@@ -15,7 +15,7 @@ C# Dev Kit requires Uno Platform extension 0.12 or later. The extension itself n
 
 From a terminal (external or inside VS Code) type:
 
-```bash
+```dotnetcli
 dotnet --version
 ```
 

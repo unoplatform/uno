@@ -3,6 +3,7 @@ uid: Uno.Features.ElevatedView
 ---
 
 # ElevatedView
+
 In many design languages (like [_Material Design_](https://material.io/design)), there's a notion of 'elevation' where a portion of the UI should be presented as being _elevated_ over the rest of the content.
 
 In this case, UWP's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (UWP, Android, iOS, macOS, WebAssembly, and Skia).
@@ -13,19 +14,20 @@ This control is very useful to create cards with both rounded corners and an ele
 
 First you need to add the `toolkit` namespace in your XAML file:
 
-```
+```xml
 xmlns:toolkit="using:Uno.UI.Toolkit"
 ```
 
 After that, use the `ElevatedView` to host the content you need to be elevated:
+
 ``` xml
 <StackPanel Orientation="Horizontal" Spacing="20">
 
-	<Button>Non-Elevated Button</Button>
+    <Button>Non-Elevated Button</Button>
 
-	<toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
-		<Button>Elevated Button</Button>
-	</toolkit:ElevatedView>
+    <toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
+        <Button>Elevated Button</Button>
+    </toolkit:ElevatedView>
 
 </StackPanel>
 ```
@@ -47,6 +49,4 @@ You can set the following properties:
 
 ## Particularities
 
-* Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<toolkit:ElevatedView>` directly in a `<ScrollViewer> ` because it's designed to clip its content.
-
-
+* Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<toolkit:ElevatedView>` directly in a `<ScrollViewer>` because it's designed to clip its content.

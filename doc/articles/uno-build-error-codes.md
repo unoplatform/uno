@@ -13,7 +13,7 @@ To fix this issue, you may be explicitly referencing `Uno.UI` and `Uno.WinUI` in
 
 For instance, if your project references `Uno.WinUI`, and you try to reference `SkiaSharp.View.Uno`, you will get this error. To fix it, you'll need to reference `SkiaSharp.View.Uno.WinUI` instead.
 
-### UNOB0002: Project XX contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework.
+### UNOB0002: Project XX contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework
 
 This error code means that a WinAppSDK project is referencing a project in your solution which is not providing a `net7.0-windows10.xx` TargetFramework.
 

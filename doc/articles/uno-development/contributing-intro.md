@@ -18,7 +18,7 @@ Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or j
 
 ## Building and debugging Uno
 
-For the prerequisites you'll need, as well as useful tips like using [solution filters](https://docs.microsoft.com/en-us/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
+For the prerequisites you'll need, as well as useful tips like using [solution filters](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
 
 If you're doing development for Uno's macOS support, you'll need to build and run Uno using Visual Studio for Mac. [There's a separate guide for that here](building-uno-macos.md).
 
@@ -39,6 +39,7 @@ See how to implement a new [feature here](../contributing/guidelines/implementin
 The [Samples App](../../../src/SamplesApp) is the development app contained in the Uno.UI solution. It serves as a UI and Runtime Tests host, as well as a playground for validating other API scenarios.
 
 This app is available live at these locations, built from the default branch:
+
 - WebAssembly: https://aka.platform.uno/wasm-samples-app
 
 ## Adding tests

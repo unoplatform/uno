@@ -38,9 +38,10 @@ This is just like adding an asset to a WinUI project, except assets must be adde
 
 ## Referencing an asset
 
-Use assets added to your shared project with the `ms-appx:///` scheme. 
+Use assets added to your shared project with the `ms-appx:///` scheme.
 
 See the examples below for XAML:
+
 ```xml
 <!-- Relative path without a leading '/' uses assets from the library where the XAML is located -->
 <Image Source="Assets/MyImage.png" />
@@ -82,7 +83,7 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 
 #### Examples
 
-```
+```paths
 \Assets\Images\logo.scale-100.png
 \Assets\Images\logo.scale-200.png
 \Assets\Images\logo.scale-400.png
@@ -97,17 +98,18 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 Use it as you would on WinUI/UWP, but keep in mind that some language or region combinations might not work on all platforms.
 
 The following languages have been verified to work on all platforms:
-- `en`
-- `en-US`
-- `en-CA`
-- `fr`
-- `fr-FR`
-- `fr-CA`
-- `es`
+
+-`en`
+-`en-US`
+-`en-CA`
+-`fr`
+-`fr-FR`
+-`fr-CA`
+-`es`
 
 #### Examples
 
-```
+```paths
 \Assets\Images\en\logo.png
 \Assets\Images\fr\logo.png
 \Assets\Images\es\logo.png
@@ -126,7 +128,7 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 #### Examples
 
-```
+```paths
 /Assets/theme-light/ThemeTestImage.png
 /Assets/theme-dark/ThemeTestImage.png
 ```
@@ -149,13 +151,13 @@ On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constr
 
 ```csharp
 #if WINDOWS_UWP
-	Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("custom", "uwp");
+    Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("custom", "uwp");
 #endif
 ```
 
 #### Examples
 
-```
+```paths
 \Assets\Images\custom-uwp\logo.png
 \Assets\Images\custom-ios\logo.png
 \Assets\Images\custom-android\logo.png
@@ -175,14 +177,14 @@ This package is installed by default when using the [Uno Cross-Platform solution
 ```csharp
 private void ConfigureUniversalImageLoader()
 {
-	// Create global configuration and initialize ImageLoader with this config
-	ImageLoaderConfiguration config = new ImageLoaderConfiguration
-		.Builder(Context)
-		.Build();
+    // Create global configuration and initialize ImageLoader with this config
+    ImageLoaderConfiguration config = new ImageLoaderConfiguration
+        .Builder(Context)
+        .Build();
 
-	ImageLoader.Instance.Init(config);
+    ImageLoader.Instance.Init(config);
 
-	ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+    ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
 }
 ```
 

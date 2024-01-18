@@ -37,7 +37,7 @@ GitHub supports [Markdown](https://help.github.com/articles/github-flavored-mark
 
 ### Request a feature
 
-If you need a [UWP feature](https://docs.microsoft.com/en-us/uwp/api/) or [WinUI feature](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls) that Uno doesn't support yet, you should [submit a feature request](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fenhancement%2C+triage%2Funtriaged&template=enhancement.md). Check [existing issues first](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fenhancement) in case the same feature request already exists (in which case you can upvote the existing issue).
+If you need a [UWP feature](https://learn.microsoft.com/uwp/api/) or [WinUI feature](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls) that Uno doesn't support yet, you should [submit a feature request](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fenhancement%2C+triage%2Funtriaged&template=enhancement.md). Check [existing issues first](https://github.com/unoplatform/uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fenhancement) in case the same feature request already exists (in which case you can upvote the existing issue).
 
 To help us understand and prioritize your idea, please provide as much detail about your scenario and why the feature or enhancement would be useful.
 

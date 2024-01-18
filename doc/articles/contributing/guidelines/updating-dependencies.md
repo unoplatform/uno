@@ -60,7 +60,7 @@ These dependencies are updated manually as part of the release process:
 
 You can trigger Dependabot actions by commenting on the pull-request:
 
-```
+```text
 @dependabot recreate will recreate this PR, overwriting any edits that have been made to it
 @dependabot ignore this [patch|minor|major] version will close this PR and stop Dependabot creating any more for this minor/major version (unless you reopen the PR or upgrade to it yourself)
 @dependabot ignore this dependency will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)

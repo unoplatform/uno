@@ -27,7 +27,7 @@ Unfortunately, WCF itself has been discontinued, although there are, of course, 
 > In the sample migration of TimeEntryRIA to Uno, ASP.NET Core Web APIs were used. You can find a full article discussing how to consume a web service with Uno below:
 >
 > * [How to consume a web service](https://platform.uno/docs/articles/howto-consume-webservices.html)
-
+>
 > [!NOTE]
 > You can learn more about alternate service technologies here:
 >

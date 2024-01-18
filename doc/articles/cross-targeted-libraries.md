@@ -10,15 +10,14 @@ Uno Platform provides a template which uses this project format. See [this docum
 
 ## The .csproj format
 
-Cross-targeted libraries use the 'SDK-style' [project file format](https://docs.microsoft.com/en-us/dotnet/core/tools/csproj). This format is considerably cleaner than older-style `.csproj` files.
+Cross-targeted libraries use the 'SDK-style' [project file format](https://learn.microsoft.com/dotnet/core/tools/csproj). This format is considerably cleaner than older-style `.csproj` files.
 
-> [!NOTE] 
-> Visual Studio provides easy edition of new-style `.csproj` files directly without needing to unload the project first. 
+> [!NOTE]
+> Visual Studio provides easy edition of new-style `.csproj` files directly without needing to unload the project first.
 
 ### Platform-conditional settings
 
 Often you'll want some properties or items to only be defined for specific targets. To do this you put them in a `PropertyGroup` or `ItemGroup` with `Condition=" '$(TargetFramework)' == 'targetname' "` set. You can use the `or` keyword to match multiple targets.
-
 
 ## Adding references
 
@@ -27,13 +26,14 @@ Often you'll want some properties or items to only be defined for specific targe
 NuGet references that should be shared by all platforms can be added through the Visual Studio NuGet UI.
 
 If you want to apply NuGet references only to specific platforms, you can do so by manually editing the `csproj` file and putting the `PackageReference` within a conditional `ItemGroup`, eg:
+
 ```xml
 <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-	<PackageReference Include="MyLibraryA" Version="3.0.4" PrivateAssets="none" />
+ <PackageReference Include="MyLibraryA" Version="3.0.4" PrivateAssets="none" />
 </ItemGroup>
 
 <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios' or '$(TargetFramework)' == 'net7.0-maccatalyst'">
-	<PackageReference Include="MyLibraryB" Version="2.5.11" PrivateAssets="none" />
+ <PackageReference Include="MyLibraryB" Version="2.5.11" PrivateAssets="none" />
 </ItemGroup>
 ```
 
@@ -42,17 +42,19 @@ If you want to apply NuGet references only to specific platforms, you can do so 
 Adding project references and framework references is not currently working through Visual Studio's interface is not currently working, it gives an error of "Missing value for TargetPlatformWinMDLocation property". You need to add the reference by editing the `csproj` file directly.
 
 Example project reference:
+
 ```xml
 <ItemGroup>
-	<ProjectReference Include="..\CoolControls.Core\CoolControls.Core.csproj" />
+ <ProjectReference Include="..\CoolControls.Core\CoolControls.Core.csproj" />
 </ItemGroup>
 ```
 
 Example SDK reference:
+
 ```xml
 <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
-	<Reference Include="System.Numerics" />
-	<Reference Include="System.Numerics.Vectors" />
+ <Reference Include="System.Numerics" />
+ <Reference Include="System.Numerics.Vectors" />
 </ItemGroup>
 ```
 
@@ -65,9 +67,10 @@ In Visual Studio you can add new XAML files via the normal 'Add Items...' UI. No
 ## Defining conditional symbols
 
 Adding a new conditional symbol via the Visual Studio UI may result in it only being defined for a single target platform. To add it for all platforms (or a specific subset), manually edit the `csproj` file:
+
 ```xml
 <PropertyGroup>
-	<DefineConstants>UNO_1213</DefineConstants>
+ <DefineConstants>UNO_1213</DefineConstants>
 </PropertyGroup>
 ```
 

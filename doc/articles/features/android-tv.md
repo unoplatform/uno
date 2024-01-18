@@ -44,7 +44,6 @@ Next, every Android TV app must provide a banner image, which is used to display
 
 The banner then must be added to the `Resources/drawable-xhdpi` folder. For the banner, use an xhdpi resource with a size of 320 x 180 px. Text must be included in the image. If your app is available in more than one language, you must provide separate versions of the banner with text for each supported language. See [Android docs](https://developer.android.com/training/tv/start/start#banner) for more information.
 
-
 Finally, to make your app work on both Android TV and Android mobile devices, declare that neither touchscreen nor leanback mode is required. You can do so using the assembly-wide `[UsesFeature]` attributes (you can place these in any file within the `Mobile` or `Droid` project, we recommend the `Main.Android.cs` or `Main.cs` file):
 
 ```csharp

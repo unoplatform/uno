@@ -10,9 +10,9 @@ This document outlines the philosophy of Uno Platform. It guides the development
 
 We stand on the shoulders of giants, Microsoft's tooling is a treat to work with:
 
-- [Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/edit-and-continue)
-- [Live Visual Tree](https://docs.microsoft.com/en-us/visualstudio/debugger/inspect-xaml-properties-while-debugging).
-- [XAML Hot Reload](https://docs.microsoft.com/en-us/visualstudio/debugger/xaml-hot-reload?view=vs-2019)
+- [Edit and Continue](https://learn.microsoft.com/visualstudio/debugger/edit-and-continue)
+- [Live Visual Tree](https://learn.microsoft.com/visualstudio/debugger/inspect-xaml-properties-while-debugging).
+- [XAML Hot Reload](https://learn.microsoft.com/visualstudio/debugger/xaml-hot-reload?view=vs-2019)
 
 The promise of the Uno Platform is to enable building your app with those tools and then deploying it to WebAssembly, iOS, Android, macOS and Linux.
 

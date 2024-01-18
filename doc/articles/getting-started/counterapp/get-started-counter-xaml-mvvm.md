@@ -6,7 +6,6 @@ uid: Uno.Workshop.Counter.XAML.MVVM
 
 [Download the complete XAML + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVVM)  
 
-
 [!INCLUDE [Intro](include-intro.md)]
 
 In this tutorial you will learn how to:
@@ -20,7 +19,7 @@ To complete this tutorial you don't need any prior knowledge of the Uno Platform
 
 [!INCLUDE [VS](include-create.md)]
 
-# [Visual Studio](#tab/vs)
+## [Visual Studio](#tab/vs)
 
 > [!NOTE]
 > If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
@@ -47,14 +46,14 @@ Before completing the wizard, take a look through each of the sections and see w
 
 The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
-# [Command Line](#tab/cli)
+## [Command Line](#tab/cli)
 
 > [!NOTE]
 > If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -preset blank -presentation mvvm -markup xaml -o Counter
 ```
 
@@ -62,7 +61,7 @@ This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -h
 ```
 

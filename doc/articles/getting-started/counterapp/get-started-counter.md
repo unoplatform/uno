@@ -2,6 +2,8 @@
 uid: Uno.Workshop.Counter
 ---
 
+<!-- markdownlint-disable MD001 -->
+
 # Create a Counter App with Uno Platform
 
 The Counter tutorial will walk you through creating a simple cross-platform counter application with Uno Platform.

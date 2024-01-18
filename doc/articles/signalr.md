@@ -4,7 +4,7 @@ uid: Uno.Development.SignalR
 
 # SignalR
 
-[SignalR](https://learn.microsoft.com/aspnet/core/signalr/introduction?view=aspnetcore-7.0) is an ASP.NET Core library that allows server-side code to be instantly pushed to the client. 
+[SignalR](https://learn.microsoft.com/aspnet/core/signalr/introduction?view=aspnetcore-7.0) is an ASP.NET Core library that allows server-side code to be instantly pushed to the client.
 
 ## Prerequisites
 
@@ -17,7 +17,7 @@ uid: Uno.Development.SignalR
 
     ![project-template](Assets/project-structure.JPG)
 
-2. Add [SignalR Hub](https://learn.microsoft.com/aspnet/core/tutorials/signalr?view=aspnetcore-7.0&tabs=visual-studio#create-a-signalr-hub) to your `[YourProjectName].Service` project in a `Hubs` folder. 
+2. Add [SignalR Hub](https://learn.microsoft.com/aspnet/core/tutorials/signalr?view=aspnetcore-7.0&tabs=visual-studio#create-a-signalr-hub) to your `[YourProjectName].Service` project in a `Hubs` folder.
 
 3. In your `Startup.cs` file, add your `SignalR` service and a `CORS policy` to the `ConfigureServices` method.
 

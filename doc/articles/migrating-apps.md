@@ -26,11 +26,11 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
 
     iii. Finally, before reopening Visual Studio, open the `.sln` file with your favorite text editor. Locate the line referencing your project, and update it to the new path. It should look something like:
 
-	```
-	Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker_OLD", "BugTracker_OLD\BugTracker_OLD.csproj", "{92E4C60C-336D-4DFB-B08D-80489617C1F2}"
-	```
+ ```sln
+ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker_OLD", "BugTracker_OLD\BugTracker_OLD.csproj", "{92E4C60C-336D-4DFB-B08D-80489617C1F2}"
+ ```
 
-1. Open the solution. Right-click on the solution and choose 'Add > New Project'. Search for the 'Uno Platform App' template. Enter the desired name (eg `BugTracker` in our fictional example). Hit 'Create'. You should now have a set of platform 'head' projects (`BugTracker.iOS`, `BugTracker.Windows`, etc), under the `Platforms` folder, and a Shared project (`BugTracker.Shared`). 
+1. Open the solution. Right-click on the solution and choose 'Add > New Project'. Search for the 'Uno Platform App' template. Enter the desired name (eg `BugTracker` in our fictional example). Hit 'Create'. You should now have a set of platform 'head' projects (`BugTracker.iOS`, `BugTracker.Windows`, etc), under the `Platforms` folder, and a Shared project (`BugTracker.Shared`).
 
 1. Delete `MainPage.xaml` from the new Shared project - you will replace these with your existing files.
 
@@ -44,11 +44,11 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
 
 If your old UWP app project had dependencies, you will have to add those dependencies to each new target platform project you wish to support. These include:
 
- - .NET Standard projects within the solution: you should be able to add these as dependencies to any target platform project without difficulties.
+- .NET Standard projects within the solution: you should be able to add these as dependencies to any target platform project without difficulties.
 
- - UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
+- UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
 
- - external dependencies: [see information here](migrating-before-you-start.md) on finding equivalent dependencies for NuGet packages and framework libraries.
+- external dependencies: [see information here](migrating-before-you-start.md) on finding equivalent dependencies for NuGet packages and framework libraries.
 
 ## Migrating app configuration
 

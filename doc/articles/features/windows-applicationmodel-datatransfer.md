@@ -2,11 +2,11 @@
 uid: Uno.Features.WAMDataTransfer
 ---
 
-## Sharing Content
+# Sharing Content
 
 The data transfer manager allows sharing content from your application using the OS sharing dialog. To check whether sharing is supported at runtime, use `IsSupported()` method:
 
-```
+```csharp
 if (DataTransferManager.IsSupported())
 {
     // Sharing is supported    
@@ -15,15 +15,15 @@ if (DataTransferManager.IsSupported())
 
 Currently, the following types of content can be shared:
 
-| Type of content   | Android | iOS | macOS | WASM | Tizen |
-|-------------------|---------|-----|-------|------| ----- |
-| Text              | ✔      | ✔ | ✔    | ✔  | ✔    |
-| Uri               | ✔      | ✔ | ✔    | ✔  |✔     |
-| File              | ✖      | ✖ | ✖    | ✖  |✖     |   
+| Type of content | Android | iOS | macOS | WASM | Tizen |
+|-----------------|---------|-----|-------|------|-------|
+| Text            | ✔       | ✔   | ✔     | ✔    | ✔     |
+| Uri             | ✔       | ✔   | ✔     | ✔    | ✔     |
+| File            | ✖       | ✖   | ✖     | ✖    | ✖     |
 
 To set up the `DataTransferManager` use the following snippet:
 
-```
+```csharp
 var dataTransferManager = DataTransferManager.GetForCurrentView();
 dataTransferManager.DataRequested += DataRequested;
 DataTransferManager.ShowShareUI();
@@ -33,7 +33,7 @@ Make sure to unregister the `DataRequested` event after finished sharing.
 
 In the `DataRequested` method, you can set the data to be shared in the `DataRequestedEventArgs`:
 
-```
+```csharp
 private void DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
 {        
     args.Request.Data.Properties.Title = "Sharing dialog title";
@@ -46,7 +46,7 @@ private void DataRequested(DataTransferManager sender, DataRequestedEventArgs ar
 
 If you need to prepare the data asynchronously, you can use a deferral:
 
-```
+```csharp
 private async void DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
 {        
     var deferral = args.Request.GetDeferral();

@@ -47,7 +47,6 @@ This will ask the `Uno` debug provider how to build and launch the application. 
 > [!NOTE]
 > Uno Platform's [templates](https://www.nuget.org/packages/uno.templates/) already include this change.
 
-
 ## Debugging with the Windows Subsystem for Android
 
 You first need to [connect](https://learn.microsoft.com/en-us/windows/android/wsa/#connect-to-the-windows-subsystem-for-android-for-debugging) to the Windows Subsystem for Android (WSA) in order to use it for debugging. From the command-line type:

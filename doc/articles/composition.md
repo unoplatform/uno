@@ -7,9 +7,9 @@ uid: Uno.Development.Composition
 Composition Visuals make up the visual tree structure which all other features of the composition API use and build on.
 The API allows developers to define and create one or many visual objects each representing a single node in a visual tree.
 
-To get more info, you can refer to [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/uwp/composition/composition-visual-tree).
+To get more info, you can refer to [Microsoft's documentation](https://learn.microsoft.com/windows/uwp/composition/composition-visual-tree).
 
-Uno Platform currently supports a small number of the APIs in the [`Windows.UI.Composition` namespace](https://docs.microsoft.com/en-us/uwp/api/windows.ui.composition?view=winrt).
+Uno Platform currently supports a small number of the APIs in the [`Windows.UI.Composition` namespace](https://learn.microsoft.com/uwp/api/windows.ui.composition?view=winrt).
 
 The rest of this article details Uno-specific considerations regarding Composition API.
 
@@ -28,7 +28,7 @@ With Uno, you can request to run those methods on a dedicated thread by setting 
 Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Options.Enabled;
 ```
 
-This thread will also be used for [independent animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/storyboarded-animations#dependent-and-independent-animations).
+This thread will also be used for [independent animations](https://learn.microsoft.com/windows/uwp/design/motion/storyboarded-animations#dependent-and-independent-animations).
 
 **When overriding the `[On]Draw` methods, it is very important not to access any state that can be edited from the UI Thread, including any `DependencyProperty`.**
 **Instead, you should capture the state of your control into a `RenderNode` during the `ArrangeOverride` and render it on the provided `Canvas`.**

@@ -4,7 +4,7 @@ uid: Uno.UI.CommonIssues.IosCatalyst
 
 # Issues related to WebAssembly projects
 
-### `Don't know how to marshal a return value of type 'System.IntPtr'`
+## `Don't know how to marshal a return value of type 'System.IntPtr'`
 
 [This issue](https://github.com/unoplatform/uno/issues/9430) may happen for Uno.UI 4.4.20 and later when deploying an application using the iOS Simulator or Mac Catalyst when the application contains a `TextBox`.
 

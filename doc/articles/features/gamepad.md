@@ -65,9 +65,6 @@ if (GamepadButtons.A == (reading.Buttons & GamepadButtons.A))
 }
 ```
 
-
-
-See Gamepad in action
----------------------------
+## See Gamepad in action
 
 * To see this API in action, visit out Gallery and look for Gamepad [here](https://gallery.platform.uno/).

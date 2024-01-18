@@ -9,12 +9,11 @@ uid: Uno.Development.HostWebAssemblyApp
   - [Nginx](#nginx)
   - [Apache](#apache)
 
-
 Regardless of the web server (or reverse proxy) software used, the support the following Content (MIME) types are always needed:
 
--   `application/wasm`
--   `application/octet-stream`
--   `application/font-woff`
+- `application/wasm`
+- `application/octet-stream`
+- `application/font-woff`
 
 ## Nginx
 
@@ -156,14 +155,16 @@ http {
 ```
 
 In order to enable the fallback routes in Nginx, you can use the following location rule in the configuration file:
-```
+
+```nginx
 location ~ ^\/(?!(package_)) {
     try_files $uri $uri/ /index.html;
 }
 ```
 
 Additionally, in order to properly handle the caching of the WASM application by the browser, the Cache-control header should be set as follow:
-```
+
+```nginx
 location ~ ^\/(?!(package_)) {
     try_files $uri $uri/ /index.html;
     add_header Cache-Control "must-revalidate, max-age=3600";
@@ -198,10 +199,12 @@ AddType application/font-woff .woff2
 ```
 
 ## IIS
+
 Windows Server IIS is supported, and needs some manual installation steps to be ready for Uno Platform WebAssembly apps.
 
 Here are some steps:
-- Install the [URL Rewriter module](https://docs.microsoft.com/en-us/iis/extensions/url-rewrite-module/url-rewrite-module-configuration-reference)
+
+- Install the [URL Rewriter module](https://learn.microsoft.com/iis/extensions/url-rewrite-module/url-rewrite-module-configuration-reference)
 - Add an application to the local web site in IIS and set its physical path to: `...\MyApp\MyApp.Wasm\bin\Debug\netstandard2.0\dist` or `...\MyApp\MyApp.Wasm\bin\Debug\net5.0\dist`
 - Add MIME type `application/octet-stream .clr` to IIS.
 - Add MIME type `application/wasm .wasm` to IIS.

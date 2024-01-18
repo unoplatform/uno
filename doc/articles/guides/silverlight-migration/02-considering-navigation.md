@@ -53,7 +53,7 @@ In UWP, there are 3 overloads of the **Navigate** method:
 
 > [!IMPORTANT]
 > Although the parameter is of type **Object**, it must have a basic type (string, char, numeric, or GUID) to support parameter serialization. More complex content can be passed if it serialized to/from JSON strings first.
-
+>
 > [!TIP]
 > Full details for the **Navigate** method and overloads can be viewed here - [https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate)
 

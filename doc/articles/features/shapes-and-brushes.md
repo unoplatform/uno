@@ -8,12 +8,12 @@ uid: Uno.Features.ShapesAndBrushes
 
 | Shape       | Android | iOS     | macOS   | Wasm (1) |                                                              |
 | ----------- | ------- | ------- | ------- | -------- | ------------------------------------------------------------ |
-| `Ellipse`   | Yes (2) | Yes (2) | Yes (2) | Yes (2)  | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.ellipse) |
-| `Line`      | Yes     | Yes     | Yes     | Yes      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.line) |
-| `Path`      | Yes     | Yes     | Yes     | Yes (3)  | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.path) |
-| `Polygon`   | Yes     | Yes     | Yes     | Yes      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.polygon) |
-| `Polyline`  | Yes     | Yes     | Yes     | Yes      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.polyline) |
-| `Rectangle` | Yes (4) | Yes (4) | Yes (4) | Yes      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.rectangle) |
+| `Ellipse`   | Yes (2) | Yes (2) | Yes (2) | Yes (2)  | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.ellipse) |
+| `Line`      | Yes     | Yes     | Yes     | Yes      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.line) |
+| `Path`      | Yes     | Yes     | Yes     | Yes (3)  | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.path) |
+| `Polygon`   | Yes     | Yes     | Yes     | Yes      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.polygon) |
+| `Polyline`  | Yes     | Yes     | Yes     | Yes      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.polyline) |
+| `Rectangle` | Yes (4) | Yes (4) | Yes (4) | Yes      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.rectangle) |
 
 Notes:
 
@@ -24,33 +24,33 @@ Notes:
 
    To get a fully reliable shape on all platforms, you should only
    use the _fill_ part of the shape.
-   
+
    All shapes on _Wasm_ platform (including `Rectangle`) are rendered as `SVG` elements.
-   
+
 2. Stretching modes `UniformToFill` and `Uniform` will behave like
    `Fill` for ellipses.
-   
+
 3. On _Wasm_, only the `Data=` text format is implemented.
    On other platforms, you can use either the _data_ or the geometries.
-   
+
 4. Rectangles on _Android_ and _iOS_ are rendered as a simple border.
 
 ## Implemented Shapes properties
 
 | Shape                | Android | iOS  | macOS | Wasm    |                                                              |
 | -------------------- | ------- | ---- | ----- | ------- | ------------------------------------------------------------ |
-| `Fill` (1)           | Yes     | Yes  |       | Yes     | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.fill) |
-| `GeometryTransform`  | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.geometrytransform) |
-| `Stretch` (2)        | Yes     | Yes  |       | Yes     | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.stretch) |
-| `Stroke` (1)         | Yes     | Yes  |       | Yes     | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.stroke) |
-| `StrokeDashArray`    | No      | Yes  |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokedasharray) |
-| `StrokeDashCap`      | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokedashcap) |
-| `StrokeDashOffset`   | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokedashoffset) |
-| `StrokeEndLineCap`   | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokeendlinecap) |
-| `StrokeLineJoin`     | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokelinejoin) |
-| `StrokeMiterLimit`   | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokemiterlimit) |
-| `StrokeStartLineCap` | No      | No   |       | No      | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokestartlinecap) |
-| `StrokeThickness`    | Yes     | Yes  |       | Yes (3) | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.shapes.shape.strokethickness) |
+| `Fill` (1)           | Yes     | Yes  |       | Yes     | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.fill) |
+| `GeometryTransform`  | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.geometrytransform) |
+| `Stretch` (2)        | Yes     | Yes  |       | Yes     | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.stretch) |
+| `Stroke` (1)         | Yes     | Yes  |       | Yes     | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.stroke) |
+| `StrokeDashArray`    | No      | Yes  |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokedasharray) |
+| `StrokeDashCap`      | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokedashcap) |
+| `StrokeDashOffset`   | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokedashoffset) |
+| `StrokeEndLineCap`   | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokeendlinecap) |
+| `StrokeLineJoin`     | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokelinejoin) |
+| `StrokeMiterLimit`   | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokemiterlimit) |
+| `StrokeStartLineCap` | No      | No   |       | No      | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokestartlinecap) |
+| `StrokeThickness`    | Yes     | Yes  |       | Yes (3) | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.shapes.shape.strokethickness) |
 
 Notes:
 
@@ -63,13 +63,13 @@ Notes:
 | Brush                              | Android | iOS     | macOS | Wasm |                                                              |
 | ---------------------------------- | ------- | ------- | ---- | ------------------------------------------------------------ | ---------------------------------- |
 | `AcrylicBrush`                     | Yes (3) | Yes (3) | Yes (3) | Yes   | [Documentation](https://docs.microsoft.com/fr-ca/uwp/api/windows.ui.xaml.media.acrylicbrush) |
-| `ImageBrush`                       | Yes (1) | Yes (1) |  | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Media.ImageBrush) |
-| `LinearGradientBrush` | Yes (2) | Yes (2) | Yes  | Yes | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Media.LinearGradientBrush) |
+| `ImageBrush`                       | Yes (1) | Yes (1) |  | No   | [Documentation](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Media.ImageBrush) |
+| `LinearGradientBrush` | Yes (2) | Yes (2) | Yes  | Yes | [Documentation](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Media.LinearGradientBrush) |
 | `RadialGradientBrush` (WinUI 2.4+) | Yes | Yes  | Yes  | Yes |                                                              |
 | `RevealBrush` (WinUI 2.0+) | No     | No     | No   | No  |                                                              |
-| `SolidColorBrush`                  | Yes     | Yes     | Yes  | Yes  | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Media.SolidColorBrush) |
-| `WebViewBrush`                     | No      | No      | No    | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.WebViewBrush) |
-| `XamlCompositionBrushBase`         | No      | No      | No    | No   | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.media.xamlcompositionbrushbase) |
+| `SolidColorBrush`                  | Yes     | Yes     | Yes  | Yes  | [Documentation](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Media.SolidColorBrush) |
+| `WebViewBrush`                     | No      | No      | No    | No   | [Documentation](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.WebViewBrush) |
+| `XamlCompositionBrushBase`         | No      | No      | No    | No   | [Documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.media.xamlcompositionbrushbase) |
 
 Notes:
 
@@ -124,4 +124,3 @@ Where you can use which brushes
 | `Foreground` (`TextBlock`)                   | Yes             | No                   | Yes (Wasm only) |
 | `Fill` (Shapes)                              | Yes             | Yes (except on Wasm) | Yes             |
 | `Stroke` (Shapes)                            | Yes             | No                   | Yes (Wasm only) |
-

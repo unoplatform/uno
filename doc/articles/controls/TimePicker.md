@@ -21,6 +21,7 @@ Cancel button cancel the new time selection. You can also click outside the time
 Done/OK button save the new selected time.
 
 ### Styles
+
 Time button style: TimePickerFlyoutButtonStyle
 Time picker flyout popup style: default generic TimePickerFlyoutPresenterStyle
 TimePickerSelector is a platform specific wrapper for IOS/Android time pickers
@@ -39,6 +40,7 @@ There might be differences in the time picker on different platform since it wra
 - In case clock mode still appear for some reason picked value will be rounded to minute increment intervals..
 
 #### iOS
+
 - Native time picker is wrapped in the flyout.
 - Set 'ios:FlyoutPlacement' property to change flyout docking placement
 - Default 'ios:FlyoutPlacement' is 'Full' and will dock of the flyout at the bottom of the screen
@@ -47,17 +49,19 @@ There might be differences in the time picker on different platform since it wra
 
 Some `ColorBrushes` are specific to **iOS** and could be changed by copying and redoing the new style so they use your own color brushes:
 
-```
+```resources
 IOSTimePickerAcceptButtonForegroundBrush  Color="#055bb7"
 IOSTimePickerDismissButtonForegroundBrush  Color="#055bb7"
 IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}"
 ```
+
 If you want to show a dimmed overlay underneath the picker, set the `TimePicker.LightDismissOverlayMode` property to `On`.
 
 If you wish to customize the overlay color, add the following to your top-level `App.Resources`:
+
 ```xml
 <SolidColorBrush x:Key="TimePickerLightDismissOverlayBackground"
-		Color="Pink" />
+                 Color="Pink" />
 ```
 
 Since **iOS14** the native `TimePicker` changed the way it's presented. By default iOS14 devices will display this new style.  You can still force the previous style (the one found in iOS13 or earlier) by adding the following at your `App.cs` or `App.xaml.cs` class:

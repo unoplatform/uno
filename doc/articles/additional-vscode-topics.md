@@ -58,4 +58,5 @@ An existing application needs additional changes to be debugged properly.
 4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/tasks.json).
 
 ## Advanced debugging
+
 You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advanced.debugging).

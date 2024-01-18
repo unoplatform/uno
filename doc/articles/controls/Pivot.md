@@ -36,6 +36,7 @@ If you want to use the native Pivot style for either Android or iOS, you'll need
 ```
 
 #### NativePivotPresenter Android Style
+
 Note that this one is written in C# rather than XAML because of the `SlidingTabLayout` object.
 
 ```csharp

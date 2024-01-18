@@ -14,6 +14,7 @@ The `ApplicationView.VisibleBounds` is the rectangular area of the screen which 
 In some cases it's acceptable for visible content to be partially obscured (a page background for example) and it should extend to fill the entire window. Other types of content should be restricted to the visible bounds (for instance readable text, or interactive controls). VisibleBoundsPadding enables this kind of fine-grained control over responsiveness to the visible bounds.
 
 ## Using the behavior
+
 The behavior can be placed on any control that provides a Padding property (e.g. Grid, StackPanel, ListView, ScrollViewer, Control, ContentPresenter or Border), and will be automatically adjusted based on the control's absolute position inside the `ApplicationView.VisibleBounds` rectangle.
 
 ```xml
@@ -51,15 +52,18 @@ Usage is as follows:
 ```
 
 #### Notes
+
 - This behavior applies the greater of the existing padding or the calculated padding set on the element it is attached to.
 - `VisibleBoundsPadding` on WinAppSDK/Desktop does not have any effect. It is present to allow for same-XAML across platforms.
 
 ## See it in action
 
 ![image](https://user-images.githubusercontent.com/36631443/68304897-b6205500-0074-11ea-8ec9-b4f02dddd5e6.png)
- 
+
 ### Before
+
 ![image](https://user-images.githubusercontent.com/36631443/68239478-06e27000-ffd9-11e9-956a-c4d954341a5f.png)
- 
+
 ### After
+
 ![image](https://user-images.githubusercontent.com/36631443/68239503-1366c880-ffd9-11e9-9d67-f95050b2e1a7.png)

@@ -14,9 +14,10 @@ uid: Uno.Features.WSPickers
 The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
-  - ✔  Supported
-  - 💬 Partially supported (see below for more details)
-  - ✖ Not supported
+
+* ✔  Supported
+* 💬 Partially supported (see below for more details)
+* ✖ Not supported
 
 | Picker         | UWP   | WebAssembly | Android | iOS    | macOS | WPF | GTK |
 |----------------|-------|-------------|---------|--------|-------|-----|-----|
@@ -187,7 +188,7 @@ While the `SuggestedStartLocation` has no effect, it must be set for UWP. You mu
 
 ## Picker configuration
 
-File pickers have various configuration options that customize the experience (see the <a href="https://docs.microsoft.com/en-us/uwp/api/windows.storage.pickers.fileopenpicker" target="_blank">UWP documentation</a> for full list of properties). Not all options are supported on all target platforms, in which case these are ignored.
+File pickers have various configuration options that customize the experience (see the <a href="https://learn.microsoft.com/uwp/api/windows.storage.pickers.fileopenpicker" target="_blank">UWP documentation</a> for full list of properties). Not all options are supported on all target platforms, in which case these are ignored.
 
 To set which file type extensions you want to allow, use the `FileTypeFilter` property on `FileOpenPicker` and `FolderPicker`, and the `FileTypeChoices` property on `FileSavePicker`. Extensions must be in the format ".xyz" (starting with a dot). For `FileOpenPicker` and `FolderPicker` you can also include "*" (star) entry, which represents the fact that any file extension is allowed.
 
@@ -213,9 +214,9 @@ There are two implementations of file pickers available in WebAssembly - **File 
 
 The most powerful picker implementation on WebAssembly uses the <a href="https://wicg.github.io/file-system-access/" target="_blank">**File System Access API**</a>. This is not yet widely implemented across all browsers. See the following support tables for each picker:
 
-- <a href="https://caniuse.com/?search=showDirectoryPicker" target="_blank">`FolderPicker`</a>
-- <a href="https://caniuse.com/?search=showOpenFilePicker" target="_blank">`FileOpenPicker`</a>
-- <a href="https://caniuse.com/?search=showSaveFilePicker" target="_blank">`FileSavePicker`</a>
+-<a href="https://caniuse.com/?search=showDirectoryPicker" target="_blank">`FolderPicker`</a>
+-<a href="https://caniuse.com/?search=showOpenFilePicker" target="_blank">`FileOpenPicker`</a>
+-<a href="https://caniuse.com/?search=showSaveFilePicker" target="_blank">`FileSavePicker`</a>
 
 `FolderPicker` is only supported for this type of pickers.
 
@@ -229,7 +230,7 @@ In case the **File System Access API** is not available in the browser, Uno Plat
 
 For the upload picker, the browser triggers a file picker dialog and Uno Platform then copies the selected files into temporary storage of the app. The `StorageFile` instance you receive is private for your application and the changes are not reflected in the original file. To save the changes, you need to trigger the "download picker".
 
-For the download picker, the experience requires the use of [`CachedFileManager`](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterwards, calling `CompleteUpdatesAsync` opens the download dialog which allows the user to save the file.
+For the download picker, the experience requires the use of [`CachedFileManager`](https://learn.microsoft.com/uwp/api/Windows.Storage.CachedFileManager). Triggering `PickSaveFileAsync` does not actually show the download picker to the user. Instead, only a temporary file is created to allow you to write any content. Afterwards, calling `CompleteUpdatesAsync` opens the download dialog which allows the user to save the file.
 
 The `CachedFileManager` class works transparently with both the **Download picker** and the **File System Access API**, which means you can write a single snippet of code that handles both scenarios correctly:
 
@@ -321,14 +322,15 @@ Uno.WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration =
 
 The allowed values for the configuration are:
 
-- `FileSystemAccessApiWithFallback` - defaults to File System Access API, but falls back to download/upload pickers if not available
-- `FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
-- `DownloadUpload` - uses download/upload pickers only.
+-`FileSystemAccessApiWithFallback` - defaults to File System Access API, but falls back to download/upload pickers if not available
+-`FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
+-`DownloadUpload` - uses download/upload pickers only.
 
 ### Security considerations
+
 Browsers generally treat file opening/saving operations as sensitive operations, and the following message may appear when using this APIs:
 
-```
+```output
 SecurityError: Failed to execute 'showSaveFilePicker' on 'Window': Must be handling a user gesture to show a file picker.
 ```
 

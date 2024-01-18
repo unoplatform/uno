@@ -2,6 +2,8 @@
 uid: Uno.Development.NetVersionSupport
 ---
 
+<!-- markdownlint-disable MD001 -->
+
 # .NET version support
 
 This page lists supported .NET versions and [C# language versions](https://learn.microsoft.com/dotnet/csharp/language-reference/configure-language-version) for different target platforms.
@@ -18,7 +20,7 @@ This page lists supported .NET versions and [C# language versions](https://learn
 | iOS, macOS, Android, Catalyst (.NET Core)  | .NET 7               | 11                 | .NET 8            | 12             |
 | UWP                                        | .NET Standard 2.0    | 7.3                | .NET Standard 2.0 | 7.3            |
 
-## Notes
+### Notes
 
 In Uno 5.0, support for .NET 6 (iOS, Android, mac Catalyst), Xamarin.Android, Xamarin.iOS, and Xamarin.macOS was removed.
 

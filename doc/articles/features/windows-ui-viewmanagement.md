@@ -7,8 +7,8 @@ uid: Uno.Features.WinUIViewManagement
 > [!TIP]
 > This article covers Uno-specific information for `Windows.UI.ViewManagement` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.ui.viewmanagement
 
- * The `Windows.UI.ViewManagement.ApplicationViewTitleBar` class allows working with the title bar of the application window.
- * The `Windows.UI.ViewManagement.UISettings` class allows retrieving the current system visual settings.
+* The `Windows.UI.ViewManagement.ApplicationViewTitleBar` class allows working with the title bar of the application window.
+* The `Windows.UI.ViewManagement.UISettings` class allows retrieving the current system visual settings.
 
 ## `ApplicationViewTitleBar`
 

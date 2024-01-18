@@ -4,7 +4,7 @@ uid: Uno.Development.PlatformSpecificCSharp
 
 # Platform-specific C# code in Uno
 
-Uno allows you to reuse views and business logic across platforms. Sometimes though, you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform. 
+Uno allows you to reuse views and business logic across platforms. Sometimes though, you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform.
 
 This guide covers multiple approaches to managing per-platform code in C#. See [this guide for managing per-platform XAML](platform-specific-xaml.md).
 
@@ -18,9 +18,9 @@ There are two ways to restrict code or XAML markup to be used only on a specific
 The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
 
 ## `#if` conditionals
- 
+
 The most basic means of authoring platform-specific code is to use `#if` conditionals:
- 
+
 ```csharp
 #if HAS_UNO
 Console.WriteLine("Uno Platform - Pixel-perfect WinUI apps that run everywhere");
@@ -28,7 +28,7 @@ Console.WriteLine("Uno Platform - Pixel-perfect WinUI apps that run everywhere")
 Console.WriteLine("Windows - Built with Microsoft's own tooling");
 #endif
 ```
- 
+
 If the supplied condition is not met, e.g. if `HAS_UNO` is not defined, then the enclosed code will be ignored by the compiler.
 
 The following conditional symbols are predefined for each Uno platform:
@@ -92,7 +92,7 @@ using _View = Windows.UI.Xaml.UIElement;
 
 public IEnumerable<_View> FindDescendants(FrameworkElement parent) => ...
 ```
- 
+
 ## Partial class definitions
 
 Heavy usage of `#if` conditionals in shared code makes it hard to read and comprehend. A better approach is to use [partial class definitions](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code. These partial classes need to exist in the shared project as it's compiled separately from each project head. This method still requires `#if` conditionals.
@@ -106,12 +106,12 @@ public partial class NativeWrapperControl : Control {
 
 ...
 
-		protected override void OnApplyTemplate()
-		{
-			 base.OnApplyTemplate();
+  protected override void OnApplyTemplate()
+  {
+    base.OnApplyTemplate();
    
-  			 _nativeView = CreateNativeView();
-		}
+      _nativeView = CreateNativeView();
+  }
 ```
 
 Platform-specific code in `PROJECTNAME/NativeWrapperControl.Android.cs`:
@@ -122,9 +122,9 @@ public partial class NativeWrapperControl : Control {
 
 ...
 
-		private View CreateNativeView() {
-			... //Android-specific code
-		}
+  private View CreateNativeView() {
+   ... //Android-specific code
+  }
 ```
 
 Platform-specific code in `PROJECTNAME/NativeWrapperControl.iOS.cs`:
@@ -135,9 +135,9 @@ public partial class NativeWrapperControl : Control {
 
 ...
 
-		private UIView CreateNativeView() {
-			... //iOS-specific code
-		}
+  private UIView CreateNativeView() {
+   ... //iOS-specific code
+  }
 ```
 
-You can use [partial methods](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods#partial-methods) when only one platform needs specialized logic.
+You can use [partial methods](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods#partial-methods) when only one platform needs specialized logic.

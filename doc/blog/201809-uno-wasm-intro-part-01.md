@@ -60,7 +60,7 @@ While this makes for a good kick start solution, such an implementation contains
 
 This situation is fortunately only temporary. When Mono's AOT will be available, the code will instantly be a lot faster, even though by how much remains to be seen. The size aspect of the generated WASM binary is also an unknown variable, and it can also be difficult to extrapolate from other similar looking AOT target CPU architectures.
 
-The interpreter mode will stay in Mono as a mixed execution mode. This will allow for [scenarios of dynamic code generation using Roslyn](https://github.com/jeromelaban/Wasm.Samples/blob/master/RoslynTests/RoslynTests/Program.cs) to be viable in a non-JIT friendly environment, and enable pieces of the BCL such as [Expression compilation](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1.compile?redirectedfrom=MSDN&view=netframework-4.7.2#System_Linq_Expressions_Expression_1_Compile) to be functional. 
+The interpreter mode will stay in Mono as a mixed execution mode. This will allow for [scenarios of dynamic code generation using Roslyn](https://github.com/jeromelaban/Wasm.Samples/blob/master/RoslynTests/RoslynTests/Program.cs) to be viable in a non-JIT friendly environment, and enable pieces of the BCL such as [Expression compilation](https://learn.microsoft.com/dotnet/api/system.linq.expressions.expression-1.compile?redirectedfrom=MSDN&view=netframework-4.7.2#System_Linq_Expressions_Expression_1_Compile) to be functional.
 
 ## Bootstrapping the mono-wasm SDK
 
@@ -72,6 +72,6 @@ We expect this package to change significantly in the near future. This includes
 
 Head over to the [Uno.Wasm.Bootstrap readme](https://github.com/unoplatform/uno.Wasm.Bootstrap#how-to-use-the-package) to create your own app and experiment with C# in the browser in minutes. See those two [examples for additional scenarios](https://github.com/jeromelaban/Wasm.Samples) using Json.NET and Roslyn.
 
-## Up next...  
+## Up next  
 
 In the second part of this article, we'll touch on more advanced topics about the integration of Mono in WebAssembly and upcoming features.

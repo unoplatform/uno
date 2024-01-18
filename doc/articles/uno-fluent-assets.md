@@ -24,12 +24,14 @@ In your Uno Platform projects:
 - You will also need to make small modifications to individual platforms.
 - For all heads, in respective `.csproj` files remove all font files named `winjs-symbols.ttf` or `uno-fluentui-assets.ttf`.
 - For iOS, Catalyst and macOS, the `info.plist` file should be updated for both platforms to remove the `UIAppFonts` block:
+
     ```xml
     <key>UIAppFonts</key>
     <array>
         <string>Fonts/uno-fluentui-assets.ttf</string>
     </array>
     ```
+
 - For WebAssembly, remove the contents of `Font.css` related to `@font-face { font-family: "Symbols"; ...}`.
 
 ## Known issues

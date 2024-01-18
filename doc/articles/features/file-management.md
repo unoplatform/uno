@@ -11,12 +11,12 @@ File management allows shared reading and writing of files across all Uno Platfo
 
 ## Supported features
 
-| Feature        |  WinUI/UWP | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | WPF (Skia) | 
-|---------------|-------|-------|-------|-------|-------|-------|-|
-| `StorageFile` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
-| `StorageFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
-| `CachedFileManager` | ✔ | partial | partial | partial | partial | partial | partial |
-| `StorageFileHelper` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
+| Feature             | WinUI/UWP | Android | iOS     | Web (WASM) | macOS   | Linux (Skia) | WPF (Skia) |
+|---------------------|-----------|---------|---------|------------|---------|--------------|------------|
+| `StorageFile`       | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
+| `StorageFolder`     | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
+| `CachedFileManager` | ✔         | partial | partial | partial    | partial | partial      | partial    |
+| `StorageFileHelper` | ✔         | ✔       | ✔       | ✔          | ✔       | ✔            | ✔          |
 
 ## Overview
 
@@ -24,7 +24,7 @@ Uno supports some of the APIs from the `Windows.Storage` namespace, such as `Win
 
 Both `Windows.Storage` and `System.IO` APIs are available, with some platform specifics defined below. In general, it is best to use `Windows.Storage` APIs when available, as their asynchronous nature allows for transparent interactions with the underlying file system implementations. In addition, `System.IO` cannot work with files that are not owned by the application directly (e.g. files picked by a dialog).
 
-Note that for file and folder metadata only `BasicProperties` are partially supported for now. 
+Note that for file and folder metadata only `BasicProperties` are partially supported for now.
 `FileAttributes` and all "advanced properties" (`StorageItemContentProperties`) related to the content of the file, including the thumbnail, are not yet supported.
 
 ## WebAssembly File System
@@ -32,6 +32,7 @@ Note that for file and folder metadata only `BasicProperties` are partially supp
 WebAssembly file system APIs are built using [emscripten's POSIX file system APIs](https://emscripten.org/docs/api_reference/Filesystem-API.html). The persistence is done through the use of browser APIs, such as IndexedDB through [emscripten's IDBFS](https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api-idbfs).
 
 While it is possible to write files in any paths, only some folders are persisted across browser refreshes:
+
 - `ApplicationData.Current.LocalFolder`
 - `ApplicationData.Current.RoamingFolder`
 - `ApplicationData.Current.SharedLocalFolder`
@@ -55,6 +56,7 @@ Note that you can view the content of the **IndexedDB** in the Application tab o
 Uno Platform supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync(Uri)`](https://learn.microsoft.com/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync) method.
 
 Support per platform may vary:
+
 - On WebAssembly targets, the requested file is part of the application package on the remote server and is downloaded on demand to avoid increasing the initial application payload size. After it is requested for the first time, the file is then stored in the browser IndexedDB.
 - Otherwise, the file is available directly as it is a part of the installed package.
 
@@ -80,19 +82,21 @@ var content = await FileIO.ReadTextAsync(file);
 Since Uno Platform 4.6, the `GetFileFromApplicationUriAsync` method supports reading assets provided by `ProjectReference` or `PackageReference` libraries, using the following syntax:
 
 Given a library or package named `MyLibrary01`, the following format can be used to read assets:
+
 ```csharp
 var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyLibrary01/MyPackageFile.xml"));
 var content = await FileIO.ReadTextAsync(file);
 ```
 
 Uno Platform also provides the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage`:
+
 ```csharp
 var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```
 
 ## Support for `RandomAccessStreamReference.CreateFromUri`
 
-Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 
+Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
 Make sure the server that hosts the file is configured accordingly.
 
 ## Support for `CachedFileManager`

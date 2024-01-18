@@ -51,7 +51,7 @@ Briefly reviewing the `App.cs` and `App.xaml.cs` files will reveal the following
 
 > [!NOTE]
 >The **OnLaunched** method may appear more complex than expected, however this is due to the fact that if a user attempts to launch a UWP app more than once, subsequent launches are directed to the original running app. This means the code has to check to see if the app UI has already been setup. Additionally. as the app may have been terminated due to resource constraints, the code also provides the opportunity to reload the last saved app state.
-
+>
 > [!NOTE]
 > The **OnLaunched** method checks to see if the app has been pre-launched - this is a state where Windows has automatically started commonly used apps to speed the perceived launch time for the user. In this state, the app is not expected to be displaying any UI. You can learn more about Prelaunch here:
 > [Handle app prelaunch](https://docs.microsoft.com/windows/uwp/launch-resume/handle-app-prelaunch)
@@ -161,7 +161,6 @@ In order to better align with the behavior of the Silverlight version of the app
         </muxc:NavigationView>
     </Grid>
     ```
-
 
 1. Review the **MainPage** XAML:
 

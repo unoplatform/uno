@@ -6,7 +6,7 @@ uid: Uno.Features.Orientation
 
 The application's orientation can be controlled using the [DisplayInformation](https://msdn.microsoft.com/en-us/library/windows/apps/windows.graphics.display.displayinformation.aspx) class, more specifically, the static [AutoRotationPreferences](https://msdn.microsoft.com/en-us/library/windows/apps/windows.graphics.display.displayinformation.autorotationpreferences) property.
 
-## Controlling Orientation on iOS 
+## Controlling Orientation on iOS
 
 In order for the DisplayInformation's AutoRotationPreferences to work properly, you need to ensure that all potential orientations are supported within the iOS application's `info.plist` file.
 

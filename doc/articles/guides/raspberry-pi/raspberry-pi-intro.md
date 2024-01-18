@@ -64,14 +64,14 @@ Before we can do anything, assuming you've gotten your Raspberry Pi all set up, 
 
 Run the following two commands;
 
-```
+```bash
 sudo apt update
 sudo apt full-upgrade
 ```
 
 Once those two commands have completed, restart your Pi using;
 
-```
+```bash
 sudo reboot
 ```
 
@@ -93,13 +93,13 @@ You can see the contents of this .NET installation script [here](https://github.
 
 Once the process has completed, go ahead and reboot your Pi again with;
 
-```
+```bash
 sudo reboot
 ```
 
 Once you're finished, you should be able to run the following to check your .NET version;
 
-```
+```dotnetcli
 dotnet --info
 ```
 
@@ -109,7 +109,7 @@ dotnet --info
 
 Next we can add the Uno Platform Project Templates to our .NET Installation;
 
-```
+```dotnetcli
 dotnet new --install Uno.Templates
 ```
 
@@ -123,13 +123,13 @@ Once the templates are installed, you can scroll back up and see the list of Uno
 
 Now we have the moving parts installed on our Pi, we can spin up a brand new Uno solution with the following command;
 
-```
+```dotnetcli
 dotnet new unoapp -o HelloPi --preset=blank --platforms=gtk --platforms="linux-fb" && cd HelloPi
 ```
 
 You should now find yourself in the solution directory for your new Uno App. If we have a look at the folder contents with;
 
-```
+```bash
 dir
 ```
 
@@ -158,7 +158,7 @@ Before we can launch our application, we need to give our SSH session access to 
 
 If we don't do this, we'll get an error like;
 
-```
+```console
 Unable to init server: Could not connect: Connection refused
 
 (HelloPi.Skia.Gtk:18530): Gtk-WARNING **: 19:40:51.384: cannot open display:
@@ -166,7 +166,7 @@ Unable to init server: Could not connect: Connection refused
 
 We can sort this out using the following command;
 
-```
+```bash
 export DISPLAY=:0
 ```
 
@@ -180,13 +180,13 @@ We're now ready to run our application.
 
 Firstly, we need to navigate to the Skia.Gtk directory;
 
-```
+```bash
 cd HelloPi.Skia.Gtk
 ```
 
 We can now run our application with;
 
-```
+```dotnetcli
 dotnet run
 ```
 
@@ -202,7 +202,7 @@ To be able to see your app running, you're going to need to either connect a Mon
 
 We've performed most of this on the Pi itself of course. However, you can actually create and build the whole application on your PC and copy the built files to your Pi using;
 
-```
+```dotnetcli
 dotnet publish -r linux-arm -o bin\linux-arm\publish --no-self-contained
 ```
 
@@ -210,26 +210,26 @@ You can copy the contents of the `bin\linux-arm\publish` directory to your Pi in
 
 You then need to navigate to the directory where you've copied the files and make the main application executable with;
 
-```
+```bash
 chmod +x HelloPi.Skia.Gtk
 ```
 
 Don't forget that, if you've just dialled in you'll need to give access to the Display;
 
-```
+```bash
 export DISPLAY=:0
 ```
 
 If you are using a 64-bit version of the Raspberry Pi OS, you need to run the following commands to be able to run 32-bit executable :
 
-```
+```bash
 $ sudo apt-get install ia32-libs-multiarch
 $ sudo apt-get install ia32-libs
 ```
 
 You can then run the application with;
 
-```
+```bash
 ./HelloPi.Skia.Gtk
 ```
 

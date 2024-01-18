@@ -40,6 +40,7 @@ modifications, with the exception of the Win2D and Gaze related code. Those are 
 and are currently not available for non-Windows targets.
 
 Some notable parts of the toolkit are not working at the moment:
+
 - Windows Composition APIs samples, for which the Uno Platform has very limited support on iOS only.
 - Service based samples, such as OneDrive, LinkedIn or Microsoft Graph.
 

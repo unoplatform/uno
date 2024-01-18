@@ -75,7 +75,7 @@ In WASM, not all of the property conversions are currently supported (notably **
 
 > [!IMPORTANT]
 > There are some idiosyncrasies with Uno and WASM regarding the use of **x:Uid** - some properties must be defined in the XAML otherwise the resources won't be applied. This issue is documented by [Uno issue #921](https://github.com/unoplatform/uno/issues/921)
-
+>
 > [!NOTE]
 > To learn more about **x:Uid** and string localization in UWP, review the following resources:
 >
@@ -114,7 +114,7 @@ In order to migrate the **MainPage** **NavigationView** to use **x:Uid**, perfor
     ```
 
     > [!NOTE]
-    > The **Content** property is still defined above to provide a default value display in the designer. If you wish to confirm that the values are replaced at run time, modify the content values by appending **` - D`** or similar and verify that when the app is executed, resource values are shown.
+    > The **Content** property is still defined above to provide a default value display in the designer. If you wish to confirm that the values are replaced at run time, modify the content values by appending **`- D`** or similar and verify that when the app is executed, resource values are shown.
 
 1. Compile and run the application - confirm that the expected values are displayed.
 
@@ -124,6 +124,7 @@ In order to access the string resources in code, the **ResourceLoader** class mu
 
 > [!TIP]
 > You can learn more about the **ResourceLoader** and UWP resources below:
+>
 > * [ResourceLoader](https://docs.microsoft.com/uwp/api/Windows.ApplicationModel.Resources.ResourceLoader)
 > * [App resources and the Resource Management System](https://docs.microsoft.com/windows/uwp/app-resources/)
 
@@ -154,12 +155,12 @@ Although all resources can be added to single resource file, it is often conside
 
     | Name | Value |
     | :--- | :---- |
-    | Cancel	| Cancel|
-    | FatalErrorTitle	| Fatal Error|
-    | FatalInitializeError	| Unable to initialize services - application must be restarted|
-    | LoginDialogLoginFailed	| The user name or password is incorrect|
-    | LoginDialogUserNameRequired	| User name and Password are required|
-    | Ok	| OK |
+    | Cancel | Cancel|
+    | FatalErrorTitle | Fatal Error|
+    | FatalInitializeError | Unable to initialize services - application must be restarted|
+    | LoginDialogLoginFailed | The user name or password is incorrect|
+    | LoginDialogUserNameRequired | User name and Password are required|
+    | Ok | OK |
 
 1. Navigate to the **Helpers** folder and add a new class - name it **ErrorMessageHelper**.
 
