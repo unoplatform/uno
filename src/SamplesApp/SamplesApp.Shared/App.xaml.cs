@@ -477,6 +477,9 @@ namespace SamplesApp
 #if __SKIA__
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 #endif
+#if HAS_UNO
+			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
+#endif
 		}
 
 		/// <summary>
