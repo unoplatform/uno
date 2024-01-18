@@ -711,6 +711,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.VerticalOffset);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Pointer_Clicks_Inside_ScrollViewer()
+		{
+			var ts = new ToggleSwitch();
+			var tb = new TextBox();
+			var SUT = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Children =
+					{
+						tb,
+						ts
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(ts.GetAbsoluteBounds().GetCenter() - new Point(SUT.ActualWidth / 2 - 10, 0));
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The ScrollViewer should NOT grab focus here.
+			Assert.AreEqual(ts, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+			mouse.Press(tb.GetAbsoluteBounds().GetCenter() + new Point(0, 20)); // click somewhere empty inside the ScrollViewer
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// This time, since no element inside handled PointerPressed, ScrollViewer should focus the first element inside.
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+		}
+#endif
+
 		[TestMethod]
 #if __WASM__
 		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
