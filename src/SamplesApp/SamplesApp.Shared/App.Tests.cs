@@ -139,7 +139,7 @@ partial class App
 			currentGroupIndexOption,
 		};
 
-		bool? commandReturn = null;
+		bool commandReturn = false;
 
 		rootCommand.SetHandler<string, int, int>((screenshotsPath, totalGroups, currentGroupIndex) =>
 		{
@@ -179,16 +179,10 @@ partial class App
 
 				commandReturn = true;
 			}
-			else
-			{
-				commandReturn = false;
-			}
 		}, autoScreenshotsOption, totalGroupsOption, currentGroupIndexOption);
 
-
 		rootCommand.Invoke(args);
-		Console.WriteLine($"Returning {commandReturn}");
-		return commandReturn!.Value;
+		return commandReturn;
 #else
 		return false;
 #endif
