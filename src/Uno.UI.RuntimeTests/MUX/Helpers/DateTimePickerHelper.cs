@@ -76,6 +76,7 @@ internal static class DateTimePickerHelper
 		});
 
 		await ControlHelper.DoClickUsingAP(button);
+		await TestServices.WindowHelper.WaitForIdle();
 		await WindowHelper.WaitForIdle();
 	}
 
@@ -131,8 +132,11 @@ internal static class DateTimePickerHelper
 		int periodIndeexToSelect = timeToSelect.Period - 1; // AM = 1, PM = 2
 
 		await LoopingSelectorHelper.SelectItemByIndex(hourLoopingSelector, hourIndexToSelect, selectionMode);
+		await TestServices.WindowHelper.WaitForIdle();
 		await LoopingSelectorHelper.SelectItemByIndex(minuteLoopingSelector, minuteIndexToSelect, selectionMode);
+		await TestServices.WindowHelper.WaitForIdle();
 		await LoopingSelectorHelper.SelectItemByIndex(periodLoopingSelector, periodIndeexToSelect, selectionMode);
+		await TestServices.WindowHelper.WaitForIdle();
 
 		await ControlHelper.ClickFlyoutCloseButton(hourLoopingSelector, true /* isAccept */);
 		await TestServices.WindowHelper.WaitForIdle();
