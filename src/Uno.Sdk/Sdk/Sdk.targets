@@ -43,8 +43,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 		</When>
 		<When Condition="$(TargetFramework.Contains('windows10'))">
+			<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
 			<Import Project="$(MSBuildThisFileDirectory)..\targets\winappsdk-workaround.targets"
-					Condition="'$(SingleProject)' != 'true'"/>
+					Condition="'$(SingleProject)' != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
 		</When>
