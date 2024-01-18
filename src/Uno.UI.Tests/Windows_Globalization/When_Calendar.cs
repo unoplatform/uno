@@ -318,7 +318,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				year: 2020,
 				month: 01,
 				day: 03,
-				hours: 00,
+				hours: 12,
 				minutes: 04,
 				seconds: 05,
 				milliseconds: 0,
