@@ -33,8 +33,6 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	private readonly Logger _log;
 	private readonly bool _isTraceEnabled;
 
-	private readonly UnoGtkWindowHost _host;
-
 	internal const Gdk.EventMask RequestedEvents =
 		Gdk.EventMask.EnterNotifyMask
 		| Gdk.EventMask.LeaveNotifyMask
@@ -622,12 +620,12 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		// GetGeometry returns different numbers between Windows and Linux.
 		// FrameExtents (and a bunch of other methods/properties) will include the border and the title bar on Linux
-		((UnoGtkWindow)(_host.RootContainer)).Window.GetOrigin(out var x, out var y);
+		((UnoGtkWindow)(_windowHost.RootContainer)).Window.GetOrigin(out var x, out var y);
 
 		// Window.GetOrigin returns shifted numbers on WSL, most likely due to window decoration differences
 		// that might not be present on Linux itself. It might be because of differences between Gnome vs
 		// non-Gnome desktops.
-		var allocation = _host.EventBox.Allocation;
+		var allocation = _windowHost.EventBox.Allocation;
 		x += allocation.X;
 		y += allocation.Y;
 

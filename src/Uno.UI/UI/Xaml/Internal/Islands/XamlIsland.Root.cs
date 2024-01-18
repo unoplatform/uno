@@ -19,8 +19,6 @@ internal partial class XamlIsland
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIsland, Colors.Transparent, this);
 		_contentRoot.XamlIslandRoot = this;
-
-		this.Background = new SolidColorBrush(Colors.Transparent);
 	}
 
 	internal ContentRoot ContentRoot => _contentRoot;

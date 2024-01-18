@@ -54,6 +54,8 @@ internal class UnoRootElementLogic
 			UIElement.PointerReleasedEvent,
 			new PointerEventHandler((snd, args) => ProcessPointerUp(args, false)),
 			handledEventsToo: true);
+
+		rootElement.SetValue(Panel.BackgroundProperty, new SolidColorBrush(ThemingHelper.GetRootVisualBackground()));
 	}
 
 	// As focus event are either async or cancellable,

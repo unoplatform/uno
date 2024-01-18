@@ -87,8 +87,6 @@ partial class Window
 
 		InitializeWindowingFlavor();
 
-		Background = SolidColorBrushHelper.White;
-
 		SizeChanged += OnWindowSizeChanged;
 		Closed += OnWindowClosed;
 
