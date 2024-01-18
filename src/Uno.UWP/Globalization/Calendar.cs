@@ -220,26 +220,53 @@ namespace Windows.Globalization
 			{
 				var hour = _calendar.GetHour(_time.DateTime);
 
-				if (hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
+				if (_clock == ClockIdentifiers.TwelveHour)
 				{
-					return hour;
+					if (hour == 0 || hour == 12)
+					{
+						return 12;
+					}
+					else if (hour > 12)
+					{
+						return hour - 12;
+					}
 				}
-				else
-				{
-					return hour - 12;
-				}
-			}
 
+				// For 24-hour clock, or 12-hour clock with hour < 12
+				return hour;
+			}
 			set
 			{
-				if (value == 12 && _clock == ClockIdentifiers.TwelveHour)
+				// Validate value against both 12-hour and 24-hour clock
+				if (value < 0 || value >= 24)
 				{
-					AddHours(-Hour);
+					throw new ArgumentException(nameof(value));
 				}
-				else
+
+				if (_clock == ClockIdentifiers.TwelveHour &&
+					(value == 0 || value > 12))
 				{
-					AddHours(value - Hour);
+					throw new ArgumentException(nameof(value));
 				}
+
+				var twentyFourHourValue = value;
+
+				if (_clock == ClockIdentifiers.TwelveHour)
+				{
+					if (Period == 1 && value == 12)
+					{
+						// 12 AM == 0
+						twentyFourHourValue = 0;
+					}
+					else if (Period == 2 && value != 12)
+					{
+						// 12 PM == 12, 1 PM == 13, etc.
+						twentyFourHourValue += 12;
+					}
+				}
+
+				var currentHours = _calendar.GetHour(_time.DateTime);
+				AddHours(twentyFourHourValue - currentHours);
 			}
 		}
 
@@ -266,7 +293,7 @@ namespace Windows.Globalization
 					if ((value <= 0 || value > 2) ||
 						(value != 1 && _clock == ClockIdentifiers.TwentyFourHour))
 					{
-						throw new ArgumentOutOfRangeException(nameof(value));
+						throw new ArgumentException(nameof(value));
 					}
 
 					if (value == 1)
