@@ -263,6 +263,10 @@
             href: uno-development/Internal-DependencyProperty-Generator.md
           - name: x:Bind in Uno Platform
             href: uno-development/Uno-UI-xBind-architecture.md
+          - name: ListViewBase
+            href: uno-development/listviewbase-internals.md
+          - name: ThemeResource
+            href: uno-development/themeresource-internals.md
       - name: Building Uno.UI
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI
@@ -375,7 +379,7 @@
             - name: ComboBox
               href: controls/ComboBox.md
             - name: CommandBar
-              href: controls/commandbar.md
+              href: controls/CommandBar.md
             - name: ContentDialog
               href: controls/ContentDialog.md
             - name: Flyout
@@ -404,6 +408,8 @@
               href: controls/ToggleSwitch.md
             - name: WebView (WebView2)
               href: controls/WebView.md
+            - name: Window
+              href: features/windows-ui-xaml-window.md
             - name: Fluent icon font
               href: uno-fluent-assets.md
             - name: Lottie animations
@@ -476,7 +482,7 @@
       - name: Accelerometer
         href: features/accelerometer.md
       - name: Android TV
-        href: features/android-tv.md  
+        href: features/android-tv.md
       - name: App Actions
         href: features/windows-ui-startscreen.md
       - name: App Close Handler
