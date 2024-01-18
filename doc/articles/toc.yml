@@ -378,6 +378,8 @@
               href: controls/commandbar.md
             - name: ContentDialog
               href: controls/ContentDialog.md
+            - name: DatePicker
+              href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
             - name: ListView and GridView

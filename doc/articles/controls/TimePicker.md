@@ -22,7 +22,7 @@ Done/OK button save the new selected time.
 
 ## Managed vs. native implementation
 
-On iOS and Android the `TimePicker` by default displays using the native time picker UI. If you prefer consistent UI across all targets, you can switch to the managed implementation by setting the `UseNativePicker` property:
+On iOS and Android the `TimePicker` by default displays using the native time picker UI. If you prefer consistent UI across all targets, you can switch to the managed implementation by setting the `UseNativeStyle` property:
 
 ```xml
 <TimePicker not_win:UseNativeStyle="False" ... />
