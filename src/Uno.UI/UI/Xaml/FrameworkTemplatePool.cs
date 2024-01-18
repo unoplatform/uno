@@ -111,7 +111,13 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Determines if the pooling is enabled. If false, all requested instances are new.
 		/// </summary>
-		public static bool IsPoolingEnabled { get; set; } = true;
+		/// <remarks>
+		/// Disabled by default on Android. See: https://github.com/unoplatform/uno/issues/13969
+		/// </remarks>
+		public static bool IsPoolingEnabled { get; set; }
+#if !__ANDROID__
+			 = true;
+#endif
 
 		/// <summary>
 		/// Gets a value indicating whether the pool is currently recycling a template.
