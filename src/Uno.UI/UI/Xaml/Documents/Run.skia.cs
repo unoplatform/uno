@@ -284,7 +284,11 @@ namespace Microsoft.UI.Xaml.Documents
 		partial void InvalidateSegmentsPartial() => _segments = null;
 
 		private static Func<SKFont, float> _measureTab =
-			((Func<SKFont, float>?)(font1 => font1.MeasureText(new ReadOnlySpan<ushort>(' ')) * SpacesPerTab))
+			((Func<SKFont, float>?)(font =>
+			{
+				ReadOnlySpan<ushort> space = [' '];
+				return font.MeasureText(space) * SpacesPerTab;
+			}))
 			.AsMemoized();
 	}
 }
