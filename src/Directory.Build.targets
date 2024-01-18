@@ -73,7 +73,6 @@
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
 		<PackageReference Update="Uno.Wasm.Bootstrap" Version="8.0.0-dev.252" />
 		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.252" />
-		<PackageReference Update="xamarin.build.download" Version="0.11.4" PrivateAssets="all" />
 		<PackageReference Update="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Update="MSTest.TestFramework" Version="2.2.8" />
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
