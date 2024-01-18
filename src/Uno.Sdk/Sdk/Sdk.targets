@@ -53,4 +53,17 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		</When>
 	</Choose>
 
+
+	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
+	<Target Name="UnoSdkVersionCheck">
+		<Error Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="Do not override the 'UnoVersion'. The 'UnoVersion' must match the version of the Uno.Sdk." />
+		<ItemGroup>
+			<UnoWinUIPackageReference Include="@(PackageReference)"
+				Condition=" '%(PackageReference.Identity)' == 'Uno.WinUI' " />
+		</ItemGroup>
+
+		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
+		<Error Text="Resolved version of Uno.WinUI does not match DefaultUnoVersion."
+			Condition="'@(UnoWinUIPackageReference->'%(Version)')' != 'DefaultUnoVersion'" />
+	</Target>
 </Project>
