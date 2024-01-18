@@ -84,8 +84,8 @@ public class Given_NoFuzzyMatching
 				{
 					"""
 					using System;
-					using Microsoft.UI.Xaml;
-					using Microsoft.UI.Xaml.Controls;
+					using Windows.UI.Xaml;
+					using Windows.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -105,7 +105,7 @@ public class Given_NoFuzzyMatching
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "5.0.118"))),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
