@@ -29,6 +29,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
 	</ItemGroup>
 
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.CrossTargeting.targets" />
+
 	<Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 
