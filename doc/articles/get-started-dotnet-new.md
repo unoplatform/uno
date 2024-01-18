@@ -46,7 +46,7 @@ More articles on WinUI 3:
 
 ## Uno Platform Blank Application (UWP)
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP API set.
 
 A basic example:
 
@@ -54,8 +54,9 @@ A basic example:
 dotnet new unoapp-uwp -o MyApp
 ```
 
-A more advanced example that will not generate the android and macOS heads:
+A more advanced example that will not generate the the Mobile head:
 
+<<<<<<< HEAD
 ```
 dotnet new unoapp-uwp -o MyApp -android=false -macos=false
 ```
@@ -84,6 +85,12 @@ Uno Platform provides an enhanced template to build your application with less e
 
 See [this documentation](xref:Overview.Features) for more information.
 
+=======
+```dotnetcli
+dotnet new unoapp-uwp -o MyApp -mobile=false
+```
+
+>>>>>>> c76c322dca (docs: Update dotnet new docs)
 ## Uno Platform Blank library
 
 This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to be built separately, but cannot be differentiated.
@@ -101,6 +108,16 @@ This template can be used to create a blank cross-runtime library, when platform
 A basic example:
 ```
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
+```
+
+## Uno Platform MAUI Embedding Class Library
+
+This template can be used to to create a .NET MAUI Controls library to embed within your Uno Platform app.
+
+A basic exampmle:
+
+```dotnetcli
+dotnet new unomauilib -o MyMauiEmbeddingLibrary
 ```
 
 ## Uno Platform Uno.UITest library
