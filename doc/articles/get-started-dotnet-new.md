@@ -46,7 +46,7 @@ More articles on WinUI 3:
 
 ## Uno Platform Blank Application (UWP)
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP
+This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP API set.
 
 A basic example:
 
@@ -54,35 +54,11 @@ A basic example:
 dotnet new unoapp-uwp -o MyApp
 ```
 
-A more advanced example that will not generate the android and macOS heads:
+A more advanced example that will not generate the the Mobile head:
 
 ```dotnetcli
-dotnet new unoapp-uwp -o MyApp -android=false -macos=false
+dotnet new unoapp-uwp -o MyApp -mobile=false
 ```
-
-## Uno Platform Blank Application (UWP, .NET 6)
-
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
-
-This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
-
-A basic example:
-
-```dotnetcli
-dotnet new unoapp-uwp-net6 -o MyApp
-```
-
-A more advanced example that will not generate the android and macOS heads:
-
-```dotnetcli
-dotnet new unoapp-uwp-net6 -o MyApp --Mobile=false
-```
-
-## Uno Platform Extensions
-
-Uno Platform provides an enhanced template to build your application with less effort.
-
-See [this documentation](xref:Overview.Features) for more information.
 
 ## Uno Platform Blank library
 
@@ -102,6 +78,16 @@ A basic example:
 
 ```dotnetcli
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
+```
+
+## Uno Platform MAUI Embedding Class Library
+
+This template can be used to to create a .NET MAUI Controls library to embed within your Uno Platform app.
+
+A basic exampmle:
+
+```dotnetcli
+dotnet new unomauilib -o MyMauiEmbeddingLibrary
 ```
 
 ## Uno Platform Uno.UITest library
