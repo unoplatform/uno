@@ -4,6 +4,9 @@ using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.Extensions;
+using Buffer = HarfBuzzSharp.Buffer;
+using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
 #nullable enable
 
@@ -11,6 +14,9 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class Run
 	{
+		private const int SpacesPerTab = 8;
+		private const int TabCodepoint = 3; // we give tab the same HarfBuzz codepoint as Space (which is not equal to `(ushort)' '` for some reason
+
 		private List<Segment>? _segments;
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= _segments = GetSegments();
@@ -206,7 +212,7 @@ namespace Microsoft.UI.Xaml.Documents
 						buffer.ReverseClusters();
 					}
 
-					var glyphs = GetGlyphs(buffer, s, textSizeX, textSizeY);
+					var glyphs = GetGlyphs(buffer, Text.AsSpan(s, length), fontInfo, s, textSizeX, textSizeY);
 
 					var segment = new Segment(this, direction, s, length, leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, glyphs, fallbackFont);
 
@@ -246,7 +252,7 @@ namespace Microsoft.UI.Xaml.Documents
 				return false;
 			}
 
-			static List<TextFormatting.GlyphInfo> GetGlyphs(HarfBuzzSharp.Buffer buffer, int clusterStart, float textSizeX, float textSizeY)
+			static List<GlyphInfo> GetGlyphs(Buffer buffer, ReadOnlySpan<char> textSpan, FontDetails fontInfo, int clusterStart, float textSizeX, float textSizeY)
 			{
 				int length = buffer.Length;
 				var hbGlyphs = buffer.GetGlyphInfoSpan();
@@ -259,10 +265,11 @@ namespace Microsoft.UI.Xaml.Documents
 					var hbGlyph = hbGlyphs[i];
 					var hbPos = hbPositions[i];
 
+					// We add special handling for tabs, which don't get rendered correctly, and treated as an unknown glyph
 					TextFormatting.GlyphInfo glyph = new(
-						(ushort)hbGlyph.Codepoint,
+						textSpan[i] == '\t' ? (ushort)TabCodepoint : (ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,
-						hbPos.XAdvance * textSizeX,
+						textSpan[i] == '\t' ? _measureTab(fontInfo.SKFont) : hbPos.XAdvance * textSizeX,
 						hbPos.XOffset * textSizeX,
 						hbPos.YOffset * textSizeY
 					);
@@ -275,5 +282,9 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
+
+		private static Func<SKFont, float> _measureTab =
+			((Func<SKFont, float>?)(font1 => font1.MeasureText(new ReadOnlySpan<ushort>(' ')) * SpacesPerTab))
+			.AsMemoized();
 	}
 }
