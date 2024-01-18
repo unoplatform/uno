@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Uno Specific: On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
 				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
 				// skip focusing, or focus some child of this faux RootScrollViewer. To match the other platforms, we do the former.
-				if (this.GetParent() is UIElement { IsVisualTreeRoot: true })
+				if (this.GetParent() is UIElement { IsVisualTreeRoot: false })
 				{
 					args.Handled = Focus(FocusState.Pointer);
 				}
