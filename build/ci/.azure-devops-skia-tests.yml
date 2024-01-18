@@ -160,13 +160,41 @@ jobs:
 
   strategy:
     matrix:
-      UWP:
+      UWP_GROUP_0:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-      WinUI:
+      UWP_GROUP_1:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      UWP_GROUP_2:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      WinUI_GROUP_0:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      WinUI_GROUP_1:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      WinUI_GROUP_2:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
   dependsOn: Skia_Tests_Build
 
