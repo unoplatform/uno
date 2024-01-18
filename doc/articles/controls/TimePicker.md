@@ -6,10 +6,10 @@ uid: Uno.Controls.TimePicker
 
 ## Summary
 
-TimePicker is use to select a specific time of the day in hour and minute (AM/PM).
+`TimePicker` is used to select a specific time of the day in hour and minute (AM/PM).
 
 Button showing time open the time picker popup.
-Bind to the Time property of the control to set initial time.
+Bind to the `Time` property of the control to set initial time.
 days, seconds and milliseconds of input timespan are ignored
 By default minute increment is set to 1
 if you assign a negative value or 0, it will use 1 minute increment
@@ -20,11 +20,21 @@ If bound time is 2h08 and time increment is 15 than time picker initial pickable
 Cancel button cancel the new time selection. You can also click outside the time picker to do the same.
 Done/OK button save the new selected time.
 
+## Managed vs. native implementation
+
+On iOS and Android the `TimePicker` by default displays using the native time picker UI. If you prefer consistent UI across all targets, you can switch to the managed implementation by setting the `UseNativePicker` property:
+
+```xml
+<TimePicker not_win:UseNativeStyle="False" ... />
+```
+
+To include the `not_win` XAML namespace on your page follow the instructions for [Platform-specific XAML](../platform-specific-xaml.md).
+
 ### Styles
 
-Time button style: TimePickerFlyoutButtonStyle
-Time picker flyout popup style: default generic TimePickerFlyoutPresenterStyle
-TimePickerSelector is a platform specific wrapper for IOS/Android time pickers
+Time button style: `TimePickerFlyoutButtonStyle`
+Time picker flyout popup style: default generic `TimePickerFlyoutPresenterStyle`
+`TimePickerSelector` is a platform specific wrapper for IOS/Android time pickers
 
 ### Device-specific implementation quirks
 
@@ -33,7 +43,7 @@ There might be differences in the time picker on different platform since it wra
 #### Android
 
 - Native time picker is wrapped in the flyout.
-- `Timepicker` flyout appear centered to screen.
+- `TimePicker` flyout appear centered to screen.
 - You can change the flyout button by copying and modifying TimePickerFlyoutButtonStyle.
 - You can change the flyout button by copying and modifying TimePickerFlyoutPresenterStyle.
 - If 'MinuteIncrement` is more than 1, `TimePicker` will show in "spinner mode"
