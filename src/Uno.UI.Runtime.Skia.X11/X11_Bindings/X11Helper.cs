@@ -72,11 +72,12 @@ public static class X11Helper
 	[DllImport(libX11Randr)]
 	public static extern int XInitThreads();
 
+	// Only change the visibility of this method if absolutely necessary. Instead, use XLock()
 	[DllImport(libX11Randr)]
-	public static extern void XLockDisplay(IntPtr display);
+	private static extern void XLockDisplay(IntPtr display);
 
 	[DllImport(libX11Randr)]
-	public static extern void XUnlockDisplay(IntPtr display);
+	private static extern void XUnlockDisplay(IntPtr display);
 
 	[DllImport(libX11)]
 	public static extern int XWidthMMOfScreen(IntPtr screen);
