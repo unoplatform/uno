@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
+		<None Include="targets\**\*.props;targets\**\*.targets" Pack="true" PackagePath="targets/" />
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
