@@ -6,6 +6,7 @@ using System.Text;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
@@ -88,6 +89,38 @@ namespace Microsoft.UI.Xaml.Controls
 				if (weakHandler.Target is IDirectManipulationStateChangeHandler h)
 				{
 					h.NotifyStateChange(DMManipulationState.DMManipulationCompleted, default, default, default, default, default, default, default, default);
+				}
+			}
+		}
+
+		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
+		{
+			// If our templated parent is handling mouse button, we should not take
+			// focus away.  They're handling it, not us.
+			if (m_templatedParentHandlesMouseButton)
+			{
+				return;
+			}
+
+			var spPointerPoint = pArgs.GetCurrentPoint(this);
+			var spPointerProperties = spPointerPoint.Properties;
+			m_isPointerLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
+
+			// Don't handle PointerPressed event to raise up
+		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (m_isPointerLeftButtonPressed)
+			{
+				m_isPointerLeftButtonPressed = false;
+
+				// Uno Specific: On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
+				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
+				// skip focusing, or focus some child of this faux RootScrollViewer. To match the other platforms, we do the former.
+				if (this.GetParent() is UIElement { IsVisualTreeRoot: true })
+				{
+					args.Handled = Focus(FocusState.Pointer);
 				}
 			}
 		}

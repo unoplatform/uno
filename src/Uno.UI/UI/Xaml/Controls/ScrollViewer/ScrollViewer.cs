@@ -1595,47 +1595,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			if (m_isPointerLeftButtonPressed)
-			{
-				m_isPointerLeftButtonPressed = false;
-
-				// On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
-				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
-				// skip focusing, or focus some child of this faux RootScrollViewer. TO match the other platforms, we do the former.
-				if (this.GetParent() is not RootVisual)
-				{
-					args.Handled = Focus(FocusState.Pointer);
-				}
-			}
-		}
-
-		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
-		{
-			// If our templated parent is handling mouse button, we should not take
-			// focus away.  They're handling it, not us.
-			if (m_templatedParentHandlesMouseButton)
-			{
-				return;
-			}
-
-			var spPointerPoint = pArgs.GetCurrentPoint(this);
-			if (spPointerPoint is null)
-			{
-				return;
-			}
-			var spPointerProperties = spPointerPoint.Properties;
-			if (spPointerProperties is null)
-			{
-				return;
-			}
-			m_isPointerLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
-
-
-			// Don't handle PointerPressed event to raise up
-		}
-
 #if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
