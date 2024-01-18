@@ -52,7 +52,7 @@ uid: Uno.Controls.TextBox
 | TimeMinutesOrSeconds    | Input scope is intended for working with a numeric minute of the hour, or second of the minute.                                           |                                                              |                                      |
 | Url                     | Indicates a Uniform Resource Identifier (URI). This can include URL, File, or File Transfer Protocol (FTP) formats.                       |     InputTypes.ClassText OR InputTypes.TextVariationUri      |          UIKeyboardType.Url          |
 
-    [*: Workaround]
+\[\*: Workaround]
 
 ## Controlling the Keyboard on iOS
 
