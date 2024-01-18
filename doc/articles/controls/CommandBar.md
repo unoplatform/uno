@@ -4,7 +4,7 @@ uid: Uno.Controls.CommandBar
 
 # CommandBar
 
-The `CommandBar` in **Uno** is designed to be used the same way you would use the `CommandBar` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.commandbar).
+The `CommandBar` in **Uno** is designed to be used the same way you would use the `CommandBar` on **WinUI**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.commandbar).
 
 This document exists to highlight some of the differences you might encounter when working with the native mode of `CommandBar` on either **iOS** or **Android**.
 
@@ -19,7 +19,7 @@ The `CommandBar` supports 2 different modes:
 
 ### Windows
 
-This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a template that's almost identical to **UWP**'s default `CommandBar`.
+This mode replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`.
 
 ![CommandBar Example - Windows](assets/commandbar/windows/example.png)
 
