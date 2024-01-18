@@ -4,7 +4,7 @@ uid: Uno.Contributing.PullRequests
 
 # Guidelines for pull-requests
 
-If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests.
+If you don't know what a pull request is, read the [About pull requests documentation from GitHub](https://docs.github.com/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
 
 ## Creating a PR
 
