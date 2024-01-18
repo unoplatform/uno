@@ -203,6 +203,8 @@ jobs:
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UnoEnableHRuntimeTests: true
 
+    CI_Build: true
+
     # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
