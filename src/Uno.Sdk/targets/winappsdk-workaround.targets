@@ -1,0 +1,21 @@
+<Project>
+	<!-- Workaround to avoid including Project XBFs in the PRI file -->
+	<Target Name="AdjustGetPackagingOutput1" AfterTargets="GetMrtPackagingOutputs">
+		<Message Importance="high" Text="Applying NuGet packaging workaround for dependent PRI files exclusion" />
+		<ItemGroup>
+			<_OtherPriFiles Include="@(PackagingOutputs)" Condition="'%(Extension)' == '.pri' and ('%(PackagingOutputs.ReferenceSourceTarget)' == 'ProjectReference' or '%(PackagingOutputs.NugetSourceType)'=='Package')" />
+			<PackagingOutputs Remove="@(_OtherPriFiles)" />
+		</ItemGroup>
+	</Target>
+	
+	<Target Name="AdjustGetPackagingOutput2" BeforeTargets="AddPriPayloadFilesToCopyToOutputDirectoryItems">
+		<Message Importance="high" Text="Applying NuGet packaging workaround for dependent PRI files exclusion" />
+		<ItemGroup>
+			<_OtherPriFiles1 Include="@(_ReferenceRelatedPaths)" Condition="'%(Extension)' == '.pri' and ('%(_ReferenceRelatedPaths.ReferenceSourceTarget)' == 'ProjectReference' or '%(_ReferenceRelatedPaths.NugetSourceType)'=='Package')" />
+			<_ReferenceRelatedPaths Remove="@(_OtherPriFiles1)" />
+
+			<_OtherPriFiles2 Include="@(ReferenceCopyLocalPaths)" Condition="'%(Extension)' == '.pri' and ('%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference' or '%(ReferenceCopyLocalPaths.NugetSourceType)'=='Package')" />
+			<ReferenceCopyLocalPaths Remove="@(_OtherPriFiles2)" />
+		</ItemGroup>
+	</Target>
+</Project>

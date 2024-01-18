@@ -28,4 +28,26 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<!-- Removes native usings to avoid Ambiguous reference -->
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
 	</ItemGroup>
+
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+
+		</When>
+		<When Condition="$(TargetFramework.Contains('windows10'))">
+			<Import Project="$(MSBuildThisFileDirectory)..\targets\winappsdk-workaround.targets"
+					Condition="'$(SingleProject)' != 'true'"/>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+		</When>
+	</Choose>
+
 </Project>
