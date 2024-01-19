@@ -1258,6 +1258,10 @@ namespace Microsoft.UI.Xaml.Controls
 					_suppressCurrentlyTyping = false;
 				}
 #endif
+
+#if !IS_UNIT_TESTS && !__MACOS__
+				RaisePaste(new TextControlPasteEventArgs());
+#endif
 			});
 		}
 
