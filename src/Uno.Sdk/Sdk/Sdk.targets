@@ -29,6 +29,21 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" !$(IsWinAppSdk) ">
+		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
+		<Content Include="Assets\**;**/*.png;**/*.bmp;**/*.jpg;**/*.dds;**/*.tif;**/*.tga;**/*.gif" 
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg" />
+		<Page Include="**\*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Update="**\*.xaml.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<PRIResource Include="**\*.resw" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(PkgUno_Resizetizer)'!='' ">
+		<UnoImage Include="Assets\**\*.svg" Exclude="$(UnoImage)" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.CrossTargeting.targets" />
 
 	<Choose>
@@ -53,14 +68,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		</When>
 	</Choose>
 
-
 	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
 	<Target Name="UnoSdkVersionCheck">
 		<Error Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="Do not override the 'UnoVersion'. The 'UnoVersion' must match the version of the Uno.Sdk." />
-		<ItemGroup>
-			<UnoWinUIPackageReference Include="@(PackageReference)"
-				Condition=" '%(PackageReference.Identity)' == 'Uno.WinUI' " />
-		</ItemGroup>
 
 		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
 		<Error Text="Resolved version of Uno.WinUI does not match DefaultUnoVersion."
