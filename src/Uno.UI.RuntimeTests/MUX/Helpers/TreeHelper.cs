@@ -90,6 +90,30 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return null;
 		}
 
+		internal static T GetVisualChildByTypeFromOpenPopups<T>(DependencyObject element)
+			where T : FrameworkElement
+		{
+			var popups = GetOpenPopups(element);
+
+			foreach (var popup in popups)
+			{
+				var popupChild = (FrameworkElement)popup.Child;
+
+				var result = popupChild as T;
+				if (result != null)
+				{
+					return result;
+				}
+				result = GetVisualChildByType<T>(popupChild);
+				if (result != null)
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
+
 		internal static IEnumerable<Popup> GetOpenPopups(DependencyObject element)
 		{
 #if WINAPPSDK

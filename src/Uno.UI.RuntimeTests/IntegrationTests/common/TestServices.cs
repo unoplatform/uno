@@ -95,6 +95,11 @@ namespace Private.Infrastructure
 			Assert.IsNull(value);
 		}
 
+		public static void THROW_IF_NULL(object value)
+		{
+			Assert.IsNotNull(value);
+		}
+
 		public static void THROW_IF_NULL_WITH_MSG(object value, string msg)
 		{
 			Assert.IsNotNull(value, msg);

@@ -50,5 +50,8 @@ namespace Microsoft.UI.Xaml
 
 		internal static void RequestInteractionSoundForElement(ElementSoundKind soundToPlay, DependencyObject element) =>
 			ElementSoundPlayerService.Instance.RequestInteractionSoundForElement(soundToPlay, element);
+
+		internal static ElementSoundMode GetEffectiveSoundMode(DependencyObject element) =>
+			ElementSoundPlayerService.Instance.GetEffectiveSoundMode(element);
 	}
 }

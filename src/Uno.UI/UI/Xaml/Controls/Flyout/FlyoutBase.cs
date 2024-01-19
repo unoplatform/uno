@@ -110,14 +110,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			var focusState = contentRoot.FocusManager.GetRealFocusStateForFocusedElement();
 
-			var presenter = GetPresenter();
-			if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
+			if (focusState != FocusState.Unfocused)
 			{
-				var childFocused = presenter.Focus(focusState);
-
-				if (!childFocused)
+				var presenter = GetPresenter();
+				if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
 				{
-					_popup.Focus(focusState);
+					var childFocused = presenter.Focus(focusState);
+
+					if (!childFocused)
+					{
+						_popup.Focus(focusState);
+					}
 				}
 			}
 

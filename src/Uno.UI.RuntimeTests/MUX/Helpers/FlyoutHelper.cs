@@ -13,17 +13,14 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 	{
 		public static FrameworkElement GetOpenFlyoutPresenter(XamlRoot xamlRoot)
 		{
-#if WINAPPSDK
-			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
-#else
 			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
-#endif
 			if (popups.Count != 1)
 			{
 				throw new InvalidOperationException("Expected exactly one open Popup.");
 			}
 
-			return popups[0] ?? throw new InvalidOperationException("Popup child should not be null.");
+			var child = popups[0].Child ?? throw new InvalidOperationException("Popup child should not be null.");
+			return child as FrameworkElement;
 		}
 
 		public static void HideFlyout<T>(T flyoutControl)

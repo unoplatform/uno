@@ -44,6 +44,17 @@ namespace DirectUI
 			return physicalRect;
 		}
 
+		public Microsoft.UI.Xaml.Window? GetAssociatedWindow(Microsoft.UI.Xaml.UIElement element)
+		{
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			// TODO: Multi-window #14499
+			return Microsoft.UI.Xaml.Window.Current;
+		}
+
 		// TODO Uno: Application-wide bar is not supported yet.
 		public ApplicationBarService? TryGetApplicationBarService() => null;
 

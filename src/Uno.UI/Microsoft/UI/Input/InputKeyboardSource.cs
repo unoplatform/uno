@@ -1,12 +1,14 @@
-﻿namespace Microsoft.UI.Input;
+﻿using Uno.UI.Core;
 
-public partial class InputKeyboardSource
-{
+namespace Microsoft.UI.Input;
+
 #if HAS_UNO_WINUI
-	public
+public
 #else
-	internal
+internal
 #endif
-	static Windows.UI.Core.CoreVirtualKeyStates GetKeyStateForCurrentThread(Windows.System.VirtualKey virtualKey)
+partial class InputKeyboardSource
+{
+	public static Windows.UI.Core.CoreVirtualKeyStates GetKeyStateForCurrentThread(Windows.System.VirtualKey virtualKey)
 		=> Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(virtualKey);
 }
