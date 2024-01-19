@@ -662,6 +662,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// because ItemsRepeater uses a "singleton" instance of default StackLayout.
 			_layoutSubscriptionsRevoker.Disposable = null;
 			_dataSourceSubscriptionsRevoker.Disposable = null;
+			if (m_itemsSourceView is not null)
+			{
+				// We will no longer receive the element changes until next load.
+				// While add and remove will be detected on next layout pass, a replace would not be reflected in the UI.
+				// To fix that, we send a fake reset collection changed in order to mark all containers as recyclable.
+				// Note: We do it on unload rather than on load because we want to avoid multiple layout-pass on next load.
+				//		 This is expected to only flag containers as recyclable and should not have any significant perf impact.
+				OnItemsSourceViewChanged(m_itemsSourceView, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			}
 #endif
 		}
 
