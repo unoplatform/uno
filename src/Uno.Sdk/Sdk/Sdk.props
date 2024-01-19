@@ -19,8 +19,11 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<IsIOS>false</IsIOS>
 		<IsMac>false</IsMac>
 		<IsMacCatalyst>false</IsMacCatalyst>
+		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
+
+    	<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
 
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
@@ -41,6 +44,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			<PropertyGroup>
+				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 				<IsIOS>true</IsIOS>
 				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
 			</PropertyGroup>
@@ -53,6 +57,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 			<PropertyGroup>
+				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 				<IsMacCatalyst>true</IsMacCatalyst>
 				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
 			</PropertyGroup>
@@ -70,6 +75,10 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
 		</When>
 	</Choose>
+
+	<ItemGroup Condition=" $(EnableDefaultUnoItems) == 'true' ">
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
 
 	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
 	<!-- SingleProject-specific features -->

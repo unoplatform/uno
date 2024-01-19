@@ -29,26 +29,58 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
 	</ItemGroup>
 
-	<Choose>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+	<ItemGroup Condition=" !$(IsWinAppSdk) AND $(EnableDefaultUnoItems) == 'true' ">
+		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
+		<Content Include="Assets\**;**/*.png;**/*.bmp;**/*.jpg;**/*.dds;**/*.tif;**/*.tga;**/*.gif" 
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg" />
+		<Page Include="**\*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<Compile Update="**\*.xaml.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<PRIResource Include="**\*.resw" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+	</ItemGroup>
 
+	<ItemGroup Condition=" '$(PkgUno_Resizetizer)'!='' ">
+		<UnoImage Include="Assets\**\*.svg" Exclude="@(UnoImage)" />
+	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.CrossTargeting.targets" />
+
+	<Choose>
+		<!-- <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
-
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-
-		</When>
+		</When> -->
 		<When Condition="$(TargetFramework.Contains('windows10'))">
+			<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.WinAppSdk.targets"
+					Condition=" $(SingleProject) == 'true' " />
 			<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
 			<Import Project="$(MSBuildThisFileDirectory)..\targets\winappsdk-workaround.targets"
 					Condition="'$(SingleProject)' != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+			<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
+					Condition=" $(SingleProject) == 'true' " />
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+			<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Skia.targets"
+					Condition=" $(SingleProject) == 'true' " />
 		</When>
 	</Choose>
 
+	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
+	<Target Name="UnoSdkVersionCheck"
+			AfterTargets="ResolveReferences"
+			BeforeTargets="Build"
+			Condition="'$(PkgUno_WinUI)' != ''">
+		<Error Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="Do not override the '%24(UnoVersion)'. The '%24(UnoVersion)' must match the version of the Uno.Sdk." />
+
+		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
+		<Error Text="The resolved version of Uno.WinUI does not match DefaultUnoVersion. The Version of Uno.WinUI must match the version of the Uno.Sdk.  For more information about updating Uno Platform versions, visit https://aka.platform.uno/migrate-from-previous"
+			Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
+	</Target>
 </Project>
