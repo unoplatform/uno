@@ -111,7 +111,7 @@
 		<DefineConstants>$(DefineConstants);NETFX_CORE;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(CI_Build)'!=''">
+	<PropertyGroup Condition="'$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true'">
 		<DefineConstants>$(DefineConstants);IS_CI</DefineConstants>
 	</PropertyGroup>
 

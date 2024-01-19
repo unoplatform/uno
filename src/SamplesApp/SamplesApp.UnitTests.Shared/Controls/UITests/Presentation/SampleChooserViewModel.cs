@@ -46,6 +46,9 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
+		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
+		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
+
 #if DEBUG
 		private const int _numberOfRecentSamplesVisible = 10;
 #else
@@ -511,6 +514,18 @@ namespace SampleControl.Presentation
 				if (ContentPhone is FrameworkElement fe
 					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
 				{
+#if IS_CI
+					// Used to disable showing the test output visually
+					unitTests.SetDependencyPropertyValue("IsRunningOnCI", "true");
+#endif
+
+					// Used to perform test grouping on CI to reduce the impact of re-runs
+					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+					{
+						unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
+						unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
+					}
+
 					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
 					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
