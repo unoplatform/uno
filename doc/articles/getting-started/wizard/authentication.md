@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Authentication
----
-
-### Authentication
-
 Adds Uno Platform's [Custom Authentication](xref:Learn.Tutorials.Authentication.HowToAuthentication) support to the generated project.
 
 Using Uno's authentication tools you can easily integrate in your app a login screen and authenticate users. It also helps you manage and track the state of the app's authentication, by allowing you to log out or switch users as well as other authentication-related actions.

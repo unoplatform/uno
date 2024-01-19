@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Platforms
----
-
-### Platforms
-
 This setting lets you choose which platforms the generated app will target.
 
 Uno Platform currently supports targeting the following operating systems:
@@ -18,7 +12,7 @@ Uno Platform currently supports targeting the following operating systems:
   - Windows
   - GTK
   - WPF
-  - Linux Framebuffer (linux-fb)
+  - Linux FrameBuffer (linux-fb)
 
 > [!NOTE]
 > For most platforms the name of the command line argument is just the platform name (eg windows or ios). However, for WebAssembly, Mac and Linux Framebuffer, use the abbreviation in braces in the above list (ie wasm, maccatalyst or linux-fb).
