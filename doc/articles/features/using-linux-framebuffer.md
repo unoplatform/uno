@@ -32,7 +32,7 @@ dotnet run
 
 The app will start and display on the first available framebuffer device. To change the active framebuffer, set the device name in the `FRAMEBUFFER` environment variable.
 
-By default, the `Debug` configuration, which will show logging information in the current terminal and may overwrite the UI content.
+By default, the `Debug` configuration is used, which will show logging information in the current terminal and may overwrite the UI content.
 
 To read the logging information, either:
 
@@ -55,7 +55,7 @@ dotnet publish -c Release -r linux-x64 --self-contained true
 > [!NOTE]
 > When using the `Release` configuration, logging is disabled for performance considerations. You can restore logging in the `App.xaml.cs` file.
 
-Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md).
+Documentation on other hardware targets is [available here](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md).
 
 ## DPI Scaling support
 

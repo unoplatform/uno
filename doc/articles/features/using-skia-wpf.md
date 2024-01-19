@@ -86,4 +86,4 @@ This is not required anymore, but to be able to use a single project, you'll can
         <UpToDateCheckInput Include="$(MSBuildThisFileDirectory)**/*.xaml" />
         ```
 
-        You'll need edit this file outside of Visual Studio. If you need an example, create a new temporary project, and take a look at the way these lines are defined in the shared project file.
+        You'll need to edit this file outside of Visual Studio. If you need an example, create a new temporary project, and take a look at the way these lines are defined in the shared project file.

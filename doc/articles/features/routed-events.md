@@ -120,7 +120,7 @@ implementation of RoutedEvents:
 
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
-In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
+In some cases/events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
 or referencing the element where the event crossed the _native-to-managed_ boundary.
 
 This property is however always accurate for "Pointers", "Manipulation", "Gesture", and "Drag and drop" events.

@@ -20,4 +20,4 @@ uid: Uno.Features.WPDNotification
 
 #### UWP
 
-- The `VibrationDevice` class is only available in the UWP-head if the `Windows.Mobile.Extenstions for the UWP` is added to the project.
+- The `VibrationDevice` class is only available in the UWP-head if the `Windows.Mobile.Extensions for the UWP` is added to the project.

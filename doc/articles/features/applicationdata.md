@@ -64,7 +64,7 @@ string value = (string)localSettings.Values["name"];
 
 ## Data location on GTK and WPF
 
-In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system.
+In the case of GTK and WPF targets, the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system.
 
 ### Windows
 

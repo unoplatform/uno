@@ -5,7 +5,7 @@ uid: Uno.Features.WS
 # URI Launcher
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.System` namespace. For a full description of the feature and instructions on using it, see [Windows.System Namespace](https://learn.microsoft.com/uwp/api/windows.system).
+> This article covers Uno-specific information for the `Windows.System` namespace. For a full description of the feature and instructions on using it, see [Windows.System Namespace](https://learn.microsoft.com/uwp/api/windows.system).
 
 * The `Windows.System.Launcher` class provides functionality for launching URIs and apps.
 
@@ -104,8 +104,8 @@ In case of macOS, Uno supports the following nested URIs, mapped to Preference P
 
 ### Exceptions
 
-* When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
-* When the method is called from non-UI thread, `InvalidOperationException` is thrown.
+* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
+* When the method is called from a non-UI thread, `InvalidOperationException` is thrown.
 
 Exceptions are in line with UWP.
 
@@ -149,6 +149,6 @@ Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSch
 
 ### Exceptions
 
-* When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.
+* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.
 
 Exceptions are in line with UWP.
