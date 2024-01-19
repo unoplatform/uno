@@ -14,15 +14,15 @@ We stand on the shoulders of giants, Microsoft's tooling is a treat to work wit
 - [Live Visual Tree](https://learn.microsoft.com/visualstudio/debugger/inspect-xaml-properties-while-debugging).
 - [XAML Hot Reload](https://learn.microsoft.com/visualstudio/debugger/xaml-hot-reload?view=vs-2019)
 
-The promise of the Uno Platform is to enable building your app with those tools and then deploying it to WebAssembly, iOS, Android, macOS and Linux.
+The promise of the Uno Platform is to enable building your app with those tools and then deploying it to WebAssembly, iOS, Android, macOS, and Linux.
 
-## Create pixel-perfect, rich and responsive UIs
+## Create pixel-perfect, rich, and responsive UIs
 
 Developers shouldn't sacrifice application looks for personal productivity. You can have both. Strong support for animations, templating, and custom visual effects is a must. When phones come in all sizes and manufacturers are [gouging holes out of the screen area](https://www.cnet.com/pictures/phones-with-notches/), your application's layout better be responsive and pixel-perfect or today's users, be it in corporate or private setting will not use it.
 
 ## Let views do views
 
-Separation of model, view and presentation keeps your code loosely coupled and easy to maintain. Features like data binding and attached properties let you write clean, elegant MVVM-style code.
+Separation of model, view, and presentation keeps your code loosely coupled and easy to maintain. Features like data binding and attached properties let you write clean, elegant MVVM-style code.
 
 ## Native inter-compatibility (leave an escape hatch)
 

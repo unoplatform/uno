@@ -24,15 +24,15 @@ However, in some cases where it makes sense, partial class files are also used f
 
 ### Disposables
 
-Uno uses lightweight `IDisposables` widely for robust lifetime management. The most commonly used types for this purpose are `SerialDisposable`, `CompositeDisposable`, `CancellationDisposable` and `DisposableAction`.
+Uno uses lightweight `IDisposables` widely for robust lifetime management. The most commonly used types for this purpose are `SerialDisposable`, `CompositeDisposable`, `CancellationDisposable`, and `DisposableAction`.
 
-If you've used the `Reactive Extensions` framework, these names [might be familiar](https://learn.microsoft.com/previous-versions/dotnet/reactive-extensions/hh229090(v=vs.103)), and in fact these disposables behave identically to their Rx equivalents. (However, they've been transplanted into [Uno.Core](https://github.com/unoplatform/Uno.Core), to avoid having to take a dependency on `System.Reactive`.)
+If you've used the `Reactive Extensions` framework, these names [might be familiar](https://learn.microsoft.com/previous-versions/dotnet/reactive-extensions/hh229090(v=vs.103)), and in fact these disposables behave identically to their Rx equivalents. However, they've been transplanted into [Uno](https://github.com/unoplatform/uno/tree/master/src/Uno.Foundation/Uno.Core.Extensions/Uno.Core.Extensions.Disposables/Disposables), to avoid having to take a dependency on `System.Reactive`.
 
 ### Extension methods
 
-[Extension methods](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods) are used throughout the Uno.UI codebase to add reusable functionality to existing types, particularly types coming from the Xamarin bindings. Extension methods should be defined in a dedicated class, with the naming convention `[TypeName]Extensions.cs`, where `TypeName` is the name of the type either being returned or passed as the `this` parameter.
+[Extension methods](https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods) are used throughout the Uno Platform codebase to add reusable functionality to existing types, particularly types coming from the Xamarin bindings. Extension methods should be defined in a dedicated class, with the naming convention `[TypeName]Extensions.cs`, where `TypeName` is the name of the type either being returned or passed as the `this` parameter.
 
-The [Uno.Core library](https://github.com/unoplatform/Uno.Core) already defines a number of extensions to the standard .NET types, so you should check those first to see if they do what you need.
+A number of extensions to the standard .NET types already exists in [Uno.Foundation](https://github.com/unoplatform/uno/tree/master/src/Uno.Foundation/Uno.Core.Extensions). So, you should check those first to see if they do what you need.
 
 When adding a new extension method class, it should typically be marked `internal`, to avoid naming clashes with existing consumer code.
 
@@ -51,7 +51,7 @@ else
 }
 ```
 
-## Integration Tests
+## Integration Tests (UI Tests)
 
 ```csharp
 [ActivePlatforms(Platform.Android, Platform.Browser, Platform.iOS)]
