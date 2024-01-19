@@ -12,6 +12,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private const int BITMAP_PAD = 32;
 
 		private SKBitmap? _bitmap;
+		private SKSurface? _surface;
 		private int renderCount;
 		internal void InvalidateRender()
 		{
@@ -33,18 +34,19 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 
 			// reset the bitmap if the size has changed
-			if (_bitmap == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
+			if (_bitmap == null || _surface == null || info.Width != _bitmap.Width || info.Height != _bitmap.Height)
 			{
 				_bitmap?.Dispose();
+				_surface?.Dispose();
 				_bitmap = new SKBitmap(width, height);
+				_surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
 			}
 
-			using var surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
-			surface.Canvas.Clear(SKColors.Transparent);
+			_surface.Canvas.Clear(SKColors.Transparent);
 
 			if (host.RootElement?.Visual is { } rootVisual)
 			{
-				host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual);
+				host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
 			}
 
 			IntPtr ximage = X11Helper.XCreateImage(
