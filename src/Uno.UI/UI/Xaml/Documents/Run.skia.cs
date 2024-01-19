@@ -269,7 +269,7 @@ namespace Microsoft.UI.Xaml.Documents
 					TextFormatting.GlyphInfo glyph = new(
 						textSpan[i] == '\t' ? (ushort)TabCodepoint : (ushort)hbGlyph.Codepoint,
 						clusterStart + (int)hbGlyph.Cluster,
-						textSpan[i] == '\t' ? _measureTab(fontInfo.SKFont) : hbPos.XAdvance * textSizeX,
+						(textSpan[i] == '\t' ? _measureTab(fontInfo.Font) : hbPos.XAdvance) * textSizeX,
 						hbPos.XOffset * textSizeX,
 						hbPos.YOffset * textSizeY
 					);
@@ -283,11 +283,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
 
-		private static Func<SKFont, float> _measureTab =
-			((Func<SKFont, float>?)(font =>
+		private static Func<Font, float> _measureTab =
+			((Func<Font, float>?)(font =>
 			{
-				ReadOnlySpan<ushort> space = [' '];
-				return font.MeasureText(space) * SpacesPerTab;
+				font.TryGetNominalGlyph((uint)' ', out var glyph);
+				font.GetGlyphAdvanceForDirection(glyph, Direction.LeftToRight, out var xAdvance, out _);
+				return xAdvance * SpacesPerTab;
 			}))
 			.AsMemoized();
 	}
