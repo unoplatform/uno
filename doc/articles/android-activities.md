@@ -8,13 +8,13 @@ uid: Uno.Development.AndroidActivities
 
 ## Android documentation links
 
-[Introduction to Activities](https://developer.android.com/guide/components/activities/intro-activities)
+- [Introduction to Activities](https://developer.android.com/guide/components/activities/intro-activities)
 
-[Understand the Activity Lifecycle](https://developer.android.com/guide/components/activities/activity-lifecycle)
+- [Understand the Activity Lifecycle](https://developer.android.com/guide/components/activities/activity-lifecycle)
 
 ## Creating/Using Android Activities
 
-At the root of every Android Uno app, lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 `AppCompat` Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
+At the root of every Android Uno app, lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 `AppCompat` Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno, you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
 
 ## Accessing Android main activity events
 
