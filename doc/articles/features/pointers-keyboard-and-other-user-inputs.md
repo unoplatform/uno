@@ -84,7 +84,7 @@ of the scrolling. For more information, see [`delaysContentTouches`](https://dev
 
 As those events are tightly coupled to the native events, Uno has to make some compromises:
 
-* On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`),
+* On iOS, when tapping with a mouse or a pen on Android, or in a few other specific cases (like `PointerCaptureLost`),
   multiple managed events are raised from a single native event. These have multiple effects:
   * On WinUI if you have a control A and a nested control B, you will get:
 
@@ -106,12 +106,12 @@ As those events are tightly coupled to the native events, Uno has to make some c
 
   * If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
 * On Android with a mouse or a pen, the `PointerEnter` and `PointerExit` are going to be raised without taking clipping in consideration.
-  This means that you will get the enter earlier and the exit later than on other platform.
-* On Android if you have an element with a `RenderTransform` which overlaps one of its sibling element,
+  This means that you will get the enter earlier and the exit later than on other platforms.
+* On Android if you have an element with a `RenderTransform` which overlaps one of its sibling elements,
   the element at the top will get the pointer events.
 * On WASM, iOS, and Android, the `RoutedPointerEventArgs.FrameId` will be reset to 0 after 49 days of running time of the application.
 * Unlike on WinUI, controls that are under a `Popup` won't receive the unhandled pointer events.
-* On non Skia-based platforms, unlike WinUI, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before.
+* On non-Skia-based platforms, unlike WinUI, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before.
   (For instance if a child control handled the pressed event but not the released event).
   > On WASM as `TextElement` inherits from `UIElement`, it means that, unlike WinUI, `TextBlock` won't raise the
   > `PointerReleased` event when clicking on a `Hyperlink`.
@@ -119,15 +119,15 @@ As those events are tightly coupled to the native events, Uno has to make some c
 * The property `PointerPointProperties.PointerUpdateKind` is not set on Android 5.x and lower (API level < 23)
 * On Firefox, pressed pointers are reported as fingers. This means you will receive events with `PointerDeviceType == Pen` only for hovering
   (i.e. `Pointer<Enter|Move|Exit>` - note that, as of 2019-11-28, once pressed `PointerMove` will be flagged as "touch")
-  and you won't  be able to track the barrel button nor the eraser. For more information, see [Bug report on Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=1449660).
+  and you won't be able to track the barrel button nor the eraser. For more information, see [Bug report on Bugzilla](https://bugzilla.mozilla.org/show_bug.cgi?id=1449660).
 * On WASM, if you touch the screen with the pen **then** you press the barrel button (still while touching the screen), the pointer events will
-  have the `IsRightButtonPressed` set (in addition of the `IsBarrelButtonPressed`). On WinUI and Android, you get this flag only if the barrel
-  button was pressed at the moment where you touched the screen, otherwise you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
+  have the `IsRightButtonPressed` set (in addition to the `IsBarrelButtonPressed`). On WinUI and Android, you get this flag only if the barrel
+  button was pressed at the moment where you touched the screen, otherwise, you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
 * For pen and fingers, the `Holding` event is not raised after a given delay like on WinUI,
-  but instead we rely on the fact that we usually get a lot of moves for those kind of pointers,
-  so we raise the event only when we get a move that exceed defined thresholds for holding.
-* On WASM, Shapes must have a non null Fill to receive pointer events (setting the Stroke is not sufficient).
-* On WASM, if the user scrolls in diagonal (e.g. with a Touchpad), but you mark as `Handled` pointer events only for vertical scrolling,
+  but instead, we rely on the fact that we usually get a lot of moves for those kinds of pointers,
+  so we raise the event only when we get a move that exceeds the defined thresholds for holding.
+* On WASM, Shapes must have a non-null Fill to receive pointer events (setting the Stroke is not sufficient).
+* On WASM, if the user scrolls diagonally (e.g. with a Touchpad), but you mark as `Handled` pointer events only for vertical scrolling,
   then the events for the horizontal scroll component won't bubble through the parents.
 
 ### Pointer capture
@@ -157,8 +157,8 @@ They are generated from the PointerXXX events (using the `Microsoft.UI.Input.Ges
 Note that `Tapped` and `DoubleTapped` are not linked in any way to a native equivalent, but are fully interpreted in managed code.
 
 In order to match the WinUI behavior, on WASM, the default "Context menu" of the browser is disabled (except for the `TextBox`),
-no matter if you use / handle the `RightTapped` event or not.
-Be aware that on some browser (Firefox), user can still request to get the "Context menu" on right click.
+no matter if you use/handle the `RightTapped` event or not.
+Be aware that on some browsers (Firefox for example), the user can still request to get the "Context menu" on right click.
 
 ### Disabling browser context menu on `<input>-based` elements
 
@@ -211,7 +211,7 @@ The table and sections below describe supported functionality and limitations fo
 1. There is no standard type for **WebLink** (nor **ApplicationLink**) on this platform.
    They are copied to the external app as raw **Text**, and converted back as **WebLink** or **ApplicationLink** from raw text from the external app
    when [`Uri.IsWellFormedUriString(text, UriKind.Absolute)`](https://learn.microsoft.com/dotnet/api/system.uri.iswellformeduristring) returns true.
-2. The image content seems to not being readable by common apps, only another Uno app is able to read it properly.
+2. The image content seems to not be readable by common apps, only another Uno app can read it properly.
 
 ### Drag and Drop Data Format Considerations
 
@@ -223,7 +223,7 @@ WinUI has the following standard data formats that correspond with a URI/URL:
 
 Several platforms such as macOS, iOS, and Android do not differentiate between them and only use a single URI/URL class or string.
 
-When applying data to the native clipboard or drag/drop data from a DataPackage, only one URI/URL may be used. Therefore, all URI data formats are merged together into a single URI using the above defined priority. WebLink is considered more specific than ApplicationLink.
+When applying data to the native clipboard or dragging/dropping data from a DataPackage, only one URI/URL may be used. Therefore, all URI data formats are merged together into a single URI using the above-defined priority. WebLink is considered more specific than ApplicationLink.
 
 When pulling data from the native clipboard or drag/drop data, this single native URI/URL is separated into the equivalent UWP data format (since UWP's direct equivalent standard data format 'Uri' is deprecated). The mapping is as follows:
 
@@ -237,7 +237,7 @@ For full compatibility, the Uri format within a DataPackage should still be popu
 1. If you have 2 nested drop targets (i.e. element flagged with `AllowDrop = true`),
    when the pointer leaves the deepest / top most element but not the parent,
    the parent element will also raise `DragLeave` and immediately after raise `DragEnter`.
-1. On WinUI, the default UI will include a tooltip which indicates the accepted drop action,
+1. On WinUI, the default UI will include a tooltip that indicates the accepted drop action,
    and a "screenshot" of the dragged element.
    Currently, Uno will display only the tooltip.
 1. The accepted drop action displayed in the tooltip is not localized.
