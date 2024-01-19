@@ -8,7 +8,7 @@ Apps that are built with native controls and APIs are able to meet today's stand
 
 The Uno Platform shares Xamarin.Forms' commitment to leveraging native controls and APIs. However, it differs in key architectural areas which make up a compelling option to customize the presentation layer across app experiences. Where Xamarin.Forms uses the design of the underlying platform (Material on Android, Cupertino on iOS, and Fluent on Windows), the Uno Platform provides a design that is pixel-perfect across all platforms. This is especially valuable when your team needs to convey a precise brand identity.
 
-With the [announced](https://dotnet.microsoft.com/platform/support/policy/xamarin#microsoft-support) end of support date for Xamarin.Forms, Uno Platform is a natural choice for teams looking to modernize their existing investment. This series of articles will outline how to migrate key aspects of the app to unlock the benefits of Uno Platform.
+With the [announced end of support date for Xamarin.Forms](https://dotnet.microsoft.com/platform/support/policy/xamarin#microsoft-support), Uno Platform is a natural choice for teams looking to modernize their existing investment. This series of articles will outline how to migrate key aspects of the app to unlock the benefits of Uno Platform.
 
 Each article provides guidance on how to migrate different areas of your existing Xamarin.Forms investment across to the Uno Platform.
 

@@ -4,7 +4,7 @@ uid: Uno.Tutorials.UnoIslands
 
 # Uno Islands
 
-With Uno Islands you can host Uno Platform XAML controls in an WPF application, next to existing WPF content. This feature enables you to enhance the look, feel, and functionality of your existing WPF application with the latest Windows UI features provided by their implementation within Uno Platform.
+With Uno Islands, you can host Uno Platform XAML controls in an WPF application, next to existing WPF content. This feature enables you to enhance the look, feel, and functionality of your existing WPF application with the latest Windows UI features provided by their implementation within Uno Platform.
 
 ## How to use Uno Islands with existing WPF app
 
@@ -14,7 +14,7 @@ The most common scenario is to add Uno Islands into an existing WPF app. First, 
 
 ### Shared project contents
 
-In this project, we need to add the Uno Islands Application and a page to be displayed. The easiest way to do this is to copy these files from our Sample project [hosted on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoIslandsSampleApp/UnoIslandsSampleApp.Shared). Copy and include `App.xaml`, `App.xaml.cs`, `MainPage.xaml`, and `MainPage.xaml.cs` files in the shared project, and the `Assets` folder to include the Uno Platform icon font.
+In this project, we need to add the Uno Islands Application and a page to be displayed. The easiest way to do this is to copy these files from [UnoIslandsSamplesApp in Uno.Samples GitHub repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoIslandsSampleApp/UnoIslandsSampleApp.Shared). Copy and include `App.xaml`, `App.xaml.cs`, `MainPage.xaml`, and `MainPage.xaml.cs` files in the shared project, and the `Assets` folder to include the Uno Platform icon font.
 
 ### Updating the WPF application project
 
