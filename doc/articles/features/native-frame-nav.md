@@ -47,7 +47,7 @@ As such, you can have the look and feel of the native control, including feature
 
 The `Frame` also uses a custom presenter for its control template.
 On iOS, this presenter creates a `UINavigationController`, and keeps its states in sync with its `Frame`. It also creates a `UIViewController` for each `Page` that gets navigated.
-On iOS and on Android, it also manages the state of back button on the `CommandBar`, if it is presents on a `Page`.
+On iOS and Android, it also manages the state of the back button on the `CommandBar`, if it is present on a `Page`.
 
 ### Helpers
 

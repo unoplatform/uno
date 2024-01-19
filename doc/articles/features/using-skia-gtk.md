@@ -133,6 +133,6 @@ To build an app with this feature enabled:
    ```
 
    > [!NOTE]
-   > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for linux or mac, you'll need to build on corresponding host.
+   > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for Linux or Mac, you'll need to build on the corresponding host.
 
 For more information, see [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) and the [.NET Native AOT documentation](https://learn.microsoft.com/dotnet/core/deploying/native-aot/).

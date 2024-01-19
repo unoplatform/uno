@@ -58,7 +58,7 @@ Notes:
 
 Notes:
 
-1. `ImageBrush` on Android & iOS can only be used as a `Fill` / `Background` brush; it is not supported for `Stroke`  / `BorderBrush` properties and **the image needs to be a local asset**. They are not supported as text's `Froreground`.
+1. `ImageBrush` on Android & iOS can only be used as a `Fill` / `Background` brush; it is not supported for `Stroke`  / `BorderBrush` properties and **the image needs to be a local asset**. They are not supported as text's `Foreground`.
 2. On Android and iOS, gradient brushes (`LinearGradientBrush` & `RadialGradientBrush`) are only used as a `Fill` / `Background` brush.
 3. On Android, iOS, and macOS `AcrylicBrush` has some limitations. Please see the following section for details.
 

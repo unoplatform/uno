@@ -73,4 +73,4 @@ On Tizen, the `http://tizen.org/privilege/appmanager.launch` privilege must be d
 
 ## Windows App SDK Usage
 
-In case of Windows App SDK, a different initialization approach is currently unfortunately required due to the multi-window capabilities of the framework. Please, follow the [official documentation](https://learn.microsoft.com/windows/apps/develop/ui-input/display-ui-objects#winui-3-with-c-also-wpfwinforms-with-net-6-or-later-1) and wrap the Windows-specific code in `#if WINDOWS` blocks.
+In the case of Windows App SDK, a different initialization approach is currently unfortunately required due to the multi-window capabilities of the framework. Please, follow the [official documentation](https://learn.microsoft.com/windows/apps/develop/ui-input/display-ui-objects#winui-3-with-c-also-wpfwinforms-with-net-6-or-later-1) and wrap the Windows-specific code in `#if WINDOWS` blocks.

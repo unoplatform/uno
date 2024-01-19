@@ -8,7 +8,7 @@ In many design languages (like [_Material Design_](https://material.io/design)),
 
 In this case, WinUI's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (WinUI, Android, iOS, macOS, WebAssembly, and Skia).
 
-This control is very useful to create cards with both rounded corners and an elevated effect - which could otherwise be challenging to produce on some platforms.
+This control is very useful for creating cards with both rounded corners and an elevated effect - which could otherwise be challenging to produce on some platforms.
 
 ## How to use the `ElevatedView`
 

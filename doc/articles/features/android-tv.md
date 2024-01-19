@@ -13,7 +13,7 @@ To make your application properly show up among installed apps on Android TV and
 First, open the `MainActivity` class in the `YourApp.Mobile` project (or the `YourApp.Droid` project for older versions of Uno Platform), and add an `[IntentFilter]` attribute for `ActionMain` declaring support for `LeanbackLauncher` category.
 
 > [!IMPORTANT]
-> If your activity has multiple IntentFilter attributes, make sure ActionMain follows directly after Activity attribute, otherwise the app will not launch for debugging in Visual Studio.
+> If your activity has multiple IntentFilter attributes, make sure ActionMain follows directly after the Activity attribute, otherwise, the app will not launch for debugging in Visual Studio.
 
 ```csharp
 [Activity(
@@ -33,7 +33,7 @@ public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 }
 ```
 
-Next, every Android TV app must provide a banner image, which is used to display the app on home screen. This can be set via the `Banner` property in the `ApplicationAttribute`, which can be found in the `Main.Android.cs` file (or the `Main.cs` file for older versions of Uno Platform):
+Next, every Android TV app must provide a banner image, which is used to display the app on the home screen. This can be set via the `Banner` property in the `ApplicationAttribute`, which can be found in the `Main.Android.cs` file (or the `Main.cs` file for older versions of Uno Platform):
 
 ```csharp
 [global::Android.App.ApplicationAttribute(
@@ -60,7 +60,7 @@ You can now deploy your app on a Android TV emulator or actual device. It should
 
 ## Remote control support
 
-The integration of focus management allows the Android TV remote control to work seamlessly, just like normal keyboard focus navigation. To navigate the focus in your application via the the directional pad of the remote control, you need to make sure `XYFocusKeyboardNavigation` is `Enabled` on all your pages:
+The integration of focus management allows the Android TV remote control to work seamlessly, just like normal keyboard focus navigation. To navigate the focus in your application via the directional pad of the remote control, you need to make sure `XYFocusKeyboardNavigation` is `Enabled` on all your pages:
 
 ```xml
 <Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

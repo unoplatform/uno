@@ -5,7 +5,7 @@ uid: Uno.Features.WSPower
 # Battery Information
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.System.Power` namespace. For a full description of the feature and instructions on using it, see [Windows.System.Power Namespace](https://learn.microsoft.com/uwp/api/windows.system.power).
+> This article covers Uno-specific information for the `Windows.System.Power` namespace. For a full description of the feature and instructions on using it, see [Windows.System.Power Namespace](https://learn.microsoft.com/uwp/api/windows.system.power).
 
 * You can use the `Windows.System.Power.PowerManager` class to query the battery and charging status of the device and subscribe to the related events when these change.
 

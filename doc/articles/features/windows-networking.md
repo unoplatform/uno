@@ -5,7 +5,7 @@ uid: Uno.Features.WNetworking
 # Networking
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.Networking` namespace. For a full description of the feature and instructions on using it, see [Windows.Networking Namespace](https://learn.microsoft.com/uwp/api/windows.networking).
+> This article covers Uno-specific information for the `Windows.Networking` namespace. For a full description of the feature and instructions on using it, see [Windows.Networking Namespace](https://learn.microsoft.com/uwp/api/windows.networking).
 
 * The `Windows.Networking` namespace provides classes for accessing and managing network connections from your app.
 

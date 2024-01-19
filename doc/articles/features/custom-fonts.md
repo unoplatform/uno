@@ -144,7 +144,7 @@ or
 
 ## Custom Fonts on macOS
 
-Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as
+Fonts must be placed in the `Resources/Fonts` folder of the head project, and be marked as
 `BundleResource` for the build type.
 
 The fonts location path **must** then be specified in the `info.plist` file as follows:
