@@ -48,4 +48,7 @@ Learn more about:
 =======
 - [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.
 - You can head to [How-tos and tutorials](xref:Uno.Tutorials.Intro) on how to work on your Uno Platform app.
+<<<<<<< HEAD
 >>>>>>> 3a1efa8378 (docs: Update features docs (#15122))
+=======
+>>>>>>> c4c83ae354 (chore: Few more fixes)

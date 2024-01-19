@@ -22,7 +22,7 @@ Here are questions you can consider before you file a bug to make sure you're no
 Pre-Submission check:
 
 1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
-2. Did you check the the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed?
+2. Did you check the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed?
 3. Does the issue exist on the UWP / WinUI project (in which case it is not an Uno Platform issue)
 
 Issue Filing [via logging a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).:
