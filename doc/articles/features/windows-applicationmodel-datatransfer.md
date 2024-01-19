@@ -63,8 +63,14 @@ private async void DataRequested(DataTransferManager sender, DataRequestedEventA
 
 To control the location where the sharing dialog shows up on iOS and macOS, use the `ShowShareUI(ShareUIOptions)` overload. `ShareUIOptions.SelectionRect` denotes the area the user is interacting with and will be taken into account by the OS. On iOS, you can also specify `ShareUIOptions.Theme` to make the dialog dark/light based on your app's preference. On other Uno targets, these properties have no effect.
 
-On Tizen, the `"http://tizen.org/privilege/appmanager.launch` privilege must be declared in the application manifest to allow sharing.
+On Tizen, the `http://tizen.org/privilege/appmanager.launch` privilege must be declared in the application manifest to allow sharing.
+
+```xml
+<privileges>
+    <privilege>http://tizen.org/privilege/appmanager.launch</privilege>
+</privileges>
+```
 
 ## Windows App SDK Usage
 
-In case of Windows App SDK, a different initialization approach is currently unfortunately required due to the multi-window capabilities of the framework. Please follow the [official documentation](https://learn.microsoft.com/en-us/windows/apps/develop/ui-input/display-ui-objects#winui-3-with-c-also-wpfwinforms-with-net-6-or-later-1) and wrap the Windows-specific code in `#if WINDOWS` blocks
+In the case of Windows App SDK, a different initialization approach is currently unfortunately required due to the multi-window capabilities of the framework. Please, follow the [official documentation](https://learn.microsoft.com/windows/apps/develop/ui-input/display-ui-objects#winui-3-with-c-also-wpfwinforms-with-net-6-or-later-1) and wrap the Windows-specific code in `#if WINDOWS` blocks.

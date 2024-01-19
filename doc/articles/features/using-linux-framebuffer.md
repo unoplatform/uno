@@ -2,17 +2,17 @@
 uid: Uno.Skia.Linux.Framebuffer
 ---
 
-# Using the Linux Framebuffer and `libinput`
+# Using the Linux FrameBuffer and `libinput`
 
-Uno supports the [Linux Framebuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.
+Uno supports the [Linux FrameBuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.
 
-There are restrictions for the support for the Framebuffer:
+There are restrictions for the support for the FrameBuffer:
 
 - The `TextBox` control is not supported. If you need text input, you will need to implement an on-screen keyboard manually using the Keyboard and Pointer events that Uno provides (in the `CoreWindow` class).
 - The mouse is supported through pointer events, but Uno does not show the pointer for your app. You'll need to display one using the pointer events provided by Uno (also in the `CoreWindow` class).
 - It is only supported on Linux where `/dev/fbXX` is available.
 
-## Get started with the Framebuffer
+## Get started with the FrameBuffer
 
 - Follow the [getting started guide](xref:Uno.GetStarted.vscode)
 
@@ -24,7 +24,7 @@ dotnet new unoapp -o MyApp
 
 You'll get a set of projects, including one named `MyApp.Skia.Linux.FrameBuffer`.
 
-You can build this app by navigating to the `MyApp.Skia.Linux.FrameBuffer` and type the following:
+You can build and run this app by navigating to the `MyApp.Skia.Linux.FrameBuffer` and type the following:
 
 ```dotnetcli
 dotnet run
@@ -32,7 +32,7 @@ dotnet run
 
 The app will start and display on the first available framebuffer device. To change the active framebuffer, set the device name in the `FRAMEBUFFER` environment variable.
 
-`dotnet run` uses the `Debug` configuration, which will show logging information in the current terminal and may overwrite the UI content.
+By default, the `Debug` configuration is used, which will show logging information in the current terminal and may overwrite the UI content.
 
 To read the logging information, either:
 
@@ -55,7 +55,7 @@ dotnet publish -c Release -r linux-x64 --self-contained true
 > [!NOTE]
 > When using the `Release` configuration, logging is disabled for performance considerations. You can restore logging in the `App.xaml.cs` file.
 
-Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
+Documentation on other hardware targets is [available here](https://github.com/dotnet/core/blob/main/release-notes/7.0/supported-os.md).
 
 ## DPI Scaling support
 
@@ -63,8 +63,8 @@ Whenever possible, the `FrameBufferHost` will try to detect the actual DPI scale
 
 The automatic scaling can be overridden in two ways:
 
-- Set a value using `FrameBufferHost.DisplayScale`
-- Set a value through the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. This value has precedence over the value specified in `FrameBufferHost.DisplayScale`
+- Set a value using `FrameBufferHost.DisplayScale`.
+- Set a value through the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. This value has precedence over the value specified in `FrameBufferHost.DisplayScale`.
 
 ## Additional dependencies
 

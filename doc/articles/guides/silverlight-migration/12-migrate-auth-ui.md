@@ -350,7 +350,7 @@ And logged in, which displays the logged-in user and a button to logout:
 
 ![Login Status - Logged In](assets/LoginStatus-LoggedIn.png)
 
-The control makes use of the the **VisualStateManager** to switch between the various layouts, a number of custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
+The control makes use of the **VisualStateManager** to switch between the various layouts, a number of custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
 
 > [!NOTE]
 > The following steps will focus on the process of migrating the **UserControl** - i.e. the changes to XAML, styles and code-behind, to support the controls behavior. As there are a many lines of XAML, the emphasis will be on the changes that must be made, rather than showing every line of code.

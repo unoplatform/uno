@@ -5,7 +5,7 @@ uid: Uno.Features.StepCounter
 # Step counter (Pedometer)
 
 > [!TIP]
-> This article covers Uno-specific information for Pedometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.devices.sensors.pedometer
+> This article covers Uno-specific information for Pedometer. For a full description of the feature and instructions on using it, see [Pedometer Class](https://learn.microsoft.com/uwp/api/windows.devices.sensors.pedometer).
 
 * The `Windows.Devices.Sensors.Pedometer` class allows counting steps taken with the device.
 

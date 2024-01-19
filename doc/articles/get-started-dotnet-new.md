@@ -54,7 +54,7 @@ A basic example:
 dotnet new unoapp-uwp -o MyApp
 ```
 
-A more advanced example that will not generate the the Mobile head:
+A more advanced example that will not generate the Mobile head:
 
 ```dotnetcli
 dotnet new unoapp-uwp -o MyApp -mobile=false

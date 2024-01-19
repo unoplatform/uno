@@ -7,7 +7,7 @@ uid: Uno.Features.FileManagement
 File management allows shared reading and writing of files across all Uno Platform targets. This includes the ability to read files from the application package, as well as the ability to read and write files from the file system.
 
 > [!TIP]
-> This article covers Uno-specific information for file management. For a full description of the feature and instructions on using it, consult Microsoft's [section](https://learn.microsoft.com/windows/uwp/files/) on the topic.
+> This article covers Uno-specific information for file management. For a full description of the feature and instructions on using it, see [Files, folders, and libraries](https://learn.microsoft.com/windows/uwp/files/).
 
 ## Supported features
 

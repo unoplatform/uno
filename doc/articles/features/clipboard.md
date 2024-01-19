@@ -5,7 +5,7 @@ uid: Uno.Features.Clipboard
 # Clipboard
 
 > [!TIP]
-> This article covers Uno-specific information for `Clipboard`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/windows/uwp/app-to-app/copy-and-paste
+> This article covers Uno-specific information for `Clipboard`. For a full description of the feature and instructions on using it, see [Copy and paste](https://learn.microsoft.com/windows/uwp/app-to-app/copy-and-paste).
 
 * The `Windows.ApplicationModel.DataTransfer.Clipboard` class allows you to copy content from your application, and paste the content into your application.
 

@@ -8,7 +8,7 @@ uid: Uno.Features.Codespaces
 
 The easiest way to get started is to visit the [Uno.QuickStart](https://github.com/unoplatform/Uno.QuickStart) repository. It allows you to get started with minimal configuration or project creation steps.
 
-To create a new Codespace, visit this [GitHub section](https://github.com/codespaces).
+To create a new Codespace, visit [GitHub Codespaces](https://github.com/codespaces).
 
 ### Developing for WebAssembly
 
@@ -38,7 +38,7 @@ If you want to start from an empty repository, follow these steps:
 1. Open the command palette (Ctrl+Shift+P) and run the `Install the dotnet new templates` command to install the dotnet new templates
 1. Open a terminal and create a new project using the following command:
 
-    ```bash
+    ```dotnetcli
     dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
     ```
 

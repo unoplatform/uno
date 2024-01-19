@@ -5,7 +5,7 @@ uid: Uno.Features.Lottie
 # Lottie for Uno
 
 > [!TIP]
-> This article covers Uno-specific information for `Lottie`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/windows/communitytoolkit/animations/lottie
+> This article covers Uno-specific information for `Lottie`. For a full description of the feature and instructions on using it, see [Lottie](https://learn.microsoft.com/windows/communitytoolkit/animations/lottie).
 
 * The `Microsoft.Toolkit.Uwp.UI.Lottie` namespace provides classes for rendering Lottie animations in a `Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer`.
 
@@ -19,7 +19,7 @@ Add the following namespaces:
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-  xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
     ...>
 ```
 
@@ -37,7 +37,7 @@ On all Uno Platform targets, you'll need the following packages:
 
 * `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
 
-Additionally, on Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
+Additionally, on Skia targets (Gtk, WPF, FrameBuffer), you'll need the following packages:
 
 * `SkiaSharp.Views.Uno.WinUI` version 2.88.3 or later
 * `SkiaSharp.Skottie` version 2.88.3 or later
@@ -52,7 +52,7 @@ Add the following namespaces:
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-  xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
     ...>
 ```
 
@@ -66,14 +66,13 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-On WebAssembly, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the following packages:
+On all Uno Platform targets, you'll need the following packages:
 
-* `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
+* `Uno.UI.Lottie` (for the `LottieVisualSource`)
 
-On Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
+Additionally, on Skia targets (Gtk, WPF, FrameBuffer), you'll need the following packages:
 
-* `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
-* `SkiaSharp.Views.Uno.WinUI` or `SkiaSharp.Views.Uno` version 2.88.3 or later
+* `SkiaSharp.Views.Uno` version 2.88.3 or later
 * `SkiaSharp.Skottie` version 2.88.3 or later
 
 On UWP, you'll need to reference the following packages in your head project:
@@ -83,11 +82,11 @@ On UWP, you'll need to reference the following packages in your head project:
 
 ***
 
-Documentation: <https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer>
+For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
 
 ## Lottie JSON file location
 
-On WASM, iOS and macOS, you can put the Lottie .json files directly in a folder of the Class Library project or your app's head project (for example "Lottie/myanimation.json") and set their Build action as Content.
+On WASM, iOS, and macOS, you can put the Lottie .json files directly in a folder of the Class Library project or your app's head project (for example "Lottie/myanimation.json") and set their Build action as Content.
 
 On Android, Lottie .json files need to be added into the Assets folder. To match the same path as for the other platforms, the file could be stored at `Assets/Lottie/myanimation.json`. Set its Build action to AndroidAsset.
 

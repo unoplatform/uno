@@ -129,5 +129,5 @@ Learn more about:
 * [Hot Reload feature](xref:Uno.Features.HotReload)
 * [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
 * [Troubleshooting](xref:Uno.UI.CommonIssues)
-* [How-tos and Tutorials](xref:Uno.GettingStarted.Tutorial1) See real-world examples with working code.
+* [How-tos and Tutorials](xref:Uno.Tutorials.Intro) See real-world examples with working code.
 * <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>

@@ -5,7 +5,7 @@ uid: Uno.Features.WinUIWindow
 # Window
 
 > [!TIP]
-> This article covers Uno-specific information for `Microsoft.UI.Xaml.Window`. For a full description of the feature and instructions on using it, consult the Microsoft documentation: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window
+> This article covers Uno-specific information for `Microsoft.UI.Xaml.Window`. For a full description of the feature and instructions on using it, see [Window Class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window).
 
 * The `Microsoft.UI.Xaml.Window` class allows for managing the window of the application.
 

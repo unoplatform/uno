@@ -135,7 +135,7 @@ The tool needs to be run on Windows because of its dependency on the Windows SDK
 To run the synchronization tool:
 
 - Open a `Developer Command Prompt for Visual Studio` (2019 or 2022)
-- Go the the `uno\build` folder (not the `uno\src\build` folder)
+- Go the `uno\build` folder (not the `uno\src\build` folder)
 - Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions
 
 Note that as of Uno 3.10, the tool is manually run for the WinUI part of the build and automatically run as part of the CI during the UWP part of the build.

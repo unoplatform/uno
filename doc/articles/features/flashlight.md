@@ -5,7 +5,7 @@ uid: Uno.Features.Flashlight
 # Flashlight
 
 > [!TIP]
-> This article covers Uno-specific information for Flashlight. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.devices.lights.lamp
+> This article covers Uno-specific information for Flashlight. For a full description of the feature and instructions on using it, see [Lamp Class](https://learn.microsoft.com/uwp/api/windows.devices.lights.lamp).
 
 * `Lamp` API allows you to turn the phone's camera flashlight on and off
 

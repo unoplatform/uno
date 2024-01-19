@@ -5,11 +5,11 @@ uid: Uno.Features.WSUserProfile
 # Wallpaper and Lock Screen
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.System.UserProfile` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system.userprofile
+> This article covers Uno-specific information for the `Windows.System.UserProfile` namespace. For a full description of the feature and instructions on using it, see [Windows.System.UserProfile Namespace](https://learn.microsoft.com/uwp/api/windows.system.userprofile).
 
 * The `Windows.System.UserProfile.UserProfilePersonalizationSettings` class provides functionality for setting the lock screen and wallpaper images.
 
-The functionality of this class is available only on Android. On other platforms the `IsSupported()` method always returns `false`.
+The functionality of this class is available only on Android. On other platforms, the `IsSupported()` method always returns `false`.
 
 To be able to set wallpaper and lock screen image, add the following permission to the Android project head:
 

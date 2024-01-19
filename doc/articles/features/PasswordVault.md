@@ -2,14 +2,10 @@
 uid: Uno.Features.PasswordVault
 ---
 
-<!-- For available Markdown syntax, check out https://guides.github.com/features/mastering-markdown/ -->
-
 # Credentials storage
 
-<!-- Leave the info tip below in place, and add a link to the UWP documentation for the feature or control you're documenting. If the feature has no UWP equivalent, you should be using the Uno-only feature template: .feature-template-uno-only.md -->
-
 > [!TIP]
-> This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordvault
+> This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, see [PasswordVault Class](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordvault).
 
 * The `PasswordVault` is a credentials manager that is persisted using a secured storage.
 * `PasswordCredential` is used to manipulate passwords in the vault.
@@ -20,8 +16,6 @@ uid: Uno.Features.PasswordVault
 |----------------------|---------|---------|---------|------------|----------|---------|--------------|--------------|-------|
 | `PasswordVault`      | ✔       | ✔       | ✔       | ✖          | ✔        | ✖       | ✖            | ✖            | ✖     |
 | `PasswordCredential` | ✔       | Partial | Partial | Partial    | Partial  | Partial | ✖            | ✖            | ✖     |
-
-<!-- Add any additional information on platform-specific limitations and constraints -->
 
 ## `PasswordVault`
 
@@ -37,14 +31,14 @@ The implementation uses the `AndroidKeyStore` which was introduced with API 18 (
 The `KeyStore` is used to generate a symmetric key which is then used to encrypt and decrypt a file persisted in the application directory.
 The key is managed by the `KeyStore` itself, which usually uses the hardware component to persist it. The key is not even accessible to the application.
 
-More info: https://developer.android.com/reference/java/security/KeyStore
+For more information, see [KeyStore](https://developer.android.com/reference/java/security/KeyStore).
 
 ### [**iOS**](#tab/iOS)
 
 The `PasswordVault` is directly stored in the iOS `KeyChain` which is the recommended way to store secrets on iOS devices.
 It's backed by hardware components that ensure that the data is almost impossible to retrieve if not granted.
 
-More info: https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain
+For more information, see [Storing Keys in the Keychain](https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain).
 
 ### [**WebAssembly**](#tab/WebAssembly)
 
@@ -57,10 +51,10 @@ So currently we preferred to **not** implement the `PasswordVault`. It will thro
 ## PasswordCredential
 
 This class is implemented, however it never hides the password like the UWP does.
-This means that the[`RetrievePassword`](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,
+This means that the [`RetrievePassword` method](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,
 but we recommend to still use it in order to ensure cross-platform compatibility.
 
-The [`Properties`](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.properties#Windows_Security_Credentials_PasswordCredential_Properties) is not implemented.
+The [`Properties` property](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.properties#Windows_Security_Credentials_PasswordCredential_Properties) is not implemented.
 
 ## Sample
 
