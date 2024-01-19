@@ -1,7 +1,3 @@
----
-uid: Uno.Development.UnoCheck.noheader
----
-
 ## [**Windows**](#tab/windows)
 
 [!include[getting-help](use-uno-check-inline-windows-noheader.md)]
