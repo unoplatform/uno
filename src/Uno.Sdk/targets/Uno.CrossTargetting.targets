@@ -5,7 +5,7 @@
 		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition=" $(EnableDefaultUnoItems) == 'true' ">
 		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 

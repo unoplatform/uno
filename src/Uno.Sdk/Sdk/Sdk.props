@@ -22,6 +22,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
+
+    	<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
 
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
@@ -74,7 +76,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		</When>
 	</Choose>
 
-	<ItemGroup>
+	<ItemGroup Condition=" $(EnableDefaultUnoItems) == 'true' ">
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
 
