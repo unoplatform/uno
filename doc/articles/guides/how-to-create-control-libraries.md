@@ -52,7 +52,7 @@ You can find the [full ControlLibrary sample code](https://github.com/unoplatfor
 
 ## Use the control
 
-1. In your application's `MainPage.xaml`, add the the following namespace `xmlns:myControlLib="using:XamlControlLibrary"` in the `Page` element
+1. In your application's `MainPage.xaml`, add the following namespace `xmlns:myControlLib="using:XamlControlLibrary"` in the `Page` element
 2. Add the following code in somewhere in the page:
 
    ```xml

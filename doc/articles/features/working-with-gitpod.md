@@ -44,7 +44,7 @@ If you want to start from an empty repository, follow these steps:
 1. Open the command palette (Ctrl+Shift+P) and run the `Install the dotnet new templates` command to install the dotnet new templates
 1. Create a new project using the following command:
 
-    ```bash
+    ```dotnetcli
     dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
     ```
 

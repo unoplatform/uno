@@ -221,7 +221,7 @@ Here's how to upgrade:
 
 Note that there are two new loggers:
 
-- `Uno.Extensions.Logging.OSLog` which provides the ability to log the the iOS system logs
+- `Uno.Extensions.Logging.OSLog` which provides the ability to log the iOS system logs
 - `Uno.Extensions.Logging.WebAssembly.Console` which provides thread-safe and colored logging to the browser debugger console
 
 #### Migrating WebAssembly projects to .NET 5

@@ -15,7 +15,7 @@ Uno.UI implements a subset of UWP's UI Automation APIs, to make your application
 |----------|----------|-----------|-----------|------------------------------|
 | Narrator | TalkBack | VoiceOver | VoiceOver | OS or Web Browser Integrated |
 
-Read [this guide](https://learn.microsoft.com/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
+Read [Expose basic accessibility information](https://learn.microsoft.com/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
 
 - `AutomationProperties.AutomationId`
 - `AutomationProperties.Name`
@@ -86,7 +86,7 @@ accessibilitySettings.HighContrast; // true
 accessibilitySettings.HighContrastScheme; // High Contrast White
 ```
 
-When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is changed, the `AccessibilitySettings.HighContrastChanged` event is raised.
+When the value of `WinRTFeatureConfiguration.Accessibility.HighContrast` is changed, the `AccessibilitySettings.HighContrastChanged` event is raised.
 
 ## Known issues
 
@@ -97,13 +97,13 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
 - A child with the same accessible name as its parent is accessibility focusable.
 - `Control` doesn't receive focus when accessibility focused.
 - `TabIndex` is not supported.
-- [iOS] Nested accessible elements are not accessibility focusable.
-- [Android] Both `ToggleSwitch` and its native `Switch` can be accessibility focused.
-- [Android] Both `TextBox` and its native `EditText` can be accessibility focused.
-- [Android] `Control` without a non-empty accessible name is not accessibility focusable.
-- [Android] The accessible name of the native back button can't be customized.
-- [Android] `TextBox` and `PasswordBox` don't hint "double tap to edit".
-- [Android] You can tap to focus an accessible child of an accessible element that has never been focused even if `UseSimpleAccessibility` is enabled.
+- On iOS, nested accessible elements are not accessibility focusable.
+- On Android, both `ToggleSwitch` and its native `Switch` can be accessibility focused.
+- On Android, both `TextBox` and its native `EditText` can be accessibility focused.
+- On Android, `Control` without a non-empty accessible name is not accessibility focusable.
+- On Android, the accessible name of the native back button can't be customized.
+- On Android, `TextBox` and `PasswordBox` don't hint at "double tap to edit".
+- On Android, you can tap to focus an accessible child of an accessible element that has never been focused even if `UseSimpleAccessibility` is enabled.
 - `AutomationPeer.GetLocalizedControlType()` is not localized.
 - `FlipViewItem` reads "double tap to activate" even if it's not interactive.
 - Navigating through accessible elements can slow down when the UI is complex.
@@ -129,7 +129,7 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
   - `LabeledBy`
   - `Name`
 
-- [WASM] Only the following elements support accessibility:
+- On Wasm, only the following elements support accessibility:
   - `Button`
   - `CheckBox`
   - `Image`
@@ -138,7 +138,7 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
   - `TextBox`
   - `Slider`
 
-- [WASM] `PasswordBox` is not currently supported due to external limitations.
+- On Wasm, `PasswordBox` is not currently supported due to external limitations.
 
 ## Tips
 

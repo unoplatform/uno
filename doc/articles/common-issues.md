@@ -28,5 +28,5 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 
 Learn more about:
 
-- You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
+- You can head to [How-tos and tutorials](xref:Uno.Tutorials.Intro) on how to work on your Uno Platform app.
 - [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.

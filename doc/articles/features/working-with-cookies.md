@@ -4,7 +4,7 @@ uid: Uno.Features.Cookies
 
 # Working with cookies
 
-In case of WebAssembly, you may need to work with the browser cookies to either read or set values with expiration support. For these purposes Uno Platform provides the `Uno.Web.Http.CookieManager` class.
+In the case of WebAssembly, you may need to work with the browser cookies to either read or set values with expiration support. For these purposes, Uno Platform provides the `Uno.Web.Http.CookieManager` class.
 
 ## Prerequisites
 
@@ -48,7 +48,8 @@ CookieManager.GetDefault().SetCookie(request);
 
 ```
 
-**Note**: If your cookie contains special characters, you may use `Uri.EscapeDataString` to escape those characters when setting the cookie and later use `Uri.UnescapeDataString` to decode them.
+> [!NOTE]
+> If your cookie contains special characters, you may use `Uri.EscapeDataString` to escape those characters when setting the cookie and later use `Uri.UnescapeDataString` to decode them.
 
 ## Getting active cookies
 
@@ -68,7 +69,8 @@ foreach (var cookie in cookies)
 
 ```
 
-**Note**: Browser only provides the `Name` and `Value` properties for reading. Other attributes can be only used as part of the `SetCookie` request.
+> [!NOTE]
+> Browser only provides the `Name` and `Value` properties for reading. Other attributes can be only used as part of the `SetCookie` request.
 
 ## Deleting a cookie
 
