@@ -132,11 +132,15 @@ partial class App
 		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
 		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
 		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
+
+		// SamplesApp can be opened with --runtime-tests option, which is currently manually handled in HandleLaunchArguments.
+		var runtimeTestsOption = new Option<string>("--runtime-tests");
 		var rootCommand = new RootCommand
 		{
 			autoScreenshotsOption,
 			totalGroupsOption,
 			currentGroupIndexOption,
+			runtimeTestsOption,
 		};
 
 		bool commandReturn = false;
