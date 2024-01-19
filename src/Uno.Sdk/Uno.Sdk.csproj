@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.Build.NoTargets/3.7.56">
+<Project Sdk="Microsoft.Build.NoTargets">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>Uno.Sdk</PackageId>
@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
+		<None Include="targets\**\*.props;targets\**\*.targets" Pack="true" PackagePath="targets/" />
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
