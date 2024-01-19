@@ -6,7 +6,7 @@ uid: Uno.Tutorials.ProfilingApplications
 
 ## Profiling .NET Android/iOS applications
 
-.NET 7 and later provides the ability to do CPU profiling through [`dotnet-trace`](https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for android applications.
+.NET 7 and later provides the ability to do CPU profiling through [`dotnet-trace`](https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for Android applications.
 
 ### Pre-requisites
 
@@ -32,14 +32,14 @@ alias mlaunch=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mla
 
 1. The first step is to launch the tool that provides a connection between the app and the .NET tracing tools:
 
-    ```bash
-    $ dotnet-dsrouter client-server -ipcc ~/my-sim-port -tcps 127.0.0.1:9000
+    ```dotnetcli
+    dotnet-dsrouter client-server -ipcc ~/my-sim-port -tcps 127.0.0.1:9000
     ```
 
 2. Launch the app and make it suspend upon launch (waiting for the .NET tooling to connect):
 
     ```bash
-    $ mlaunch --launchsim bin/Debug/net*/*/*.app --device :v2:runtime=com.apple.CoreSimulator.SimRuntime.iOS-15-4,devicetype=com.CoreSimulator.SimDeviceType.iPhone-11 --wait-for-exit --stdout=$(tty) --stderr=$(tty) --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend'
+    mlaunch --launchsim bin/Debug/net*/*/*.app --device :v2:runtime=com.apple.CoreSimulator.SimRuntime.iOS-15-4,devicetype=com.CoreSimulator.SimDeviceType.iPhone-11 --wait-for-exit --stdout=$(tty) --stderr=$(tty) --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend'
     ```
 
 3. At this point it's necessary to wait until the following line shows up in the terminal:
@@ -50,20 +50,20 @@ alias mlaunch=/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mla
 
 4. Once that's printed, go ahead and start profiling:
 
-    ```bash
-    $ dotnet-trace collect --diagnostic-port ~/my-sim-port --format speedscope
+    ```dotnetcli
+    dotnet-trace collect --diagnostic-port ~/my-sim-port --format speedscope
     ```
 
 To find which device to use, use:
 
 ```bash
-$ xcrun simctl list devices
+xcrun simctl list devices
 ```
 
 Then reference the UDID of the simulator in the mlaunch command:
 
 ```bash
-$ mlaunch ... --device :v2:udid=50BCC90D-7E56-4AFB-89C5-3688BF345998 ...
+mlaunch ... --device :v2:udid=50BCC90D-7E56-4AFB-89C5-3688BF345998 ...
 ```
 
 ### Profiling on a physical iOS device
@@ -71,14 +71,14 @@ $ mlaunch ... --device :v2:udid=50BCC90D-7E56-4AFB-89C5-3688BF345998 ...
 Launch the tool that bridges the app and the .NET tracing tools:
 
 ```bash
-$ dotnet-dsrouter server-client -ipcs ~/my-dev-port -tcpc 127.0.0.1:9001 --forward-port iOS
+dotnet-dsrouter server-client -ipcs ~/my-dev-port -tcpc 127.0.0.1:9001 --forward-port iOS
 ```
 
 Install & launch the app and make it suspended upon launch:
 
 ```bash
-$ mlaunch --installdev bin/Debug/net*/*/*.app --devname ... 
-$ mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9001,suspend,listen'
+mlaunch --installdev bin/Debug/net*/*/*.app --devname ... 
+mlaunch --launchdev bin/Debug/net*/*/*.app --devname ... --wait-for-exit --argument --connection-mode --argument none '--setenv:DOTNET_DiagnosticPorts=127.0.0.1:9001,suspend,listen'
 ```
 
 At this point, it's necessary to wait until the following line shows up in the terminal:
@@ -90,7 +90,7 @@ The runtime has been configured to pause during startup and is awaiting a Diagno
 Once that's printed, go ahead and start profiling:
 
 ```bash
-$ dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
+dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
 ```
 
 ## Profiling Catalyst apps
@@ -98,7 +98,7 @@ $ dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedsco
 1. Launch the executable, passing the `DOTNET_DiagnosticPorts` variable directly:
 
     ```bash
-    $ DOTNET_DiagnosticPorts=~/my-desktop-port,suspend ./bin/Debug/net6.0-*/*/MyTestApp.app/Contents/MacOS/MyTestApp
+    DOTNET_DiagnosticPorts=~/my-desktop-port,suspend ./bin/Debug/net7.0-*/*/MyTestApp.app/Contents/MacOS/MyTestApp
     ```
 
 2. At this point it's necessary to wait until the following line shows up in the terminal:
@@ -110,7 +110,7 @@ $ dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedsco
 3. Once that's printed, go ahead and start profiling:
 
     ```bash
-    $ dotnet-trace collect --diagnostic-port ~/my-desktop-port --format speedscope
+    dotnet-trace collect --diagnostic-port ~/my-desktop-port --format speedscope
     ```
 
 ## Profiling .NET Android applications
@@ -121,7 +121,7 @@ Profiling has to first be enabled in the application. Some additional properties
 
 ```xml
 <PropertyGroup>
-    <RuntimeIdentifier Condition="'$(TargetFramework)' == 'net6.0-android'">android-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(TargetFramework)' == 'net7.0-android'">android-x64</RuntimeIdentifier>
 </PropertyGroup>
 
 <PropertyGroup Condition="'$(AndroidEnableProfiler)'=='true'">
@@ -170,7 +170,7 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
 - Build the application with profiling enabled
 
     ```dotnetcli
-    dotnet build -f net6.0-android -t:run -c Release -p:IsEmulator=true /p:RunAOTCompilation=true /p:AndroidEnableProfiler=true
+    dotnet build -f net7.0-android -t:run -c Release -p:IsEmulator=true /p:RunAOTCompilation=true /p:AndroidEnableProfiler=true
     ```
 
 - The app will start and the `dotnet-trace` will display a MB number counting up
