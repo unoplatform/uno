@@ -5,7 +5,7 @@ uid: Uno.Features.Accelerometer
 # Accelerometer
 
 > [!TIP]
-> This article covers Uno-specific information for Accelerometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/windows/uwp/devices-sensors/use-the-accelerometer
+> This article covers Uno-specific information for Accelerometer. For a full description of the feature and instructions on using it, see [Use the accelerometer](https://learn.microsoft.com/windows/uwp/devices-sensors/use-the-accelerometer).
 
 * The `Windows.Devices.Sensors.Accelerometer` class allows measuring the linear acceleration of the device along three X, Y, and Z-axis.
 
@@ -68,4 +68,4 @@ accelerometer.Shaken -= Accelerometer_ReadingChanged;
 
 ## See Accelerometer in action
 
-* To see this API in action, visit the example application for non-UI APIs [here](https://cutt.ly/apis).
+* To see this API in action, visit the [example application for non-UI APIs](https://aka.platform.uno/demo-unexpected-apis).

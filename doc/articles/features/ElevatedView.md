@@ -6,7 +6,7 @@ uid: Uno.Features.ElevatedView
 
 In many design languages (like [_Material Design_](https://material.io/design)), there's a notion of 'elevation' where a portion of the UI should be presented as being _elevated_ over the rest of the content.
 
-In this case, UWP's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (UWP, Android, iOS, macOS, WebAssembly, and Skia).
+In this case, WinUI's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (WinUI, Android, iOS, macOS, WebAssembly, and Skia).
 
 This control is very useful to create cards with both rounded corners and an elevated effect - which could otherwise be challenging to produce on some platforms.
 
@@ -36,7 +36,7 @@ Will produce the following result:
 
 ![ElevatedView sample](../Assets/features/elevatedview/elevatedview-sample.png)
 
-> **ATTENTION FOR UWP**: When there is an error seeing the `<toolkit:ElevatedView>` on UWP, the common mistake is to forget to include the `Uno.UI` package for all platforms, including UWP. On UWP, the only component that the `Uno.UI` package adds is the Toolkit.
+> **ATTENTION FOR WinUI**: When there is an error resolving the `<toolkit:ElevatedView>` on WinUI, the common mistake is to forget to include the `Uno.WinUI` package for all platforms, including WinUI. On WinUI, the only component that the `Uno.WinUI` package adds is the Toolkit.
 
 ## Settings
 

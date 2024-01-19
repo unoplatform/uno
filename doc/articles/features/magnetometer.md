@@ -5,7 +5,7 @@ uid: Uno.Features.Magnetometer
 # Magnetometer
 
 > [!TIP]
-> This article covers Uno-specific information for Magnetometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/uwp/api/windows.devices.sensors.magnetometer
+> This article covers Uno-specific information for Magnetometer. For a full description of the feature and instructions on using it, see [Magnetometer Class](https://learn.microsoft.com/uwp/api/windows.devices.sensors.magnetometer).
 
 * The `Windows.Devices.Sensors.Magnetometer` class allows measuring magnetic force affecting the device.
 

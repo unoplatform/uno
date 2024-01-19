@@ -54,7 +54,7 @@ Note that for libraries, Uno 3.9 or later must be used to build the library, as 
 
 As of Uno 3.9, for a `dotnet new unoapp` created app:
 
-|                      | w/o XAML Trimming | w/ XAML Trimming |
-| -------------------- | ----------------- | --------------- |
-| Total IL Payload     |            12.9MB |         9.12 MB |
-| dotnet.wasm          |              53MB |       28.9MB MB |
+|                      | without XAML Trimming | with XAML Trimming |
+| -------------------- | --------------------- | ------------------ |
+| Total IL Payload     |                12.9MB |            9.12 MB |
+| dotnet.wasm          |                  53MB |          28.9MB MB |

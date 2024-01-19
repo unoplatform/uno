@@ -8,11 +8,11 @@ Uno supports running applications using Gtk+3 shell, using a Skia backend render
 
 Depending on the target platform, the UI rendering may be using OpenGL or software rendering.
 
-Note that for Linux, the [framebuffer rendering](using-linux-framebuffer.md) head is also available.
+Note that for Linux, the [FrameBuffer rendering](using-linux-framebuffer.md) head is also available.
 
 ## Get started with the Skia+GTK head
 
-Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode), [Visual Studio 2022](xref:Uno.GetStarted.vs2022).
+Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [Visual Studio 2022](xref:Uno.GetStarted.vs2022).
 
 ### Additional setup
 
@@ -50,9 +50,7 @@ host.RenderSurfaceType = RenderSurfaceType.Software;
 
 ### Hosting Native GTK Controls
 
-Hosting native GTK controls is supported through `ContentPresenter` and `ContentControl`.
-
-See this documentation about [embedding native controls](xref:Uno.Skia.Embedding.Native).
+Hosting native GTK controls is supported through `ContentPresenter` and `ContentControl`. For more information, see [embedding native controls](xref:Uno.Skia.Embedding.Native).
 
 ### Linux considerations
 
@@ -85,7 +83,7 @@ YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the GTK host
 
 ## Upgrading to a later version of SkiaSharp
 
-By default Uno comes with a set of **SkiaSharp** dependencies set by the **[Uno.UI.Runtime.Skia.Gtk](https://nuget.info/packages/Uno.UI.Runtime.Skia.Gtk)** package.
+By default, Uno comes with a set of **SkiaSharp** dependencies set by the **[Uno.UI.Runtime.Skia.Gtk](https://nuget.info/packages/Uno.UI.Runtime.Skia.Gtk)** package.
 
 If you want to upgrade **SkiaSharp** to a later version, you'll need to specify all packages individually in your project as follows:
 
@@ -130,11 +128,11 @@ To build an app with this feature enabled:
 
 1. Build your app with:
 
-   ```bash
+   ```dotnetcli
    dotnet publish -c Release
    ```
 
    > [!NOTE]
    > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for linux or mac, you'll need to build on corresponding host.
 
-See [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) for more details, and the [.NET Native AOT documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/).
+For more information, see [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) and the [.NET Native AOT documentation](https://learn.microsoft.com/dotnet/core/deploying/native-aot/).

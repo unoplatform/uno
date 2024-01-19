@@ -64,9 +64,9 @@ string value = (string)localSettings.Values["name"];
 
 ## Data location on GTK and WPF
 
-In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system:
+In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system.
 
-**Windows**
+### Windows
 
 - `LocalFolder` - `C:\Users\UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalState`
 - `RoamingFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
@@ -75,7 +75,7 @@ In case of GTK and WPF targets the data are stored in application- and user-spec
 - `LocalSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Local.dat`
 - `RoamingSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Roaming.dat`
 
-**Unix-based systems**
+### Unix-based systems
 
 - `LocalFolder` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/LocalState`
 - `RoamingFolder` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/RoamingState`

@@ -5,7 +5,7 @@ uid: Uno.Features.Gamepad
 # Gamepad
 
 > [!TIP]
-> This article covers Uno-specific information for `Gamepad`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.gaming.input.gamepad
+> This article covers Uno-specific information for `Gamepad`. For a full description of the feature and instructions on using it, see [Gamepad Class](https://learn.microsoft.com/uwp/api/windows.gaming.input.gamepad).
 
 * The `Windows.Gaming.Input.Gamepad` class allows working with the connected gamepads.
 

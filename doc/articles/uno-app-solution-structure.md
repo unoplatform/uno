@@ -42,5 +42,10 @@ Learn more about:
 - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
 - [Hot Reload feature](xref:Uno.Features.HotReload)
 - [Troubleshooting](xref:Uno.UI.CommonIssues)
+<<<<<<< HEAD
 - <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
 - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
+=======
+- [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.
+- You can head to [How-tos and tutorials](xref:Uno.Tutorials.Intro) on how to work on your Uno Platform app.
+>>>>>>> 3a1efa8378 (docs: Update features docs (#15122))

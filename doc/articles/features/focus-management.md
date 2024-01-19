@@ -6,7 +6,7 @@ uid: Uno.Features.FocusManagement
 
 ## Programmatic focus
 
-Support for programmatic focus is fully implemented on all Uno Platform targets and matches the logic provided by WinUI. To use programmatic focus, utilize the `Windows.UI.Xaml.Input.FocusManager` class and its static methods. For detailed documentation on its methods check the comments provided by IntelliSense in Visual Studio, the source code [here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Input/FocusManager.cs), or the official [WinUI documentation](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Input.FocusManager).
+Support for programmatic focus is fully implemented on all Uno Platform targets and matches the logic provided by WinUI. To use programmatic focus, utilize the `Microsoft.UI.Xaml.Input.FocusManager` class and its static methods. For detailed documentation on its methods check the comments provided by IntelliSense in Visual Studio, see [FocusManager source code](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Input/FocusManager.cs), or the official [WinUI documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.input.focusmanager).
 
 ## Keyboard focus
 
@@ -32,4 +32,4 @@ The focus management logic in UWP/WinUI sets initial focus on `Page` that is bei
 </Page>
 ```
 
-Alternatively you can set focus explicitly to some other UI element by calling `element.Focus(FocusState.Programmatic)` in the code-behind - ideally in the `Loaded` event handler or in `OnNavigatedTo` override.
+Alternatively, you can set focus explicitly to some other UI element by calling `element.Focus(FocusState.Programmatic)` in the code-behind - ideally in the `Loaded` event handler or in `OnNavigatedTo` override.

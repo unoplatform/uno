@@ -40,7 +40,8 @@ public static void main(string[] orgs)
     // Preloads a font which has been specified as a CSS font, either with a data uri or a remote resource.
     Uno.UI.Xaml.Media.FontFamilyHelper.PreloadAsync("Roboto");
 
-    Windows.UI.Xaml.Application.Start(_ => _app = new App());
+    Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
+}
 ```
 
 Uno Platform for WebAssembly also supports remote fonts directly from the XAML, but it is exclusively supported on WebAssembly:
@@ -146,7 +147,7 @@ or
 Fonts must be placed in the `Resources/Fonts` folder of the head project, be marked as
 `BundleResource` for the build type.
 
-The fonts location path   **must** then be specified in the `info.plist` file as follows:
+The fonts location path **must** then be specified in the `info.plist` file as follows:
 
 ```xml
 <key>ATSApplicationFontsPath</key>

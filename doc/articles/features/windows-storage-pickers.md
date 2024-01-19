@@ -5,13 +5,13 @@ uid: Uno.Features.WSPickers
 # Storage Pickers
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.Storage.Pickers` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.storage.pickers
+> This article covers Uno-specific information for `Windows.Storage.Pickers` namespace. For a full description of the feature and instructions on using it, see [Windows.Storage.Pickers Namespace](https://learn.microsoft.com/uwp/api/windows.storage.pickers).
 
 * The `Windows.Storage.Pickers` namespace provides classes that allow the user to pick a folder or a file on the local file system so that the application can work with it.
 
 ![Android JumpList sample](../Assets/features/filepickers/fileopenpicker.png)
 
-The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
+The following table shows which file picker experiences are available across Uno Platform targets. For detailed information, see the next sections.
 
 Legend
 
@@ -25,7 +25,7 @@ Legend
 | FileSavePicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔   | ✔  |
 | FolderPicker   | ✔    | ✔           | ✔      | 💬 (2) | ✔    | ✖   | ✔  |
 
-*(1) - Multiple implementations supported - see WebAssembly section below*
+*(1) - Multiple implementations supported - see WebAssembly section below*\
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file picking experience by utilizing additional properties:
@@ -36,8 +36,8 @@ On some platforms, you can further customize the file picking experience by util
 | SuggestedStartLocation  | ✔   | ✔ (1)       | 💬     | ✔ (3) | ✔    | ✔   | ✔  |
 | SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✖    | ✖   | ✖  |
 
-*(1) - Only for the native file pickers - see WebAssembly section below*
-*(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used apply `image/*` and `video/*` filters*
+*(1) - Only for the native file pickers - see WebAssembly section below*\
+*(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used apply `image/*` and `video/*` filters*\
 *(3) - PicturesLibrary opens the picture library with the image picker controller*
 
 On platforms where the additional features are not supported yet, setting them will not have any effect.
@@ -73,7 +73,7 @@ For UWP-based Uno Platform apps, these two lines of code are not needed.
 
 ### FolderPicker
 
-``` c#
+```csharp
 var folderPicker = new FolderPicker();
 folderPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 folderPicker.FileTypeFilter.Add("*");
@@ -94,13 +94,14 @@ else
 }
 ```
 
-**Notes**: While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, and `FileTypeFilter` has no effect for `FolderPicker`, they both must be set, otherwise the dialog crashes on UWP.
+> [!NOTE]
+> While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, and `FileTypeFilter` has no effect for `FolderPicker`, they both must be set, otherwise the dialog crashes on UWP.
 
 ### FileOpenPicker
 
 #### Picking a single file
 
-``` c#
+```csharp
 var fileOpenPicker = new FileOpenPicker();
 fileOpenPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 fileOpenPicker.FileTypeFilter.Add(".txt");
@@ -122,11 +123,12 @@ else
 }
 ```
 
-**Notes**: While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, it must be set, otherwise the dialog crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
+> [!NOTE]
+> While the `SuggestedStartLocation` has currently no effect in Uno Platform targets, it must be set, otherwise the dialog crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 
 #### Picking multiple files
 
-``` c#
+```csharp
 var fileOpenPicker = new FileOpenPicker();
 fileOpenPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 fileOpenPicker.FileTypeFilter.Add(".jpg");
@@ -151,11 +153,12 @@ else
 }
 ```
 
-**Notes**: `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
+> [!NOTE]
+> `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
 
 ### FileSavePicker
 
-``` c#
+```csharp
 var fileSavePicker = new FileSavePicker();
 fileSavePicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
 fileSavePicker.SuggestedFileName = "myfile.txt";
@@ -181,30 +184,31 @@ else
 }
 ```
 
-**Notes**:
-The `CachedFileManager` only has effect on Windows and on WebAssembly (see below in the [WebAssembly](#WebAssembly) section)
-
-While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
+> [!NOTE]
+> The `CachedFileManager` only has effect on Windows and on WebAssembly. For more information, see [WebAssembly section](#webassembly) below.
+>
+> [!NOTE]
+> While the `SuggestedStartLocation` has no effect, it must be set for UWP. You must declare at least one item for `FileTypeChoices`. Each has a description and one or more extensions.
 
 ## Picker configuration
 
-File pickers have various configuration options that customize the experience (see the <a href="https://learn.microsoft.com/uwp/api/windows.storage.pickers.fileopenpicker" target="_blank">UWP documentation</a> for full list of properties). Not all options are supported on all target platforms, in which case these are ignored.
+File pickers have various configuration options that customize the experience. For a full list of properties, see the [UWP documentation](https://learn.microsoft.com/uwp/api/windows.storage.pickers.fileopenpicker). Not all options are supported on all target platforms, in which case these are ignored.
 
 To set which file type extensions you want to allow, use the `FileTypeFilter` property on `FileOpenPicker` and `FolderPicker`, and the `FileTypeChoices` property on `FileSavePicker`. Extensions must be in the format ".xyz" (starting with a dot). For `FileOpenPicker` and `FolderPicker` you can also include "*" (star) entry, which represents the fact that any file extension is allowed.
 
-Some systems use `MIME` types to specify the file type. Uno includes a list of common predefined mappings (see list in <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types" target="_blank">MDN Docs</a>). If a MIME type you require is missing, you can provide it by adding it to the `Uno.WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping` dictionary:
+Some systems use `MIME` types to specify the file type. Uno includes a list of common predefined mappings. For more information, see [Common MIME types in MDN docs](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types). If a MIME type you require is missing, you can provide it by adding it to the `Uno.WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping` dictionary:
 
-``` c#
+```csharp
 Uno.WinRTFeatureConfiguration.FileTypes.FileTypeToMimeMapping.Add(".myextension", "some/mimetype");
 ```
 
 For iOS and macOS, `UTType` is utilized for the same purpose. Here you can provide a custom mapping using `Uno.WinRTFeatureConfiguration.FileTypes.FileTypeToUTTypeMapping` dictionary:
 
-``` c#
+```csharp
 Uno.WinRTFeatureConfiguration.FileTypes.FileTypeToUTTypeMapping.Add(".myextension", "my.custom.UTType");
 ```
 
-Custom Uniform Type Identifiers must be declared in the `info.plist` of your iOS and macOS application. See a full example of this [in Apple documentation](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_declare/understand_utis_declare.html).
+Custom Uniform Type Identifiers must be declared in the `info.plist` of your iOS and macOS application. See a full example of this in [Uniform Type Identifiers Overview from Apple documentation](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_declare/understand_utis_declare.html).
 
 ## WebAssembly
 
@@ -214,9 +218,9 @@ There are two implementations of file pickers available in WebAssembly - **File 
 
 The most powerful picker implementation on WebAssembly uses the <a href="https://wicg.github.io/file-system-access/" target="_blank">**File System Access API**</a>. This is not yet widely implemented across all browsers. See the following support tables for each picker:
 
--<a href="https://caniuse.com/?search=showDirectoryPicker" target="_blank">`FolderPicker`</a>
--<a href="https://caniuse.com/?search=showOpenFilePicker" target="_blank">`FileOpenPicker`</a>
--<a href="https://caniuse.com/?search=showSaveFilePicker" target="_blank">`FileSavePicker`</a>
+* [`FolderPicker`](https://caniuse.com/?search=showDirectoryPicker)
+* [`FileOpenPicker`](https://caniuse.com/?search=showOpenFilePicker)
+* [`FileSavePicker`](https://caniuse.com/?search=showSaveFilePicker)
 
 `FolderPicker` is only supported for this type of pickers.
 
