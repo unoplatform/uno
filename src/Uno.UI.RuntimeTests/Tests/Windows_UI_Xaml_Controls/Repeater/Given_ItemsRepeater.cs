@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -308,6 +309,183 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			source.Clear();
 			await TestServices.WindowHelper.WaitForIdle();
 			sut.Children.Count(elt => elt.ActualOffset.X >= 0).Should().Be(0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __ANDROID__ || __SKIA__
+		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
+#endif
+		public async Task When_UnloadAndReload_Then_ReMaterializeItems()
+		{
+			var sut = SUT.Create(5000, new Size(250, 500));
+
+			await sut.Load();
+
+			var topItems = sut.MaterializedItems.ToArray();
+
+			sut.Scroller.ChangeView(null, sut.Scroller.ExtentHeight / 2, null, disableAnimation: true);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var middleItems = sut.MaterializedItems.ToArray();
+			middleItems.Should().NotContain(topItems);
+
+			await sut.Unload();
+			await sut.Load();
+
+			var reloadedItems = sut.MaterializedItems.ToArray();
+			reloadedItems.Count(item => middleItems.Contains(item)).Should().BeGreaterThan(2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_AddItemWhileUnloaded_Then_MaterializeItems()
+		{
+			var sut = SUT.Create();
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(3);
+
+			await sut.Unload();
+
+			sut.Source.Add("Additional item");
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(4);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_RemoveItemWhileUnloaded_Then_MaterializeItems()
+		{
+			var sut = SUT.Create();
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(3);
+
+			await sut.Unload();
+
+			sut.Source.RemoveAt(1);
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_EditItemWhileUnloaded_Then_MaterializeItems()
+		{
+			var sut = SUT.Create();
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(3);
+
+			await sut.Unload();
+
+			sut.Source[1] = "Item #1 - Edited";
+
+			await sut.Load();
+
+			sut.Repeater.Children.FirstOrDefault(g => g.DataContext as string == "Item #1 - Edited").Should().NotBeNull();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_ClearItemsWhileUnloaded_Then_MaterializeItems()
+		{
+			var sut = SUT.Create();
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(3);
+
+			await sut.Unload();
+
+			sut.Source.Clear();
+
+			await sut.Load();
+
+			sut.Materialized.Should().Be(0);
+		}
+
+		private record SUT(Border Root, ScrollViewer Scroller, ItemsRepeater Repeater, ObservableCollection<string> Source)
+		{
+			public static SUT Create(int itemsCount = 3, Size? viewport = default)
+			{
+				var repeater = default(ItemsRepeater);
+				var scroller = default(ScrollViewer);
+				var source = new ObservableCollection<string>(Enumerable.Range(0, itemsCount).Select(i => $"Item #{i}"));
+				var root = new Border
+				{
+					BorderThickness = new Thickness(5),
+					BorderBrush = new SolidColorBrush(Colors.Purple),
+					Child = (scroller = new ScrollViewer
+					{
+						Content = (repeater = new ItemsRepeater
+						{
+							ItemsSource = source,
+							Layout = new StackLayout(),
+							ItemTemplate = new DataTemplate(() => new Border
+							{
+								Width = 100,
+								Height = 100,
+								Background = new SolidColorBrush(Colors.DeepSkyBlue),
+								Margin = new Thickness(10),
+								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							})
+						})
+					})
+				};
+
+				if (viewport is not null)
+				{
+					root.Height = viewport.Value.Height;
+					root.Width = viewport.Value.Width;
+				}
+
+				return new(root, scroller, repeater, source);
+			}
+
+			public int Materialized => Repeater.Children.Count(elt => elt.ActualOffset.X >= 0);
+
+			public IEnumerable<string> MaterializedItems => Repeater.Children.Where(elt => elt.ActualOffset.X >= 0).Select(elt => elt.DataContext?.ToString());
+
+			public async ValueTask Load()
+			{
+				Root.Child = Scroller;
+				if (TestServices.WindowHelper.WindowContent != Root)
+				{
+					TestServices.WindowHelper.WindowContent = Root;
+				}
+				await TestServices.WindowHelper.WaitForIdle();
+				Repeater.IsLoaded.Should().BeTrue();
+			}
+
+			public async ValueTask Unload()
+			{
+				Root.Child = new TextBlock { Text = "IR unloaded" };
+				await TestServices.WindowHelper.WaitForIdle();
+				Repeater.IsLoaded.Should().BeFalse();
+			}
 		}
 #endif
 	}
