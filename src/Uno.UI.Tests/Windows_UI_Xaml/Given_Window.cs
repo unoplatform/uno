@@ -7,7 +7,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_Window
 {
-#if WINUI_WINDOWING
 	[TestMethod]
 	public void New_Window_Becomes_Current()
 	{
@@ -20,5 +19,4 @@ public class Given_Window
 		window.Activate();
 		Assert.AreEqual(window, Microsoft.UI.Xaml.Window.Current);
 	}
-#endif
 }

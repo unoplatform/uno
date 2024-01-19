@@ -35,7 +35,7 @@ namespace Uno.UI.Xaml.Core
 		/// Initialization type.
 		/// </summary>
 		public InitializationType InitializationType { get; internal set; } =
-#if HAS_UNO_WINUI || WINUI_WINDOWING
+#if HAS_UNO_WINUI
 			InitializationType.IslandsOnly;
 #else
 			InitializationType.MainView;

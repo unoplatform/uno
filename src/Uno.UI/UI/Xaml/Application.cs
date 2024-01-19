@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml
 
 			_initializationComplete = true;
 
-#if !HAS_UNO_WINUI && !WINUI_WINDOWING
+#if !HAS_UNO_WINUI
 			Microsoft.UI.Xaml.Window.EnsureWindowCurrent();
 #endif
 

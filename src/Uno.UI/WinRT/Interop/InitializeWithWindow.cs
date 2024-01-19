@@ -1,4 +1,4 @@
-﻿#if HAS_UNO_WINUI || WINUI_WINDOWING
+﻿#if HAS_UNO_WINUI
 using System;
 using Microsoft.UI.Windowing;
 using Windows.UI.Popups;

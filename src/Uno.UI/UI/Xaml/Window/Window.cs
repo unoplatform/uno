@@ -52,10 +52,8 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
-#if WINUI_WINDOWING
 		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
-#endif
 
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
