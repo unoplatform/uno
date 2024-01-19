@@ -62,7 +62,7 @@
 		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
 	</Target>
 
-  <ItemGroup>
+	<ItemGroup>
 		<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
 		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 		<PackageReference Update="Uno.Core.Extensions" Version="4.0.1" />
@@ -130,14 +130,15 @@
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
-  </ItemGroup>
+		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+	</ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
-	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-  </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
+		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
+		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
 		<!-- Xamarin.AndroidX.Legacy.Support.v4 shouldn't be brought for any version after net7.0 -->

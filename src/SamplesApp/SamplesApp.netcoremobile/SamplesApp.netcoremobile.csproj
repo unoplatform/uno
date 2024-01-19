@@ -167,6 +167,7 @@
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='macos'">
 			<ItemGroup>
 				<PackageReference Include="SkiaSharp.NativeAssets.macos" />
+				<PackageReference Include="System.CommandLine" />
 			</ItemGroup>
 		</When>
 	</Choose>

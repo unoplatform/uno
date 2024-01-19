@@ -17,7 +17,10 @@ namespace UnoApp50.Skia.Gtk
 			};
 
 			var host = new GtkHost(() => new AppHead());
-
+#if IS_CI
+			// Avoids "GL implementation doesn't support any form of non-power-of-two textures" in CI for snapshot tests when run on Windows
+			host.RenderSurfaceType = RenderSurfaceType.Software;
+#endif
 			host.Run();
 		}
 	}
