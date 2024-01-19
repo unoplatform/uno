@@ -106,11 +106,6 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			set
 			{
-				if (_selection is SelectionDetails sd && sd.StartIndex == value.start && sd.EndIndex == value.end)
-				{
-					return;
-				}
-
 				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
 				var startLine = GetRenderLineAt(GetRectForIndex(value.start).GetCenter().Y, true)?.index ?? 0;
 				var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
