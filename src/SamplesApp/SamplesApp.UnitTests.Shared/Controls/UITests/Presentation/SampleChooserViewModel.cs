@@ -516,7 +516,7 @@ namespace SampleControl.Presentation
 				{
 #if IS_CI
 					// Used to disable showing the test output visually
-					unitTests.SetDependencyPropertyValue("IsRunningOnCI", "true");
+					unitTests.IsRunningOnCI = true;
 #endif
 
 					// Used to perform test grouping on CI to reduce the impact of re-runs
