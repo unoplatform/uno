@@ -8,11 +8,11 @@ uid: Uno.Features.AdaptiveTrigger
 
 Use the `AdaptiveTrigger` class to trigger a `<VisualState.Setters>` target. The target invokes changes in window properties, such as font size or panel orientation.
 
-For more information, please refer to Microsoft's documentation on the [AdaptiveTrigger class](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.adaptivetrigger?view=winrt-22621) and the [VisualState class.](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.visualstate?view=winrt-22621)
+For more information, please refer to Microsoft's documentation on the [AdaptiveTrigger class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.adaptivetrigger) and the [VisualState class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.visualstate).
 
-## WinUI vs. UNO
+## Differences between Uno and WinUI
 
-In a standard UWP application, the sequential order of the adaptive trigger does not matter. The compiler will execute any `<VisualState.Setters>` target regardless of their order (See [this issue](https://github.com/unoplatform/uno/issues/2662) for more details).
+In a standard WinUI application, the sequential order of the adaptive trigger does not matter. The compiler will execute any `<VisualState.Setters>` target regardless of their order. For more information, see [AdaptiveTriggers' order declared in XAML shouldn't matter GitHub issue](https://github.com/unoplatform/uno/issues/2662).
 
 In an Uno Platform application, the sequential order of the adaptive trigger does matter. In this instance, the `VisualState` will execute the `Setters` when it finds the first matching occurrence. Subsequent triggers may be ignored if the first matching property remains true for the life of the program.
 

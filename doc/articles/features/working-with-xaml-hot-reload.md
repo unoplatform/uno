@@ -9,8 +9,8 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of 
 ## Features
 
 - Supported in **Visual Studio 2022** (Windows) and **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod)
-- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, Skia (Gtk, WPF and Framebuffer)**
-- All **[C# of Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code ([supported code changes](https://learn.microsoft.com/en-us/visualstudio/debugger/supported-code-changes-csharp)).
+- XAML and [C# Markup](xref:Uno.Extensions.Markup.Overview) Hot Reload for **iOS, Catalyst, Android, WebAssembly, and Skia (Gtk, WPF and FrameBuffer)**
+- All **[C# of Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code. See [supported code changes](https://learn.microsoft.com/visualstudio/debugger/supported-code-changes-csharp).
 - **Simulator and physical devices** support
 - What can be Hot Reloaded:
   - **XAML files** in the **main project**, in **shared projects**, and **referenced projects libraries**
@@ -43,7 +43,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 ***
 
 > [!IMPORTANT]
-> Using [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
+> Using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
 
 ## Supported features
 
@@ -69,15 +69,12 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
   - Hot Reload is sensitive to Web Workers caching, which can cause errors like [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228), with a `BrowserConnectionException` error. In order to fix this:
     - Update to Uno.Wasm.Bootstrap 8.0.3 or later
     - Unregister any Web Worker associated to your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
-  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
+  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available.
   - Hot Reload is not supported when using the debugger
 
-### [**iOS, Android Catalyst**](#tab/mobile)
+### [**iOS, Android, and Catalyst**](#tab/mobile)
 
 Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
-
-> [!NOTE]
-> Help us by giving it a thumbs up to help prioritize it in the .NET team backlog!
 
 - In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
 - In both VS and VS Code, C# Hot Reload is not yet supported
@@ -106,7 +103,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
   </PropertyGroup>
   ```
 
-- if you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app startup to Uno 5 or later:
+- If you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app startup to Uno 5 or later:
   - Add the following lines to the shared library project `csproj` file :
 
     ```xml
@@ -159,5 +156,5 @@ Learn more about:
 - [Uno Platform features and architecture](xref:Uno.GetStarted.Explore)
 - [Uno Platform App solution structure](xref:Uno.Development.AppStructure)
 - [Troubleshooting](xref:Uno.UI.CommonIssues)
-- <a href="../implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
-- You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
+- [List of views implemented in Uno](../implemented-views.md) for the set of available controls and their properties.
+- You can head to [How-tos and tutorials](xref:Uno.Tutorials.Intro) on how to work on your Uno Platform app.

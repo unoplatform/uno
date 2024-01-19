@@ -43,4 +43,4 @@ Learn more about:
 - [Hot Reload feature](xref:Uno.Features.HotReload)
 - [Troubleshooting](xref:Uno.UI.CommonIssues)
 - [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.
-- You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
+- You can head to [How-tos and tutorials](xref:Uno.Tutorials.Intro) on how to work on your Uno Platform app.

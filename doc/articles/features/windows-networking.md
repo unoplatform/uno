@@ -5,7 +5,7 @@ uid: Uno.Features.WNetworking
 # Networking
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.Networking` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.networking
+> This article covers Uno-specific information for `Windows.Networking` namespace. For a full description of the feature and instructions on using it, see [Windows.Networking Namespace](https://learn.microsoft.com/uwp/api/windows.networking).
 
 * The `Windows.Networking` namespace provides classes for accessing and managing network connections from your app.
 
@@ -20,12 +20,12 @@ uid: Uno.Features.WNetworking
 
 ### Android
 
-Android can recognize all values of `NetworkConnectivityLevel`. iOS, macOS and WASM return either `None` or `InternetAccess`.
+Android can recognize all values of `NetworkConnectivityLevel`. iOS, macOS, and WASM return either `None` or `InternetAccess`.
 
 The `android.permission.ACCESS_NETWORK_STATE` permission is required. It can be added to the application manifest or with the following attribute in the Android platform head:
 
 ```csharp
-[assembly: UsesPermission(\"android.permission.ACCESS_NETWORK_STATE\")]
+[assembly: UsesPermission("android.permission.ACCESS_NETWORK_STATE")]
 ```
 
 ### iOS/macOS reachability host name
@@ -38,7 +38,7 @@ On iOS and macOS, it is required to make an actual "ping" request, to verify tha
 
 You can use the following snippet to check for internet connectivity level in a cross-platform manner:
 
-``` C#
+```csharp
 var profile = NetworkInformation.GetInternetConnectionProfile();
 if (profile == null)
 {
@@ -55,13 +55,13 @@ else
 
 You can use the following snippet to observe changes in connectivity:
 
-``` C#
+```csharp
 var profile = NetworkInformation.GetInternetConnectionProfile();
 profile.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
 ```
 
 ### Unsubscribing from the changes
 
-``` C#
+```csharp
 profile.NetworkStatusChanged -= NetworkInformation_NetworkStatusChanged;
 ```
