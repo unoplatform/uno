@@ -113,7 +113,7 @@ Read more about [Uno and WinUI 3](uwp-vs-winui3.md).
 
 Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
 
-Visit Microsoft's documentation for a primer on UWP : https://learn.microsoft.com/en-us/windows/uwp/get-started/
+For more information on UWP, visit [Universal Windows Platform (UWP) - Get Started](https://learn.microsoft.com/windows/uwp/get-started).
 
 ### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
 

@@ -20,13 +20,13 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 
 ## Platforms
 
-- [WebAssembly](xref:Uno.UI.CommonIssues.Wasm)
-- [Skia (Gtk/WPF/Framebuffer)](xref:Uno.UI.CommonIssues.Skia)
-- [iOS/mac Catalyst](xref:Uno.UI.CommonIssues.IosCatalyst)
+- [Common issues on WebAssembly](xref:Uno.UI.CommonIssues.Wasm)
+- [Common issues Skia (Gtk/WPF/Framebuffer)](xref:Uno.UI.CommonIssues.Skia)
+- [Common issues iOS/mac Catalyst](xref:Uno.UI.CommonIssues.IosCatalyst)
 
 ## Next Steps
 
 Learn more about:
 
 - You can head to [our tutorials](xref:Uno.GettingStarted.Tutorial1) on how to work on your Uno Platform app.
-- <a href="implemented-views.md">Use the API Reference to Browse the set of available controls and their properties.</a>
+- [List of views implemented in Uno](implemented-views.md) for the set of available controls and their properties.
