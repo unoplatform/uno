@@ -102,7 +102,7 @@ When the value of `WinRTFeatureConfiguration.Accessiblity.HighContrast` is chang
 - On Android, both `TextBox` and its native `EditText` can be accessibility focused.
 - On Android, `Control` without a non-empty accessible name is not accessibility focusable.
 - On Android, the accessible name of the native back button can't be customized.
-- On Android, `TextBox` and `PasswordBox` don't hint "double tap to edit".
+- On Android, `TextBox` and `PasswordBox` don't hint at "double tap to edit".
 - On Android, you can tap to focus an accessible child of an accessible element that has never been focused even if `UseSimpleAccessibility` is enabled.
 - `AutomationPeer.GetLocalizedControlType()` is not localized.
 - `FlipViewItem` reads "double tap to activate" even if it's not interactive.

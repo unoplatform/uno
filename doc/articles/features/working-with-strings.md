@@ -14,7 +14,7 @@ Localization is done through the `resw` files in the current project. Normally, 
 
 See the UWP documentation on [localizing strings in your UI](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
 
-Resources may be placed in the default scope files `Resources.resw`, or in a custom named file. Custom named file content
+Resources may be placed in the default scope file `Resources.resw`, or in a custom-named file. Custom-named file content
 can be used with the `x:Uid="/myResources/MyResource"` format, see [how to factor strings into multiple resource files](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest#factoring-strings-into-multiple-resources-files).
 
 Note that the default language can be defined using the `DefaultLanguage` MSBuild property, using an IETF Language Tag (e.g. `en` or `fr-FR`).

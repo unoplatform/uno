@@ -5,7 +5,7 @@ uid: Uno.Features.WinUIViewManagement
 # View Management
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.UI.ViewManagement` namespace. For a full description of the feature and instructions on using it, see [Windows.UI.ViewManagement Namespace](https://learn.microsoft.com/uwp/api/windows.ui.viewmanagement).
+> This article covers Uno-specific information for the `Windows.UI.ViewManagement` namespace. For a full description of the feature and instructions on using it, see [Windows.UI.ViewManagement Namespace](https://learn.microsoft.com/uwp/api/windows.ui.viewmanagement).
 
 * The `Windows.UI.ViewManagement.ApplicationViewTitleBar` class allows working with the title bar of the application window.
 * The `Windows.UI.ViewManagement.UISettings` class allows retrieving the current system visual settings.
@@ -16,7 +16,7 @@ The `BackgroundColor` property is implemented on WASM and uses the `theme-color`
 
 If you set `theme_color` in the PWA application manifest, setting this property will override this configuration.
 
-This functionality is currently supported in Chrome, Edge (Chromium), and Opera when app is installed as PWA and in Chrome mobile (even without installing).
+This functionality is currently supported in Chrome, Edge (Chromium), and Opera when the app is installed as PWA and in Chrome mobile (even without installing).
 
 ![Blue title bar](../Assets/features/applicationviewtitlebar/blue.png)
 ![Red title bar](../Assets/features/applicationviewtitlebar/red.png)
