@@ -47,6 +47,8 @@ namespace UnoWinUIRevert
 				Directory.Delete(dispatcherQueuePath, true);
 			}
 
+			ReplaceInFile(Path.Combine(basePath, @"src", "Directory.Build.props"), "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>true</UNO_UWP_BUILD>");
+
 			// Generic replacements
 			var genericReplacements = new[] {
 				("Microsoft.UI.Xaml", "Windows.UI.Xaml"),
@@ -54,11 +56,7 @@ namespace UnoWinUIRevert
 				("Microsoft.UI.Colors", "Windows.UI.Colors"),
 				("Microsoft.UI.Text.FontWeights", "Windows.UI.Text.FontWeights"),
 				("Microsoft.UI.ColorHelper", "Windows.UI.ColorHelper"),
-				("Microsoft.UI.Xaml", "Windows.UI.Xaml"),
 				("__LinkerHints.Is_Microsoft_UI_Xaml", "__LinkerHints.Is_Windows_UI_Xaml"),
-				("__LinkerHints.Is_Windows_UI_Xaml_Controls_LayoutPanel", "__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel"),
-				("Uno.UI.Controls.Legacy\", \"ProgressRing", "Windows.UI.Xaml.Controls\", \"ProgressRing"),
-				("<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>true</UNO_UWP_BUILD>"),
 			};
 
 			ReplaceInFolders(basePath, genericReplacements);
