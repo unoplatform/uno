@@ -35,4 +35,4 @@ Uno Platform applications run on all macOS versions supported by Mac Catalyst - 
 
 ## Linux
 
-Uno Platform applications run on Linux distributions and versions where .NET 7 is supported, [listed here](https://docs.microsoft.com/en-ca/dotnet/core/install/linux).
+Uno Platform applications run on Linux distributions and versions where .NET 7 is supported, [listed here](https://learn.microsoft.com/dotnet/core/install/linux).

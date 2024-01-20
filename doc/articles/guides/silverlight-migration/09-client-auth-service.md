@@ -11,8 +11,8 @@ As WCF RIA Services is no longer available, and the general approach to web serv
 > [!NOTE]
 > There are lots of authentication options out there - you can learn more about some of them from the resources below:
 >
-> * [Overview of ASP.NET Core authentication](https://docs.microsoft.com/aspnet/core/security/authentication/?view=aspnetcore-5.0)
-> * [Authentication and authorization in gRPC for ASP.NET Core](https://docs.microsoft.com/aspnet/core/grpc/authn-and-authz?view=aspnetcore-5.0)
+> * [Overview of ASP.NET Core authentication](https://learn.microsoft.com/aspnet/core/security/authentication/?view=aspnetcore-5.0)
+> * [Authentication and authorization in gRPC for ASP.NET Core](https://learn.microsoft.com/aspnet/core/grpc/authn-and-authz?view=aspnetcore-5.0)
 > * [IdentityServer4 Big Picture](https://identityserver4.readthedocs.io/en/latest/intro/big_picture.html)
 > * [Auth0 Get Started](https://auth0.com/docs/get-started)
 
