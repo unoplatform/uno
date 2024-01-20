@@ -6,7 +6,11 @@ uid: Uno.Tutorials.ProfilingApplications
 
 ## Profiling .NET Android/iOS applications
 
+<<<<<<< HEAD
 .NET 7 and later provides the ability to do CPU profiling through [`dotnet-trace`](https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for android applications.
+=======
+.NET 7 and later provides the ability to do CPU profiling through [`dotnet-trace`](https://learn.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for Android applications.
+>>>>>>> a7a23f12bb (docs: Update Microsoft links)
 
 ### Pre-requisites
 
@@ -187,7 +191,7 @@ This section provides insights into what to look for when analyzing flame charts
 
 ## Profiling Skia/GTK and Skia/WPF applications
 
-Profiling Skia based Uno Platform targets can be done on Windows in Visual Studio 2019 and 2022 using [time and memory profilers](https://docs.microsoft.com/visualstudio/profiling/profiling-feature-tour?view=vs-2019).
+Profiling Skia based Uno Platform targets can be done on Windows in Visual Studio 2019 and 2022 using [time and memory profilers](https://learn.microsoft.com/visualstudio/profiling/profiling-feature-tour?view=vs-2019).
 
 ## Profiling WebAssembly applications
 

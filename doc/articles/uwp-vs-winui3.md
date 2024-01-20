@@ -4,7 +4,7 @@ uid: Uno.Development.UwpVsWinUI3
 
 # WinUI 3 and Uno Platform
 
-WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://docs.microsoft.com/windows/apps/windows-app-sdk/).
+WinUI 3 is the [next generation of Microsoft's Windows UI library](https://learn.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://learn.microsoft.com/windows/apps/windows-app-sdk/).
 
 Since WinUI 3 and UWP XAML are very similar in their API, Uno Platform offers compatibility with both. This article goes further into the differences and how they apply to Uno.
 

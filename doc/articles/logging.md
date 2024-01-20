@@ -210,7 +210,7 @@ The Uno platform also provides an extension that simplifies the use of logging b
     > [!TIP]
     > To learn more about the logging capabilities, review the Microsoft logging reference materials here:
     >
-    > * [Logging in .NET](https://docs.microsoft.com/dotnet/core/extensions/logging)
+    > * [Logging in .NET](https://learn.microsoft.com/dotnet/core/extensions/logging)
 
 ## Log output for not implemented member usage
 

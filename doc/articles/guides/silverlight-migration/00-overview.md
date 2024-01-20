@@ -33,8 +33,13 @@ Other things to consider include:
 * Considering Navigation options
   * Many Silverlight applications used the navigation app template or the RIA Business App template. Modern apps also leverage a navigation style approach, often utilizing the "Hamburger" menu approach to navigation.
 
+<<<<<<< HEAD
 > [!TIP]
 > Review the Microsoft navigation guide to learn more - [https://docs.microsoft.com/windows/uwp/design/basics/navigation-basics](https://docs.microsoft.com/windows/uwp/design/basics/navigation-basics)
+=======
+  > [!TIP]
+  > To learn more about navigation, see [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/uwp/design/basics/navigation-basics).
+>>>>>>> a7a23f12bb (docs: Update Microsoft links)
 
 * Styling choices - consider whether to migrate existing styles or adopt Fluent/Material as a new default
 * Asynchronous code and threading
