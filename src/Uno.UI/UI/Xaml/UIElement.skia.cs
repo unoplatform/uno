@@ -227,8 +227,6 @@ namespace Microsoft.UI.Xaml
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		internal bool IsPointerCaptured { get; set; }
-
 		internal MaterializableList<UIElement> GetChildren() => _children;
 
 		public IntPtr Handle { get; }
