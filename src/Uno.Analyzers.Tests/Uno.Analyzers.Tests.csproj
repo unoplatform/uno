@@ -6,7 +6,6 @@
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
 		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<IsPackable>false</IsPackable>
-		<OutputPath>..\Build\Tests\bin\$(Configuration)_$(Platform)\</OutputPath>
 
 		<CodeAnalysisVersionForAnalyzersTests>4.0.0</CodeAnalysisVersionForAnalyzersTests>
 	</PropertyGroup>
@@ -25,14 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Analyzers\Uno.Analyzers.csproj">
-			<Project>{1b204959-7a49-4283-a601-8713ea3a04a4}</Project>
-			<Name>Uno.Analyzers</Name>
-		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+		<ProjectReference Include="..\Uno.Analyzers\Uno.Analyzers.csproj" />
 	</ItemGroup>
 
 </Project>
