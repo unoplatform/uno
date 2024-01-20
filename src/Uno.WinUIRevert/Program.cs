@@ -57,6 +57,7 @@ namespace UnoWinUIRevert
 				("Microsoft.UI.Text.FontWeights", "Windows.UI.Text.FontWeights"),
 				("Microsoft.UI.ColorHelper", "Windows.UI.ColorHelper"),
 				("__LinkerHints.Is_Microsoft_UI_Xaml", "__LinkerHints.Is_Windows_UI_Xaml"),
+				("__LinkerHints.Is_Windows_UI_Xaml_Controls_LayoutPanel", "__LinkerHints.Is_Microsoft_UI_Xaml_Controls_LayoutPanel"),
 			};
 
 			ReplaceInFolders(basePath, genericReplacements);
