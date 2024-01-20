@@ -33,6 +33,18 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="DeleteCachedPackage" Condition="'$(CI)' != 'true'" BeforeTargets="Pack">
+		<ItemGroup>
+			<ToDelete Include="$(PackageOutputPath)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)*.*" />
+			<ToDelete Include="$(LocalArtifactStagingDirectory)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).*" />
+		</ItemGroup>
+		<Delete Files="@(ToDelete)" />
+		<Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s'
+			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
+		<Exec Command='rm -rf "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())"'
+			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
+	</Target>
+
 	<!-- Using Regex Replace prevents XmlPoke from replacing Tabs with Spaces -->
 	<UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
