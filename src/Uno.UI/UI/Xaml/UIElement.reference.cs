@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsArrangeDirtyPath => throw new NotSupportedException("Reference assembly");
 
-		internal bool IsPointerCaptured { get; set; }
-
 		internal bool ShouldInterceptInvalidate { get; set; }
 
 		internal void AddChild(UIElement child, int? index = null) => throw new NotSupportedException("Reference assembly");
