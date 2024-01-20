@@ -135,7 +135,7 @@ namespace Uno.UWPSyncGenerator
 			InitializeRoslyn();
 		}
 
-		public virtual async Task Build(string basePath, string baseName, string sourceAssembly)
+		public virtual async Task Build(string baseName, string sourceAssembly)
 		{
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
 
@@ -143,7 +143,7 @@ namespace Uno.UWPSyncGenerator
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			var topProject = Path.Combine(Path.GetDirectoryName(basePath), "Uno.UI", "Uno.UI");
+			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
 			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-ios");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-android");
