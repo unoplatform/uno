@@ -107,7 +107,7 @@ Here are some tips when building the Uno solution and failures happen:
 
 ### Building the reference assemblies for Skia and WebAssembly
 
-Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `net7.0` and `netstandard2.0` target framework assemblies (called reference assemblies) found in NuGet packages (`lib` folder) are only used for building applications. At the end of a head build, those reference assemblies are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder of NuGet packages.
+Skia and WebAssembly use a custom bait-and-switch technique for assemblies for which the `net7.0` target framework assemblies (called reference assemblies) found in NuGet packages (`lib` folder) are only used for building applications. At the end of a head build, those reference assemblies are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder of NuGet packages.
 
 When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overridden NuGet cache to be unable to use those newly added APIs.
 
