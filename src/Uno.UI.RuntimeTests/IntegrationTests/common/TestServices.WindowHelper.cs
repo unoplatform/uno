@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
+using System.Linq;
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -412,6 +414,18 @@ namespace Private.Infrastructure
 			internal static void ResetWindowContentAndWaitForIdle()
 			{
 
+			}
+
+			internal static void CloseAllSecondaryWindows()
+			{
+				var windows = ApplicationHelper.Windows.ToArray();
+				foreach (var window in windows)
+				{
+					if (window != TestServices.WindowHelper.XamlRoot.HostWindow)
+					{
+						window.Close();
+					}
+				}
 			}
 		}
 	}
