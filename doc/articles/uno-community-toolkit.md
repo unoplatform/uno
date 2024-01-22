@@ -206,4 +206,4 @@ A working sample complete with data is available on GitHub: [Uno Windows Communi
 
 ***
 
-[!include[getting-help](getting-help.md)]
+[!include[getting-help](includes/getting-help.md)]

@@ -6,7 +6,7 @@ uid: Uno.UI.CommonIssues
 
 The Uno Platform features and support are constantly evolving, yet you may encounter some of the issues while building your application, for which answers and details are available below.
 
-[!include[getting-help](getting-help.md)]
+[!include[getting-help](includes/getting-help.md)]
 
 ## Hot Reload
 
