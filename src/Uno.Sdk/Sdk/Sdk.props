@@ -10,6 +10,23 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<!-- Import the Directory.Build.props before loading the Microsoft.NET.Sdk -->
+	<PropertyGroup>
+		<ImportDirectoryBuildProps Condition="'$(ImportDirectoryBuildProps)' == ''">true</ImportDirectoryBuildProps>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ImportDirectoryBuildProps)' == 'true' and '$(DirectoryBuildPropsPath)' == ''">
+		<_DirectoryBuildPropsFile Condition="'$(_DirectoryBuildPropsFile)' == ''">Directory.Build.props</_DirectoryBuildPropsFile>
+		<_DirectoryBuildPropsBasePath Condition="'$(_DirectoryBuildPropsBasePath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '$(_DirectoryBuildPropsFile)'))</_DirectoryBuildPropsBasePath>
+		<DirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsBasePath)' != '' and '$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('$(_DirectoryBuildPropsBasePath)', '$(_DirectoryBuildPropsFile)'))</DirectoryBuildPropsPath>
+	</PropertyGroup>
+
+	<Import Project="$(DirectoryBuildPropsPath)" Condition="'$(ImportDirectoryBuildProps)' == 'true' and exists('$(DirectoryBuildPropsPath)')"/>
+
+	<PropertyGroup>
+		<ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+	</PropertyGroup>
+	<!-- END Import the Directory.Build.props -->
+
 	<PropertyGroup>
 		<UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</UnoImportMicrosoftNETSdkTargets>
 		<_UnoImportMicrosoftNETSdkTargets>false</_UnoImportMicrosoftNETSdkTargets>
@@ -24,6 +41,24 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<IsBrowser>false</IsBrowser>
 		<IsSkia>false</IsSkia>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
+	</PropertyGroup>
+
+	<!--
+		Load the solution-config.props file, if it exists.
+	-->
+	<PropertyGroup>
+		<ImportSolutionConfigProps Condition="'$(ImportSolutionConfigProps)' == ''">true</ImportSolutionConfigProps>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ImportSolutionConfigProps)' == 'true' and '$(SolutionConfigPropsPath)' == ''">
+		<_SolutionConfigPropsFile Condition="'$(_SolutionConfigPropsFile)' == ''">solution-config.props</_SolutionConfigPropsFile>
+		<_SolutionConfigPropsBasePath Condition="'$(_SolutionConfigPropsBasePath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '$(_SolutionConfigPropsFile)'))</_SolutionConfigPropsBasePath>
+		<SolutionConfigPropsPath Condition="'$(_SolutionConfigPropsBasePath)' != '' and '$(_SolutionConfigPropsFile)' != ''">$([System.IO.Path]::Combine('$(_SolutionConfigPropsBasePath)', '$(_SolutionConfigPropsFile)'))</SolutionConfigPropsPath>
+	</PropertyGroup>
+
+	<Import Project="$(SolutionConfigPropsPath)" Condition="'$(ImportSolutionConfigProps)' == 'true' and exists('$(SolutionConfigPropsPath)')"/>
+
+	<PropertyGroup>
+		<ImportSolutionConfigProps>false</ImportSolutionConfigProps>
 	</PropertyGroup>
 
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
