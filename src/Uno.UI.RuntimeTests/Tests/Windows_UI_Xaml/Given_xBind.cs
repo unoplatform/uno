@@ -29,4 +29,14 @@ public class Given_xBind
 		SUT.ItemOther.IsSelected = true;
 		Assert.AreEqual("ItemOther", SUT.tb.Text);
 	}
+
+	[TestMethod]
+	public async Task When_xBind_With_Cast_Default_Namespace()
+	{
+		var SUT = new When_xBind_With_Cast_Default_Namespace();
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		Assert.AreEqual("Hello", SUT.tb.Text);
+	}
 }
