@@ -71,7 +71,7 @@ As part of the continuing evolution of desktop development on Windows, Microsoft
 > [!TIP]
 > You can learn more about the Windows UI Library here:
 >
-> * [Windows UI Library (WinUI)](https://docs.microsoft.com/windows/apps/winui/)
+> * [Windows UI Library (WinUI)](https://learn.microsoft.com/windows/apps/winui/)
 
 There are a few steps to adding WinUI 2.5 to the Uno project:
 

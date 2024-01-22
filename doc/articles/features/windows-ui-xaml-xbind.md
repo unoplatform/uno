@@ -116,7 +116,7 @@ Uno supports the [`x:Bind`](https://learn.microsoft.com/windows/uwp/xaml-platfor
   public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
-- [Attached Properties](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#attached-properties)
+- [Attached Properties](https://learn.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension#attached-properties)
 
   ```xml
   <Button x:Name="Button22" Content="Click me!" Grid.Row="42" />

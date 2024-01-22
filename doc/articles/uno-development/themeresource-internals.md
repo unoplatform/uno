@@ -47,7 +47,7 @@ There are 3 cases for ThemeResource assignations that are handled differently:
 
 1. Assigning an ordinary dependency property to a ThemeResource reference.
 2. Assigning an ordinary non-dependency property to a ThemeResource reference.
-3. Assigning the Value property of a [Setter](https://docs.microsoft.com/uwp/api/windows.ui.xaml.setter) to a ThemeResource reference.
+3. Assigning the Value property of a [Setter](https://learn.microsoft.com/uwp/api/windows.ui.xaml.setter) to a ThemeResource reference.
 
 In case 1., we create a `ResourceBinding`, an internal Uno-only type that inherits from `BindingBase`, that binds the property to the ThemeResource, allowing its value to be subsequently reevaluated when the owner enters the live visual tree and also when the active theme changes. This is done through the `ResourceResolver` static class. As much as possible, XAML-generated code should use helper intermediaries that will not change when the underlying implementation evolves. XAML-generated code compiled with older versions of Uno may run against newer Uno versions, in the case of 3rd-party libraries, and we don't want to introduce breaking changes that could be avoided.
 

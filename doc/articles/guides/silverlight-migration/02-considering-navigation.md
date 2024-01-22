@@ -55,7 +55,7 @@ In UWP, there are 3 overloads of the **Navigate** method:
 > Although the parameter is of type **Object**, it must have a basic type (string, char, numeric, or GUID) to support parameter serialization. More complex content can be passed if it serialized to/from JSON strings first.
 >
 > [!TIP]
-> Full details for the **Navigate** method and overloads can be viewed here - [https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate)
+> Full details for the **Navigate** method and overloads can be viewed here - [https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.frame.navigate)
 
 ## The navigation links
 
@@ -82,14 +82,14 @@ In Silverlight, there is no "out-of-the-box" control that renders a list of navi
 ```
 
 > [!NOTE]
-> In the **HyperLink** button code above, the **Content** properties are bound to a string resource that can provide support for different languages. UWP also has a similar capability - you can learn more here [https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest](https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
+> In the **HyperLink** button code above, the **Content** properties are bound to a string resource that can provide support for different languages. UWP also has a similar capability - you can learn more here [https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest).
 
 As mentioned above, in UWP, the **NavigationView** and **Frame** controls are often used together to achieve a similar effect.
 
 > [!TIP]
 > You aren't constrained to just using a **NavigationView** and adopting the same layout/approach as the original Silverlight app. Uwp and Uno supports other types of app layouts and navigation styles with supporting controls. You can review these guidelines here:
 >
-> * [Navigation design basics for Windows apps](https://docs.microsoft.com/windows/uwp/design/basics/navigation-basics)
+> * [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/uwp/design/basics/navigation-basics)
 
 ## Creating the navigation structure in Uno
 

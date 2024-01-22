@@ -79,8 +79,8 @@ In WASM, not all of the property conversions are currently supported (notably **
 > [!NOTE]
 > To learn more about **x:Uid** and string localization in UWP, review the following resources:
 >
-> * [x:Uid directive](https://docs.microsoft.com/windows/uwp/xaml-platform/x-uid-directive)
-> * [Localize strings in your UI and app package manifest](https://docs.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest)
+> * [x:Uid directive](https://learn.microsoft.com/windows/uwp/xaml-platform/x-uid-directive)
+> * [Localize strings in your UI and app package manifest](https://learn.microsoft.com/windows/uwp/app-resources/localize-strings-ui-manifest)
 
 ## Update Main Page NavigationViewItem controls to use x:Uid
 
@@ -125,8 +125,8 @@ In order to access the string resources in code, the **ResourceLoader** class mu
 > [!TIP]
 > You can learn more about the **ResourceLoader** and UWP resources below:
 >
-> * [ResourceLoader](https://docs.microsoft.com/uwp/api/Windows.ApplicationModel.Resources.ResourceLoader)
-> * [App resources and the Resource Management System](https://docs.microsoft.com/windows/uwp/app-resources/)
+> * [ResourceLoader](https://learn.microsoft.com/uwp/api/Windows.ApplicationModel.Resources.ResourceLoader)
+> * [App resources and the Resource Management System](https://learn.microsoft.com/windows/uwp/app-resources/)
 
 To access resources in the default file `Resources.resw`, you would use the following code:
 

@@ -14,8 +14,8 @@ Part of the initial startup for an application creates and configures navigation
 > [!TIP]
 > Resources for the Silverlight Application Model and Application class include:
 >
-> * [Application Model](https://docs.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/cc872869(v=vs.95))
-> * [Application Class](https://docs.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/ms588794(v=vs.95))
+> * [Application Model](https://learn.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/cc872869(v=vs.95))
+> * [Application Class](https://learn.microsoft.com/previous-versions/windows/silverlight/dotnet-windows-silverlight/ms588794(v=vs.95))
 
 Briefly reviewing the Silverlight **App.xaml.cs** will reveal the following structure:
 
@@ -35,9 +35,9 @@ Earlier application platforms had a simple lifecycle - once launched, they conti
 > [!TIP]
 > Resources that cover the UWP Application Lifecycle include:
 >
-> * [Launching, resuming, and background tasks](https://docs.microsoft.com/windows/uwp/launch-resume/)
-> * [App Lifecycle](https://docs.microsoft.com/windows/uwp/launch-resume/app-lifecycle)
-> * [Application Class](https://docs.microsoft.com/uwp/api/windows.ui.xaml.application?view=winrt-19041)
+> * [Launching, resuming, and background tasks](https://learn.microsoft.com/windows/uwp/launch-resume/)
+> * [App Lifecycle](https://learn.microsoft.com/windows/uwp/launch-resume/app-lifecycle)
+> * [Application Class](https://learn.microsoft.com/uwp/api/windows.ui.xaml.application?view=winrt-19041)
 
 The Uno template generates a basic `App.cs` and `App.xaml.cs` file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
 
@@ -54,7 +54,7 @@ Briefly reviewing the `App.cs` and `App.xaml.cs` files will reveal the following
 >
 > [!NOTE]
 > The **OnLaunched** method checks to see if the app has been pre-launched - this is a state where Windows has automatically started commonly used apps to speed the perceived launch time for the user. In this state, the app is not expected to be displaying any UI. You can learn more about Prelaunch here:
-> [Handle app prelaunch](https://docs.microsoft.com/windows/uwp/launch-resume/handle-app-prelaunch)
+> [Handle app prelaunch](https://learn.microsoft.com/windows/uwp/launch-resume/handle-app-prelaunch)
 
 In the next task, the Uno application will be configured so that it can navigate to each of the top-level pages.
 
@@ -180,8 +180,8 @@ In order to better align with the behavior of the Silverlight version of the app
     > [!TIP]
     > You can learn more about the **NavigationView** and the **Frame** controls here:
     >
-    > * [NavigationView](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/navigationview)
-    > * [Frame](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Frame)
+    > * [NavigationView](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/navigationview)
+    > * [Frame](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Frame)
 
 ### Adding a class to help with navigation synchronization
 
