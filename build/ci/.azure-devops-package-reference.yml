@@ -1,5 +1,7 @@
 parameters:
   poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
 
 jobs:
 - job: reference_package_build
@@ -7,20 +9,13 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self

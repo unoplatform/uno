@@ -1,5 +1,7 @@
 parameters:
   poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
 
 jobs:
 - job: netcoremobile_win_build
@@ -10,28 +12,11 @@ jobs:
 
   strategy:
     matrix:
-      UWP_NET8:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
+      NET8:
         UnoDisableNet7Mobile: true
         ZipFileTargetFramework: net8
 
-      WinUI_NET8:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-        UnoDisableNet7Mobile: true
-        ZipFileTargetFramework: net8
-
-      UWP_NET7:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
-        ZipFileTargetFramework: net7
-
-      WinUI_NET7:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+      NET7:
         UnoDisableNetCurrentMobile: true
         UnoDisableNetCurrent: true
         ZipFileTargetFramework: net7
@@ -48,6 +33,9 @@ jobs:
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self
