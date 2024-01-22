@@ -19,7 +19,7 @@ To determine all parameters available for a template use `dotnet new [templatena
 >
 > This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for the UI Test template.
 
-[!include[getting-help](use-uno-check-inline.md)]
+[!include[use-uno-check](includes/use-uno-check-inline.md)]
 
 ## Uno Platform Application
 
@@ -111,4 +111,4 @@ Using a command line or terminal, run the following command:
 dotnet new -u Uno.Templates
 ```
 
-[!include[getting-help](getting-help.md)]
+[!include[getting-help](includes/getting-help.md)]

@@ -42,7 +42,7 @@ Uno Platform provides support for a large number of WinUI controls, panels, and 
 
 Uno Platform supports a number of non-visual APIs from Windows Runtime namespaces on non-Windows platforms, like [clipboard management](features/windows-applicationmodel-datatransfer.md) and [sensor access](features/windows-devices-sensors.md).
 
-[!include[Inline table of contents](inlineTOCs/winrt-features-inline-toc.include)]
+[!include[Inline table of contents](includes/winrt-features-inline-toc.md)]
 
 ## Features unique to Uno
 

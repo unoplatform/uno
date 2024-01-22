@@ -6,7 +6,7 @@ uid: Uno.Workshop.Counter.XAML.MVUX
 
 [Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX)  
 
-[!INCLUDE [Intro](include-intro.md)]
+[!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:
 
@@ -17,7 +17,7 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#.
 
-[!INCLUDE [VS](include-create.md)]
+[!INCLUDE [VS](includes/include-create.md)]
 
 ## [Visual Studio](#tab/vs)
 
@@ -69,23 +69,23 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ---
 
-[!INCLUDE [Counter Solution](include-solution.md)]
+[!INCLUDE [Counter Solution](includes/include-solution.md)]
 
 ![Counter Solution](Assets/counter-solution-xaml.png)
 
-[!INCLUDE [Main Window](include-mainwindow.md)]
+[!INCLUDE [Main Window](includes/include-mainwindow.md)]
 
-[!INCLUDE [Main Page - XAML](include-mainpage-xaml.md)]
+[!INCLUDE [Main Page - XAML](includes/include-mainpage-xaml.md)]
 
-[!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-image-xaml.md)]
+[!INCLUDE [Main Page - Image](includes/include-image-xaml.md)]
 
-[!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements](includes/include-elements-xaml.md)]
 
-[!INCLUDE [View Model](include-mvux.md)]
+[!INCLUDE [View Model](includes/include-mvux.md)]
 
 ## Data Binding
 
@@ -166,6 +166,6 @@ The final code for **MainPage.xaml** should look like this:
 </Page>
 ```
 
-[!INCLUDE [View Model](include-wrap.md)]
+[!INCLUDE [View Model](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX).
