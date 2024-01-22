@@ -130,8 +130,8 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- stage: skia_tests
-  displayName: Tests - Skia
+- stage: skia_tests_uwp
+  displayName: Tests - Skia UWP
   dependsOn:
     - Setup
     - convert_tree
@@ -142,7 +142,23 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
       poolName: '$(windowsScaledPool)'
-  
+      UNO_UWP_BUILD: true
+      XAML_FLAVOR_BUILD: UWP
+
+- stage: skia_tests_winui
+  displayName: Tests - Skia WinUI
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-skia-tests.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+      vmMacImage: '$(macOSVMImage)'
+      poolName: '$(windowsScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+
 - stage: macos_tests
   displayName: Tests - macOS
   dependsOn:
@@ -201,7 +217,7 @@ stages:
     - ios_tests
     - android_tests
     - macos_tests
-    - skia_tests
+    - skia_tests_winui
 
   jobs:
   - template: .azure-devops-screenshot-compare.yml

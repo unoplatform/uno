@@ -2,6 +2,8 @@ parameters:
   vmImage: ''
   vmMacImage: ''
   poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
 
   snapshotGroups:
     - 0
@@ -29,15 +31,8 @@ jobs:
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
 
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self
@@ -116,11 +111,14 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
     SamplesAppArtifactName: skia-gtk-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     SnapshotGroupCount: ${{ parameters.snapshotGroupCount }}
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   strategy:
     matrix:
@@ -160,39 +158,15 @@ jobs:
 
   strategy:
     matrix:
-      UWP_GROUP_0:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
+      GROUP_0:
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-      UWP_GROUP_1:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
+      GROUP_1:
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-      UWP_GROUP_2:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-        UITEST_RUNTIME_TEST_GROUP: 2
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-
-      WinUI_GROUP_0:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-        UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-
-      WinUI_GROUP_1:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-
-      WinUI_GROUP_2:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+      GROUP_2:
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
@@ -208,6 +182,9 @@ jobs:
     # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
 
@@ -262,10 +239,14 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
     SamplesAppArtifactName: skia-wpf-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -296,21 +277,14 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-
   dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -337,15 +311,18 @@ jobs:
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
   displayName: 'Run Uno Islands Skia WPF Runtime Tests'
   timeoutInMinutes: 45
-
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
   pool:
     vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-UWP
+    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0
