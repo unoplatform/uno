@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Markup
----
-
-### Markup
-
 This setting allows you to choose the markup to use for declaring the UI of the application.
 
 - #### XAML
