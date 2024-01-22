@@ -1,7 +1,3 @@
----
-uid: Uno.GetStarted.AdditionalSetup.Linux
----
-
 ## [**Ubuntu 18.04**](#tab/ubuntu1804)
 
 - Install GTK3:

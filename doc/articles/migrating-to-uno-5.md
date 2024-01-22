@@ -133,7 +133,7 @@ This change moves the `AnimatedVisualPlayer` to the appropriate namespace for Wi
 
 ### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`
 
-These legacy classes have been removed. Use the [`CommunityToolkit.Mvvm`](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) package instead.
+These legacy classes have been removed. Use the [`CommunityToolkit.Mvvm`](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/) package instead.
 
 ### `SolidColorBrushHelper` isn't available in UWP, so we are making it internal
 

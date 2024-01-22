@@ -204,8 +204,6 @@ This control will create an easily organized grid that will allow you to create 
 
 A working sample complete with data is available on GitHub: [Uno Windows Community Toolkit Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample)
 
-<br>
-
 ***
 
 [!include[getting-help](getting-help.md)]
