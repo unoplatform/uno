@@ -6,7 +6,7 @@ uid: Uno.Controls.MenuFlyout
 
 MenuFlyout is implemented to provide support for `ContextMenu` and `MenuBar` features.
 
-## Platform specific behavior
+## Platform-specific behavior
 
 On iOS and Android, the flyout can either be displayed using native popup, or Uno managed popups.
 

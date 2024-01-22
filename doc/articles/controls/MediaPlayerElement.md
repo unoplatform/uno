@@ -4,7 +4,7 @@ uid: Uno.Controls.MediaPlayerElement
 
 # MediaPlayerElement
 
-See [MediaPlayerElement](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.mediaplayerelement) on MSDN
+See [Microsoft API reference for MediaPlayerElement](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mediaplayerelement).
 
 ## Media formats
 
@@ -25,8 +25,8 @@ See [MediaPlayerElement](https://learn.microsoft.com/uwp/api/windows.ui.xaml.con
 
 ### Notes
 
-- Uno's MediaPlayerElement relies on AVPlayer for iOS and AndroidMediaPlayer for Android. Please refer to those native players documentation for more information about supported audio and video formats
-- If you need to set source programmatically (i.e., using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported
+- Uno's MediaPlayerElement relies on AVPlayer for iOS and AndroidMediaPlayer for Android. Please, refer to those native players documentation for more information about supported audio and video formats.
+- If you need to set source programmatically (i.e., using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported.
 
 ## Features
 
@@ -64,7 +64,7 @@ See [MediaPlayerElement](https://learn.microsoft.com/uwp/api/windows.ui.xaml.con
 
 ### iOS
 
-Add the following to your info.plist
+Add the following to your info.plist:
 
 ```xml
 <key>NSAppTransportSecurity</key>
