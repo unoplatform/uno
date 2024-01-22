@@ -11,8 +11,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
-		<DebugType>portable</DebugType>
-		<DebugSymbols>True</DebugSymbols>
+		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
+		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
 
 		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -164,5 +164,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 			Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
 	</Target>
 
+	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
 </Project>
