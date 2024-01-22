@@ -31,8 +31,8 @@ Unfortunately, WCF itself has been discontinued, although there are, of course, 
 > [!NOTE]
 > You can learn more about alternate service technologies here:
 >
-> * [Create web APIs with ASP.NET Core](https://docs.microsoft.com/aspnet/core/web-api/?view=aspnetcore-5.0)
-> * [Introduction to gRPC on .NET](https://docs.microsoft.com/aspnet/core/grpc/?view=aspnetcore-5.0)
+> * [Create web APIs with ASP.NET Core](https://learn.microsoft.com/aspnet/core/web-api/?view=aspnetcore-5.0)
+> * [Introduction to gRPC on .NET](https://learn.microsoft.com/aspnet/core/grpc/?view=aspnetcore-5.0)
 > * [Core WCF](https://github.com/CoreWCF/CoreWCF)
 
 In the sample application migration, REST-based services using ASP.NET Core Web APIs were chosen.

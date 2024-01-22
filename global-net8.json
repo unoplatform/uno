@@ -8,6 +8,7 @@
 		"dotnet": "8.0.100"
 	},
 	"msbuild-sdks": {
-		"MSBuild.Sdk.Extras": "3.0.44"
+		"MSBuild.Sdk.Extras": "3.0.44",
+		"Microsoft.Build.NoTargets": "3.7.56"
 	}
 }

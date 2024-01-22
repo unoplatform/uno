@@ -1,7 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Startup
----
-
 ### Preset
 
 The `unoapp` template comes with two preset options: *Blank* and *Recommended* (*Default* in Visual Studio Wizard). These represent two different sets of pre-configured values for the options that follow. The *Blank* option is the most minimal template, while the *Recommended* option comes with a few more features pre-configured.

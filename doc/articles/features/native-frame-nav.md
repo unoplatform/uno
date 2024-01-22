@@ -8,18 +8,18 @@ uid: Uno.Features.NativeFrameNav
 
 This article discusses the particularities of the native `Frame` navigation in detail.
 
-It is recommended to be familiar with the concept of navigation in UWP, here are some good starting points:
+It is recommended to be familiar with the concept of navigation in WinUI, here are some good starting points:
 
-- [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/uwp/design/basics/navigation-basics)
-- [`Windows.UI.Xaml.Controls.Frame`](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.Frame)
+- [Navigation design basics for Windows apps](https://learn.microsoft.com/windows/apps/design/basics/navigation-basics)
+- [`Microsoft.UI.Xaml.Controls.Frame`](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.frame)
 
 ## Native Frame Navigation
 
 On Android and iOS, there is the option to enable native frame navigation. Enabling this feature replaces the default styles and templates of the controls below:
 
-- `Windows.UI.Xaml.Controls.Frame`<superscript>*</superscript>
-- `Windows.UI.Xaml.Controls.CommandBar`
-- `Windows.UI.Xaml.Controls.AppBarButton`
+- `Microsoft.UI.Xaml.Controls.Frame`<superscript>*</superscript>
+- `Microsoft.UI.Xaml.Controls.CommandBar`
+- `Microsoft.UI.Xaml.Controls.AppBarButton`
 
 This feature can be enabled by calling the method below, typically in the constructor of your `App` class in `App.cs` or `App.xaml.cs`:
 
@@ -36,7 +36,7 @@ This feature can be enabled by calling the method below, typically in the constr
 
 In essence, by enabling this, a custom renderer will be used as the control template. This renderer injects the native control into the app, and maps dependency properties (colors, content/icon, ...) and events (clicked), between the UWP controls and the native ones:
 
-UWP Control|Native Android Control|Native iOS Control
+WinUI Control|Native Android Control|Native iOS Control
 -|-|-
 `CommandBar`|`android.widget.Toolbar`|`UIKit.UINavigationBar`
 `AppBarButton`|`android.view.MenuItem`|`UIKit.UIBarButtonItem`
@@ -46,8 +46,8 @@ As such, you can have the look and feel of the native control, including feature
 ### Frame
 
 The `Frame` also uses a custom presenter for its control template.
-On iOS, this presenter creates an `UINavigationController`, and keeps its states in sync with its `Frame`. It also creates a `UIViewController` for each `Page` that gets navigated.
-On iOS and on Android, it also manages the state of back button on the `CommandBar`, if it is presents on a `Page`.
+On iOS, this presenter creates a `UINavigationController`, and keeps its states in sync with its `Frame`. It also creates a `UIViewController` for each `Page` that gets navigated.
+On iOS and Android, it also manages the state of the back button on the `CommandBar`, if it is present on a `Page`.
 
 ### Helpers
 
@@ -55,10 +55,10 @@ There is a `FrameNavigationHelper` that is in place to expose useful properties 
 
 Method|Return Type|Description
 -|-|-
-`GetCurrentEntry(Frame)`|`PageStackEntry`|Returns the PageStackEntry for the currently displayed Page within the given `frame`
-`GetInstance(PageStackEntry)`|`Page`|Returns the actual Page instance of the given `entry`
-`EnsurePageInitialized(Frame, PageStackEntry)`|`Page`|Retrieves the current `Page` instance of the given `PageStackEntry`. If no instance exists, the `Page` will be created and properly initialized to the provided `Frame`
-`CreateNavigationEventArgs(...)`|`NavigationEventArgs`|Creates a new instance of `NavigationEventArgs`/>
+`GetCurrentEntry(Frame)`|`PageStackEntry`|Returns the `PageStackEntry` for the currently displayed Page within the given `frame`.
+`GetInstance(PageStackEntry)`|`Page`|Returns the actual Page instance of the given `entry`.
+`EnsurePageInitialized(Frame, PageStackEntry)`|`Page`|Retrieves the current `Page` instance of the given `PageStackEntry`. If no instance exists, the `Page` will be created and properly initialized to the provided `Frame`.
+`CreateNavigationEventArgs(...)`|`NavigationEventArgs`|Creates a new instance of `NavigationEventArgs`.
 
 ## Platform Specifics
 
@@ -70,5 +70,6 @@ Method|Return Type|Description
 
 ## Additional Resources
 
-- [Uno-specific documentation](../controls/CommandBar.md) on `CommandBar` and `AppBarButton`
-- [How-to guide](../guides/native-frame-nav-tutorial.md) & [sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav) on native frame navigation
+- [`CommandBar` and `AppBarButton` Uno documentation](../controls/CommandBar.md)
+- [How to use native Frame navigation](../guides/native-frame-nav-tutorial.md)
+- [Native frame navigation sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav)

@@ -29,8 +29,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
 
-		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
-
 		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
 
 		internal int InvalidateMeasureCallCount => throw new NotSupportedException("Reference assembly");

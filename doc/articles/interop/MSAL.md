@@ -6,9 +6,9 @@ uid: Uno.Interop.MSAL
 
 Uno can be used to build applications using authentication. A popular mechanism is Azure Authentication (Azure AD, Azure AD B2C or ADFS) and it can be used directly using the Microsoft Authentication Library for .NET (MSAL.NET) available from NuGet.
 
-> MSAL.NET is the successor of ADAL.NET library which shouldn't be used for new apps. If you are migrating an application to Uno using ADAL.NET, you should first [migrate it to MSAL.NET](https://docs.microsoft.com/azure/active-directory/develop/msal-net-migration).
+> MSAL.NET is the successor of ADAL.NET library which shouldn't be used for new apps. If you are migrating an application to Uno using ADAL.NET, you should first [migrate it to MSAL.NET](https://learn.microsoft.com/azure/active-directory/develop/msal-net-migration).
 
-Quick-start for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
+Quick-start for MSAL: https://learn.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
 
 ## General usage
 
@@ -16,7 +16,7 @@ To use MSAL into an Uno project, follow the following steps:
 
 1. Add a reference to [`Uno.WinUI.MSAL`](https://www.nuget.org/packages/Uno.UI.MSAL) (or `Uno.UI.MSAL` for UWP) package to all your heads - including UWP.
 
-2. Follow [Microsoft Documentation](https://docs.microsoft.com/azure/active-directory/develop/msal-net-initializing-client-applications) to integrate with your app.
+2. Follow [Initialize client applications using MSAL.NET](https://learn.microsoft.com/azure/active-directory/develop/msal-net-initializing-client-applications) to integrate with your app.
 
 3. Change the `IPublicCLientApplication` initialization to add a call to `.WithUnoHelpers()` like this:
 
@@ -47,15 +47,15 @@ There is nothing to change for UWP. The `.WithUnoHelpers()` does nothing on UAP/
 
 You'll need to setup the return URI following the Microsoft documentation:
 
-* Official documentation <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-android-considerations>
+* [Configuration requirements and troubleshooting tips for Xamarin Android with MSAL.NET](https://learn.microsoft.com/entra/identity-platform/msal-net-xamarin-android-considerations)
 
-* Wiki https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Xamarin-Android-specifics
+* [Microsoft Authentication Library for .NET](https://learn.microsoft.com/entra/msal/dotnet/)
 
 * There is no need to call `.WithParentActivity()` as it is already initialized by `.WithUnoHelpers()`.
 
 ## iOS & macOS
 
-Follow Microsoft's documentation: <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-ios-considerations>.
+Follow [Considerations for using Xamarin iOS with MSAL.NET](https://learn.microsoft.com/entra/identity-platform/msal-net-xamarin-ios-considerations).
 
 * There is no need to call `.WithParentActivity()` as it is already initialized by `.WithUnoHelpers()`.
 
@@ -75,12 +75,7 @@ Particularities for WASM:
 
 * Token cache is *in-memory* for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
 
-## Other things
+## More resources
 
-Take note of these 'do nots' in the MSAL Wiki:
-
-<https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/do-not#do-not>
-
-Guidance on handling errors and exceptions:
-
-<https://docs.microsoft.com/azure/active-directory/develop/msal-handling-exceptions?tabs=dotnet>
+* [Best practices for MSAL.NET](https://learn.microsoft.com/entra/msal/dotnet/getting-started/best-practices)
+* [Handle errors and exceptions in MSAL.NET](https://learn.microsoft.com/entra/msal/dotnet/advanced/exceptions/msal-error-handling)

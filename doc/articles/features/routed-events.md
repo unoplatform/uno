@@ -120,13 +120,13 @@ implementation of RoutedEvents:
 
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
-In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
+In some cases/events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
 or referencing the element where the event crossed the _native-to-managed_ boundary.
 
-This property is however always accurate for "Pointers", "Manipulation", "Gesture" and "Drag and drop" events.
+This property is however always accurate for "Pointers", "Manipulation", "Gesture", and "Drag and drop" events.
 
 ### Resetting `Handled` to false won't behave like in UWP
 
 There's a strange behavior in UWP where you can switch back the `event.Handle` to `false` when
-intercepted by a handler with `handledEventsToo: true`. In UWP the event will continue to bubble normally.
+intercepted by a handler with `handledEventsToo: true`. In UWP, the event will continue to bubble normally.
 Trying to do this in Uno can lead to unreliable results.

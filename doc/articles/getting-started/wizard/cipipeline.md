@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.CIPipeline
----
-
-### CI Pipeline
-
 - #### None
 
     No CI pipeline will be created. This is the default option for both the blank and recommended presets.

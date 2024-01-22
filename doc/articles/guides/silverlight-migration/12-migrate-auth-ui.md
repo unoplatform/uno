@@ -75,8 +75,8 @@ The next task will take a look at creating the **LoginForm**. As discussed above
 > To learn more about the **ContentDialog** control, review the following resources:
 > *
 >
-> * [ContentDialog control](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
-> * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
+> * [ContentDialog control](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
+> * [Dialog controls](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
 
 ### Create the LoginForm
 
@@ -129,9 +129,9 @@ The following steps will create the **LoginForm**.
     > [!TIP]
     > The code is using the modern version of binding with the `x:Bind` syntax. This approach is faster than the reflection based binding used in Silverlight and also provides improved compile time error reporting. `x:Bind` also allows the use of functions, such as **IsErrorMessageVisible()** above, which reduces the need for custom value convertors. The properties and functions referenced in the bindings will be implemented in the code-behind shortly. You can learn more about binding from the resources below:
     >
-    > * [Data binding](https://docs.microsoft.com/windows/uwp/data-binding/)
-    > * [Functions in x:Bind](https://docs.microsoft.com/windows/uwp/data-binding/function-bindings)
-    > * [Value Converters](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Data.IValueConverter)
+    > * [Data binding](https://learn.microsoft.com/windows/uwp/data-binding/)
+    > * [Functions in x:Bind](https://learn.microsoft.com/windows/uwp/data-binding/function-bindings)
+    > * [Value Converters](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Data.IValueConverter)
 
 1. To add the input controls string resources, open the `Strings\en\Resources.resw` file and add the following strings:
 
@@ -292,7 +292,7 @@ Let's walk through the implementation.
     > [!TIP]
     > Although the **AuthenticationService.LoginUser** service is asynchronous, the code does not need to wait for it here - the **AuthenticationService.LoggedIn** and **AuthenticationService.LoginFailed** will communicate the state of the login. The `_ = AuthenticationService...` code uses a C# 7 feature called **Discards** to show the intention to ignore the result. You can learn more about **Discards** below:
     >
-    > * [Discards](https://docs.microsoft.com/dotnet/csharp/discards)
+    > * [Discards](https://learn.microsoft.com/dotnet/csharp/discards)
 
     Once again, **Bindings.Update** method is called to update the UI. Finally, `args.Cancel = true;` is used to ensure the dialog does not close.
 
@@ -350,10 +350,10 @@ And logged in, which displays the logged-in user and a button to logout:
 
 ![Login Status - Logged In](assets/LoginStatus-LoggedIn.png)
 
-The control makes use of the the **VisualStateManager** to switch between the various layouts, a number of custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
+The control makes use of the **VisualStateManager** to switch between the various layouts, several custom styles, and code-behind - the vast majority of which can be migrated to UWP without change. The following steps will walk through the process of migrating the **UserControl** - an approach that can be used for migrating any **UserControl** or custom control.
 
 > [!NOTE]
-> The following steps will focus on the process of migrating the **UserControl** - i.e. the changes to XAML, styles and code-behind, to support the controls behavior. As there are a many lines of XAML, the emphasis will be on the changes that must be made, rather than showing every line of code.
+> The following steps will focus on the process of migrating the **UserControl** - i.e. the changes to XAML, styles, and code-behind, to support the controls' behavior. As there are many lines of XAML, the emphasis will be on the changes that must be made, rather than showing every line of code.
 
 ### Migrating the LoginStatus visual states
 
@@ -408,7 +408,7 @@ In the following steps, the Silverlight styles used by the **LoginStatus** contr
     > [!TIP]
     > You can review the XAML theme resources that are available such as **SystemBaseHighColor** below:
     >
-    > * [XAML theme resources](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-theme-resources)
+    > * [XAML theme resources](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-theme-resources)
 
 1. Next, locate the **WelcomeTextStyle Margin** setter and comment out the entire setter - the offset is not required.
 
@@ -417,7 +417,7 @@ In the following steps, the Silverlight styles used by the **LoginStatus** contr
     > [!TIP]
     > You can learn more about control templates, how they relate to styles, and how to view the template for a control in the resource below:
     >
-    > * [Control templates](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
+    > * [Control templates](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
 
 1. The **LoginRegisterLinkStyle** requires a number of changes to property setters:
 
@@ -425,7 +425,7 @@ In the following steps, the Silverlight styles used by the **LoginStatus** contr
     * Locate the **Cursor** setter and comment out the entire setter - this property does not exist in UWP.
 
         > [!Note]
-        > Microsoft recommends the use of *hover effects* in the [UWP Design guidelines](https://docs.microsoft.com/windows/uwp/input-and-devices/mouse-interactions#cursors) instead of custom cursors over interactive elements. However, custom cursors can be useful in some specific scenarios, such as drag and drop, etc. If they are a must have, the Windows Community Toolkit has the [Mouse.Cursor attached property](https://docs.microsoft.com/windows/communitytoolkit/extensions/mousecursor) that can be used.
+        > Microsoft recommends the use of *hover effects* in the [UWP Design guidelines](https://learn.microsoft.com/windows/uwp/input-and-devices/mouse-interactions#cursors) instead of custom cursors over interactive elements. However, custom cursors can be useful in some specific scenarios, such as drag and drop, etc. If they are a must have, the Windows Community Toolkit has the [Mouse.Cursor attached property](https://learn.microsoft.com/windows/communitytoolkit/extensions/mousecursor) that can be used.
 
     The **LoginRegisterLinkStyle** also completely customizes the look of a **Button** control by replacing the template with a much simpler layout. Fortunately, the basic structure of the **Button** template in UWP closely matches the template in Silverlight. However, one issue that must be addressed relates to the **CommonStates** group. As UWP has been designed to support multiple input devices, such as touch, pen, etc., Silverlight visual states such as **MouseOver** have been renamed to **PointerOver**. The visual states toggle the visibility of the three controls withing the template.
 

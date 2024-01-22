@@ -9,8 +9,8 @@ The Silverlight **TimeEntryRia** makes use of **ChildWindow** controls to displa
 > [!TIP]
 > Dialog controls are modal UI overlays that provide contextual app information. They block interactions with the app window until being explicitly dismissed. They often request some kind of action from the user. The Microsoft guidelines on dialog controls in UWP can be reviewed below:
 >
-> * [Dialog controls](https://docs.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
-> * [ContentDialog class](https://docs.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
+> * [Dialog controls](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/dialogs-and-flyouts/dialogs)
+> * [ContentDialog class](https://learn.microsoft.com/uwp/api/Windows.UI.Xaml.Controls.ContentDialog)
 
 The **ContentDialog** is a flexible control - a dialog box that can be customized to contain checkboxes, hyperlinks, buttons and any other XAML content. It can be created simply from code, or as a new item added to a project with full designer support. However, there is one major limitation:
 
@@ -52,7 +52,7 @@ In this task, a **DialogManager** class will be created. The **DialogManager** u
     > [!TIP]
     > You can learn more about the **SemaphoreSlim** class below:
     >
-    > * [SemaphoreSlim Class](https://docs.microsoft.com/dotnet/api/system.threading.semaphoreslim)
+    > * [SemaphoreSlim Class](https://learn.microsoft.com/dotnet/api/system.threading.semaphoreslim)
 
 1. Finally, add the actual method that performs the work:
 
@@ -93,8 +93,8 @@ In this task, a **DialogManager** class will be created. The **DialogManager** u
     > [!TIP]
     > You can learn more about how the **CancellationToken** struct is used to notify an asynchronous task that it should be canceled below:
     >
-    > * [CancellationToken Struct](https://docs.microsoft.com/dotnet/api/system.threading.cancellationtoken)
-    > * [Task cancellation](https://docs.microsoft.com/dotnet/standard/parallel-programming/task-cancellation)
+    > * [CancellationToken Struct](https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken)
+    > * [Task cancellation](https://learn.microsoft.com/dotnet/standard/parallel-programming/task-cancellation)
 
 The next task introduces a series of extensions that assist with showing and configuring a **ContentDialog**.
 

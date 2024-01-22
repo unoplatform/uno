@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			RaiseTextChanging();
 
-			if (!_isInputModifyingText)
+			if (!_isInputModifyingText || IsSkiaTextBox)
 			{
 				_textBoxView?.SetTextNative(Text);
 			}
@@ -1250,13 +1250,17 @@ namespace Microsoft.UI.Xaml.Controls
 #else
 				{
 #endif
-					Text = currentText;
+					ProcessTextInput(currentText);
 				}
 #if __SKIA__
 				finally
 				{
 					_suppressCurrentlyTyping = false;
 				}
+#endif
+
+#if !IS_UNIT_TESTS && !__MACOS__
+				RaisePaste(new TextControlPasteEventArgs());
 #endif
 			});
 		}

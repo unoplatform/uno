@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.Build.NoTargets/3.7.56">
+<Project Sdk="Microsoft.Build.NoTargets">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>Uno.Sdk</PackageId>
@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
+		<None Include="targets\**\*.props;targets\**\*.targets" Pack="true" PackagePath="targets/" />
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
@@ -30,6 +31,18 @@
 		<ItemGroup>
 			<None Include="%(_IntermediateSdkFile.Identity)" Pack="true" PackagePath="Sdk\%(_IntermediateSdkFile.Filename)%(_IntermediateSdkFile.Extension)" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="DeleteCachedPackage" Condition="'$(CI)' != 'true'" BeforeTargets="Pack">
+		<ItemGroup>
+			<ToDelete Include="$(PackageOutputPath)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)*.*" />
+			<ToDelete Include="$(LocalArtifactStagingDirectory)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).*" />
+		</ItemGroup>
+		<Delete Files="@(ToDelete)" />
+		<Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s'
+			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
+		<Exec Command='rm -rf "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())"'
+			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
 	</Target>
 
 	<!-- Using Regex Replace prevents XmlPoke from replacing Tabs with Spaces -->

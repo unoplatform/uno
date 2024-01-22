@@ -448,7 +448,7 @@ public partial class TextBox
 		{
 			_clearHistoryOnTextChanged = false;
 			_pendingSelection = (selectionStart, selectionLength);
-			Text = text;
+			ProcessTextInput(text);
 			_clearHistoryOnTextChanged = true;
 		}
 		_suppressCurrentlyTyping = false;
@@ -1209,7 +1209,16 @@ public partial class TextBox
 				// we will already get a new action from the setter, so we don't need to commit another one here.
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
-			_pendingSelection = (selectionStart + clipboardText.Length, 0);
+
+			if (Text == newText)
+			{
+				// OnTextChanged won't fire, so we immediately change the selection
+				Select(selectionStart + clipboardText.Length, 0);
+			}
+			else
+			{
+				_pendingSelection = (selectionStart + clipboardText.Length, 0);
+			}
 		}
 	}
 
@@ -1283,11 +1292,11 @@ public partial class TextBox
 				_pendingSelection = currentAction.SelectionEndsAtTheStart ?
 					(currentAction.SelectionStart + currentAction.SelectionLength, -currentAction.SelectionLength) :
 					(currentAction.SelectionStart, currentAction.SelectionLength);
-				Text = r.OldText;
+				ProcessTextInput(r.OldText);
 				break;
 			case DeleteAction d:
 				_pendingSelection = (d.UndoSelectionStart, d.UndoSelectionLength);
-				Text = d.OldText;
+				ProcessTextInput(d.OldText);
 				break;
 			case SentinelAction:
 				break;
@@ -1321,11 +1330,11 @@ public partial class TextBox
 		{
 			case ReplaceAction r:
 				_pendingSelection = (r.caretIndexAfterReplacement, 0); // we always have an empty selection here.
-				Text = r.NewText;
+				ProcessTextInput(r.NewText);
 				break;
 			case DeleteAction d:
 				_pendingSelection = (Math.Min(d.UndoSelectionStart, d.UndoSelectionStart + d.UndoSelectionLength), 0);
-				Text = d.NewText;
+				ProcessTextInput(d.NewText);
 				break;
 			case SentinelAction:
 				break;

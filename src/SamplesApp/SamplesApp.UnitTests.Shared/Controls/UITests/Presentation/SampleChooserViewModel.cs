@@ -48,6 +48,9 @@ namespace SampleControl.Presentation
 
 	public partial class SampleChooserViewModel
 	{
+		private const string TestGroupVariable = "UITEST_RUNTIME_TEST_GROUP";
+		private const string TestGroupCountVariable = "UITEST_RUNTIME_TEST_GROUP_COUNT";
+
 #if DEBUG
 		private const int _numberOfRecentSamplesVisible = 10;
 #else
@@ -287,7 +290,7 @@ namespace SampleControl.Presentation
 			"Animations.EasingDoubleKeyFrame_CompositeTransform",
 		};
 
-		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", Action doneAction = null)
+		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", int totalGroups = 1, int currentGroupIndex = 0, Action doneAction = null)
 		{
 			try
 			{
@@ -303,7 +306,7 @@ namespace SampleControl.Presentation
 					{
 						try
 						{
-							await RecordAllTestsInner(folderName, ct, doneAction);
+							await RecordAllTestsInner(folderName, totalGroups, currentGroupIndex, ct, doneAction);
 						}
 						finally
 						{
@@ -320,7 +323,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private async Task RecordAllTestsInner(string folderName, CancellationToken ct, Action doneAction = null)
+		private async Task RecordAllTestsInner(string folderName, int totalGroups, int currentGroupIndex, CancellationToken ct, Action doneAction = null)
 		{
 			try
 			{
@@ -361,8 +364,15 @@ namespace SampleControl.Presentation
 
 				var target = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
-				foreach (var sample in tests)
+				for (int i = 0; i < tests.Length; i++)
 				{
+					if ((i % totalGroups) != currentGroupIndex)
+					{
+						continue;
+					}
+
+					var sample = tests[i];
+
 					try
 					{
 #if TRACK_REFS
@@ -513,6 +523,18 @@ namespace SampleControl.Presentation
 				if (ContentPhone is FrameworkElement fe
 					&& fe.FindName("UnitTestsRootControl") is Uno.UI.Samples.Tests.UnitTestsControl unitTests)
 				{
+#if IS_CI
+					// Used to disable showing the test output visually
+					unitTests.IsRunningOnCI = true;
+#endif
+
+					// Used to perform test grouping on CI to reduce the impact of re-runs
+					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+					{
+						unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
+						unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
+					}
+
 					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
 					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);

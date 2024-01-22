@@ -17,57 +17,57 @@ Uno supports the [`x:Bind`](https://learn.microsoft.com/windows/uwp/xaml-platfor
 - Properties
   - Page or control property
 
-  ```xml
-  <TextBlock Text="{x:Bind MyProperty}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind MyProperty}" />
+    ```
 
   - Member function
 
-  ```xml
-  <TextBlock Text="{x:Bind MyProperty.ToUpper()}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind MyProperty.ToUpper()}" />
+    ```
 
   - Static types field or properties OneTime binding
 
-  ```xml
-  <TextBlock Text="{x:Bind local:StaticType.PropertyIntValue}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind local:StaticType.PropertyIntValue}" />
+    ```
 
   - OneWay local member function with multiple observable parameters
 
-  ```xml
-  <TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
+    ```
 
   - OneWay static class function with  multiple observable parameters
 
-  ```xml
-  <TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
+    ```
 
   - Literal boolean parameters (`x:True`, `x:False`)
 
-  ```xml
-  <TextBlock Text="{x:Bind BoolFunc(x:False)}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind BoolFunc(x:False)}" />
+    ```
 
   - Null parameter (`x:Null`)
 
-  ```xml
-  <TextBlock Text="{x:Bind TestString(x:Null)}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind TestString(x:Null)}" />
+    ```
 
   - Quote escaping
 
-  ```xml
-  <TextBlock Text="{x:Bind sys:String.Format('{0}, ^'{1}^'', InstanceProperty, StaticProperty)}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind sys:String.Format('{0}, ^'{1}^'', InstanceProperty, StaticProperty)}" />
+    ```
 
   - Literal numeric value
 
-  ```xml
-  <TextBlock Text="{x:Bind Add(InstanceProperty, 42.42)}" />
-  ```
+    ```xml
+    <TextBlock Text="{x:Bind Add(InstanceProperty, 42.42)}" />
+    ```
 
 - Use of system functions (given `xmlns:sys="using:System"`):
   - Single parameter formatting:
@@ -116,7 +116,7 @@ Uno supports the [`x:Bind`](https://learn.microsoft.com/windows/uwp/xaml-platfor
   public void OnUncheckedRaised(object sender, RoutedEventArgs args) { }
   ```
 
-- [Attached Properties](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#attached-properties)
+- [Attached Properties](https://learn.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension#attached-properties)
 
   ```xml
   <Button x:Name="Button22" Content="Click me!" Grid.Row="42" />
@@ -147,7 +147,7 @@ Uno supports the [`x:Bind`](https://learn.microsoft.com/windows/uwp/xaml-platfor
   public void MyFunction(string p1, string p2) { }
   ```
 
-- [Pathless casting](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension#pathless-casting)
+- [Pathless casting](https://learn.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension#pathless-casting)
 
   ```xml
   <Page
@@ -176,4 +176,4 @@ Uno supports the [`x:Bind`](https://learn.microsoft.com/windows/uwp/xaml-platfor
   <TextBox x:Load="{x:Bind IsMyControlVisible}" />
   ```
 
-  See the [WinUI documentation](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) for more details.
+  See the [{x:Bind} markup extension from WinUI documentation](https://learn.microsoft.com/windows/uwp/xaml-platform/x-bind-markup-extension) for more details.

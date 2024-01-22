@@ -16,7 +16,7 @@ See these sections for information about using Uno Platform with:
 - [**Visual Studio Code**](https://code.visualstudio.com/)
 - The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 - For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
-- For Linux, install [OpenJDK 11](https://learn.microsoft.com/en-us/java/openjdk/install#install-on-ubuntu) for Android development.
+- For Linux, install [OpenJDK 11](https://learn.microsoft.com/java/openjdk/install#install-on-ubuntu) for Android development.
 
 ## Check your environment
 

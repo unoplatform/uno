@@ -12,7 +12,7 @@ Starting from Uno 4.8.26, the Uno Platform solution templates contains the appro
 
 Both [Source Link](https://github.com/dotnet/designs/blob/main/accepted/2020/diagnostics/source-link.md) and "Sources embedded inside PDB" features are used by Uno Platform and are supported by the extension.
 
-However only Android includes the `.pdb` of the referenced assemblies inside debug builds for net6.0. This makes the features unusable for iOS, macOS and Mac Catalyst, see [issue](https://github.com/xamarin/xamarin-macios/issues/11879#issuecomment-1279452073).
+However, only Android includes the `.pdb` of the referenced assemblies inside debug builds for net6.0. This makes the features unusable for iOS, macOS, and Mac Catalyst, see [issue](https://github.com/xamarin/xamarin-macios/issues/11879#issuecomment-1279452073).
 
 This situation [should be](https://github.com/dotnet/sdk/issues/1458#issuecomment-1244736464) fixed with net7.0. A workaround for net6 mobile projects is to install [Cymbal](https://github.com/SimonCropp/Cymbal).
 
@@ -49,7 +49,7 @@ This will ask the `Uno` debug provider how to build and launch the application. 
 
 ## Debugging with the Windows Subsystem for Android
 
-You first need to [connect](https://learn.microsoft.com/en-us/windows/android/wsa/#connect-to-the-windows-subsystem-for-android-for-debugging) to the Windows Subsystem for Android (WSA) in order to use it for debugging. From the command-line type:
+You first need to [connect](https://learn.microsoft.com/windows/android/wsa/#connect-to-the-windows-subsystem-for-android-for-debugging) to the Windows Subsystem for Android (WSA) in order to use it for debugging. From the command-line type:
 
 ```bash
 adb connect 127.0.0.1:58526
@@ -58,7 +58,7 @@ adb connect 127.0.0.1:58526
 and you should then be able to see the WSA device inside VSCode. You can also confirm it's connected from the command-line:
 
 ```bash
-adb devices -l
+$ adb devices -l
 List of devices attached
 127.0.0.1:58526        device product:windows_arm64 model:Subsystem_for_Android_TM_ device:windows_arm64 transport_id:1
 ```
@@ -114,44 +114,44 @@ If you need to define launches or modify the defaults then you can can create yo
 1. Select `.NET Custom Launch Configuration for Uno Platform` item
 1. This will insert a JSON block that looks like the following:
 
-```json
-{
-  "comment1": "// name: unique name for the configuration, can be identical to preLaunchTask",
-  "name": "Uno: net6.0-android | Debug | android-x64",
-  "comment2": "// type: 'Uno' for mono-based SDK, 'coreclr' for macOS and Skia.Gtk",
-  "type": "Uno",
-  "request": "launch",
-  "comment3": "// preLaunchTask format is 'Uno: {tfm} | {config}[ | {rid]}]' where ",
-  "comment4": "// * {tfm} is the target framework moniker, e.g. net6.0-ios",
-  "comment5": "// * {config} is the build configuration, e.g. 'Debug' or 'Release'",
-  "comment6": "// * {rid} is the optional runtime identifier, e.g. 'osx-arm64'",
-  "comment7": "// E.g. 'Uno: net6.0-ios | Debug | iossimulator-x64', 'Uno: net6.0 | Debug' for Skia.Gtk",
-  "preLaunchTask": "Uno: net6.0-android | Debug | android-x64"
-},
-```
+    ```json
+    {
+      "comment1": "// name: unique name for the configuration, can be identical to preLaunchTask",
+      "name": "Uno: net6.0-android | Debug | android-x64",
+      "comment2": "// type: 'Uno' for mono-based SDK, 'coreclr' for macOS and Skia.Gtk",
+      "type": "Uno",
+      "request": "launch",
+      "comment3": "// preLaunchTask format is 'Uno: {tfm} | {config}[ | {rid]}]' where ",
+      "comment4": "// * {tfm} is the target framework moniker, e.g. net6.0-ios",
+      "comment5": "// * {config} is the build configuration, e.g. 'Debug' or 'Release'",
+      "comment6": "// * {rid} is the optional runtime identifier, e.g. 'osx-arm64'",
+      "comment7": "// E.g. 'Uno: net6.0-ios | Debug | iossimulator-x64', 'Uno: net6.0 | Debug' for Skia.Gtk",
+      "preLaunchTask": "Uno: net6.0-android | Debug | android-x64"
+    },
+    ```
 
-Follow the comments to construct the launch required by your target platform, for example:
+1. Follow the comments to construct the launch required by your target platform, for example:
 
-```json
-{
-  "name": "net7.0-ios | simulator | x64",
-  "type": "Uno",
-  "request": "launch",
-  "preLaunchTask": "Uno: net7.0-ios | Debug | iossimulator-x64"
-},
-```
+    ```json
+    {
+      "name": "net7.0-ios | simulator | x64",
+      "type": "Uno",
+      "request": "launch",
+      "preLaunchTask": "Uno: net7.0-ios | Debug | iossimulator-x64"
+    },
+    ```
 
 If you follow the `Uno: {tfm} | {config}[ | {rid]}]` convention then there is no need to add entries inside the `tasks.json` file, the extension already provides them.
 
 ### Customizing tasks.json
 
 The extension provides default build tasks for most platforms without the need to define them inside the `tasks.json` file.
-If you need to define tasks or something that the defaut, built-in tasks do not provide you can create your own.
+If you need to define tasks or something that the default built-in tasks do not provide, you can create your own.
 
-1. Press the `Shift+Cmd+P` keys to open the **Command Palette**
-1. Select the `Tasks: Configure Tasks` item
-1. Pick the `Uno: *` task that is the closed to your need
-1. Edit the `args` section but avoid changing the other values (beside the `label`) to keep automation working
+1. Press the `Shift+Cmd+P` keys to open the **Command Palette**.
+1. Select the `Tasks: Configure Tasks` item.
+1. Pick the `Uno: *` task that is the closest to your need.
+1. Edit the `args` section but avoid changing the other values (besides the `label`) to keep automation working.
 
 See [VS Code documentation](https://code.visualstudio.com/docs/editor/tasks) for more information.
 

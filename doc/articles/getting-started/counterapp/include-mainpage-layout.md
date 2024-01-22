@@ -1,4 +1,3 @@
-
 This defines a page with a background set to the theme resource **ApplicationPageBackgroundThemeBrush**, meaning it will adapt to the theme (**Dark** or **Light**) of the application.
 
 The page contains a **`StackPanel`**, which will lay out controls in a vertical stack and is aligned in the center of the page, both horizontally and vertically. The **`StackPanel`** contains a single **`TextBlock`** control, which displays the text `Hello Uno Platform` and is aligned in the horizontal center of the **StackPanel**.

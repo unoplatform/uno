@@ -3148,6 +3148,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("world", SUT.Text);
 		}
 
+		[TestMethod]
+		public async Task When_Paste_Does_Not_Change_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "t"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.None));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "t";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;
