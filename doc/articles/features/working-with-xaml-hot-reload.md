@@ -68,7 +68,7 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
 - In Visual Studio for Windows:
   - Hot Reload is sensitive to Web Workers caching, which can cause errors like [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228), with a `BrowserConnectionException` error. In order to fix this:
     - Update to Uno.Wasm.Bootstrap 8.0.3 or later
-    - Unregister any Web Worker associated to your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
+    - Unregister any Web Worker associated with your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available.
   - Hot Reload is not supported when using the debugger
 
