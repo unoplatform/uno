@@ -14,7 +14,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
 ## Step-by-steps
 
-1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
+1. Create a new Uno Platform application, following the instructions in [Get Started guide](../get-started.md).
 1. Modify the content of `MainPage`:
 
     - In `MainPage.xaml`, replace the content of the page:
@@ -122,16 +122,8 @@ See the completed sample on GitHub: [LocalizationSamples/Localization](https://g
 
 ## Additional Resources
 
-https://learn.microsoft.com/windows/uwp/design/globalizing/globalizing-portal
-
-<br>
-
-***
+[Globalization and localization](https://learn.microsoft.com/windows/uwp/design/globalizing/globalizing-portal)
 
 ## Help! I'm having trouble
 
-> [!TIP]
-> If you ran into difficulties with any part of this guide, you can:
->
-> - Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
-> - Ask a question on [GitHub Discussions](https://github.com/unoplatform/uno/discussions) with the 'uno-platform' tag
+[!include[getting-help](getting-help.md)]

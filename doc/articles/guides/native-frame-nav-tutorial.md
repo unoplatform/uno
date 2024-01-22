@@ -6,37 +6,38 @@ uid: Uno.Tutorials.UseNativeFrameNav
 
 ## Example
 
-The complete sample code can be found here: [NativeFrameNav](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav)
+The complete sample code can be found in [NativeFrameNav on Uno.Samples GitHub repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav).
 
 ## Step-by-step instructions
 
-1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
+1. Create a new Uno Platform application, following the instructions in [Get Started guide](../get-started.md).
 2. Add two more pages (`BlankPage1` and `BlankPage2`) to the `Your_Project_Name` project
 
     Right-click on the `Your_Project_Name` project -> `Add` -> `New Item...` -> `Page (Uno Platform Windows App SDK)`
     Repeat once
-3. Modify the content of each page to:
-   - `MainPage.xaml`, `BlankPage1.xaml`, `BlankPage2.xaml`:
-        > [!NOTE]
-        > Add `xmlns:toolkit="using:Uno.UI.Toolkit"` to the `<Page>` element.
+3. Modify the content of `MainPage.xaml`, `BlankPage1.xaml`, and `BlankPage2.xaml` pages to the following:
 
-        ```xml
-        <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    ```xml
+    <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <CommandBar Grid.Row="0" Content="CHANGE_THE_TEXT_HERE" />
-            <StackPanel Grid.Row="1">
-                <TextBlock Text="CHANGE_THE_TEXT_HERE" />
-            </StackPanel>
-        </Grid>
-        ```
+        <CommandBar Grid.Row="0" Content="CHANGE_THE_TEXT_HERE" />
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="CHANGE_THE_TEXT_HERE" />
+        </StackPanel>
+    </Grid>
+    ```
 
-        > Put a different text for each page: "MainPage", "Content 1", "Content 2"
+    Put a different text for each page: "MainPage", "Content 1", "Content 2".
+
+    > [!NOTE]
+    > Add `xmlns:toolkit="using:Uno.UI.Toolkit"` to the `<Page>` element.
+
 4. Add a button for forward navigation in the first two pages:
-    - `MainPage.xaml`, `BlankPage1,xaml`:
+    - `MainPage.xaml` and `BlankPage1.xaml`:
 
         ```xml
         <StackPanel Grid.Row="1">
@@ -45,7 +46,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
         </StackPanel>
         ```
 
-    - `MainPage.xaml.cs`, `BlankPage1.xaml.cs`:
+    - `MainPage.xaml.cs` and `BlankPage1.xaml.cs`:
 
         ```csharp
         private void GotoNextPage(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(BlankPage1)); // in MainPage
@@ -53,7 +54,7 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
         ```
 
 5. (Optionally) Add an `AppBarButton` to the `CommandBar` for back navigation in the last two pages for Skia heads:
-    - `BlankPage1.xaml`, `BlankPage2.xaml`:
+    - `BlankPage1.xaml` and `BlankPage2.xaml`:
         > [!NOTE]
         > Here a platform conditional is used to show the `AppBarButton` on the Skia platforms only. For more information on this feature, check out: [platform specific XAML](../platform-specific-xaml.md)
 

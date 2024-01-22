@@ -27,18 +27,15 @@ For this guide, we'll install all of the requirements to build and run the appli
 
 There will be a series of steps involved in this;
 
-- [Getting Started with Uno Platform and the Raspberry Pi](#getting-started-with-uno-platform-and-the-raspberry-pi)
-  - [Prerequisites](#prerequisites)
-  - [What we'll be doing](#what-well-be-doing)
-  - [Connect to your Raspberry Pi](#connect-to-your-raspberry-pi)
-  - [Update Raspberry Pi OS](#update-raspberry-pi-os)
-  - [Install .NET](#install-net)
-  - [Install Uno Platform Templates](#install-uno-platform-templates)
-  - [Create a new Uno Solution](#create-a-new-uno-solution)
-  - [Give the SSH Session access to use the display](#give-the-ssh-session-access-to-use-the-display)
-  - [Build and run the application](#build-and-run-the-application)
-  - [Creating and Building on a PC](#creating-and-building-on-a-pc)
-  - [Wrap Up](#wrap-up)
+- [Connect to your Raspberry Pi](#connect-to-your-raspberry-pi)
+- [Update Raspberry Pi OS](#update-raspberry-pi-os)
+- [Install .NET](#install-net)
+- [Install Uno Platform Templates](#install-uno-platform-templates)
+- [Create a new Uno Solution](#create-a-new-uno-solution)
+- [Give the SSH Session access to use the display](#give-the-ssh-session-access-to-use-the-display)
+- [Build and run the application](#build-and-run-the-application)
+- [Creating and Building on a PC](#creating-and-building-on-a-pc)
+- [Wrap Up](#wrap-up)
 
 ## Connect to your Raspberry Pi
 
@@ -87,7 +84,7 @@ Run the following command;
 
 `wget -O - https://raw.githubusercontent.com/pjgpetecodes/dotnet7pi/main/install.sh | sudo bash`
 
-You can see the contents of this .NET installation script [here](https://github.com/pjgpetecodes/dotnet7pi/blob/main/install.sh)
+You can see the contents of this .NET installation script in [install.sh on GitHub](https://github.com/pjgpetecodes/dotnet7pi/blob/main/install.sh)
 
 ![Install .NET](images/03_install-dot-net.gif)
 
@@ -135,22 +132,15 @@ dir
 
 ![Uno Templates Installed](images/07_uno-app-directory.png)
 
-In the solution we've just created we have several files, including a global.json file which enforces that we use at least .NET Core 3.1.100.
-
-We also have the main solution files that we can open in Visual Studio on Windows or Mac.
-
-Then we have four directories;
+In the solution we've just created, we have the following directories:
 
 | Directory | Purpose |
 | :--- | :--- |
 | `HelloPi` | Contains the main XAML page  |
 | `HelloPi.Skia.Gtk` | Contains the Linux / Raspberry Pi Version |
 | `HelloPi.Skia.Linux.FrameBuffer` | Provides Access to a Window Manager and the Cursor  |
-| `HelloPi.UWP` | Contains the Windows UWP version |
 
 The directory we're interested in is the `HelloPi.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
-
-It actually includes the build outputs from the `HelloPi` and `HelloPi.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive into those in a bit more detail.
 
 ## Give the SSH Session access to use the display
 
@@ -164,7 +154,7 @@ Unable to init server: Could not connect: Connection refused
 (HelloPi.Skia.Gtk:18530): Gtk-WARNING **: 19:40:51.384: cannot open display:
 ```
 
-We can sort this out using the following command;
+We can sort this out using the following command:
 
 ```bash
 export DISPLAY=:0
@@ -178,7 +168,7 @@ You'll need to remember do this every time you launch a new SSH session currentl
 
 We're now ready to run our application.
 
-Firstly, we need to navigate to the Skia.Gtk directory;
+Firstly, we need to navigate to the HelloPi.Skia.Gtk directory;
 
 ```bash
 cd HelloPi.Skia.Gtk
@@ -223,8 +213,8 @@ export DISPLAY=:0
 If you are using a 64-bit version of the Raspberry Pi OS, you need to run the following commands to be able to run 32-bit executable :
 
 ```bash
-$ sudo apt-get install ia32-libs-multiarch
-$ sudo apt-get install ia32-libs
+sudo apt-get install ia32-libs-multiarch
+sudo apt-get install ia32-libs
 ```
 
 You can then run the application with;
@@ -233,9 +223,7 @@ You can then run the application with;
 ./HelloPi.Skia.Gtk
 ```
 
-I've created a blog post around how you can actually automate Building, Deploying and even debugging from your Windows machine using VS Code;
-
-[Developing UWP Apps for the Raspberry Pi with Uno Platform](https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/)
+See [Developing UWP Apps for the Raspberry Pi with Uno Platform](https://www.petecodes.co.uk/developing-uwp-apps-for-the-raspberry-pi-with-uno-platform/) blog post for how you can actually automate Building, Deploying, and even debugging from your Windows machine using VS Code.
 
 ## Wrap Up
 
