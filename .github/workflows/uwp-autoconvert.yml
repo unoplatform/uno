@@ -66,6 +66,11 @@ jobs:
         & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
       name: Install .NET Workloads
 
+    - name: Convert source tree to UWP
+      run: |
+        cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
+        dotnet run "$env:GITHUB_WORKSPACE"
+
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
