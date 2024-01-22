@@ -17,16 +17,21 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 		<IsAndroid>false</IsAndroid>
 		<IsIOS>false</IsIOS>
-		<IsMac>false</IsMac>
+		<IsMacOS>false</IsMacOS>
 		<IsMacCatalyst>false</IsMacCatalyst>
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsWinAppSdk>false</IsWinAppSdk>
+		<IsBrowser>false</IsBrowser>
+		<IsSkia>false</IsSkia>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
-
-    	<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
 
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
+
+	<PropertyGroup>
+		<EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
+		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
+	</PropertyGroup>
 
 	 <Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
@@ -51,7 +56,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
 			<PropertyGroup>
-				<IsMac>true</IsMac>
+				<IsMacOS>true</IsMacOS>
 				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.14</SupportedOSPlatformVersion>
 			</PropertyGroup>
 		</When>
@@ -73,6 +78,14 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 			</PropertyGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+			<PropertyGroup>
+				<IsBrowser>true</IsBrowser>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+			<PropertyGroup>
+				<IsSkia>true</IsSkia>
+			</PropertyGroup>
 		</When>
 	</Choose>
 
