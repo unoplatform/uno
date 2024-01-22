@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Resources.Core
 						ietfLanguageTags,
 						twoLetterLanguageTags.Concat(ietfLanguageParentTags));
 
-					_languageTags = new HashSet<string>(allCulture.Distinct());
+					_languageTags = new HashSet<string>(allCulture.Distinct(), StringComparer.InvariantCultureIgnoreCase);
 				}
 
 				return _languageTags;
@@ -75,7 +75,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 		private static bool IsLanguageTag(string str)
 		{
-			return LanguageTags.Contains(str, StringComparer.InvariantCultureIgnoreCase);
+			return LanguageTags.Contains(str);
 		}
 
 		#endregion
