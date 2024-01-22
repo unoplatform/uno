@@ -32,16 +32,30 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<ItemGroup Condition=" !$(IsWinAppSdk) AND $(EnableDefaultUnoItems) == 'true' ">
 		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
 		<Content Include="Assets\**;**/*.png;**/*.bmp;**/*.jpg;**/*.dds;**/*.tif;**/*.tga;**/*.gif" 
-			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg" />
-		<Page Include="**\*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg">
+			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
+			<IsDefaultItem>true</IsDefaultItem>
+		</Content>
+		<Page Include="**\*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
+			<IsDefaultItem>true</IsDefaultItem>
+		</Page>
 		<Compile Update="**\*.xaml.cs">
 			<DependentUpon>%(Filename)</DependentUpon>
+			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
+			<IsDefaultItem>true</IsDefaultItem>
 		</Compile>
-		<PRIResource Include="**\*.resw" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+		<PRIResource Include="**\*.resw" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
+			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
+			<IsDefaultItem>true</IsDefaultItem>
+		</PRIResource>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(PkgUno_Resizetizer)'!='' ">
-		<UnoImage Include="Assets\**\*.svg" Exclude="@(UnoImage)" />
+		<UnoImage Include="Assets\**\*.svg" Exclude="@(UnoImage)">
+			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
+			<IsDefaultItem>true</IsDefaultItem>
+		</UnoImage>
 	</ItemGroup>
 
 	<!-- Cross Targetting -->
