@@ -33,7 +33,7 @@ To create a blank template, using minimal dependencies:
 dotnet new unoapp -preset=blank -o test
 ```
 
-To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
+To create from a recommended template using [Uno.Extensions](xref:Overview.Extensions):
 
 ```dotnetcli
 dotnet new unoapp -preset=recommended -o test
@@ -72,7 +72,7 @@ dotnet new unolib -o MyUnoLib
 
 ## Uno Platform Blank Cross-Runtime library
 
-This template can be used to create a blank cross-runtime library, when platform specific code needs to be created for Skia and WebAssembly.
+This template can be used to create a blank cross-runtime library when platform-specific code needs to be created for Skia and WebAssembly.
 
 A basic example:
 
@@ -82,9 +82,9 @@ dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 
 ## Uno Platform MAUI Embedding Class Library
 
-This template can be used to to create a .NET MAUI Controls library to embed within your Uno Platform app.
+This template can be used to create a .NET MAUI Controls library to embed within your Uno Platform app.
 
-A basic exampmle:
+A basic example:
 
 ```dotnetcli
 dotnet new unomauilib -o MyMauiEmbeddingLibrary
@@ -92,7 +92,7 @@ dotnet new unomauilib -o MyMauiEmbeddingLibrary
 
 ## Uno Platform Uno.UITest library
 
-This templates creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
+This template creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
 
 Considering you've created an application with `dotnet new unoapp -o MyApp`, you can then create a UI Tests library with these steps:
 
