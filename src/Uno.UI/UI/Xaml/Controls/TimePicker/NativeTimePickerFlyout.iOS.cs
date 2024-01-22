@@ -8,6 +8,7 @@ using Uno.UI.Common;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -27,7 +28,7 @@ partial class NativeTimePickerFlyout
 			Visibility = Visibility.Collapsed,
 			Background = SolidColorBrushHelper.Transparent,
 			AutoresizingMask = UIViewAutoresizing.All,
-			Frame = new CGRect(CGPoint.Empty, ViewHelper.GetMainWindowSize())
+			Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
 		};
 	}
 
