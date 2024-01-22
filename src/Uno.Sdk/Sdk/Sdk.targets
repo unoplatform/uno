@@ -62,8 +62,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<When Condition="$(TargetFramework.Contains('windows10'))">
 			<PropertyGroup>
 				<IsWinAppSdk>true</IsWinAppSdk>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.0.18362.0</SupportedOSPlatformVersion>
-				<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">$(SupportedOSPlatformVersion)</TargetPlatformMinVersion>
+				<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
+				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
 				<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
 			</PropertyGroup>
