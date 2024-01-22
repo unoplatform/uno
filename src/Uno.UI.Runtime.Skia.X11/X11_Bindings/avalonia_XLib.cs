@@ -51,6 +51,11 @@ namespace Avalonia.X11
 			int height, int border_width, IntPtr border, IntPtr background);
 
 		[DllImport(libX11)]
+		public static extern IntPtr XCreateWindow(IntPtr display, IntPtr parent, int x, int y, int width, int height,
+			int border_width, int depth, int xclass, IntPtr visual, UIntPtr valuemask,
+			ref XSetWindowAttributes attributes);
+
+		[DllImport(libX11)]
 		public static extern int XMapWindow(IntPtr display, IntPtr window);
 
 		[DllImport(libX11)]

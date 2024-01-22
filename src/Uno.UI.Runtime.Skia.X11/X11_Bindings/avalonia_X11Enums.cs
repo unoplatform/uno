@@ -75,4 +75,24 @@ namespace Avalonia.X11
 		AnyModifier = (1 << 15)
 
 	}
+
+	[Flags]
+	internal enum XCreateWindowFlags
+	{
+		CWBackPixmap = (1 << 0),
+		CWBackPixel = (1 << 1),
+		CWBorderPixmap = (1 << 2),
+		CWBorderPixel = (1 << 3),
+		CWBitGravity = (1 << 4),
+		CWWinGravity = (1 << 5),
+		CWBackingStore = (1 << 6),
+		CWBackingPlanes = (1 << 7),
+		CWBackingPixel = (1 << 8),
+		CWOverrideRedirect = (1 << 9),
+		CWSaveUnder = (1 << 10),
+		CWEventMask = (1 << 11),
+		CWDontPropagate = (1 << 12),
+		CWColormap = (1 << 13),
+		CWCursor = (1 << 14),
+	}
 }

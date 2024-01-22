@@ -7,7 +7,6 @@ using Windows.UI.Core;
 using Avalonia.X11;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using EventMask = Avalonia.X11.EventMask;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -63,25 +62,6 @@ internal partial class X11XamlRootHost
 	[DoesNotReturn]
 	private void Run()
 	{
-		var mask =
-			(IntPtr)EventMask.ExposureMask |
-			(IntPtr)EventMask.ButtonPressMask |
-			(IntPtr)EventMask.ButtonReleaseMask |
-			(IntPtr)EventMask.PointerMotionMask |
-			(IntPtr)EventMask.KeyPressMask |
-			(IntPtr)EventMask.KeyReleaseMask |
-			(IntPtr)EventMask.EnterWindowMask |
-			(IntPtr)EventMask.LeaveWindowMask |
-			(IntPtr)EventMask.StructureNotifyMask |
-			(IntPtr)EventMask.FocusChangeMask |
-			(IntPtr)EventMask.VisibilityChangeMask |
-			(IntPtr)EventMask.NoEventMask;
-
-		using (X11Helper.XLock(X11Window.Display))
-		{
-			XLib.XSelectInput(X11Window.Display, X11Window.Window, mask);
-		}
-
 		while (true)
 		{
 			// can probably be optimized with epoll but at the cost of thread preemption

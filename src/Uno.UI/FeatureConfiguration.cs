@@ -797,5 +797,14 @@ namespace Uno.UI
 			/// </summary>
 			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
 		}
+
+		public static class Rendering
+		{
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
+			/// OpenGL if available. Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseOpenGLOnX11 { get; set; }
+		}
 	}
 }

@@ -6,15 +6,16 @@ using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	internal class X11Renderer(IXamlRootHost host, X11Window x11window)
+	internal class X11SoftwareRenderer(IXamlRootHost host, X11Window x11window) : IX11Renderer
 	{
-		private const int COLOR_DEPTH = 24;
-		private const int BITMAP_PAD = 32;
+		private const int ColorDepth = 24;
+		private const int BitmapPad = 32;
 
 		private SKBitmap? _bitmap;
 		private SKSurface? _surface;
 		private int renderCount;
-		internal void InvalidateRender()
+
+		void IX11Renderer.InvalidateRender()
 		{
 			using var __ = X11Helper.XLock(x11window.Display);
 
@@ -52,13 +53,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			IntPtr ximage = X11Helper.XCreateImage(
 				display: x11window.Display,
 				visual: /* CopyFromParent */ 0,
-				depth: COLOR_DEPTH,
+				depth: ColorDepth,
 				format: /* ZPixmap */ 2,
 				offset: 0,
 				data: _bitmap.GetPixels(),
 				width: (uint)width,
 				height: (uint)height,
-				bitmap_pad: BITMAP_PAD,
+				bitmap_pad: BitmapPad,
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
 			var _2 = X11Helper.XPutImage(
