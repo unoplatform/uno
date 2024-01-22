@@ -418,7 +418,8 @@ namespace Private.Infrastructure
 
 			internal static void CloseAllSecondaryWindows()
 			{
-				var windows = ApplicationHelper.Windows.ToArray();
+#if HAS_UNO_WINUI
+				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
 				foreach (var window in windows)
 				{
 					if (window != TestServices.WindowHelper.XamlRoot.HostWindow)
@@ -426,6 +427,7 @@ namespace Private.Infrastructure
 						window.Close();
 					}
 				}
+#endif
 			}
 		}
 	}
