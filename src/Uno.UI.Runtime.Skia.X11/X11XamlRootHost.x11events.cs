@@ -64,7 +64,7 @@ internal partial class X11XamlRootHost
 	private void Run()
 	{
 		var mask =
-			// (IntPtr)EventMask.ExposureMask | // TODO: invalidate render on Expose, see related comment below
+			(IntPtr)EventMask.ExposureMask |
 			(IntPtr)EventMask.ButtonPressMask |
 			(IntPtr)EventMask.ButtonReleaseMask |
 			(IntPtr)EventMask.PointerMotionMask |
