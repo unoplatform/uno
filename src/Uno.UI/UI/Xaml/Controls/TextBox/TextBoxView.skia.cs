@@ -17,6 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
+		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -25,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_textBox = new WeakReference<TextBox>(textBox);
 			_isPasswordBox = textBox is PasswordBox;
-			if (FeatureConfiguration.TextBox.UseOverlayOnSkia && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
+			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -116,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			if (_isSkiaTextBox)
 			{
 				return;
 			}
@@ -192,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			if (_isSkiaTextBox)
 			{
 				TextBox?.ContentElement?.InvalidateMeasure();
 				TextBox?.UpdateLayout();
