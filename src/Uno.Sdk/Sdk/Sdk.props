@@ -40,7 +40,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
 	<!-- SingleProject-specific features -->
 	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
-		<ProjectCapability Include="Msix" />
+		<ProjectCapability Include="Msix" Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'"/>
 		<ProjectCapability Include="MauiSingleProject" />
 		<ProjectCapability Include="LaunchProfiles" />
 		<!-- If VS is older than Dev17 -->
