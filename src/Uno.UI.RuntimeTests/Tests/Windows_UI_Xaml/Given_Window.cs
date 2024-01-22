@@ -11,15 +11,6 @@ using Windows.UI;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Media;
 
-
-
-
-
-
-
-
-
-
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
@@ -30,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_Window
 {
-#if !WINAPPSDK
+#if !WINAPPSDK && HAS_UNO_WINUI
 	[TestCleanup]
 	public void CleanupTest()
 	{
