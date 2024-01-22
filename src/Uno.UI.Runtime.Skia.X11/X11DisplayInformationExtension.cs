@@ -116,7 +116,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			host?.SetDisplayInformationExtension(this);
 		}
 
-		// TODO: this can probably be improved using the Xrandr extension
 		internal void UpdateDetails()
 		{
 			var x11Window = X11XamlRootHost.GetWindow();
