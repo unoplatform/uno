@@ -40,7 +40,10 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private string? _lastUpdatedFilePath;
 		private bool _supportsXamlReader;
+
+#if __IOS__ || __CATALYST__ || __ANDROID__
 		private bool? _isIssue93860Fixed;
+#endif
 
 		private void InitializeXamlReader()
 		{
