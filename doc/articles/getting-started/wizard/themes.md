@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Themes
----
-
-### Theme
-
 Uno platform lets you decide easily which theme or skin to display throughout your app.
 
 This option sets the generated theme or skin to be used in the generated app. The options available are:
@@ -26,7 +20,7 @@ This option sets the generated theme or skin to be used in the generated app. Th
 
 The theme in the application can be further customized with the following options:
 
-### Theme Service  
+#### Theme Service  
 
 Includes references to the [Uno.Extensions.Core.WinUI](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI/) package which includes the theme service that can be used to control the theme (Dark, Light or System) of the application. This is included by default in the recommended preset, but not in the blank preset.
 
@@ -34,7 +28,7 @@ Includes references to the [Uno.Extensions.Core.WinUI](https://www.nuget.org/pac
 dotnet new unoapp -theme-Service
 ```
 
-### Import DSP
+#### Import DSP
 
 Allows colors in the application to be overridden using a DSP file (Material theme only). This is included by default in the recommended preset, but not in the blank preset.
 

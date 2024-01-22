@@ -49,7 +49,7 @@ The template will create a new solution with a number of projects. The main proj
 ## [Command Line](#tab/cli)
 
 > [!NOTE]
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
+> If you don't have the Uno Platform dotnet new templates installed, follow [dotnet new templates for Uno Platform](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 

@@ -4,18 +4,18 @@ uid: Uno.Workshop.Counter.CSharp.MVUX
 
 # Counter App using C# Markup and MVUX
 
-[Download the complete C# Markup + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVUX)  
+[Download the complete C# Markup + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVUX)
 
 [!INCLUDE [Intro](include-intro.md)]
 
-In this tutorial you will learn how to:
+In this tutorial, you will learn how to:
 
 - Create a new Project with Uno Platform using Visual Studio Template Wizard or the **dotnet new** command
 - Add elements to the C# file, using [C# Markup](xref:Uno.Extensions.Markup.Overview), to define the layout of the application
 - Add code to the C# file to implement the application logic using the [Model-View-Update-eXtended (MVUX)](xref:Uno.Extensions.Mvux.Overview) pattern
 - Use data binding to connect the UI to the application logic
 
-To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#.
+To complete this tutorial, you don't need any prior knowledge of the Uno Platform or C#.
 
 [!INCLUDE [VS](include-create.md)]
 
@@ -49,7 +49,7 @@ The template will create a new solution with a number of projects. The main proj
 ## [Command Line](#tab/cli)
 
 > [!NOTE]
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
+> If you don't have the Uno Platform dotnet new templates installed, follow [dotnet new templates for Uno Platform](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 
