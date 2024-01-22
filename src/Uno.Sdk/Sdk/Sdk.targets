@@ -10,8 +10,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
-
 	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
@@ -143,4 +141,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<Error Text="The resolved version of Uno.WinUI does not match DefaultUnoVersion. The Version of Uno.WinUI must match the version of the Uno.Sdk.  For more information about updating Uno Platform versions, visit https://aka.platform.uno/migrate-from-previous"
 			Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
 	</Target>
+
+	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
 </Project>
