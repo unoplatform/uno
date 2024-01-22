@@ -1,11 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.UI.Xaml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Core;
 using FluentAssertions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Private.Infrastructure;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI;
+using Uno.UI.Xaml.Core;
+using Microsoft.UI.Xaml.Media;
+
+
+
+
+
+
+
+
 
 
 #if !WINDOWS_UWP && !WINAPPSDK
@@ -19,6 +31,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 public class Given_Window
 {
 #if !WINAPPSDK
+	[TestCleanup]
+	public void CleanupTest()
+	{
+		TestServices.WindowHelper.CloseAllSecondaryWindows();
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_CreateNewWindow()
@@ -87,29 +105,155 @@ public class Given_Window
 
 		Assert.IsTrue(closedFired);
 	}
-#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public void When_Secondary_Window_From_Xaml()
+	public async Task When_Secondary_Window_Opens()
 	{
-		var sut = new RedWindow();
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new Window();
+		bool activated = false;
+		sut.Content = new Border();
+		sut.Activated += (s, e) => activated = true;
 		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+		Assert.IsTrue(activated);
+		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
+		Assert.IsTrue(sut.Bounds.Width > 0);
+		Assert.IsTrue(sut.Bounds.Height > 0);
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public void When_Secondary_Window_Background()
+	public async Task When_Secondary_Window_Content_Loads()
 	{
-		var sut = new RedWindow();
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new Window();
+		bool loaded = false;
+		var border = new Border();
+		var button = new Button();
+		button.Content = "Hello!";
+		border.Child = button;
+		sut.Content = border;
+		button.Loaded += (s, e) => loaded = true;
 		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => loaded);
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public void When_Secondary_Window_No_Background()
+	public async Task When_Secondary_Window_Content_Non_Zero_Size()
 	{
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new Window();
+		var button = new Button();
+		button.Content = "Hello!";
+		sut.Content = button;
+		sut.Activate();
+		await TestServices.WindowHelper.WaitFor(() => button.ActualWidth > 0);
+		Assert.IsTrue(button.ActualWidth > 0);
+		Assert.IsTrue(button.ActualHeight > 0);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async void When_Secondary_Window_From_Xaml()
+	{
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new RedWindow();
+		sut.Activate();
+		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
+
+		// Verify that center of window is red
+		var initialScreenshot = await UITestHelper.ScreenShot(sut.Content as FrameworkElement);
+
+		var color = initialScreenshot.GetPixel(initialScreenshot.Width / 2, initialScreenshot.Height / 2);
+		color.Should().Be(Colors.Red);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Secondary_Window_No_Background_Light_Dark()
+	{
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		using var _ = ThemeHelper.UseDarkTheme();
 		var sut = new NoBackgroundWindow();
-		sut.Activate();
+
+		await VerifyWindowBackgroundAsync(sut, false, Colors.Black);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Secondary_Window_No_Background_Light()
+	{
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new NoBackgroundWindow();
+
+		await VerifyWindowBackgroundAsync(sut, false, Colors.White);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Secondary_Window_No_Background_Switch_Theme()
+	{
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new NoBackgroundWindow();
+
+		await VerifyWindowBackgroundAsync(sut, false, Colors.White);
+
+		using var _ = ThemeHelper.UseDarkTheme();
+		await VerifyWindowBackgroundAsync(sut, true, Colors.Black);
+	}
+
+	private static async Task VerifyWindowBackgroundAsync(Window sut, bool wasActivated, Color expectedColor)
+	{
+		if (!wasActivated)
+		{
+			bool activated = false;
+			sut.Activated += (s, e) => activated = true;
+			sut.Activate();
+
+			await TestServices.WindowHelper.WaitFor(() => activated);
+		}
+
+		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
+
+		// Verify that center of window is red
+		var rootElement = sut.Content.XamlRoot.VisualTree.RootElement;
+		Assert.IsInstanceOfType(rootElement, typeof(Panel));
+		var rootElementAsPanel = (Panel)rootElement;
+		var rootElementBackground = rootElementAsPanel.Background;
+		Assert.IsInstanceOfType(rootElementBackground, typeof(SolidColorBrush));
+		var rootElementBackgroundAsSolidColorBrush = (SolidColorBrush)rootElementBackground;
+		Assert.AreEqual(expectedColor, rootElementBackgroundAsSolidColorBrush.Color);
+	}
+#endif
 }
