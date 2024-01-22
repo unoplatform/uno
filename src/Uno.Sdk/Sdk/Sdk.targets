@@ -155,13 +155,21 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
 	<Target Name="UnoSdkVersionCheck"
 			AfterTargets="ResolveReferences"
-			BeforeTargets="Build"
+			BeforeTargets="BeforeBuild"
 			Condition="'$(PkgUno_WinUI)' != ''">
-		<Error Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="Do not override the '%24(UnoVersion)'. The '%24(UnoVersion)' must match the version of the Uno.Sdk." />
+		<Error Code="UNOB0004"
+		 	   HelpLink="https://aka.platform.uno/UNOB0004"
+		       Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="The '%24(UnoVersion)' property must match the version of the Uno.Sdk defined in global.json (found $(UnoVersion) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages" />
 
 		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
-		<Error Text="The resolved version of Uno.WinUI does not match DefaultUnoVersion. The Version of Uno.WinUI must match the version of the Uno.Sdk.  For more information about updating Uno Platform versions, visit https://aka.platform.uno/migrate-from-previous"
-			Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
+		<PropertyGroup>
+			<_UnoSdkVersionCheck_Resolved_UnoWinUI>$([System.IO.Path]::GetFileName($(PkgUno_WinUI)))</_UnoSdkVersionCheck_Resolved_UnoWinUI>
+		</PropertyGroup>
+
+		<Error Code="UNOB0005"
+		 	   HelpLink="https://aka.platform.uno/UNOB0005"
+		       Text="The Version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
+			   Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
 	</Target>
 
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
