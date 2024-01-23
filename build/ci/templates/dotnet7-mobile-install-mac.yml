@@ -1,6 +1,6 @@
 parameters:
   UnoCheck_Version: '1.14.1'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/8a14128754833984a0c83398e7dda6d995199e1b/manifests/uno.ui.manifest.json'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
 
 steps:
 
