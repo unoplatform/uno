@@ -358,18 +358,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 					var currentSize = new Size(ActualWidth, ActualHeight);
 
-					// If the control is not visible, or not sized properly
-					// we cannot display the video window.
-					if (currentSize.Height <= 0 || currentSize.Width <= 0)
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Skipping layout update for empty layout slot");
-						}
-
-						return;
-					}
-
 					var playerHeight = (double)currentSize.Height - _transportControlsBounds.Height;
 					var playerWidth = (double)currentSize.Width;
 
