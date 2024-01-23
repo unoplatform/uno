@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Media;
 
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
