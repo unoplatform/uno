@@ -79,13 +79,7 @@ namespace Microsoft.UI.Xaml
 
 		protected internal override void OnInvalidateMeasure()
 		{
-			InvalidateMeasureCallCount++;
 			base.OnInvalidateMeasure();
-		}
-
-		internal void InternalArrange(Rect frame)
-		{
-			_layouter.Arrange(frame);
 		}
 
 		public bool IsLoaded { get; private set; }
@@ -111,8 +105,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
-
-		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;
 

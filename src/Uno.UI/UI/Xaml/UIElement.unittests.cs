@@ -26,8 +26,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsArrangeDirtyPath => false;
 
-		internal bool IsPointerCaptured { get; set; }
-
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
 
