@@ -388,12 +388,10 @@
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Library">
 							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Library}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+								<FontIcon Glyph="&#xE1D3;" VerticalAlignment="Top" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="LIBRARY" />
+										   Text="Library" />
 							</Grid>
 						</RadioButton>
 
@@ -404,12 +402,10 @@
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Favorites">
 							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Favorites}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+								<FontIcon Glyph="&#xE728;" VerticalAlignment="Top" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="FAVS" />
+										   Text="Favorites" />
 							</Grid>
 						</RadioButton>
 
@@ -420,29 +416,10 @@
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Recents">
 							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Recents}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+								<FontIcon Glyph="&#xE81C;" VerticalAlignment="Top" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="RECENTS" />
-							</Grid>
-						</RadioButton>
-
-						<RadioButton GroupName="SelectedSectionPhone"
-									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 VerticalContentAlignment="Stretch"
-									 Foreground="{Binding SearchSelected, Converter={StaticResource TabActiveColorForeground}}"
-									 IsChecked="{Binding SearchSelected, Mode=TwoWay}"
-									 Command="{Binding ShowNewSectionCommand}"
-									 CommandParameter="Search">
-							<Grid VerticalAlignment="Stretch">
-								<u:PathControl Style="{StaticResource Icon_Section_Search}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
-								<TextBlock Style="{StaticResource Typo06}"
-										   VerticalAlignment="Bottom"
-										   Text="SEARCH" />
+										   Text="Recents" />
 							</Grid>
 						</RadioButton>
 					</u:StarStackPanel>
