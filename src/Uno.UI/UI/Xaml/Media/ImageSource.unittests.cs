@@ -24,6 +24,11 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{
+		public ImageSource()
+		{
+			InitializeBinder();
+		}
+
 		partial void InitFromResource(Uri uri)
 		{
 			AbsoluteUri = uri;
