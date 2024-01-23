@@ -21,7 +21,6 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		public ImageSource()
 		{
-			InitializeBinder();
 		}
 
 		partial void InitFromResource(Uri uri)
