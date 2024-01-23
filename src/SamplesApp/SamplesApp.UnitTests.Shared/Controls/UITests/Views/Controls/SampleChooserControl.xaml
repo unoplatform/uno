@@ -45,11 +45,11 @@
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
 				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
+						Value="{ThemeResource Color05Brush}" />
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Background"
-						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
+						Value="{ThemeResource ControlFillColorDefaultBrush}" />
 				<Setter Property="Height"
 								Value="50" />
 			</Style>
@@ -57,7 +57,7 @@
 			<Style x:Key="BaseTitleContainerStyle"
 				   TargetType="Border">
 				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
+						Value="{ThemeResource Color05Brush}" />
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="HorizontalAlignment"
@@ -75,13 +75,13 @@
 				   TargetType="Border"
 				   BasedOn="{StaticResource BaseTitleContainerStyle}">
 				<Setter Property="MinHeight"
-						Value="{StaticResource TitleContainerHeight}" />
+						Value="{ThemeResource TitleContainerHeight}" />
 			</Style>
 
 			<Style x:Key="TemplateContainerStyle"
 				   TargetType="Border">
 				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
+						Value="{ThemeResource Color05Brush}" />
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Margin"
@@ -139,7 +139,13 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="SamplesList">
-				<ListView ItemsSource="{Binding SampleContents}"
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<ListView Grid.Row="1" ItemsSource="{Binding SampleContents}"
 						  SelectedItem="{Binding SelectedLibrarySample, Mode=TwoWay}"
 						  ItemTemplate="{StaticResource SampleTemplate}"
 						  ItemContainerStyle="{StaticResource SampleChooserListViewItemStyle}"
@@ -147,7 +153,8 @@
 						  helper:ListViewBaseCommand.Command="{Binding ShowNewSectionCommand}"
 						  helper:ListViewBaseCommand.CommandParameter="SamplesContent"
 							ub:SplitViewBehavior.CloseOnClick="True">
-				</ListView>
+					</ListView>
+				</Grid>
 			</DataTemplate>
 
 			<DataTemplate x:Key="FavoritesList">
@@ -180,12 +187,6 @@
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
-
-					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-							 Style="{StaticResource SearchTextBoxStyle}"
-							 KeyDown="OnSearchEnterKey_KeyDown"
-							 PlaceholderText="Search"
-							 Margin="8" />
 
 					<ListView Grid.Row="1"
 							  ItemsSource="{Binding FilteredSamples}"
@@ -260,122 +261,134 @@
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<!-- LIBRARY (Categories)-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+				<!-- Title area -->
+				
+				<Grid>
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}" BorderThickness="0"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
 
-					<!-- Runtime tests button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+						<!-- Runtime tests button -->
+						<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
 							Command="{Binding OpenRuntimeTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
-									   Margin="5,0" />
-					</Button>
-					<Button Style="{StaticResource IconButtonStyle}"
-							Grid.Column="1"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Command="{Binding CreateNewWindowCommand}">
-						<FontIcon Glyph="&#xE8A7;" />
-					</Button>
+							<FontIcon Glyph="&#xE9F9;" Foreground="{StaticResource Color06Brush}" />
+						</Button>
 
-					<!-- Title -->
-					<TextBlock
+						<!-- Create new window button -->
+						<Button Style="{StaticResource IconButtonStyle}"
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Right"
+								Command="{Binding CreateNewWindowCommand}">
+							<FontIcon Glyph="&#xE8A7;" />
+						</Button>
+
+						<!-- Title -->
+						<TextBlock
 						Grid.Column="2"
 						Style="{StaticResource Typo03}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center"
 						Text="Library" />
 
-					<!-- Record All Tests Button -->
-					<Button
+						<!-- Record All Tests Button -->
+						<Button
 						Grid.Column="3"
 						Style="{StaticResource IconButtonStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
 						Command="{Binding RecordAllTestsCommand}">
-						<u:PathControl Style="{StaticResource Icon_RunAll}"
-									   Margin="5,0" />
-					</Button>
+							<FontIcon Glyph="&#xEC58;" Foreground="{StaticResource Color06Brush}" />
+						</Button>
+					</Grid>
+
+					<ContentControl HorizontalContentAlignment="Stretch"
+							VerticalContentAlignment="Stretch"
+							Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
+							ContentTemplate="{StaticResource SamplesTitle}" />
+
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}" BorderThickness="0"
+					  Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
+						<TextBlock Style="{StaticResource Typo03}"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Text="Favorites" />
+					</Grid>
+
+					<Grid Style="{StaticResource BaseTitleGridContainerStyle}" BorderThickness="0"
+					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
+						<TextBlock Style="{StaticResource Typo03}"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Text="Recents" />
+					</Grid>
+
 				</Grid>
-				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
-								Grid.Row="1"
+
+				<!-- Search box -->
+
+				<Grid Grid.Row="1" Style="{StaticResource BaseTitleGridContainerStyle}">
+					<TextBox Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							 Style="{StaticResource SearchTextBoxStyle}"
+							 KeyDown="OnSearchEnterKey_KeyDown"
+							 PlaceholderText="Search"
+							 Margin="8,0,8,8" />
+				</Grid>
+
+				<!-- Lists-->
+				
+				<Grid Grid.Row="2">
+
+					<!-- Categories -->
+					<ContentControl ContentTemplate="{StaticResource CategoriesList}"
+								
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}" />
 
-				<!--SAMPLES-->
-				<ContentControl HorizontalContentAlignment="Stretch"
+					<!-- Samples -->
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
-								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource SamplesTitle}" />
-				<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
+								Grid.Row="2"
 								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource SamplesList}" />
 
-				<!--FAVORITES-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Favorites" />
-				</Grid>
-				<ContentControl HorizontalContentAlignment="Stretch"
+					<!-- Favorites -->
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
+								Grid.Row="2"
 								Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource FavoritesList}" />
 
-				<!--RECENTS-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Recents" />
-				</Grid>
-				<ContentControl HorizontalContentAlignment="Stretch"
+					<!-- Recents -->
+					<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="1"
 								Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource RecentSamplesList}" />
-
-				<!--SEARCH-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding SearchVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Search" />
 				</Grid>
-				<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
-								Visibility="{Binding SearchVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource SearchList}" />
 
-				<!--NAVIGATION BUTTONS-->
-				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+				<!-- Bottom tab bar -->
 
+				<Border Background="{ThemeResource ControlFillColorDefaultBrush}"
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
-						Height="50"
-						Grid.Row="2">
+						Height="56"
+						Padding="0,4,0,4"
+						Grid.Row="3">
 					<u:StarStackPanel VerticalAlignment="Stretch"
 									  Sizes="*,*,*,*"
 									  Orientation="Horizontal">
