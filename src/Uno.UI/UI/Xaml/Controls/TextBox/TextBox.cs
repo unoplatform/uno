@@ -285,7 +285,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			RaiseTextChanging();
 
-			if (!_isInputModifyingText || IsSkiaTextBox)
+			if (!_isInputModifyingText
+#if __SKIA__
+				|| _isSkiaTextBox
+#endif
+				)
 			{
 				_textBoxView?.SetTextNative(Text);
 			}
