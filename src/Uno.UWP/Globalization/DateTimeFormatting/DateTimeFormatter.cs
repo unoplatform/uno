@@ -85,7 +85,7 @@ public sealed partial class DateTimeFormatter
 
 		Patterns = BuildPatterns().ToArray();
 
-		var calendar = new Calendar(languagesArray);
+		var calendar = new Calendar(Languages);
 		Calendar = calendar.GetCalendarSystem();
 		Clock = calendar.GetClock();
 
