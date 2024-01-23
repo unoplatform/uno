@@ -73,8 +73,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			var messageDialog = new MessageDialog("Hello");
 
+#if HAS_UNO_WINUI
 			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
 			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 			var asyncOperation = messageDialog.ShowAsync();
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
@@ -94,8 +96,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			var messageDialog = new MessageDialog("When_Cancel_Then_CloseDialog");
 
+#if HAS_UNO_WINUI
 			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
 			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 
 			var asyncOperation = messageDialog.ShowAsync();
 
