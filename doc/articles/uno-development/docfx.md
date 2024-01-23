@@ -123,9 +123,5 @@ To run the script on Windows:
 
 1. Make sure `crosstargeting_override.props` is not defining UnoTargetFrameworkOverride
 2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
-<<<<<<< HEAD
-3. Go the the uno\build folder (not the uno\src\build folder)
-=======
 3. Go to the uno\build folder (not the uno\src\build folder)
->>>>>>> 34f3ba4344 (docs: Few more followup improvements)
 4. Run the `run-doc-generation.cmd` script; make sure to follow the instructions
