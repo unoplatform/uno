@@ -418,7 +418,7 @@ namespace Private.Infrastructure
 
 			internal static void CloseAllSecondaryWindows()
 			{
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI && !WINAPPSDK
 				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
 				foreach (var window in windows)
 				{
