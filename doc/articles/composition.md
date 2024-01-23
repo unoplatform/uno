@@ -56,6 +56,7 @@ Or alternatively this, if you want to enable all available Composition capabilit
 ## Implemented APIs [GTK/WPF]
 
 ### Windows.UI.Composition
+
 - [CompositionBackdropBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionbackdropbrush)
 - [CompositionBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionbrush)
 - [CompositionCapabilities](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositioncapabilities)
@@ -98,12 +99,15 @@ Or alternatively this, if you want to enable all available Composition capabilit
 - [VisualCollection](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.visualcollection)
 
 ### Windows.Graphics.Effects
+
 - [IGraphicsEffectSource](https://learn.microsoft.com/en-us/uwp/api/windows.graphics.effects.igraphicseffectsource)
 
 ### Windows.Graphics.Effects.Interop
+
 - [IGraphicsEffectD2D1Interop](https://learn.microsoft.com/en-us/windows/win32/api/windows.graphics.effects.interop/nn-windows-graphics-effects-interop-igraphicseffectd2d1interop)
 
 ### Microsoft.Graphics.Canvas.Effects (Win2D/Composition Effects)
+
 - [AlphaMaskEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_AlphaMaskEffect.htm)
 - [ArithmeticCompositeEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_ArithmeticCompositeEffect.htm)
 - [BlendEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_BlendEffect.htm)
@@ -136,6 +140,8 @@ Or alternatively this, if you want to enable all available Composition capabilit
 - [Transform2DEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_Transform2DEffect.htm)
 
 Note that while Uno Platform implements these effects and their Win2D wrappers, the Win2D wrappers are still internal and not exposed to users, but the effects can still be used by temporary implementing the [IGraphicsEffectD2D1Interop](https://learn.microsoft.com/en-us/windows/win32/api/windows.graphics.effects.interop/nn-windows-graphics-effects-interop-igraphicseffectd2d1interop) interface manually until the Win2D wrappers become public, like for example the [GaussianBlurEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_GaussianBlurEffect.htm) can be implemented like this:
+
+<!-- markdownlint-disable MD010 -->
 
 ```csharp
 #nullable enable
@@ -201,6 +207,6 @@ The GUID used in the example above is the Effect CLSID of the [Direct2D Gaussian
 
 ## Known issues
 
-* When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.
+- When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.
 
-* [GTK/WPF] Some Composition effects don't render properly (or at all) on software rendering (CPU), to check if Uno is running on the software rendering (CPU) or the hardware rendering (GPU), you can call `CompositionCapabilities.GetForCurrentView().AreEffectsFast()`.
+- [GTK/WPF] Some Composition effects don't render properly (or at all) on software rendering (CPU), to check if Uno is running on the software rendering (CPU) or the hardware rendering (GPU), you can call `CompositionCapabilities.GetForCurrentView().AreEffectsFast()`.
