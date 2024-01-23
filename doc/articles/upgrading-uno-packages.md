@@ -5,7 +5,7 @@ uid: Uno.Development.UpgradeUnoNuget
 
 Starting from Uno Platform 5.1 and using the new Uno.Sdk, upgrading NuGet packages starting by `Uno.WinUI.` requires updating the `global.json` file at the root of your solution.
 
-It typically looks like this:
+It typically looks similar to this:
 
 ```json
 {
@@ -18,4 +18,4 @@ It typically looks like this:
 
 To update the version, pick a stable version from the Uno.WinUI packages either by using [nuget.org](https://www.nuget.org/packages/Uno.WinUI), or by looking at the NuGet Packager's latest stable package version.
 
-Once the version has been chosen, change the global.json to use the newer version of Uno Platform.
+Once the version has been chosen, change the global.json line with `"Uno.Sdk"` to use the newer version of Uno Platform.
