@@ -186,6 +186,8 @@
 
     - name: Upgrading
       items:
+      - name: Upgrading NuGet Packages
+        href: xref:Uno.Development.UpgradeUnoNuget
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
       - name: Upgrading to Uno 5.0

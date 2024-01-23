@@ -27,6 +27,18 @@ This error may occur during resources (`.resw`) analysis if the framework does n
 
 For instance, the language code `zh-CN` is not recognized and `zh-Hans` should be used instead.
 
+### UNOB0004: The $(UnoVersion) property must match the version of the Uno.Sdk defined in global.json
+
+The build process has determined that an MSBuild property was defined to override `UnoVersion`. This property is defined by the Uno.Sdk and cannot be changed and must be updated through the `global.json` file
+
+Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
+
+### UNOB0005: The Version of Uno.WinUI must match the version of the Uno.Sdk found in global.json
+
+The build process has determined that the version of the Uno.WinUI NuGet package does not match the Uno.Sdk package version. This generally happens when the Uno.WinUI.* packages are updated through Visual Studio's NuGet Package manager.
+
+Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
+
 ## Compiler Errors
 
 ### UNO0001

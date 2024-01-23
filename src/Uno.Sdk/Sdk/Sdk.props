@@ -10,6 +10,23 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<!-- Import the Directory.Build.props before loading the Microsoft.NET.Sdk -->
+	<PropertyGroup>
+		<ImportDirectoryBuildProps Condition="'$(ImportDirectoryBuildProps)' == ''">true</ImportDirectoryBuildProps>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ImportDirectoryBuildProps)' == 'true' and '$(DirectoryBuildPropsPath)' == ''">
+		<_DirectoryBuildPropsFile Condition="'$(_DirectoryBuildPropsFile)' == ''">Directory.Build.props</_DirectoryBuildPropsFile>
+		<_DirectoryBuildPropsBasePath Condition="'$(_DirectoryBuildPropsBasePath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '$(_DirectoryBuildPropsFile)'))</_DirectoryBuildPropsBasePath>
+		<DirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsBasePath)' != '' and '$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('$(_DirectoryBuildPropsBasePath)', '$(_DirectoryBuildPropsFile)'))</DirectoryBuildPropsPath>
+	</PropertyGroup>
+
+	<Import Project="$(DirectoryBuildPropsPath)" Condition="'$(ImportDirectoryBuildProps)' == 'true' and exists('$(DirectoryBuildPropsPath)')"/>
+
+	<PropertyGroup>
+		<ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+	</PropertyGroup>
+	<!-- END Import the Directory.Build.props -->
+
 	<PropertyGroup>
 		<UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</UnoImportMicrosoftNETSdkTargets>
 		<_UnoImportMicrosoftNETSdkTargets>false</_UnoImportMicrosoftNETSdkTargets>
@@ -26,68 +43,30 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
 	</PropertyGroup>
 
+	<!--
+		Load the solution-config.props file, if it exists.
+	-->
+	<PropertyGroup>
+		<ImportSolutionConfigProps Condition="'$(ImportSolutionConfigProps)' == ''">true</ImportSolutionConfigProps>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ImportSolutionConfigProps)' == 'true' and '$(SolutionConfigPropsPath)' == ''">
+		<_SolutionConfigPropsFile Condition="'$(_SolutionConfigPropsFile)' == ''">solution-config.props</_SolutionConfigPropsFile>
+		<_SolutionConfigPropsBasePath Condition="'$(_SolutionConfigPropsBasePath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '$(_SolutionConfigPropsFile)'))</_SolutionConfigPropsBasePath>
+		<SolutionConfigPropsPath Condition="'$(_SolutionConfigPropsBasePath)' != '' and '$(_SolutionConfigPropsFile)' != ''">$([System.IO.Path]::Combine('$(_SolutionConfigPropsBasePath)', '$(_SolutionConfigPropsFile)'))</SolutionConfigPropsPath>
+	</PropertyGroup>
+
+	<Import Project="$(SolutionConfigPropsPath)" Condition="'$(ImportSolutionConfigProps)' == 'true' and exists('$(SolutionConfigPropsPath)')"/>
+
+	<PropertyGroup>
+		<ImportSolutionConfigProps>false</ImportSolutionConfigProps>
+	</PropertyGroup>
+
 	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
 
 	<PropertyGroup>
 		<EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
 		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
-
-	 <Choose>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-			<PropertyGroup>
-				<IsAndroid>true</IsAndroid>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
-				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'AndroidManifest.xml'))) ">Android\AndroidManifest.xml</AndroidManifest>
-				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'AndroidManifest.xml'))) ">Platforms\Android\AndroidManifest.xml</AndroidManifest>
-			</PropertyGroup>
-
-			<ItemGroup>
-				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'environment.conf'))) " Include="Android\environment.conf" />
-				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'environment.conf'))) " Include="Platforms\Android\environment.conf" />
-			</ItemGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-			<PropertyGroup>
-				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
-				<IsIOS>true</IsIOS>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
-			<PropertyGroup>
-				<IsMacOS>true</IsMacOS>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.14</SupportedOSPlatformVersion>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-			<PropertyGroup>
-				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
-				<IsMacCatalyst>true</IsMacCatalyst>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
-			</PropertyGroup>
-		</When>
-		<When Condition="$(TargetFramework.Contains('windows10'))">
-			<PropertyGroup>
-				<IsWinAppSdk>true</IsWinAppSdk>
-				<UseRidGraph Condition=" '$(UseRidGraph)' == '' ">true</UseRidGraph>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.0.18362.0</SupportedOSPlatformVersion>
-				<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">$(SupportedOSPlatformVersion)</TargetPlatformMinVersion>
-				<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
-			<PropertyGroup>
-				<IsBrowser>true</IsBrowser>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
-			<PropertyGroup>
-				<IsSkia>true</IsSkia>
-			</PropertyGroup>
-		</When>
-	</Choose>
 
 	<ItemGroup Condition=" $(EnableDefaultUnoItems) == 'true' ">
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
@@ -96,7 +75,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
 	<!-- SingleProject-specific features -->
 	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
-		<ProjectCapability Include="Msix" />
+		<ProjectCapability Include="Msix" Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'"/>
 		<ProjectCapability Include="MauiSingleProject" />
 		<ProjectCapability Include="LaunchProfiles" />
 		<!-- If VS is older than Dev17 -->
