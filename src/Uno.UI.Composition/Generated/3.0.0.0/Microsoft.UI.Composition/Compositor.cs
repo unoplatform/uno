@@ -198,8 +198,8 @@ namespace Microsoft.UI.Composition
 			throw new global::System.NotImplementedException("The member CubicBezierEasingFunction Compositor.CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CubicBezierEasingFunction%20Compositor.CreateCubicBezierEasingFunction%28Vector2%20controlPoint1%2C%20Vector2%20controlPoint2%29");
 		}
 #endif
-        // Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Microsoft.Graphics.Effects.IGraphicsEffect)
-        // Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Microsoft.Graphics.Effects.IGraphicsEffect, IEnumerable<string>)
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect)
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect, IEnumerable<string>)
 
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -271,13 +271,6 @@ namespace Microsoft.UI.Composition
 		public global::Microsoft.UI.Composition.CompositionAnimationGroup CreateAnimationGroup()
 		{
 			throw new global::System.NotImplementedException("The member CompositionAnimationGroup Compositor.CreateAnimationGroup() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionAnimationGroup%20Compositor.CreateAnimationGroup%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionBackdropBrush CreateBackdropBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionBackdropBrush Compositor.CreateBackdropBrush() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBackdropBrush%20Compositor.CreateBackdropBrush%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

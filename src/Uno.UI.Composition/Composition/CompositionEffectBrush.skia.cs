@@ -11,7 +11,7 @@ using Windows.Graphics.Effects.Interop;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class CompositionEffectBrush : CompositionBrush
 {
@@ -969,11 +969,12 @@ $$"""
 
 	private SKImageFilter? GenerateBorderEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
-		// Note: Clamp and Mirror are currently broken, see https://github.com/mono/SkiaSharp/issues/866
+		// Note (1): Clamp and Mirror are currently broken, see https://github.com/mono/SkiaSharp/issues/866
+		// Note (2): This currently only works correctly when the source is CompositionEffectSourceParameter, this is because of a limitation in SkiaSharp 2, we can support other source types one we upgrade to SkiaSharp 3
 
 		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 		{
-			SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
+			SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds, tryUsingSourceSize: true);
 			if (sourceFilter is null && !_isCurrentInputBackdrop)
 			{
 				return null;
@@ -988,7 +989,7 @@ $$"""
 
 			SKShaderTileMode mode;
 
-			// TODO: support separate X,Y modes
+			//TODO: support separate X,Y modes
 			if (xmode != ymode)
 			{
 				if (xmode != default)
@@ -1005,14 +1006,26 @@ $$"""
 				mode = xmode.ToSkia();
 			}
 
-			float[] identityKernel = new float[9]
+			if (mode == SKShaderTileMode.Repeat)
 			{
-				0,0,0,
-				0,1,0,
-				0,0,0
-			};
+				var srcBounds = source is CompositionEffectSourceParameter param && GetSourceParameter(param.Name) is ISizedBrush sizedBrush && sizedBrush.IsSized ?
+					(sizedBrush.Size is Vector2 size ?
+					new SKRect(0, 0, size.X, size.Y) : bounds)
+					: bounds;
 
-			return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(1, 1), mode, true, sourceFilter, new(bounds));
+				return SKImageFilter.CreateTile(srcBounds, bounds, sourceFilter);
+			}
+			else
+			{
+				float[] identityKernel = new float[9]
+				{
+					0,0,0,
+					0,1,0,
+					0,0,0
+				};
+
+				return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(1, 1), mode, true, sourceFilter, new(bounds));
+			}
 		}
 
 		return null;

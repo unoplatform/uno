@@ -2,7 +2,7 @@
 
 using Windows.Graphics.Effects;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class CompositionEffectSourceParameter : IGraphicsEffectSource
 {

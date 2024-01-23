@@ -1,25 +1,30 @@
 ﻿using System;
 using System.Numerics;
-using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
-#if !WINDOWS_UWP // Making the sample buildable on UWP
-using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Effects;
-#endif
-
 using Windows.UI;
+
+#if WINDOWS_UWP
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Composition.Effects;
+#else
+using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Effects;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Composition.Effects;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Windows_UI_Composition
 {
-	[Sample("Windows.UI.Composition", Name = "CompositionEffectBrush", Description = "Paints a SpriteVisual with the output of a filter effect. The filter effect description is defined using the CompositionEffectFactory class.", IsManualTest = true)]
+	[Sample("Microsoft.UI.Composition", Name = "CompositionEffectBrush", Description = "Paints a SpriteVisual with the output of a filter effect. The filter effect description is defined using the CompositionEffectFactory class.", IsManualTest = true)]
 	public sealed partial class EffectBrushTests : UserControl
 	{
 		private static CompositionSurfaceBrush _unoBrush;
@@ -34,7 +39,7 @@ namespace UITests.Windows_UI_Composition
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
 		{
 #if !WINDOWS_UWP
-			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+			var compositor = Window.Current.Compositor;
 
 			var effect = new GaussianBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
 			var factory = compositor.CreateEffectFactory(effect);
@@ -54,7 +59,7 @@ namespace UITests.Windows_UI_Composition
 
 			invertGrid.Background = new EffectTesterBrush(effectBrush3);
 
-			var effect4 = new HueRotationEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Angle = (float)MathEx.ToRadians(45) };
+			var effect4 = new HueRotationEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Angle = (float)Uno.Extensions.MathEx.ToRadians(45) };
 			var factory4 = compositor.CreateEffectFactory(effect4);
 			var effectBrush4 = factory4.CreateBrush();
 
@@ -160,7 +165,7 @@ namespace UITests.Windows_UI_Composition
 
 			borderGrid.Background = new EffectTesterBrush(effectBrush17, 50);
 
-			var effect18 = new Transform2DEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), TransformMatrix = Matrix3x2.CreateRotation((float)MathEx.ToRadians(45), new(100, 100)) };
+			var effect18 = new Transform2DEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), TransformMatrix = Matrix3x2.CreateRotation((float)Uno.Extensions.MathEx.ToRadians(45), new(100, 100)) };
 			var factory18 = compositor.CreateEffectFactory(effect18);
 			var effectBrush18 = factory18.CreateBrush();
 
@@ -215,7 +220,7 @@ namespace UITests.Windows_UI_Composition
 				{
 					var brush = compositor.CreateSurfaceBrush(surface3);
 
-					var effect22 = new DistantDiffuseEffect() { Source = new LuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, DiffuseAmount = 5.0f, Azimuth = (float)MathEx.ToRadians(180.0f) };
+					var effect22 = new DistantDiffuseEffect() { Source = new LuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, DiffuseAmount = 5.0f, Azimuth = (float)Uno.Extensions.MathEx.ToRadians(180.0f) };
 					var factory22 = compositor.CreateEffectFactory(effect22);
 					var effectBrush22 = factory22.CreateBrush();
 
@@ -223,7 +228,7 @@ namespace UITests.Windows_UI_Composition
 
 					ddGrid.Background = new XamlCompositionBrush(effectBrush22);
 
-					var effect23 = new DistantSpecularEffect() { Source = new LuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, Azimuth = (float)MathEx.ToRadians(180.0f) };
+					var effect23 = new DistantSpecularEffect() { Source = new LuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, Azimuth = (float)Uno.Extensions.MathEx.ToRadians(180.0f) };
 					var factory23 = compositor.CreateEffectFactory(effect23);
 					var effectBrush23 = factory23.CreateBrush();
 
@@ -312,7 +317,7 @@ namespace UITests.Windows_UI_Composition
 
 			protected override void OnConnected()
 			{
-				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+				var compositor = Window.Current.Compositor;
 
 				if (_unoBrush is null || _imgSize != 200)
 				{
@@ -357,7 +362,7 @@ namespace UITests.Windows_UI_Composition
 
 			protected override void OnConnected()
 			{
-				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+				var compositor = Window.Current.Compositor;
 
 				if (_unoBrush is null)
 				{

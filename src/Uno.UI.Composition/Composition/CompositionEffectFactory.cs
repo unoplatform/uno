@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 public partial class CompositionEffectFactory : CompositionObject
 {

@@ -4,17 +4,17 @@ using System;
 using System.IO;
 using Windows.UI;
 using Microsoft.UI;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Windows.Graphics.Effects;
 using Microsoft.Graphics.Canvas;
 using System.Collections.Generic;
 using Microsoft.Graphics.Canvas.Effects;
 
-namespace Windows.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
 public partial class AcrylicBrush
 {
-	private CompositionSurfaceBrush? _noiseBrush;
+	private CompositionEffectBrush? _noiseBrush;
 	private CompositionBrush? _brush;
 	private bool _isUsingOpaqueBrush;
 	private bool _isConnected;
@@ -36,6 +36,7 @@ public partial class AcrylicBrush
 		public const string TintColor = "TintColor.Color";
 		public const string Noise = "Noise";
 		public const string NoiseAsset = "Uno.UI.Resources.NoiseAsset256x256.png";
+		public const string NoiseSource = "NoiseSource";
 		public const string NoiseOpacity = "NoiseOpacity";
 	}
 
@@ -164,9 +165,16 @@ public partial class AcrylicBrush
 			{
 				surfaceBrush.Surface = surface;
 				surfaceBrush.Stretch = CompositionStretch.None;
-				_noiseBrush = surfaceBrush;
 
-				return true;
+				var borderEffect = new BorderEffect() { Source = new CompositionEffectSourceParameter(EffectNames.NoiseSource), ExtendX = CanvasEdgeBehavior.Wrap, ExtendY = CanvasEdgeBehavior.Wrap };
+				var effectFactory = compositor.CreateEffectFactory(borderEffect);
+				_noiseBrush = effectFactory.CreateBrush();
+
+				if (_noiseBrush is not null)
+				{
+					_noiseBrush.SetSourceParameter(EffectNames.NoiseSource, surfaceBrush);
+					return true;
+				}
 			}
 
 			surfaceBrush.Dispose();
