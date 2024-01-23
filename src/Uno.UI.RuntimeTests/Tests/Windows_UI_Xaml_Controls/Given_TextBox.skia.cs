@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Core;
@@ -3180,6 +3181,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_FeatureConfiguration_Changes()
+		{
+			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
+
+			FeatureConfiguration.TextBox.UseOverlayOnSkia = true;
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "hello world"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.TextBoxView.DisplayBlock.Opacity);
+
+			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
+
+			await UITestHelper.Load(new Button()); // a random control to unload SUT
+
+			Assert.AreEqual(1, SUT.TextBoxView.DisplayBlock.Opacity);
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable

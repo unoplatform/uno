@@ -123,13 +123,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 
-		private bool IsSkiaTextBox =>
-#if __SKIA__
-			!FeatureConfiguration.TextBox.UseOverlayOnSkia;
-#else
-			false;
-#endif
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -162,7 +155,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-				if (!IsSkiaTextBox)
+#if __SKIA__
+				if (!_isSkiaTextBox)
+#endif
 				{
 					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
 					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
@@ -290,7 +285,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			RaiseTextChanging();
 
-			if (!_isInputModifyingText || IsSkiaTextBox)
+			if (!_isInputModifyingText
+#if __SKIA__
+				|| _isSkiaTextBox
+#endif
+				)
 			{
 				_textBoxView?.SetTextNative(Text);
 			}
@@ -379,10 +378,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				baseString = GetFirstLine(baseString);
 			}
-			else if (IsSkiaTextBox)
+#if __SKIA__
+			else if (_isSkiaTextBox)
 			{
 				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
 			}
+#endif
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
