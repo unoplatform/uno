@@ -11,13 +11,14 @@ using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.Radial
 using Uno;
 using Uno.UI.Helpers;
 using Uno.UI.Extensions;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{
 		private Brush _background;
-		private (Brush, Thickness, CornerRadius) _border;
+		private (Brush, Thickness, CornerRadius, Size) _border;
 
 		private Action _backgroundChanged;
 
@@ -38,9 +39,10 @@ namespace Microsoft.UI.Xaml.Shapes
 				SetAndObserveBackgroundBrush(fwElt, oldValue, background, ref _backgroundChanged);
 			}
 
-			if (_border != (borderBrush, borderThickness, cornerRadius))
+			var renderSize = element.RenderSize;
+			if (_border != (borderBrush, borderThickness, cornerRadius, renderSize))
 			{
-				_border = (borderBrush, borderThickness, cornerRadius);
+				_border = (borderBrush, borderThickness, cornerRadius, renderSize);
 				SetBorder(element, borderThickness, borderBrush, cornerRadius);
 			}
 		}
