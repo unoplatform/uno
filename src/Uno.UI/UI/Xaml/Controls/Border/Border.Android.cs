@@ -8,7 +8,7 @@ using Uno.Disposables;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Border
 {

@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Page : IBorderInfoProvider
 {

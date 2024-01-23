@@ -5,7 +5,7 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides Border and Background rendering capabilities to a UI element.

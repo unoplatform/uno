@@ -7,7 +7,7 @@ using Uno.UI.DataBinding;
 using UIKit;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Page
 {

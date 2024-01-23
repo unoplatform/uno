@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using CoreGraphics;
 using AppKit;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class Panel
 {

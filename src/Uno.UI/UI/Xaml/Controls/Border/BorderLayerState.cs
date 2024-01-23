@@ -1,10 +1,10 @@
 ﻿#nullable enable
 
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 internal record struct BorderLayerState(
 	Size ElementSize,

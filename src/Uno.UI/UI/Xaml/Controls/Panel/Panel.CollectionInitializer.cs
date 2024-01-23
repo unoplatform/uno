@@ -13,7 +13,7 @@ using View = AppKit.NSView;
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class Panel : IEnumerable
 {

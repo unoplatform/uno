@@ -1,12 +1,12 @@
 ﻿using System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 partial class BorderLayerRenderer
 {
