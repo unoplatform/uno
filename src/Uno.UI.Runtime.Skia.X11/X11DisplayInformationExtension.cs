@@ -114,7 +114,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var x11Window = X11XamlRootHost.GetWindow();
 			var host = X11XamlRootHost.GetXamlRootHostFromX11Window(x11Window);
 			host?.SetDisplayInformationExtension(this);
-		}
+
+            UpdateDetails();
+        }
 
 		internal void UpdateDetails()
 		{

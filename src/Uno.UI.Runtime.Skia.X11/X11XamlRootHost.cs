@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Avalonia.X11;
 using Avalonia.X11.Glx;
 using Uno.UI;
+using Microsoft.Graphics.Display;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -173,7 +174,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			window = XLib.XCreateSimpleWindow(display, XLib.XRootWindow(display, screen), 0, 0, (int)size.Width, (int)size.Height, 0,
 				XLib.XBlackPixel(display, screen), XLib.XWhitePixel(display, screen));
-			XLib.XSelectInput(X11Window.Display, X11Window.Window, EventsMask);
+			XLib.XSelectInput(display, window, EventsMask);
 			_x11Window = new X11Window(display, window);
 		}
 
@@ -200,6 +201,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			_renderer = new X11SoftwareRenderer(this, _x11Window.Value);
 		}
+
+		// This is necessary to initialize the lazy-initialized instance as it will be needed before before the first measure cycle,
+		// which will need the DisplayInformation to calculate the bounds of the window (otherwise we get NaNxNaN).
+		Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow
@@ -265,13 +270,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	{
 		try
 		{
-			GlxInterface.glXQueryVersion(display, out var major, out var minor);
-			if (major <= 1 && minor < 2)
-			{
-				return false;
-			}
-
-			return true;
+			return GlxInterface.glXQueryExtension(display, out _, out _);
 		}
 		catch (Exception) // most likely DllNotFoundException, but can be other types
 		{

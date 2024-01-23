@@ -35,7 +35,10 @@ namespace Avalonia.X11.Glx
         private const string libGL = "libGL.so.1";
 
 		[DllImport(libGL)]
-		public static extern bool glXQueryVersion(IntPtr dpy, out int maj, out int min );
+		public static extern bool glXQueryVersion(IntPtr dpy, out int maj, out int min);
+
+		[DllImport(libGL)]
+        public static extern bool glXQueryExtension(IntPtr dpy, out int errorBase, out int eventBase);
 
 		[DllImport(libGL)]
 		public static extern bool glXMakeContextCurrent(IntPtr display, IntPtr draw, IntPtr read, IntPtr context);
