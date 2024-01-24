@@ -155,6 +155,10 @@
 
 		<!-- net7.0 Skia -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\skia" />
-
+		
+		<!-- Force UAP/netx-win to ignore netX.0 -->
+		<file src="_._" target="build\uap10.0.16299" />
+		<file src="_._" target="build\uap10.0.19041" />
+		<file src="_._" target="build\net7.0-windows" />
 	</files>
 </package>
