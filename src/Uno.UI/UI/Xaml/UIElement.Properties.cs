@@ -174,7 +174,7 @@ namespace Microsoft.UI.Xaml
 				nameof(KeyboardAcceleratorPlacementMode),
 				typeof(KeyboardAcceleratorPlacementMode),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(default(KeyboardAcceleratorPlacementMode)));
+				new FrameworkPropertyMetadata(KeyboardAcceleratorPlacementMode.Auto));
 
 		/// <summary>
 		/// Gets or sets a value that indicates the control tooltip that displays the accelerator key combination.
@@ -193,6 +193,11 @@ namespace Microsoft.UI.Xaml
 				nameof(KeyboardAcceleratorPlacementTarget),
 				typeof(DependencyObject),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		/// <summary>
+		/// Occurs when a keyboard shortcut (or accelerator) is pressed.
+		/// </summary>
+		public event TypedEventHandler<UIElement, ProcessKeyboardAcceleratorEventArgs> ProcessKeyboardAccelerators;
 	}
 }
