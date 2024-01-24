@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return args.Handled;
 		}
 
-		partial void OnUnloadedPartial()
+		private protected override void OnUnloaded()
 		{
 			HtmlInput -= OnInput;
 			HtmlPaste -= OnPaste;
