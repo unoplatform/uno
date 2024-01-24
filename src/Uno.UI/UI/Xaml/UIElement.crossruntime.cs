@@ -78,11 +78,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnChildAdded(UIElement child)
 		{
-			if (!child._isFrameworkElement
-#if __WASM__
-				|| !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-#endif
-				)
+			if (!child._isFrameworkElement)
 			{
 				return;
 			}
@@ -106,11 +102,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnChildRemoved(UIElement child)
 		{
-			if (!child._isFrameworkElement
-#if __WASM__
-				|| !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-#endif
-				)
+			if (!child._isFrameworkElement)
 			{
 				return;
 			}
