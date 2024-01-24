@@ -10,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Composition.Effects;
+using XamlWindow = Windows.UI.Xaml.Window;
 #else
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Effects;
@@ -18,6 +19,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Composition.Effects;
+using XamlWindow = Microsoft.UI.Xaml.Window;
 #endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -39,7 +41,7 @@ namespace UITests.Windows_UI_Composition
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
 		{
 #if !WINDOWS_UWP
-			var compositor = Window.Current.Compositor;
+			var compositor = XamlWindow.Current.Compositor;
 
 			var effect = new GaussianBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
 			var factory = compositor.CreateEffectFactory(effect);
@@ -317,7 +319,7 @@ namespace UITests.Windows_UI_Composition
 
 			protected override void OnConnected()
 			{
-				var compositor = Window.Current.Compositor;
+				var compositor = XamlWindow.Current.Compositor;
 
 				if (_unoBrush is null || _imgSize != 200)
 				{
@@ -362,7 +364,7 @@ namespace UITests.Windows_UI_Composition
 
 			protected override void OnConnected()
 			{
-				var compositor = Window.Current.Compositor;
+				var compositor = XamlWindow.Current.Compositor;
 
 				if (_unoBrush is null)
 				{

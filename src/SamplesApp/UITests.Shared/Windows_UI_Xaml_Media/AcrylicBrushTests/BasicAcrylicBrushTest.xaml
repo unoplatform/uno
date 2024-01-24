@@ -25,7 +25,7 @@
 		</Grid>
 		<Border x:Name="CustomAcrylicShapeInApp" Margin="12">
 			<Border.Background>
-				<AcrylicBrush x:Name="acrylicBrush" BackgroundSource="Backdrop" TintOpacity="0.5" TintColor="Red" FallbackColor="Green" />
+				<AcrylicBrush x:Name="acrylicBrush" TintOpacity="0.5" TintColor="Red" FallbackColor="Green" />
 			</Border.Background>
 			<Rectangle Fill="White" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>
