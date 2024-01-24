@@ -2,13 +2,17 @@
 
 using Uno.UI.DirectUI;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Input;
 
 internal static class KeyboardAcceleratorUtility
 {
+	internal delegate bool KeyboardAcceleratorPolicyFn(KeyboardAccelerator accelerator, DependencyObject owner);
+
 	// Through TryInvokeKeyboardAccelerator mechanism we will be traversing the whole subtree to hunt for the accelerator.
 	// As a result we may encounter matching accelerator but with the scope not valid for this instance.
 	// Below utility function will validate the scope of an accelerator before raising the event.
@@ -21,7 +25,7 @@ internal static class KeyboardAcceleratorUtility
 		{
 			return false;
 		}
-		if (accelerator.m_scopeOwner == null)
+		if (accelerator.ScopeOwner is null)
 		{
 			return false; // accelerator is global, hence okay to be invoked.
 		}
@@ -80,7 +84,7 @@ internal static class KeyboardAcceleratorUtility
 	internal static bool ProcessAllLiveAccelerators(
 		VirtualKey originalKey,
 		VirtualKeyModifiers keyModifiers,
-		VectorOfKACollectionAndRefCountPair& allLiveAccelerators,
+		VectorOfKACollectionAndRefCountPair allLiveAccelerators,
 		DependencyObject owner,
 		KeyboardAcceleratorPolicyFn policyFn,
 		DependencyObject pFocusedElement,
@@ -107,9 +111,9 @@ internal static class KeyboardAcceleratorUtility
 				parent = parent.GetParentInternal(false /* publicParentOnly */);
 			}
 
-			for (DependencyObject accelerator : *collection)
+			foreach (DependencyObject accelerator in collection)
 			{
-				MUX_ASSERT(accelerator.OfTypeByIndex<KnownTypeIndex.KeyboardAccelerator>());
+				MUX_ASSERT(accelerator is KeyboardAccelerator);
 
 				if (policyFn((KeyboardAccelerator)(accelerator), owner) &&
 					ShouldRaiseAcceleratorEvent(originalKey, keyModifiers, (KeyboardAccelerator)(accelerator), parent))
@@ -117,9 +121,9 @@ internal static class KeyboardAcceleratorUtility
 					// The parent of the collection is the element that the collection belongs to.
 					DependencyObject acceleratorParentElement = collection.GetParentInternal(false /* publicParentOnly */);
 
-					UIElement* acceleratorUIElement = do_pointer_cast<UIElement>(acceleratorParentElement);
+					var acceleratorUIElement = acceleratorParentElement as UIElement;
 					// If the parent is disabled search for the next accelerator with enabled parent
-					if (acceleratorUIElement && !acceleratorUIElement.IsEnabled)
+					if (acceleratorUIElement is not null && !acceleratorUIElement.IsEnabled())
 					{
 						continue;
 					}
@@ -157,14 +161,14 @@ internal static class KeyboardAcceleratorUtility
 	}
 
 	internal static void ProcessKeyboardAccelerators(
-		  VirtualKey originalKey,
-		  VirtualKeyModifiers keyModifiers,
-		 VectorOfKACollectionAndRefCountPair& allLiveAccelerators,
-		 DependencyObject pElement,
-		out bool* pHandled,
-		out bool* pHandledShouldNotImpedeTextInput,
-		  DependencyObject pFocusedElement,
-		 bool isCallFromTryInvoke)
+		VirtualKey originalKey,
+		VirtualKeyModifiers keyModifiers,
+		VectorOfKACollectionAndRefCountPair allLiveAccelerators,
+		DependencyObject pElement,
+		out bool pHandled,
+		out bool pHandledShouldNotImpedeTextInput,
+		DependencyObject pFocusedElement,
+		bool isCallFromTryInvoke)
 	{
 		// The order of things should be as follows:
 		// 1) Try to process local accelerators defined on this element
@@ -176,47 +180,46 @@ internal static class KeyboardAcceleratorUtility
 		// If any of these gets handled, we don't need to do the rest - we just mark this as handled and return.  The caller should
 		// copy the handled flag into the KeyRoutedEventArgs' handled property.
 
-		*pHandled = false;
-		*pHandledShouldNotImpedeTextInput = false;
+		pHandled = false;
+		pHandledShouldNotImpedeTextInput = false;
 
 		if (ProcessLocalAccelerators(originalKey, keyModifiers, pElement, pFocusedElement, isCallFromTryInvoke) ||
 			ProcessOwnedAccelerators(originalKey, keyModifiers, allLiveAccelerators, pElement, pFocusedElement, isCallFromTryInvoke))
 		{
-			*pHandled = true;
+			pHandled = true;
 		}
 		else
 		{
-			UIElement* pElementAsUIE = do_pointer_cast<UIElement>(pElement);
-			if (pElementAsUIE)
+			var pElementAsUIE = pElement as UIElement;
+			if (pElementAsUIE is not null)
 			{
 				// Here, we try calling the OnProcessKeyboardAccelerators protected virtual,
 				// after which we raise the public ProcessKeyboardAccelerators event
-				(FxCallbacks.UIElement_RaiseProcessKeyboardAccelerators(
+				FxCallbacks.UIElement_RaiseProcessKeyboardAccelerators(
 					pElementAsUIE,
 					originalKey,
 					keyModifiers,
-					pHandled,
-					pHandledShouldNotImpedeTextInput));
+					ref pHandled,
+					ref pHandledShouldNotImpedeTextInput);
 			}
 		}
-		return S_OK;
 	}
 
 	internal static bool ProcessLocalAccelerators(
-		 VirtualKey originalKey,
-		 VirtualKeyModifiers keyModifiers,
-		 DependencyObject pElement,
-		  DependencyObject pFocusedElement,
-		 bool isCallFromTryInvoke)
+		VirtualKey originalKey,
+		VirtualKeyModifiers keyModifiers,
+		DependencyObject pElement,
+		DependencyObject pFocusedElement,
+		bool isCallFromTryInvoke)
 	{
 		// If the element is disabled, none of its accelerators are considered invocable anyway, so we can bail out early in that case
-		UIElement* pUIElement = do_pointer_cast<UIElement>(pElement);
-		if (pUIElement && !pUIElement.IsEnabled)
+		var pUIElement = pElement as UIElement;
+		if (pUIElement is not null && !pUIElement.IsEnabled())
 		{
 			return false;
 		}
 
-		if (false == pElement.IsEffectiveValueInSparseStorage(KnownPropertyIndex.UIElement_KeyboardAccelerators))
+		if (false == pElement.IsEffectiveValueInSparseStorage(UIElement.KeyboardAcceleratorsProperty))
 		{
 			return false;
 		}
@@ -262,18 +265,18 @@ internal static class KeyboardAcceleratorUtility
 		  DependencyObject owner)
 	{
 		// no need to proceed if accelerator we are processing is global.
-		if (accelerator.m_scopeOwner == null)
+		if (accelerator.ScopeOwner is null)
 		{
 			return false;
 		}
-		//Below code will unwrap the managed object pointer for scopeOwner and returns actual pointer to compate with Owner.
-		CValue value;
-		/*VERIFYHR*/
-		(accelerator.GetValueByIndex(KnownPropertyIndex.KeyboardAccelerator_ScopeOwner, &value));
 
-		DependencyObject pDO = null;
-		/*VERIFYHR*/
-		(CValueBoxer.UnwrapWeakRef(&value, DirectUI.MetadataAPI.GetDependencyPropertyByIndex(KnownPropertyIndex.KeyboardAccelerator_ScopeOwner), &pDO));
+		// Below code will unwrap the managed object pointer for scopeOwner and returns actual pointer to compare with Owner.
+		var value = accelerator.GetValue(KeyboardAccelerator.ScopeOwnerProperty);
+
+		// TODO: MZ: Should KeyboardAccelerator.ScopeOwner be weak ref???
+		var pDO = value as DependencyObject;
+		///*VERIFYHR*/
+		//(CValueBoxer.UnwrapWeakRef(&value, DirectUI.MetadataAPI.GetDependencyPropertyByIndex(KnownPropertyIndex.KeyboardAccelerator_ScopeOwner), &pDO));
 
 		return pDO == owner;
 	}
@@ -281,7 +284,7 @@ internal static class KeyboardAcceleratorUtility
 	internal static bool ProcessOwnedAccelerators(
 		 VirtualKey originalKey,
 		 VirtualKeyModifiers keyModifiers,
-		 VectorOfKACollectionAndRefCountPair& allLiveAccelerators,
+		 VectorOfKACollectionAndRefCountPair allLiveAccelerators,
 		 DependencyObject pElement,
 		  DependencyObject pFocusedElement,
 		 bool isCallFromTryInvoke)
@@ -293,13 +296,13 @@ internal static class KeyboardAcceleratorUtility
 		  KeyboardAccelerator accelerator,
 		  DependencyObject owner)
 	{
-		return accelerator.m_scopeOwner == null;
+		return accelerator.ScopeOwner == null;
 	}
 
 	internal static bool ProcessGlobalAccelerators(
 		 VirtualKey originalKey,
 		 VirtualKeyModifiers keyModifiers,
-		 VectorOfKACollectionAndRefCountPair& allLiveAccelerators)
+		 VectorOfKACollectionAndRefCountPair allLiveAccelerators)
 	{
 		return ProcessAllLiveAccelerators(originalKey, keyModifiers, allLiveAccelerators, null, AcceleratorIsGlobalPolicy, null, false);
 	}

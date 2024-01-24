@@ -4,6 +4,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Windows.System;
 
 namespace Uno.UI.DirectUI;
 
@@ -11,8 +12,14 @@ internal static class FxCallbacks
 {
 	internal static bool KeyboardAccelerator_RaiseKeyboardAcceleratorInvoked(
 		KeyboardAccelerator pNativeAccelerator,
-		DependencyObject pElement)
-	{
-		return KeyboardAccelerator.RaiseKeyboardAcceleratorInvoked(pNativeAccelerator, pElement);
-	}
+		DependencyObject pElement) =>
+		KeyboardAccelerator.RaiseKeyboardAcceleratorInvoked(pNativeAccelerator, pElement);
+
+	internal static void UIElement_RaiseProcessKeyboardAccelerators(
+		UIElement pUIElement,
+		VirtualKey key,
+		VirtualKeyModifiers keyModifiers,
+		ref bool pHandled,
+		ref bool pHandledShouldNotImpedeTextInput) =>
+		UIElement.RaiseProcessKeyboardAcceleratorsStatic(pUIElement, key, keyModifiers, ref pHandled, ref pHandledShouldNotImpedeTextInput);
 }
