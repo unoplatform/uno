@@ -237,17 +237,6 @@ namespace Uno.UI
 #endif
 
 			/// <summary>
-			/// [WebAssembly Only] Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal.
-			/// </summary>
-			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on WebAssembly.
-			/// Setting it to true avoids the use of costly JavaScript->C# interop.
-			/// </remarks>
-			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
-
-			/// <summary>
 			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
 			/// </summary>

@@ -52,8 +52,6 @@ namespace Microsoft.UI.Xaml
 
 		private void OnFwEltLoading()
 		{
-			// TODO: **IMPORTANT BEFORE MERGE** See where to handle WasmUseManagedLoadedUnloaded. Previously, it was checked in ContentManager.wasm.cs in LoadRootElementPlatform
-			// OR; we might not actually consider native loading at all and always use managed loading as Loading is now aligned with WinUI?
 			IsLoading = true;
 
 			OnLoading();

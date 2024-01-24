@@ -104,7 +104,6 @@ internal sealed class EventManager
 
 			_loadedEventList[i] = null;
 
-			// TODO: Should this be gated on WasmUseManagedLoadedUnloaded ?
 			uiElementLoadedEventObject.RaiseLoaded();
 		}
 
