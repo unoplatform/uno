@@ -1,0 +1,8 @@
+<Project>
+	<PropertyGroup>
+		<IsSkia>true</IsSkia>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Skia.targets"
+			Condition=" $(SingleProject) == 'true' " />
+</Project>
