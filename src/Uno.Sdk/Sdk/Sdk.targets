@@ -10,180 +10,20 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
-		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
-		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
-
-		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
-		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-	</PropertyGroup>
-
 	<PropertyGroup>
-		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
+		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\targets\Uno.Sdk.After.targets</AfterMicrosoftNETSdkTargets>
 	</PropertyGroup>
 
-	<Choose>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-			<PropertyGroup>
-				<IsAndroid>true</IsAndroid>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
-				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'AndroidManifest.xml'))) ">Android\AndroidManifest.xml</AndroidManifest>
-				<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'AndroidManifest.xml'))) ">Platforms\Android\AndroidManifest.xml</AndroidManifest>
-			</PropertyGroup>
+	<!-- Common Includes -->
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.Common.targets" />
 
-			<ItemGroup>
-				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'environment.conf'))) " Include="Android\environment.conf" />
-				<AndroidEnvironment Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'environment.conf'))) " Include="Platforms\Android\environment.conf" />
-			</ItemGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-			<PropertyGroup>
-				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
-				<IsIOS>true</IsIOS>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
-			<PropertyGroup>
-				<IsMacOS>true</IsMacOS>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.14</SupportedOSPlatformVersion>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-			<PropertyGroup>
-				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
-				<IsMacCatalyst>true</IsMacCatalyst>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
-			</PropertyGroup>
-		</When>
-		<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
-		<When Condition="$(TargetFramework.Contains('windows10'))">
-			<PropertyGroup>
-				<IsWinAppSdk>true</IsWinAppSdk>
-				<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
-				<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
-				<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
-				<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">true</EnableMsixTooling>
-				<EnableWindowsTargeting Condition=" $(EnableWindowsTargeting) == '' ">true</EnableWindowsTargeting>
-			</PropertyGroup>
+	<!-- Default Includes -->
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.DefaultItems.targets" Condition=" $(EnableDefaultUnoItems) == 'true' " />
 
-			<PropertyGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
-				<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">app.manifest</ApplicationManifest>
-				<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
-				<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
-				<UseWinUI Condition=" $(UseWinUI) == '' ">true</UseWinUI>
-			</PropertyGroup>
-
-			<ItemGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
-				<!-- Exclude Manifest items that have already been added to avoid duplicates -->
-				<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
-			</ItemGroup>
-
-			<!--
-				Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
-				Tools extension to be activated for this project even if the Windows App SDK Nuget
-				package has not yet been restored.
-
-				Note: This will not be needed here for SingleProject
-			-->
-			<ItemGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe' and '$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-				<ProjectCapability Include="Msix"/>
-			</ItemGroup>
-
-			<!--
-				Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
-				Explorer "Package and Publish" context menu entry to be enabled for this project even if
-				the Windows App SDK Nuget package has not yet been restored.
-			-->
-			<PropertyGroup Condition="$(OutputType)=='WinExe' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-				<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
-			<PropertyGroup>
-				<IsBrowser>true</IsBrowser>
-			</PropertyGroup>
-		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
-			<PropertyGroup>
-				<IsSkia>true</IsSkia>
-			</PropertyGroup>
-		</When>
-	</Choose>
-
-	<ItemGroup>
-		<!-- Removes native usings to avoid Ambiguous reference -->
-		<Using Remove="@(Using->HasMetadata('Platform'))" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" !$(IsWinAppSdk) AND $(EnableDefaultUnoItems) == 'true' ">
-		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
-		<Content Include="Assets\**;**/*.png;**/*.bmp;**/*.jpg;**/*.dds;**/*.tif;**/*.tga;**/*.gif" 
-			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</Content>
-		<Page Include="**\*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</Page>
-		<Compile Update="**\*.xaml.cs">
-			<DependentUpon>%(Filename)</DependentUpon>
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</Compile>
-		<PRIResource Include="**\*.resw" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</PRIResource>
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(PkgUno_Resizetizer)'!='' ">
-		<UnoImage Include="Assets\**\*.svg" Exclude="@(UnoImage)">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</UnoImage>
-	</ItemGroup>
-
-	<!-- Cross Targetting -->
-	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.CrossTargetting.targets" />
-
-	<!-- WinUI -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.WinAppSdk.targets"
-			Condition=" $(IsWinAppSdk) AND $(SingleProject) == 'true' " />
-	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\winappsdk-workaround.targets"
-			Condition=" $(IsWinAppSdk) AND '$(SingleProject)' != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
-
-	<!-- WASM -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
-			Condition=" $(IsBrowser) AND $(SingleProject) == 'true' " />
-
-	<!-- Skia -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Skia.targets"
-			Condition=" $(IsSkia) AND $(SingleProject) == 'true' " />
-
-	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
-	<Target Name="UnoSdkVersionCheck"
-			AfterTargets="ResolveReferences"
-			BeforeTargets="BeforeBuild"
-			Condition="'$(PkgUno_WinUI)' != ''">
-		<Error Code="UNOB0004"
-		 	   HelpLink="https://aka.platform.uno/UNOB0004"
-		       Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="The '%24(UnoVersion)' property must match the version of the Uno.Sdk defined in global.json (found $(UnoVersion) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages" />
-
-		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
-		<PropertyGroup>
-			<_UnoSdkVersionCheck_Resolved_UnoWinUI>$([System.IO.Path]::GetFileName($(PkgUno_WinUI)))</_UnoSdkVersionCheck_Resolved_UnoWinUI>
-		</PropertyGroup>
-
-		<Error Code="UNOB0005"
-		 	   HelpLink="https://aka.platform.uno/UNOB0005"
-		       Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
-			   Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
-	</Target>
+	<!-- Build Targets -->
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.Build.targets" />
 
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
-	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
+	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
+
 </Project>

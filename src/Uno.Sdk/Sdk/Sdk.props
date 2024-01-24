@@ -10,79 +10,23 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!-- Import the Directory.Build.props before loading the Microsoft.NET.Sdk -->
 	<PropertyGroup>
-		<ImportDirectoryBuildProps Condition="'$(ImportDirectoryBuildProps)' == ''">true</ImportDirectoryBuildProps>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(ImportDirectoryBuildProps)' == 'true' and '$(DirectoryBuildPropsPath)' == ''">
-		<_DirectoryBuildPropsFile Condition="'$(_DirectoryBuildPropsFile)' == ''">Directory.Build.props</_DirectoryBuildPropsFile>
-		<_DirectoryBuildPropsBasePath Condition="'$(_DirectoryBuildPropsBasePath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '$(_DirectoryBuildPropsFile)'))</_DirectoryBuildPropsBasePath>
-		<DirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsBasePath)' != '' and '$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('$(_DirectoryBuildPropsBasePath)', '$(_DirectoryBuildPropsFile)'))</DirectoryBuildPropsPath>
+		<_DefaultMicrosoftNETSdk>Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
+		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' or $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
 	</PropertyGroup>
 
-	<Import Project="$(DirectoryBuildPropsPath)" Condition="'$(ImportDirectoryBuildProps)' == 'true' and exists('$(DirectoryBuildPropsPath)')"/>
-
 	<PropertyGroup>
-		<ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
-	</PropertyGroup>
-	<!-- END Import the Directory.Build.props -->
-
-	<PropertyGroup>
-		<UnoImportMicrosoftNETSdkTargets Condition=" '$(UsingMicrosoftNETSdk)' != 'true' ">true</UnoImportMicrosoftNETSdkTargets>
-		<_UnoImportMicrosoftNETSdkTargets>false</_UnoImportMicrosoftNETSdkTargets>
-		<_UnoImportMicrosoftNETSdkTargets Condition=" $(UnoImportMicrosoftNETSdkTargets) == 'true' AND $(UsingMicrosoftNETSdk) != 'true' ">true</_UnoImportMicrosoftNETSdkTargets>
-
-		<IsAndroid>false</IsAndroid>
-		<IsIOS>false</IsIOS>
-		<IsMacOS>false</IsMacOS>
-		<IsMacCatalyst>false</IsMacCatalyst>
-		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
-		<IsWinAppSdk>false</IsWinAppSdk>
-		<IsBrowser>false</IsBrowser>
-		<IsSkia>false</IsSkia>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
+
+		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(MSBuildThisFileDirectory)..\targets\Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
+		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(MSBuildThisFileDirectory)..\targets\Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
 	</PropertyGroup>
 
-	<!--
-		Load the solution-config.props file, if it exists.
-	-->
-	<PropertyGroup>
-		<ImportSolutionConfigProps Condition="'$(ImportSolutionConfigProps)' == ''">true</ImportSolutionConfigProps>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(ImportSolutionConfigProps)' == 'true' and '$(SolutionConfigPropsPath)' == ''">
-		<_SolutionConfigPropsFile Condition="'$(_SolutionConfigPropsFile)' == ''">solution-config.props</_SolutionConfigPropsFile>
-		<_SolutionConfigPropsBasePath Condition="'$(_SolutionConfigPropsBasePath)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '$(_SolutionConfigPropsFile)'))</_SolutionConfigPropsBasePath>
-		<SolutionConfigPropsPath Condition="'$(_SolutionConfigPropsBasePath)' != '' and '$(_SolutionConfigPropsFile)' != ''">$([System.IO.Path]::Combine('$(_SolutionConfigPropsBasePath)', '$(_SolutionConfigPropsFile)'))</SolutionConfigPropsPath>
-	</PropertyGroup>
-
-	<Import Project="$(SolutionConfigPropsPath)" Condition="'$(ImportSolutionConfigProps)' == 'true' and exists('$(SolutionConfigPropsPath)')"/>
-
-	<PropertyGroup>
-		<ImportSolutionConfigProps>false</ImportSolutionConfigProps>
-	</PropertyGroup>
-
-	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
+	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
 
 	<PropertyGroup>
 		<EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
 		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
-
-	<ItemGroup Condition=" $(EnableDefaultUnoItems) == 'true' ">
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
-
-	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
-	<!-- SingleProject-specific features -->
-	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
-		<ProjectCapability Include="Msix" Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'"/>
-		<ProjectCapability Include="MauiSingleProject" />
-		<ProjectCapability Include="LaunchProfiles" />
-		<!-- If VS is older than Dev17 -->
-		<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
-		<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
-		<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
-		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
-	</ItemGroup>
 
 </Project>
