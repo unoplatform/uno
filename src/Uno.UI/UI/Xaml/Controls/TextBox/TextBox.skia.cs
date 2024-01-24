@@ -22,16 +22,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TextBox
 {
-	private enum ContextMenuItem
-	{
-		Cut,
-		Copy,
-		Paste,
-		Undo,
-		Redo,
-		SelectAll
-	}
-
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 	private TextBoxView _textBoxView;
@@ -794,7 +784,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = displayBlock.Inlines.GetIndexAt(point.Position, false);
+			var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(point.Position, false, true));
 			if (_multiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -828,6 +818,7 @@ public partial class TextBox
 		}
 	}
 
+	// TODO: remove this context menu when TextCommandBarFlyout is implemented
 	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
 		base.OnRightTapped(e);
@@ -840,13 +831,12 @@ public partial class TextBox
 				_contextMenu = new MenuFlyout();
 				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
 
-				// TODO: port localized resources from WinUI
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCut"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCopy"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxPaste"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxUndo"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
-				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxRedo"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(SelectAll) } });
+				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_CUT"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_PASTE"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_UNDO"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
+				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_REDO"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
 			}
 
 			_contextMenu.Items.Clear();
@@ -909,7 +899,7 @@ public partial class TextBox
 				// multiple left presses
 
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false);
+				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false, true));
 
 				if (_lastPointerDown.repeatedPresses == 1)
 				{
@@ -933,7 +923,7 @@ public partial class TextBox
 			{
 				// single click
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true);
+				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
 				Select(index, 0);
 				_lastPointerDown = (currentPoint, 0);
 			}
@@ -1008,7 +998,7 @@ public partial class TextBox
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexAt(new Point(x, y), true);
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -1043,7 +1033,7 @@ public partial class TextBox
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexAt(new Point(x, y), true);
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -1375,18 +1365,11 @@ public partial class TextBox
 		public static SentinelAction Instance { get; } = new SentinelAction();
 	}
 
-	private sealed class TextBoxCommand : ICommand
+	private sealed class TextBoxCommand(Action action) : ICommand
 	{
-		private readonly Action _action;
-
-		public TextBoxCommand(Action action)
-		{
-			_action = action;
-		}
-
 		public bool CanExecute(object parameter) => true;
 
-		public void Execute(object parameter) => _action();
+		public void Execute(object parameter) => action();
 
 #pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
 		public event EventHandler CanExecuteChanged;

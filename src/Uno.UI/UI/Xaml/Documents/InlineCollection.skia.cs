@@ -824,13 +824,13 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		internal int GetIndexAt(Point p, bool ignoreEndingSpace)
+		internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
 		{
-			var line = GetRenderLineAt(p.Y, true)?.line;
+			var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
 			if (line is not { })
 			{
-				return 0;
+				return -1;
 			}
 
 			var characterCount = _renderLines
@@ -931,6 +931,7 @@ namespace Microsoft.UI.Xaml.Documents
 			return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 		}
 
+		/// <param name="extendedSelection">returns the most appropriate match even if y is completely outside the textblock</param>
 		internal (RenderLine line, int index)? GetRenderLineAt(double y, bool extendedSelection)
 		{
 			if (_renderLines.Count == 0)
