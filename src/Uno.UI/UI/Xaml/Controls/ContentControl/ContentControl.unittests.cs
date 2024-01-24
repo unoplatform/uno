@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentControl : Control
 	{
-		private bool HasParent() => true;
+		private new bool HasParent() => true;
 
 		partial void RegisterContentTemplateRoot()
 		{
