@@ -37,7 +37,7 @@ _There are a few known issues associated with the used of the compositor thread,
 
 ## Brush Anti-aliasing [GTK/WPF]
 
-On Skia targets (GTK and WPF), anti-aliasing is disabled by default for brushes, you can request it to be anti-aliased by setting this in your application's constructor:
+On Skia targets (GTK and WPF), anti-aliasing is disabled by default for brushes, You can request it to be anti-aliased by setting this in your application's constructor:
 
 ```csharp
 #if HAS_UNO
@@ -45,7 +45,7 @@ On Skia targets (GTK and WPF), anti-aliasing is disabled by default for brushes,
 #endif
 ```
 
-Or alternatively this, if you want to enable all available Composition capabilities:
+Or alternatively, if you want to enable all available Composition capabilities:
 
 ```csharp
 #if HAS_UNO
@@ -57,50 +57,50 @@ Or alternatively this, if you want to enable all available Composition capabilit
 
 ### Windows.UI.Composition
 
-- [CompositionBackdropBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionbackdropbrush)
-- [CompositionBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionbrush)
-- [CompositionCapabilities](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositioncapabilities)
-- [CompositionClip](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionclip)
-- [CompositionColorBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositioncolorbrush)
-- [CompositionEffectBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositioneffectbrush)
-- [CompositionEffectFactory](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositioneffectfactory)
-- [CompositionEffectSourceParameter](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositioneffectsourceparameter)
-- [CompositionEllipseGeometry](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionellipsegeometry)
-- [CompositionGeometricClip](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositiongeometricclip)
-- [CompositionGeometry](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositiongeometry)
-- [CompositionGradientBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositiongradientbrush)
-- [CompositionLinearGradientBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionlineargradientbrush)
-- [CompositionLineGeometry](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionlinegeometry)
-- [CompositionMaskBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionmaskbrush)
-- [CompositionNineGridBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionninegridbrush)
-- [CompositionObject](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject)
-- [CompositionPath](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionpath)
-- [CompositionPathGeometry](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionpathgeometry)
-- [CompositionPropertySet](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionpropertyset)
-- [CompositionRadialGradientBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionradialgradientbrush)
-- [CompositionRectangleGeometry](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionrectanglegeometry)
-- [CompositionRoundedRectangleGeometry](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionroundedrectanglegeometry)
-- [CompositionShape](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionshape)
-- [CompositionShapeCollection](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionshapecollection)
-- [CompositionSpriteShape](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionspriteshape)
-- [CompositionSurfaceBrush](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionsurfacebrush)
-- [CompositionViewBox](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionviewbox)
-- [CompositionVisualSurface](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionvisualsurface)
-- [Compositor](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositor)
-- [ContainerVisual](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.containervisual)
-- [InsetClip](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.insetclip)
-- [IVisualElement](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.ivisualelement)
-- [IVisualElement2](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.ivisualelement2)
-- [RectangleClip](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.rectangleclip)
-- [RedirectVisual](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.redirectvisual)
-- [ShapeVisual](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.shapevisual)
-- [SpriteVisual](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.spritevisual)
-- [Visual](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.visual)
-- [VisualCollection](https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.visualcollection)
+- [CompositionBackdropBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionbackdropbrush)
+- [CompositionBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionbrush)
+- [CompositionCapabilities](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositioncapabilities)
+- [CompositionClip](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionclip)
+- [CompositionColorBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositioncolorbrush)
+- [CompositionEffectBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositioneffectbrush)
+- [CompositionEffectFactory](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositioneffectfactory)
+- [CompositionEffectSourceParameter](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositioneffectsourceparameter)
+- [CompositionEllipseGeometry](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionellipsegeometry)
+- [CompositionGeometricClip](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositiongeometricclip)
+- [CompositionGeometry](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositiongeometry)
+- [CompositionGradientBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositiongradientbrush)
+- [CompositionLinearGradientBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionlineargradientbrush)
+- [CompositionLineGeometry](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionlinegeometry)
+- [CompositionMaskBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionmaskbrush)
+- [CompositionNineGridBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionninegridbrush)
+- [CompositionObject](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionobject)
+- [CompositionPath](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionpath)
+- [CompositionPathGeometry](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionpathgeometry)
+- [CompositionPropertySet](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionpropertyset)
+- [CompositionRadialGradientBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionradialgradientbrush)
+- [CompositionRectangleGeometry](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionrectanglegeometry)
+- [CompositionRoundedRectangleGeometry](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionroundedrectanglegeometry)
+- [CompositionShape](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionshape)
+- [CompositionShapeCollection](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionshapecollection)
+- [CompositionSpriteShape](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionspriteshape)
+- [CompositionSurfaceBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionsurfacebrush)
+- [CompositionViewBox](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionviewbox)
+- [CompositionVisualSurface](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionvisualsurface)
+- [Compositor](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositor)
+- [ContainerVisual](https://learn.microsoft.com/uwp/api/windows.ui.composition.containervisual)
+- [InsetClip](https://learn.microsoft.com/uwp/api/windows.ui.composition.insetclip)
+- [IVisualElement](https://learn.microsoft.com/uwp/api/windows.ui.composition.ivisualelement)
+- [IVisualElement2](https://learn.microsoft.com/uwp/api/windows.ui.composition.ivisualelement2)
+- [RectangleClip](https://learn.microsoft.com/uwp/api/windows.ui.composition.rectangleclip)
+- [RedirectVisual](https://learn.microsoft.com/uwp/api/windows.ui.composition.redirectvisual)
+- [ShapeVisual](https://learn.microsoft.com/uwp/api/windows.ui.composition.shapevisual)
+- [SpriteVisual](https://learn.microsoft.com/uwp/api/windows.ui.composition.spritevisual)
+- [Visual](https://learn.microsoft.com/uwp/api/windows.ui.composition.visual)
+- [VisualCollection](https://learn.microsoft.com/uwp/api/windows.ui.composition.visualcollection)
 
 ### Windows.Graphics.Effects
 
-- [IGraphicsEffectSource](https://learn.microsoft.com/en-us/uwp/api/windows.graphics.effects.igraphicseffectsource)
+- [IGraphicsEffectSource](https://learn.microsoft.com/uwp/api/windows.graphics.effects.igraphicseffectsource)
 
 ### Windows.Graphics.Effects.Interop
 
@@ -141,8 +141,6 @@ Or alternatively this, if you want to enable all available Composition capabilit
 
 Note that while Uno Platform implements these effects and their Win2D wrappers, the Win2D wrappers are still internal and not exposed to users, but the effects can still be used by temporary implementing the [IGraphicsEffectD2D1Interop](https://learn.microsoft.com/en-us/windows/win32/api/windows.graphics.effects.interop/nn-windows-graphics-effects-interop-igraphicseffectd2d1interop) interface manually until the Win2D wrappers become public, like for example the [GaussianBlurEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_GaussianBlurEffect.htm) can be implemented like this:
 
-<!-- markdownlint-disable MD010 -->
-
 ```csharp
 #nullable enable
 
@@ -152,58 +150,58 @@ using Windows.Graphics.Effects.Interop;
 
 internal class GaussianBlurEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
 {
-	private string _name = "GaussianBlurEffect";
-	private Guid _id = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
+    private string _name = "GaussianBlurEffect";
+    private Guid _id = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
 
-	public string Name
-	{
-		get => _name;
-		set => _name = value;
-	}
+    public string Name
+    {
+        get => _name;
+        set => _name = value;
+    }
 
-	public IGraphicsEffectSource? Source { get; set; }
+    public IGraphicsEffectSource? Source { get; set; }
 
-	public float BlurAmount { get; set; } = 3.0f;
+    public float BlurAmount { get; set; } = 3.0f;
 
-	public Guid GetEffectId() => _id;
+    public Guid GetEffectId() => _id;
 
-	public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
-	{
-		switch (name)
-		{
-			case nameof(BlurAmount):
-				{
-					index = 0;
-					mapping = GraphicsEffectPropertyMapping.Direct;
-					break;
-				}
-			default:
-				{
-					index = 0xFF;
-					mapping = (GraphicsEffectPropertyMapping)0xFF;
-					break;
-				}
-		}
-	}
+    public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+    {
+        switch (name)
+        {
+            case nameof(BlurAmount):
+                {
+                    index = 0;
+                    mapping = GraphicsEffectPropertyMapping.Direct;
+                    break;
+                }
+            default:
+                {
+                    index = 0xFF;
+                    mapping = (GraphicsEffectPropertyMapping)0xFF;
+                    break;
+                }
+        }
+    }
 
-	public object? GetProperty(uint index)
-	{
-		switch (index)
-		{
-			case 0:
-				return BlurAmount;
-			default:
-				return null;
-		}
-	}
+    public object? GetProperty(uint index)
+    {
+        switch (index)
+        {
+            case 0:
+                return BlurAmount;
+            default:
+                return null;
+        }
+    }
 
-	public uint GetPropertyCount() => 1;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
-	public uint GetSourceCount() => 1;
+    public uint GetPropertyCount() => 1;
+    public IGraphicsEffectSource? GetSource(uint index) => Source;
+    public uint GetSourceCount() => 1;
 }
 ```
 
-The GUID used in the example above is the Effect CLSID of the [Direct2D Gaussian Blur Effect](https://learn.microsoft.com/en-us/windows/win32/direct2d/gaussian-blur), you can find a list of built-in Direct2D effects and their corresponding CLSIDs [here](https://learn.microsoft.com/en-us/windows/win32/direct2d/built-in-effects).
+The GUID used in the example above is the Effect CLSID of the [Direct2D Gaussian Blur Effect](https://learn.microsoft.com/windows/win32/direct2d/gaussian-blur). For a list of built-in Direct2D effects and their corresponding CLSIDs, see [Direct2D Built-in Effects](https://learn.microsoft.com/windows/win32/direct2d/built-in-effects).
 
 ## Known issues
 
