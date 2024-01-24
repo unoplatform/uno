@@ -38,8 +38,14 @@ namespace Uno.UI.Xaml.Core
 			// This lambda is intentionally static. It shouldn't capture anything to avoid allocations.
 			NativeDispatcher.Main.Enqueue(static () => OnTick(), NativeDispatcherPriority.Idle);
 
-			if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
+			// TODO: foreach should be replaced with if (CoreServices.Instance.MainVisualTree?.RootElement is { } root)
+			foreach (var window in ApplicationHelper.Windows)
 			{
+				if (window.RootElement is not { } root)
+				{
+					continue;
+				}
+
 				root.UpdateLayout();
 
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)

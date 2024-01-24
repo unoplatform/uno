@@ -448,9 +448,16 @@ namespace Uno.UI.Xaml.Core
 					UIElement rootVisual = RootVisual!;
 					rootVisual.IsLoaded = true;
 					rootVisual.HitTestVisibility = HitTestability.Visible;
-
-					root.Enter(enterParams, 0);
 				}
+				else if (root.XamlRoot?.VisualTree.RootElement is { } xamlIsland)
+				{
+					xamlIsland.IsLoaded = true;
+					xamlIsland.HitTestVisibility = HitTestability.Visible;
+				}
+
+				// In WinUI, this is called only under IsMainVisualTree condition.
+				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
+				root.Enter(enterParams, 0);
 #endif
 			}
 		}
