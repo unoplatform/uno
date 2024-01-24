@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml
 
 		private protected bool IsVisible() => Visibility == Visibility.Visible;
 
-		private bool IsEnabled()
+		internal bool IsEnabled()
 		{
 			if (this is Control control)
 			{

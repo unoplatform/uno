@@ -22,4 +22,10 @@ partial class ContentRoot
 	private readonly SerialDisposable _automationProviderRequestedToken = new();
 
 	private bool _hasPendingChangedEvent;
+﻿}
+
+internal record KACollectionAndRefCountPair(ManagedWeakReference KeyboardAcceleratorCollectionWeak, int Count);
+
+internal class VectorOfKACollectionAndRefCountPair : List<KACollectionAndRefCountPair>
+{
 }
