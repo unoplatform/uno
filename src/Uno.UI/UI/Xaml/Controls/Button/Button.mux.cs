@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			spButtonFlyout.TryInvokeKeyboardAccelerator(args));
+			spButtonFlyout.TryInvokeKeyboardAccelerator(args);
 		}
 
 		//internal void SuppressFlyoutOpening()

@@ -239,7 +239,7 @@ internal static class KeyboardAcceleratorUtility
 			return false;
 		}
 
-		CKeyboardAcceleratorCollection* pCollection = do_pointer_cast<CKeyboardAcceleratorCollection>(value);
+		CKeyboardAcceleratorCollection* pCollection = do_pointer_cast<KeyboardAcceleratorCollection>(value);
 		DependencyObject collectionParent = pCollection.GetParentInternal(false /*public parent only*/);
 		for (DependencyObject accelerator : *pCollection)
 		{

@@ -36,7 +36,7 @@ partial class KeyboardAccelerator
 		// This will enable controls which don't have automated invoked action, to handle the event. e.g Pivot
 		if (!pIsHandled)
 		{
-			UIElement.RaiseKeyboardAcceleratorInvokedStatic(pElement, spArgs, pIsHandled));
+			pIsHandled = UIElement.RaiseKeyboardAcceleratorInvokedStatic(pElement, spArgs);
 		}
 
 		return pIsHandled;
