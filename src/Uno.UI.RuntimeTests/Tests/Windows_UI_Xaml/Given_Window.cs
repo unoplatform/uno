@@ -13,20 +13,33 @@ using Microsoft.UI.Xaml.Media;
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
+#if !WINAPPSDK
 [TestClass]
 public class Given_Window
 {
-#if !WINAPPSDK && HAS_UNO_WINUI
 	[TestCleanup]
 	public void CleanupTest()
 	{
 		TestServices.WindowHelper.CloseAllSecondaryWindows();
 	}
+
+#if !HAS_UNO_WINUI
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Primary_Window_UWP()
+	{
+		// The current window on UWP should be a CoreWindow.
+		var mainVisualTreeXamlRoot = WinUICoreServices.Instance.MainVisualTree?.XamlRoot;
+		Assert.AreEqual(Window.Current.Content.XamlRoot, mainVisualTreeXamlRoot);
+	}
+#endif
+
+#if HAS_UNO_WINUI
 
 	[TestMethod]
 	[RunsOnUIThread]
@@ -248,3 +261,4 @@ public class Given_Window
 	}
 #endif
 }
+#endif
