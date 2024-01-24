@@ -135,6 +135,8 @@ public sealed partial class XamlRoot
 		return result;
 	}
 
+	internal static XamlRoot? GetImplementationForElement(DependencyObject element) => GetForElement(element);
+
 	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
 	{
 		if (currentRoot == newRoot)

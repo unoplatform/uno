@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
-			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, InitializeSkia);
 
 			CoreApplication.SetInvalidateRender(() =>
 			{
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml
 			);
 		}
 
-		private void Initialize()
+		private void InitializeSkia()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{

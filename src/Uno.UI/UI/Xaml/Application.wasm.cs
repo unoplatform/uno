@@ -15,7 +15,6 @@ using Uno.Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Threading;
-using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno;
@@ -51,7 +50,7 @@ namespace Microsoft.UI.Xaml
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
 				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());
 
-			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, InitializeWasm);
 
 			ObserveApplicationVisibility();
 		}
@@ -78,7 +77,7 @@ namespace Microsoft.UI.Xaml
 			return 0;
 		}
 
-		private async Task BeforeStartAsync()
+		private static async Task BeforeStartAsync()
 		{
 			try
 			{
@@ -103,7 +102,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void Initialize()
+		private void InitializeWasm()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{

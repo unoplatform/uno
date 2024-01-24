@@ -5,12 +5,14 @@
 #nullable enable
 
 using System;
+using System.Threading;
 using DirectUI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Hosting;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
+using static Uno.UI.Xaml.Internal.AppModel;
 
 namespace Microsoft.UI.Xaml;
 
@@ -132,12 +134,7 @@ partial class Application
 		//     AppPolicyWindowingModel_ClassicDesktop (WinUI Desktop)
 		//     AppPolicyWindowingModel_ClassicPhone
 		//
-		AppPolicyWindowingModel policy = AppPolicyWindowingModel.None;
-#if WINUI_WINDOWING
-		policy = AppPolicyWindowingModel.ClassicDesktop;
-#else
-		policy = AppPolicyWindowingModel.Universal;
-#endif
+		var policy = AppPolicyGetWindowingModel(Thread.CurrentThread);
 
 		if (policy == AppPolicyWindowingModel.ClassicDesktop)
 		{
@@ -186,5 +183,46 @@ partial class Application
 	private static void StartUWP(ApplicationInitializationCallback pCallback)
 	{
 		// return RunInActivationMode();
+	}
+
+	private void Initialize()
+	{
+		// TODO Uno: Use CApplicationLock
+		if (Current is not null)
+		{
+			throw new InvalidOperationException("Application was already created");
+		}
+
+		Current = this;
+
+		//IFC_RETURN(ctl::ComObject < DirectUI::DebugSettings >::CreateInstance(&m_pDebugSettings));
+		//IFCEXPECT_RETURN(m_pDebugSettings);   // Should never fail
+		//m_pDebugSettings->UpdatePeg(true);
+
+		//// Set up the metadata resetter. This object clears out the process-wide metadata when it is safe to do so (before
+		//// DLLs are getting unloaded, but after we're done shutting down the visual tree).
+		//m_metadataRef = std::make_shared<MetadataResetter>();
+
+		// Determine which AppPolicyWindowingModel is being used. Use Application::GetAppPolicyWindowingModel() to
+		// get the current Windowing model.
+		//
+		//     AppPolicyWindowingModel_None
+		//     AppPolicyWindowingModel_Universal (WinUI UWP)
+		//     AppPolicyWindowingModel_ClassicDesktop (WinUI Desktop)
+		//     AppPolicyWindowingModel_ClassicPhone
+		//
+		_appPolicyWindowingModel = AppPolicyGetWindowingModel(Thread.CurrentThread);
+
+		//  Register for CoreApplication's 'BackgroundActivated' event if not running as WinUI Desktop
+		//if (AppPolicyWindowingModel_ClassicDesktop != m_appPolicyWindowingModel)
+		//{
+		//	// 'BackgroundActivated' is fired when in-process background tasks are invoked, after FrameworkView is created and
+		//	// initialized, and the App constructor is called.
+		//	IFC_RETURN(HookBackgroundActivationEvents(true));
+		//}
+
+		//IFC_RETURN(FrameworkApplicationGenerated::Initialize());
+
+		FocusVisualKind = FocusVisualKind.HighVisibility;
 	}
 }

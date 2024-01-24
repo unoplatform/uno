@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__ || __WASM__
 			Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
-			Current = this;
+			Initialize();
 			ApplicationLanguages.ApplyCulture();
 			InitializeSystemTheme();
 

@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Uno.Disposables;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
 
 namespace DirectUI;
 
@@ -169,6 +170,74 @@ internal partial class DXamlCore
 			// DCompSurfaceFactoryManager.EnsureInitialized();
 		}
 	}
+
+	internal Window? GetAssociatedWindow(UIElement element)
+	{
+		if (element is null)
+		{
+			throw new ArgumentNullException(nameof(element));
+		}
+		Window? windowNoRef = null;
+
+		// In the short term, we will allow UWP apps to use this function in much the same way they use GetWindow().
+		// This logic should be updated when MultiWindow support is enabled for UWP apps. At which time
+		// retrieving the AppPolicyWindowingModel ideally would not be necessary.
+		AppPolicyWindowingModel policy = Application.Current.AppPolicyWindowingModel;
+		if (policy == AppPolicyWindowingModel.Universal)
+		{
+			windowNoRef = _uwpWindowNoRef;
+		}
+
+		// Determine the element's XamlRoot and retrieve the HostWindow property from that root.
+		// Note that in a pure islands scenario, it is possible that a UIElement will not have a XamlRoot
+		// if the UIElement was created in code behind and not assigned a XamlRoot. In this case, this
+		// function cannot proceed but should not throw an exception.
+		var xamlRoot = XamlRoot.GetImplementationForElement(element);
+		if (xamlRoot is null)
+		{
+			throw new InvalidOperationException("Element was not loaded yet.");
+		}
+
+		var xamlHwnd = xamlRoot.HostWindow;
+
+		// In a desktop context, the HostWindow actually refers to the DesktopWindowXamlSource window where the xaml lives.
+		HWND parentHwnd = ::GetParent(xamlHwnd);
+		if (parentHwnd == NULL)
+		{
+			return S_OK;
+		}
+
+		// use top-level HWND to identify the DirectUI::Window instance associated with it.
+		auto windowEntry = _handleToDesktopWindowMap.find(parentHwnd);
+		if (windowEntry != _handleToDesktopWindowMap.end())
+		{
+			*windowNoRef = windowEntry->second;
+		}
+		return S_OK;
+	}
+
+	private List<Window> _windows = new();
+
+	internal IList<Window> GetAllWindows()
+	{
+		_windows.Clear();
+		var policy = Application.Current.AppPolicyWindowingModel;
+		if (policy == AppPolicyWindowingModel.Universal)
+		{
+			_windows.Add(_uwpWindowNoRef);
+		}
+		else
+		{
+			foreach (var pair in _handleToDesktopWindowMap)
+			{
+				_windows.Add(pair.Value);
+			}
+		}
+
+		return _windows.AsReadOnly();
+	}
+
+	internal bool HasDesktopWindow => _handleToDesktopWindowMap.Count > 0;
 
 	//
 	// This is the normal xaml runtime initialization code used by designer, shell, immersive apps.

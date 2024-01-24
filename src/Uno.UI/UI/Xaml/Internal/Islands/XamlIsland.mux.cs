@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
 
@@ -30,7 +31,7 @@ partial class XamlIsland
 	{
 		// WinUI has two classes - XamlIsland and XamlIslandRoot. Uno has only one.
 		// This takes care of the "root" initialization.
-		InitializeRoot();
+		InitializeRoot(WinUICoreServices.Instance);
 	}
 
 	//internal void Initialize(ContentBridge contentBridge)
