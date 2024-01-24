@@ -8,7 +8,6 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 ## Create the App
 
-
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and Uno Platform Online Wizard by following these steps:
 
 1. Open a browser and navigate to the online [App Wizard](https://aka.platform.uno/app-wizard)
