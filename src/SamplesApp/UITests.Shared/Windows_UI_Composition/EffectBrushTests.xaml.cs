@@ -40,7 +40,7 @@ namespace UITests.Windows_UI_Composition
 
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
 		{
-#if !WINDOWS_UWP
+#if HAS_UNO
 			var compositor = XamlWindow.Current.Compositor;
 
 			var effect = new GaussianBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
