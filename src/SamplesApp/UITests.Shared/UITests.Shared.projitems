@@ -1314,6 +1314,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DropDownButton\DropDownButton_ListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\FlipView\FlipView_Background.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5892,6 +5896,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\PanelWithNullBrushAndNonZeroThickness.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Native_With_AppBarButton_Binding.xaml.cs">
       <DependentUpon>CommandBar_Native_With_AppBarButton_Binding.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DropDownButton\DropDownButton_ListView.xaml.cs">
+      <DependentUpon>DropDownButton_ListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\FlipView\FlipView_Background.xaml.cs">
       <DependentUpon>FlipView_Background.xaml</DependentUpon>
