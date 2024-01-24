@@ -932,7 +932,7 @@ namespace Uno.UI.Samples.Tests
 							}
 							else if (test.ExpectedException is null || !test.ExpectedException.IsInstanceOfType(e))
 							{
-								if (_currentRun.CurrentRepeatCount < config.Attempts - 1 && !Debugger.IsAttached)
+								if (_currentRun.CurrentRepeatCount < config.Attempts - 1 && !Debugger.IsAttached && test.Name != "When_HotReloadScenario")
 								{
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;
