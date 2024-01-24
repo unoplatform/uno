@@ -55,7 +55,7 @@ Notes:
 | `RadialGradientBrush` (WinUI 2.4+) | Yes | Yes  | Yes  | Yes | Yes | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.radialgradientbrush) |
 | `RevealBrush` (WinUI 2.0+) | No     | No     | No   | No  | No  | [Documentation](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.media.revealbrush) |
 | `SolidColorBrush`                  | Yes     | Yes     | Yes  | Yes  | Yes | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.solidcolorbrush) |
-| `XamlCompositionBrushBase`         | No      | No      | No    | No   | Yes | [Documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.media.xamlcompositionbrushbase) |
+| `XamlCompositionBrushBase`         | No      | No      | No    | No   | Yes | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.xamlcompositionbrushbase) |
 
 Notes:
 
