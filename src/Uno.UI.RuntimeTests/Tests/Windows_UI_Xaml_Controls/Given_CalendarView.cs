@@ -10,7 +10,6 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using System.Linq;
-using Microsoft.UI;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -28,7 +27,7 @@ public class Given_CalendarView
 	public async Task When_ItemCornerRadius()
 	{
 		var calendarView = new CalendarView();
-		calendarView.OutOfScopeBackground = new SolidColorBrush(Colors.Red);
+		calendarView.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
 		calendarView.CalendarItemCornerRadius = new CornerRadius(40);
 		calendarView.DayItemCornerRadius = new CornerRadius(20);
 
