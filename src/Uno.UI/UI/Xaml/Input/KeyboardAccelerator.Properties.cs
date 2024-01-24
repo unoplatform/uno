@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Windows.Foundation;
 using Windows.System;
 
 namespace Microsoft.UI.Xaml.Input;
@@ -85,4 +86,9 @@ partial class KeyboardAccelerator
 			typeof(DependencyObject),
 			typeof(KeyboardAccelerator),
 			new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+	/// <summary>
+	/// Occurs when the key combination for this KeyboardAccelerator is pressed.
+	/// </summary>
+	public event TypedEventHandler<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs> Invoked;
 }

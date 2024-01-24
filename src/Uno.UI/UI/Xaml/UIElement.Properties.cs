@@ -2,30 +2,20 @@
 #pragma warning disable CS0067
 #endif
 
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Disposables;
-using System.Linq;
-using Windows.Devices.Input;
-using Windows.System;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI;
-using Uno;
-using Uno.UI.Controls;
-using Uno.UI.Media;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using Microsoft.UI.Xaml.Markup;
-
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
 
 #if __IOS__
 using UIKit;
@@ -35,6 +25,67 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
+		/// <summary>
+		/// Gets or sets the access key (mnemonic) for this element.
+		/// </summary>
+		/// <remarks>
+		/// Setting this property enables the AccessKeyDisplayRequested event to be raised.
+		/// </remarks>
+		public string AccessKey
+		{
+			get => (string)GetValue(AccessKeyProperty);
+			set => SetValue(AccessKeyProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies for the AccessKey dependency property.
+		/// </summary>
+		public static DependencyProperty AccessKeyProperty { get; } =
+			DependencyProperty.Register(
+				nameof(AccessKey),
+				typeof(string),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(string)));
+
+		/// <summary>
+		/// Gets or sets a source element that provides the access key scope for this element,
+		/// even if it's not in the visual tree of the source element.
+		/// </summary>
+		public DependencyObject AccessKeyScopeOwner
+		{
+			get => (DependencyObject)this.GetValue(AccessKeyScopeOwnerProperty);
+			set => SetValue(AccessKeyScopeOwnerProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies for the AccessKeyScopeOwner dependency property.
+		/// </summary>
+		public static DependencyProperty AccessKeyScopeOwnerProperty { get; } =
+			DependencyProperty.Register(
+				nameof(AccessKeyScopeOwner),
+				typeof(DependencyObject),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether an element defines its own access key scope.
+		/// </summary>
+		public bool IsAccessKeyScope
+		{
+			get => (bool)GetValue(IsAccessKeyScopeProperty);
+			set => SetValue(IsAccessKeyScopeProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies for the IsAccessKeyScope dependency property.
+		/// </summary>
+		public static DependencyProperty IsAccessKeyScopeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsAccessKeyScope),
+				typeof(bool),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(bool)));
+
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true)]
 		public static DependencyProperty IsHitTestVisibleProperty { get; } = CreateIsHitTestVisibleProperty();
 
@@ -104,5 +155,44 @@ namespace Microsoft.UI.Xaml
 			get => GetKeyboardAcceleratorsValue() ?? (KeyboardAccelerators = new List<KeyboardAccelerator>());
 			set => SetKeyboardAcceleratorsValue(value);
 		}
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the control tooltip displays
+		/// the key combination for its associated keyboard accelerator.
+		/// </summary>
+		public KeyboardAcceleratorPlacementMode KeyboardAcceleratorPlacementMode
+		{
+			get => (KeyboardAcceleratorPlacementMode)GetValue(KeyboardAcceleratorPlacementModeProperty);
+			set => SetValue(KeyboardAcceleratorPlacementModeProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the KeyboardAcceleratorPlacementMode dependency property.
+		/// </summary>
+		public static DependencyProperty KeyboardAcceleratorPlacementModeProperty { get; } =
+			DependencyProperty.Register(
+				nameof(KeyboardAcceleratorPlacementMode),
+				typeof(KeyboardAcceleratorPlacementMode),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(KeyboardAcceleratorPlacementMode)));
+
+		/// <summary>
+		/// Gets or sets a value that indicates the control tooltip that displays the accelerator key combination.
+		/// </summary>
+		public DependencyObject KeyboardAcceleratorPlacementTarget
+		{
+			get => (DependencyObject)GetValue(KeyboardAcceleratorPlacementTargetProperty);
+			set => SetValue(KeyboardAcceleratorPlacementTargetProperty, value);
+		}
+
+		/// <summary>
+		/// Identifies the KeyboardAcceleratorPlacementTarget dependency property.
+		/// </summary>
+		public static DependencyProperty KeyboardAcceleratorPlacementTargetProperty { get; } =
+			DependencyProperty.Register(
+				nameof(KeyboardAcceleratorPlacementTarget),
+				typeof(DependencyObject),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 	}
 }

@@ -7,4 +7,10 @@
 /// </summary>
 public partial class KeyboardAccelerator : DependencyObject
 {
+	/// <summary>
+	/// Initializes a new instance of the KeyboardAccelerator class.
+	/// </summary>
+	public KeyboardAccelerator()
+	{
+	}
 }
