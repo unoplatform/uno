@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml;
 partial class Window
 {
 #if HAS_UNO_WINUI
-	public Window() : this(Uno.UI.Xaml.WindowType.CoreWindow/*TODO: ***IMPORTANT BEFORE MERGE*** REVERT */)
+	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
 	{
 	}
 

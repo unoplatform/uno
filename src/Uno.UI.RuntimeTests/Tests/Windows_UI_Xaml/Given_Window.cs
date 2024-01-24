@@ -20,7 +20,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 #if !WINAPPSDK
 [TestClass]
-[Ignore("Temporarily ignored. TODO: **IMPORTANT BEFORE MERGE** Un-ignore this.")]
 public class Given_Window
 {
 	[TestCleanup]
