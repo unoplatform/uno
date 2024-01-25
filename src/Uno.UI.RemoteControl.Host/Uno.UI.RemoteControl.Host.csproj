@@ -20,6 +20,13 @@
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
+
+		<!-- StreamJsonRpc 2.14.24 brings in Microsoft.VisualStudio.Threading (and in turn -->
+		<!-- Microsoft.VisualStudio.Threading.Analyzers) version 17.1.46 -->
+		<!-- Analyzers version 17.1.46 has a performance issue that is fixed in 17.5.21 -->
+		<!-- commit: https://github.com/microsoft/vs-threading/commit/c7ceed01d1c73d7d5f2f6c0dd427245b3c7c8d96 -->
+		<!-- We explicitly add the reference here (same we do for Uno.UI.RemoteControl.VS.csproj) so we get a version with fast analyzers -->
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
 	</ItemGroup>
 
 	<ItemGroup>
