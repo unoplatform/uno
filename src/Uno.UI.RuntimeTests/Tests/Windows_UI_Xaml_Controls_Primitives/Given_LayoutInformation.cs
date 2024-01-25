@@ -217,20 +217,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			WindowContent = root;
-			for (int i = 0; i < 100; i++)
+			do
 			{
-				if (root.IsLoaded)
-				{
-					break;
-				}
-
 				await WaitForIdle();
-			}
-
-			if (!root.IsLoaded)
-			{
-				Assert.Fail("Border was not loaded.");
-			}
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
 			var slot = LayoutInformation.GetLayoutSlot(sut);
 
@@ -346,20 +336,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			WindowContent = root;
-			for (int i = 0; i < 100; i++)
+			do
 			{
-				if (root.IsLoaded)
-				{
-					break;
-				}
-
 				await WaitForIdle();
-			}
-
-			if (!root.IsLoaded)
-			{
-				Assert.Fail("Border was not loaded.");
-			}
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
 			var slot = LayoutInformation.GetLayoutSlot(sut);
 
@@ -666,20 +646,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			WindowContent = root;
-			for (int i = 0; i < 100; i++)
+			do
 			{
-				if (root.IsLoaded)
-				{
-					break;
-				}
-
 				await WaitForIdle();
-			}
-
-			if (!root.IsLoaded)
-			{
-				Assert.Fail("Border was not loaded.");
-			}
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
 			var slot = LayoutInformation.GetLayoutSlot(sut);
 
@@ -986,20 +956,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			WindowContent = root;
-			for (int i = 0; i < 100; i++)
+			do
 			{
-				if (root.IsLoaded)
-				{
-					break;
-				}
-
 				await WaitForIdle();
-			}
-
-			if (!root.IsLoaded)
-			{
-				Assert.Fail("Border was not loaded.");
-			}
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
 			var slot = LayoutInformation.GetLayoutSlot(sut);
 
@@ -1102,20 +1062,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			WindowContent = root;
-			for (int i = 0; i < 100; i++)
+			do
 			{
-				if (root.IsLoaded)
-				{
-					break;
-				}
-
 				await WaitForIdle();
-			}
-
-			if (!root.IsLoaded)
-			{
-				Assert.Fail("Border was not loaded.");
-			}
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
 			var slot = LayoutInformation.GetLayoutSlot(sut);
 
@@ -1426,20 +1376,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			};
 
 			WindowContent = root;
-			for (int i = 0; i < 100; i++)
+			do
 			{
-				if (root.IsLoaded)
-				{
-					break;
-				}
-
 				await WaitForIdle();
-			}
-
-			if (!root.IsLoaded)
-			{
-				Assert.Fail("Border was not loaded.");
-			}
+			} while (!root.IsLoaded); // kicks-in too early on UWP otherwise
 
 			var expected = new Rect(
 				0,
