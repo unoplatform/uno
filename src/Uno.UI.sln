@@ -82,8 +82,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.UITests", "Sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.ProjectTemplates.Dotnet", "SolutionTemplate\Uno.ProjectTemplates.Dotnet\Uno.ProjectTemplates.Dotnet.csproj", "{34B3A06C-2988-434E-A7EF-CA6B1A949B65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.UWP.Design", "SamplesApp\SamplesApp.UWP.Design\SamplesApp.UWP.Design.csproj", "{E3B940DA-15A4-4104-B96B-6951D932FE0E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RemoteControl.Host", "Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj", "{86B348BE-64E3-441F-A361-83D3C7C9F828}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RemoteControl", "RemoteControl", "{E8E628C1-3BAF-4C67-AF41-78B1B30AC8CC}"
@@ -1227,45 +1225,6 @@ Global
 		{34B3A06C-2988-434E-A7EF-CA6B1A949B65}.Release|x64.Build.0 = Release|Any CPU
 		{34B3A06C-2988-434E-A7EF-CA6B1A949B65}.Release|x86.ActiveCfg = Release|Any CPU
 		{34B3A06C-2988-434E-A7EF-CA6B1A949B65}.Release|x86.Build.0 = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|ARM.ActiveCfg = Debug|ARM
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|ARM.Build.0 = Debug|ARM
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|ARM64.Build.0 = Debug|ARM64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|x64.ActiveCfg = Debug|x64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|x64.Build.0 = Debug|x64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|x86.ActiveCfg = Debug|x86
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Debug|x86.Build.0 = Debug|x86
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|Any CPU.ActiveCfg = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|ARM.ActiveCfg = Release|ARM
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|ARM.Build.0 = Release|ARM
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|ARM64.ActiveCfg = Release|ARM64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|ARM64.Build.0 = Release|ARM64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|iPhone.ActiveCfg = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|iPhone.Build.0 = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|iPhoneSimulator.Build.0 = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|x64.ActiveCfg = Release|x64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|x64.Build.0 = Release|x64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|x86.ActiveCfg = Release|x86
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release_NoSamples|x86.Build.0 = Release|x86
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|ARM.ActiveCfg = Release|ARM
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|ARM.Build.0 = Release|ARM
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|ARM64.ActiveCfg = Release|ARM64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|ARM64.Build.0 = Release|ARM64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|iPhone.Build.0 = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|x64.ActiveCfg = Release|x64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|x64.Build.0 = Release|x64
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|x86.ActiveCfg = Release|x86
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E}.Release|x86.Build.0 = Release|x86
 		{86B348BE-64E3-441F-A361-83D3C7C9F828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{86B348BE-64E3-441F-A361-83D3C7C9F828}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86B348BE-64E3-441F-A361-83D3C7C9F828}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -6026,7 +5985,6 @@ Global
 		{8B51C7BA-BE67-4707-97CF-A57190236860} = {62907CED-829B-441B-893A-9F663342F6EA}
 		{F65D1C57-8BF7-4894-B491-3AD94F889C4D} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{34B3A06C-2988-434E-A7EF-CA6B1A949B65} = {FCBC6D7C-8F07-4C07-9802-0E2B5B72391D}
-		{E3B940DA-15A4-4104-B96B-6951D932FE0E} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{86B348BE-64E3-441F-A361-83D3C7C9F828} = {E8E628C1-3BAF-4C67-AF41-78B1B30AC8CC}
 		{BCB38AAE-4CDA-43C2-AA10-C3A935B08F79} = {E8E628C1-3BAF-4C67-AF41-78B1B30AC8CC}
 		{E6872579-B7A0-42CE-AE97-44234BB55625} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
@@ -6174,8 +6132,6 @@ Global
 		SamplesApp\UITests.Shared\UITests.Shared.projitems*{c8c4395c-602f-45ab-aed4-40a8a4ef0089}*SharedItemsImports = 5
 		SamplesApp\UnoIslands.Shared\UnoIslands.Shared.projitems*{cce4cf3e-03b1-4153-8df0-6ab551c84ae6}*SharedItemsImports = 13
 		SamplesApp\UnoIslands.Shared\UnoIslands.Shared.projitems*{d946b7ca-da2b-4f0b-ae5c-d49f67ce0535}*SharedItemsImports = 5
-		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{e3b940da-15a4-4104-b96b-6951d932fe0e}*SharedItemsImports = 4
-		SamplesApp\UITests.Shared\UITests.Shared.projitems*{e3b940da-15a4-4104-b96b-6951d932fe0e}*SharedItemsImports = 4
 		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{e6872579-b7a0-42ce-ae97-44234bb55625}*SharedItemsImports = 5
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{f4581f51-40d6-4035-8a1d-65cc6917d0a9}*SharedItemsImports = 13
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{fa0e451f-69eb-4e90-bc77-696b16391c02}*SharedItemsImports = 5
