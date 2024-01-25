@@ -1,0 +1,41 @@
+<Project>
+	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
+	<!-- SingleProject-specific features -->
+	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
+		<ProjectCapability Include="Msix" Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'"/>
+		<ProjectCapability Include="MauiSingleProject" />
+		<ProjectCapability Include="LaunchProfiles" />
+		<!-- If VS is older than Dev17 -->
+		<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
+		<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
+		<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
+		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
+
+		<!-- Required since VS 2022 17.4 Preview 1 -->
+		<ProjectCapability Include="MauiCore" />
+		<ProjectCapability Include="Maui" />
+		<ProjectCapability Include="UseMauiCore" />
+	</ItemGroup>
+
+	<Import Project="Uno.ProjectCapabilities.WinAppSdk.targets" Condition="$(IsWinAppSdk)" />
+
+	<!-- Additional capabilities to enable XAML Intellisense for non WinUI native projects -->
+	<ItemGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
+		<AvailableItemName Include="PRIResource" />
+		<AvailableItemName Include="AppxManifest" />
+		<AvailableItemName Include="ApplicationDefinition" />
+		<AvailableItemName Include="Page" />
+		<AvailableItemName Include="DesignData" />
+		<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- WinAppSDK Defined caps for the XAML editor-->
+		<ProjectCapability Include="WindowsXaml"/>
+		<ProjectCapability Include="WindowsXamlPage"/>
+		<ProjectCapability Include="WindowsXamlCodeBehind"/>
+		<ProjectCapability Include="WindowsXamlResourceDictionary"/>
+		<ProjectCapability Include="WindowsXamlUserControl"/>
+		<ProjectCapability Include="WindowsUniversalMultiViews"/>
+	</ItemGroup>
+</Project>
