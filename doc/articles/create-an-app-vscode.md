@@ -8,9 +8,9 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 ## Create the App
 
-Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and Uno Platform Online Wizard by following these steps:
+Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and Uno Platform Live Wizard by following these steps:
 
-1. Open a browser and navigate to the online [App Wizard](https://aka.platform.uno/app-wizard)
+1. Open a browser and navigate to the online [Live Wizard](https://aka.platform.uno/app-wizard)
 1. Configure your new project by providing a project name, then click **Start**
 
     ![A screen showing how to choose a solution name](Assets/quick-start/live-wizard-01-choose-name.png)
@@ -20,14 +20,14 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
     ![A screen showing how to choose template for the new app](Assets/quick-start/live-wizard-02-select-preset.png)
 
     > [!TIP]
-    > For a detailed overview of the Uno Platform project template wizard and all its options, see the [Template Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+    > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
 
 1. Click the **Create** button on the top right corner, then click the **Copy** button
 
     ![A screen showing the dotnet new command to create the new app](Assets/quick-start/live-wizard-03-create-app.png)
 
 1. In your terminal, navigate to the folder that will contains your new app.
-1. Create a new project by pasting and executing the command that was previously generated in the App Wizard.
+1. Create a new project by pasting and executing the command that was previously generated in the Live Wizard.
 
 > [!IMPORTANT]
 > Apple targets cannot be built under Linux. If you are using Linux, you'll need to remove `ios` and `maccatalyst` from the `platforms` list.
