@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_isPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('•', text.Length);
+				DisplayBlock.Text = new string('●', text.Length);
 			}
 			else
 			{
