@@ -753,7 +753,7 @@ namespace Uno.UI.Samples.Tests
 
 					// We await this to make sure the UI is updated before running the test.
 					// This will help developpers to identify faulty tests when the app is crashing.
-					await ReportMessage($"{DateTime.Now.TimeOfDay}: Running test {fullTestName}");
+					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 
 					var sw = new Stopwatch();

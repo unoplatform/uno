@@ -107,9 +107,6 @@ public partial class Popup
 				PopupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
-		{
-
-		}
 
 		if (newIsOpen)
 		{
