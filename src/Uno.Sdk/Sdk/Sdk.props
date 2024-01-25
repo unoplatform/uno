@@ -16,6 +16,12 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<!--
+			Indicate to other targets that Uno.Sdk is being used.
+			This should be set as early as possible to ensure that Uno.WinUI targets do not
+			override or add additional project capabilities.
+		-->
+		<UsingUnoSdk>true</UsingUnoSdk>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
 
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(MSBuildThisFileDirectory)..\targets\Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
