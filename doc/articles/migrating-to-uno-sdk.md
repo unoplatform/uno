@@ -91,7 +91,6 @@ Beneath the PropertyGroup is a Choose block with conditions for various TargetFr
 | MacCatalyst | 14.0 |
 | WinUI | 10.0.18362.0 |
 
-
 Lastly the [solution-config.props](xref:Build.Solution.TargetFramework-override) file is now automatically located and loaded for you if it exists. Be sure to remove the Import at the bottom of the `Directory.Build.props`.
 
 ## Cleaning up the Directory.Build.targets
