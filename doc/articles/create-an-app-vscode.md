@@ -20,7 +20,7 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
     ![A screen showing how to choose template for the new app](Assets/quick-start/live-wizard-02-select-preset.png)
 
     > [!TIP]
-    > For a detailed overview of the Uno Platform project template wizard and all its options, see [this guide](xref:Uno.GettingStarted.UsingWizard).
+    > For a detailed overview of the Uno Platform project template wizard and all its options, see the [Template Wizard guide](xref:Uno.GettingStarted.UsingWizard).
 
 1. Click the **Create** button on the top right corner, then click the **Copy** button
 
