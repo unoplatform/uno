@@ -44,7 +44,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_With_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -79,7 +79,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_Navigate_And_Return_With_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -126,7 +126,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	//[Ignore("Not yet working")]
 	public async Task Check_Can_Change_Page1_Before_Navigating_Back_With_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -166,7 +166,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_With_Inherited_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;

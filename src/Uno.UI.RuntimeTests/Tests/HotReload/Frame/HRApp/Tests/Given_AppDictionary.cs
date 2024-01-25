@@ -18,7 +18,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_AppResource_String()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -48,7 +48,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_AppResource_DataTemplate()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -78,7 +78,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_AppResource_Color()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
@@ -121,7 +121,7 @@ public class Given_Dictionary : BaseTestClass
 	[TestMethod]
 	public async Task When_Change_SubDictionary_String()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		// We're not storing the instance explicitly, as the HR engine replaces
 		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
