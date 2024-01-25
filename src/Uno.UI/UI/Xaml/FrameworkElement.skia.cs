@@ -103,9 +103,9 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
+		#region VerticalAlignment Dependency Property
 		[GeneratedDependencyProperty(
-			DefaultValue = Xaml.HorizontalAlignment.Stretch,
+			DefaultValue = Xaml.VerticalAlignment.Stretch,
 			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
 #if DEBUG
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
