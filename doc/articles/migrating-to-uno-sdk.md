@@ -217,3 +217,67 @@ Finally towards the bottom of the Windows project you will find two blocks that 
   <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
 </PropertyGroup>
 ```
+
+## Customizing the behavior of the Uno.Sdk
+
+### Disabling Default Items
+
+As previously discussed, the `Uno.Sdk` will automatically includes files that you previously needed to manage within your projects. These default item's include definitions for including files within the `Content`, `Page`, abd `PRIResource` `ItemGroup`'s. Additionally if you have referenced the `Uno.Resizetizer` it will add default items for the `UnoImage` allowing you to more easily manage your image assets.
+
+You may disable this behavior in one of two ways:
+
+```xml
+<PropertyGroup>
+  <!-- Globally disable all default includes from the `Uno.Sdk`, `Microsoft.NET.Sdk` and if building on WASM `Microsoft.NET.Sdk.Web` -->
+  <EnableDefaultItems>false</EnableDefaultItems>
+
+  <!-- Disable only default items provided by the `Uno.Sdk` -->
+  <EnableDefaultUnoItems>false</EnableDefaultUnoItems>
+</PropertyGroup>
+```
+
+### Configure the `solution-config.props`
+
+By default the `Uno.Sdk` will automatically import the `solution-config.props` if one exists. To disable this behavior you can set the following property and the `Uno.Sdk` will not import the `solution-config.props` file.
+
+```xml
+<PropertyGroup>
+  <ImportSolutionConfigProps>false</ImportSolutionConfigProps>
+</PropertyGroup>
+```
+
+To specify a specific location for the `solution-config.props` you can set the following property with the path to the file.
+
+```xml
+<PropertyGroup>
+  <SolutionConfigPropsPath>path/to/solution-config.props</SolutionConfigPropsPath>
+</Property>
+```
+
+> [!Note]
+> If you specify the `SolutionConfigPropsPath`, it will still only be imported if the file exists which makes it safe to use with source control as it should not exist in CI and therefore would not be imported during a CI build.
+
+### WinAppSdk PRIResource Workaround
+
+Many Uno projects and libraries make use of a `winappsdk-workaround.targets` file that corrects a [bug](https://github.com/microsoft/microsoft-ui-xaml/issues/8857https://github.com/microsoft/microsoft-ui-xaml/issues/8857) found in WinUI. When using the `Uno.Sdk` these targets now are provided for you out of the box. This extra set of workaround targets can be disabled by setting the following property:
+
+```xml
+<PropertyGroup>
+  <DisableWinUI8857_Workaround>true</DisableWinUI8857_Workaround>
+</PropertyGroup>
+```
+
+## Cross Targeting Support
+
+By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
+
+- *.crossruntime.cs (WASM, Skia, or Reference)
+- *.wasm.cs
+- *.skia.cs
+- *.reference.cs
+- *.iOS.cs (iOS & MacCatalyst)
+- *.macOS.cs (MacOS not MacCatalyst)
+- *.iOSmacOS.cs (iOS, MacCatalyst, & MacOS)
+- *.Android.cs
+
+As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
