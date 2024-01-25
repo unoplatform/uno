@@ -11,16 +11,18 @@
 
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
-		<None Include="targets\**\*.props;targets\**\*.targets" Pack="true" PackagePath="targets/" />
+		<TargetFile Include="targets\**\*.props;targets\**\*.targets" />
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
 		<Copy SourceFiles="@(SdkFile)" DestinationFolder="$(IntermediateOutputPath)Sdk" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(TargetFile)" DestinationFolder="$(IntermediateOutputPath)targets" SkipUnchangedFiles="true" />
 	</Target>
 
 	<Target Name="ReplacePackageVersion" BeforeTargets="Pack;_IntermediatePack" AfterTargets="CopySdkFiles">
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
+			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.props;$(IntermediateOutputPath)targets\*.targets" />
 		</ItemGroup>
 
 		<ReplaceFileText
@@ -28,8 +30,14 @@
 			MatchExpression="DefaultUnoVersion"
 			ReplacementText="$(PackageVersion)" />
 
+		<ReplaceFileText
+			Filename="%(_IntermediateTargetFile.Identity)"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
 		<ItemGroup>
 			<None Include="%(_IntermediateSdkFile.Identity)" Pack="true" PackagePath="Sdk\%(_IntermediateSdkFile.Filename)%(_IntermediateSdkFile.Extension)" />
+			<None Include="%(_IntermediateTargetFile.Identity)" Pack="true" PackagePath="targets\%(_IntermediateTargetFile.Filename)%(_IntermediateTargetFile.Extension)" />
 		</ItemGroup>
 	</Target>
 

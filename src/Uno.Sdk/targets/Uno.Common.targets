@@ -1,0 +1,35 @@
+<Project>
+
+	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
+		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
+
+		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
+	</PropertyGroup>
+
+	<Import Project="Uno.Common.Android.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
+	<Import Project="Uno.Common.iOS.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' " />
+	<Import Project="Uno.Common.MacCatalyst.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " />
+	<Import Project="Uno.Common.MacOS.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' " />
+	<Import Project="Uno.Common.Skia.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia' " />
+	<Import Project="Uno.Common.Skia.targets"
+		Condition=" $(MSBuildProjectName.Contains('.Skia.')) " />
+	<Import Project="Uno.Common.Wasm.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' " />
+	<Import Project="Uno.Common.Wasm.targets"
+		Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) " />
+	<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
+	<Import Project="Uno.Common.WinAppSdk.targets"
+		Condition=" $(TargetFramework.Contains('windows10')) " />
+
+</Project>
