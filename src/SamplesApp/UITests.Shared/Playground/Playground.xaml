@@ -30,7 +30,8 @@
 							   RequestedTheme="Light"
 							   HasGlyphMargin="True"
 							   Text="XAML editor"
-							   CodeLanguage="XML" />
+							   CodeLanguage="XML"
+							   Loaded="OnXamlEditorLoaded" />
 
 			<ContentControl Grid.Column="1"
 							x:Name="renderSurface" />

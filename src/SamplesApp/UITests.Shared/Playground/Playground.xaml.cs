@@ -23,10 +23,9 @@ public sealed partial class Playground : UserControl
 	public Playground()
 	{
 		this.InitializeComponent();
-
-		xamlText.Loaded += OnXamlEditorLoaded;
-
 	}
+
+#if __WASM__
 	private async void OnXamlEditorLoaded(object sender, RoutedEventArgs e)
 	{
 		xamlText.CodeLanguage = "xml";
@@ -70,4 +69,5 @@ public sealed partial class Playground : UserControl
 			</Grid>";
 		
 	}
+#endif
 }
