@@ -343,6 +343,12 @@
 					PropertyName="XamlGeneratorAnalyzerSuppressionsProperty" />
 		</CreateProperty>
 
+		<CreateProperty Value="@(UnoRuntimeProjectReference, ',')">
+			<Output
+					TaskParameter="Value"
+					PropertyName="UnoRuntimeProjectReferenceProperty" />
+		</CreateProperty>
+
 		<CreateProperty Value="$(ProjectTypeGuids.Replace(';',','))">
 			<Output
 					TaskParameter="Value"

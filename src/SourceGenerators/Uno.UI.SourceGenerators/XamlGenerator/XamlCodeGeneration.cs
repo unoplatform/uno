@@ -382,7 +382,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 				var includeXamlNamespaces = _includeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 
-				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper)
+				var runtimeIdentifier = _generatorContext.GetMSBuildPropertyValue("UnoRuntimeIdentifier");
+				var runtimeProjectReferences = _generatorContext.GetMSBuildPropertyValue("UnoRuntimeProjectReferenceProperty");
+				var targetFramework = _generatorContext.GetMSBuildPropertyValue("TargetFramework");
+
+				// Note: When we have a browser platform identifier, (e.g, net8.0-browser and net9.0-browser), we will be able to
+				// differentiate Wasm and Skia and this warning can be removed.
+				Action<string, string>? onSkiaOrWasmCondition;
+				if (targetFramework.Length > 0 && !targetFramework.Contains("-") && runtimeIdentifier.Length == 0 && runtimeProjectReferences.Length == 0)
+				{
+					onSkiaOrWasmCondition = (platform, fileName) => _generatorContext.ReportDiagnostic(Diagnostic.Create(XamlCodeGenerationDiagnostics.ConditionalXamlInClassLibrary, null, platform, fileName));
+				}
+				else
+				{
+					onSkiaOrWasmCondition = null;
+				}
+
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper, onSkiaOrWasmCondition)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
