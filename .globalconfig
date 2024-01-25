@@ -142,6 +142,9 @@ dotnet_diagnostic.CA1309.severity = none
 # CA2101: Specify marshalling for P/Invoke string arguments
 dotnet_diagnostic.CA2101.severity = none
 
+# IDE0005: Remove unnecessary using directives
+dotnet_diagnostic.IDE0005.severity = none
+
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = warning # Will be promoted as an error by TreatWarningsAsErrors but also allows usage of WarningsNotAsErrors in debug
 
