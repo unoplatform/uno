@@ -3,6 +3,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
@@ -11,11 +12,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 		public void Should_not_throw_if_Path_Data_is_set_to_null()
 		{
-			// This bug is an illustration of issue
-			// https://github.com/unoplatform/uno/issues/6846
-
 			// Set initial Data
 			var SUT = new Path { Data = new RectangleGeometry() };
 
