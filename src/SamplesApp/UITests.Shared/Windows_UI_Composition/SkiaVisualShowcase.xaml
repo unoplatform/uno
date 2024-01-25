@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Composition.SkiaVisualShowcase"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:UITests.Shared.Windows_UI_Composition"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skia="http://uno.ui/skia"
+             xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="400">
+
+	<skia:Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Slider Grid.Row="0" Header="Sample" Minimum="0" Maximum="{x:Bind MaxSampleIndex}" Value="{x:Bind wrapper.Sample, Mode=TwoWay}" />
+		<local:SkiaWrapper Grid.Row="1" x:Name="wrapper" />
+	</skia:Grid>
+	<not_skia:TextBlock Text="This sample is only supported on skia." />
+</UserControl>
