@@ -3,19 +3,12 @@
 using System;
 using System.Diagnostics;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.ApplicationModel;
-using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
-using System.Linq;
 using Windows.ApplicationModel.Core;
-using Windows.Globalization;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 

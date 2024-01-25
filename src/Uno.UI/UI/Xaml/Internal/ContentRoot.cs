@@ -10,6 +10,7 @@ using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
@@ -72,7 +73,7 @@ internal partial class ContentRoot
 		FocusManager.SetFocusObserver(new FocusObserver(this));
 
 		CompositionTarget = new CompositionTarget();
-		CompositionTarget.Root = VisualTree.RootElement.Visual;
+		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
 		CompositionTarget.Root.CompositionTarget = CompositionTarget;
 
 		switch (type)
