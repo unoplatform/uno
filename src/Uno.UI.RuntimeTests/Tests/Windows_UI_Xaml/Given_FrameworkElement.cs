@@ -638,7 +638,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 
-#if HAS_UNO
+#if __CROSSRUNTIME__
 				// Unlike WinUI, we don't crash.
 				SUT.Measure(new Size(double.NaN, double.NaN));
 				SUT.Measure(new Size(42.0, double.NaN));
@@ -1167,6 +1167,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		[TestMethod]
 		[RunsOnUIThread]
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		[Ignore("Works only with proper lifecycle.")]
+#endif
 		public async Task When_Removed_After_Add_But_Before_Loaded()
 		{
 			var sp = new StackPanel

@@ -879,14 +879,15 @@ namespace Uno.UI.Samples.Tests
 							if (test.Method.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								var timeoutTask = Task.Delay(GetTestTimeout(test));
+								var timeout = GetTestTimeout(test);
+								var timeoutTask = Task.Delay(timeout);
 
 								var resultingTask = await Task.WhenAny(task, timeoutTask);
 
 								if (resultingTask == timeoutTask)
 								{
 									throw new TimeoutException(
-										$"Test execution timed out after {DefaultUnitTestTimeout}");
+										$"Test execution timed out after {timeout}");
 								}
 
 								// Rethrow exception if failed OR task cancelled if task **internally** raised
