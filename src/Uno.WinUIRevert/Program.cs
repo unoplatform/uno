@@ -129,7 +129,6 @@ namespace UnoWinUIRevert
 		static string[] _exclusions = new string[] {
 			"Uno.UWPSyncGenerator.Reference.csproj",
 			"SamplesApp.Windows.csproj",
-			"SamplesApp.UWP.Design.csproj",
 			@"Uno.UWPSyncGenerator",
 			@"PackageDiffIgnore.xml",
 			@"src\Uno.UWP\",

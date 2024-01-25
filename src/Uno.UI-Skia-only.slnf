@@ -14,7 +14,6 @@
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
-      "SamplesApp\\SamplesApp.UWP.Design\\SamplesApp.UWP.Design.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SamplesApp\\UnoIslands.Shared\\UnoIslands.Shared.shproj",
