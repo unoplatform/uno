@@ -309,7 +309,28 @@ public class EntryPoint : IDisposable
 			_process.BeginErrorReadLine();
 
 			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
+			_ideChannelClient.ForceHotReloadRequested += IdeChannelClient_ForceHotReloadRequested;
 			_ideChannelClient.ConnectToHost();
+		}
+	}
+
+#pragma warning disable VSTHRD100 // Avoid async void methods
+	private async void IdeChannelClient_ForceHotReloadRequested(object sender, ForceHotReloadIdeMessage message)
+#pragma warning restore VSTHRD100 // Avoid async void methods
+	{
+		try
+		{
+			_dte.ExecuteCommand("Debug.ApplyCodeChanges");
+
+			// Send a message back to indicate that the request has been received and acted upon.
+			if (_ideChannelClient is not null)
+			{
+				await _ideChannelClient.SendToDevServerAsync(new HotReloadRequestedIdeMessage());
+			}
+		}
+		catch (Exception e)
+		{
+			_debugAction?.Invoke($"Failed to execute command to ForceHotReload: {e}");
 		}
 	}
 
