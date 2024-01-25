@@ -100,7 +100,7 @@
 	</ItemGroup>
 
 	<Choose>
-		<When Condition="'$(_UnoIsWinAppSDKDefined)'!='true'">
+		<When Condition="'$(_UnoIsWinAppSDKDefined)'!='true' and $(UsingUnoSdk) != 'true'">
 			<!-- IDE capabilities -->
 
 			<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
