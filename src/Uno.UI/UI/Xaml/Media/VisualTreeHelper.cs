@@ -541,19 +541,8 @@ namespace Microsoft.UI.Xaml.Media
 			}
 
 			// Validate if any child is an acceptable target
-			var children = GetManagedVisualChildren(element);
-
 			var isChildStale = isStale;
-
-			using var child = children
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
-				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
-				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
-				.GetReverseEnumerator();
-#endif
-
+			using var child = GetManagedVisualChildrenReversedEnumerator(element);
 			while (child.MoveNext())
 			{
 				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
@@ -658,13 +647,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
 		{
-			using var enumerator = GetManagedVisualChildren(root)
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
-				.GetReverseEnumerator();
-#endif
-
+			using var enumerator = GetManagedVisualChildrenReversedEnumerator(root);
 			while (enumerator.MoveNext())
 			{
 				var child = enumerator.Current;
@@ -753,6 +736,22 @@ namespace Microsoft.UI.Xaml.Media
 #else
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
+#endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseEnumerator GetManagedVisualChildrenReversedEnumerator(_View view)
+			=> view._children.GetReverseEnumerator();
+#endif
+
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
+		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
+#else
+		internal static MaterializableList<UIElement>.ReverseReduceEnumerator GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
+			=> view._children.GetReverseEnumerator(predicate);
 #endif
 		#endregion
 
@@ -852,6 +851,31 @@ namespace Microsoft.UI.Xaml.Media
 
 					yield return current;
 				}
+			}
+
+			public bool Contains(UIElement element)
+			{
+				var current = Leaf;
+				if (current == element)
+				{
+					return true;
+				}
+
+				while (current != Root)
+				{
+					var parentDo = GetParent(current);
+					while ((current = parentDo as UIElement) is null)
+					{
+						parentDo = GetParent(parentDo!);
+					}
+
+					if (current == element)
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 
 			public override string ToString() => $"Root={Root.GetDebugName()} | Leaf={Leaf.GetDebugName()}";

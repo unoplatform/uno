@@ -260,6 +260,9 @@ namespace Microsoft.UI.Xaml
 			/// </remarks>
 			/// <remarks>This is used only for managed dispatch.</remarks>
 			public bool VisualTreeAltered { get; set; }
+
+			public static PointerEventDispatchResult operator +(PointerEventDispatchResult left, PointerEventDispatchResult right)
+				=> new() { VisualTreeAltered = left.VisualTreeAltered || right.VisualTreeAltered };
 		}
 
 		/// <summary>
@@ -1087,16 +1090,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
-			// We release the captures on up but only after the released event and processed the gesture
-			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
-			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'isOverOrCaptured' would have been false.
-			if (!isOver || args.Pointer.PointerDeviceType != PointerDeviceType.Touch)
-			{
-				handledInManaged |= SetNotCaptured(args);
-			}
-#endif
-
 			return handledInManaged;
 		}
 
@@ -1121,15 +1114,6 @@ namespace Microsoft.UI.Xaml
 			{
 				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 			}
-
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
-			// We release the captures on exit when pointer if not pressed
-			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
-			if (!IsPressed(args.Pointer))
-			{
-				handledInManaged |= SetNotCaptured(args);
-			}
-#endif
 
 			return handledInManaged;
 		}

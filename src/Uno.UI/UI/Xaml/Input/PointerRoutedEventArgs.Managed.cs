@@ -24,6 +24,8 @@ namespace Microsoft.UI.Xaml.Input
 		private readonly Windows.UI.Core.PointerEventArgs _pointerEventArgs;
 		private readonly PointerPoint _currentPoint;
 
+		internal Windows.UI.Core.PointerEventArgs CoreArgs => _pointerEventArgs;
+
 		internal PointerRoutedEventArgs(
 			Windows.UI.Core.PointerEventArgs pointerEventArgs,
 			UIElement source) : this()

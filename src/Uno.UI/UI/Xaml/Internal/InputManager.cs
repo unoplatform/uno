@@ -36,12 +36,10 @@ internal partial class InputManager : IInputInjectorTarget
 	internal void Initialize(object host)
 	{
 		InitializeKeyboard(host);
-		InitializeManagedPointers(host);
+		InitializePointers(host);
 	}
 
 	partial void InitializeKeyboard(object host);
-
-	partial void InitializeManagedPointers(object host);
 
 	internal ContentRoot ContentRoot { get; }
 
@@ -59,6 +57,7 @@ internal partial class InputManager : IInputInjectorTarget
 	internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
 	{
 		//TODO Uno: Implement
+		// Pointers.NotifyFocusChanged(); ==> Confirm usage of this InputManager.NotifyFocusChanged, currently uncommenting this line would result to a duplicate call to Pointers.NotifyFocusChanged!
 	}
 
 	internal bool LastInputWasNonFocusNavigationKeyFromSIP()
