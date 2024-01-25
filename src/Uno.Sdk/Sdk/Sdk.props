@@ -24,8 +24,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<UsingUnoSdk>true</UsingUnoSdk>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
 
-		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(MSBuildThisFileDirectory)..\targets\Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
-		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(MSBuildThisFileDirectory)..\targets\Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
+		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$([MSBuild]::GetPathOfFileAbove('Uno.Import.SolutionConfig.props', '$(MSBuildThisFileDirectory)..\targets'))</CustomAfterDirectoryBuildProps>
+		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$([MSBuild]::GetPathOfFileAbove('Uno.IsPlatform.props', '$(MSBuildThisFileDirectory)..\targets'))</CustomAfterDirectoryBuildProps>
 	</PropertyGroup>
 
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
