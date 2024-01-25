@@ -300,8 +300,8 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			SpinWait.SpinUntil(() =>
 			{
-					using var _ = X11Helper.XLock(_x11Window.Display);
-					return X11Helper.XPending(_x11Window.Display) > 0;
+				using var _ = X11Helper.XLock(_x11Window.Display);
+				return X11Helper.XPending(_x11Window.Display) > 0;
 			});
 
 			using (X11Helper.XLock(_x11Window.Display))

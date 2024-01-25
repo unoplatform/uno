@@ -30,15 +30,17 @@ using System.Runtime.InteropServices;
 
 namespace Avalonia.X11.Glx
 {
-    internal unsafe class GlxInterface
-    {
-        private const string libGL = "libGL.so.1";
+	unsafe internal class GlxInterface
+	{
+		private const string libGL = "libGL.so.1";
+		private static readonly char[] _separators = { ',', ' ' };
+		private static readonly int[] _null = { 0 };
 
 		[DllImport(libGL)]
 		public static extern bool glXQueryVersion(IntPtr dpy, out int maj, out int min);
 
 		[DllImport(libGL)]
-        public static extern bool glXQueryExtension(IntPtr dpy, out int errorBase, out int eventBase);
+		public static extern bool glXQueryExtension(IntPtr dpy, out int errorBase, out int eventBase);
 
 		[DllImport(libGL)]
 		public static extern bool glXMakeContextCurrent(IntPtr display, IntPtr draw, IntPtr read, IntPtr context);
@@ -54,84 +56,84 @@ namespace Avalonia.X11.Glx
 
 		[DllImport(libGL)]
 		public static extern IntPtr glXGetCurrentDrawable();
-        
+
 		[DllImport(libGL)]
 		public static extern IntPtr glXGetCurrentReadDrawable();
-        
+
 		[DllImport(libGL)]
 		public static extern IntPtr glXCreatePbuffer(IntPtr dpy, IntPtr fbc, int[] attrib_list);
-        
+
 		[DllImport(libGL)]
 		public static extern IntPtr glXDestroyPbuffer(IntPtr dpy, IntPtr fb);
-        
+
 		[DllImport(libGL)]
 		public static extern XVisualInfo* glXChooseVisual(IntPtr dpy, int screen, int[] attribList);
 
 		[DllImport(libGL)]
-		public static extern IntPtr glXCreateContext(IntPtr dpy,  XVisualInfo* vis,  IntPtr shareList,  bool direct);
+		public static extern IntPtr glXCreateContext(IntPtr dpy, XVisualInfo* vis, IntPtr shareList, bool direct);
 
 		[DllImport(libGL)]
 		public static extern IntPtr glXCreateNewContext(IntPtr dpy, IntPtr config, int renderType, IntPtr shareList, int direct);
 
 		[DllImport(libGL)]
-        public static extern IntPtr glXCreateContextAttribsARB(IntPtr dpy, IntPtr fbconfig, IntPtr shareList,
-            bool direct, int[] attribs);
-        
-        [DllImport(libGL)]
-        public static extern IntPtr glXGetProcAddress(string buffer);
-        
+		public static extern IntPtr glXCreateContextAttribsARB(IntPtr dpy, IntPtr fbconfig, IntPtr shareList,
+			bool direct, int[] attribs);
+
+		[DllImport(libGL)]
+		public static extern IntPtr glXGetProcAddress(string buffer);
+
 		[DllImport(libGL)]
 		public static extern void glXDestroyContext(IntPtr dpy, IntPtr ctx);
-        
+
 		[DllImport(libGL)]
-		public static extern IntPtr* glXChooseFBConfig(IntPtr dpy,  int screen,  int[] attrib_list,  out int nelements);
-        
-        public IntPtr* glXChooseFBConfig(IntPtr dpy, int screen, IEnumerable<int> attribs, out int nelements)
-        {
-            var arr = attribs.Concat(new[]{0}).ToArray();
-            return glXChooseFBConfig(dpy, screen, arr, out nelements);
-        }
-        
+		public static extern IntPtr* glXChooseFBConfig(IntPtr dpy, int screen, int[] attrib_list, out int nelements);
+
+		public IntPtr* glXChooseFBConfig(IntPtr dpy, int screen, IEnumerable<int> attribs, out int nelements)
+		{
+			var arr = attribs.Concat(_null).ToArray();
+			return glXChooseFBConfig(dpy, screen, arr, out nelements);
+		}
+
 		[DllImport(libGL)]
-		public static extern XVisualInfo * glXGetVisualFromFBConfig(IntPtr dpy,  IntPtr config);
-        
+		public static extern XVisualInfo* glXGetVisualFromFBConfig(IntPtr dpy, IntPtr config);
+
 		[DllImport(libGL)]
 		public static extern int glXGetFBConfigAttrib(IntPtr dpy, IntPtr config, int attribute, out int value);
-        
+
 		[DllImport(libGL)]
-		public static extern void glXSwapBuffers(IntPtr dpy,  IntPtr drawable);
-        
+		public static extern void glXSwapBuffers(IntPtr dpy, IntPtr drawable);
+
 		[DllImport(libGL)]
 		public static extern void glXWaitX();
-        
+
 		[DllImport(libGL)]
 		public static extern void glXWaitGL();
 
 		[DllImport(libGL)]
 		public static extern int glGetError();
-        
+
 		[DllImport(libGL)]
 		public static extern IntPtr glXQueryExtensionsString(IntPtr display, int screen);
 
-        // Ignores egl functions.
-        // On some Linux systems, glXGetProcAddress will return valid pointers for even EGL functions.
-        // This makes Skia try to load some data from EGL,
-        // which can then cause segmentation faults because they return garbage.
-        public static IntPtr SafeGetProcAddress(string proc)
-        {
-            if (proc.StartsWith("egl", StringComparison.InvariantCulture))
-            {
-                return IntPtr.Zero;
-            }
+		// Ignores egl functions.
+		// On some Linux systems, glXGetProcAddress will return valid pointers for even EGL functions.
+		// This makes Skia try to load some data from EGL,
+		// which can then cause segmentation faults because they return garbage.
+		public static IntPtr SafeGetProcAddress(string proc)
+		{
+			if (proc.StartsWith("egl", StringComparison.InvariantCulture))
+			{
+				return IntPtr.Zero;
+			}
 
-            return glXGetProcAddress(proc);
-        }
+			return glXGetProcAddress(proc);
+		}
 
-        public string[]? GetExtensions(IntPtr display)
-        {
-            var s = Marshal.PtrToStringAnsi(glXQueryExtensionsString(display, 0));
-            return s?.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => x.Trim()).ToArray();
-        }
-    }
+		public string[]? GetExtensions(IntPtr display)
+		{
+			var s = Marshal.PtrToStringAnsi(glXQueryExtensionsString(display, 0));
+			return s?.Split(_separators, StringSplitOptions.RemoveEmptyEntries)
+				.Select(x => x.Trim()).ToArray();
+		}
+	}
 }

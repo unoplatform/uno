@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml;
 using Avalonia.X11;
 using Avalonia.X11.Glx;
 using Uno.UI;
-using Microsoft.Graphics.Display;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -229,10 +228,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr bestFbc = IntPtr.Zero;
 		XVisualInfo* visual = null;
 		var ptr = GlxInterface.glXChooseFBConfig(display, screen, glxAttribs, out var count);
-		if (ptr == null || *ptr == IntPtr.Zero) {
+		if (ptr == null || *ptr == IntPtr.Zero)
+		{
 			throw new InvalidOperationException($"{nameof(GlxInterface.glXChooseFBConfig)} failed to retrieve GLX frambuffer configurations.");
 		}
-		for (var c = 0 ; c < count; c++)
+		for (var c = 0; c < count; c++)
 		{
 			XVisualInfo* visual_ = GlxInterface.glXGetVisualFromFBConfig(display, ptr[c]);
 			if (visual_->depth == 32) // 24bit color + 8bit stencil as requested above
@@ -243,12 +243,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		if (visual == null) {
+		if (visual == null)
+		{
 			throw new InvalidOperationException("Could not create correct visual window.\n");
 		}
 
-		IntPtr context =  GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		XLib.XSync(display, false);
+		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
+		var _1 = XLib.XSync(display, false);
 
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
@@ -261,8 +262,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			(UIntPtr)(XCreateWindowFlags.CWBackPixel | XCreateWindowFlags.CWColormap | XCreateWindowFlags.CWBorderPixel | XCreateWindowFlags.CWEventMask),
 			ref attribs);
 
-		GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
-		GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);
+		var _2 = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
+		var _3 = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
