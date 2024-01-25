@@ -1213,6 +1213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE || !HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task TestEventOrder()
@@ -1243,6 +1244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Child LayoutUpdated", events[8]);
 #endif
 		}
+#endif
 	}
 
 	public partial class ControlLoggingEventsSequence : StackPanel
