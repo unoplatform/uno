@@ -192,6 +192,8 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading to Uno.Sdk
+        href: xref:Uno.Development.MigratingToUnoSdk
       - name: Upgrading from .NET 7 to .NET 8
         href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
