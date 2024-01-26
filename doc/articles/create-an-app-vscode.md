@@ -8,19 +8,29 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 ## Create the App
 
-In a terminal, type the following to create a new project using [`dotnet new`](xref:Uno.GetStarted.dotnet-new) templates:
+Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and Uno Platform Live Wizard by following these steps:
 
-```dotnetcli
-dotnet new unoapp -o MyApp --preset=blank -platforms android ios maccatalyst wasm gtk --vscode
-```
+1. Open a browser and navigate to the online [Live Wizard](https://aka.platform.uno/app-wizard)
+1. Configure your new project by providing a project name, then click **Start**
 
-> [!TIP]
-> `MyApp` is the name you want to give to your project.
+    ![A screen showing how to choose a solution name](Assets/quick-start/live-wizard-01-choose-name.png)
 
-This will create a blank template app that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
+1. Choose a template to build your application
+
+    ![A screen showing how to choose template for the new app](Assets/quick-start/live-wizard-02-select-preset.png)
+
+    > [!TIP]
+    > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+
+1. Click the **Create** button on the top right corner, then click the **Copy** button
+
+    ![A screen showing the dotnet new command to create the new app](Assets/quick-start/live-wizard-03-create-app.png)
+
+1. In your terminal, navigate to the folder that will contains your new app.
+1. Create a new project by pasting and executing the command that was previously generated in the Live Wizard.
 
 > [!IMPORTANT]
-> Apple targets cannot be built under Linux. If you are using Linux, you'll need to remove `ios` and `maccatalyst` from the `platforms` list. The previous command would become `dotnet new unoapp -o MyApp -preset=blank -platforms wasm gtk android --vscode`.
+> Apple targets cannot be built under Linux. If you are using Linux, you'll need to remove `ios` and `maccatalyst` from the `platforms` list.
 
 Next, open the project using Visual Studio Code:
 
