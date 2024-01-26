@@ -12,7 +12,7 @@ Before reading it, you should first read the documentation of [ListViewBase aime
 
 `ListViewBase` is the base class of `ListView` and `GridView`. The remainder of the article will refer to 'ListView', the more commonly used of the two derived controls, for ease of reading, but most of the information is applicable to `GridView` as well since a large part of the implementation is shared.
 
-`ListView` is a specialized type of [`ItemsControl`](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.itemscontrol) designed for showing large numbers of items. `ListView` is by default *virtualized*, meaning that it only materializes view containers for those items which are visible or about to be visible within the scroll viewport. When items disappear from view, their containers are *recycled* and reused for newly appearing views. Correctly-functioning virtualization is the key to good scroll performance.
+`ListView` is a specialized type of [`ItemsControl`](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.itemscontrol) designed for showing large numbers of items. `ListView` is by default *virtualized*, meaning that it only materializes view containers for those items which are visible or about to be visible within the scroll viewport. When items disappear from view, their containers are *recycled* and reused for newly appearing views. Correctly-functioning virtualization is the key to good scroll performance.
 
 Other important features of `ListView`:
 
@@ -46,7 +46,7 @@ Although the Android and iOS implementations are quite different, they share som
 
 Architecturally, the Android and iOS implementations share a similar high-level 'division of labor', reflecting the underlying platform API. Aside from the view type itself, both implementations implement a class, `VirtualizingPanelLayout`, whose responsibility is to determine what items are visible, what size they should take, and how they should be positioned within the list. Additionally, both Android and iOS implement an 'adapter' or 'source' class with the responsibility of materializing item containers for a given list index and binding them to the appropriate item from the items source.
 
-(As an aside, this division of labor has no equivalent in `ListView`, but a somewhat similar approach is taken by WinUI's newer [`ItemsRepeater`](https://docs.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.itemsrepeater) control, also available in Uno.)
+(As an aside, this division of labor has no equivalent in `ListView`, but a somewhat similar approach is taken by WinUI's newer [`ItemsRepeater`](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.itemsrepeater) control, also available in Uno.)
 
 [This diagram](../controls/ListViewBase.md#difference-in-the-visual-tree) shows how the `NativeListViewBase` view is incorporated into the visual tree, and the resulting difference from UWP. The key differences are:
 

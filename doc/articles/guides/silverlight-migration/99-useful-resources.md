@@ -10,7 +10,7 @@ uid: Uno.SilverlightMigration.UsefulResources
   * [unoplatform/Uno.Samples GitHub Repo](https://github.com/unoplatform/Uno.Samples)
   * [Uno.UI.Toolkit.SL GitHub Repo](https://github.com/unoplatform/Uno.UI.Toolkit.SL)
 * Microsoft Documentation
-  * [Move from Windows Phone Silverlight to UWP](https://docs.microsoft.com/windows/uwp/porting/wpsl-to-uwp-root)
+  * [Move from Windows Phone Silverlight to UWP](https://learn.microsoft.com/windows/uwp/porting/wpsl-to-uwp-root)
 * Visual Studio Extensions
   * Unofficial extension for opening Silverlight solutions in Visual Studio 2017 and 2019 - [Silverlight for Visual Studio](https://marketplace.visualstudio.com/items?itemName=RamiAbughazaleh.SilverlightProjectSystem)
 * Silverlight Styles

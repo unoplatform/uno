@@ -18,7 +18,7 @@ The Uno Platform is an Open-source platform for building single codebase native 
 
 It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
 
-Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
+Use the WinUI tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Hot Reload](https://learn.microsoft.com/visualstudio/xaml-tools/xaml-hot-reload?view=vs-2019) and [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload), build your application as much as possible on Windows, then validate that your application runs on iOS, Android, macOS, and WebAssembly.
 
 Visit [our documentation](doc/articles/intro.md) for more details.
 
@@ -40,7 +40,7 @@ For a larger example and features demo:
 * Dev loop:
     * Develop on Windows first using Visual Studio
     * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
-    * [C# Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload) on Windows (VS2022), Linux and macOS (VS Code)
+    * [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) on Windows (VS2022), Linux and macOS (VS Code)
     * Validate on other platforms as late as possible
     * Develop in VS Code, Codespaces or GitPod
     * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
