@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
@@ -18,7 +19,6 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
-#if !WINAPPSDK
 [TestClass]
 public class Given_Window
 {
@@ -41,15 +41,12 @@ public class Given_Window
 
 #if HAS_UNO_WINUI
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_CreateNewWindow()
 	{
-		if (!CoreApplication.IsFullFledgedApp)
-		{
-			Assert.Inconclusive("This test can only be run in a full-fledged app");
-			return;
-		}
+		VerifyFullFledgedApp();
 
 		if (NativeWindowFactory.SupportsMultipleWindows)
 		{
@@ -64,60 +61,44 @@ public class Given_Window
 	[RunsOnUIThread]
 	public void When_Create_Multiple_Windows()
 	{
-		if (!CoreApplication.IsFullFledgedApp)
-		{
-			Assert.Inconclusive("This test can only be run in a full-fledged app");
-			return;
-		}
+		VerifyFullFledgedApp();
 
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var startingNumberOfWindows = ApplicationHelper.Windows.Count;
 
 		for (int i = 0; i < 10; i++)
 		{
-			var sut = new Window(WindowType.DesktopXamlSource);
+			var sut = new Window();
 			sut.Close();
 		}
 
 		var endNumberOfWindows = ApplicationHelper.Windows.Count;
 		Assert.AreEqual(startingNumberOfWindows, endNumberOfWindows);
 	}
+#endif
 
+#if HAS_UNO // WinUI throws an exception when a non-activated window is closed
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_Close_Non_Activated_Window()
 	{
-		if (!CoreApplication.IsFullFledgedApp)
-		{
-			Assert.Inconclusive("This test can only be run in a full-fledged app");
-			return;
-		}
+		VerifyPlatformSupportsMultiwindow();
 
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
-
-		var sut = new Window(WindowType.DesktopXamlSource);
+		var sut = new Window();
 		bool closedFired = false;
 		sut.Closed += (s, e) => closedFired = true;
 		sut.Close();
 
 		Assert.IsTrue(closedFired);
 	}
+#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_Opens()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var sut = new Window();
 		bool activated = false;
@@ -135,10 +116,7 @@ public class Given_Window
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_Content_Loads()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var sut = new Window();
 		bool loaded = false;
@@ -156,10 +134,7 @@ public class Given_Window
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_Content_Non_Zero_Size()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var sut = new Window();
 		var button = new Button();
@@ -173,12 +148,9 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async void When_Secondary_Window_From_Xaml()
+	public async Task When_Secondary_Window_From_Xaml()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var sut = new RedWindow();
 		sut.Activate();
@@ -193,12 +165,21 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Secondary_Window_Default_Size()
+	{
+		VerifyPlatformSupportsMultiwindow();
+
+		var sut = new Window();
+		Assert.AreNotEqual(0, sut.Bounds.Width);
+		Assert.AreNotEqual(0, sut.Bounds.Height);
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		using var _ = ThemeHelper.UseDarkTheme();
 		var sut = new NoBackgroundWindow();
@@ -210,10 +191,7 @@ public class Given_Window
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Light()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var sut = new NoBackgroundWindow();
 
@@ -224,10 +202,7 @@ public class Given_Window
 	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Switch_Theme()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
-		}
+		VerifyPlatformSupportsMultiwindow();
 
 		var sut = new NoBackgroundWindow();
 
@@ -260,5 +235,25 @@ public class Given_Window
 		Assert.AreEqual(expectedColor, rootElementBackgroundAsSolidColorBrush.Color);
 	}
 #endif
-}
+
+	private void VerifyFullFledgedApp()
+	{
+#if HAS_UNO
+		if (!CoreApplication.IsFullFledgedApp)
+		{
+			Assert.Inconclusive("This test can only be run in a full-fledged app");
+		}
 #endif
+	}
+
+	private void VerifyPlatformSupportsMultiwindow()
+	{
+#if HAS_UNO
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+#endif
+	}
+#endif
+}
