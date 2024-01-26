@@ -3,7 +3,7 @@ uid: Uno.Development.MigratingToUnoSdk
 ---
 # Migrating Projects to Uno.Sdk
 
-The [Uno.Sdk](https://www.nuget.org/packages/uno.sdk) provides several enhancements to further simplify Uno Projects.
+The [Uno.Sdk](https://www.nuget.org/packages/uno.sdk) provides several enhancements to further simplify Uno Projects and a single location for updating the Uno Platform core packages version in `global.json`.
 
 > [!Important]
 > Migrating to the Uno.Sdk is not required. Existing projects continue to be supported in Uno Platform 5.1 or later.
