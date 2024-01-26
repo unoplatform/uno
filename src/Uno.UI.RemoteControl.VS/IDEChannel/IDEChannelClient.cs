@@ -22,6 +22,8 @@ internal class IdeChannelClient
 	private IIdeChannelServer? _roslynServer;
 	private readonly ILogger _logger;
 
+	public event EventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
+
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
 		_logger = logger;
@@ -62,6 +64,14 @@ internal class IdeChannelClient
 		}, _IDEChannelCancellation.Token);
 	}
 
+	public async Task SendToDevServerAsync(IdeMessage message)
+	{
+		if (_roslynServer is not null)
+		{
+			await _roslynServer.SendToDevServerAsync(message);
+		}
+	}
+
 	private async Task StartKeepaliveAsync()
 	{
 		while (_IDEChannelCancellation is { IsCancellationRequested: false })
@@ -76,9 +86,10 @@ internal class IdeChannelClient
 	{
 		_logger.Info($"IDE: IDEChannel message received {devServerMessage}");
 
-		if (devServerMessage is ForceHotReloadIdeMessage)
+		if (devServerMessage is ForceHotReloadIdeMessage forceHotReloadMessage)
 		{
 			_logger.Debug($"Hot reload requested");
+			ForceHotReloadRequested?.Invoke(this, forceHotReloadMessage);
 		}
 		else if (devServerMessage is KeepAliveIdeMessage)
 		{
