@@ -47,10 +47,6 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Media\AcrylicBrush\AcrylicBrush.reference.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="Resources\NoiseAsset256x256.png" />
 	</ItemGroup>
 
