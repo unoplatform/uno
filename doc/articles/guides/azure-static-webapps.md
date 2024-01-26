@@ -8,7 +8,7 @@ Deploying and hosting of Uno Platform WebApps can be accomplished using [Azure S
 
 This Azure service allows the publication of GitHub and Azure DevOps Git repositories to a service specialized for static web apps. It uses GitHub Actions or Azure DevOps to build and publish the application. The integration also supports the creation of temporary environments for Pull Requests, giving the ability to perform validations while a Pull Request is opened.
 
-You can review [the Azure documentation](https://learn.microsoft.com/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
+You can review [Configure Azure Static Web Apps from Azure documentation](https://learn.microsoft.com/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
 
 ## Publishing Uno Platform WebAssembly app on Azure
 
@@ -22,12 +22,13 @@ Here is how to publish an app from GitHub, using Uno Platform:
     dotnet new unoapp -o MyApp
     ```
 
-- If the <TargetFramework> value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](https://github.com/unoplatform/uno/blob/master/doc/articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
+- If the `<TargetFramework>` value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](../../articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
 - If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
 - Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
 - Fill the required fields in the creation form:
 
     ![visual-studio-installer-web](../Assets/aswa-create.png)
+
 - Select your repository using the **Sign in with GitHub** button
 - Select your organization, repository, and branch
 - In the build presets, select **Custom**, and keep the default values
@@ -39,10 +40,10 @@ Here is how to publish an app from GitHub, using Uno Platform:
 
     ```yaml
     - name: Setup dotnet
-    uses: actions/setup-dotnet@v1.7.2
-    with:
+      uses: actions/setup-dotnet@v1.7.2
+      with:
         dotnet-version: '6.0.402'
-            
+
     - run: |
         cd src/MyApp.Wasm
         dotnet build -c Release
@@ -76,7 +77,7 @@ You will need to [enable fallback routes](https://learn.microsoft.com/azure/stat
 - In your application, You'll need to get the active url of the browser this way:
 
   ```csharp
-  if(System.Uri.TryCreate(
+  if (System.Uri.TryCreate(
       Uno.Foundation.WebAssemblyRuntime.InvokeJS("document.location.search"),
       UriKind.RelativeOrAbsolute,
       out var browserUrl))

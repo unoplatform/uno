@@ -28,6 +28,9 @@
 			}
 			internal set
 			{
+#if DEBUG
+				put_Date(value);
+#endif
 				this.SetValue(DateProperty, value);
 			}
 		}

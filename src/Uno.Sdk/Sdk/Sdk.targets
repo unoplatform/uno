@@ -10,67 +10,20 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Import Sdk="Microsoft.NET.Sdk" Project="Sdk.targets"  Condition=" $(_UnoImportMicrosoftNETSdkTargets) " />
-
-	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
-		<DebugType>portable</DebugType>
-		<DebugSymbols>True</DebugSymbols>
-
-		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
-		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-	</PropertyGroup>
-
 	<PropertyGroup>
-		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
+		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\targets\Uno.Sdk.After.targets</AfterMicrosoftNETSdkTargets>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<!-- Removes native usings to avoid Ambiguous reference -->
-		<Using Remove="@(Using->HasMetadata('Platform'))" />
-	</ItemGroup>
+	<!-- Common Includes -->
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.Common.targets" />
 
-	<ItemGroup Condition=" !$(IsWinAppSdk) AND $(EnableDefaultUnoItems) == 'true' ">
-		<!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
-		<Content Include="Assets\**;**/*.png;**/*.bmp;**/*.jpg;**/*.dds;**/*.tif;**/*.tga;**/*.gif" 
-			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);**\*.svg" />
-		<Page Include="**\*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-		<Compile Update="**\*.xaml.cs">
-			<DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<PRIResource Include="**\*.resw" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-	</ItemGroup>
+	<!-- Default Includes -->
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.DefaultItems.targets" Condition=" $(EnableDefaultUnoItems) == 'true' " />
 
-	<ItemGroup Condition=" '$(PkgUno_Resizetizer)'!='' ">
-		<UnoImage Include="Assets\**\*.svg" Exclude="@(UnoImage)" />
-	</ItemGroup>
+	<!-- Build Targets -->
+	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.Build.targets" />
 
-	<!-- Cross Targetting -->
-	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.CrossTargetting.targets" />
+	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
+	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
 
-	<!-- WinUI -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.WinAppSdk.targets"
-			Condition=" $(IsWinAppSdk) AND $(SingleProject) == 'true' " />
-	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\winappsdk-workaround.targets"
-			Condition=" $(IsWinAppSdk) AND '$(SingleProject)' != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
-
-	<!-- WASM -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
-			Condition=" $(IsBrowser) AND $(SingleProject) == 'true' " />
-
-	<!-- Skia -->
-	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Skia.targets"
-			Condition=" $(IsSkia) AND $(SingleProject) == 'true' " />
-
-	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
-	<Target Name="UnoSdkVersionCheck"
-			AfterTargets="ResolveReferences"
-			BeforeTargets="Build"
-			Condition="'$(PkgUno_WinUI)' != ''">
-		<Error Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="Do not override the '%24(UnoVersion)'. The '%24(UnoVersion)' must match the version of the Uno.Sdk." />
-
-		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
-		<Error Text="The resolved version of Uno.WinUI does not match DefaultUnoVersion. The Version of Uno.WinUI must match the version of the Uno.Sdk.  For more information about updating Uno Platform versions, visit https://aka.platform.uno/migrate-from-previous"
-			Condition="$([System.IO.Path]::GetFileName($(PkgUno_WinUI))) != 'DefaultUnoVersion'" />
-	</Target>
 </Project>

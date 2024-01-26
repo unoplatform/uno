@@ -25,7 +25,7 @@ These guidelines serves as a primary document for triaging incoming issues to Un
 
 ## Security
 
-Security related matters should be disclosed in private [as per our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://docs.github.com/issues/tracking-your-work-with-issues/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
+Security-related matters should be disclosed in private as per [our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://docs.github.com/issues/tracking-your-work-with-issues/deleting-an-issue), and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
 
 ## Support requests
 
@@ -40,7 +40,7 @@ Community support requests should be directed to:
 * The [Discord Channel #uno-platform](https://discord.gg/eBHZSKG)
 * On [Twitter using the #unoplatform](https://twitter.com/search?q=%23unoplatform) hashtag.
 
-Organizations that want a deeper level of support beyond community support, should be directed to [contact unoplatform](https://platform.uno/contact/) to discuss obtaining professional support.
+Organizations that want a deeper level of support beyond community support should be directed to [contact Uno Platform](https://platform.uno/contact/) to discuss obtaining professional support.
 
 ## Validate if the issue is a bug
 
@@ -50,11 +50,11 @@ Confirm if the problem is a bug by reproducing it. If a test case has not been s
 * If you can not reproduce the issue, label it as a `triage/not-reproducible`. Contact the issue reporter with your findings and close the issue if both the parties agree that it could not be reproduced.
 * If you need more information to further work on the issue, let the reporter know it by adding an issue comment followed by label `triage/needs-information`.
 
-In all cases, if you do not get a response in 20 days then close the issue with an appropriate comment.
+In all cases, if you do not get a response in 20 days, then close the issue with an appropriate comment.
 
 ## Closing issues
 
-Issues that are identified as a support request, duplicate, not-reproducible or lacks enough information from reporter should be closed using the following guidelines explained in this file. Also, any issues that can not be resolved because of any particular reason should be closed. These issues should have one or more of following self-readable labels:
+Issues that are identified as a support request, duplicate, not-reproducible, or lacks enough information from reporter should be closed using the following guidelines explained in this file. Also, any issues that can not be resolved because of any particular reason should be closed. These issues should have one or more of following self-readable labels:
 
 * `triage/duplicate`: Indicates an issue is a duplicate of other open issue.
 * `triage/not-reproducible`: Indicates an issue can not be reproduced as described.
@@ -70,7 +70,7 @@ Items marked with the `good first issue` label are intended for _first-time
 contributors_. It indicates that members will keep an eye out for these pull
 requests and shepherd them through our processes.
 
-**New contributors should not be left to find an approver, ping for reviews or identify that their build failed due to a flake.**
+**New contributors should not be left to find an approver, ping for reviews, or identify that their build failed due to a flake.**
 
 This makes new contributors feel welcome, valued, and assures them that they will have an extra level of help with their first contribution.
 
@@ -126,11 +126,11 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 
 > Thanks for the suggestion!
 >
-> This idea is interesting for the future, but this is beyond the scope of our [current roadmap](https://github.com/unoplatform/Uno/projects/1).
+> This idea is interesting for the future, but this is beyond the scope of our current roadmap.
 >
-> I've added the `priority/awaiting-more-evidence` label to this issue and will keep it open until there's more evidence. If you believe this to be incorrectly prioritized, please do let us know and we will evaluate your counter-proposal. If you want to contribute the implementation, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you up to speed with becoming a contributor.
+> We will keep it open until there's more evidence. If you believe this to be incorrectly prioritized, please do let us know and we will evaluate your counter-proposal. If you want to contribute the implementation, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you up to speed with becoming a contributor.
 
-### needs information or reproduction (android)
+### needs information or reproduction (Android)
 
 > Thanks for the report!
 >
@@ -158,7 +158,7 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 >
 > This would be good to have, but we may not have anyone available to work on it right now or in the immediate future.
 >
-> I've added the `priority/backlog` label to this issue and community contributions would be most welcome in the meantime. If you want to contribute the implementation, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you up to speed with becoming a contributor.
+> I've added the `help wanted` label to this issue and community contributions would be most welcome in the meantime. If you want to contribute the implementation, please tell the maintainers that you are willing to send in a pull-request and we'll do everything we can to bring you up to speed with becoming a contributor.
 
 ### open a new issue
 

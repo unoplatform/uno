@@ -1,7 +1,6 @@
-
 ## ViewModel
 
-So far all the elements we've added to the **MainPage** have had their content set directly. This is fine for static content, but for dynamic content, we need to use data binding. Data binding allows us to connect the UI to the application logic, so that when the application logic changes, the UI is automatically updated.
+So far, all the elements we've added to the **MainPage** have had their content set directly. This is fine for static content, but for dynamic content, we need to use data binding. Data binding allows us to connect the UI to the application logic, so that when the application logic changes, the UI is automatically updated.
 
 As part of creating the application, we selected MVUX as the presentation framework. This added a reference to [**MVUX**](https://aka.platform.uno/mvux) which is responsible for dealing with our Models and generating the ViewModels.
 

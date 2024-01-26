@@ -40,12 +40,13 @@ namespace Uno.UI.RemoteControl.HotReload
 					//
 					// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
 					//
-					//(Debugger.IsAttached
-					//	&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))
-					//||
+					(Debugger.IsAttached
+						&& IsIssue93860Fixed()
+						&& (targetFramework.Contains("-android")
+							|| targetFramework.Contains("-ios")))
 
 					// WebAssembly does not support sending updated types, and does not support debugger based hot reload.
-					(unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
+					|| (unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -53,7 +54,8 @@ namespace Uno.UI.RemoteControl.HotReload
 					$"unoRuntimeIdentifier:{unoRuntimeIdentifier} " +
 					$"targetFramework:{targetFramework} " +
 					$"buildingInsideVisualStudio:{targetFramework} " +
-					$"debuggerAttached:{Debugger.IsAttached}");
+					$"debuggerAttached:{Debugger.IsAttached} " +
+					$"IsIssue93860Fixed:{IsIssue93860Fixed()}");
 			}
 
 			_mappedTypes = _supportsLightweightHotReload

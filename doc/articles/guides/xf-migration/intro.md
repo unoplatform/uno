@@ -4,11 +4,11 @@ uid: Uno.XamarinFormsMigration.Intro
 
 # Uno Platform for Xamarin.Forms developers
 
-With an announced [end of support](https://dotnet.microsoft.com/platform/support/policy/xamarin#microsoft-support) for Xamarin.Forms, you should start the process of migrating to the Uno Platform as soon as possible. This page expands on the previous [section](xref:Uno.XamarinFormsMigration.Overview) section to offer more context about the Uno Platform.
+With an announced [end of support](https://dotnet.microsoft.com/platform/support/policy/xamarin#microsoft-support) for Xamarin.Forms, you should start the process of migrating to the Uno Platform as soon as possible. This page expands on the [Migrating from Xamarin.Forms to Uno Platform](xref:Uno.XamarinFormsMigration.Overview) article to offer more context about the Uno Platform.
 
 ## Understanding our approach
 
-Uno Platform is designed for compatibility with Microsoft's native UI framework [WinUI](https://learn.microsoft.com/windows/apps/winui/winui3/). It achieves this by implementing the same controls, panels, and other non-UI APIs across the other supported platforms: iOS, Android, MacCatalyst, Web and Linux. While Xamarin.Forms also supports reuse across platforms, it differs from Uno Platform architecturally as a type of abstraction.
+Uno Platform is designed for compatibility with Microsoft's native UI framework [WinUI](https://learn.microsoft.com/windows/apps/winui/winui3/). It achieves this by implementing the same controls, panels, and other non-UI APIs across the other supported platforms: iOS, Android, MacCatalyst, Web, and Linux. While Xamarin.Forms also supports reuse across platforms, it differs from Uno Platform architecturally as a type of abstraction.
 
 In the Xamarin.Forms space, it would be difficult to miss the differing behaviors and properties inherited by your app UI depending on the platform. This occasionally requires more boilerplate code, with less-natural methods to customize views for your brand identity. Migrating to Uno Platform is a step forward, as its appreciation for consistency in appearance and behavior across platforms allows your app to embody a precise brand identity.
 

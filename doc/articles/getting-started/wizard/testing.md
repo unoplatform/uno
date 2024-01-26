@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Themes
----
-
-### Testing
-
 - #### Unit tests
 
     Adds an [NUnit](https://nunit.org) test project that targets the main (shared) head project.  

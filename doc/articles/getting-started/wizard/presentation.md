@@ -1,9 +1,3 @@
----
-uid: Uno.GettingStarted.UsingWizard.Presentation
----
-
-### Presentation
-
 This setting allows you to choose a presentation architecture.
 
 - #### None
