@@ -87,7 +87,7 @@ public partial class AcrylicBrush
 
 	private void CreateAcrylicBrush(bool useCrossFadeEffect, bool forceCreateAcrylicBrush)
 	{
-		Compositor compositor = Window.Current.Compositor;
+		Compositor compositor = Compositor.GetSharedCompositor();
 
 		if (forceCreateAcrylicBrush)
 		{
@@ -156,7 +156,7 @@ public partial class AcrylicBrush
 	{
 		if (_noiseBrush is null)
 		{
-			Compositor compositor = Window.Current.Compositor;
+			Compositor compositor = Compositor.GetSharedCompositor();
 			CompositionSurfaceBrush surfaceBrush = compositor.CreateSurfaceBrush();
 			SkiaCompositionSurface surface = new SkiaCompositionSurface();
 			using Stream? imgStream = GetType().Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);

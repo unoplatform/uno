@@ -35,8 +35,10 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref UnmanagedArrayOfBytes? buffer, Size? scaledSize = null)
 		{
-			bool? previousCompMode = Window.Current.Compositor.IsSoftwareRenderer;
-			Window.Current.Compositor.IsSoftwareRenderer = true;
+			var compositor = Compositor.GetSharedCompositor();
+
+			bool? previousCompMode = compositor.IsSoftwareRenderer;
+			compositor.IsSoftwareRenderer = true;
 
 			var renderSize = element.RenderSize;
 			var visual = element.Visual;
@@ -78,7 +80,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 			bitmap?.Dispose();
 
-			Window.Current.Compositor.IsSoftwareRenderer = previousCompMode;
+			compositor.IsSoftwareRenderer = previousCompMode;
 
 			return (byteCount, width, height);
 		}
