@@ -69,7 +69,7 @@ public static class X11Helper
 	[DllImport(libX11)]
 	public static extern IntPtr XDefaultGC(IntPtr display, int screen_number);
 
-	[DllImport(libX11Randr)]
+	[DllImport(libX11)]
 	public static extern int XInitThreads();
 
 	// Only change the visibility of this method if absolutely necessary. Instead, use XLock()
