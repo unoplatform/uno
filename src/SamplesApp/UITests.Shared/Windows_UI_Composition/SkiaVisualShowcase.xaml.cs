@@ -1,16 +1,11 @@
+using System;
 using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 #if __SKIA__
-using Microsoft.UI.Xaml.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using SkiaSharp;
+using Windows.Foundation;
 #endif
 
 namespace UITests.Shared.Windows_UI_Composition
@@ -18,7 +13,7 @@ namespace UITests.Shared.Windows_UI_Composition
 	[Sample("Microsoft.UI.Composition", Name = "SkiaVisualShowcase")]
 	public sealed partial class SkiaVisualShowcase : UserControl
 	{
-		public int MaxSampleIndex => SkiaWrapper.VisualCount - 1;
+		public int MaxSampleIndex => SkiaCanvasShowcaser.SampleCount - 1;
 
 		public SkiaVisualShowcase()
 		{
@@ -26,29 +21,24 @@ namespace UITests.Shared.Windows_UI_Composition
 		}
 	}
 
-	public class SkiaWrapper : FrameworkElement
-	{
 #if __SKIA__
-		private SkiaVisual _skiaVisual;
-		private static readonly List<Type> _visuals = new List<Type>
-		{
-			typeof(SkiaVisual1), typeof(SkiaVisual2), typeof(SkiaVisual3),
-		};
-		public static int VisualCount { get; } = _visuals.Count;
+	public class SkiaCanvasShowcaser : SKCanvasElement
 #else
-		public static int VisualCount { get; } = 0;
+	public class SkiaCanvasShowcaser : FrameworkElement
 #endif
+	{
+		public static int SampleCount => 3;
 
-		public SkiaWrapper()
+		public SkiaCanvasShowcaser()
 		{
-			SampleChanged(0);
+			Sample = 0;
 		}
 
 		public static DependencyProperty SampleProperty { get; } = DependencyProperty.Register(
 			nameof(Sample),
 			typeof(int),
-			typeof(SkiaWrapper),
-			new PropertyMetadata(-1, (o, args) => ((SkiaWrapper)o).SampleChanged((int)args.NewValue)));
+			typeof(SkiaCanvasShowcaser),
+			new PropertyMetadata(-1, (o, args) => ((SkiaCanvasShowcaser)o).SampleChanged((int)args.NewValue)));
 
 		public int Sample
 		{
@@ -58,59 +48,39 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void SampleChanged(int newIndex)
 		{
-#if __SKIA__
-			var coercedIndex = Math.Min(Math.Max(0, newIndex), _visuals.Count - 1);
+			var coercedIndex = Math.Min(Math.Max(0, newIndex), SampleCount - 1);
 			if (coercedIndex != Sample)
 			{
 				Sample = coercedIndex;
 			}
-			else
-			{
-				_skiaVisual = (SkiaVisual)Activator.CreateInstance(_visuals[coercedIndex], Visual.Compositor);
-				ElementCompositionPreview.SetElementChildVisual(this, _skiaVisual!);
-
-				InvalidateArrange();
-				// don't wait for a rendering cycle to update the visual's Size, or else there will be
-				// a split second where the visual will have invalid clipping
-				Arrange(LayoutInformation.GetLayoutSlot(this));
-			}
-#endif
 		}
 
 #if __SKIA__
-		protected override Size MeasureOverride(Size availableSize) => availableSize;
-
-		protected override Size ArrangeOverride(Size finalSize)
+		protected override void RenderOverride(SKCanvas canvas, Size area)
 		{
-			if (_skiaVisual is { })
+			var minDim = Math.Min(area.Width, area.Height);
+			if (minDim > 250)
 			{
-				_skiaVisual.Size = new Vector2((float)finalSize.Width, (float)finalSize.Height);
-				_skiaVisual.Clip = _skiaVisual.Compositor.CreateRectangleClip(0, 0, (float)finalSize.Width, (float)finalSize.Height);
-				ApplyFlowDirection((float)finalSize.Width);
+				// scale up if area is bigger than needed, assuming each drawing takes at most 260x260
+				canvas.Scale((float)(minDim / 260), (float)(minDim / 260));
 			}
 
-			return base.ArrangeOverride(finalSize);
+			switch (Sample)
+			{
+				case 0:
+					SkiaDrawing0(canvas);
+					break;
+				case 1:
+					SkiaDrawing1(canvas);
+					break;
+				case 2:
+					SkiaDrawing2(canvas);
+					break;
+			}
 		}
 
-		private void ApplyFlowDirection(float width)
-		{
-			if (FlowDirection == FlowDirection.RightToLeft)
-			{
-				_skiaVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, width, 0.0f));
-			}
-			else
-			{
-				_skiaVisual.TransformMatrix = Matrix4x4.Identity;
-			}
-		}
-#endif
-	}
-
-#if __SKIA__
-	public class SkiaVisual1(Compositor compositor) : SkiaVisual(compositor)
-	{
 		// https://fiddle.skia.org/c/@shapes
-		protected override void Invalidate(SKCanvas canvas)
+		private void SkiaDrawing0(SKCanvas canvas)
 		{
 			canvas.DrawColor(SKColors.White);
 
@@ -137,12 +107,9 @@ namespace UITests.Shared.Windows_UI_Composition
 			paint.Style = SKPaintStyle.Stroke;
 			canvas.DrawRoundRect(rect, 10, 10, paint);
 		}
-	}
 
-	public class SkiaVisual2(Compositor compositor) : SkiaVisual(compositor)
-	{
 		// https://fiddle.skia.org/c/@bezier_curves
-		protected override void Invalidate(SKCanvas canvas)
+		private void SkiaDrawing1(SKCanvas canvas)
 		{
 			canvas.DrawColor(SKColors.White);
 
@@ -159,12 +126,9 @@ namespace UITests.Shared.Windows_UI_Composition
 			path.QuadTo(10, 192, 250, 250);
 			canvas.DrawPath(path, paint);
 		}
-	}
 
-	public class SkiaVisual3(Compositor compositor) : SkiaVisual(compositor)
-	{
 		// https://fiddle.skia.org/c/@shader
-		protected override void Invalidate(SKCanvas canvas)
+		private void SkiaDrawing2(SKCanvas canvas)
 		{
 			var paint = new SKPaint();
 			using var pathEffect = SKPathEffect.CreateDiscrete(10.0f, 4.0f);
@@ -184,21 +148,21 @@ namespace UITests.Shared.Windows_UI_Composition
 			canvas.Clear(SKColors.White);
 			var path = Star();
 			canvas.DrawPath(path, paint);
-		}
 
-		private SKPath Star()
-		{
-			const float R = 60.0f, C = 128.0f;
-			var path = new SKPath();
-			path.MoveTo(C + R, C);
-			for (var i = 1; i < 15; ++i)
+			SKPath Star()
 			{
-				var a = 0.44879895f * i;
-				var r = R + R * (i % 2);
-				path.LineTo((float)(C + r * Math.Cos(a)), (float)(C + r * Math.Sin(a)));
+				const float R = 60.0f, C = 128.0f;
+				var path = new SKPath();
+				path.MoveTo(C + R, C);
+				for (var i = 1; i < 15; ++i)
+				{
+					var a = 0.44879895f * i;
+					var r = R + R * (i % 2);
+					path.LineTo((float)(C + r * Math.Cos(a)), (float)(C + r * Math.Sin(a)));
+				}
+				return path;
 			}
-			return path;
 		}
-	}
 #endif
+	}
 }
