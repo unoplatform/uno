@@ -74,7 +74,7 @@ internal class IdeChannelClient
 
 	private void ProcessDevServerMessage(object sender, IdeMessage devServerMessage)
 	{
-		_logger.Info($"IDE: IDEChannel message received {devServerMessage}");
+		_logger.Verbose($"IDE: IDEChannel message received {devServerMessage}");
 
 		if (devServerMessage is ForceHotReloadIdeMessage)
 		{
@@ -82,13 +82,11 @@ internal class IdeChannelClient
 		}
 		else if (devServerMessage is KeepAliveIdeMessage)
 		{
-#if DEBUG
 			_logger.Verbose($"Keep alive from Dev Server");
-#endif
 		}
 		else
 		{
-			_logger.Debug($"Unknown message type {devServerMessage?.GetType()} from DevServer");
+			_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");
 		}
 	}
 
