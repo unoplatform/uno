@@ -6,18 +6,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -131,8 +129,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		SerialDisposable m_epFlyoutButtonClickHandler = new SerialDisposable();
 
-		// SerialDisposable m_epWindowActivatedHandler = new SerialDisposable();
-
 		// See the comment of AllowReactionToSelectionChange method for use of this variable.
 		bool m_reactionToSelectionChangeAllowed;
 
@@ -206,7 +202,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void DatePicker_Unloaded(object sender, RoutedEventArgs e)
 		{
+			// Uno specific: These operations are inside the destructor in WinUI 3, but we need to do them here
+			// to make sure they happen on the UI thread.
+
 			_windowActivatedToken.Disposable = null;
+
+			// This will ensure the pending async operation
+			// completes, closed the open dialog, and doesn't
+			// try to execute a callback to a DatePicker that
+			// no longer exists.
+			m_tpAsyncSelectionInfo?.Cancel();
 		}
 
 		private void DatePicker_Loaded(object sender, RoutedEventArgs e)
@@ -241,21 +246,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-
-		~DatePicker()
-		{
-			// This will ensure the pending async operation
-			// completes, closed the open dialog, and doesn't
-			// try to execute a callback to a DatePicker that
-			// no longer exists.
-			if (m_tpAsyncSelectionInfo != null)
-			{
-				/*VERIFYHR*/
-				m_tpAsyncSelectionInfo.Cancel();
-			}
-
-			// m_epWindowActivatedHandler.Disposable = null;
-		}
 
 		// Initialize the DatePicker
 		void PrepareState()
