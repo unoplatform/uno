@@ -11,17 +11,20 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(MSBuildThisFileDirectory)..\targets\Uno.Sdk.After.targets</AfterMicrosoftNETSdkTargets>
+		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(_UnoSdkTargetsDirectory)Uno.Sdk.After.targets</AfterMicrosoftNETSdkTargets>
 	</PropertyGroup>
 
 	<!-- Common Includes -->
-	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.Common.targets" />
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Common.targets" />
 
 	<!-- Default Includes -->
-	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.DefaultItems.targets" Condition=" $(EnableDefaultUnoItems) == 'true' " />
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.DefaultItems.targets" Condition=" $(EnableDefaultUnoItems) == 'true' " />
+
+	<!-- Project Capabilities -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.ProjectCapabilities.targets" />
 
 	<!-- Build Targets -->
-	<Import Project="$(MSBuildThisFileDirectory)../targets/Uno.Build.targets" />
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Build.targets" />
 
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
