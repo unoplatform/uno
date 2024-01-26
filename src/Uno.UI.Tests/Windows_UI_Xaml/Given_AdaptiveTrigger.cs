@@ -1,20 +1,30 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
 	[TestClass]
 	public class Given_AdaptiveTrigger
 	{
+		[TestInitialize]
+		public void Initialize()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_SingleActiveState()
 		{
 			Window.Current.SetWindowSize(new Size(100, 100));
+
+			var border = new Border();
+			border.ForceLoaded();
 
 			var sut = new AdaptiveTrigger { MinWindowHeight = 10, MinWindowWidth = 10 };
 
@@ -23,6 +33,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var group = new VisualStateGroup();
 			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
 
 			group.CurrentState.Should().Be(state);
 
@@ -34,6 +46,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_SingleActiveState_ExactValue()
 		{
 			Window.Current.SetWindowSize(new Size(100d, 100d));
+			var border = new Border();
+			border.ForceLoaded();
 
 			var sut = new AdaptiveTrigger { MinWindowHeight = 100d, MinWindowWidth = 100d };
 
@@ -41,6 +55,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			state.StateTriggers.Add(sut);
 
 			var group = new VisualStateGroup();
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+
 			group.States.Add(state);
 
 			group.CurrentState.Should().Be(state);
@@ -51,6 +67,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			Window.Current.SetWindowSize(new Size(5, 5));
 
+			var border = new Border();
+			border.ForceLoaded();
+
 			var sut = new AdaptiveTrigger { MinWindowHeight = 10, MinWindowWidth = 10 };
 
 			var state = new VisualState { Name = "activeState" };
@@ -58,6 +77,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var group = new VisualStateGroup();
 			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
 
 			group.CurrentState.Should().Be(null);
 
@@ -70,6 +91,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			Window.Current.SetWindowSize(new Size(100, 100));
 
+			var border = new Border();
+			border.ForceLoaded();
+
 			var sut = new AdaptiveTrigger { MinWindowWidth = 0 };
 
 			var state = new VisualState { Name = "activeState" };
@@ -77,6 +101,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var group = new VisualStateGroup();
 			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
 
 			group.CurrentState.Should().Be(state);
 		}
@@ -86,6 +112,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			Window.Current.SetWindowSize(new Size(100, 100));
 
+			var border = new Border();
+
 			var sut = new AdaptiveTrigger { MinWindowWidth = 101, MinWindowHeight = 42 };
 
 			var state = new VisualState { Name = "activeState" };
@@ -94,6 +122,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var group = new VisualStateGroup();
 			group.States.Add(state);
 
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
+			border.ForceLoaded();
+
 			group.CurrentState.Should().Be(null);
 		}
 
@@ -101,14 +132,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_SingleWithTwoConstraints_FailingHeight()
 		{
 			Window.Current.SetWindowSize(new Size(100, 100));
+			var border = new Border();
 
 			var sut = new AdaptiveTrigger { MinWindowWidth = 42, MinWindowHeight = 101 };
+
+			border.ForceLoaded();
 
 			var state = new VisualState { Name = "activeState" };
 			state.StateTriggers.Add(sut);
 
 			var group = new VisualStateGroup();
 			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
 
 			group.CurrentState.Should().Be(null);
 		}
@@ -117,6 +153,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_SingleNoConstraints()
 		{
 			Window.Current.SetWindowSize(new Size(100, 100));
+			var border = new Border();
+			border.ForceLoaded();
 
 			var sut = new AdaptiveTrigger { MinWindowWidth = 0, MinWindowHeight = 0 };
 
@@ -125,6 +163,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var group = new VisualStateGroup();
 			group.States.Add(state);
+
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { group });
 
 			group.CurrentState.Should().Be(state);
 		}
@@ -143,6 +183,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Multiple_AdaptiveTriggers(int expectedIndex, int windowWidth, int windowHeight, string context)
 		{
 			Window.Current.SetWindowSize(new Size(windowWidth, windowHeight));
+			var border = new Border();
+			border.ForceLoaded();
 
 			var sut = new VisualStateGroup();
 			var states = context.Split('|')
@@ -152,6 +194,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					StateTriggers = { x }
 				})
 				.ForEach(sut.States.Add);
+			VisualStateManager.SetVisualStateGroups(border, new List<VisualStateGroup>() { sut });
 
 			sut.CurrentState.Should().Be(sut.States[expectedIndex]);
 

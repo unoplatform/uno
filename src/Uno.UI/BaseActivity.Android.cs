@@ -17,6 +17,9 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.WindowManagement;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace Uno.UI
 {
@@ -155,7 +158,7 @@ namespace Uno.UI
 		{
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
-			ApplicationView.GetForCurrentView();
+			ApplicationView.InitializeForWindowId(AppWindow.MainWindowId);
 
 			NotifyCreatingInstance();
 		}
@@ -196,7 +199,7 @@ namespace Uno.UI
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				Microsoft.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
+				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -207,12 +210,12 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
-			Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(
+			NativeWindowWrapper.Instance.OnNativeActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -222,14 +225,14 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
 		{
 			ResignCurrent();
 
-			Microsoft.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
+			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
 			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 

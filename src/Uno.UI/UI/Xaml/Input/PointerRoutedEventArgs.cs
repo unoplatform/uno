@@ -9,6 +9,7 @@ using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -27,13 +28,18 @@ namespace Microsoft.UI.Xaml.Input
 		internal const bool PlatformSupportsNativeBubbling = true;
 #endif
 
-		public PointerRoutedEventArgs()
+		internal PointerRoutedEventArgs()
 		{
-			// This is acceptable as all ctors of this class are internal
-			CoreWindow.GetForCurrentThread().LastPointerEvent = this;
+			LastPointerEvent = this;
+			if (CoreWindow.GetForCurrentThreadSafe() is { } coreWindow)
+			{
+				coreWindow.LastPointerEvent = this;
+			}
 
 			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}
+
+		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
 
 		/// <inheritdoc />
 		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
@@ -117,16 +123,15 @@ namespace Microsoft.UI.Xaml.Input
 				mods |= DragDropModifiers.RightButton;
 			}
 
-			var window = Window.Current.CoreWindow;
-			if (window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Shift;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Control;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Alt;
 			}

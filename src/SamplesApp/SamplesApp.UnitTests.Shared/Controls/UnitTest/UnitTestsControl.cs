@@ -94,15 +94,8 @@ namespace Uno.UI.Samples.Tests
 				}
 			);
 
-			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
 				Microsoft.UI.Xaml.Window.Current;
-
-			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
-#if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
-#else
-				false;
-#endif
 
 			DataContext = null;
 
@@ -118,6 +111,13 @@ namespace Uno.UI.Samples.Tests
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				XamlRoot.HostWindow is null;
+#else
+				false;
+#endif
 		}
 
 		private static void OverrideDebugProviderAsserts()
@@ -274,8 +274,12 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
-
-#if !WINAPPSDK
+#if HAS_UNO_WINUI
+				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
+				{
+					window.Title = message;
+				}
+#else
 				_applicationView.Title = message;
 #endif
 			}

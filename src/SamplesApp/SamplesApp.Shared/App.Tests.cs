@@ -6,10 +6,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
 
 #if !HAS_UNO
 using Uno.Logging;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
 #endif
 
 #if __SKIA__ || __MACOS__
@@ -58,13 +65,18 @@ partial class App
 
 	public static string RunTest(string metadataName)
 	{
+		if (_mainWindow is null)
+		{
+			throw new InvalidOperationException("Cannot run tests until main window is initialized.");
+		}
+
 		try
 		{
 			Console.WriteLine($"Initiate Running Test {metadataName}");
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = UnitTestDispatcherCompat.From(Microsoft.UI.Xaml.Window.Current).RunAsync(
+			_ = UnitTestDispatcherCompat.From(_mainWindow).RunAsync(
 				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
@@ -74,7 +86,7 @@ partial class App
 						var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 						if (statusBar != null)
 						{
-							_ = UnitTestDispatcherCompat.From(Microsoft.UI.Xaml.Window.Current).RunAsync(
+							_ = UnitTestDispatcherCompat.From(_mainWindow).RunAsync(
 								UnitTestDispatcherCompat.Priority.Normal,
 								async () => await statusBar.HideAsync()
 							);

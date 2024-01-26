@@ -4,16 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
-using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -134,7 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		SerialDisposable m_epFlyoutButtonClickHandler = new SerialDisposable();
 
-		SerialDisposable m_epWindowActivatedHandler = new SerialDisposable();
+		// SerialDisposable m_epWindowActivatedHandler = new SerialDisposable();
 
 		// See the comment of AllowReactionToSelectionChange method for use of this variable.
 		bool m_reactionToSelectionChangeAllowed;
@@ -196,10 +193,54 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(DatePicker);
 
+			this.Loaded += DatePicker_Loaded;
+			this.Unloaded += DatePicker_Unloaded;
+
 			InitPartial();
 
 			PrepareState();
 		}
+
+#if HAS_UNO // TODO Uno specific: Window activation handling to accomodate for WinUI multiwindow, original implementation can be ported when DatePicker is updated from WinUI 3 sources.
+		private readonly SerialDisposable _windowActivatedToken = new();
+
+		private void DatePicker_Unloaded(object sender, RoutedEventArgs e)
+		{
+			_windowActivatedToken.Disposable = null;
+		}
+
+		private void DatePicker_Loaded(object sender, RoutedEventArgs e)
+		{
+			// TODO: Uno Specific: This portion of code was originally in PrepareState,
+			// but was moved here as it requires XamlRoot for multiwindow purposes.
+			if (XamlRoot.HostWindow is { } window)
+			{
+				WeakReference wrWeakThis = new WeakReference(this);
+
+				window.Activated += OnWindowActivated;
+				_windowActivatedToken.Disposable = Disposable.Create(() => window.Activated -= OnWindowActivated);
+
+				void OnWindowActivated(object sender, WindowActivatedEventArgs args)
+				{
+					DatePicker spThis;
+
+					spThis = wrWeakThis.Target as DatePicker;
+					if (spThis != null)
+					{
+						CoreWindowActivationState state =
+							CoreWindowActivationState.CodeActivated;
+						state = (args.WindowActivationState);
+
+						if (state == CoreWindowActivationState.CodeActivated
+							|| state == CoreWindowActivationState.PointerActivated)
+						{
+							spThis.RefreshSetup();
+						}
+					}
+				}
+			}
+		}
+#endif
 
 		~DatePicker()
 		{
@@ -213,44 +254,17 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpAsyncSelectionInfo.Cancel();
 			}
 
-			m_epWindowActivatedHandler.Disposable = null;
+			// m_epWindowActivatedHandler.Disposable = null;
 		}
 
 		// Initialize the DatePicker
 		void PrepareState()
 		{
-			Window pCurrentWindow = global::Microsoft.UI.Xaml.Window.Current;
-
 			// DatePickerGenerated.PrepareState();
 
 			// We should update our state during initialization because we still want our dps to function properly
 			// until we get applied a template, to do this we need our state information.
 			UpdateState();
-
-			if (pCurrentWindow != null)
-			{
-				WeakReference wrWeakThis = new WeakReference(this);
-
-				pCurrentWindow.Activated += (s, pArgs) =>
-				{
-
-					DatePicker spThis;
-
-					spThis = wrWeakThis.Target as DatePicker;
-					if (spThis != null)
-					{
-						CoreWindowActivationState state =
-							CoreWindowActivationState.CodeActivated;
-						state = (pArgs.WindowActivationState);
-
-						if (state == CoreWindowActivationState.CodeActivated
-							|| state == CoreWindowActivationState.PointerActivated)
-						{
-							spThis.RefreshSetup();
-						}
-					}
-				};
-			}
 		}
 
 		// Called when the IsEnabled property changes.

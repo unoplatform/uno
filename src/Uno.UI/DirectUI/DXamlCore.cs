@@ -51,8 +51,7 @@ namespace DirectUI
 				throw new ArgumentNullException(nameof(element));
 			}
 
-			// TODO: Multi-window #14499
-			return Microsoft.UI.Xaml.Window.Current;
+			return element.XamlRoot?.HostWindow;
 		}
 
 		// TODO Uno: Application-wide bar is not supported yet.

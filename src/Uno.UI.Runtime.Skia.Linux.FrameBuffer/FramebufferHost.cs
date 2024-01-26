@@ -5,8 +5,11 @@ using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
@@ -90,10 +93,11 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		{
 			_isDispatcherThread = true;
 
+			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension(this));
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => { FrameBufferPointerInputSource.Instance.SetHost(o); return FrameBufferPointerInputSource.Instance; });
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => { FrameBufferKeyboardInputSource.Instance.SetHost(o); return FrameBufferKeyboardInputSource.Instance; });
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension());
+			ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new FrameBufferNativeElementHostingExtension());
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
@@ -136,31 +140,11 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_renderer = new Renderer(this);
 
-			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 			WUX.Application.StartWithArguments(CreateApp);
-		}
-
-		private void OnCoreWindowContentRootSet(object? sender, object e)
-		{
-			var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-			if (xamlRoot is null)
-			{
-				throw new InvalidOperationException("XamlRoot was not properly initialized");
-			}
-
-			contentRoot!.SetHost(this);
-			FrameBufferManager.XamlRootMap.Register(xamlRoot, this);
-
-			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
-		WUX.UIElement? IXamlRootHost.RootElement => WUX.Window.Current.RootElement;
+		WUX.UIElement? IXamlRootHost.RootElement => FrameBufferWindowWrapper.Instance.Window?.RootElement;
 	}
 }

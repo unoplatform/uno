@@ -72,15 +72,7 @@ internal partial class PopupPanel : Panel
 		}
 		else
 		{
-			Rect visibleBounds;
-			if (XamlRoot is not { } xamlRoot || xamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			}
-			else
-			{
-				visibleBounds = xamlRoot.Bounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
 
@@ -211,15 +203,7 @@ internal partial class PopupPanel : Panel
 		{
 			// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
-			Rect visibleBounds;
-			if (XamlRoot is { } xamlRoot && xamlRoot.VisualTree.ContentRoot.Type != ContentRootType.CoreWindow)
-			{
-				visibleBounds = xamlRoot.Bounds;
-			}
-			else
-			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
@@ -246,7 +230,7 @@ internal partial class PopupPanel : Panel
 		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
 		this.SetLogicalParent(Popup);
 
-		Microsoft.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
+		this.XamlRoot.Changed += XamlRootChanged;
 	}
 
 	private protected override void OnUnloaded()
@@ -254,7 +238,7 @@ internal partial class PopupPanel : Panel
 		base.OnUnloaded();
 		this.SetLogicalParent(null);
 
-		Microsoft.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
+		this.XamlRoot.Changed -= XamlRootChanged;
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we

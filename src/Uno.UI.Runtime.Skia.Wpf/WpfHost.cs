@@ -3,8 +3,10 @@
 using System;
 using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
+using Uno.UI.Xaml.Controls;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
@@ -57,8 +59,6 @@ public class WpfHost : IWpfApplicationHost
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
 		StartApp();
-
-		SetupMainWindow();
 	}
 
 	private void InitializeDispatcher()
@@ -66,19 +66,6 @@ public class WpfHost : IWpfApplicationHost
 		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d);
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
 	}
-
-	private void SetupMainWindow()
-	{
-		var unoWpfWindow = new UnoWpfWindow(WinUI.Window.Current);
-		WpfApplication.Current.MainWindow = unoWpfWindow;
-		unoWpfWindow.Activated += MainWindow_Activated;
-		unoWpfWindow.UpdateWindowPropertiesFromPackage();
-		unoWpfWindow.UpdateWindowPropertiesFromApplicationView();
-	}
-
-	internal event EventHandler? MainWindowShown;
-
-	private void MainWindow_Activated(object? sender, EventArgs e) => MainWindowShown?.Invoke(this, EventArgs.Empty);
 
 	private void StartApp()
 	{

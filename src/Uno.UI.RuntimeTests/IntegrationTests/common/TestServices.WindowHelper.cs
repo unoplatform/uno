@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
+using System.Linq;
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -25,25 +27,13 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static Microsoft.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
 			public static XamlRoot XamlRoot { get; set; }
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow
-			{
-				get
-				{
-					if (_currentTestWindow is null)
-					{
-						throw new InvalidOperationException("Current test window not set.");
-					}
-					return _currentTestWindow;
-				}
-				set => _currentTestWindow = value;
-			}
+			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 
@@ -424,6 +414,20 @@ namespace Private.Infrastructure
 			internal static void ResetWindowContentAndWaitForIdle()
 			{
 
+			}
+
+			internal static void CloseAllSecondaryWindows()
+			{
+#if HAS_UNO_WINUI && !WINAPPSDK
+				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
+				foreach (var window in windows)
+				{
+					if (window != TestServices.WindowHelper.XamlRoot.HostWindow)
+					{
+						window.Close();
+					}
+				}
+#endif
 			}
 		}
 	}

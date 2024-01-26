@@ -228,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public void When_UpdateLayout_Then_TreeNotMeasuredUsingCachedValue()
 		{
-			if (Window.Current.RootElement is Panel root)
+			if (TestServices.WindowHelper.RootElement is Panel root)
 			{
 				var sut = new Grid
 				{

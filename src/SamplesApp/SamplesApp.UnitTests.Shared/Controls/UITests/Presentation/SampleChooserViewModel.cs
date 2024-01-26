@@ -31,9 +31,11 @@ using Uno.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
+using SamplesApp;
 using Uno.UI.Extensions;
 using Microsoft.UI.Dispatching;
 using Private.Infrastructure;
+using System.Reflection.Metadata;
 
 namespace SampleControl.Presentation
 {
@@ -220,8 +222,7 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await _dispatcher.RunAsync(
-				UnitTestDispatcherCompat.Priority.Normal,
+			await RunOnUIThreadAsync(
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -300,8 +301,7 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await _dispatcher.RunAsync(
-					UnitTestDispatcherCompat.Priority.Normal,
+				await RunOnUIThreadAsync(
 					async () =>
 					{
 						try
@@ -471,6 +471,15 @@ namespace SampleControl.Presentation
 				.Replace("\\", "_")
 				.Replace("\\", "_");
 
+		internal void CreateNewWindow()
+		{
+#if HAS_UNO //TODO: Enable UWP-style new window #8978
+			var newWindow = new Window();
+			newWindow.Content = new MainPage();
+			newWindow.Activate();
+#endif
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
@@ -550,7 +559,7 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					UnitTestDispatcherCompat
+					_ = UnitTestDispatcherCompat
 						.From(SamplesApp.App.MainWindow.Content)
 						.RunAsync(
 						async () =>
@@ -616,8 +625,8 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			var unused = _dispatcher.RunAsync(
-				UnitTestDispatcherCompat.Priority.Normal, async () =>
+			_ = RunOnUIThreadAsync(
+				async () =>
 				{
 					// Delay the search to allow the user to type more characters
 					await Task.Delay(400);
@@ -1276,6 +1285,13 @@ namespace SampleControl.Presentation
 				await Task.Yield();
 			}
 #endif
+		}
+
+		private async Task RunOnUIThreadAsync(Action action)
+		{
+			await _dispatcher.RunAsync(
+					UnitTestDispatcherCompat.Priority.Normal,
+					() => action());
 		}
 	}
 }

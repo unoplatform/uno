@@ -167,7 +167,12 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Opened += OnPopupOpened;
 			}
 
-			Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
+			if (XamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+			}
+
+			XamlRoot.Changed += OnXamlRootChanged;
 		}
 
 		private protected override void OnUnloaded()
@@ -180,7 +185,12 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Opened -= OnPopupOpened;
 			}
 
-			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
+			if (XamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+			}
+
+			XamlRoot.Changed -= OnXamlRootChanged;
 		}
 
 		protected virtual void OnDropDownClosed(object e)
@@ -193,7 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DropDownOpened?.Invoke(this, null!);
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}
@@ -1462,7 +1472,8 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__
 				// Check whether the status bar is translucent
 				// If so, we may need to compensate for the origin location
-				var isTranslucent = Window.Current.IsStatusBarTranslucent();
+				// TODO: Adjust for multiwindow #13827
+				var isTranslucent = Window.CurrentSafe!.IsStatusBarTranslucent();
 				var allowUnderStatusBar = FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar;
 				if (isTranslucent && allowUnderStatusBar)
 				{

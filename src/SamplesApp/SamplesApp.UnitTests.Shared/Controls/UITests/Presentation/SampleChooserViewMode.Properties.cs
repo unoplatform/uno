@@ -15,10 +15,15 @@ using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
-using Windows.Graphics.Display;
+using Microsoft.Graphics.Display;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
+#endif
+
+#if HAS_UNO
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 
 namespace SampleControl.Presentation
@@ -407,7 +412,10 @@ namespace SampleControl.Presentation
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
-				Application.PropagateResourcesChanged(Microsoft.UI.Xaml.Window.Current.Content, updateReason);
+				foreach (var root in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+				{
+					Application.PropagateResourcesChanged(root.XamlRoot?.Content, updateReason);
+				}
 #endif
 				RaisePropertyChanged();
 			}

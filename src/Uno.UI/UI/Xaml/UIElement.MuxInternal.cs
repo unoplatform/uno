@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml
 
 #if !HAS_UNO_WINUI
 		// This is to ensure forward compatibility with WinUI
-		private protected DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
+		protected internal DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
 #endif
 	}
 }

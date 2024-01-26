@@ -37,7 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			get
 			{
-				var slot = LayoutInformation.GetLayoutSlot(Window.Current.Content);
+				var slot = LayoutInformation.GetLayoutSlot(TestServices.WindowHelper.CurrentTestWindow!.Content);
 				var bounds = new Rect(0, 0, slot.Width, slot.Height);
 
 				return bounds;
@@ -46,9 +46,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #else
 		private Rect WindowBounds =>
 #if HAS_UNO
-			TestServices.WindowHelper.EmbeddedTestRoot.control?.XamlRoot?.Bounds ??
+			TestServices.WindowHelper.XamlRoot.Bounds;
+#else
+			Microsoft.UI.Xaml.Window.Current?.Bounds ?? default;
 #endif
-			Window.Current.Bounds;
 #endif
 
 		private Point RootLocation

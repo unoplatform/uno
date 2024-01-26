@@ -1,4 +1,6 @@
-﻿using System;
+#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
@@ -16,12 +18,14 @@ using Windows.Graphics.Display;
 using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
-using Uno;
 using System.Diagnostics.CodeAnalysis;
+using Uno;
+using Uno.UI;
+using Uno.UI.RuntimeTests.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Uno.UI;
 using Private.Infrastructure;
 
 #if !HAS_UNO
@@ -50,15 +54,14 @@ namespace SamplesApp
 #endif
 	{
 #if HAS_UNO
-		private static Uno.Foundation.Logging.Logger _log;
+		private static Uno.Foundation.Logging.Logger? _log;
 #else
-		private static ILogger _log;
+		private static ILogger? _log;
 #endif
 
+		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
-
-		public static Window MainWindow { get; set; }
 
 		static App()
 		{
@@ -93,6 +96,8 @@ namespace SamplesApp
 #endif
 		}
 
+		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
+
 		/// <summary>
 		/// Invoked when the application is launched normally by the end user.  Other entry points
 		/// will be used such as when the application is launched to open a specific file.
@@ -104,7 +109,9 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT && HAS_TESTCLOUD_AGENT
+			EnsureMainWindow();
+
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 
@@ -171,6 +178,19 @@ namespace SamplesApp
 		}
 #endif
 
+		[MemberNotNull(nameof(_mainWindow))]
+		private void EnsureMainWindow()
+		{
+			_mainWindow ??=
+#if HAS_UNO_WINUI
+				new Microsoft.UI.Xaml.Window();
+#else
+				Microsoft.UI.Xaml.Window.Current!;
+#endif
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+				_mainWindow;
+		}
+
 #if __IOS__
 		/// <summary>
 		/// Launches a watchdog that will terminate the app if the dispatcher does not process
@@ -187,7 +207,7 @@ namespace SamplesApp
 			{
 				Console.WriteLine("Starting dispatcher WatchDog...");
 
-				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+				var dispatcher = UnitTestDispatcherCompat.From(_mainWindow!);
 				var timeout = TimeSpan.FromSeconds(240);
 
 				Task.Run(async () =>
@@ -196,7 +216,7 @@ namespace SamplesApp
 					while (true)
 					{
 						var delayTask = Task.Delay(timeout);
-						var messageTask = dispatcher.RunAsync(CoreDispatcherPriority.High, () => { }).AsTask();
+						var messageTask = dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.High, () => { }).AsTask();
 
 						if (await Task.WhenAny(delayTask, messageTask) == delayTask)
 						{
@@ -224,6 +244,7 @@ namespace SamplesApp
 		{
 			base.OnActivated(e);
 
+			EnsureMainWindow();
 			InitializeFrame();
 			ActivateMainWindow();
 
@@ -245,15 +266,15 @@ namespace SamplesApp
 		private void ActivateMainWindow()
 		{
 #if DEBUG && (__SKIA__ || __WASM__)
-			Microsoft.UI.Xaml.Window.Current.EnableHotReload();
+			_mainWindow!.EnableHotReload();
 #endif
-			MainWindow.Activate();
+			_mainWindow!.Activate();
 			_wasActivated = true;
 			_isSuspended = false;
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);
 		}
 
-		public event EventHandler MainWindowActivated;
+		public event EventHandler? MainWindowActivated;
 
 #if !HAS_UNO_WINUI
 		protected override void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)
@@ -265,23 +286,18 @@ namespace SamplesApp
 		}
 #endif
 
-		private void InitializeFrame(string arguments = null)
+		private void InitializeFrame(string? arguments = null)
 		{
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
-			MainWindow = new Window();
-#else
-			MainWindow = Microsoft.UI.Xaml.Window.Current;
-#endif
+			if (_mainWindow is null)
+			{
+				throw new InvalidOperationException("Main window must be initialized before Frame");
+			}
 
-#if DEBUG
-			MainWindow.EnableHotReload();
-#endif
-
-			Frame rootFrame = MainWindow.Content as Frame;
+			var rootFrame = _mainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
-			if (rootFrame == null)
+			if (rootFrame is null)
 			{
 				// Create a Frame to act as the navigation context and navigate to the first page
 				rootFrame = new Frame();
@@ -289,10 +305,10 @@ namespace SamplesApp
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
 				// Place the frame in the current Window
-				MainWindow.Content = rootFrame;
+				_mainWindow.Content = rootFrame;
 			}
 
-			if (rootFrame.Content == null)
+			if (rootFrame.Content is null)
 			{
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
@@ -368,7 +384,7 @@ namespace SamplesApp
 			deferral.Complete();
 		}
 
-		private void OnResuming(object sender, object e)
+		private void OnResuming(object? sender, object e)
 		{
 			Console.WriteLine("OnResuming");
 

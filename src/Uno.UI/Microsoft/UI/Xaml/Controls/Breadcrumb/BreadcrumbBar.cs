@@ -7,6 +7,7 @@
 using System.Collections.ObjectModel;
 using Microsoft.UI.Input;
 using Uno.Disposables;
+using Uno.UI.Core;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;

@@ -4,8 +4,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Uno.Foundation.Logging;
-using Windows.Foundation;
-using Windows.UI.Core.Preview;
+using Uno.UI.Xaml.Core;
 using Windows.UI.ViewManagement;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -16,14 +15,13 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly WinUI.Window _winUIWindow;
-	private readonly UnoWpfWindowHost _host;
-	private bool _isVisible;
+	private readonly ApplicationView _applicationView;
 
-	public UnoWpfWindow(WinUI.Window winUIWindow)
+	private bool _shown;
+
+	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Showing += OnShowing;
-		_winUIWindow.NativeWindow = this;
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
@@ -32,72 +30,44 @@ internal class UnoWpfWindow : WpfWindow
 			Height = (int)preferredWindowSize.Height;
 		}
 
-		Content = _host = new UnoWpfWindowHost(this, winUIWindow);
+		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
+		WpfManager.XamlRootMap.Register(xamlRoot, Host);
 
-		Closing += OnClosing;
-		Activated += OnActivated;
-		Deactivated += OnDeactivated;
-		StateChanged += OnStateChanged;
+		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		Closed += UnoWpfWindow_Closed;
+		Activated += UnoWpfWindow_Activated;
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
-
-		winUIWindow.OnNativeWindowCreated();
+		UpdateWindowPropertiesFromPackage();
+		UpdateWindowPropertiesFromApplicationView();
 	}
 
-	private void OnShowing(object? sender, EventArgs e) => Show();
-
-	private void OnClosing(object? sender, CancelEventArgs e)
+	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{
-		// TODO: Support multi-window approach properly #8341
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
+		Host.Focus();
+		if (!_shown)
 		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
-	}
-
-	private void OnDeactivated(object? sender, EventArgs e) =>
-		_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-
-	private void OnActivated(object? sender, EventArgs e)
-	{
-		_winUIWindow.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.PointerActivated);
-		_host.Focus();
-	}
-
-	private void OnStateChanged(object? sender, EventArgs e)
-	{
-		var application = WinUIApplication.Current;
-		var wasVisible = _isVisible;
-
-		_isVisible = WindowState != System.Windows.WindowState.Minimized;
-
-		if (wasVisible && !_isVisible)
-		{
-			_winUIWindow.OnNativeVisibilityChanged(false);
-			application?.RaiseEnteredBackground(null);
-		}
-		else if (!wasVisible && _isVisible)
-		{
-			application?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
+			_shown = true;
+			NativeWindowShown?.Invoke(this, this);
 		}
 	}
+
+	internal static event EventHandler<UnoWpfWindow>? NativeWindowShown;
+
+	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
+	{
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+	}
+
+	internal UnoWpfWindowHost Host { get; private set; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.GetForCurrentView();
-		Title = appView.Title;
-		MinWidth = appView.PreferredMinSize.Width;
-		MinHeight = appView.PreferredMinSize.Height;
+		Title = _applicationView.Title;
+		MinWidth = _applicationView.PreferredMinSize.Width;
+		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
 
 	internal void UpdateWindowPropertiesFromPackage()
@@ -134,9 +104,9 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		if (string.IsNullOrEmpty(_applicationView.Title))
 		{
-			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 }

@@ -15,6 +15,8 @@ using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
 
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
 #if NOT_IMPLEMENTED
@@ -96,8 +98,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					element ??= Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer, new Size(scaledWidth, scaledHeight));
+					element ??= WinUICoreServices.Instance.MainVisualTree?.PublicRootVisual;
+
+					if (element is null)
+					{
+						throw new InvalidOperationException("No visual tree is available and no UIElement was provided for render");
+					}
+
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -118,8 +126,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					element ??= Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer);
+					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
+
+					if (element is null)
+					{
+						throw new InvalidOperationException("No window or element to render");
+					}
+
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif

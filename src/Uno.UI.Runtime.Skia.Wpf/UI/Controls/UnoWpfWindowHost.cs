@@ -1,22 +1,20 @@
 ﻿#nullable enable
 
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using System;
 using System.Windows;
 using System.Windows.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
+using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Xaml.Core;
 using WinUI = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
-using WpfControl = System.Windows.Controls.Control;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
+using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using WpfWindow = System.Windows.Window;
-using RoutedEventArgs = System.Windows.RoutedEventArgs;
-using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -26,11 +24,9 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private const string NativeOverlayLayerHostPart = "NativeOverlayLayerHost";
 
 	private readonly WpfCanvas _nativeOverlayLayer = new();
-	private readonly WpfWindow _wpfWindow;
+	private readonly UnoWpfWindow _wpfWindow;
 	private readonly WinUI.Window _winUIWindow;
 	private readonly CompositeDisposable _disposables = new();
-
-	private Size _previousArrangeBounds;
 
 	private IWpfRenderer? _renderer;
 
@@ -41,7 +37,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 			new WpfFrameworkPropertyMetadata(typeof(UnoWpfWindowHost)));
 	}
 
-	public UnoWpfWindowHost(WpfWindow wpfWindow, WinUI.Window winUIWindow)
+	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, WinUI.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
 		_winUIWindow = winUIWindow;
@@ -50,28 +46,16 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 		Loaded += WpfHost_Loaded;
 
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 		RegisterForBackgroundColor();
-	}
-
-	protected override Size ArrangeOverride(Size arrangeBounds)
-	{
-		if (arrangeBounds != _previousArrangeBounds)
-		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
-			_previousArrangeBounds = arrangeBounds;
-		}
-		return base.ArrangeOverride(arrangeBounds);
 	}
 
 	WinUI.UIElement? IXamlRootHost.RootElement => _winUIWindow.RootElement;
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
-	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
+	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current?.IgnorePixelScaling ?? false;
 
-	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current!.RenderSurfaceType;
+	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current?.RenderSurfaceType ?? null;
 
 	public bool IsIsland => false;
 
@@ -98,25 +82,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		{
 			control.FocusVisualStyle = null;
 		}
-	}
-
-	private void OnCoreWindowContentRootSet(object? sender, object e)
-	{
-		var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-
-		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-		if (xamlRoot is null)
-		{
-			throw new InvalidOperationException("XamlRoot was not properly initialized");
-		}
-
-		contentRoot!.SetHost(this);
-		WpfManager.XamlRootMap.Register(xamlRoot, this);
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
 	private void RegisterForBackgroundColor()

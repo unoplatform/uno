@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
@@ -92,6 +93,11 @@ namespace Microsoft.UI.Xaml
 
 		private void EnterTree()
 		{
+			if (XamlRoot is null)
+			{
+				XamlRoot = Window.InitialWindow?.RootElement?.XamlRoot;
+			}
+
 			if (IsLoaded)
 			{
 				OnLoading();

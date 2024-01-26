@@ -24,6 +24,11 @@ namespace Windows.System
 				Enum.GetValues<DispatcherQueuePriority>().Length == 3);
 		}
 
+		/// <summary>
+		/// Gets the dispatcher queue for the main thread.
+		/// </summary>
+		internal static DispatcherQueue Main { get; } = new DispatcherQueue();
+
 		public DispatcherQueueTimer CreateTimer()
 			=> new DispatcherQueueTimer();
 

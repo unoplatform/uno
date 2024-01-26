@@ -90,12 +90,13 @@ namespace Microsoft.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-				Window.Current.ToString();
-
 				InitializationCompleted();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				// OnLaunched should execute only for full apps, not for individual islands.
+				if (CoreApplication.IsFullFledgedApp)
+				{
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				}
 			}
 		}
 

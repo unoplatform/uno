@@ -5,12 +5,11 @@
 #nullable enable
 
 using System;
-
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -106,7 +105,7 @@ namespace Uno.UI.Xaml.Core
 
 		/// <summary>
 		/// RootElement is the parent of the roots. For XAML app window content, this is the RootVisual.
-		/// For XamlIsland content, it's the XamlIslandRoot.
+		/// For XamlIsland content, it's the XamlIsland.
 		/// </summary>
 		public UIElement RootElement { get; }
 
@@ -418,12 +417,10 @@ namespace Uno.UI.Xaml.Core
 		}
 
 
-		[NotImplemented]
-		private bool ResetRoots()
+		private void ResetRoots()
 		{
 			//TODO Uno: We currently never reset existing roots for backwards compatability
 			//with existing infrastructure. This should be adjusted later.
-			return true;
 			//if (_connectedAnimationRoot != null)
 			//{
 			//	RemoveRoot(_connectedAnimationRoot);
@@ -449,6 +446,16 @@ namespace Uno.UI.Xaml.Core
 			//	}
 			//}
 
+			if (FocusVisualRoot is not null)
+			{
+				RemoveRoot(FocusVisualRoot);
+			}
+
+			if (PopupRoot is not null)
+			{
+				RemoveRoot(PopupRoot);
+			}
+
 			//if (_printRoot != null)
 			//{
 			//	RemoveRoot(_printRoot);
@@ -459,10 +466,10 @@ namespace Uno.UI.Xaml.Core
 			//	RemoveRoot(_transitionRoot);
 			//}
 
-			//if (_fullWindowMediaRoot != null)
-			//{
-			//	RemoveRoot(_fullWindowMediaRoot);
-			//}
+			if (FullWindowMediaRoot != null)
+			{
+				RemoveRoot(FullWindowMediaRoot);
+			}
 
 			//if (_renderTargetBitmapRoot != null)
 			//{
@@ -474,38 +481,40 @@ namespace Uno.UI.Xaml.Core
 			//	RemoveRoot(_xamlIslandRootCollection);
 			//}
 
-			//if (_publicRootVisual != null)
+			//if (PublicRootVisual != null)
 			//{
 			//	// ToolTipService attaches handlers to the public root of the main window and each Xaml island. Clean up its
 			//	// bookkeeping now that the root is going away.
-			//	ToolTipService.OnPublicRootRemoved(_publicRootVisual);
+			//	//ToolTipService.OnPublicRootRemoved(_publicRootVisual);
 			//}
 
-			//if (_rootScrollViewer && _bIsRootScrollViewerAddedToRoot)
-			//{
-			//	// Remove both root ScrollViewer and visual root from the tree
-			//	RemoveRootScrollViewer(_rootScrollViewer);
-			//	RemoveVisualRootFromRootScrollViewer(_publicRootVisual);
+			if (false) //RootScrollViewer is not null && _bIsRootScrollViewerAddedToRoot)
+			{
+				//// Remove both root ScrollViewer and visual root from the tree
+				//RemoveRootScrollViewer(RootScrollViewer);
+				//RemoveVisualRootFromRootScrollViewer(PublicRootVisual);
 
-			//	// The public visual root is always released immediately.
-			//	// But we keep the root ScrollViewer reference to reuse it
-			//	// for new public visual root.
-			//	_publicRootVisual.reset();
+				//// The public visual root is always released immediately.
+				//// But we keep the root ScrollViewer reference to reuse it
+				//// for new public visual root.
+				//PublicRootVisual = null;
 
-			//	_bIsRootScrollViewerAddedToRoot = false;
-			//}
-			//else
-			//{
-			//	// Public root visual is always removed last
-			//	if (_publicRootVisual)
-			//	{
-			//		RemoveRoot(_publicRootVisual);
+				//_bIsRootScrollViewerAddedToRoot = false;
+			}
+			else
+			{
+				// Public root visual is always removed last
+				if (PublicRootVisual is not null)
+				{
+					RemoveRoot(PublicRootVisual);
 
-			//		// The public root visual is always released, regardless of 'resetRoots'.
-			//		_publicRootVisual.reset();
-			//	}
-			//}
+					// The public root visual is always released, regardless of 'resetRoots'.
+					PublicRootVisual = null;
+				}
+			}
 		}
+
+		private void RemoveRoot(UIElement root) => RootElement.RemoveChild(root);
 
 		[NotImplemented]
 		internal bool IsBehindFullWindowMediaRoot(DependencyObject? focusedElement)
@@ -662,7 +671,7 @@ namespace Uno.UI.Xaml.Core
 					}
 				}
 
-				if (currentAncestor is XamlIslandRoot xamlIslandRoot)
+				if (currentAncestor is XamlIsland xamlIslandRoot)
 				{
 					return xamlIslandRoot.ContentRoot.VisualTree;
 				}
@@ -773,7 +782,6 @@ namespace Uno.UI.Xaml.Core
 
 			return XamlRoot;
 		}
-
 
 		private static void VisualTreeNotFoundWarning()
 		{

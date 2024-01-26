@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.System;
@@ -492,12 +493,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				// UNO TODO
-				//VisualTree* visualTree = VisualTree.GetForElementNoRef(GetHandle());
-				//if (visualTree)
-				//{
-				//	// Put the popup on the same VisualTree as this flyout sub item to make sure it shows up in the right place
-				//	(CPopup*)(m_tpPopup as Popup.GetHandle()).SetAssociatedVisualTree(visualTree);
-				//}
+				VisualTree visualTree = VisualTree.GetForElement(this);
+				if (visualTree is not null)
+				{
+					// Put the popup on the same VisualTree as this flyout sub item to make sure it shows up in the right place
+					m_tpPopup.SetVisualTree(visualTree);
+				}
 
 				// Set the popup open or close state
 				m_tpPopup.IsOpen = isOpen;
