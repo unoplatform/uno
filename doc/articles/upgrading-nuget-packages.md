@@ -33,6 +33,7 @@ It typically looks similar to this:
 > At this time the NuGet Manager in Visual Studio 2022 does not parse or manage Sdks provided by NuGet. If you would like to see this feature added, please be sure to provide your [feedback or upvote this issue](https://github.com/NuGet/Home/issues/13127).
 
 To update the version, pick the latest stable build from the [Uno.WinUI](https://www.nuget.org/packages/Uno.WinUI) package with either:
+
 - [Uno.WinUI in Nuget Package Explorer](https://nuget.info)
 - [Uno.WinUI in nuget.org](https://www.nuget.org/packages/Uno.WinUI)
 - The latest Uno.WinUI package in the Visual Studio 2022 NuGet Package Manager.
