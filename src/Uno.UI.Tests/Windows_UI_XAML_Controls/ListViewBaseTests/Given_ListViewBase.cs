@@ -803,23 +803,23 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.AreEqual(0, containerCount);
 
 			SUT.ItemsSource = source;
-			Assert.AreEqual(3, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 3 : 4, count);
 			Assert.AreEqual(3, containerCount);
 			Assert.AreEqual(3, containerCount);
 
 			source.Add("4");
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 6, count);
 			Assert.AreEqual(4, containerCount);
 			Assert.AreEqual(4, containerCount);
 
 			source.Remove("1");
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 6, count);
 			Assert.AreEqual(4, containerCount);
 			Assert.AreEqual(4, containerCount);
 
 			source[0] = "5";
 			// Data template is not recreated because of pooling
-			Assert.AreEqual(4, count);
+			Assert.AreEqual(FrameworkTemplatePool.IsPoolingEnabled ? 4 : 8, count);
 			// The item container style is reapplied (not cached)
 			Assert.AreEqual(5, containerCount);
 		}

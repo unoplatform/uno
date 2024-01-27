@@ -30,13 +30,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			_previousPoolingEnabled = FrameworkTemplatePool.IsPoolingEnabled;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(_mockProvider = new());
 
-			FrameworkTemplatePool.IsPoolingEnabled = true;
+			FrameworkTemplatePool.InternalIsPoolingEnabled = true;
 		}
 
 		[TestCleanup]
 		public void Cleanup()
 		{
-			FrameworkTemplatePool.IsPoolingEnabled = _previousPoolingEnabled;
+			FrameworkTemplatePool.InternalIsPoolingEnabled = _previousPoolingEnabled;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(null);
 			FrameworkTemplatePool.Scavenge();
 		}
