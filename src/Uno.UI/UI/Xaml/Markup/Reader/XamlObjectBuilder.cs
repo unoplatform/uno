@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			XamlObjectDefinition? control,
 			object? rootInstance,
 			object? component = null,
-			DependencyObject? templatedParent = null,
+			TemplateMaterializationSettings? settings = null,
 			bool createInstanceFromXClass = false
 		)
 		{
@@ -111,9 +111,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 					}
-					if (templatedParent is { })
+					if (settings?.TemplatedParent is { } tp)
 					{
-						fe.SetTemplatedParent(templatedParent);
+						fe.SetTemplatedParent(tp);
+						settings.TemplateMemberCreatedCallback?.Invoke(fe);
 					}
 				}
 			}
@@ -139,11 +140,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type.Is<FrameworkTemplate>())
 			{
-				FrameworkTemplateBuilder builder = (o, tp) =>
+				FrameworkTemplateBuilder builder = (o, s) =>
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, templatedParent: tp) as _View;
+					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: settings) as _View;
 				};
 
 				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
@@ -159,7 +160,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members.Where(m => m != unknownContent))
 					{
-						ProcessNamedMember(control, rd, member, rd, templatedParent: null);
+						ProcessNamedMember(control, rd, member, rd, settings: null);
 					}
 
 					if (unknownContent is { })
@@ -240,7 +241,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					foreach (var member in control.Members)
 					{
-						ProcessNamedMember(control, instance, member, rootInstance, templatedParent);
+						ProcessNamedMember(control, instance, member, rootInstance, settings);
 					}
 				}
 
@@ -304,7 +305,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object instance,
 			XamlMemberDefinition member,
 			object rootInstance,
-			DependencyObject? templatedParent
+			TemplateMaterializationSettings? settings
 		)
 		{
 			// Exclude attached properties, must be set in the extended apply section.
@@ -344,7 +345,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					&& TypeResolver.FindContentProperty(TypeResolver.FindType(control.Type)) == null
 					&& TypeResolver.IsCollectionOrListType(TypeResolver.FindType(control.Type)))
 				{
-					AddCollectionItems(instance, member.Objects, rootInstance, templatedParent);
+					AddCollectionItems(instance, member.Objects, rootInstance, settings);
 				}
 				else if (GetMemberProperty(control, member) is PropertyInfo propertyInfo)
 				{
@@ -400,7 +401,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							ProcessMemberElements(instance, member, propertyInfo, rootInstance, templatedParent);
+							ProcessMemberElements(instance, member, propertyInfo, rootInstance, settings);
 						}
 					}
 				}
@@ -441,7 +442,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
-							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, /* fixme@xy: should it be null here? */ templatedParent);
+							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, null /*should be this: templatedParent, but we are just gonna test the bad case*/);
 						}
 						else
 						{
@@ -614,7 +615,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			XamlMemberDefinition member,
 			DependencyProperty property,
 			object rootInstance,
-			DependencyObject? templatedParent
+			TemplateMaterializationSettings? settings
 		)
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
@@ -633,13 +634,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				var collection = BuildInstance();
 
-				AddCollectionItems(collection, member.Objects, rootInstance, templatedParent);
+				AddCollectionItems(collection, member.Objects, rootInstance, settings);
 
 				instance.SetValue(property, collection);
 			}
 			else
 			{
-				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance, templatedParent: templatedParent));
+				instance.SetValue(property, LoadObject(member.Objects.First(), rootInstance: rootInstance, settings: settings));
 			}
 		}
 
@@ -648,7 +649,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			XamlMemberDefinition member,
 			PropertyInfo propertyInfo,
 			object rootInstance,
-			DependencyObject? templatedParent
+			TemplateMaterializationSettings? settings
 		)
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
@@ -741,7 +742,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					&& TypeResolver.IsNewableType(propertyInfo.PropertyType))
 				{
 					var collection = Activator.CreateInstance(propertyInfo.PropertyType);
-					AddCollectionItems(collection!, member.Objects, rootInstance, templatedParent);
+					AddCollectionItems(collection!, member.Objects, rootInstance, settings);
 
 					GetPropertySetter(propertyInfo).Invoke(instance, new[] { collection });
 				}
@@ -762,7 +763,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else
 						{
-							AddCollectionItems(propertyInstance, member.Objects, rootInstance, templatedParent);
+							AddCollectionItems(propertyInstance, member.Objects, rootInstance, settings);
 						}
 					}
 					else
@@ -779,7 +780,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				GetPropertySetter(propertyInfo).Invoke(instance, new[]
 				{
-					LoadObject(member.Objects.First(), rootInstance: rootInstance, templatedParent: templatedParent)
+					LoadObject(member.Objects.First(), rootInstance: rootInstance, settings: settings)
 				});
 			}
 		}
@@ -1152,14 +1153,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object collectionInstance,
 			IEnumerable<XamlObjectDefinition> nonBindingObjects,
 			object rootInstance,
-			DependencyObject? templatedParent
+			TemplateMaterializationSettings? settings
 		)
 		{
 			var addMethodMap = new Dictionary<Type, MethodInfo>(); // review@xy: globally cache this lookup by (instance-type, item-type)?
 
 			foreach (var child in nonBindingObjects)
 			{
-				var item = LoadObject(child, rootInstance: rootInstance, templatedParent: templatedParent);
+				var item = LoadObject(child, rootInstance: rootInstance, settings: settings);
 				var itemType = item?.GetType() ?? typeof(object);
 				if (!addMethodMap.TryGetValue(itemType, out var addMethodInfo))
 				{

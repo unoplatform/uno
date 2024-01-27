@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
-	public delegate View? FrameworkTemplateBuilder(object? owner, DependencyObject? templatedParent);
+	public delegate View? FrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
 
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
@@ -40,8 +40,19 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, (o, tp) => factory?.Invoke())
+			: this(null, (o, s) =>
+			{
+				s.IsIgnored = true;
+				return factory?.Invoke();
+			})
 		{
+			// fixme@xy: locate the caller for this implementation
+			// and try to see if we can drop this overload
+			// because it won't inject the templated parent at all.
+
+			// ^update: we may be able to get away with this,
+			// since the TemplateCache(from winui, not here) mechanism may be used to re-inject the TP post creation.
+			// still we should explain why this overload is kept? (whos calling it)
 		}
 
 		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
@@ -82,11 +93,26 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
 		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
+		//View? IFrameworkTemplateInternal.LoadContent(TemplateMaterializationSettings settings)
 		{
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-				var view = _viewFactory?.Invoke(_ownerRef?.Target, templatedParent);
+
+				var members = new List<DependencyObject>();
+				var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
+
+				var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+
+				if (view is { })
+				{
+					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
+				}
+
+				if (view is FrameworkElement fe)
+				{
+					fe.IsTemplateRoot = true;
+				}
 
 				return view;
 			}

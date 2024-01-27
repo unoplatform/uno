@@ -1,0 +1,201 @@
+﻿<UserControl x:Class="UITests.Windows_UI_Xaml_Controls.ContentControlTestsControl.ContentControl_TemplateRecycling"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ContentControlTestsControl"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d">
+
+	<!-- todo@xy: convert to runtime tests -->
+	<!-- with 2 versions: 1. XamlReader, 2. XamlCodeGenerator -->
+
+	<UserControl.Resources>
+		<DataTemplate x:Key="TemplateA">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{Binding}" />
+				<TextBlock Text="-" />
+				<TextBlock Text="A" />
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="TemplateB">
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{Binding}" />
+				<TextBlock Text="-" />
+				<TextBlock Text="B" />
+			</StackPanel>
+		</DataTemplate>
+	</UserControl.Resources>
+
+	<Grid x:Name="SUT">
+		<Grid.ColumnDefinitions>
+			<!-- 0: Content, 1~3: Buttons -->
+			<ColumnDefinition Width="150" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<!--
+			from y in Enumerable.Range(0, 3)
+			from x in Enumerable.Range(0, 4)
+			select x == 0
+			? $$"""<ContentControl x:Name="CC{{y}}" Grid.Row="{{y}}" Grid.Column="{{x}}" Content="{{y}}" /> """
+			: $$"""<Button Grid.Row="{{y}}" Grid.Column="{{x}}" Content="{{",Null,TemplateA,TemplateB".Split(',')[x]}}" Click="SetTemplate" Tag="{Binding ElementName=CC{{y}}}" />"""
+		-->
+
+		<ContentControl x:Name="CC0" Grid.Row="0" Grid.Column="0" Content="0" />
+		<Button Grid.Row="0" Grid.Column="1" Content="Null" Click="SetTemplate" Tag="{Binding ElementName=CC0}" />
+		<Button Grid.Row="0" Grid.Column="2" Content="TemplateA" Click="SetTemplate" Tag="{Binding ElementName=CC0}" />
+		<Button Grid.Row="0" Grid.Column="3" Content="TemplateB" Click="SetTemplate" Tag="{Binding ElementName=CC0}" />
+		<ContentControl x:Name="CC1" Grid.Row="1" Grid.Column="0" Content="1" />
+		<Button Grid.Row="1" Grid.Column="1" Content="Null" Click="SetTemplate" Tag="{Binding ElementName=CC1}" />
+		<Button Grid.Row="1" Grid.Column="2" Content="TemplateA" Click="SetTemplate" Tag="{Binding ElementName=CC1}" />
+		<Button Grid.Row="1" Grid.Column="3" Content="TemplateB" Click="SetTemplate" Tag="{Binding ElementName=CC1}" />
+		<ContentControl x:Name="CC2" Grid.Row="2" Grid.Column="0" Content="2" />
+		<Button Grid.Row="2" Grid.Column="1" Content="Null" Click="SetTemplate" Tag="{Binding ElementName=CC2}" />
+		<Button Grid.Row="2" Grid.Column="2" Content="TemplateA" Click="SetTemplate" Tag="{Binding ElementName=CC2}" />
+		<Button Grid.Row="2" Grid.Column="3" Content="TemplateB" Click="SetTemplate" Tag="{Binding ElementName=CC2}" />
+
+		<StackPanel Grid.Row="3" Grid.ColumnSpan="4">
+			<ContentControl x:Name="CC_Nesting_TB">
+				<TextBlock />
+			</ContentControl>
+			<ContentControl x:Name="CC_Nesting_TB_With_CT">
+				<TextBlock />
+				<ContentControl.ContentTemplate>
+					<DataTemplate>
+						<ContentPresenter />
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
+
+			<!-- TemplatedParent: null -->
+			<local:LeftRightControl x:Name="RootLeftRight">
+				<local:LeftRightControl.Left>
+					<TextBlock x:Name="LeftRightControl_Left" Text="Left" />
+				</local:LeftRightControl.Left>
+				<local:LeftRightControl.Right>
+					<TextBlock x:Name="LeftRightControl_Right" Text="Right" />
+				</local:LeftRightControl.Right>
+
+				<local:LeftRightControl.Template>
+					<ControlTemplate TargetType="local:LeftRightControl">
+						<!-- TemplatedParent: LeftRightControl -->
+						<local:WestEastControl x:Name="LeftRightControl_Template_Root">
+							<local:WestEastControl.West>
+								<ContentControl x:Name="LeftRightControl_Template_LeftContent" Content="{TemplateBinding Left}" />
+							</local:WestEastControl.West>
+							<local:WestEastControl.East>
+								<ContentControl x:Name="LeftRightControl_Template_RightContent" Content="{TemplateBinding Right}" />
+							</local:WestEastControl.East>
+
+							<local:WestEastControl.Template>
+								<!-- TemplatedParent: WestEastControl -->
+								<ControlTemplate TargetType="local:WestEastControl">
+									<StackPanel x:Name="WestEastControl_Template_RootPanel">
+										<ContentControl x:Name="WestEastControl_Template_WestContent" Content="{TemplateBinding West}" />
+										<ContentControl x:Name="WestEastControl_Template_EastContent" Content="{TemplateBinding East}" />
+									</StackPanel>
+								</ControlTemplate>
+							</local:WestEastControl.Template>
+
+						</local:WestEastControl>
+					</ControlTemplate>
+				</local:LeftRightControl.Template>
+
+			</local:LeftRightControl>
+
+			<d:Button x:Name="NestedContent_LeftRightTest">
+
+				<!-- TemplatedParent: null -->
+				<local:LeftRightControl x:Name="NestedRootLeftRight">
+					<local:LeftRightControl.Left>
+						<TextBlock x:Name="NestedLeftRightControl_Left" Text="Left" />
+					</local:LeftRightControl.Left>
+					<local:LeftRightControl.Right>
+						<TextBlock x:Name="NestedLeftRightControl_Right" Text="Right" />
+					</local:LeftRightControl.Right>
+
+					<local:LeftRightControl.Template>
+						<ControlTemplate TargetType="local:LeftRightControl">
+							<!-- TemplatedParent: LeftRightControl -->
+							<local:WestEastControl x:Name="NestedLeftRightControl_Template_Root">
+								<local:WestEastControl.West>
+									<ContentControl x:Name="NestedLeftRightControl_Template_LeftContent" Content="{TemplateBinding Left}" />
+								</local:WestEastControl.West>
+								<local:WestEastControl.East>
+									<ContentControl x:Name="NestedLeftRightControl_Template_RightContent" Content="{TemplateBinding Right}" />
+								</local:WestEastControl.East>
+
+								<local:WestEastControl.Template>
+									<!-- TemplatedParent: WestEastControl -->
+									<ControlTemplate TargetType="local:WestEastControl">
+										<StackPanel x:Name="NestedWestEastControl_Template_RootPanel">
+											<ContentControl x:Name="NestedWestEastControl_Template_WestContent" Content="{TemplateBinding West}" />
+											<ContentControl x:Name="NestedWestEastControl_Template_EastContent" Content="{TemplateBinding East}" />
+										</StackPanel>
+									</ControlTemplate>
+								</local:WestEastControl.Template>
+
+							</local:WestEastControl>
+						</ControlTemplate>
+					</local:LeftRightControl.Template>
+
+				</local:LeftRightControl>
+
+				<Button.Template>
+					<ControlTemplate>
+						<ContentPresenter />
+					</ControlTemplate>
+				</Button.Template>
+			</d:Button>
+
+			<d:Button x:Name="Nested2Content_LeftRightTest">
+				<Button.Template>
+					<ControlTemplate>
+						<!-- TemplatedParent: null -->
+						<local:LeftRightControl x:Name="Nested2RootLeftRight">
+							<local:LeftRightControl.Left>
+								<TextBlock x:Name="Nested2LeftRightControl_Left" Text="Left" />
+							</local:LeftRightControl.Left>
+							<local:LeftRightControl.Right>
+								<TextBlock x:Name="Nested2LeftRightControl_Right" Text="Right" />
+							</local:LeftRightControl.Right>
+
+							<local:LeftRightControl.Template>
+								<ControlTemplate TargetType="local:LeftRightControl">
+									<!-- TemplatedParent: LeftRightControl -->
+									<local:WestEastControl x:Name="Nested2LeftRightControl_Template_Root">
+										<local:WestEastControl.West>
+											<ContentControl x:Name="Nested2LeftRightControl_Template_LeftContent" Content="{TemplateBinding Left}" />
+										</local:WestEastControl.West>
+										<local:WestEastControl.East>
+											<ContentControl x:Name="Nested2LeftRightControl_Template_RightContent" Content="{TemplateBinding Right}" />
+										</local:WestEastControl.East>
+
+										<local:WestEastControl.Template>
+											<!-- TemplatedParent: WestEastControl -->
+											<ControlTemplate TargetType="local:WestEastControl">
+												<StackPanel x:Name="Nested2WestEastControl_Template_RootPanel">
+													<ContentControl x:Name="Nested2WestEastControl_Template_WestContent" Content="{TemplateBinding West}" />
+													<ContentControl x:Name="Nested2WestEastControl_Template_EastContent" Content="{TemplateBinding East}" />
+												</StackPanel>
+											</ControlTemplate>
+										</local:WestEastControl.Template>
+
+									</local:WestEastControl>
+								</ControlTemplate>
+							</local:LeftRightControl.Template>
+
+						</local:LeftRightControl>
+					</ControlTemplate>
+				</Button.Template>
+			</d:Button>
+		</StackPanel>
+	</Grid>
+</UserControl>

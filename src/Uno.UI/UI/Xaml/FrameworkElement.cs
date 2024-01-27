@@ -265,6 +265,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal bool IsTemplateRoot { get; set; } // fixme@xy: remove debug code
+
 		private ManagedWeakReference _templatedParentWeakRef;
 		internal ManagedWeakReference GetTemplatedParentWeakRef() => _templatedParentWeakRef;
 		public override DependencyObject GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
