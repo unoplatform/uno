@@ -1,6 +1,7 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
+  vmLinuxImage: ''
   poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
@@ -366,7 +367,7 @@ jobs:
   timeoutInMinutes: 60
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   dependsOn: Skia_Tests_Build
 
@@ -381,10 +382,11 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
+  - template: templates/linux-install-xvfb.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-        dotnet SamplesApp.Skia.X11.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-x11-screenshots
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-x11-screenshots'
 
     displayName: Run Skia X11 Snapshot Tests
 
@@ -401,7 +403,7 @@ jobs:
   timeoutInMinutes: 60
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   strategy:
     matrix:
@@ -434,6 +436,7 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
+  - template: templates/linux-install-xvfb.yml
 
   - script: |
       # Build source generators for hot reload runtime tests
@@ -448,7 +451,7 @@ jobs:
 
   - script: |
         cd $(SamplesAppArtifactPath)
-        dotnet SamplesApp.Skia.X11.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
 
     displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
     env:
