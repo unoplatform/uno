@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Helpers\DTEHelper.cs" />
 	  <UpToDateCheckInput Remove="Helpers\ILogger.cs" />
 	  <UpToDateCheckInput Remove="IdeChannel\IDEChannelClient.cs" />
 	</ItemGroup>

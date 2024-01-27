@@ -47,6 +47,7 @@ public class EntryPoint : IDisposable
 	private Action<string>? _verboseAction;
 	private Action<string>? _warningAction;
 	private Action<string>? _errorAction;
+	private int _msBuildLogLevel;
 	private System.Diagnostics.Process? _process;
 
 	private int RemoteControlServerPort;
@@ -101,6 +102,8 @@ public class EntryPoint : IDisposable
 	{
 		var ow = _dte2.ToolWindows.OutputWindow;
 
+		_msBuildLogLevel = _dte2.GetMSBuildOutputVerbosity();
+
 		// Add a new pane to the Output window.
 		var owPane = ow
 			.OutputWindowPanes
@@ -116,35 +119,35 @@ public class EntryPoint : IDisposable
 
 		_debugAction = s =>
 		{
-			if (!_closing)
+			if (!_closing && _msBuildLogLevel >= 3 /* MSBuild Log Detailed */)
 			{
 				owPane.OutputString("[DEBUG] " + s + "\r\n");
 			}
 		};
 		_infoAction = s =>
 		{
-			if (!_closing)
+			if (!_closing && _msBuildLogLevel >= 2 /* MSBuild Log Normal */)
 			{
 				owPane.OutputString("[INFO] " + s + "\r\n");
 			}
 		};
 		_verboseAction = s =>
 		{
-			if (!_closing)
+			if (!_closing && _msBuildLogLevel >= 4 /* MSBuild Log Diagnostic */)
 			{
 				owPane.OutputString("[VERBOSE] " + s + "\r\n");
 			}
 		};
 		_warningAction = s =>
 		{
-			if (!_closing)
+			if (!_closing && _msBuildLogLevel >= 1 /* MSBuild Log Minimal */)
 			{
 				owPane.OutputString("[WARNING] " + s + "\r\n");
 			}
 		};
 		_errorAction = e =>
 		{
-			if (!_closing)
+			if (!_closing && _msBuildLogLevel >= 0 /* MSBuild Log Quiet */)
 			{
 				owPane.OutputString("[ERROR] " + e + "\r\n");
 			}
