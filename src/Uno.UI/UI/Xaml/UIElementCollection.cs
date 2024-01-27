@@ -82,6 +82,11 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
+			if (!hasItems)
+			{
+				return;
+			}
+
 			if (_owner is FrameworkElement fe)
 			{
 				fe.InvalidateMeasure();
