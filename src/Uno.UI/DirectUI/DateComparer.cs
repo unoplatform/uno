@@ -103,7 +103,14 @@ namespace DirectUI
 
 			global::System.Diagnostics.Debug.Assert(m_spCalendar is { });
 
-			long delta = lhs.ToUniversalTime().Ticks - rhs.ToUniversalTime().Ticks;
+			// Uno specific: In WinUI, wf::DateTime is a struct that only has "UniversalTime" field.
+			// So, we need to call ToUniversalTime here.
+			// Failure to do so can cause issues when comparing dates like 2024/01/01 10:00:00 PM UTC+2 and 2024/01/02 12:00:00 AM UTC
+			// Both dates should be equal, but getUnit will return 1 and 2 indicating that the first date is smaller.
+			lhs = lhs.ToUniversalTime();
+			rhs = rhs.ToUniversalTime();
+
+			long delta = lhs.Ticks - rhs.Ticks;
 			if (delta < 0)
 			{
 				delta = -delta;
