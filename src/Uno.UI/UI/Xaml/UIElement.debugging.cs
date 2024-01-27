@@ -270,7 +270,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (item == null || 0 >= --depth) break;
 
-				node = item;
+				node = item as View;
 			}
 
 			return Uno.UI.Extensions.ViewExtensions.TreeGraph(node);

@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -76,9 +77,11 @@ static partial class ViewExtensions
 		return new StringBuilder()
 			.Append(x.GetType().Name)
 			.Append((x as FrameworkElement)?.Name is string { Length: > 0 } xname ? $"#{xname}" : string.Empty)
+			.Append($"@{x.GetHashCode():X8}")
 			.Append($" // {string.Join(", ", GetDetails())}")
 			.ToString();
 
+#pragma warning disable CS8321 // Local function is declared but never used
 		bool TryGetDpValue<T>(object owner, string property, [NotNullWhen(true)] out T? value)
 		{
 			if (owner is DependencyObject @do &&
@@ -91,26 +94,34 @@ static partial class ViewExtensions
 			value = default;
 			return false;
 		}
-		//string FormatCornerRadius(CornerRadius x)
-		//{
-		//	// format: uniform, [left,top,right,bottom]
-		//	if (x.TopLeft == x.TopRight && x.TopRight == x.BottomRight && x.BottomRight == x.BottomLeft) return $"{x.TopLeft}";
-		//	return $"[{x.TopLeft},{x.TopRight},{x.BottomRight},{x.BottomLeft}]";
-		//}
-		//string FormatThickness(Thickness x)
-		//{
-		//	// format: uniform, [same-left-right,same-top-bottom], [left,top,right,bottom]
-		//	if (x.Left == x.Top && x.Top == x.Right && x.Right == x.Bottom) return $"{x.Left}";
-		//	if (x.Left == x.Right && x.Top == x.Bottom) return $"[{x.Left},{x.Top}]";
-		//	return $"[{x.Left},{x.Top},{x.Right},{x.Bottom}]";
-		//}
+		string FormatCornerRadius(CornerRadius x)
+		{
+			// format: uniform, [left,top,right,bottom]
+			if (x.TopLeft == x.TopRight && x.TopRight == x.BottomRight && x.BottomRight == x.BottomLeft) return $"{x.TopLeft}";
+			return $"[{x.TopLeft},{x.TopRight},{x.BottomRight},{x.BottomLeft}]";
+		}
+		string FormatThickness(Thickness x)
+		{
+			// format: uniform, [same-left-right,same-top-bottom], [left,top,right,bottom]
+			if (x.Left == x.Top && x.Top == x.Right && x.Right == x.Bottom) return $"{x.Left}";
+			if (x.Left == x.Right && x.Top == x.Bottom) return $"[{x.Left},{x.Top}]";
+			return $"[{x.Left},{x.Top},{x.Right},{x.Bottom}]";
+		}
+#pragma warning restore CS8321 // Local function is declared but never used
 		IEnumerable<string> GetDetails()
 		{
-			//if (x is UIElement uie)
-			//{
-			//	yield return $"TemplatedParent={uie.GetTemplatedParent()?.GetType().Name}";
-			//	yield return $"DataContext={uie.DataContext?.GetType().Name}";
-			//}
+			if (x is FrameworkElement { IsTemplateRoot: true })
+			{
+				yield return $"IsTemplateRoot=true";
+			}
+			if (x is UIElement uie)
+			{
+				if (uie.GetTemplatedParent() is { } tp)
+				{
+					yield return $"TemplatedParent={tp.GetType().Name}@{tp.GetHashCode():X8}";
+				}
+				//yield return $"DataContext={uie.DataContext?.GetType().Name}";
+			}
 			//if (x is ContentControl cc)
 			//{
 			//	yield return $"C={cc.Content?.GetType().Name}";
@@ -124,30 +135,34 @@ static partial class ViewExtensions
 			//	yield return $"CTS={cp.ContentTemplateSelector?.GetHashCode().ToString("X8", CultureInfo.InvariantCulture)}";
 			//}
 
-			if (x is FrameworkElement fe)
+			//if (x is FrameworkElement fe)
+			//{
+			//	yield return $"Actual={fe.ActualWidth}x{fe.ActualHeight}";
+			//	yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
+			//}
+			if (x is ListViewItem lvi)
 			{
-				yield return $"Actual={fe.ActualWidth}x{fe.ActualHeight}";
-				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
+				yield return $"Index={ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi)}";
 			}
 
-			if (x is ToggleButton tb)
-			{
-				yield return $"IsChecked={tb.IsChecked}";
-			}
-			if (x is SplitView sv)
-			{
-				yield return $"IsPaneOpen={sv.IsPaneOpen}";
-			}
-			if (x is TextBlock text)
-			{
-				yield return $"{text.Text}";
-			}
+			//if (x is ToggleButton tb)
+			//{
+			//	yield return $"IsChecked={tb.IsChecked}";
+			//}
+			//if (x is SplitView sv)
+			//{
+			//	yield return $"IsPaneOpen={sv.IsPaneOpen}";
+			//}
+			//if (x is TextBlock text)
+			//{
+			//	yield return $"Text={text.Text}";
+			//}
 			//if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
 			//if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
 			//if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
 
-			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
-			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
+			//if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
+			//if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
 		}
 	}
 

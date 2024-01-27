@@ -71,7 +71,7 @@ namespace Uno.UI.Samples.Controls
 				(SampleContentControl as ContentControl).Content as FrameworkElement ??
 				((SampleContentControl as ContentControl).TemplatedRoot as ContentPresenter).Content as FrameworkElement ??
 				SampleContentControl;
-			var sut = sampleRoot?.FindFirstDescendant<FrameworkElement>(x => x.Name == "SUT") ?? sampleRoot;
+			var sut = sampleRoot?.FindFirstDescendant<FrameworkElement>(x => x.Name == "SUT" || x.Tag as string == "SUT") ?? sampleRoot;
 
 			var tree = sut?.TreeGraph();
 			var thisTree = this.TreeGraph();
