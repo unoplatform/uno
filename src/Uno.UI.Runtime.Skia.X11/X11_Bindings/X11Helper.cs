@@ -42,6 +42,7 @@ public static class X11Helper
 	public const string WM_DELETE_WINDOW = "WM_DELETE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
+	public const string _NET_WM_ICON = "_NET_WM_ICON";
 	public const string TIMESTAMP = "TIMESTAMP";
 	public const string MULTIPLE = "MULTIPLE";
 	public const string TARGETS = "TARGETS";
@@ -49,6 +50,7 @@ public static class X11Helper
 	public const string PRIMARY = "PRIMARY";
 	public const string XA_INTEGER = "INTEGER";
 	public const string XA_ATOM = "ATOM";
+	public const string XA_CARDINAL = "CARDINAL";
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
 

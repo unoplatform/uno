@@ -9,8 +9,8 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal class X11WindowWrapper : NativeWindowWrapperBase
 {
-	private X11XamlRootHost _host;
-	private XamlRoot _xamlRoot;
+	private readonly X11XamlRootHost _host;
+	private readonly XamlRoot _xamlRoot;
 	private static ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
 
 	internal X11WindowWrapper(Window window, XamlRoot xamlRoot)

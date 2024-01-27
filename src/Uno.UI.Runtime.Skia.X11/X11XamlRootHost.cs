@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -9,6 +11,8 @@ using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
 using Avalonia.X11;
 using Avalonia.X11.Glx;
+using SkiaSharp;
+using Uno.Disposables;
 using Uno.UI;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -61,6 +65,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		Closed.ContinueWith(_ => _applicationView.PropertyChanged -= OnApplicationViewPropertyChanged);
 
 		Initialize();
+		UpdateWindowPropertiesFromPackage();
 	}
 
 	public Task Closed { get; }
@@ -70,6 +75,86 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// might need to explicitly set _NET_WM_NAME as well?
 		using var _ = X11Helper.XLock(X11Window.Display);
 		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
+	}
+
+	private void UpdateWindowPropertiesFromPackage()
+	{
+		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
+		{
+			var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
+			var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
+
+			if (File.Exists(iconPath))
+			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
+				}
+
+				SetIconFromFile(iconPath);
+			}
+			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+				}
+
+				SetIconFromFile(scaledPath);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
+				}
+			}
+		}
+
+		if (string.IsNullOrEmpty(_applicationView.Title))
+		{
+			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
+
+		// TODO: Currently not working
+		unsafe void SetIconFromFile(string iconPath)
+		{
+			using var fileStream = File.OpenRead(iconPath);
+			using var codec = SKCodec.Create(fileStream);
+			using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+			var bitmapBuffer = bitmap.GetPixels();
+			var result = codec.GetPixels(bitmap.Info, bitmapBuffer);
+			if (result != SKCodecResult.Success)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Unable to decode icon file [{iconPath}] specified in the Package.appxmanifest file.");
+				}
+				return;
+			}
+
+			var pixels = bitmap.Pixels;
+			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
+			using var _1 = Disposable.Create(() => Marshal.FreeHGlobal(data));
+			var span = new Span<IntPtr>(data.ToPointer(), pixels.Length + 2)
+			{
+				[0] = bitmap.Width,
+				[1] = bitmap.Height
+			};
+
+			new Span<IntPtr>(bitmap.GetPixels().ToPointer(), pixels.Length).CopyTo(span[2..]);
+
+			var display = _x11Window!.Value.Display;
+			using var _2 = X11Helper.XLock(display);
+
+			var wmIconAtom = X11Helper.GetAtom(display, X11Helper._NET_WM_ICON);
+			var cardinalAtom = X11Helper.GetAtom(display, X11Helper.XA_CARDINAL);
+			var res = XLib.XChangeProperty(display, _x11Window!.Value.Window, wmIconAtom, cardinalAtom, 32, PropertyMode.Replace,
+				data, pixels.Length);
+
+			var _3 = XLib.XFlush(display);
+			var _4 = XLib.XSync(display, false); // wait until the pixels are actually copied
+		}
 	}
 
 	public static X11XamlRootHost? GetXamlRootHostFromX11Window(X11Window window)
