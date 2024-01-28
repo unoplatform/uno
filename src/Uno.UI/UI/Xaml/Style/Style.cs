@@ -84,7 +84,30 @@ namespace Microsoft.UI.Xaml
 				{
 					for (var i = 0; i < _flattenedSetters.Length; i++)
 					{
-						_flattenedSetters[i].ApplyTo(o);
+						try
+						{
+							_flattenedSetters[i].ApplyTo(o);
+						}
+						catch (Exception)
+						{
+							if (this.Log().IsEnabled(LogLevel.Warning))
+							{
+								this.Log().LogWarning($"An exception occurred while applying style setter.");
+							}
+
+							// Ideally, this should be an empty catch, keeping parity equivalent to WinUI's IGNOREHR in https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
+							// However, Later when default style is applied (using ImplicitStyle precedence), we don't observe that value in WinUI.
+							// As a workaround, we force-set the current value to Local precedence.
+							// Note: This workaround can be removed as long as When_Unbound_FullFlyout is passing.
+							// Maybe we are applying default styles later than we should?
+							// For now, this is very uncommon code path for already bad code that throws.
+							if (_flattenedSetters[i] is Setter { Property: { } dp })
+							{
+								var value = o.GetValue(dp);
+								this.Log().LogWarning($"Force-setting local value to '{value}'.");
+								o.SetValue(dp, value);
+							}
+						}
 					}
 				}
 
