@@ -338,6 +338,9 @@
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
 
+    - name: Packages
+      href: uno-packages.md
+
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
