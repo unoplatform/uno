@@ -35,6 +35,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.InvalidateRender()
 		{
+			// Could this somehow race? i.e. Closed is completed right after the check?
+			if (_host is X11XamlRootHost x11Host && x11Host.Closed.IsCompleted)
+			{
+				return;
+			}
+
 			using var _1 = X11Helper.XLock(_x11Window.Display);
 
 			this.Log().Trace($"Render {_renderCount++}");
