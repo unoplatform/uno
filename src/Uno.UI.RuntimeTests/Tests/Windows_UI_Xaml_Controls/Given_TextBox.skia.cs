@@ -790,7 +790,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -824,7 +825,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -900,7 +902,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -938,7 +941,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -977,7 +981,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "This should be a lot longer than the width of the TextBox."
+				Text = "This should be a lot longer than the width of the TextBox.",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1166,7 +1171,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1224,7 +1230,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			var handled = false;
@@ -1274,7 +1281,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1332,7 +1340,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -1384,7 +1393,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 150,
-				Text = "Hello world"
+				Text = "Hello world",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -2019,7 +2029,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 250,
 				AcceptsReturn = true,
-				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing"
+				Text = "Lorem\ripsum dolor sit\ramet consectetur\radipiscing",
+				FontFamily = "Arial" // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
