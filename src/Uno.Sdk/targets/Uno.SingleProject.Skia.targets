@@ -1,3 +1,18 @@
 <Project>
-
+	<PropertyGroup>
+		<SkiaHeadBaseDirectory Condition="$(SkiaHeadBaseDirectory) == ''">$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::Combine('Platforms', 'Skia'))))</SkiaHeadBaseDirectory>
+		<ApplicationManifest Condition="$(ApplicationManifest) == ''">$(SkiaHeadBaseDirectory)app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="$(SkiaHeadBaseDirectory)Package.appxmanifest"
+			Condition="Exists('$(SkiaHeadBaseDirectory)Package.appxmanifest')"
+			Condition="@(EmbeddedResource)"
+			IsDefaultItem="true"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+		<Manifest Include="$(SkiaHeadBaseDirectory)$(ApplicationManifest)"
+			Condition="Exists('$(SkiaHeadBaseDirectory)$(ApplicationManifest)')"
+			Condition="@(EmbeddedResource)"
+			IsDefaultItem="true"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+	</ItemGroup>
 </Project>

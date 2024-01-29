@@ -51,12 +51,11 @@
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(PkgUno_Resizetizer)'!='' ">
-		<UnoImage Include="Assets\**\*.svg" Exclude="@(UnoImage)">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</UnoImage>
-	</ItemGroup>
+	<!-- Single Project -->
+	<Import Project="Uno.DefaultItems.SingleProject.targets" Condition="$(SingleProject) == 'true'" />
+
+	<!-- Resizetizer -->
+	<Import Project="Uno.DefaultItems.Resizetizer.targets" Condition="$(PkgUno_Resizetizer) != ''" />
 
 	<!-- Cross Targetting -->
 	<Import Project="Uno.CrossTargeting.targets" />

@@ -1,6 +1,18 @@
 <Project>
+	<!--
+		We aren't currently fully supporting macos because of
+		https://github.com/xamarin/xamarin-macios/issues/16401
+		https://github.com/dotnet/sdk/issues/21877
+	-->
 	<PropertyGroup>
 		<IsMacOS>true</IsMacOS>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.14</SupportedOSPlatformVersion>
+
+		<EnableDefaultMacOSItems>false</EnableDefaultMacOSItems>
+		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
+		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
+		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
 	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOSMac.targets" Condition="$(SingleProject) == 'true'" />
 </Project>

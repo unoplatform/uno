@@ -1,6 +1,11 @@
 <Project>
 	<PropertyGroup>
 		<IsBrowser>true</IsBrowser>
+
+		<EnableDefaultWasmItems>false</EnableDefaultWasmItems>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
+		<WasmProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
+		<WasmProjectFolder Condition=" !Exists('$(WasmProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Wasm'))</WasmProjectFolder>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
