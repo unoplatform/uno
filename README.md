@@ -102,7 +102,7 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [Discord](https://platform.uno/discord) - "Uno-Platform" channel where our engineering and community are.
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [Discord](https://platform.uno/uno-discord) - "Uno-Platform" channel where our engineering and community are.
 
 # Contributing
 
