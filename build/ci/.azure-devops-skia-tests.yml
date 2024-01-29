@@ -373,7 +373,7 @@ jobs:
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
-    SamplesAppArtifactName: skia-x11-samples-app-UWP
+    SamplesAppArtifactName: skia-x11-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
