@@ -9,6 +9,11 @@
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' AND ('$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe') ">true</EnableMsixTooling>
 
 		<EnableWindowsTargeting Condition=" $(EnableWindowsTargeting) == '' ">true</EnableWindowsTargeting>
+
+		<EnableDefaultWindowsItems>false</EnableDefaultWindowsItems>
+		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
+		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
+		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">

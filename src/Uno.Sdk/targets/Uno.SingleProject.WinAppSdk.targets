@@ -1,3 +1,23 @@
 <Project>
+	<PropertyGroup>
+		<UseWinUI>true</UseWinUI>
+		<OutputType>WinExe</OutputType>
+		<!-- Bundles the WinAppSDK binaries -->
+		<WindowsAppSDKSelfContained Condition="$(WindowsAppSDKSelfContained) == ''">true</WindowsAppSDKSelfContained>
+	</PropertyGroup>
 
+	<PropertyGroup>
+		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
+		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
+		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
+		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
+		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
+	</ItemGroup>
 </Project>
