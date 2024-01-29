@@ -720,7 +720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Pointer_Clicks_Inside_ScrollViewer()
 		{
 			var ts = new ToggleSwitch();
-			var tb = new TextBox();
+			var tb = new TextBox { Width = 300 };
 			var SUT = new ScrollViewer
 			{
 				Content = new StackPanel
@@ -738,7 +738,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			mouse.Press(ts.GetAbsoluteBounds().GetCenter() - new Point(SUT.ActualWidth / 2 - 10, 0));
+			mouse.Press(ts.FindFirstChild<TextBlock>().GetAbsoluteBounds().GetCenter());
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
