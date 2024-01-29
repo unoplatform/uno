@@ -2,20 +2,20 @@
 using System.Web;
 using Windows.Foundation;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{

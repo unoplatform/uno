@@ -7,7 +7,7 @@ using System;
 using Windows.Foundation;
 using DirectUI;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 //  Abstract:
 //      VariableSizeWrapGrid definition.

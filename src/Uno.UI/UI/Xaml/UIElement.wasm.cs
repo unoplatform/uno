@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -14,13 +15,12 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 using Color = Windows.UI.Color;
-using System.Globalization;
 using Microsoft.UI.Input;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -326,23 +326,21 @@ namespace Windows.UI.Xaml
 
 		internal static UIElement GetElementFromHandle(IntPtr handle)
 		{
-			var gcHandle = GCHandle.FromIntPtr(handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (handle != IntPtr.Zero)
 			{
-				return element;
+				var gcHandle = GCHandle.FromIntPtr(handle);
+
+				if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+				{
+					return element;
+				}
 			}
-
-			return null;
-		}
-
-		internal static UIElement GetElementFromHandle(int handle)
-		{
-			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
-
-			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			else
 			{
-				return element;
+				if (typeof(UIElement).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					typeof(UIElement).Log().Debug($"Unable to get element handle for uninitialized handle");
+				}
 			}
 
 			return null;
@@ -637,7 +635,7 @@ namespace Windows.UI.Xaml
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
 		{
-			if (int.TryParse(payload, out int xamlHandle))
+			if (int.TryParse(payload, CultureInfo.InvariantCulture, out int xamlHandle))
 			{
 				if (GetElementFromHandle(xamlHandle) is UIElement element)
 				{

@@ -2,8 +2,8 @@
 
 using Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 
@@ -15,5 +15,5 @@ internal class TextBoxViewExtension : OverlayTextBoxViewExtension
 	}
 
 	public override bool IsOverlayLayerInitialized(XamlRoot xamlRoot) =>
-		GtkCoreWindowExtension.GetOverlayLayer(xamlRoot) is not null;
+		GtkNativeElementHostingExtension.GetOverlayLayer(xamlRoot) is not null;
 }

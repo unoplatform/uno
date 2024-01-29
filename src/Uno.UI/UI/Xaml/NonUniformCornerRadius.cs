@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Windows.Foundation;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 /// <summary>
 /// Represents a potentially non-uniform CornerRadius.

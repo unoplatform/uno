@@ -10,13 +10,15 @@ using Windows.System;
 using Windows.System.Threading;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Core;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -25,7 +27,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {
 	public partial class ColorSpectrum : Control
 	{
@@ -196,8 +198,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			ColorPickerHsvChannel incrementChannel = ColorPickerHsvChannel.Hue;
 

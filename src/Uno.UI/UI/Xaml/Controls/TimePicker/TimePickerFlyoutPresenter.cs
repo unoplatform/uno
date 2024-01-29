@@ -1,16 +1,10 @@
-﻿#if !IS_UNIT_TESTS
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#nullable enable
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Represents the visual container for the TimePickerFlyout.
+/// </summary>
+public partial class TimePickerFlyoutPresenter : FlyoutPresenter
 {
-	public partial class TimePickerFlyoutPresenter : FlyoutPresenter
-	{
-		public TimePickerFlyoutPresenter()
-		{
-			DefaultStyleKey = typeof(TimePickerFlyoutPresenter);
-		}
-	}
 }
-#endif

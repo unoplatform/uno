@@ -6,8 +6,8 @@ using System.Text;
 using System.Windows.Input;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Uno;
 using Uno.Extensions;
 using Uno.UI.Samples.UITests.Helpers;
@@ -43,7 +43,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private string _selectedItem = "3";
 		public ObservableCollection<string> InitialyEmptyStringList { get; } = new ObservableCollection<string>();
 
-		public ListViewViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public ListViewViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			VariableLengthItemsLong = CreateVariableLengthItemsLong().ToArray();
 			VariableLengthItemsLongLazy = CreateVariableLengthItemsLong();

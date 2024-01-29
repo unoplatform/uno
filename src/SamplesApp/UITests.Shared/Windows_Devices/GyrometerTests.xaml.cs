@@ -4,8 +4,9 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Sensors;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -31,7 +32,7 @@ namespace UITests.Shared.Windows_Devices
 		private double _angularVelocityZ;
 		private string _timestamp;
 
-		public GyrometerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public GyrometerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			_gyrometer = Gyrometer.GetDefault();
 			if (_gyrometer != null)
@@ -128,7 +129,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Gyrometer_ReadingChanged(Gyrometer sender, GyrometerReadingChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				AngularVelocityX = args.Reading.AngularVelocityX;
 				AngularVelocityY = args.Reading.AngularVelocityY;

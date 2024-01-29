@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -10,7 +10,7 @@ using Microsoft.UI.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input
 {
 	[ContractVersion(typeof(UniversalApiContract), 65536U)]
 	[Flags]

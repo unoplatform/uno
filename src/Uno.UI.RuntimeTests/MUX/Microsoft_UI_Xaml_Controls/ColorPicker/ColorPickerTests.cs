@@ -2,15 +2,15 @@
 using System.Numerics;
 using System.Threading;
 using Common;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
-using TextBox = Windows.UI.Xaml.Controls.TextBox;
+using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[Uno.UI.RuntimeTests.RunsOnUIThread]

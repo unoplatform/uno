@@ -7,9 +7,9 @@ using System.Text;
 using Uno.Buffers;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal class ResourceBindingCollection
 {

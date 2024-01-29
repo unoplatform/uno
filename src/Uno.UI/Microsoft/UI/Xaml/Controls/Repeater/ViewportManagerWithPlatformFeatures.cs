@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ItemsRepeater.h, ItemsRepeater.cpp, commit 1cf9f1c
 
@@ -8,13 +8,13 @@ using System;
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.Disposables;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal partial class ViewportManagerWithPlatformFeatures : ViewportManager
 	{
@@ -418,10 +418,10 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					m_renderingToken = Disposable.Create(() =>
 					{
-						Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
+						Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
 						m_renderingToken = null;
 					});
-					Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
 				}
 			}
 		}

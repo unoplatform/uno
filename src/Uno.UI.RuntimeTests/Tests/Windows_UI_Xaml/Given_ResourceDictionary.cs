@@ -1,8 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 
 
@@ -31,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async void When_ResourceDictionary_DP()
+		public async Task When_ResourceDictionary_DP()
 		{
 			var SUT = new When_ResourceDictionary_DP();
 			await UITestHelper.Load(SUT);
@@ -88,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				// set active theme and update the copy res-dict
 				ResourceDictionary.SetActiveTheme(Dark);
-				copy.UpdateThemeBindings(Windows.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+				copy.UpdateThemeBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
 
 				// retrieve the "TestBrush" again from each res-dict
 				var materialized3 = (SolidColorBrush)source[TestBrush];

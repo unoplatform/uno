@@ -16,7 +16,7 @@ internal class GtkApplicationViewExtension : IApplicationViewExtension
 
 	public void ExitFullScreenMode()
 	{
-		if (GtkHost.Current?.MainWindow is not { } window)
+		if (GtkHost.Current?.InitialWindow is not { } window)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -30,7 +30,7 @@ internal class GtkApplicationViewExtension : IApplicationViewExtension
 
 	public bool TryEnterFullScreenMode()
 	{
-		if (GtkHost.Current?.MainWindow is not { } window)
+		if (GtkHost.Current?.InitialWindow is not { } window)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -45,7 +45,7 @@ internal class GtkApplicationViewExtension : IApplicationViewExtension
 
 	public bool TryResizeView(Size size)
 	{
-		if (GtkHost.Current?.MainWindow is not { } window)
+		if (GtkHost.Current?.InitialWindow is not { } window)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{

@@ -8,11 +8,11 @@ using System.Text;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using V = System.Collections.Generic.Dictionary<string, object>;
 
@@ -148,7 +148,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private void ValidateTranslatedTapTest(object sender, RoutedEventArgs e)
 		{
 			var args = new EventSequenceValidator(_translatedTapResult);
-			var isInertialManip = _translatedTapResult.Any(arg => arg.evt == ManipulationInertiaStartingEvent);
+			var isInertialManip = _translatedTapResult.Any(arg => ReferenceEquals(arg.evt, ManipulationInertiaStartingEvent));
 			var result = false;
 			switch (PointerType)
 			{
@@ -233,7 +233,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			// Pointer pressed and released are handled by the ButtonBase
 
 			var args = new EventSequenceValidator(_translatedClickResult);
-			var isInertialManip = _translatedClickResult.Any(arg => arg.evt == ManipulationInertiaStartingEvent);
+			var isInertialManip = _translatedClickResult.Any(arg => ReferenceEquals(arg.evt, ManipulationInertiaStartingEvent));
 			var result = false;
 			switch (PointerType)
 			{
@@ -327,7 +327,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generates it and we want to validate it
-#if NETFX_CORE
+#if WINAPPSDK
 						&& args.One(PointerReleasedEvent)
 						&& args.Click()
 #else
@@ -353,7 +353,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.One(PointerEnteredEvent)
 						&& args.MaybeSome(PointerMovedEvent)
-#if NETFX_CORE
+#if WINAPPSDK
 						&& args.One(PointerReleasedEvent)
 						&& args.Click()
 #elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
@@ -483,7 +483,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					+ $"| frame={point.FrameId}"
 					+ $"| type={e.Pointer.PointerDeviceType} "
 					+ $"| position={point.Position} "
+#if !WINAPPSDK
 					+ $"| rawPosition={point.RawPosition} "
+#endif
 					+ $"| inContact={point.IsInContact} "
 					+ $"| inRange={point.Properties.IsInRange} "
 					+ $"| primary={point.Properties.IsPrimary}"
@@ -579,7 +581,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			/// </summary>
 			public bool MaybeOne(RoutedEvent evt)
 			{
-				if (_index < _args.Count && _args[_index].evt == evt)
+				if (_index < _args.Count && ReferenceEquals(_args[_index].evt, evt))
 				{
 					++_index;
 				}

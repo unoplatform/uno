@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Specifies the display state of an element.

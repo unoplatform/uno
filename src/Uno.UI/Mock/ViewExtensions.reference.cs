@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 using System.Text;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Collections;
 
 namespace Uno.UI

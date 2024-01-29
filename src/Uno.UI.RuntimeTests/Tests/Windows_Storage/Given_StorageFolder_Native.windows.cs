@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP
+﻿#if WINAPPSDK
 #nullable enable
 
 using System;

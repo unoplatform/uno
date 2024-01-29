@@ -35,6 +35,7 @@ Starting with Uno 5.0, the only way for source generation is using Roslyn source
 In some cases, the generated code may use patterns that cause C# to raise warnings, and in order to silence those warnings, the generated code can contain a set of custom C# pragma.
 
 The MSBuild `XamlGeneratorAnalyzerSuppressions` item is used to configure suppressions, with the format `CATEGORY-CODE_TEXT`:
+
 - If `CATEGORY` is `csharp`, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files
 - If `CATEGORY` is anything else, `SuppressMessageAttribute` attributes will be applied on generated classes.
 
@@ -42,7 +43,7 @@ To define a pragma, in your csproj add the following:
 
 ```xml
 <ItemGroup>
-	<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+ <XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
 </ItemGroup>
 ```
 

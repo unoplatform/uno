@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Controls;
+﻿namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify the password reveal behavior of a PasswordBox.

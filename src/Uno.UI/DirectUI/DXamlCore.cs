@@ -11,7 +11,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace DirectUI
 {
@@ -42,6 +42,16 @@ namespace DirectUI
 			physicalRect.Width = dipRect.Width * scale;
 			physicalRect.Height = dipRect.Height * scale;
 			return physicalRect;
+		}
+
+		public Microsoft.UI.Xaml.Window? GetAssociatedWindow(Microsoft.UI.Xaml.UIElement element)
+		{
+			if (element == null)
+			{
+				throw new ArgumentNullException(nameof(element));
+			}
+
+			return element.XamlRoot?.HostWindow;
 		}
 
 		// TODO Uno: Application-wide bar is not supported yet.

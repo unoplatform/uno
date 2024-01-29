@@ -1,18 +1,21 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.Foundation;
 using Uno.UI;
-using Windows.UI.Xaml.Data;
-using Windows.System;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
+using Windows.System;
 
 #if __ANDROID__
 using Android.Views;
@@ -24,16 +27,16 @@ using _View = UIKit.UIView;
 using AppKit;
 using _View = AppKit.NSView;
 #else
-using _View = Windows.UI.Xaml.FrameworkElement;
+using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ComboBox : Selector
 	{
@@ -46,7 +49,16 @@ namespace Windows.UI.Xaml.Controls
 		private Border? _popupBorder;
 		private ContentPresenter? _contentPresenter;
 		private TextBlock? _placeholderTextBlock;
+		private TextBox? _editableText;
 		private ContentPresenter? _headerContentPresenter;
+
+		private DateTime m_timeSinceLastCharacterReceived;
+		private bool m_isInSearchingMode;
+		private string m_searchString = "";
+		private bool m_searchResultIndexSet;
+		private int m_searchResultIndex = -1;
+		private int m_indexForcedToUnselectedVisual = -1;
+		private int m_indexForcedToSelectedVisual = -1;
 
 		/// <summary>
 		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
@@ -60,7 +72,17 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ComboBox);
 		}
 
-		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
+		internal bool IsSearchResultIndexSet()
+		{
+			return m_searchResultIndexSet;
+		}
+
+		internal int GetSearchResultIndex()
+		{
+			return m_searchResultIndex;
+		}
+
+		public global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
 
 		protected override DependencyObject GetContainerForItemOverride() => new ComboBoxItem { IsGeneratedContainer = true };
 
@@ -79,6 +101,7 @@ namespace Windows.UI.Xaml.Controls
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
+			_editableText = this.GetTemplateChild("EditableText") as TextBox;
 
 			if (_popup is Popup popup)
 			{
@@ -144,7 +167,12 @@ namespace Windows.UI.Xaml.Controls
 				_popup.Opened += OnPopupOpened;
 			}
 
-			Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
+			if (XamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+			}
+
+			XamlRoot.Changed += OnXamlRootChanged;
 		}
 
 		private protected override void OnUnloaded()
@@ -157,7 +185,12 @@ namespace Windows.UI.Xaml.Controls
 				_popup.Opened -= OnPopupOpened;
 			}
 
-			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
+			if (XamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+			}
+
+			XamlRoot.Changed -= OnXamlRootChanged;
 		}
 
 		protected virtual void OnDropDownClosed(object e)
@@ -170,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			DropDownOpened?.Invoke(this, null!);
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}
@@ -293,6 +326,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
+		}
+
+		public static DependencyProperty IsTextSearchEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextSearchEnabled),
+				typeof(bool),
+				typeof(ComboBox),
+				new FrameworkPropertyMetadata(true));
+
+		public bool IsTextSearchEnabled
+		{
+			get => (bool)this.GetValue(IsTextSearchEnabledProperty);
+			set => this.SetValue(IsTextSearchEnabledProperty, value);
 		}
 
 		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
@@ -533,6 +579,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				args.Handled = TryHandleKeyDown(args, null);
 			}
+
+			// Temporary as Uno doesn't yet implement CharacterReceived event.
+			UnoOnCharacterReceived(args);
 		}
 
 		internal bool TryHandleKeyDown(KeyRoutedEventArgs args, ComboBoxItem? focusedContainer)
@@ -547,7 +596,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (IsDropDownOpen)
 				{
-					if (SelectedIndex > -1)
+					// If we got a space while in searching mode, we shouldn't close the dropdown.
+					if (!(args.Key == VirtualKey.Space && IsInSearchingMode()) && SelectedIndex > -1)
 					{
 						IsDropDownOpen = false;
 						return true;
@@ -623,6 +673,485 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 			return false;
+		}
+
+		// Uno TODO: This should override OnCharacterReceived when it's implemented.
+		private void UnoOnCharacterReceived(KeyRoutedEventArgs args)
+		{
+			if (IsTextSearchEnabled)
+			{
+				if (args.UnicodeKey is not { } keyCode)
+				{
+					return;
+				}
+
+				ProcessSearch(keyCode);
+			}
+		}
+
+		private bool HasSearchStringTimedOut()
+		{
+			const int timeOutInMilliseconds = 1000;
+
+			var now = DateTime.UtcNow;
+
+			return (now - m_timeSinceLastCharacterReceived).TotalMilliseconds > timeOutInMilliseconds;
+		}
+
+		private void ProcessSearch(char keyCode)
+		{
+			int foundIndex = -1;
+
+			if (IsEditable)
+			{
+				if (_editableText is null)
+				{
+					return;
+				}
+
+				string textBoxText = _editableText.Text;
+
+				// Don't process search if new text is equal to previous searched text.
+				if (textBoxText.Equals(m_searchString))
+				{
+					return;
+				}
+
+				if (textBoxText.Length != 0)
+				{
+					foundIndex = SearchItemSourceIndex(keyCode, false /*startSearchFromCurrentIndex*/, false /*searchExactMatch*/);
+				}
+				else
+				{
+					m_searchString = "";
+				}
+
+				SetSearchResultIndex(foundIndex);
+
+				var selectionChangedTrigger = SelectionChangedTrigger;
+
+				if (selectionChangedTrigger == ComboBoxSelectionChangedTrigger.Always && foundIndex > -1)
+				{
+					SelectedIndex = foundIndex;
+				}
+
+				bool isDropDownOpen = IsDropDownOpen;
+
+				// Override selected visuals only if popup is open
+				if (isDropDownOpen)
+				{
+					OverrideSelectedIndexForVisualStates(foundIndex);
+				}
+
+				if (foundIndex >= 0)
+				{
+					if (isDropDownOpen)
+					{
+						// UNO TODO:
+						//ScrollIntoView(
+						//	foundIndex,
+						//	false /*isGroupItemIndex*/,
+						//	false /*isHeader*/,
+						//	false /*isFooter*/,
+						//	false /*isFromPublicAPI*/,
+						//	true  /*ensureContainerRealized*/,
+						//	false /*animateIfBringIntoView*/,
+						//	ScrollIntoViewAlignment.Default);
+					}
+				}
+			}
+			else
+			{
+				foundIndex = SearchItemSourceIndex(keyCode, true /*startSearchFromCurrentIndex*/, false /*searchExactMatch*/);
+				if (foundIndex >= 0)
+				{
+					SelectedIndex = foundIndex;
+				}
+			}
+		}
+
+		private int SearchItemSourceIndex(char keyCode, bool startSearchFromCurrentIndex, bool searchExactMatch)
+		{
+			// Get all of the ComboBox items; we'll try to convert them to strings later.
+			var itemsVector = Items as IList<object>;
+			int itemCount = itemsVector?.Count ?? 0;
+
+			int searchIndex = -1;
+
+			bool newStringCreated = false;
+
+			// Editable ComboBox uses the text in the TextBox to search for values, Non-Editable ComboBox appends received characters to the current search string
+			if (IsEditable)
+			{
+				if (_editableText is not null)
+				{
+					m_searchString = _editableText.Text;
+				}
+			}
+			else
+			{
+				newStringCreated = AppendCharToSearchString(keyCode);
+			}
+
+			if (startSearchFromCurrentIndex)
+			{
+				int currentSelectedIndex = SelectedIndex;
+				searchIndex = currentSelectedIndex;
+
+				if (newStringCreated)
+				{
+					// If we've created a new search string, then we shouldn't search at i, but rather at i+1.
+					if (searchIndex < itemCount - 1)
+					{
+						// We have at least one more item after this one to start searching at.
+						searchIndex++;
+					}
+					else
+					{
+						// We are at the end of the list. Loop the search.
+						searchIndex = 0;
+					}
+				}
+				else
+				{
+					// If we just appended to the search string, then ensure that the search index is valid (>= 0)
+					searchIndex = (searchIndex >= 0) ? searchIndex : 0;
+				}
+			}
+			else
+			{
+				searchIndex = 0;
+			}
+
+			global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
+
+			object item;
+			string strItem;
+			int foundIndex = -1;
+
+			//EnsurePropertyPathListener();
+
+			// Iterate through all of the items. Try to get a string out of the item; if it matches, break. If not, keep looking.
+			// TODO: [https://task.ms/6720676] Use CoreDispatcher/BuildTree to slice TypeAhead search logic
+			for (int i = 0; i < itemCount; i++)
+			{
+				item = itemsVector![searchIndex];
+
+				if (item is not null)
+				{
+					strItem = TryGetStringValue(item/*, _propertyPathListener*/);
+
+					if (strItem is null)
+					{
+						// We couldn't get the string representing this item; it doesn't make sense to continue searching because
+						// we're probably not going to be able to get strings from more items in this collection.
+						break;
+					}
+
+					// Trim leading spaces on the item before comparing.
+					strItem = strItem.TrimStart(' ');
+
+					// On Editable mode Backspace should only search for exact matches. This prevents auto-complete from stopping backspacing.
+					if (searchExactMatch || IsEditable && keyCode == (char)8)
+					{
+						if (AreStringsEqual(strItem, m_searchString))
+						{
+							foundIndex = searchIndex;
+
+							break;
+						}
+					}
+					else if (StartsWithIgnoreLinguisticSemantics(strItem, m_searchString))
+					{
+						foundIndex = searchIndex;
+
+						// If matching item was found auto-complete word.
+						if (IsEditable)
+						{
+							UpdateEditableTextBox(item, true /*selectText*/, false /*selectAll*/);
+						}
+
+						break;
+					}
+				}
+
+				searchIndex++;
+
+				// If we've gotten to the end of the list, loop the search.
+				if (searchIndex == itemCount)
+				{
+					searchIndex = 0;
+				}
+			}
+
+			return foundIndex;
+		}
+
+		private bool IsInSearchingMode()
+		{
+			if (HasSearchStringTimedOut())
+			{
+				m_isInSearchingMode = false;
+			}
+			return IsTextSearchEnabled && m_isInSearchingMode;
+		}
+
+		private string TryGetStringValue(object @object/*, PropertyPathListener pathListener*/)
+		{
+			object spBoxedValue;
+			object spObject = @object;
+
+			if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
+			{
+				//if (pathListener != null)
+				//{
+				//	// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
+				//	// This is our boxedValue, which we effectively ToString below.
+				//	pathListener.SetSource(spObject));
+				//	spBoxedValue = pathListener.GetValue();
+				//}
+				//else
+				{
+					// No PathListener specified, but this object implements
+					// ICustomPropertyProvider. Call .ToString on the object:
+					return spObjectPropertyAccessor.GetStringRepresentation();
+				}
+			}
+			else
+			{
+				// Try to get the string value by unboxing the object itself.
+				spBoxedValue = spObject;
+			}
+
+			if (spBoxedValue != null)
+			{
+				if (spBoxedValue is IStringable spStringable)
+				{
+					// We've set a BoxedValue. If it is castable to a string, try to ToString it.
+					return spStringable.ToString();
+				}
+				else
+				{
+					return spBoxedValue.ToString()!;
+					// We've set a BoxedValue, but we can't directly ToString it. Try to get a string out of it.
+				}
+			}
+			else
+			{
+				// If we haven't found a BoxedObject and it's not Stringable, try one last time to get a string out.
+				return @object.ToString()!;
+			}
+		}
+
+		private bool AppendCharToSearchString(char ch)
+		{
+			var createdNewString = false;
+			if (HasSearchStringTimedOut())
+			{
+				ResetSearchString();
+				createdNewString = true;
+			}
+
+			m_timeSinceLastCharacterReceived = DateTime.UtcNow;
+
+			const int maxNumCharacters = 256;
+
+			// Only append a new character if we're less than the max string length.
+			if (m_searchString.Length <= maxNumCharacters)
+			{
+				m_searchString += ch;
+			}
+			m_isInSearchingMode = true;
+
+			return createdNewString;
+		}
+
+		private void ResetSearchString()
+		{
+			m_searchString = "";
+		}
+
+		private void SetSearchResultIndex(int index)
+		{
+			m_searchResultIndexSet = true;
+			m_searchResultIndex = index;
+		}
+
+		private void OverrideSelectedIndexForVisualStates(int selectedIndexOverride)
+		{
+			//Debug.Assert(!CanSelectMultiple);
+
+			ClearSelectedIndexOverrideForVisualStates();
+
+			// We only need to override the selected visual if the specified item is not
+			// also the selected item.
+			int selectedIndex = SelectedIndex;
+			if (selectedIndexOverride != selectedIndex)
+			{
+				DependencyObject container;
+				ComboBoxItem? comboBoxItem;
+
+				// Force the specified override  item to appear selected.
+				if (selectedIndexOverride != -1)
+				{
+					container = ContainerFromIndex(selectedIndexOverride);
+					comboBoxItem = container as ComboBoxItem;
+					if (comboBoxItem is not null)
+					{
+						comboBoxItem.OverrideSelectedVisualState(true /* appearSelected */);
+					}
+				}
+
+				m_indexForcedToSelectedVisual = selectedIndexOverride;
+
+				if (selectedIndex != -1)
+				{
+					// Force the actual selected item to appear unselected.
+					container = ContainerFromIndex(selectedIndex);
+					comboBoxItem = container as ComboBoxItem;
+					if (comboBoxItem is not null)
+					{
+						comboBoxItem.OverrideSelectedVisualState(false /* appearSelected */);
+					}
+
+					m_indexForcedToUnselectedVisual = selectedIndex;
+				}
+			}
+		}
+
+		private void ClearSelectedIndexOverrideForVisualStates()
+		{
+			//Debug.Assert(!CanSelectMultiple);
+
+			DependencyObject container;
+			ComboBoxItem? comboBoxItem;
+
+			if (m_indexForcedToUnselectedVisual != -1)
+			{
+				container = ContainerFromIndex(m_indexForcedToUnselectedVisual);
+				comboBoxItem = container as ComboBoxItem;
+				if (comboBoxItem is not null)
+				{
+					comboBoxItem.ClearSelectedVisualState();
+				}
+
+				m_indexForcedToUnselectedVisual = -1;
+			}
+
+			if (m_indexForcedToSelectedVisual != -1)
+			{
+				container = ContainerFromIndex(m_indexForcedToSelectedVisual);
+				comboBoxItem = container as ComboBoxItem;
+				if (comboBoxItem is not null)
+				{
+					comboBoxItem.ClearSelectedVisualState();
+				}
+
+				m_indexForcedToSelectedVisual = -1;
+			}
+		}
+
+		//private void EnsurePropertyPathListener()
+		//{
+		//	if (_propertyPathListener is null)
+		//	{
+		//		string strDisplayMemberPath = DisplayMemberPath;
+
+		//		if (!string.IsNullOrEmpty(strDisplayMemberPath))
+		//		{
+		//			// If we don't have one cached, create the property path listener
+		//			// If strDisplayMemberPath contains something (a path), then use that to inform our PropertyPathListener.
+		//			var propertyPathParser = new PropertyPathParser();
+
+		//			propertyPathParser.SetSource(strDisplayMemberPath, false);
+
+		//			_propertyPathListener = new PropertyPathListener(null, propertyPathParser, , false /*fListenToChanges*/, false /*fUseWeakReferenceForSource*/);
+		//		}
+		//	}
+		//}
+
+		private bool AreStringsEqual(string str1, string str2)
+		{
+			return str1.Equals(str2, StringComparison.OrdinalIgnoreCase);
+		}
+
+		private bool StartsWithIgnoreLinguisticSemantics(string strSource, string strPrefix)
+		{
+			// The goal of this method is to return true if strPrefix is found at the start of strSource regardless of linguistic semantics.
+			// For example, if we've got strSource = "wAsHINGton" and strPrefix = "Wa", we should return true from this method.
+			// FindNLSStringEx will return a 0-based index into the source string if it's successful; it will return < 0 if it failed to find a match.
+			// We pass in a number of flags to achieve this behavior:
+			// FIND_STARTSWITH : Test to find out if the strPrefix value is the first value in the Source string.
+			// NORM_IGNORECASE: Ignore case (broader than LINGUISTIC_IGNORECASE)
+			// NORM_IGNOREKANATYPE: Do not differentiate between hiragana and katakana characters (corresponding chars compare as equal)
+			// NORM_IGNOREWIDTH: Used in Japanese and Chinese scripts, this flag ignores the difference between half- and full-width characters
+			// NORM_LINGUISTIC_CASING: Use linguistic rules for casing instead of file system rules
+			// LINGUISTIC_IGNOREDIACRITIC: Ignore diacritics (Dotless Turkish i maps to dotted i).
+			return strSource.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		private void UpdateEditableTextBox(object item, bool selectText, bool selectAll)
+		{
+			if (item is null)
+			{
+				return;
+			}
+
+			string strItem;
+
+			//EnsurePropertyPathListener();
+			strItem = TryGetStringValue(item/*, m_spPropertyPathListener.Get()*/);
+
+			UpdateEditableTextBox(strItem, selectText, selectAll);
+		}
+
+		private void UpdateEditableTextBox(string str, bool selectText, bool selectAll)
+		{
+			if (str is null)
+			{
+				return;
+			}
+
+			if (_editableText is not null)
+			{
+				string textBoxText = _editableText.Text;
+
+				if (AreStringsEqual(str, textBoxText))
+				{
+					return;
+				}
+
+				m_searchString = str;
+
+				if (selectAll)
+				{
+					// Selects all the text.
+					_editableText.Text = m_searchString;
+
+					if (selectText)
+					{
+						_editableText.SelectAll();
+					}
+				}
+				else
+				{
+					// Selects auto-completed text for quick replacement.
+					int selectionStart = _editableText.SelectionStart;
+					_editableText.Text = m_searchString;
+
+					if (selectText)
+					{
+						_editableText.Select(selectionStart, str.Length - selectionStart);
+					}
+				}
+			}
+		}
+
+		internal InputDeviceType GetInputDeviceTypeUsedToOpen()
+		{
+			//return m_inputDeviceTypeUsedToOpen;
+			// UNO TODO:
+			return InputDeviceType.None;
 		}
 
 		private bool TryMoveKeyboardFocus(int offset, ComboBoxItem? focusedContainer)
@@ -943,7 +1472,8 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__
 				// Check whether the status bar is translucent
 				// If so, we may need to compensate for the origin location
-				var isTranslucent = Window.Current.IsStatusBarTranslucent();
+				// TODO: Adjust for multiwindow #13827
+				var isTranslucent = Window.CurrentSafe!.IsStatusBarTranslucent();
 				var allowUnderStatusBar = FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar;
 				if (isTranslucent && allowUnderStatusBar)
 				{

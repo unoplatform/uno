@@ -1,16 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-
 using DateTime = System.DateTimeOffset;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 
 	public partial class DatePickerFlyout : PickerFlyoutBase
@@ -26,6 +25,7 @@ namespace Windows.UI.Xaml.Controls
 			base.UsePickerFlyoutTheme = true;
 
 			Opening += OnOpening;
+			Opened += OnOpened;
 
 			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime?>(this, () => default);
 		}
@@ -71,11 +71,19 @@ namespace Windows.UI.Xaml.Controls
 		protected override Control CreatePresenter()
 		{
 			DatePickerFlyoutPresenter spFlyoutPresenter;
-			spFlyoutPresenter = new DatePickerFlyoutPresenter()
+			spFlyoutPresenter = new DatePickerFlyoutPresenter();
+			if (DatePickerFlyoutPresenterStyle is not null)
 			{
-				Style = DatePickerFlyoutPresenterStyle
-			};
+				spFlyoutPresenter.Style = DatePickerFlyoutPresenterStyle;
+			}
 			_tpPresenter = spFlyoutPresenter;
+
+			// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
+			if (_tpPresenter is FrameworkElement presenter)
+			{
+				presenter.Opacity = 0.0;
+			}
+
 			return _tpPresenter as Control;
 		}
 
@@ -89,7 +97,6 @@ namespace Windows.UI.Xaml.Controls
 		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
 		{
 			_tpTarget = target;
-			base.ShowAtCore(target, null);
 			return _asyncOperationManager.Start(target);
 		}
 
@@ -132,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnOpened()
+		private void OnOpened(object sender, object args)
 		{
 			//wrl.ComPtr<UIElement> spFlyoutPresenterAsUIE;
 			Control spFlyoutPresenterAsControl = _tpPresenter as Control;
@@ -162,6 +169,12 @@ namespace Windows.UI.Xaml.Controls
 				//spFlyoutBase = GetComposableBase();
 				spFlyoutBase = this;
 				spFlyoutBase.PlaceFlyoutForDateTimePicker(point);
+
+				// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
+				if (_tpPresenter is FrameworkElement presenter)
+				{
+					presenter.Opacity = 1.0;
+				}
 			}
 
 			//Hook up OnAcceptClick and OnDismissClick event handlers:

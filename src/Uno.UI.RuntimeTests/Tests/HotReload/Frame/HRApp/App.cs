@@ -1,7 +1,7 @@
-using Uno.UI;
+﻿using Uno.UI;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -14,15 +14,15 @@ namespace UnoApp50
 
 		protected internal override void OnLaunched(LaunchActivatedEventArgs args)
 		{
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
+#if (NET6_0_OR_GREATER && WINDOWS && !HAS_UNO) || HAS_UNO_WINUI
 			_window = new Window();
 #else
-			_window = Windows.UI.Xaml.Window.Current;
+			_window = Microsoft.UI.Xaml.Window.Current;
 #endif
-			_window.EnableHotReload();
+			_window!.EnableHotReload();
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
-			if (_window.Content is not Frame rootFrame)
+			if (_window!.Content is not Frame rootFrame)
 			{
 				// Create a Frame to act as the navigation context and navigate to the first page
 				rootFrame = new Frame();
@@ -42,7 +42,7 @@ namespace UnoApp50
 			}
 
 			// Ensure the current window is active
-			_window.Activate();
+			_window!.Activate();
 		}
 
 		/// <summary>

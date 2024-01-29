@@ -4,8 +4,8 @@ using System.Text;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 		private void ToggleButton_Click(object sender, RoutedEventArgs e)
 		{
 			// Set theme for window root.
-			if (global::Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			if (XamlRoot?.Content is FrameworkElement root)
 			{
 				switch (root.ActualTheme)
 				{
@@ -110,7 +110,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 				}
 			}
 #elif __WASM__
-			var serializedTheme = Uno.Foundation.WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
+			var serializedTheme = Uno.Foundation.WebAssemblyRuntime.InvokeJS("Microsoft.UI.Xaml.Application.getDefaultSystemTheme()");
 
 			if (serializedTheme != null)
 			{
@@ -125,7 +125,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 			}
 			//OS has no preference or API not implemented, use light as default
 			return ApplicationTheme.Light;
-#elif WINDOWS_UWP
+#elif WINAPPSDK
 			var settings = new UISettings();
 			var systemBackground = settings.GetColorValue(UIColorType.Background);
 			var black = Color.FromArgb(255, 0, 0, 0);

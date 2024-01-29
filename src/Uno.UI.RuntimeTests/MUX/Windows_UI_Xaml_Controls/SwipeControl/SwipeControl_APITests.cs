@@ -7,10 +7,10 @@
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Threading;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Common;
 
 #if USING_TAEF
@@ -22,13 +22,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
-using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
-using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
-using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
+using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
+using SwipeItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItem;
+using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
+using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIconSource;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[Uno.UI.RuntimeTests.RunsOnUIThread]
@@ -43,8 +43,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				swipeItem = new SwipeItem();
 				swipeItem.Text = "Selfie";
 				swipeItem.IconSource = new FontIconSource() { Glyph = "&#xE114;" };
-				swipeItem.Background = new SolidColorBrush(Windows.UI.Colors.Red);
-				swipeItem.Foreground = new SolidColorBrush(Windows.UI.Colors.Blue);
+				swipeItem.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				swipeItem.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
 			});
 
 			IdleSynchronizer.Wait();
@@ -54,8 +54,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(swipeItem.Text, "Selfie");
 				Verify.IsTrue(swipeItem.IconSource is FontIconSource);
 				Verify.AreEqual((swipeItem.IconSource as FontIconSource).Glyph, "&#xE114;");
-				Verify.AreEqual(((SolidColorBrush)swipeItem.Background).Color, Windows.UI.Colors.Red);
-				Verify.AreEqual(((SolidColorBrush)swipeItem.Foreground).Color, Windows.UI.Colors.Blue);
+				Verify.AreEqual(((SolidColorBrush)swipeItem.Background).Color, Microsoft.UI.Colors.Red);
+				Verify.AreEqual(((SolidColorBrush)swipeItem.Foreground).Color, Microsoft.UI.Colors.Blue);
 			});
 		}
 
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			RunOnUIThread.Execute(() =>
 			{
-				var rootGrid = (Windows.UI.Xaml.Controls.Grid)XamlReader.LoadWithInitialTemplateValidation(
+				var rootGrid = (Microsoft.UI.Xaml.Controls.Grid)XamlReader.LoadWithInitialTemplateValidation(
 				"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'> " +
 					"<GridView> " +
 						"<GridViewItem> " +

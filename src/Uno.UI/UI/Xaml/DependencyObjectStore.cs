@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Uno.UI.DataBinding;
@@ -12,7 +12,7 @@ using System.Threading;
 using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using System.Collections;
 using System.Globalization;
@@ -24,7 +24,7 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Defines a delegate to be called when a property value changes.
@@ -1857,7 +1857,7 @@ namespace Windows.UI.Xaml
 					// Uno TODO: What should we do here for non-UIElements (if anything is needed)?
 					if (actualInstanceAlias is UIElement elt)
 					{
-						Windows.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
+						Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(elt).Compositor.InvalidateRender();
 					}
 				}
 

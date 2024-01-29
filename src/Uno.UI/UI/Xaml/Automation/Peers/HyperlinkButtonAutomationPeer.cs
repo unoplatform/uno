@@ -1,8 +1,8 @@
-#pragma warning disable 108 // new keyword hiding
+﻿#pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IInvokeProvider
 	{

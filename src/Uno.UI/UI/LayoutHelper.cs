@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using static System.Double;
 
 #if __IOS__ || __MACOS__
@@ -38,36 +38,50 @@ namespace Uno.UI
 		[Pure]
 		internal static (Size min, Size max) GetMinMax(this IFrameworkElement e)
 		{
-			var size = new Size(e.Width, e.Height);
-			var minSize = e.GetMinSize();
-			var maxSize = e.GetMaxSize();
+			double minWidth;
+			double maxWidth;
+			double minHeight;
+			double maxHeight;
 
-			minSize = size
-				.NumberOrDefault(new Size(0, 0))
-				.AtMost(maxSize)
-				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
+			var isDefaultHeight = double.IsNaN(e.Height);
+			var isDefaultWidth = double.IsNaN(e.Width);
 
-			maxSize = size
-				.NumberOrDefault(new Size(PositiveInfinity, PositiveInfinity))
-				.AtMost(maxSize)
-				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
+			maxHeight = e.MaxHeight;
+			minHeight = e.MinHeight;
+			var userValue = e.Height;
+
+			var height = isDefaultHeight ? double.PositiveInfinity : userValue;
+			maxHeight = Math.Max(Math.Min(height, maxHeight), minHeight);
+
+			height = (isDefaultHeight ? 0 : userValue);
+			minHeight = Math.Max(Math.Min(maxHeight, height), minHeight);
+
+			maxWidth = e.MaxWidth;
+			minWidth = e.MinWidth;
+			userValue = e.Width;
+
+			var width = (isDefaultWidth ? double.PositiveInfinity : userValue);
+			maxWidth = Math.Max(Math.Min(width, maxWidth), minWidth);
+
+			width = (isDefaultWidth ? 0 : userValue);
+			minWidth = Math.Max(Math.Min(maxWidth, width), minWidth);
 
 			if (e is UIElement uiElement && uiElement.GetUseLayoutRounding())
 			{
 				// It is possible for max vars to be INF so be don't want to round those.
 
-				minSize.Width = uiElement.LayoutRound(minSize.Width);
+				minWidth = uiElement.LayoutRound(minWidth);
 
-				if (double.IsFinite(maxSize.Width))
-					maxSize.Width = uiElement.LayoutRound(maxSize.Width);
+				if (double.IsFinite(maxWidth))
+					maxWidth = uiElement.LayoutRound(maxWidth);
 
-				minSize.Height = uiElement.LayoutRound(minSize.Height);
+				minHeight = uiElement.LayoutRound(minHeight);
 
-				if (double.IsFinite(maxSize.Height))
-					maxSize.Height = uiElement.LayoutRound(maxSize.Height);
+				if (double.IsFinite(maxHeight))
+					maxHeight = uiElement.LayoutRound(maxHeight);
 			}
 
-			return (minSize, maxSize);
+			return (new Size(minWidth, minHeight), new Size(maxWidth, maxHeight));
 		}
 
 		/// <summary>
@@ -446,7 +460,7 @@ namespace Uno.UI
 		[Pure]
 		internal static Rect GetAbsoluteBoundsRect(this FrameworkElement element)
 		{
-			var root = Window.Current.Content as FrameworkElement;
+			var root = (element.XamlRoot?.VisualTree.RootElement ?? Window.CurrentSafe?.RootElement) as FrameworkElement;
 			return GetBoundsRectRelativeTo(element, root);
 		}
 	}

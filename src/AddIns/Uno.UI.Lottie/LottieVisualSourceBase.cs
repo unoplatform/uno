@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -19,7 +19,7 @@ using Uno.Helpers;
 using System.Diagnostics;
 
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO_WINUI
@@ -73,7 +73,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if HAS_UNO_WINUI
 		[NotImplemented]
-		public IAnimatedVisual TryCreateAnimatedVisual(Windows.UI.Composition.Compositor compositor, out object diagnostics)
+		public IAnimatedVisual TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor compositor, out object diagnostics)
 		{
 			throw new NotImplementedException();
 		}

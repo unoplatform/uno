@@ -179,17 +179,23 @@
       items:
       - name: Uno Platform in WPF
         href: guides/uno-islands.md
-      - name: Natie Views with Mobile
+      - name: Native Views with Mobile
         href: native-views.md
       - name: Native Views with Skia 
         href: xref:Uno.Skia.Embedding.Native
 
     - name: Upgrading
       items:
+      - name: Upgrading NuGet Packages
+        href: xref:Uno.Development.UpgradeUnoNuget
       - name: Upgrading from previous releases
         href: migrating-from-previous-releases.md
       - name: Upgrading to Uno 5.0
-        href: migrating-to-uno-5.md
+        href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading to Uno.Sdk
+        href: xref:Uno.Development.MigratingToUnoSdk
+      - name: Upgrading from .NET 7 to .NET 8
+        href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
         href: migrating-from-xamarin-to-net6.md
       - name: Upgrading to WinUI 3.0
@@ -198,15 +204,8 @@
     - name: Migrating
       items:
       - name: Xamarin Forms
-        items:
-          - name: Migrating Custom Controls
-            href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
-          - name: Migrating Custom-Drawn Controls
-            href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
-          - name: Migrating Animations
-            href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
-          - name: Migrating Renderers
-            href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
+        topicHref: xref:Uno.XamarinFormsMigration.Overview
+        href: guides/xf-migration/toc.yml
       - name: WPF
         items:
           - name: Migrating WPF Apps to Web
@@ -268,6 +267,10 @@
             href: uno-development/Internal-DependencyProperty-Generator.md
           - name: x:Bind in Uno Platform
             href: uno-development/Uno-UI-xBind-architecture.md
+          - name: ListViewBase
+            href: uno-development/listviewbase-internals.md
+          - name: ThemeResource
+            href: uno-development/themeresource-internals.md
       - name: Building Uno.UI
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI
@@ -307,7 +310,7 @@
       - name: Guidelines for issue triage
         href: contributing/guidelines/issue-triage.md
       - name: Guidelines for implementing a new WinUI/WinRT feature
-        href: contributing/guidelines/implementing-a-new winui-winrt-feature.md
+        href: contributing/guidelines/implementing-a-new-winui-winrt-feature.md
       - name: Adding documentation
         href: uno-development/doc-on-docs.md
       - name: DocFX
@@ -324,8 +327,8 @@
             href: uno-development/Internal-WeakEventHelper.md
           - name: Debugging Uno.UI Java code with Android studio
             href: uno-development/Uno-UI-Debugging-Android-Studio.md
-          - name: Converting the source tree to WinUI
-            href: uno-development/winui-conversion.md
+          - name: Converting the source tree to UWP
+            href: uno-development/uwp-conversion.md
           - name: Troubleshooting Memory Issues
             href: uno-development/troubleshooting-memory-issues.md
           - name: Troubleshooting Source Generation
@@ -380,9 +383,11 @@
             - name: ComboBox
               href: controls/ComboBox.md
             - name: CommandBar
-              href: controls/commandbar.md
+              href: controls/CommandBar.md
             - name: ContentDialog
               href: controls/ContentDialog.md
+            - name: DatePicker
+              href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
             - name: ListView and GridView
@@ -409,6 +414,8 @@
               href: controls/ToggleSwitch.md
             - name: WebView (WebView2)
               href: controls/WebView.md
+            - name: Window
+              href: features/windows-ui-xaml-window.md
             - name: Fluent icon font
               href: uno-fluent-assets.md
             - name: Lottie animations
@@ -481,7 +488,7 @@
       - name: Accelerometer
         href: features/accelerometer.md
       - name: Android TV
-        href: features/android-tv.md  
+        href: features/android-tv.md
       - name: App Actions
         href: features/windows-ui-startscreen.md
       - name: App Close Handler
@@ -580,7 +587,7 @@
   href: external/uno.toolkit.ui/doc/toc.yml
   
 - name: Figma
-  topicHref: external/figma-docs/overview/getting-started-uno-figma.md
+  #topicHref: xref:Uno.Figma.GetStarted
   href: external/figma-docs/toc.yml
 
 - name: Tooling

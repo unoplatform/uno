@@ -12,7 +12,7 @@ Before reading it, you should first read the documentation of [ListViewBase aime
 
 `ListViewBase` is the base class of `ListView` and `GridView`. The remainder of the article will refer to 'ListView', the more commonly used of the two derived controls, for ease of reading, but most of the information is applicable to `GridView` as well since a large part of the implementation is shared.
 
-`ListView` is a specialized type of [`ItemsControl`](https://docs.microsoft.com/uwp/api/windows.ui.xaml.controls.itemscontrol) designed for showing large numbers of items. `ListView` is by default _virtualized_, meaning that it only materializes view containers for those items which are visible or about to be visible within the scroll viewport. When items disappear from view, their containers are _recycled_ and reused for newly appearing views. Correctly-functioning virtualization is the key to good scroll performance.
+`ListView` is a specialized type of [`ItemsControl`](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.itemscontrol) designed for showing large numbers of items. `ListView` is by default *virtualized*, meaning that it only materializes view containers for those items which are visible or about to be visible within the scroll viewport. When items disappear from view, their containers are *recycled* and reused for newly appearing views. Correctly-functioning virtualization is the key to good scroll performance.
 
 Other important features of `ListView`:
 
@@ -33,12 +33,12 @@ The managed ListView implementation is newer and lacks some features that are su
 
 `ListView` can scroll either vertically or horizontally, and the layouting logic is written as much as possible to reuse the same code for both orientations. Accordingly, certain terms are used throughout the code to avoid using orientation-specific terms like 'width' and 'height'. (These usages are probably unique to the Uno codebase.) The main terms are the following:
 
- * Extent: Size along the dimension parallel to scrolling. The equivalent of 'Height' if scrolling is vertical, or 'Width' otherwise.
- * Breadth: Size along the dimension orthogonal to scrolling. The equivalent of 'Width' if scrolling is vertical, or 'Height' otherwise.
- * Start: The edge of the element nearest to the top of the content panel, ie 'Top' or 'Left' depending whether scrolling is vertical or horizontal.
- * End: The edge of the element nearest to the bottom of the content panel, ie 'Bottom' or 'Right' depending whether scrolling is vertical or horizontal.
- * Leading: When scrolling, the edge that is coming into view. ie, if the scrolling forward in a vertical orientation, the bottom edge.
- * Trailing: When scrolling, the edge that is disappearing from view.
+* Extent: Size along the dimension parallel to scrolling. The equivalent of 'Height' if scrolling is vertical, or 'Width' otherwise.
+* Breadth: Size along the dimension orthogonal to scrolling. The equivalent of 'Width' if scrolling is vertical, or 'Height' otherwise.
+* Start: The edge of the element nearest to the top of the content panel, ie 'Top' or 'Left' depending whether scrolling is vertical or horizontal.
+* End: The edge of the element nearest to the bottom of the content panel, ie 'Bottom' or 'Right' depending whether scrolling is vertical or horizontal.
+* Leading: When scrolling, the edge that is coming into view. ie, if the scrolling forward in a vertical orientation, the bottom edge.
+* Trailing: When scrolling, the edge that is disappearing from view.
 
 ### Android and iOS ListViews in detail
 
@@ -46,7 +46,7 @@ Although the Android and iOS implementations are quite different, they share som
 
 Architecturally, the Android and iOS implementations share a similar high-level 'division of labor', reflecting the underlying platform API. Aside from the view type itself, both implementations implement a class, `VirtualizingPanelLayout`, whose responsibility is to determine what items are visible, what size they should take, and how they should be positioned within the list. Additionally, both Android and iOS implement an 'adapter' or 'source' class with the responsibility of materializing item containers for a given list index and binding them to the appropriate item from the items source.
 
-(As an aside, this division of labor has no equivalent in `ListView`, but a somewhat similar approach is taken by WinUI's newer [`ItemsRepeater`](https://docs.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.itemsrepeater) control, also available in Uno.)
+(As an aside, this division of labor has no equivalent in `ListView`, but a somewhat similar approach is taken by WinUI's newer [`ItemsRepeater`](https://learn.microsoft.com/windows/winui/api/microsoft.ui.xaml.controls.itemsrepeater) control, also available in Uno.)
 
 [This diagram](../controls/ListViewBase.md#difference-in-the-visual-tree) shows how the `NativeListViewBase` view is incorporated into the visual tree, and the resulting difference from UWP. The key differences are:
 
@@ -70,10 +70,10 @@ The 'life cycle' of view creation and positioning of the `ListView` largely take
     1. Android framework calls `VirtualizingPanelLayout.OnMeasure()`, which calls `VirtualizingPanelLayout.UpdateLayout()`.
     1. `UpdateLayout()` => `ScrapLayout()`. `ScrapLayout()` performs a 'lightweight detach operation' on all views and adds them to the `Recycler's` 'scrap'. This allows the size and position of views to be recalculated if need be, but is very cheap (compared to removing and re-adding views in the normal Android way, which kills performance if done frequently).
     1. `UpdateLayout()` => `FillLayout()`. `FillLayout()` takes a direction, either Forward or Backward, and fills in unmaterialized items in that direction. The next item to add is always determined *relative to existing materialized items*, and it is added *if there is available viewport space in the designated direction*. To take a concrete example: the viewport is 320 pixels high; individual item containers are 80 pixels high; the list is currently scrolled to an offset of 100 pixels. Item containers for positions 0, 1, 2, 3 are currently materialized; their bounds in y are (-100, -20), (-20, 60), (60, 140), and (140, 220), relative to the viewport. `FillLayout()` would determine that the next unmaterialized item is 4. It would also see that `220 < 320`, and therefore space is available to add the item - this occurs within `TryCreateLine()`. Item 4 will be added at (220, 300). The list would then try to add item 5 at (300, 380), and succeed because `300 < 320`. It will then try to add item 6, and fail, because `380 > 320` (that is, item 6 is still entirely out of the viewport), at which point the loop terminates.
-    2. `UpdateLayout()` => `UnfillLayout()`. `UnfillLayout()` takes a direction, and trims materialized item containers that are not visible starting from the **opposite** direction. So to take the example above: `UnfillLayout()` would start with item 0, and see that it lies entirely outside the viewport (`-20 < 0`), so it would dematerialize it, returning it to the recycler to be reused. It would then consider item 1, see that it is partially visible (`60 > 0`), and terminate at that point. `UnfillLayout()` is particularly important during scrolling (see below).
+    1. `UpdateLayout()` => `UnfillLayout()`. `UnfillLayout()` takes a direction, and trims materialized item containers that are not visible starting from the **opposite** direction. So to take the example above: `UnfillLayout()` would start with item 0, and see that it lies entirely outside the viewport (`-20 < 0`), so it would dematerialize it, returning it to the recycler to be reused. It would then consider item 1, see that it is partially visible (`60 > 0`), and terminate at that point. `UnfillLayout()` is particularly important during scrolling (see below).
 2. List is arranged.
     1. Android framework => `VirtualizingPanelLayout.OnLayoutChildren()` => `VirtualizingPanelLayout.UpdateLayout()`.
-    2. `UpdateLayout()` does _not_ call `ScrapLayout()` from within the arrange pass. This is because item dimensions should not have changed since the measure. It does however call `FillLayout()` and `UnfillLayout()` again. This is because the dimensions available to the list itself _might_ be different from the ones it was measured with.
+    2. `UpdateLayout()` does *not* call `ScrapLayout()` from within the arrange pass. This is because item dimensions should not have changed since the measure. It does however call `FillLayout()` and `UnfillLayout()` again. This is because the dimensions available to the list itself *might* be different from the ones it was measured with.
 3. List is scrolled.
     1. Android framework => `VirtualizingPanelLayout.ScrollVerticallyBy()` (or `ScrollHorizontallyBy()`).
     1. `ScrollVerticallyBy()` => `ScrollBy()`.
@@ -101,7 +101,6 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
     3. Update the positions of subsequent items in the cached layout info, since if an item is larger/smaller than initially estimated, the offsets of the remaining items must be modified accordingly.
 7. Whenever the list is scrolled, `UICollectionView` will call `LayoutAttributesForElementsInRect()` with the new visible viewport. Steps 5. and 6. will occur for each newly-visible item.
 
-
 ### Android and iOS internal classes
 
 | Uno class | Android base class | iOS base class | Description |
@@ -118,8 +117,8 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
 
 On WASM, Skia, and macOS, `ListViewBase` uses a shared implementation that's dubbed 'managed' because it doesn't rely upon an external native control. The visible implementation details of the managed `ListView` are much closer to UWP. Specifically:
 
- - the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
- - the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
+* the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
+* the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
 
 The internals of the managed `ListView` were originally implemented independently of the UWP source, but have been gradually converging on the internals of UWP.
 

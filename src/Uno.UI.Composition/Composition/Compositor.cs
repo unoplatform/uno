@@ -1,15 +1,20 @@
-#nullable enable
+﻿#nullable enable
 
+using System;
 using System.Numerics;
 using Windows.UI;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
-		internal static Compositor? Current;
+		private static Lazy<Compositor> _sharedCompositorLazy = new(() => new());
 
-		public Compositor() { Current = this; }
+		public Compositor()
+		{
+		}
+
+		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this);

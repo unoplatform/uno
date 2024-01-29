@@ -1,4 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System;
 using DisplayInfo = Windows.Graphics.Display.DisplayInformation;
@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_Graphics_Display
 		private bool _dpiChangesOn = false;
 		private bool _orientationChangesOn = false;
 
-		public DisplayInformationTestsViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public DisplayInformationTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			RefreshDisplayInformation();
 			Disposables.Add(Disposable.Create(() =>

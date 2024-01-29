@@ -6,11 +6,11 @@ uid: Uno.Development.UseUnoControlsInXamarinForms
 
 All Uno Platform UI controls inherit directly from native views, which makes for an easy way for its controls to be integrated in Xamarin.iOS and Xamarin.Android projects.
 
-Xamarin.Forms provides a way to use native-inheriting views to be added as part of its visual tree (both [in code-behind](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/platform/native-views/code) and [in XAML](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/platform/native-views/xaml)).
+Xamarin.Forms provides a way to use native-inheriting views to be added as part of its visual tree (both [in code-behind](https://learn.microsoft.com/xamarin/xamarin-forms/platform/native-views/code) and [in XAML](https://learn.microsoft.com/xamarin/xamarin-forms/platform/native-views/xaml)).
 
 ## Initialize
 
-In code-behind, before adding Uno.UI controls to the visual tree or in your Xamarin.Forms App constructor you should initialize Uno UI. 
+In code-behind, before adding Uno.UI controls to the visual tree or in your Xamarin.Forms App constructor you should initialize Uno UI.
 
 Example for Android:
 
@@ -34,7 +34,7 @@ public App()
 
 ## Add Uno views in Xamarin.Forms XAML
 
-Xamarin.Forms supports adding views directly in XAML documents, using platform specific namespaces: 
+Xamarin.Forms supports adding views directly in XAML documents, using platform specific namespaces:
 
 ```xml
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
@@ -111,4 +111,3 @@ namespace UnoFormsApp
     }
 }
 ```
-

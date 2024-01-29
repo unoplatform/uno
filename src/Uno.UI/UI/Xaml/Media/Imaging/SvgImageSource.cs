@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.IO;
 using System.Threading;
@@ -9,7 +9,7 @@ using Windows.UI.Core;
 using Uno;
 using Uno.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 /// <summary>
 /// Provides a source object for properties that use a Scalable Vector Graphics (SVG) source. You can define a SvgImageSource

@@ -14,19 +14,20 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
+using Private.Infrastructure;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 using Uno.UI.Controls.Legacy;
 #endif
 
@@ -67,7 +68,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				Y2 = 100
 			}),
 
-			Factory.New(() => new Windows.UI.Xaml.Shapes.Path
+			Factory.New(() => new Microsoft.UI.Xaml.Shapes.Path
 			{
 				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
 				Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
@@ -266,7 +267,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 #if __SKIA__
 			// Workaround to avoid issue #7829
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, GenerateScreenshots);
+			await UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, GenerateScreenshots);
 #else
 			await GenerateScreenshots();
 #endif
@@ -337,7 +338,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			var tests = testNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
-			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => _ = RunTestsCore(tests));
 
 			return id;
 
@@ -548,7 +549,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Text = text?.ToString() ?? "N/A",
 					VerticalAlignment = VerticalAlignment.Center,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
-					TextAlignment = Windows.UI.Xaml.TextAlignment.Center
+					TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center
 				};
 		}
 
@@ -608,7 +609,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 	// This is a clone of src\Uno.UI\UI\Xaml\Controls\Grid\GridExtensions.cs,
 	// but we prefer to not multi target this to not conflict with other efforts for fluent declaration
 	internal static class GridExtensions

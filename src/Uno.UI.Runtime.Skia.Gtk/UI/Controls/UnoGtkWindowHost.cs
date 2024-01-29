@@ -10,8 +10,9 @@ using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
-using WinUI = Windows.UI.Xaml;
-using WinUIWindow = Windows.UI.Xaml.Window;
+using Windows.Foundation;
+using WinUI = Microsoft.UI.Xaml;
+using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
@@ -34,10 +35,10 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_winUIWindow = winUIWindow;
 		_displayInformation = DisplayInformation.GetForCurrentView();
 
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 		RegisterForBackgroundColor();
 	}
+
+	public Window GtkWindow => _gtkWindow;
 
 	public UnoEventBox EventBox => _eventBox;
 
@@ -72,7 +73,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 			if (!_firstSizeAllocated)
 			{
 				_firstSizeAllocated = true;
-				_winUIWindow.OnNativeWindowCreated();
 			}
 		};
 
@@ -82,13 +82,15 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_gtkWindow.Add(_eventBox);
 	}
 
+	internal event EventHandler<Size>? SizeChanged;
+
 	private void OnDpiChanged(DisplayInformation sender, object args) =>
 		UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
 
 	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
 	{
 		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
-		_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
+		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
 	}
 
 	private void RegisterForBackgroundColor()
@@ -114,24 +116,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
 			}
 		}
-	}
-
-	private void OnCoreWindowContentRootSet(object? sender, object e)
-	{
-		var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-		if (xamlRoot is null)
-		{
-			throw new InvalidOperationException("XamlRoot was not properly initialized");
-		}
-
-		contentRoot!.SetHost(this);
-		GtkManager.XamlRootMap.Register(xamlRoot, this);
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
 	void IXamlRootHost.InvalidateRender()

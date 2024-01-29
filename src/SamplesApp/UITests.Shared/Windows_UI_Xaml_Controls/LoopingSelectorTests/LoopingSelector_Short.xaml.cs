@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
 using Uno.UI;
 
@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 		{
 			this.InitializeComponent();
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			var loopingSelector = new LoopingSelector
 			{
 				ItemHeight = 30,

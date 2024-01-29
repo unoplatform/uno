@@ -1,5 +1,5 @@
-﻿using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Uno.Extensions;
 
 #if HAS_UNO_WINUI
@@ -102,7 +102,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			=> (object sender, RoutedEventArgs args) =>
 			{
 				_eventLog.Add(new RoutedEventLogEntry(evt, eventName, sender, args, Validate(sender, evt, args)));
-				if (sender == TouchTarget && (handleEvent?.IsChecked ?? false))
+				if (ReferenceEquals(sender, TouchTarget) && (handleEvent?.IsChecked ?? false))
 				{
 					args.GetType().GetProperty("Handled")?.SetValue(args, true);
 				}
@@ -281,7 +281,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 					&& ((PointerRoutedEventArgs)e.Args).Pointer.PointerId == pointer.Pointer.PointerId);
 		}
 
-		[Windows.UI.Xaml.Data.Bindable]
+		[Microsoft.UI.Xaml.Data.Bindable]
 		public class RoutedEventLogEntry
 		{
 			public RoutedEventLogEntry(RoutedEvent evt, string eventName, object sender, RoutedEventArgs args, (EventValidity result, string errors) validity)
@@ -330,7 +330,9 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 							+ $"| frame={point.FrameId}"
 							+ $"| type={ptArgs.Pointer.PointerDeviceType} "
 							+ $"| position={F(point.Position)} "
+#if !WINAPPSDK
 							+ $"| rawPosition={F(point.RawPosition)} "
+#endif
 							+ $"| inContact={point.IsInContact} "
 							+ $"| props={F(point.Properties)} "
 							+ $"| intermediates={ptArgs.GetIntermediatePoints(Sender as UIElement)?.Count.ToString() ?? "null"} ";

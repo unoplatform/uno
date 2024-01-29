@@ -3,10 +3,10 @@
 // MUX Reference TreeView.cpp, tag winui3/release/1.4.2
 
 using System.Collections.Generic;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a hierarchical list with expanding and collapsing nodes that contain nested items.

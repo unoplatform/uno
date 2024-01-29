@@ -4,13 +4,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Cairo;
 using SkiaSharp;
-using Windows.UI.Xaml.Input;
-using WUX = Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using WUX = Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
 using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -93,11 +94,12 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
+				var compositor = Compositor.GetSharedCompositor();
+				compositor.RenderRootVisual(_surface, rootVisual);
 
-				if (WUX.Window.Current.Compositor.IsSoftwareRenderer is null)
+				if (compositor.IsSoftwareRenderer is null)
 				{
-					WUX.Window.Current.Compositor.IsSoftwareRenderer = true;
+					compositor.IsSoftwareRenderer = true;
 				}
 			}
 		}

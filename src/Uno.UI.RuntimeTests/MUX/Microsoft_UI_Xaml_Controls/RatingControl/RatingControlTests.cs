@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 using MUXControlsTestApp.Utilities;
 
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Common;
 
 #if USING_TAEF
@@ -24,12 +24,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using RatingControl = Microsoft.UI.Xaml.Controls.RatingControl;
-using RatingItemFontInfo = Microsoft.UI.Xaml.Controls.RatingItemFontInfo;
-using RatingItemImageInfo = Microsoft.UI.Xaml.Controls.RatingItemImageInfo;
+using RatingControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl;
+using RatingItemFontInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemFontInfo;
+using RatingItemImageInfo = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingItemImageInfo;
 using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[Uno.UI.RuntimeTests.RunsOnUIThread]

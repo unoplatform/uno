@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using Windows.Foundation.Metadata;
 using Windows.Globalization.NumberFormatting;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal partial class NumberBoxParser
 	{

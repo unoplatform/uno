@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
@@ -18,7 +18,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		public void BringIntoView(object sender, RoutedEventArgs e)
 		{
-			var list = (Windows.UI.Xaml.Controls.ListViewBase)this.myList;
+			var list = (Microsoft.UI.Xaml.Controls.ListViewBase)this.myList;
 
 			list.ScrollIntoView(list.SelectedItem, ScrollIntoViewAlignment.Leading);
 		}

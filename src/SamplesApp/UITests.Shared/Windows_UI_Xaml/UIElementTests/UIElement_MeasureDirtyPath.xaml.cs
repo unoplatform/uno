@@ -1,8 +1,8 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace UITests.Windows_UI_Xaml.UIElementTests
 {
@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 		private void changeOptimizeMeasure(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (sender is ToggleButton { IsChecked: true })
 			{
 				FeatureConfiguration.UIElement.UseInvalidateMeasurePath = true;
@@ -30,7 +30,7 @@ namespace UITests.Windows_UI_Xaml.UIElementTests
 
 		internal void changeOptimizeElements(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			if (sender is ToggleButton { IsChecked: true })
 			{
 				FrameworkElementHelper.SetUseMeasurePathDisabled(elements2, true);

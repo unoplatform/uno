@@ -1,10 +1,10 @@
-#if __SKIA__
+﻿#if __SKIA__
 
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 {

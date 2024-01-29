@@ -4,7 +4,7 @@ using System;
 using Gtk;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -59,8 +59,8 @@ internal class MultilineTextBoxView : GtkTextBoxView
 		_textView.Editable = !textBox.IsReadOnly && textBox.IsTabStop;
 		_textView.WrapMode = textBox.TextWrapping switch
 		{
-			Windows.UI.Xaml.TextWrapping.Wrap => WrapMode.WordChar,
-			Windows.UI.Xaml.TextWrapping.WrapWholeWords => WrapMode.Word,
+			Microsoft.UI.Xaml.TextWrapping.Wrap => WrapMode.WordChar,
+			Microsoft.UI.Xaml.TextWrapping.WrapWholeWords => WrapMode.Word,
 			_ => WrapMode.None,
 		};
 	}

@@ -2,17 +2,19 @@
 
 using System;
 using DirectUI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
 using _Debug = System.Diagnostics.Debug;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ToolTip : ContentControl
 	{
@@ -114,7 +116,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
 				ApplyTemplate();
-				Measure(XamlRoot?.Size ?? (_owner as FrameworkElement)?.XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size);
+				var availableSize =
+					XamlRoot?.Size ??
+					(_owner as FrameworkElement)?.XamlRoot?.Size ??
+					Xaml.Window.CurrentSafe?.Bounds.Size ??
+					default;
+				Measure(availableSize);
 			}
 
 			return DesiredSize;
@@ -270,7 +277,7 @@ namespace Windows.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			var bounds = XamlRoot?.Bounds ?? Target?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			screenWidth = bounds.Width;
 			screenHeight = bounds.Height;
 
@@ -293,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var spPopup = Popup;
 
-			var lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
+			var lastPointerEnteredPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
 
 			left = lastPointerEnteredPoint.X;
 			top = lastPointerEnteredPoint.Y;
@@ -442,10 +449,10 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			var constraint = visibleRect;
 
-			var windowRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 
@@ -470,7 +477,7 @@ namespace Windows.UI.Xaml.Controls
 				var lastPointerEnteredPoint = default(Point);
 
 				// UNO TODO: PointerPoint.GetCurrentPoint(uint pointerId)
-				lastPointerEnteredPoint = CoreWindow.GetForCurrentThread()!.PointerPosition;
+				lastPointerEnteredPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
 
 				rcDockTo.X = lastPointerEnteredPoint.X;
 				rcDockTo.Y = lastPointerEnteredPoint.Y;

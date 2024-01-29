@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml;
+﻿namespace Microsoft.UI.Xaml;
 
 internal interface ISkiaApplicationHost
 {

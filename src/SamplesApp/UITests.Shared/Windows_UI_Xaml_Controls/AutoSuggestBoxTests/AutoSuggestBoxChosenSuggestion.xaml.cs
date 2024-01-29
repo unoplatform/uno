@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using Windows.Foundation;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409

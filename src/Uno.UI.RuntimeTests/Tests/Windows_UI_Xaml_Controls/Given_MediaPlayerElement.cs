@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
 using SamplesApp.UITests.TestFramework;
@@ -323,20 +323,26 @@ public partial class Given_MediaPlayerElement
 		sut.TransportControls.IsFastForwardEnabled = true;
 		sut.TransportControls.IsFastRewindEnabled = true;
 		sut.TransportControls.IsPlaybackRateEnabled = true;
+#if !WINAPPSDK
 		sut.TransportControls.IsFullWindowEnabled = true;
+#endif
 		sut.TransportControls.IsRepeatEnabled = true;
 		sut.TransportControls.IsSeekEnabled = true;
 		sut.TransportControls.IsSkipBackwardEnabled = true;
 		sut.TransportControls.IsStopEnabled = true;
 		sut.TransportControls.IsVolumeEnabled = true;
 		sut.TransportControls.IsZoomEnabled = true;
+#if !WINAPPSDK
 		sut.TransportControls.IsCompactOverlayEnabled = true;
+#endif
 		sut.TransportControls.IsSkipForwardEnabled = true;
 
 		//// step 3: Collapsed Visibility from all to make sure that we have space
 		sut.TransportControls.IsFastForwardButtonVisible = false;
 		sut.TransportControls.IsFastRewindButtonVisible = false;
+#if !WINAPPSDK
 		sut.TransportControls.IsFullWindowButtonVisible = false;
+#endif
 		sut.TransportControls.IsNextTrackButtonVisible = false;
 		sut.TransportControls.IsPlaybackRateButtonVisible = false;
 		sut.TransportControls.IsPreviousTrackButtonVisible = false;
@@ -347,7 +353,9 @@ public partial class Given_MediaPlayerElement
 		sut.TransportControls.IsStopButtonVisible = false;
 		sut.TransportControls.IsVolumeButtonVisible = false;
 		sut.TransportControls.IsZoomButtonVisible = false;
+#if !WINAPPSDK
 		sut.TransportControls.IsCompactOverlayButtonVisible = false;
+#endif
 
 		// step 4: Start to validate one by one.
 		sut.TransportControls.IsFastForwardButtonVisible = true;
@@ -380,6 +388,7 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
 				);
 
+#if !WINAPPSDK
 		sut.TransportControls.IsFullWindowButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("FullWindowButton");
 		await WindowHelper.WaitFor(
@@ -394,6 +403,7 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for TransportControls IsFullWindowButtonVisible Visibility Collapsed when Auto Hide."
 				);
+#endif
 
 		sut.TransportControls.IsNextTrackButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("NextTrackButton");
@@ -536,6 +546,7 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
 				);
 
+#if !WINAPPSDK
 		sut.TransportControls.IsCompactOverlayButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
 		await WindowHelper.WaitFor(
@@ -550,6 +561,7 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
 				);
+#endif
 
 		sut.TransportControls.IsSeekBarVisible = true;
 		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");

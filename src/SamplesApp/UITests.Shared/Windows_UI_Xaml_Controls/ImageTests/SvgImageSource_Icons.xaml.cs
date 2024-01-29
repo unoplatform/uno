@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 
@@ -39,7 +39,7 @@ public sealed partial class SvgImageSource_Icons : Page
 		flyout.Items.Add(
 			new MenuFlyoutItem
 			{
-				Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+				Icon = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 				Text = "This menu item should have a HOME icon",
 			});
 
@@ -63,7 +63,7 @@ public sealed partial class SvgImageSource_Icons : Page
 			{
 				(s2 as MenuFlyout).Items.Add(new MenuFlyoutItem
 				{
-					Icon = new Microsoft.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
+					Icon = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon { Source = svgImageSource },
 					Text = "This menu item should have a HOME icon",
 				});
 			};

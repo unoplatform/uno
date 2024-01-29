@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using SkiaSharp;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI.Composition
 {

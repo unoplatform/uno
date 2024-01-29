@@ -3,32 +3,31 @@
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
@@ -81,7 +80,7 @@ namespace Windows.UI.Xaml
 
 				if (_visual is null)
 				{
-					_visual = Window.Current.Compositor.CreateShapeVisual();
+					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
@@ -227,8 +226,6 @@ namespace Windows.UI.Xaml
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
-
-		internal bool IsPointerCaptured { get; set; }
 
 		internal MaterializableList<UIElement> GetChildren() => _children;
 

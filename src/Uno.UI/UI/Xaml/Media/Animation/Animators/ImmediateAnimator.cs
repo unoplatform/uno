@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal sealed class ImmediateAnimator<T> : IValueAnimator, IDisposable where T : struct
 	{

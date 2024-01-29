@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial interface IAnimatedVisualSource
 	{

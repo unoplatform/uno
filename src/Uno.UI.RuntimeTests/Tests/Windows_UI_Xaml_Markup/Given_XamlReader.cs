@@ -3,9 +3,9 @@ using System.Linq;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.Xaml;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 {
@@ -265,7 +265,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var sut = setup.FindFirstDescendant<ScrollViewer>(x => x.Name == "SUT");
 			var expr = sut.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty);
 
-			Assert.AreEqual(expr.ParentBinding.Path.Path, "(Windows.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
+			Assert.AreEqual(expr.ParentBinding.Path.Path, "(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
 			Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
 			ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
 			Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
@@ -281,9 +281,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	Kind="Copy" />
 """;
-			var xaml = Windows.UI.Xaml.Markup.XamlReader.Load(xamlString);
+			var xaml = Microsoft.UI.Xaml.Markup.XamlReader.Load(xamlString);
 			Assert.IsInstanceOfType(xaml, typeof(StandardUICommand));
 		}
+
+		[TestMethod]
+		public void When_XMLNS()
+		{
+			var xamlString = """
+				<Style TargetType="FlyoutPresenter" xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+					<Setter Property="local:Given_AttachedDP.Prop" Value="1" />
+				</Style>
+				""";
+			var xaml = XamlHelper.LoadXaml<Style>(xamlString);
+			Assert.IsInstanceOfType(xaml, typeof(Style));
+		}
+	}
+
+	public static partial class Given_AttachedDP
+	{
+		public static void SetProp(this UIElement element, int prop)
+		{
+			element.SetValue(PropProperty, prop);
+		}
+
+		public static double GetProp(this UIElement element)
+		{
+			return (double)element.GetValue(PropProperty);
+		}
+
+		public static DependencyProperty PropProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"Prop",
+				typeof(int),
+				typeof(Given_AttachedDP),
+				new PropertyMetadata(0)
+			);
+
 	}
 
 	public class Given_XamlReader_CustomResDict : ResourceDictionary

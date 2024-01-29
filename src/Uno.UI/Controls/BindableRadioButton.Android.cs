@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Android.Widget;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {

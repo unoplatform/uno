@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	internal enum ScrollOrientation
 	{

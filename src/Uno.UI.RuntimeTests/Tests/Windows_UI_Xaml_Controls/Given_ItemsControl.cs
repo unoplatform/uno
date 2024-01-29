@@ -1,18 +1,18 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Shapes;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Windows.UI.Xaml.Markup;
-#if NETFX_CORE
+using Microsoft.UI.Xaml.Markup;
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -110,7 +110,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ContentPresenter cp = null;
 				await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[index]) as ContentPresenter) != null);
-#if !NETFX_CORE // This is an Uno implementation detail
+#if !WINAPPSDK // This is an Uno implementation detail
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
 #endif
 

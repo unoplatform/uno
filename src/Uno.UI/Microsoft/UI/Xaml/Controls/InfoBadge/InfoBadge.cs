@@ -1,13 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference InfoBadge.cpp, tag winui3/release/1.4.2
 
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control for indicating notifications, alerts, new content, or to attract focus to an area within an app.
@@ -87,7 +87,7 @@ public partial class InfoBadge : Control
 		}
 	}
 
-	private void OnSizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args)
+	private void OnSizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs args)
 	{
 		CornerRadius GetCornerRadius()
 		{

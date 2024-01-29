@@ -6,7 +6,7 @@ using Uno.UI.Helpers;
 using Uno.Extensions;
 using System.Collections;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{

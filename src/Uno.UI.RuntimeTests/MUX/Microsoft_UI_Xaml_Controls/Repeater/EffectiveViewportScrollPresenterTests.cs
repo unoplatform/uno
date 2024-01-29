@@ -7,20 +7,20 @@ using MUXControlsTestApp.Utilities;
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Threading;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Numerics;
 using Common;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -31,26 +31,26 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using VirtualizingLayout = Microsoft.UI.Xaml.Controls.VirtualizingLayout;
-using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
-using VirtualizingLayoutContext = Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext;
-using RecyclingElementFactory = Microsoft.UI.Xaml.Controls.RecyclingElementFactory;
-using StackLayout = Microsoft.UI.Xaml.Controls.StackLayout;
-using UniformGridLayout = Microsoft.UI.Xaml.Controls.UniformGridLayout;
-using AnimationMode = Microsoft.UI.Xaml.Controls.AnimationMode;
-using SnapPointsMode = Microsoft.UI.Xaml.Controls.SnapPointsMode;
-using ScrollingScrollOptions = Microsoft.UI.Xaml.Controls.ScrollingScrollOptions;
-using ScrollingZoomOptions = Microsoft.UI.Xaml.Controls.ScrollingZoomOptions;
-using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
-using ScrollingScrollCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
-using ScrollingZoomCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
-using ContentOrientation = Microsoft.UI.Xaml.Controls.ContentOrientation;
+using VirtualizingLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayout;
+using ItemsRepeater = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater;
+using VirtualizingLayoutContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.VirtualizingLayoutContext;
+using RecyclingElementFactory = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RecyclingElementFactory;
+using StackLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout;
+using UniformGridLayout = Microsoft/* UWP don't rename */.UI.Xaml.Controls.UniformGridLayout;
+using AnimationMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationMode;
+using SnapPointsMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SnapPointsMode;
+using ScrollingScrollOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollOptions;
+using ScrollingZoomOptions = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomOptions;
+using ScrollPresenter = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ScrollPresenter;
+using ScrollingScrollCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
+using ScrollingZoomCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs;
+using ContentOrientation = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ContentOrientation;
 using IRepeaterScrollingSurface = Microsoft.UI.Private.Controls.IRepeaterScrollingSurface;
 using ConfigurationChangedEventHandler = Microsoft.UI.Private.Controls.ConfigurationChangedEventHandler;
 using PostArrangeEventHandler = Microsoft.UI.Private.Controls.PostArrangeEventHandler;
 using ViewportChangedEventHandler = Microsoft.UI.Private.Controls.ViewportChangedEventHandler;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class EffectiveViewportScrollPresenterTests : MUXApiTestBase
@@ -333,8 +333,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var root = (Grid)XamlReader.Load(TestUtilities.ProcessTestXamlForRepo(
 					 @"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
 							 xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-							 xmlns:controls='using:Microsoft.UI.Xaml.Controls' 
-							 xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'> 
+							 xmlns:controls='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls' 
+							 xmlns:primitives='using:Microsoft" + /* UWP don't rename */ @".UI.Xaml.Controls.Primitives'> 
 						 <Grid.Resources>
 						   <controls:StackLayout x:Name='VerticalStackLayout' />
 						   <controls:RecyclingElementFactory x:Key='ElementFactory'>

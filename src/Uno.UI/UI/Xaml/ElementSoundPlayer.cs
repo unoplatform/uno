@@ -2,7 +2,7 @@
 using Uno;
 using Uno.UI.Xaml.Core;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Represents a player for XAML control sounds.
@@ -50,5 +50,8 @@ namespace Windows.UI.Xaml
 
 		internal static void RequestInteractionSoundForElement(ElementSoundKind soundToPlay, DependencyObject element) =>
 			ElementSoundPlayerService.Instance.RequestInteractionSoundForElement(soundToPlay, element);
+
+		internal static ElementSoundMode GetEffectiveSoundMode(DependencyObject element) =>
+			ElementSoundPlayerService.Instance.GetEffectiveSoundMode(element);
 	}
 }

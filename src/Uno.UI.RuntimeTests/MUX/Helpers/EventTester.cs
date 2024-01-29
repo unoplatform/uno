@@ -12,10 +12,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 
-namespace Microsoft.UI.Xaml.Tests.Common
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 {
 	[Flags]
 	public enum EventTesterOptions : int

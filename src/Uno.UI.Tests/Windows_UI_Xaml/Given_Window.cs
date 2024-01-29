@@ -1,27 +1,22 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Activation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml;
 
-// These tests will become invalid when multi-window support is added #8341
 [TestClass]
 public class Given_Window
 {
 	[TestMethod]
 	public void New_Window_Becomes_Current()
 	{
-		var window = new Windows.UI.Xaml.Window(true);
-		window.Activate();
-		Assert.AreEqual(window, Windows.UI.Xaml.Window.Current);
-	}
+		// This test expects the created Window to be the first window set.
+		// So for it to pass reliably, we need to cleanup current window so that
+		// we guarantee that the new window becomes "Current".
+		Window.CleanupCurrentForTestsOnly();
 
-	[TestMethod]
-	public void New_Window_Does_Not_Override_Current()
-	{
-		var existingCurrent = Windows.UI.Xaml.Window.Current;
-		var window = new Windows.UI.Xaml.Window(true);
+		var window = new Microsoft.UI.Xaml.Window();
 		window.Activate();
-		Assert.AreEqual(existingCurrent, Windows.UI.Xaml.Window.Current);
+		Assert.AreEqual(window, Microsoft.UI.Xaml.Window.Current);
 	}
 }

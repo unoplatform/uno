@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>uap10.0.19041</TargetFrameworks>
+		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
+		<UseWinUI>true</UseWinUI>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -15,8 +16,6 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
-		<Reference Include="System.Xml" />
-		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,25 +46,16 @@
 		<Content Include="Assets\**" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.19041'">
+	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0-prerelease.210816001" />
 
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<PackageReference Include="Uno.Core.Extensions" />
-		
-		<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-			<Version>6.1.9</Version>
-		</PackageReference>
-		<SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
-			<Name>Windows Desktop Extensions for the UWP</Name>
-		</SDKReference>
-		<SDKReference Include="WindowsMobile, Version=10.0.19041.0">
-			<Name>Windows Mobile Extensions for the UWP</Name>
-		</SDKReference>
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230913002" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
@@ -73,13 +63,11 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Microsoft_UI_Xaml_Controls\Given_WebView2.cs" />
 	</ItemGroup>
 	
-	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.19041'">
-		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation on UAP-->
-		<SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
-		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.19041'">
+	<PropertyGroup>
 		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml</PageExclusions>
 	</PropertyGroup>
 
@@ -87,23 +75,7 @@
 		<PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
 
-	<PropertyGroup>
-		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-	</PropertyGroup>
-
-	<ItemGroup Condition="'$(DocsGeneration)'==''">
-		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
-	</ItemGroup>
-
 	<ItemGroup>
 		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
 	</ItemGroup>
-
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
-	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
-
 </Project>

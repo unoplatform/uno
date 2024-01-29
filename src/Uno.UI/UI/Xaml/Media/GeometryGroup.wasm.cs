@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class GeometryGroup
 	{

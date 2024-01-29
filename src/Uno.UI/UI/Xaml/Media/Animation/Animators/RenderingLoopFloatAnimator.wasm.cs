@@ -7,7 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	internal sealed class RenderingLoopFloatAnimator : RenderingLoopAnimator<float>
 	{

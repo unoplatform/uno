@@ -4,15 +4,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -76,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Slider_Dragged()

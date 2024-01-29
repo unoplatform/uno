@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #pragma warning disable 168 // for cleanup imported member
@@ -6,12 +6,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Common;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,7 +22,7 @@ using Uno.UI.RuntimeTests.MUX.Helpers;
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
 
-namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
+namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
 	[TestClass]
 #if __MACOS__
@@ -52,14 +52,14 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			{
 				using var _ = new AssertionScope();
 
-				var cp = new Windows.UI.Xaml.Controls.CalendarDatePicker();
-				VERIFY_ARE_EQUAL(cp.FirstDayOfWeek, Windows.Globalization.DayOfWeek.Sunday);
-				VERIFY_ARE_EQUAL(cp.DisplayMode, Windows.UI.Xaml.Controls.CalendarViewDisplayMode.Month);
+				var cp = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+				VERIFY_ARE_EQUAL(cp.FirstDayOfWeek, global::Windows.Globalization.DayOfWeek.Sunday);
+				VERIFY_ARE_EQUAL(cp.DisplayMode, Microsoft.UI.Xaml.Controls.CalendarViewDisplayMode.Month);
 				VERIFY_ARE_EQUAL(cp.IsTodayHighlighted, true);
 				VERIFY_ARE_EQUAL(cp.IsOutOfScopeEnabled, true);
 				VERIFY_ARE_EQUAL(cp.IsGroupLabelVisible, false);
 
-				Windows.Globalization.Calendar calendar = new Windows.Globalization.Calendar();
+				global::Windows.Globalization.Calendar calendar = new global::Windows.Globalization.Calendar();
 				calendar.SetToNow();
 
 				calendar.AddYears(-100);
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			// this should happens on ListView and GridView, however for default ListView and GridView (especially in below helper method) are empty and there is no buildtree work.
 			// But for default CalendarDatePicker, we have! because default CalendarDatePicker will show the dates in 3 years.
 
-			//Generic.FrameworkElementTests<Windows.UI.Xaml.Controls.CalendarDatePicker>.CanEnterAndLeaveLiveTree();
+			//Generic.FrameworkElementTests<Microsoft.UI.Xaml.Controls.CalendarDatePicker>.CanEnterAndLeaveLiveTree();
 
 			TestCleanupWrapper cleanup;
 
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !NETFX_CORE
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task CanOpenFlyoutByTapping()
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			FlyoutBase flyout = null;
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await helper.PrepareOpenedEvent();
 
 			TestServices.InputHelper.Tap(dateText
-#if NETFX_CORE
+#if WINAPPSDK
 				// On Windows, we might wait a bit after pressing for the popup to open
 				// UNO TODO: why do we need this wait?
 				, 600
@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #elif !__SKIA__
 		[Ignore("Fails")]
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			await RunOnUIThread(() =>
 			{
-				cp.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+				cp.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
 			});
 
 			await helper.PrepareOpenedEvent();
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			await RunOnUIThread(() =>
 			{
-				cp.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+				cp.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			Grid rootPanel = null;
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -306,7 +306,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !NETFX_CORE
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task CanCloseFlyoutBySelectingADate()
@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			CalendarView calendarView = null;
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 			TestServices.InputHelper.Tap(dateText
-#if NETFX_CORE
+#if WINAPPSDK
 				// On Windows, we might wait a bit after pressing for the popup to open
 				// UNO TODO: why do we need this wait?
 				, 600
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			Grid rootPanel = null;
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -450,7 +450,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -496,7 +496,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -526,7 +526,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				cp.DateFormat = "{dayofweek.full}, {month.full} {day.integer}, {year.full}"; // equivalent to "longdate"
 				cp.UpdateLayout();
 
-				cp.CalendarIdentifier = Windows.Globalization.CalendarIdentifiers.Taiwan;
+				cp.CalendarIdentifier = global::Windows.Globalization.CalendarIdentifiers.Taiwan;
 
 				LOG_OUTPUT("actual text: %s.", dateText.Text);
 				VERIFY_ARE_EQUAL("Monday, January 1, 90", dateText.Text);
@@ -535,7 +535,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !NETFX_CORE
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task PressingDoesNotOpenMenuFlyout()
@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			var gridPointerPressedEvent = new Event();
 			var gridPointerPressedRegistration = CreateSafeEventRegistration<UIElement, PointerEventHandler>("PointerPressed");
@@ -565,7 +565,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				cp.Date = ConvertToDateTime(1, 2001, 1, 1);
 
 				gridPointerPressedRegistration.Attach(rootPanel,
-					(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs args) =>
+					(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs args) =>
 					{
 						gridPointerPressedEvent.Set();
 					});
@@ -591,7 +591,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await helper.PrepareOpenedEvent();
 
 			TestServices.InputHelper.Tap(dateText
-#if NETFX_CORE
+#if WINAPPSDK
 				// On Windows, we might wait a bit after pressing for the popup to open
 				// UNO TODO: why do we need this wait?
 				, 600
@@ -625,7 +625,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cdp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cdp = await helper.GetCalendarDatePicker();
 
 			await RunOnUIThread(() =>
 			{
@@ -649,7 +649,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			await RunOnUIThread(() =>
 			{
-				cdp.Focus(Windows.UI.Xaml.FocusState.Pointer);
+				cdp.Focus(Microsoft.UI.Xaml.FocusState.Pointer);
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
@@ -690,11 +690,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			// load into visual tree
 			await RunOnUIThread(() =>
 			{
-				cpPressed = new Windows.UI.Xaml.Controls.CalendarDatePicker();
-				cpPointerOver = new Windows.UI.Xaml.Controls.CalendarDatePicker();
-				cpDisabled = new Windows.UI.Xaml.Controls.CalendarDatePicker();
-				cpFocused = new Windows.UI.Xaml.Controls.CalendarDatePicker();
-				cpSelected = new Windows.UI.Xaml.Controls.CalendarDatePicker();
+				cpPressed = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+				cpPointerOver = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+				cpDisabled = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+				cpFocused = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
+				cpSelected = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
 
 				rootPanel.Children.Append(cpNormal);
 				rootPanel.Children.Append(cpPressed);
@@ -741,7 +741,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			Grid rootPanel = null;
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			// load into visual tree
 			await RunOnUIThread(() =>
@@ -786,7 +786,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			Grid rootPanel = null;
 
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 			CalendarView calendarView = null;
 			TextBlock dateText = null;
 
@@ -882,8 +882,8 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		{
 			TestCleanupWrapper cleanup;
 			StackPanel rootPanel = null;
-			Windows.UI.Xaml.Controls.CalendarDatePicker cdp1 = null;
-			Windows.UI.Xaml.Controls.CalendarDatePicker cdp2 = null;
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cdp1 = null;
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cdp2 = null;
 			var date1 = ConvertToDateTime(1, 2000, 1, 1);
 			var date2 = ConvertToDateTime(1, 2000, 1, 2);
 
@@ -933,7 +933,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		{
 			TestCleanupWrapper cleanup;
 			Grid rootPanel = null;
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = null;
+			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = null;
 
 			rootPanel = await CreateTestResources();
 			var date = ConvertToDateTime(1, 2000, 1, 1);
@@ -941,7 +941,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			// load into visual tree
 			await RunOnUIThread(() =>
 			{
-				cp = new Windows.UI.Xaml.Controls.CalendarDatePicker();
+				cp = new Microsoft.UI.Xaml.Controls.CalendarDatePicker();
 				cp.Date = date;
 
 				rootPanel.Children.Append(cp);

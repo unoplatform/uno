@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Popup_Open_Then_Click_Outside()

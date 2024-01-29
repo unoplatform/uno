@@ -14,8 +14,8 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -24,10 +24,10 @@ using View = UIKit.UIView;
 #elif __ANDROID__
 using View = Android.Views.View;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutBase : DependencyObject
 	{
@@ -110,14 +110,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			var focusState = contentRoot.FocusManager.GetRealFocusStateForFocusedElement();
 
-			var presenter = GetPresenter();
-			if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
+			if (focusState != FocusState.Unfocused)
 			{
-				var childFocused = presenter.Focus(focusState);
-
-				if (!childFocused)
+				var presenter = GetPresenter();
+				if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
 				{
-					_popup.Focus(focusState);
+					var childFocused = presenter.Focus(focusState);
+
+					if (!childFocused)
+					{
+						_popup.Focus(focusState);
+					}
 				}
 			}
 
@@ -213,7 +216,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
+		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(FlyoutBase),
 			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
@@ -370,7 +373,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
 						UIElement reference =
 #if __ANDROID__
-							Window.Current.Content;
+							// TODO: Adjust for multiwindow #13827
+							Window.CurrentSafe?.Content;
 #else
 							null;
 #endif
@@ -384,16 +388,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						throw new ArgumentException("Invalid flyout position");
 					}
 
-					Rect visibleBounds;
-					if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-					{
-						var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
-						visibleBounds = xamlRoot.Bounds;
-					}
-					else
-					{
-						visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-					}
+					var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
+					Rect visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 					positionValue = new Point(
 						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
 						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
@@ -587,13 +583,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
-			if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-			{
-				var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
-				return xamlRoot.Bounds;
-			}
-
-			return ApplicationView.GetForCurrentView().VisibleBounds;
+			var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
+			return xamlRoot.VisualTree.VisibleBounds;
 		}
 
 		internal void SetPresenterStyle(

@@ -9,13 +9,14 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
@@ -55,7 +56,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 
 		private void HolderUpdate(int value)
 		{
-			var unused = Dispatcher.RunAsync(CoreDispatcherPriority.High,
+			var unused = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.High,
 				() =>
 				{
 					_maxCounter = Math.Max(value, _maxCounter);

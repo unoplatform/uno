@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// A subject to route the availability of an element instance reference.

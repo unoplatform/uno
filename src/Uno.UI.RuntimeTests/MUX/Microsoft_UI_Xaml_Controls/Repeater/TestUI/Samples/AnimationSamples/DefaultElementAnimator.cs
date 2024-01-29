@@ -4,12 +4,12 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
 
-using AnimationContext = Microsoft.UI.Xaml.Controls.AnimationContext;
-using ElementAnimator = Microsoft.UI.Xaml.Controls.ElementAnimator;
+using AnimationContext = Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimationContext;
+using ElementAnimator = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ElementAnimator;
 
 namespace MUXControlsTestApp.Utils
 {

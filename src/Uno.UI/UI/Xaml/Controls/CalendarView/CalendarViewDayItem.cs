@@ -1,18 +1,18 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Printing;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Printing;
 using DirectUI;
 using DateTime = System.DateTimeOffset;
-using CCalendarViewBaseItemChrome = Windows.UI.Xaml.Controls.CalendarViewBaseItem;
+using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class CalendarViewDayItem : CalendarViewBaseItem
 	{
@@ -140,11 +140,11 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-#if DEBUG && false
+#if DEBUG
 		private void put_Date(DateTime value)
 		{
 			SetDateForDebug(value);
-			CalendarViewDayItemGenerated.Date = value;
+			//CalendarViewDayItemGenerated.Date = value;
 
 		}
 #endif

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
 using Private.Infrastructure;
@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				return;
 			}
 
-			var button = new Windows.UI.Xaml.Controls.Button();
+			var button = new Microsoft.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			WindowHelper.WindowContent = button;
@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void Should_Not_Close_Open_ContentDialogs()
+		public async Task Should_Not_Close_Open_ContentDialogs()
 		{
 			if (WindowHelper.IsXamlIsland)
 			{
@@ -64,12 +64,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				Title = "Title",
 				Content = "My Dialog Content"
 			};
+			contentDialog.XamlRoot = WindowHelper.XamlRoot;
 
 			_ = contentDialog.ShowAsync();
 
+			await WindowHelper.WaitFor(() => GetNonMessageDialogPopupsCount() > 0);
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 
 			var messageDialog = new MessageDialog("Hello");
+
+#if HAS_UNO_WINUI
+			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
+			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 			var asyncOperation = messageDialog.ShowAsync();
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 			contentDialog.Hide();
@@ -87,6 +95,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 			}
 
 			var messageDialog = new MessageDialog("When_Cancel_Then_CloseDialog");
+
+#if HAS_UNO_WINUI
+			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
+			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
+
 			var asyncOperation = messageDialog.ShowAsync();
 
 			Assert.AreEqual(AsyncStatus.Started, asyncOperation.Status);

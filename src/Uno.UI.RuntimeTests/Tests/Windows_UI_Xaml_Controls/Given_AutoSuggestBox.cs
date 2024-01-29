@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -20,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AutoSuggestBox
 	{
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		public async Task When_Text_Changed_Should_Reflect_In_DataTemplate_TextBox()
 		{
@@ -62,8 +65,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __SKIA__
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Text_Changed_UserInput(bool useTextBoxOverlay)
+#else
 		public async Task When_Text_Changed_UserInput()
+#endif
 		{
+#if __SKIA__
+			var oldUseOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			FeatureConfiguration.TextBox.UseOverlayOnSkia = useTextBoxOverlay;
+			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = oldUseOverlay);
+#endif
+
 			var SUT = new AutoSuggestBox();
 			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
 			WindowHelper.WindowContent = SUT;
@@ -80,6 +95,144 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ProcessTextInput("something");
 
 			await WindowHelper.WaitFor(() => eventRaised);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("This test specifically tests the skia-rendered TextBox")]
+#endif
+		public async Task When_Text_Changed_UserInput_Skia()
+		{
+			var oldUseOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
+			using var _ = Disposable.Create(() =>
+			{
+				FeatureConfiguration.TextBox.UseOverlayOnSkia = oldUseOverlay;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach(p => p.IsOpen = false);
+			});
+
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			AutoSuggestionBoxTextChangeReason? reason = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				reason = e.Reason;
+				eventRaised = true;
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
+			textBox.Focus(FocusState.Programmatic);
+			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(eventRaised);
+			Assert.IsTrue(popup.IsOpen);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
+#endif
+		public async Task When_UserInput_Paste()
+		{
+			using var _ = Disposable.Create(() =>
+			{
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach(p => p.IsOpen = false);
+			});
+
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			AutoSuggestionBoxTextChangeReason? reason = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				reason = e.Reason;
+				eventRaised = true;
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
+			textBox.Focus(FocusState.Programmatic);
+			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("a");
+			Clipboard.SetContent(dataPackage);
+
+			textBox.PasteFromClipboard();
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(eventRaised);
+			Assert.IsTrue(popup.IsOpen);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("This test specifically tests the skia-rendered TextBox")]
+#endif
+		public async Task When_UserInput_Undo_Redo()
+		{
+			var oldUseOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
+			using var _ = Disposable.Create(() =>
+			{
+				FeatureConfiguration.TextBox.UseOverlayOnSkia = oldUseOverlay;
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach(p => p.IsOpen = false);
+			});
+
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			AutoSuggestionBoxTextChangeReason? reason = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				reason = e.Reason;
+				eventRaised = true;
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
+			textBox.Focus(FocusState.Programmatic);
+			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("a");
+			Clipboard.SetContent(dataPackage);
+
+			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.Escape(); // close the popup
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(popup.IsOpen);
+
+			textBox.Undo();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(eventRaised);
+			Assert.IsTrue(popup.IsOpen);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
+
+			eventRaised = default;
+			reason = default;
+
+			KeyboardHelper.Escape(); // close the popup
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(popup.IsOpen);
+
+			textBox.Redo();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(eventRaised);
+			Assert.IsTrue(popup.IsOpen);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
 		}
 
@@ -274,7 +427,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
 		public async Task When_Keyboard_Handled()
@@ -390,7 +543,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
 		public async Task When_ArrowKeys_Handled()
@@ -484,7 +637,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
 		[DataRow(false)]
@@ -587,7 +740,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if NETFX_CORE
+#if WINAPPSDK
 		[Ignore("KeyboardHelper doesn't work on Windows")]
 #endif
 		public async Task When_SuggestionChosen_TextBox_Moves_To_The_End()

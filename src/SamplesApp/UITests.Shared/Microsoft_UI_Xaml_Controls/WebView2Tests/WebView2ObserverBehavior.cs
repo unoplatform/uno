@@ -1,6 +1,6 @@
 ﻿#if HAS_UNO
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
@@ -8,12 +8,12 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 	{
 		#region IsAttached ATTACHED PROPERTY
 
-		public static bool GetIsAttached(Microsoft.UI.Xaml.Controls.WebView2 obj)
+		public static bool GetIsAttached(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 obj)
 		{
 			return (bool)obj.GetValue(IsAttachedProperty);
 		}
 
-		public static void SetIsAttached(Microsoft.UI.Xaml.Controls.WebView2 obj, bool value)
+		public static void SetIsAttached(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 obj, bool value)
 		{
 			obj.SetValue(IsAttachedProperty, value);
 		}
@@ -23,7 +23,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		private static void OnIsAttachedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			var webView2 = d as Microsoft.UI.Xaml.Controls.WebView2;
+			var webView2 = d as Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2;
 
 			if (webView2 != null)
 			{
@@ -55,21 +55,21 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		#endregion
 
-		private static void RegisterEvents(Microsoft.UI.Xaml.Controls.WebView2 webView)
+		private static void RegisterEvents(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 webView)
 		{
 			webView.NavigationStarting += WebView2_NavigationStarting;
 			webView.NavigationCompleted += WebView2_NavigationCompleted;
 			//webView.NavigationFailed += WebView2_NavigationFailed;//TODO:MZ:
 		}
 
-		private static void UnregisterEvents(Microsoft.UI.Xaml.Controls.WebView2 webView)
+		private static void UnregisterEvents(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 webView)
 		{
 			webView.NavigationStarting -= WebView2_NavigationStarting;
 			webView.NavigationCompleted -= WebView2_NavigationCompleted;
 			//webView.NavigationFailed -= WebView2_NavigationFailed; //TODO:MZ:
 		}
 
-		private static void WebView2_NavigationStarting(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
+		private static void WebView2_NavigationStarting(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
 		{
 			var message = $"NavigationStarting @ {args.Uri} [{sender.Source}]";
 
@@ -79,14 +79,14 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		//private static void WebView2_NavigationFailed(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationFailedEventArgs e)
 		//{
-		//	//var webView2 = sender as Microsoft.UI.Xaml.Controls.WebView2;
+		//	//var webView2 = sender as Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2;
 		//	//var message = $"NavigationFailed {e.WebErrorStatus} @ {e.Uri} [{webView.Source}]";
 
 		//	//SetMessage(webView, message);
 		//	//sender.Log().Debug(message); //TODO:MZ:
 		//}
 
-		private static void WebView2_NavigationCompleted(Microsoft.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
+		private static void WebView2_NavigationCompleted(Microsoft/* UWP don't rename */.UI.Xaml.Controls.WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
 		{
 			//var message = $"NavigationCompleted @ {args.Uri} [{sender.Source}]";
 

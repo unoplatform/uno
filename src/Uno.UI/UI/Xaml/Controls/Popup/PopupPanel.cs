@@ -7,11 +7,11 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 
 #if __IOS__
@@ -20,7 +20,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupPanel : Panel
 {
@@ -72,15 +72,7 @@ internal partial class PopupPanel : Panel
 		}
 		else
 		{
-			Rect visibleBounds;
-			if (XamlRoot is not { } xamlRoot || xamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			}
-			else
-			{
-				visibleBounds = xamlRoot.Bounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
 
@@ -129,12 +121,12 @@ internal partial class PopupPanel : Panel
 		}
 		else if (Popup.CustomLayouter == null)
 		{
-			// TODO: For now, the layouting logic for managed DatePickerFlyout does not correctly work
+			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
 			// against the placement target approach.
 			var isFlyoutManagedDatePicker =
-				Popup.AssociatedFlyout is DatePickerFlyout
+				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
 #if __ANDROID__ || __IOS__
-				&& Popup.AssociatedFlyout is not NativeDatePickerFlyout
+				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
 #endif
 				;
 
@@ -211,15 +203,7 @@ internal partial class PopupPanel : Panel
 		{
 			// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
-			Rect visibleBounds;
-			if (XamlRoot is { } xamlRoot && xamlRoot.VisualTree.ContentRoot.Type != ContentRootType.CoreWindow)
-			{
-				visibleBounds = xamlRoot.Bounds;
-			}
-			else
-			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
@@ -246,7 +230,7 @@ internal partial class PopupPanel : Panel
 		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
 		this.SetLogicalParent(Popup);
 
-		Windows.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
+		this.XamlRoot.Changed += XamlRootChanged;
 	}
 
 	private protected override void OnUnloaded()
@@ -254,7 +238,7 @@ internal partial class PopupPanel : Panel
 		base.OnUnloaded();
 		this.SetLogicalParent(null);
 
-		Windows.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
+		this.XamlRoot.Changed -= XamlRootChanged;
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we

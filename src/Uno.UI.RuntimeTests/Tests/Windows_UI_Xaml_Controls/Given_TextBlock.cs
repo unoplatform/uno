@@ -2,20 +2,30 @@
 using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
+using System.Drawing;
+using Uno.Extensions;
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
 
 #if __SKIA__
+using System;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Windows.UI.Input.Preview.Injection;
 using SkiaSharp;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Input;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -134,7 +144,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CharacterSpacing = 18
 			};
 
-			WindowHelper.WindowContent = new Border { Width = 10, Height = 10, Child = SUT };
+			WindowHelper.WindowContent = new Border
+			{
+				Width = 10,
+				Height = 10,
+				Child = SUT
+			};
 
 			await WindowHelper.WaitForIdle();
 
@@ -146,13 +161,182 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[Ignore("Fails")]
-		public async Task When_Text_Ends_In_Return()
+		[RunsOnUIThread]
+		public async Task When_Multiline_Wrapping_LongWord_Then_Space_Then_Word()
 		{
 			var SUT = new TextBlock
 			{
+				Width = 150,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "abcdefghijklmnopqrstuvwxyzabcdefg"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text += " a";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiline_Wrapping_LeadingSpaces()
+		{
+			var SUT = new TextBlock
+			{
+				Width = 150,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "initial"
+			};
+
+			WindowHelper.WindowContent = new Border
+			{
+				Child = SUT,
+				BorderBrush = new SolidColorBrush(Colors.Pink),
+				BorderThickness = new Thickness(1)
+			};
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = new string(' ', 120);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+#if __IOS__
+		[Ignore("Fails")]
+#endif
+		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
+		{
+			var SUT = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
 				Text = "hello world"
 			};
+
+			WindowHelper.WindowContent = new Border
+			{
+				Width = 150,
+				Child = SUT
+			};
+
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = "mmmmmmmmm               ";
+			await WindowHelper.WaitForIdle();
+
+			// Trailing space shouldn't wrap
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_CarriageReturn()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+
+			SUT0.Text = "text";
+			SUT1.Text = "text\r";
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_CarriageReturn2()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+			var SUT2 = new TextBlock();
+			var SUT3 = new TextBlock();
+
+			SUT1.Text = "\r";
+			SUT2.Text = "\r\r";
+			SUT3.Text = "\r\r\r";
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					},
+					new Border
+					{
+						Child = SUT2,
+						BorderBrush = new SolidColorBrush(Colors.Brown)
+					},
+					new Border
+					{
+						Child = SUT3,
+						BorderBrush = new SolidColorBrush(Colors.Yellow)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+			SUT2.ActualHeight.Should().BeGreaterThan(SUT1.ActualHeight);
+			SUT3.ActualHeight.Should().BeGreaterThan(SUT2.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_Return()
+		{
+			var SUT = new TextBlock { Text = "hello world" };
 
 			WindowHelper.WindowContent = new Border { Child = SUT };
 
@@ -162,8 +346,102 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var height = SUT.ActualHeight;
 
 			SUT.Text += "\r";
+			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(SUT.ActualHeight > height * 1.5);
+			SUT.ActualHeight.Should().BeGreaterThan(height * 1.5);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_LineBreak()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+
+			SUT0.Text = "text";
+			SUT1.Inlines.Add(new Run { Text = "text" });
+			SUT1.Inlines.Add(new LineBreak());
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Only skia handled trailing newlines correctly for now.")]
+#endif
+		public async Task When_Text_Ends_In_LineBreak2()
+		{
+			var SUT0 = new TextBlock();
+			var SUT1 = new TextBlock();
+			var SUT2 = new TextBlock();
+			var SUT3 = new TextBlock();
+
+			SUT1.Inlines.Add(new LineBreak());
+
+			SUT2.Inlines.Add(new LineBreak());
+			SUT2.Inlines.Add(new LineBreak());
+
+			SUT3.Inlines.Add(new LineBreak());
+			SUT3.Inlines.Add(new LineBreak());
+			SUT3.Inlines.Add(new LineBreak());
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						Child = SUT0,
+						BorderBrush = new SolidColorBrush(Colors.Chartreuse)
+					},
+					new Border
+					{
+						Child = SUT1,
+						BorderBrush = new SolidColorBrush(Colors.Pink)
+					},
+					new Border
+					{
+						Child = SUT2,
+						BorderBrush = new SolidColorBrush(Colors.Brown)
+					},
+					new Border
+					{
+						Child = SUT3,
+						BorderBrush = new SolidColorBrush(Colors.Yellow)
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			SUT1.ActualHeight.Should().BeGreaterThan(SUT0.ActualHeight);
+			SUT2.ActualHeight.Should().BeGreaterThan(SUT1.ActualHeight);
+			SUT3.ActualHeight.Should().BeGreaterThan(SUT2.ActualHeight);
 		}
 
 		[TestMethod]
@@ -198,7 +476,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
+			SUT.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
 
 			int counter = 3;
 
@@ -266,7 +544,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
 			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
 
-			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
+			SUT.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -283,7 +561,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
-			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -305,6 +583,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextWrapping_Changed()
+		{
+			var SUT = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! ",
+			};
+			StackPanel panel = new StackPanel
+			{
+				Width = 100,
+				Children =
+				{
+					SUT
+				}
+			};
+			await UITestHelper.Load(panel);
+			var height1 = SUT.ActualHeight;
+			SUT.TextWrapping = TextWrapping.NoWrap;
+			await Task.Delay(500);
+			var height2 = SUT.ActualHeight;
+			Assert.AreNotEqual(height1, height2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
 		{
 			var container = new Grid()
@@ -442,6 +746,218 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
 			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
+#endif
+
+#if HAS_UNO // GetMouse is not available on WinUI
+		#region IsTextSelectionEnabled
+
+#if __SKIA__ // enable this region when InputInjector and IsTextSelectionEnabled are supported on more platforms
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_PointerDrag()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.MoveTo(bounds.GetCenter() with { X = bounds.Right });
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Press();
+			mouse.MoveTo(bounds.GetCenter() with { X = bounds.Right });
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight(bounds.GetCenter());
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+		}
+#endif
+
+
+
+		#endregion
 #endif
 	}
 }

@@ -4,15 +4,15 @@
 
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
 		private protected virtual string GetPlainText() => "";
 
-		private protected static string GetStringFromObject(object pObject)
+		internal protected static string GetStringFromObject(object pObject)
 		{
 			// First, try IFrameworkElement
 			var spFrameworkElement = pObject as FrameworkElement;

@@ -1,7 +1,7 @@
-using Windows.UI.Xaml.Controls;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+﻿using Microsoft.UI.Xaml.Controls;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	/// <summary>
 	/// Exposes ToggleSwitch types to Microsoft UI Automation.

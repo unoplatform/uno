@@ -3,24 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
-using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Panel
 {
 	private readonly List<ManagedWeakReference> _openPopups = new();
 
+	private readonly SerialDisposable _subscriptions = new();
+
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
-		Windows.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
-		Windows.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+		Loaded += OnRootLoaded;
+		Unloaded += OnRootUnloaded;
+	}
+
+	private void OnRootLoaded(object sender, RoutedEventArgs args)
+	{
+		if (XamlRoot is { } xamlRoot)
+		{
+			void OnChanged(object sender, object args) => CloseFlyouts();
+
+			CompositeDisposable disposables = new();
+			xamlRoot.Changed += OnChanged;
+			disposables.Add(() => xamlRoot.Changed -= OnChanged);
+
+			if (xamlRoot.HostWindow is { } window)
+			{
+				window.Activated += OnChanged;
+				disposables.Add(() => window.Activated -= OnChanged);
+			}
+
+			_subscriptions.Disposable = disposables;
+		}
+	}
+
+	private void OnRootUnloaded(object sender, RoutedEventArgs args)
+	{
+		_subscriptions.Disposable = null;
 	}
 
 	private void CloseFlyouts()

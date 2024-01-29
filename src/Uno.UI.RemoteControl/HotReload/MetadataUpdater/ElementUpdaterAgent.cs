@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno;
 using System.Threading.Tasks;
 

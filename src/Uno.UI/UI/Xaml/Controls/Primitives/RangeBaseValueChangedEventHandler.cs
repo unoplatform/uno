@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Controls.Primitives
+﻿namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
 	/// Represents the method that will handle a ValueChanged event.

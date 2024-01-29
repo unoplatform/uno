@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using Uno;
 using Uno.Foundation.Interop;
@@ -31,7 +31,7 @@ using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public partial class UIElement : DependencyObject
 {
@@ -206,7 +206,12 @@ public partial class UIElement : DependencyObject
 
 						if (result.ShouldStop)
 						{
-							WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
+							IRootElement? rootElement = WinUICoreServices.Instance.MainRootVisual as IRootElement;
+							if (rootElement is null)
+							{
+								rootElement = element.XamlRoot?.VisualTree.RootElement as IRootElement;
+							}
+							rootElement?.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
 						}
 
 						break;

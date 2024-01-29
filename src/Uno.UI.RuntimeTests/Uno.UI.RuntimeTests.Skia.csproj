@@ -100,4 +100,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>
+
+	<!-- Multiwindowing is only supported on Uno.WinUI -->
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
+	</PropertyGroup>
 </Project>

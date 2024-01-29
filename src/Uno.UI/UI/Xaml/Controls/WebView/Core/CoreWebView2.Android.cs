@@ -18,9 +18,9 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.Web;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Microsoft.Web.WebView2.Core;
 

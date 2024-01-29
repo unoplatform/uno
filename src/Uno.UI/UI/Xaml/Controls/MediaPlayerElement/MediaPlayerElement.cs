@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[TemplatePart(Name = PosterImageName, Type = typeof(Image))]
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
@@ -149,11 +149,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
+				if (XamlRoot?.HostWindow is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning(
+							$"Cannot toggle Full Screen as the media player was not yet " +
+							$"loaded in the visual tree.");
+					}
+
+					return;
+				}
+
 				_mediaPlayerPresenter.IsTogglingFullscreen = true;
 
 				if (showFullscreen)
 				{
-					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).TryEnterFullScreenMode();
 
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
@@ -163,14 +175,14 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
-					ApplicationView.GetForCurrentView().ExitFullScreenMode();
+					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).ExitFullScreenMode();
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(null);
 #endif
 
 #if __ANDROID__
@@ -229,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
-					newMediaPlayer.NaturalVideoDimensionChanged -= mpe.OnNaturalVideoDimensionChanged;
+					newMediaPlayer.NaturalVideoDimensionChanged += mpe.OnNaturalVideoDimensionChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}

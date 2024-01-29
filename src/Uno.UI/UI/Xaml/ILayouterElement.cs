@@ -1,13 +1,15 @@
 ﻿#nullable enable
+
+#if !UNO_REFERENCE_API
 using System;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 using Uno.UI;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 internal partial interface ILayouterElement
 {
@@ -136,3 +138,4 @@ internal static class LayouterElementExtensions
 		return false; // UIElement.MaxLayoutIterations reached. Maybe an exception should be raised instead.
 	}
 }
+#endif

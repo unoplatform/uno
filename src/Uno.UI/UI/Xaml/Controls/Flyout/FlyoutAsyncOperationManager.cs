@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	// --------------------------------------------------------------------------------------------
 	//
@@ -123,8 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			//IFC(spAsyncOp->StartOperation(m_pAssociatedFlyoutNoRef));
 			spAsyncOp.StartOperation(m_pAssociatedFlyoutNoRef);
 
-			//pTarget = m_tpTargetForDeferredShowAt;
-			//IFC(SetPtrValue(m_tpTargetForDeferredShowAt, pTarget));
+			m_tpTargetForDeferredShowAt = pTarget;
 
 			// UNO-TODO: TEMPORARY DISABLE THIS FEATURE
 			// m_isShowAtForCurrentOperationDeferred = true; 

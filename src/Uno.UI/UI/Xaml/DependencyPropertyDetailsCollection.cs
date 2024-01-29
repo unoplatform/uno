@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection

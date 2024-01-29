@@ -9,7 +9,6 @@
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
-      "SamplesApp\\SamplesApp.UWP.Design\\SamplesApp.UWP.Design.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\SamplesApp.Wasm\\SamplesApp.Wasm.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",

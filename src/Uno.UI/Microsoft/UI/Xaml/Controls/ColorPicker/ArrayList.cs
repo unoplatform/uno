@@ -1,6 +1,6 @@
 ﻿using global::System;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Simplified implementation of List<typeparamref name="T"/> that supports direct access to the internal array.

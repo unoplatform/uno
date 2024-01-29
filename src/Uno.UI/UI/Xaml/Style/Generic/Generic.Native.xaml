@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,8 +14,8 @@
 					xmlns:native_android="using:Android.Widget"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					xmlns:legacy="using:Uno.UI.Controls.Legacy"
-					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
-					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
+					xmlns:maps="using:Microsoft.UI.Xaml.Controls.Maps"
+					xmlns:mapsPresenter="using:Microsoft.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
 					xmlns:skia="http://uno.ui/skia"
 					xmlns:macos="http://uno.ui/macos"
@@ -264,7 +264,7 @@
 					<Grid>
 						<Grid.Resources>
 						</Grid.Resources>
-						<ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
+						<legacy:ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
 											 Foreground="{TemplateBinding Foreground}"
 											 Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
 						<ios:BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
@@ -718,7 +718,7 @@
 	</ios:Style>
 
 	<!-- TimePicker -->
-	<android:Style TargetType="TimePickerFlyoutPresenter">
+	<android:Style TargetType="NativeTimePickerFlyoutPresenter">
 		<Setter Property="VerticalAlignment"
 				Value="Stretch" />
 		<Setter Property="HorizontalAlignment"
@@ -743,7 +743,7 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-	<ios:Style TargetType="TimePickerFlyoutPresenter">
+	<ios:Style TargetType="NativeTimePickerFlyoutPresenter">
 		<Setter Property="Background"
 				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
@@ -770,10 +770,10 @@
 							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
 
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0"
 							  x:Name="AcceptDismissHostGrid"

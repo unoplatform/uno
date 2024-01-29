@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Provider;
+﻿namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Exposes a method to support the virtualized item control pattern. 

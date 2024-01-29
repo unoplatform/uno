@@ -4,9 +4,9 @@ using Private.Infrastructure;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Input;
 

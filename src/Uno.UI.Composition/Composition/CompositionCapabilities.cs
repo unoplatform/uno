@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionCapabilities
 	{
@@ -15,6 +15,6 @@ namespace Windows.UI.Composition
 
 		internal CompositionCapabilities(Compositor? compositor) => _compositor = compositor;
 
-		public static CompositionCapabilities GetForCurrentView() => new CompositionCapabilities(Compositor.Current);
+		public static CompositionCapabilities GetForCurrentView() => new CompositionCapabilities(Compositor.GetSharedCompositor());
 	}
 }

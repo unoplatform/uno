@@ -4,7 +4,7 @@ using System.Text;
 using CoreGraphics;
 using ObjCRuntime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal interface IUIScrollView
 	{

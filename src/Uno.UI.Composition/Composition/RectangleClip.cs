@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 
-namespace Windows.UI.Composition;
+namespace Microsoft.UI.Composition;
 
 /// <summary>
 /// Represents a rectangle with optional rounded corners that clips a portion of a visual.

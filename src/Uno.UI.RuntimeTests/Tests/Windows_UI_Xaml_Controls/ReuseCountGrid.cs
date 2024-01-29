@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class ReuseCountGrid : Grid
-#if !NETFX_CORE
+#if !WINAPPSDK
 		, IFrameworkTemplatePoolAware
 #endif
 	{
 		public static int GlobalReuseCount { get; private set; }
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		public void OnTemplateRecycled()
 		{
 			GlobalReuseCount++;

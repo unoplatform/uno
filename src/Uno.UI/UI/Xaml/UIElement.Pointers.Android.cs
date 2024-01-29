@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Android.Runtime;
 using Android.Views;
 
@@ -20,7 +20,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
@@ -124,7 +124,11 @@ namespace Windows.UI.Xaml
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(args, isAfterHandledUp: true); // TODO for #8341
+						if (WinUICoreServices.Instance.MainRootVisual is not IRootElement rootElement)
+						{
+							rootElement = XamlRoot?.VisualTree.RootElement as IRootElement;
+						}
+						rootElement?.ProcessPointerUp(args, isAfterHandledUp: true);
 						return true;
 					}
 					else

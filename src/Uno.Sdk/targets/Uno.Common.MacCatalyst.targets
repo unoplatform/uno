@@ -1,0 +1,7 @@
+<Project>
+	<PropertyGroup>
+		<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
+		<IsMacCatalyst>true</IsMacCatalyst>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+</Project>

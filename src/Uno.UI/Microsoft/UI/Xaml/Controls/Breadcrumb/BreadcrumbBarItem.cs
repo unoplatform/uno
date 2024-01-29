@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BreadcrumbBarItem.cpp, tag winui3/release/1.4.2
 
@@ -7,16 +7,16 @@
 using System.Collections.ObjectModel;
 using Uno.Disposables;
 using Windows.System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 #if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 #endif
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -25,7 +25,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an item in a BreadcrumbBar control.
@@ -54,7 +54,7 @@ public partial class BreadcrumbBarItem : ContentControl
 		HookListeners(m_isEllipsisDropDownItem);
 	}
 
-	private void BreadcrumbBarItem_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+	private void BreadcrumbBarItem_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
 		RevokeListeners();
 		m_ellipsisRepeaterElementPreparedRevoker.Disposable = null;

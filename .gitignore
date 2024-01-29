@@ -259,3 +259,5 @@ src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
 
 # external docs
 doc/articles/external
+
+mergedstyles.xaml

@@ -3,9 +3,9 @@
 
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
+using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
 
 namespace MUXControlsTestApp
 {

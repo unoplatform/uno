@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Input;
+﻿namespace Microsoft.UI.Xaml.Input;
 
 /// <summary>
 /// Derives from XamlUICommand, adding a set of standard platform commands with pre-defined properties.

@@ -8,21 +8,21 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Windows.Foundation.Metadata;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using SwipeControl_TestUI;
 using Uno.UI.Samples.Controls;
 
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
-using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
+using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
+using SwipeItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItem;
+using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
+using SwipeItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
 //using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
 //using SwipeTestHooks = Microsoft.UI.Private.Controls.SwipeTestHooks;
 //using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;
@@ -125,7 +125,7 @@ namespace MUXControlsTestApp
 		//SwipeTestHooks.LastInteractedWithSwipeControlChanged += SwipeTestHooks_LastInteractedWithSwipeControlChanged;
 		//         MaterialHelperTestApiSetup();
 
-		//         if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Input.XamlUICommand"))
+		//         if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Input.XamlUICommand"))
 		//         {
 		//             XamlUICommand uiCommand = new XamlUICommand
 		//             {
@@ -702,14 +702,14 @@ namespace MUXControlsTestApp
 		//             if (!this.IsRenderingHooked)
 		//             {
 		//                 this.IsRenderingHooked = true;
-		//                 Windows.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
+		//                 Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += CompositionTarget_Rendering;
 		//             }
 		//         }
 		//         else
 		//         {
 		//             if (this.IsRenderingHooked)
 		//             {
-		//                 Windows.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
+		//                 Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= CompositionTarget_Rendering;
 		//                 this.IsRenderingHooked = false;
 		//             }
 		//         }
@@ -837,7 +837,7 @@ namespace MUXControlsTestApp
 		//                 lstAsyncEventMessage.Add(msgHead);
 		//             }
 
-		//             var ignored = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, AppendAsyncEventMessage);
+		//             var ignored = UnitTestDispatcherCompat.From(this).RunAsync(UnitTestDispatcherCompat.Priority.Normal, AppendAsyncEventMessage);
 		//         }
 		//     }
 

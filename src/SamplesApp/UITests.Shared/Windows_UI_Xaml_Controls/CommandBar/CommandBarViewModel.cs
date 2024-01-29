@@ -15,7 +15,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		private string _dynamicSubTitle2;
 		private bool _isChecked;
 
-		public CommandBarViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public CommandBarViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			ToggleChecked = GetOrCreateCommand(() => IsChecked = !IsChecked);
 			StartData();

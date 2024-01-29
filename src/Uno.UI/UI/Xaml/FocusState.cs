@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml
+﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Describes how an element obtained focus.

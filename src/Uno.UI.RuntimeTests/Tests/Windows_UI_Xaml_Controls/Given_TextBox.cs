@@ -2,17 +2,18 @@
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
+using Windows.ApplicationModel.DataTransfer;
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -779,6 +780,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(height1, height3);
 			height2.Should().BeGreaterThan(height1);
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Paste is not implemented on MacOS")]
+#endif
+		public async Task When_Paste()
+		{
+			var SUT = new TextBox();
+
+			var pasteCount = 0;
+			SUT.Paste += (_, _) => pasteCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText("a");
+			Clipboard.SetContent(dataPackage);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(pasteCount, 1);
 		}
 	}
 }

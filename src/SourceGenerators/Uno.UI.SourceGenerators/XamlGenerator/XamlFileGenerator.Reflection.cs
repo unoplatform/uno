@@ -514,18 +514,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
+		private INamedTypeSymbol? SearchNamespaces(string name, string[] namespaces)
+		{
+			foreach (var @namespace in namespaces)
+			{
+				if (_metadataHelper.FindTypeByFullName(@namespace + "." + name) is INamedTypeSymbol type)
+				{
+					return type;
+				}
+			}
+
+			return null;
+		}
+
 		private INamedTypeSymbol? SearchClrNamespaces(string name)
 		{
 			if (_clrNamespaces != null)
 			{
-				// Search first using the default namespace
-				foreach (var clrNamespace in _clrNamespaces)
-				{
-					if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
-					{
-						return type;
-					}
-				}
+				return SearchNamespaces(name, _clrNamespaces);
 			}
 
 			return null;
@@ -604,9 +610,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					namespaceUrl = ns.Namespace.Substring(0, indexOfQuestionMark);
 				}
 
-				if (namespaceUrl.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
+				if (_knownNamespaces.TryGetValue(namespaceUrl, out var knownNamespaces))
 				{
-					return SearchClrNamespaces(fields[1]);
+					return SearchNamespaces(fields[1], knownNamespaces);
 				}
 
 				var nsName = GetTrimmedNamespace(namespaceUrl);
@@ -625,9 +631,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// Background on this code path taking the following xaml just as an example:
 				// https://github.com/unoplatform/uno/blob/12c3b1c3cdd6bcd856005d181be4057cd3751212/src/Uno.UI.FluentTheme.v2/Resources/Version2/PriorityDefault/CommandBarFlyout.xaml#L5-L6
-				// In the above XAML, we have 'local:CommandBarFlyoutCommandBar' which refers to 'using:Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar'
+				// In the above XAML, we have 'local:CommandBarFlyoutCommandBar' which refers to 'using:Microsoft/**/.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar'
 				// However, we have 'CommandBarFlyoutCommandBar' in Windows namespace for UWP tree, and in Microsoft namespace for WinUI tree.
-				// So, if we couldn't get Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar, we try with Windows.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar
+				// So, if we couldn't get Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar, we try with Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBar
 				// Ideally we would like UWP and WinUI trees to individually have the correct namespace. Until that happens, we have to live with this workaround.
 				if (nsName.StartsWith("Microsoft.", StringComparison.Ordinal) &&
 					_metadataHelper.FindTypeByFullName("Windows." + nsName.Substring("Microsoft.".Length) + "." + fields[1]) is INamedTypeSymbol namedTypeSymbol2)
@@ -726,7 +732,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// fullKey = $"{uidName}.[using:{ns}]{type}.{memberName}";
 				//
 				// Example:
-				// OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip
+				// OpenVideosButton.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip
 
 				var firstDotIndex = resource.Key.IndexOf('.');
 				var propertyPath = resource.Key.Substring(firstDotIndex + 1);

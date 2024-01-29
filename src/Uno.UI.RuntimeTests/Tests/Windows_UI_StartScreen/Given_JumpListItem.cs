@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__ || NETFX_CORE
+﻿#if __ANDROID__ || __IOS__ || WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Linq;

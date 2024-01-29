@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Uno.UI.DataBinding;
 using System.Collections.Generic;
 using Uno.Extensions;
@@ -17,7 +17,7 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Describes the changes made to a dependency property

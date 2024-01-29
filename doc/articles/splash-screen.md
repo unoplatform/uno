@@ -4,7 +4,7 @@ uid: Uno.Development.SplashScreen
 
 # How to manually add a splash screen
 
-Projects created using Uno Platform 4.8 or later have the Uno.Resizetizer [package](https://www.nuget.org/packages/Uno.Resizetizer) installed by default. Simply provide an SVG file, and the tool handles the task of generating various image sizes. That package updates the build process to automate configuring a splash screen for each platform. 
+Projects created using Uno Platform 4.8 or later have the Uno.Resizetizer [package](https://www.nuget.org/packages/Uno.Resizetizer) installed by default. Simply provide an SVG file, and the tool handles the task of generating various image sizes. That package updates the build process to automate configuring a splash screen for each platform.
 
 While the new templates simplify adding a splash screen, this article covers how to add one to your application manually if using Uno.Resizetizer is not warranted.
 
@@ -32,23 +32,19 @@ While the new templates simplify adding a splash screen, this article covers how
 
 * Refer to this [table](xref:Uno.Features.Assets#table-of-scales) to see values for the different scales required.
 
-    * You can instead provide only a single image named `SplashScreen.png` without the `scale-000` qualifier.
+  * You can instead provide only a single image named `SplashScreen.png` without the `scale-000` qualifier.
 
     > [!NOTE]
     > Regardless if you provide a single image or multiple images, you would always refer to this image as `SplashScreen.png`.
 
 * Add these images under the `Assets\` folder of the `MyApp` Class Library project, right-click on each image, go to `Properties`, and set their build action as `Content`.
 
-
 ### 2. Windows
 
 * In the `.Windows` project, open the file `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
 
-* Make sure the value for `Preview Images > Splash Screen` is set to:
+* Make sure the value for `Preview Images > Splash Screen` is set to `Assets\SplashScreen.png`
 
-    ```
-    Assets\SplashScreen.png
-    ```
     ![uwp-splash-screen](Assets/uwp-splash-screen.JPG)
 
 ### 3. Android
@@ -58,11 +54,13 @@ While the new templates simplify adding a splash screen, this article covers how
 * Navigate further to the file at `Resources/values/Styles.xml`
 
 * `Styles.xml` contains Android-specific customizations for the splash screen. Inside, look for the `AppTheme` style and add an `<item>` under it:
+
     ```xml
     <item name="android:windowBackground">@drawable/splash</item>
     ```
 
 * Navigate upward to `Resources/drawable`, and create a new XML file named `splash.xml`:
+
     ```xml
     <?xml version="1.0" encoding="utf-8"?>
         <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
@@ -80,65 +78,68 @@ While the new templates simplify adding a splash screen, this article covers how
     ```
 
     > [!IMPORTANT]
-    > Before Uno.UI 4.5, the `@drawable/assets_splashscreen` source should be `@drawable/splashscreen`. 
+    > Before Uno.UI 4.5, the `@drawable/assets_splashscreen` source should be `@drawable/splashscreen`.
     > See the [breaking changes](https://github.com/unoplatform/uno/releases/tag/4.5.9) section of that release.
 
 * Make sure `splash.xml` is added as an `AndroidResource` in the Droid project file: `[Project-name].Droid.csproj`.
 
-    * This is not always done automatically and may occur if `splash.xml` was created and added outside the IDE.
-        ```xml
-        <ItemGroup>
-            <AndroidResource Include="Resources\drawable\splash.xml" />
-        </ItemGroup>
-        ```
+  * This is not always done automatically and may occur if `splash.xml` was created and added outside the IDE.
+
+    ```xml
+    <ItemGroup>
+      <AndroidResource Include="Resources\drawable\splash.xml" />
+    </ItemGroup>
+    ```
 
     > [!TIP]
     > After modifying `splash.xml`, you may run into errors like these while trying to debug:
-    > ```
+    >
+    > ```console
     > Resources\drawable-mdpi\SplashScreen.png : error APT2126: file not found.
     > Resources\drawable-hdpi\SplashScreen.png : error APT2126: file not found.
     > ```
+    >
     > Simply rebuild the Android target to get rid of these errors.
 
 ### 4. iOS/MacCatalyst
 
 * In the `.Mobile` project, open the subfolder for `iOS` or `MacCatalyst`.
 
-    * Delete the old splash screen files:
-        - `Resources\SplashScreen@2x.png`
-        - `Resources\SplashScreen@3x.png`
-        - `LaunchScreen.storyboard`
+  * Delete the old splash screen files:
+    * `Resources\SplashScreen@2x.png`
+    * `Resources\SplashScreen@3x.png`
+    * `LaunchScreen.storyboard`
 
 * Create a new **StoryBoard** named `LaunchScreen.storyboard`:
-    * Right-click the `.Mobile` project subfolder you're working with (ex: `MyApp.Mobile\iOS`)
-    * Select **Add** > **New Item...**
-    * Create a **Visual C#** > **Apple** > **Empty Storyboard**
+  * Right-click the `.Mobile` project subfolder you're working with (ex: `MyApp.Mobile\iOS`)
+  * Select **Add** > **New Item...**
+  * Create a **Visual C#** > **Apple** > **Empty Storyboard**
 
 * In the **Toolbox** window, drag and drop a **View Controller** and then an **ImageView** inside the **View Controller**
 
-    * Enable the **Is initial View Controller**-flag on the **View Controller**.
+  * Enable the **Is initial View Controller**-flag on the **View Controller**.
 
-        ![`viewcontroller-imageview`](Assets/viewcontroller-imageview.png)
+    ![`viewcontroller-imageview`](Assets/viewcontroller-imageview.png)
 
-    * To have an image fill the screen, set your constraints as below
+  * To have an image fill the screen, set your constraints as below
 
-        ![ios-constraints](Assets/ios-constraints.png)
+    ![ios-constraints](Assets/ios-constraints.png)
 
-    * Set the **Content Mode** to **Aspect Fit**
+  * Set the **Content Mode** to **Aspect Fit**
 
-        ![ios-content-fit](Assets/ios-content-fit.png)
+    ![ios-content-fit](Assets/ios-content-fit.png)
 
-    * In the **Properties** > **Storyboard Document** window, select the **Can be Launch Screen** checkbox.
+  * In the **Properties** > **Storyboard Document** window, select the **Can be Launch Screen** checkbox.
 
-        ![can-be-launch](Assets/can-be-launch.png)
+    ![can-be-launch](Assets/can-be-launch.png)
 
 * Close the designer and open the `.storyboard` file.
 
-    * Add your image path to the `Image View`
+  * Add your image path to the `Image View`
 
-        ``` xml
-        <imageView ... image="Assets/SplashScreen">
-        ```
+    ``` xml
+    <imageView ... image="Assets/SplashScreen">
+    ```
 
 * Open `info.plist` and update the `UILaunchStoryboardName` value to `LaunchScreen`.
 

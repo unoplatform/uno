@@ -14,7 +14,7 @@ using _View = AppKit.NSView;
 #endif
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{

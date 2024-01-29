@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system
@@ -130,6 +130,8 @@ namespace Windows.UI.Xaml
 		/// <param name="precedence">The precedence level to set the value at</param>
 		internal void SetValue(object? value, DependencyPropertyValuePrecedences precedence)
 		{
+			Property.ValidateValue(value);
+
 			if (!SetValueFast(value, precedence))
 			{
 				SetValueFull(value, precedence);

@@ -3,9 +3,9 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public sealed partial class XamlControlsResources : ResourceDictionary
 	{

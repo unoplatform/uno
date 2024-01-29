@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 using ICommand = System.Windows.Input.ICommand;
 using EventHandler = System.EventHandler;
@@ -14,7 +14,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Model
 	{
 		private TimeSpan _time = new TimeSpan(12, 0, 0);
 
-		public TimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public TimePickerViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation.Provider;
+﻿namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Provides access to items (cells) in a spreadsheet.

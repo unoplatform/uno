@@ -3,18 +3,18 @@
 // MUX Reference TreeViewItemAutomationPeer.cpp, tag winui3/release/1.4.2
 
 using Uno.UI.Helpers.WinUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
-using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
-using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
-using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
+using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
+using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
+using TreeViewSelectionMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionMode;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TreeViewItem types to Microsoft UI Automation.

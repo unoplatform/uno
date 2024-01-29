@@ -11,11 +11,11 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Uno.UI.Helpers;
@@ -30,7 +30,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public class TextBoxConstants
 	{
@@ -119,15 +119,9 @@ namespace Windows.UI.Xaml.Controls
 
 #if __SKIA__
 			_timer.Tick += TimerOnTick;
+			EnsureHistory();
 #endif
 		}
-
-		private bool IsSkiaTextBox =>
-#if __SKIA__
-			!FeatureConfiguration.TextBox.UseOverlayOnSkia;
-#else
-			false;
-#endif
 
 		private protected override void OnLoaded()
 		{
@@ -161,7 +155,9 @@ namespace Windows.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-				if (!IsSkiaTextBox)
+#if __SKIA__
+				if (!_isSkiaTextBox)
+#endif
 				{
 					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
 					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
@@ -289,7 +285,11 @@ namespace Windows.UI.Xaml.Controls
 
 			RaiseTextChanging();
 
-			if (!_isInputModifyingText)
+			if (!_isInputModifyingText
+#if __SKIA__
+				|| _isSkiaTextBox
+#endif
+				)
 			{
 				_textBoxView?.SetTextNative(Text);
 			}
@@ -378,10 +378,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				baseString = GetFirstLine(baseString);
 			}
-			else if (IsSkiaTextBox)
+#if __SKIA__
+			else if (_isSkiaTextBox)
 			{
 				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
 			}
+#endif
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
@@ -1214,7 +1216,20 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				var content = Clipboard.GetContent();
-				var clipboardText = await content.GetTextAsync();
+				string clipboardText;
+				try
+				{
+					clipboardText = await content.GetTextAsync();
+				}
+				catch (InvalidOperationException e)
+				{
+					clipboardText = "";
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
+					}
+				}
 				var selectionStart = SelectionStart;
 				var selectionLength = SelectionLength;
 				var currentText = Text;
@@ -1228,7 +1243,26 @@ namespace Windows.UI.Xaml.Controls
 
 				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
 
-				Text = currentText;
+#if __SKIA__
+				try
+				{
+
+					_suppressCurrentlyTyping = true;
+#else
+				{
+#endif
+					ProcessTextInput(currentText);
+				}
+#if __SKIA__
+				finally
+				{
+					_suppressCurrentlyTyping = false;
+				}
+#endif
+
+#if !IS_UNIT_TESTS && !__MACOS__
+				RaisePaste(new TextControlPasteEventArgs());
+#endif
 			});
 		}
 
@@ -1255,7 +1289,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			CopySelectionToClipboard();
 			CutSelectionToClipboardPartial();
-			Text = Text.Remove(SelectionStart, SelectionLength);
+#if __SKIA__
+			try
+			{
+				_suppressCurrentlyTyping = true;
+#else
+			{
+#endif
+				Text = Text.Remove(SelectionStart, SelectionLength);
+			}
+#if __SKIA__
+			finally
+			{
+				_suppressCurrentlyTyping = false;
+			}
+#endif
 		}
 
 		partial void CutSelectionToClipboardPartial();

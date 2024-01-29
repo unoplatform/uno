@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Windows.Foundation;
-using Windows.UI.Xaml.Documents;
-using Uno.Extensions;
-using System.Linq;
-using Windows.UI.Xaml.Hosting;
+using Microsoft.UI.Xaml.Documents;
 using SkiaSharp;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using System.Numerics;
-using Windows.UI.Composition.Interactions;
-using Uno.Disposables;
-using Windows.UI.Xaml.Media;
+using System.Windows.Input;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
-using Windows.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 #nullable enable
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{
 		private readonly TextVisual _textVisual;
+		private Action? _selectionHighlightColorChanged;
+		private MenuFlyout? _contextMenu;
+		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
 		public TextBlock()
 		{
@@ -30,6 +33,15 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
+
+			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
+
+			DoubleTapped += (s, e) => ((TextBlock)s).OnDoubleTapped(e);
+			RightTapped += (s, e) => ((TextBlock)s).OnRightTapped(e);
+			KeyDown += (s, e) => ((TextBlock)s).OnKeyDown(e);
+
+			GotFocus += (_, _) => UpdateSelectionRendering();
+			LostFocus += (_, _) => UpdateSelectionRendering();
 		}
 
 #if DEBUG
@@ -68,6 +80,20 @@ namespace Windows.UI.Xaml.Controls
 			return desiredSize;
 		}
 
+		partial void OnIsTextSelectionEnabledChangedPartial()
+		{
+			RecalculateSubscribeToPointerEvents();
+			UpdateSelectionRendering();
+		}
+
+		private void UpdateSelectionRendering()
+		{
+			if (_inlines is { })
+			{
+				_inlines.RenderSelection = IsTextSelectionEnabled && (IsFocused || (_contextMenu?.IsOpen ?? false));
+			}
+		}
+
 		private void ApplyFlowDirection(float width)
 		{
 			if (this.FlowDirection == FlowDirection.RightToLeft)
@@ -96,8 +122,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Gets the line height of the TextBlock either 
-		/// based on the LineHeight property or the default 
+		/// Gets the line height of the TextBlock either
+		/// based on the LineHeight property or the default
 		/// font line height.
 		/// </summary>
 		/// <returns>Computed line height</returns>
@@ -124,28 +150,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private Hyperlink? FindHyperlinkAt(Point point)
-		{
-			var padding = Padding;
-			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false)?.span;
-
-			if (span == null)
-			{
-				return null;
-			}
-
-			var inline = span.Segment.Inline;
-
-			while ((inline = inline.GetParent() as Inline) != null)
-			{
-				if (inline is Hyperlink hyperlink)
-				{
-					return hyperlink;
-				}
-			}
-
-			return null;
-		}
+		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => Inlines.GetIndexAt(point, false, extended);
 
 		partial void OnInlinesChangedPartial()
 		{
@@ -174,12 +179,143 @@ namespace Windows.UI.Xaml.Controls
 			Inlines.InvalidateMeasure();
 		}
 
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush)
+		{
+			Inlines.InvalidateMeasure();
+		}
+
+		void IBlock.Invalidate(bool updateText) => InvalidateInlines(updateText);
+
+		partial void OnSelectionChanged()
+			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+
+		partial void SetupInlines()
+		{
+			_inlines.SelectionFound += t =>
+			{
+				var canvas = t.canvas;
+				var rect = t.rect;
+				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
+				{
+					Color = SelectionHighlightColor.Color.ToSKColor(),
+					Style = SKPaintStyle.Fill
+				});
+			};
+
+			_inlines.FireDrawingEventsOnEveryRedraw = true;
+			_inlines.RenderSelection = IsTextSelectionEnabled;
+		}
+
+		private void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			switch (args.Key)
+			{
+				case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+					CopySelectionToClipboard();
+					args.Handled = true;
+					break;
+				case VirtualKey.A when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+					SelectAll();
+					args.Handled = true;
+					break;
+			}
+		}
+
+		private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			if (IsTextSelectionEnabled)
+			{
+				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
+				if (nullableSpan.HasValue)
+				{
+					Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
+				}
+			}
+		}
+
+		// TODO: remove this context menu when TextCommandBarFlyout is implemented
+		private void OnRightTapped(RightTappedRoutedEventArgs e)
+		{
+			e.Handled = true;
+
+			Focus(FocusState.Pointer);
+
+			if (_contextMenu is null)
+			{
+				_contextMenu = new MenuFlyout();
+
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
+			}
+
+			_contextMenu.Items.Clear();
+
+			if (Selection.start != Selection.end)
+			{
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+			}
+			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
+
+			_contextMenu.ShowAt(this, e.GetPosition(this));
+		}
+
+		public void CopySelectionToClipboard()
+		{
+			if (Selection.start != Selection.end)
+			{
+				var start = Math.Min(Selection.start, Selection.end);
+				var end = Math.Max(Selection.start, Selection.end);
+				var text = Text[start..end];
+				var dataPackage = new DataPackage();
+				dataPackage.SetText(text);
+				Clipboard.SetContent(dataPackage);
+			}
+		}
+
+		public void SelectAll() => Selection = new Range(0, Text.Length);
+
+		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		public SolidColorBrush SelectionHighlightColor
+		{
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
+			set => SetValue(SelectionHighlightColorProperty, value);
+		}
+
+		public static DependencyProperty SelectionHighlightColorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColor),
+				typeof(SolidColorBrush),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					DefaultBrushes.SelectionHighlightColor,
+					propertyChangedCallback: (s, e) => ((TextBlock)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
+
+		private void OnSelectionHighlightColorChanged(SolidColorBrush? oldBrush, SolidColorBrush? newBrush)
+		{
+			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
+			newBrush ??= DefaultBrushes.SelectionHighlightColor;
+			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+
 		partial void UpdateIsTextTrimmed()
 		{
 			IsTextTrimmed = IsTextTrimmable && (
 				(_textVisual.Size.X + Padding.Left + Padding.Right) > ActualWidth ||
 				(_textVisual.Size.Y + Padding.Top + Padding.Bottom) > ActualHeight
 			);
+		}
+
+		private sealed class TextBlockCommand(Action action) : ICommand
+		{
+			public bool CanExecute(object? parameter) => true;
+
+			public void Execute(object? parameter) => action();
+
+#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
+			public event EventHandler? CanExecuteChanged;
+#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 		}
 	}
 }

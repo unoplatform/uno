@@ -51,12 +51,11 @@ namespace Windows.Globalization
 				global::System.Globalization.UmAlQuraCalendar _ => CalendarIdentifiers.UmAlQura,
 				global::System.Globalization.PersianCalendar _ => CalendarIdentifiers.Persian,
 				global::System.Globalization.ChineseLunisolarCalendar _ => CalendarIdentifiers.ChineseLunar,
-				// Not supported by UWP as of 2019-05-23
-				// https://docs.microsoft.com/en-us/uwp/api/windows.globalization.calendaridentifiers
+				global::System.Globalization.TaiwanLunisolarCalendar _ => CalendarIdentifiers.TaiwanLunar,
+				global::System.Globalization.KoreanLunisolarCalendar _ => CalendarIdentifiers.KoreanLunar,
+				global::System.Globalization.JapaneseLunisolarCalendar _ => CalendarIdentifiers.JapaneseLunar,
+				// Missing support in System.Globalization for VietnameseLunar calendar.
 				// case CalendarIdentifiers.VietnameseLunar: return new global::System.Globalization.VietnameseLunarCalendar();
-				// case CalendarIdentifiers.TaiwanLunar: return new global::System.Globalization.TaiwanLunarCalendar();
-				// case CalendarIdentifiers.KoreanLunar: return new global::System.Globalization.KoreanLunarCalendar();
-				// case CalendarIdentifiers.JapaneseLunar: return new global::System.Globalization.JapaneseLunarCalendar();
 				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
 			};
 		}
@@ -221,17 +220,54 @@ namespace Windows.Globalization
 			{
 				var hour = _calendar.GetHour(_time.DateTime);
 
-				if (hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
+				if (_clock == ClockIdentifiers.TwelveHour)
 				{
-					return hour;
+					if (hour == 0 || hour == 12)
+					{
+						return 12;
+					}
+					else if (hour > 12)
+					{
+						return hour - 12;
+					}
 				}
-				else
-				{
-					return hour - 12;
-				}
-			}
 
-			set => AddHours(value - Hour);
+				// For 24-hour clock, or 12-hour clock with hour < 12
+				return hour;
+			}
+			set
+			{
+				// Validate value against both 12-hour and 24-hour clock
+				if (value < 0 || value >= 24)
+				{
+					throw new ArgumentException(nameof(value));
+				}
+
+				if (_clock == ClockIdentifiers.TwelveHour &&
+					(value == 0 || value > 12))
+				{
+					throw new ArgumentException(nameof(value));
+				}
+
+				var twentyFourHourValue = value;
+
+				if (_clock == ClockIdentifiers.TwelveHour)
+				{
+					if (Period == 1 && value == 12)
+					{
+						// 12 AM == 0
+						twentyFourHourValue = 0;
+					}
+					else if (Period == 2 && value != 12)
+					{
+						// 12 PM == 12, 1 PM == 13, etc.
+						twentyFourHourValue += 12;
+					}
+				}
+
+				var currentHours = _calendar.GetHour(_time.DateTime);
+				AddHours(twentyFourHourValue - currentHours);
+			}
 		}
 
 		public int Minute
@@ -251,30 +287,23 @@ namespace Windows.Globalization
 			get => _clock == ClockIdentifiers.TwentyFourHour || _time.Hour < 12 ? 1 : 2;
 			set
 			{
-				switch (value)
+				var currentPeriod = Period;
+				if (value != currentPeriod)
 				{
-					case 1 when _clock == ClockIdentifiers.TwentyFourHour:
-						break;
+					if ((value <= 0 || value > 2) ||
+						(value != 1 && _clock == ClockIdentifiers.TwentyFourHour))
+					{
+						throw new ArgumentException(nameof(value));
+					}
 
-					case 1 when _clock == ClockIdentifiers.TwelveHour && _time.Hour < 12:
-						break;
-
-					case 1 when _clock == ClockIdentifiers.TwelveHour:
+					if (value == 1)
+					{
 						AddHours(-12);
-						break;
-
-					case 2 when _clock == ClockIdentifiers.TwelveHour:
-						break;
-
-					case 2 when _clock == ClockIdentifiers.TwentyFourHour && _time.Hour < 12:
+					}
+					else
+					{
 						AddHours(12);
-						break;
-
-					case 2 when _clock == ClockIdentifiers.TwentyFourHour:
-						break;
-
-					default:
-						throw new ArgumentOutOfRangeException(nameof(value));
+					}
 				}
 			}
 		}

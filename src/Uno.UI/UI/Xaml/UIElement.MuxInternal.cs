@@ -1,8 +1,8 @@
 ﻿using System;
 using Windows.System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	partial class UIElement
 	{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml
 
 #if !HAS_UNO_WINUI
 		// This is to ensure forward compatibility with WinUI
-		private protected DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
+		protected internal DispatcherQueue DispatcherQueue => DispatcherQueue.GetForCurrentThread();
 #endif
 	}
 }

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class StateTriggerBase : DependencyObject
 	{
@@ -55,7 +55,18 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnOwnerChanged()
 		{
+		}
 
+		internal virtual void OnOwnerElementChanged()
+		{
+		}
+
+		internal virtual void OnOwnerElementLoaded()
+		{
+		}
+
+		internal virtual void OnOwnerElementUnloaded()
+		{
 		}
 	}
 }

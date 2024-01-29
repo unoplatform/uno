@@ -994,7 +994,7 @@ namespace Uno.UI {
 
 			if (eventExtractorId) {
 				//
-				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+				// NOTE TO MAINTAINERS: Keep in sync with Microsoft.UI.Xaml.UIElement.HtmlEventExtractor
 				//
 
 				switch (eventExtractorId) {
@@ -1417,6 +1417,11 @@ namespace Uno.UI {
 				}
 			}
 
+			// This is necessary because in Safari 17 "white-space" is not selected by index (i.e. elementStyle[i])
+			// This is important to implement the Wrap/NoWrap of Controls
+			if (elementStyle.cssText.includes("white-space") && !updatedStyleString.includes("white-space"))
+				updatedStyleString += "white-space: " + elementStyle.whiteSpace + "; ";
+
 			// We use a string to prevent the browser to update the element between
 			// each style assignation. This way, the browser will update the element only once.
 			return updatedStyleString;
@@ -1630,25 +1635,25 @@ namespace Uno.UI {
 			if ((<any>globalThis).DotnetExports !== undefined) {
 				const exports = (<any>globalThis).DotnetExports.UnoUI;
 
-				WindowManager.resizeMethod = exports.Windows.UI.Xaml.Window.Resize;
-				WindowManager.dispatchEventMethod = exports.Windows.UI.Xaml.UIElement.DispatchEvent;
-				WindowManager.focusInMethod = exports.Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
-				WindowManager.dispatchSuspendingMethod = exports.Windows.UI.Xaml.Application.DispatchSuspending;
+				WindowManager.resizeMethod = exports.Microsoft.UI.Xaml.Window.Resize;
+				WindowManager.dispatchEventMethod = exports.Microsoft.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
+				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
 			} else {
 				if (!WindowManager.resizeMethod) {
-					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
+					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Window:Resize");
 				}
 
 				if (!WindowManager.dispatchEventMethod) {
-					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
+					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:DispatchEvent");
 				}
 
 				if (!WindowManager.focusInMethod) {
-					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
 				}
 
 				if (!WindowManager.dispatchSuspendingMethod) {
-					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
+					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Application:DispatchSuspending");
 				}
 			}
 		}

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
 
 #if HAS_UNO_WINUI
@@ -76,9 +76,13 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 		{
 			var pt = args.GetCurrentPoint(TouchTarget);
 			var position = pt.Position;
-			var raw = pt.RawPosition;
 
+#if WINAPPSDK
+			MoveOutput.Text += $"{args.Pointer.PointerId}@[{position.X:000.00},{position.Y:000.00}] ";
+#else
+			var raw = pt.RawPosition;
 			MoveOutput.Text += $"{args.Pointer.PointerId}@[{position.X:000.00},{position.Y:000.00}][{raw.X:000.00},{raw.Y:000.00}] ";
+#endif
 		}
 
 		private void OnManipStarting(object sender, ManipulationStartingRoutedEventArgs e)

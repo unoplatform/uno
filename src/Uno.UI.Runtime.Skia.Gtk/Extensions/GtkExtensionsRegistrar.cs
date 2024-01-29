@@ -6,15 +6,17 @@ using Uno.Extensions.UI.Core.Preview;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.System;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Gtk.System.Profile;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #pragma warning disable CS0649
 namespace Uno.UI.Runtime.Skia.Gtk.Extensions;
 
@@ -29,10 +31,11 @@ internal static class GtkExtensionsRegistrar
 			return;
 		}
 
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
-		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new GtkKeyboardInputSource());
-		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource());
-		ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
+		ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new GtkKeyboardInputSource(o));
+		ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource(o));
+		ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new GtkNativeElementHostingExtension());
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new GtkDisplayInformationExtension(o));

@@ -4,15 +4,15 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class DropDownButtonTests
 	{
-#if !WINDOWS_UWP // GetTemplateChild is protected in UWP while public in Uno.
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[Description("Verifies that the TextBlock representing the Chevron glyph uses the correct font")]
 		[Ignore("Fluent styles V2 use AnimatedIcon instead of FontIcon")]

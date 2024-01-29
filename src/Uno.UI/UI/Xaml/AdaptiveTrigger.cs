@@ -1,16 +1,12 @@
-using System;
 using Uno.Disposables;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class AdaptiveTrigger : StateTriggerBase
 	{
@@ -18,15 +14,20 @@ namespace Windows.UI.Xaml
 
 		public AdaptiveTrigger()
 		{
-			UpdateState();
 		}
 
-		private void OnCurrentWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
-			UpdateState();
+		public XamlRoot XamlRoot => XamlRoot.GetForElement(this);
+
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e) => UpdateState();
 
 		private void UpdateState()
 		{
-			var size = Window.Current.Bounds;
+			if (XamlRoot is not { } xamlRoot)
+			{
+				return;
+			}
+
+			var size = xamlRoot.Bounds;
 
 			var w = size.Width;
 			var h = size.Height;
@@ -81,12 +82,43 @@ namespace Windows.UI.Xaml
 		{
 			base.OnOwnerChanged();
 
-			_sizeChangedSubscription.Disposable = null;
+			DetachSizeChanged();
+			AttachSizeChanged();
+		}
 
-			if (Owner != null)
+		internal override void OnOwnerElementChanged()
+		{
+			base.OnOwnerElementChanged();
+
+			DetachSizeChanged();
+			AttachSizeChanged();
+		}
+
+		internal override void OnOwnerElementLoaded()
+		{
+			base.OnOwnerElementLoaded();
+
+			AttachSizeChanged();
+		}
+
+		internal override void OnOwnerElementUnloaded()
+		{
+			base.OnOwnerElementUnloaded();
+
+			DetachSizeChanged();
+		}
+
+		private void AttachSizeChanged()
+		{
+			if (XamlRoot is { } xamlRoot)
 			{
-				_sizeChangedSubscription.Disposable = Window.Current.RegisterSizeChangedEvent(OnCurrentWindowSizeChanged);
+				xamlRoot.Changed += OnXamlRootChanged;
+				UpdateState();
+
+				_sizeChangedSubscription.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
 			}
 		}
+
+		private void DetachSizeChanged() => _sizeChangedSubscription.Disposable = null;
 	}
 }

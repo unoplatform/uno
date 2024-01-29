@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using FluentAssertions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Private.Infrastructure
 {
@@ -37,7 +37,7 @@ namespace Private.Infrastructure
 
 			}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 			internal static FrameworkElement GetPopupOverlayElement(Popup popup)
 			{
 				return null;
@@ -51,21 +51,48 @@ namespace Private.Infrastructure
 #endif
 			Task RunOnUIThread(Action action)
 		{
-#if __WASM__
+#if __WASM__ // TODO Uno: To be adjusted for #2302
 			action();
 			return Task.CompletedTask;
 #else
-			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+			await WindowHelper.RootElementDispatcher.RunAsync(() => action());
 #endif
 		}
 
-		internal static async Task RunOnUIThread(Func<Task> action)
+		internal static async Task RunOnUIThread(Func<Task> asyncAction)
 		{
 #if __WASM__
-			await action();
+			await asyncAction();
 #else
-			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await action());
+			var tsc = new TaskCompletionSource<bool>();
+
+			await WindowHelper.RootElementDispatcher.RunAsync(async () =>
+			{
+				try
+				{
+					await asyncAction();
+					tsc.TrySetResult(true);
+				}
+				catch (Exception e)
+				{
+					tsc.TrySetException(e);
+				}
+			});
+
+			await tsc.Task;
 #endif
+		}
+
+		internal static bool HasDispatcherAccess
+		{
+			get
+			{
+#if __WASM__ // TODO Uno: To be adjusted for #2302
+				return false;
+#else
+				return WindowHelper.RootElementDispatcher.HasThreadAccess;
+#endif
+			}
 		}
 
 		internal static void EnsureInitialized() { }
@@ -78,6 +105,11 @@ namespace Private.Infrastructure
 		public static void VERIFY_IS_NULL(object value)
 		{
 			Assert.IsNull(value);
+		}
+
+		public static void THROW_IF_NULL(object value)
+		{
+			Assert.IsNotNull(value);
 		}
 
 		public static void THROW_IF_NULL_WITH_MSG(object value, string msg)

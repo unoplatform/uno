@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Uno.UI.Controls.Legacy
 {

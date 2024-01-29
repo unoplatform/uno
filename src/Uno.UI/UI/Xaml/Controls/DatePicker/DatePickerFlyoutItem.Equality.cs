@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class DatePickerFlyoutItem : IEquatable<DatePickerFlyoutItem>
 	{

@@ -31,7 +31,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -55,7 +55,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -87,7 +87,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -134,7 +134,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -168,7 +168,7 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Force a refresh
-		Window.Current.ForceHotReloadUpdate();
+		Window.Current!.ForceHotReloadUpdate();
 
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 
@@ -191,7 +191,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -229,7 +229,7 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Force a refresh
-		Window.Current.ForceHotReloadUpdate();
+		Window.Current!.ForceHotReloadUpdate();
 
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 
@@ -251,7 +251,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -294,7 +294,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		// Navigate to Page1
@@ -339,7 +339,7 @@ public class Given_Frame : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
-		var frame = new Windows.UI.Xaml.Controls.Frame();
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		// Navigate to Page1

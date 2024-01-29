@@ -1,11 +1,11 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 
 using Foundation;

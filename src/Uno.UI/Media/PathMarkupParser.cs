@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.Media
 {

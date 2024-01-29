@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime;
 using System.Runtime.InteropServices;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkTemplatePool
 	{

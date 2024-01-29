@@ -30,6 +30,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleControlInfoAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleInfoControl.xaml.cs">
+      <DependentUpon>SampleInfoControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\StarStackPanel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromBoolToBrushConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromBoolToObjectConverter.cs" />
@@ -61,6 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleChooserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Controls\SampleInfoControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 
 #if __ANDROID__
 using Android.Views;
@@ -16,7 +16,7 @@ using NativeView = UIKit.UIView;
 using NativeView = System.Object;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Canvas : Panel
 	{
@@ -92,16 +92,16 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
-		public static double GetLeft(global::Windows.UI.Xaml.UIElement element) => GetLeftValue(element);
+		public static double GetLeft(global::Microsoft.UI.Xaml.UIElement element) => GetLeftValue(element);
 
-		public static void SetLeft(global::Windows.UI.Xaml.UIElement element, double length) => SetLeftValue(element, length);
+		public static void SetLeft(global::Microsoft.UI.Xaml.UIElement element, double length) => SetLeftValue(element, length);
 
-		public static double GetTop(global::Windows.UI.Xaml.UIElement element) => GetTopValue(element);
+		public static double GetTop(global::Microsoft.UI.Xaml.UIElement element) => GetTopValue(element);
 
-		public static void SetTop(global::Windows.UI.Xaml.UIElement element, double length) => SetTopValue(element, length);
+		public static void SetTop(global::Microsoft.UI.Xaml.UIElement element, double length) => SetTopValue(element, length);
 
-		public static int GetZIndex(global::Windows.UI.Xaml.UIElement element) => GetZIndexValue(element);
+		public static int GetZIndex(global::Microsoft.UI.Xaml.UIElement element) => GetZIndexValue(element);
 
-		public static void SetZIndex(global::Windows.UI.Xaml.UIElement element, int value) => SetZIndexValue(element, value);
+		public static void SetZIndex(global::Microsoft.UI.Xaml.UIElement element, int value) => SetZIndexValue(element, value);
 	}
 }

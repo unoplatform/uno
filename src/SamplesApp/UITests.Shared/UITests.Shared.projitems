@@ -982,6 +982,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_WASM_Tab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_FocusCycle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1351,6 +1355,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_LinearGradientBrush.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_Click_Verify_SynchronizationContext.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4498,27 +4506,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RedirectVisualTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RedirectVisualTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\VisualSurfaceTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\VisualSurfaceTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\NineGridTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\NineGridTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5225,7 +5233,7 @@
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Reference.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>    
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
@@ -5976,6 +5984,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManager_GetFocus_Automated.xaml.cs">
       <DependentUpon>FocusManager_GetFocus_Automated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_WASM_Tab.xaml.cs">
+      <DependentUpon>Focus_WASM_Tab.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\Focus_FocusCycle.xaml.cs">
       <DependentUpon>Focus_FocusCycle.xaml</DependentUpon>
     </Compile>
@@ -6212,6 +6223,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\Border_LinearGradientBrush.xaml.cs">
       <DependentUpon>Border_LinearGradientBrush.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_Click_Verify_SynchronizationContext.xaml.cs">
+      <DependentUpon>Button_Click_Verify_SynchronizationContext.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Buttons_Native.xaml.cs">
       <DependentUpon>Buttons_Native.xaml</DependentUpon>
@@ -7911,22 +7925,22 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\CompositionTargetTests\CompositionTarget_Rendering.xaml.cs">
       <DependentUpon>CompositionTarget_Rendering.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RedirectVisualTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RedirectVisualTests.xaml.cs">
       <DependentUpon>RedirectVisualTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\VisualSurfaceTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\VisualSurfaceTests.xaml.cs">
       <DependentUpon>VisualSurfaceTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\NineGridTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\NineGridTests.xaml.cs">
       <DependentUpon>NineGridTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml.cs">
       <DependentUpon>MaskBrushTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
       <DependentUpon>XamlCompositionBrushBaseTests.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml.cs">
       <DependentUpon>LoadedImageSurfaceTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ArcSegmentPage.xaml.cs">
@@ -9183,8 +9197,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackButtonImage\CommandBar_Page2.xaml.cs">
       <DependentUpon>CommandBar_Page2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Reference.xaml.cs" >
-        <DependentUpon>ListView_DataContext_Reference.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Reference.xaml.cs">
+      <DependentUpon>ListView_DataContext_Reference.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

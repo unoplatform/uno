@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using System.Linq;
 using Uno.UI;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.Collections;

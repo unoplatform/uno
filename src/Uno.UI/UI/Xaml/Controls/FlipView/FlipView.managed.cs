@@ -6,17 +6,18 @@ using System.Text;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Windows.Foundation.Metadata;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Peers;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Xaml;
 using Uno.Disposables;
 using DirectUI;
@@ -30,7 +31,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
@@ -410,7 +411,10 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpScrollViewer != null)
 			{
 				m_tpScrollViewer.SizeChanged -= OnScrollingHostPartSizeChanged;
+
+#if !__WASM__
 				m_tpScrollViewer.ViewChanged -= OnScrollViewerViewChanged;
+#endif
 			}
 
 			m_tpButtonsFadeOutTimer?.Stop();
@@ -482,11 +486,14 @@ namespace Windows.UI.Xaml.Controls
 					//	return OnScrollViewerViewChanged(pSender, pArgs);
 					//}));
 
+#if !__WASM__ // Workaround for https://github.com/unoplatform/uno/issues/14488
 					m_tpScrollViewer.ViewChanged += OnScrollViewerViewChanged;
+#endif
 				}
 			}
 		}
 
+#pragma warning disable IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 		void OnScrollViewerViewChanged(object pSender, ScrollViewerViewChangedEventArgs pArgs)
 		{
 			bool isIntermediate = true;
@@ -581,6 +588,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#pragma warning restore IDE0051 // Private member 'FlipView.OnScrollViewerViewChanged' is unused
 
 #if false
 		void OnItemsHostAvailable()
@@ -1511,7 +1519,12 @@ namespace Windows.UI.Xaml.Controls
 				// with SetFixOffsetTimer.
 				if (m_animateNewIndex)
 				{
-					bool succeeded = (bool)(m_tpScrollViewer?.CancelDirectManipulations());
+					// UIElement.CancelDirectManipulations is not yet implemented in uno at the time of writing.
+					if (ApiInformation.IsMethodPresent(typeof(UIElement), "CancelDirectManipulations"))
+					{
+						bool succeeded = (bool)(m_tpScrollViewer?.CancelDirectManipulations());
+					}
+
 					RestoreSnapPointsTypes();
 					m_animateNewIndex = false;
 					SetFixOffsetTimer();

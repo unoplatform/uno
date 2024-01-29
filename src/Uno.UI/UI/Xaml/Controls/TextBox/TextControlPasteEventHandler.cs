@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents the method that will handle a Paste event.

@@ -1,7 +1,7 @@
-using Uno;
-using Windows.UI.Xaml.Controls;
+﻿using Uno;
+using Microsoft.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.IExpandCollapseProvider, Provider.IValueProvider, Provider.IWindowProvider
 	{
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public global::Windows.UI.Xaml.Automation.WindowInteractionState InteractionState
+		public global::Microsoft.UI.Xaml.Automation.WindowInteractionState InteractionState
 		{
 			get
 			{
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public global::Windows.UI.Xaml.Automation.WindowVisualState VisualState
+		public global::Microsoft.UI.Xaml.Automation.WindowVisualState VisualState
 		{
 			get
 			{
@@ -87,39 +87,39 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public ComboBoxAutomationPeer(global::Windows.UI.Xaml.Controls.ComboBox owner) : base(owner)
+		public ComboBoxAutomationPeer(global::Microsoft.UI.Xaml.Controls.ComboBox owner) : base(owner)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "ComboBoxAutomationPeer.ComboBoxAutomationPeer(ComboBox owner)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "ComboBoxAutomationPeer.ComboBoxAutomationPeer(ComboBox owner)");
 		}
 
 		[NotImplemented]
 		public void Collapse()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.Collapse()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.Collapse()");
 		}
 
 		[NotImplemented]
 		public void Expand()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.Expand()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.Expand()");
 		}
 
 		[NotImplemented]
 		public void SetValue(string value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.SetValue(string value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.SetValue(string value)");
 		}
 
 		[NotImplemented]
 		public void Close()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.Close()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.Close()");
 		}
 
 		[NotImplemented]
-		public void SetVisualState(global::Windows.UI.Xaml.Automation.WindowVisualState state)
+		public void SetVisualState(global::Microsoft.UI.Xaml.Automation.WindowVisualState state)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.SetVisualState(WindowVisualState state)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.SetVisualState(WindowVisualState state)");
 		}
 
 		[NotImplemented]

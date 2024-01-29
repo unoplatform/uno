@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Tests.Common;
-using Windows.UI.Xaml.Tests.Enterprise;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Common;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
@@ -16,20 +16,22 @@ using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation.Collections;
-using ButtonBase = Windows.UI.Xaml.Controls.Primitives.ButtonBase;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
+using ButtonBase = Microsoft.UI.Xaml.Controls.Primitives.ButtonBase;
 using Uno.UI;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Controls;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Windows.UI.Tests.Enterprise
 {
@@ -1398,7 +1400,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				var moreButton = TreeHelper.GetVisualChildByName(cmdBar, "MoreButton");
 
 				VERIFY_IS_TRUE(focusedElement.Equals(moreButton));
@@ -1510,7 +1512,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Validate the second primary command still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(1), (ICommandBarElement)FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(1), (ICommandBarElement)FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
 				LOG_OUTPUT("Focus the second secondary command.");
 				((Control)commandBar.SecondaryCommands.GetAt(1)).Focus(FocusState.Keyboard);
@@ -1523,7 +1525,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Validate the second secondary command still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.SecondaryCommands.GetAt(1), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.SecondaryCommands.GetAt(1), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 
 				LOG_OUTPUT("Clearing all secondary commands. Focus is expected to go to the more button.");
 				commandBar.SecondaryCommands.Clear();
@@ -1534,7 +1536,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				LOG_OUTPUT("Validate the more button has focus.");
 				var moreButton = (Button)(TreeHelper.GetVisualChildByName(commandBar, "MoreButton"));
-				var focused = (Button)FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focused = (Button)FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_ARE_EQUAL(moreButton, focused);
 
 				LOG_OUTPUT("Focus fourth primary command, enable dynamic overflow and resize command bar.");
@@ -1547,7 +1549,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Fourth primary command is now in the secondary ItemsControl. Validate it still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 
 				LOG_OUTPUT("Resize command bar back to its original size.");
 				commandBar.Width = 500;
@@ -1557,7 +1559,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Fourth primary command is back in the primary ItemsControl. Validate it still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 			});
 		}
 
@@ -1953,7 +1955,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 
 				cmdBar.IsOpen = false;
 
@@ -1972,7 +1974,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 
 				cmdBar.IsOpen = false;
 			});
@@ -2537,16 +2539,12 @@ namespace Windows.UI.Tests.Enterprise
 			//UNO ONLY: SetWindowSizeOverride is not supported, so we are fullscreen
 			//double expectedCommandBarWidth = 500;
 
-			double expectedCommandBarWidth = Window.Current.Bounds.Width;
-			if (TestServices.WindowHelper.IsXamlIsland)
-			{
-				expectedCommandBarWidth = TestServices.WindowHelper.XamlRoot.Size.Width;
-			}
+			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : WindowHelper.CurrentTestWindow!.Bounds.Width;
 
 #if __IOS__
 			await RunOnUIThread(() =>
 			{
-				expectedCommandBarWidth = ViewHelper.GetMainWindowSize().Width;
+				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
 			});
 #endif
 			double expectedCommandBarCompactClosedHeight = 40;
@@ -3488,7 +3486,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)));
 				});
 
@@ -3498,7 +3496,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(async () =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					var moreButton = await GetMoreButton(cmdBar);
 					VERIFY_IS_TRUE(focusedElement.Equals(moreButton), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be moreButton ({moreButton.GetHashCode()})");
 				});
@@ -3509,7 +3507,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be primary command ({cmdBar.PrimaryCommands.GetAt(0).GetHashCode()})");
 				});
 
@@ -3519,7 +3517,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.Content), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be content ({cmdBar.Content.GetHashCode()})");
 				});
 			};
@@ -3574,7 +3572,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.SecondaryCommands.GetAt(2)));
 			});
 			await CloseCommandBar(cmdBar);
@@ -3585,7 +3583,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.SecondaryCommands.GetAt(0)));
 			});
 			await CloseCommandBar(cmdBar);
@@ -3759,7 +3757,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				root = (Grid)XamlReader.Load(@"<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
                                 xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-								xmlns:input=""using:Windows.UI.Xaml.Input"">
+								xmlns:input=""using:Microsoft.UI.Xaml.Input"">
                             <Grid.Resources>
                                 <input:XamlUICommand x:Key=""AcceptCommand"" Label=""Accept"">
                                     <input:XamlUICommand.IconSource>
@@ -5228,7 +5226,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				var nextElement = FocusManager.FindNextElement(direction, new FindNextElementOptions()
 				{
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 					SearchRoot = container.XamlRoot.Content
 #endif
 				});

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 
@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseNativeFrameNavigation()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
 			return new CompositeDisposable
@@ -39,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseNativeStyle<T>() where T : Control
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
 			IDisposable disposable;
@@ -76,19 +76,19 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseFluentStyles()
 		{
-#if NETFX_CORE // Disabled on UWP for now because 19041 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
+#if WINAPPSDK // Disabled on UWP for now because 19041 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
 			return null;
 #else
 
 			NativeDispatcher.CheckThreadAccess();
 
 			var resources = Application.Current.Resources;
-			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())
+			if (resources is Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources>().Any())
 			{
 				return null;
 			}
 
-			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
+			var xcr = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.XamlControlsResources();
 			resources.MergedDictionaries.Insert(0, xcr);
 
 			// Force default brushes to be reloaded
@@ -104,10 +104,11 @@ namespace Uno.UI.RuntimeTests.Helpers
 #endif
 		}
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 		private static void ResetIslandRootForeground()
 		{
-			if (TestServices.WindowHelper.IsXamlIsland && VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.Content) is { } control)
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly &&
+				VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement) is { } control)
 			{
 				// Ensure the root element's Foreground is set correctly
 				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);

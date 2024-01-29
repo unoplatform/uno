@@ -11,8 +11,8 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage
 {
@@ -26,7 +26,7 @@ namespace UITests.Windows_Storage
 			this.DataContextChanged += DataContextChangedHandler;
 		}
 
-		private void DataContextChangedHandler(Windows.UI.Xaml.DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		private void DataContextChangedHandler(Microsoft.UI.Xaml.DependencyObject sender, Microsoft.UI.Xaml.DataContextChangedEventArgs args)
 		{
 			var newViewModel = args.NewValue as NativeStorageRuntimeTestsViewModel;
 			ViewModel = newViewModel;
@@ -47,7 +47,7 @@ namespace UITests.Windows_Storage
 
 		public string ErrorMessage { get; set; }
 
-		public NativeStorageRuntimeTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public NativeStorageRuntimeTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

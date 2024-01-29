@@ -1,12 +1,10 @@
 ﻿using System.Numerics;
 using SkiaSharp;
-using Windows.UI.Composition;
-using Uno.Extensions;
+using Microsoft.UI.Composition;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media;
+
+partial class EllipseGeometry
 {
-	partial class EllipseGeometry
-	{
-		internal override SKPath GetSKPath() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY));
-	}
+	internal override SKPath GetSKPath() => CompositionGeometry.BuildEllipseGeometry(Center.ToVector2(), new Vector2((float)RadiusX, (float)RadiusY));
 }

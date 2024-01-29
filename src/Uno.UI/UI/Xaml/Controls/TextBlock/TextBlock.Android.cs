@@ -2,8 +2,8 @@
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -12,27 +12,27 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Linq;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using Android.Text;
 using Android.Text.Style;
 using Android.Widget;
 using Android.Views;
 using System.Collections.Specialized;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation;
 using Android.Graphics.Drawables;
 using static Uno.UI.ViewHelper;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Collections;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{

@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Text;

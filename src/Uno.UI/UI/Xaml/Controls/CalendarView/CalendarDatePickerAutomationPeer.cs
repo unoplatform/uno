@@ -1,16 +1,16 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using DirectUI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 //CalendarDatePickerAutomationPeerFactory.CreateInstanceWithOwnerImpl
 //IMPLEMENT_CONTROL_AUTOMATIONPEERFACTORY_CREATEINSTANCE(CalendarDatePicker)
 
 // Initializes a new instance of the CalendarDatePickerAutomationPeer class.
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 
 	partial class CalendarDatePickerAutomationPeer : FrameworkElementAutomationPeer

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
 	public static class FeatureConfigurationHelper
 	{
-#if !NETFX_CORE
+#if !WINAPPSDK
 		private class MockProvider : FrameworkTemplatePoolDefaultPlatformProvider
 		{
 			public override bool CanUseMemoryManager => false;
@@ -21,15 +21,15 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseTemplatePooling()
 		{
-#if NETFX_CORE
+#if WINAPPSDK
 			return null;
 #else
-			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;
-			FrameworkTemplatePool.IsPoolingEnabled = true;
+			var originallyEnabled = FrameworkTemplatePool.InternalIsPoolingEnabled;
+			FrameworkTemplatePool.InternalIsPoolingEnabled = true;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(new MockProvider());
 			return Disposable.Create(() =>
 			{
-				FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled;
+				FrameworkTemplatePool.InternalIsPoolingEnabled = originallyEnabled;
 				FrameworkTemplatePool.Instance.SetPlatformProvider(null);
 			});
 #endif

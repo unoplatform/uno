@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Layout : global::Windows.UI.Xaml.DependencyObject
+	public partial class Layout : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.InitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Layout.UninitializeForContext(Microsoft.UI.Xaml.Controls.LayoutContext)

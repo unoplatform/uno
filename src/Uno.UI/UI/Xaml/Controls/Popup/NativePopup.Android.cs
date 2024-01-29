@@ -4,12 +4,12 @@ using Uno.Disposables;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Android.Views;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = "Child")]
 public partial class NativePopup : NativePopupBase
@@ -54,7 +54,8 @@ public partial class NativePopup : NativePopupBase
 		{
 			if (Child is FrameworkElement child)
 			{
-				child.Measure(Window.Current.Bounds.Size);
+				// TODO: Adjust for multiwindow #13827
+				child.Measure(Window.CurrentSafe?.Bounds.Size ?? default);
 				_popupWindow.Width = ViewHelper.LogicalToPhysicalPixels(child.DesiredSize.Width);
 				_popupWindow.Height = ViewHelper.LogicalToPhysicalPixels(child.DesiredSize.Height);
 			}

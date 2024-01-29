@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Storage;
 
-#if WINDOWS_UWP
+#if WINAPPSDK
 using NotFoundException = System.IO.FileNotFoundException;
 using UnmatchedItemTypeException = System.ArgumentException;
 using NotAuthorizedException = System.Exception;
@@ -1075,7 +1075,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		}
 
 		[TestMethod]
-#if WINDOWS_UWP
+#if WINAPPSDK
 		[Ignore("UWP is unable to handle going up a level for picked folders")]
 #endif
 		public async Task When_GetParent()

@@ -89,6 +89,14 @@
 		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
 	</ItemGroup>
 
+	<!-- Multiwindowing is only supported on Uno.WinUI -->
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
+	</PropertyGroup>
+
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 

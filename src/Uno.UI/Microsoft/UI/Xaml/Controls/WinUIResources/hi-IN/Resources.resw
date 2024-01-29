@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>हल्का नीला</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>बर्फ़ानी नीला</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>दस्तावेज़</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>विभाजन बटन</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>विंडो</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>फ़लक</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>शीर्षलेख</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>शीर्षलेख आइटम</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>तालिका</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>शीर्षक बार</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>विभाजक</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>सिमेंटिक ज़ूम</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>टॉगल स्विच</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>आइटम</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 आइटम</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>%1 को ड्रैग करना रद्द करें</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>अगला</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>पिछला</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>चलाएँ</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>विराम दें</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>समय समाप्त</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>शेष समय</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>बफ़रिंग प्रगति</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>पता लगाएँ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>म्यूट</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>वॉल्यूम</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>त्रुटि</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>दिन </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>माह </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>वर्ष </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>घंटा </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>मिनट </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 मिनट</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 मिनट</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 (दूसरा)</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 सेकंड्स</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>लंबवत रूप से अधिक कमी</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>लंबवत रूप से कम कमी</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>काटें</value>
   </data>

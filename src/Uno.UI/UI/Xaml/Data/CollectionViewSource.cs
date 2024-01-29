@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data
 {
 	public partial class CollectionViewSource : DependencyObject
 	{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Data
 		#endregion
 
 		public static DependencyProperty ViewProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				name: nameof(View),
 				propertyType: typeof(ICollectionView),
 				ownerType: typeof(CollectionViewSource),
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Data
 			private set => SetValue(ViewProperty, value);
 		}
 
-		public global::Windows.UI.Xaml.PropertyPath ItemsPath
+		public global::Microsoft.UI.Xaml.PropertyPath ItemsPath
 		{
 			get => (PropertyPath)this.GetValue(ItemsPathProperty);
 			set => this.SetValue(ItemsPathProperty, value);

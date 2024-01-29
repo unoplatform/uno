@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace XamlGenerationTests.Shared
 {

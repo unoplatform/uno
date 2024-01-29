@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 
 	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
@@ -33,7 +33,7 @@
 		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 		<Deterministic>true</Deterministic>
 
-		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
+		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Resizetizer codegen is not supported in UWP -->

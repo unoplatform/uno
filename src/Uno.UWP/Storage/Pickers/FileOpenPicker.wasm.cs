@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -141,7 +142,7 @@ namespace Windows.Storage.Pickers
 
 			var fileCountString = await NativeMethods.UploadPickFilesAsync(multiple, targetFolder.FullName, BuildAcceptString());
 
-			if (int.TryParse(fileCountString, out var fileCount))
+			if (int.TryParse(fileCountString, CultureInfo.InvariantCulture, out var fileCount))
 			{
 				var files = targetFolder
 					.GetFiles()

@@ -5,16 +5,16 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
-#if !SUPPORTS_RTL && !WINDOWS_UWP
+#if !SUPPORTS_RTL && !WINAPPSDK
 [Ignore("RTL is not supported")]
 #endif
 public class Given_FlowDirection
@@ -68,10 +68,10 @@ public class Given_FlowDirection
 	}
 
 	private static Rect GetWindowBounds() =>
-#if WINDOWS_UWP
+#if WINAPPSDK
 		Window.Current.Bounds;
 #else
-		TestServices.WindowHelper.WindowContent.XamlRoot.Bounds;
+		TestServices.WindowHelper.XamlRoot.Bounds;
 #endif
 
 	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));
@@ -82,7 +82,7 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
@@ -206,7 +206,7 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL_RenderTransform_Translation()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
@@ -337,7 +337,7 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL_RenderTransform_Scaling()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
@@ -469,7 +469,7 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	public async Task When_RTL_RenderTransform_Composite()
 	{
-		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 		{
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}

@@ -12,10 +12,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Diagnostics.Eventing;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Devices.Enumeration;
 using Uno.UI.Xaml.Media;
@@ -26,7 +26,7 @@ using Uno.Web.Query;
 using Uno.Web.Query.Cache;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{

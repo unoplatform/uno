@@ -4,14 +4,13 @@ using System;
 using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers;
-using Windows.UI.Xaml;
-using WinUIApplication = Windows.UI.Xaml.Application;
-using WUX = Windows.UI.Xaml;
-using GtkApplication = Gtk.Application;
-using WinUIWindow = Windows.UI.Xaml.Window;
+using Microsoft.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
-using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Uno.UI.Runtime.Skia.Gtk.UI;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
+using GtkApplication = Gtk.Application;
+using WinUIApplication = Microsoft.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -41,7 +40,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		internal static GtkHost? Current => _current;
 
-		internal UnoGtkWindow? MainWindow { get; private set; }
+		internal UnoGtkWindow? InitialWindow { get; set; }
 
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
@@ -49,7 +48,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
-		public global::Gtk.Window? Window => MainWindow;
+		public global::Gtk.Window? Window => InitialWindow;
 
 		public void Run()
 		{
@@ -66,15 +65,13 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 			StartApp();
 
-			SetupMainWindow();
-
 			GtkApplication.Run();
 		}
 
 
 		public void TakeScreenshot(string filePath)
 		{
-			MainWindow?.Host.Renderer?.TakeScreenshot(filePath);
+			InitialWindow?.Host.Renderer?.TakeScreenshot(filePath);
 		}
 
 		private void InitializeDispatcher()
@@ -84,19 +81,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = GtkDispatch.DispatchNativeSingle;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 		}
-
-		private void SetupMainWindow()
-		{
-			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
-			MainWindow.Shown += MainWindow_Shown;
-			MainWindow.UpdateWindowPropertiesFromPackage();
-			MainWindow.UpdateWindowPropertiesFromApplicationView();
-			MainWindow.UpdateWindowPropertiesFromCoreApplication();
-		}
-
-		internal event EventHandler? MainWindowShown;
-
-		private void MainWindow_Shown(object? sender, EventArgs e) => MainWindowShown?.Invoke(this, e);
 
 		private void StartApp()
 		{

@@ -9,7 +9,7 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using ObjCRuntime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal class TextBoxViewDelegate : NSTextFieldDelegate
 	{

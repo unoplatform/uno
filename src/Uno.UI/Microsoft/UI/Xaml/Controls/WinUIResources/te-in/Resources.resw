@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>లేత నీలం</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>మంచు నీలం</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>పత్రం</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>విభజన బటన్</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>విండో</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>పేన్</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>శీర్షిక</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>శీర్షిక అంశం</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>పట్టిక</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>శీర్షిక బార్</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>విభాజకం</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>అర్థ జూమ్</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>టోగుల్ స్విచ్</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>అంశం</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 అంశాలు</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>%1ను లాగడాన్ని రద్దు చేయి</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>తదుపరి</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>మునుపటి</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>ప్లే చేయి</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>పాజ్ చేయి</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>పూర్తయిన సమయం</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>మిగిలి ఉన్న సమయం</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>బఫరింగ్ చేయడం ప్రోగ్రెస్ అవుతోంది</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>వెతుకు</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>మ్యూట్ చేయి</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>వాల్యూమ్</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>దోషం</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>రోజు</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>నెల</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>సంవత్సరం</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>గంట</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>నిమిషం</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 నిమిషం</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 నిమిషాలు</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 సెకను</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 సెకన్లు</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>లంబ పెద్ద తగ్గింపు</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>లంబ చిన్న తగ్గింపు</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>కత్తిరించు</value>
   </data>

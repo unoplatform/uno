@@ -1,5 +1,5 @@
 ﻿using System;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
 #if __ANDROID__
 using Android.Views;
@@ -18,7 +18,7 @@ using Color = Windows.UI.Color;
 using Windows.UI;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Color))]
 	public partial class GradientStop : DependencyObject

@@ -5,10 +5,10 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
@@ -17,6 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
+		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -25,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_textBox = new WeakReference<TextBox>(textBox);
 			_isPasswordBox = textBox is PasswordBox;
-			if (FeatureConfiguration.TextBox.UseOverlayOnSkia && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
+			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -116,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			if (_isSkiaTextBox)
 			{
 				return;
 			}
@@ -185,20 +186,14 @@ namespace Windows.UI.Xaml.Controls
 			if (_isPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('•', text.Length);
+				DisplayBlock.Text = new string('●', text.Length);
 			}
 			else
 			{
 				DisplayBlock.Text = text;
-
-				if (text.EndsWith('\r'))
-				{
-					// this works around a bug in TextBlock where the last newline is not shown
-					DisplayBlock.Text += '\r';
-				}
 			}
 
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			if (_isSkiaTextBox)
 			{
 				TextBox?.ContentElement?.InvalidateMeasure();
 				TextBox?.UpdateLayout();

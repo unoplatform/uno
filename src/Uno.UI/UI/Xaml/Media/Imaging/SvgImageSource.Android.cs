@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.IO;
 using System.Net.Http;
@@ -17,10 +17,10 @@ using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using static Android.Provider.DocumentsContract;
 
-namespace Windows.UI.Xaml.Media.Imaging;
+namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {

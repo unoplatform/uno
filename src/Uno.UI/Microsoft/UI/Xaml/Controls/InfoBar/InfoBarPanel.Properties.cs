@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference InfoBarPanel.properties.cpp, tag winui3/release/1.4.2
 
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
 public partial class InfoBarPanel
 {

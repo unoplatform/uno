@@ -1,14 +1,16 @@
-using System;
+﻿using System;
 using System.IO;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Xaml.Core;
 #endif
 
 namespace SamplesApp;
@@ -21,7 +23,7 @@ partial class App
 	/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
 	public void AssertIssue1790ApplicationSettingsUsable()
 	{
-		void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
+		void AssertIsUsable(global::Windows.Storage.ApplicationDataContainer container)
 		{
 			const string issue1790 = nameof(issue1790);
 
@@ -31,8 +33,8 @@ partial class App
 			Assert.IsTrue(container.Values.ContainsKey(issue1790));
 		}
 
-		AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
-		AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+		AssertIsUsable(global::Windows.Storage.ApplicationData.Current.LocalSettings);
+		AssertIsUsable(global::Windows.Storage.ApplicationData.Current.RoamingSettings);
 	}
 
 	/// <summary>
@@ -43,12 +45,11 @@ partial class App
 		//On Wasm and XamlIslands the DisplayName is currently empty, as it is not being load from manifest
 #if !__WASM__
 #if __SKIA__
-		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+		if (!CoreApplication.IsFullFledgedApp)
 		{
 			return;
 		}
 #endif
-
 		var displayName = Package.Current.DisplayName;
 
 		Assert.IsFalse(string.IsNullOrEmpty(displayName), "DisplayName is empty.");
@@ -64,7 +65,7 @@ partial class App
 	{
 		//The ApplicationModel Package properties are currently only supported on Skia
 #if __SKIA__
-		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+		if (!CoreApplication.IsFullFledgedApp)
 		{
 			return;
 		}
@@ -98,25 +99,22 @@ partial class App
 	public void AssertIssue8641NativeOverlayInitialized()
 	{
 #if __SKIA__
-		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-		{
-			return;
-		}
 		// Temporarily add a TextBox to the current page's content to verify native overlay is available
-		if (Windows.UI.Xaml.Window.Current?.Content is not Frame rootFrame)
+		if (_mainWindow?.Content is not Frame rootFrame)
 		{
 			throw new InvalidOperationException("Native overlay verification executed too early");
 		}
 
 		var textBox = new TextBox();
-		textBox.XamlRoot = rootFrame.XamlRoot;
+		var xamlRoot = _mainWindow.RootElement.XamlRoot;
+		textBox.XamlRoot = xamlRoot;
 		var textBoxView = new TextBoxView(textBox);
 		ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 		Assert.IsNotNull(textBoxViewExtension);
 
 		if (textBoxViewExtension is not null)
 		{
-			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(xamlRoot));
 		}
 		else
 		{
@@ -128,8 +126,8 @@ partial class App
 	public void AssertInitialWindowSize()
 	{
 #if !__SKIA__ // Will be fixed as part of #8341
-		Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Width > 0);
-		Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
+		Assert.IsTrue(_mainWindow.Bounds.Width > 0);
+		Assert.IsTrue(_mainWindow.Bounds.Height > 0);
 #endif
 	}
 

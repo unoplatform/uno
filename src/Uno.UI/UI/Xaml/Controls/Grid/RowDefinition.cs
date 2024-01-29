@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[DebuggerDisplay("{DebugDisplay,nq}")]
 	[ContentProperty(Name = nameof(Height))]

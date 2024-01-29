@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno;
 using Uno.UI.Helpers;
 using Uno.UI.Extensions;
+using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{
 		private Brush _background;
-		private (Brush, Thickness, CornerRadius) _border;
+		private (Brush, Thickness, CornerRadius, Size) _border;
 
 		private Action _backgroundChanged;
 
@@ -38,9 +39,10 @@ namespace Windows.UI.Xaml.Shapes
 				SetAndObserveBackgroundBrush(fwElt, oldValue, background, ref _backgroundChanged);
 			}
 
-			if (_border != (borderBrush, borderThickness, cornerRadius))
+			var renderSize = element.RenderSize;
+			if (_border != (borderBrush, borderThickness, cornerRadius, renderSize))
 			{
-				_border = (borderBrush, borderThickness, cornerRadius);
+				_border = (borderBrush, borderThickness, cornerRadius, renderSize);
 				SetBorder(element, borderThickness, borderBrush, cornerRadius);
 			}
 		}

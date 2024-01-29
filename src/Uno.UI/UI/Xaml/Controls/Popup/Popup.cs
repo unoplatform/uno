@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
 using Uno.UI.DataBinding;
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = nameof(Child))]
 public partial class Popup

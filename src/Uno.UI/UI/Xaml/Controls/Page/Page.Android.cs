@@ -4,7 +4,7 @@ using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -16,7 +16,7 @@ using System.Drawing;
 using System.Linq;
 using Uno.UI;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page
 	{

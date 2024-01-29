@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Immutable;
@@ -6,9 +6,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Uno.UI.RuntimeTests.Extensions;
+using Private.Infrastructure;
 
 #if !HAS_UNO
 using Uno.Logging;
+#endif
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
+
+#if __SKIA__ || __MACOS__
+using System.CommandLine;
 #endif
 
 namespace SamplesApp;
@@ -53,14 +65,19 @@ partial class App
 
 	public static string RunTest(string metadataName)
 	{
+		if (_mainWindow is null)
+		{
+			throw new InvalidOperationException("Cannot run tests until main window is initialized.");
+		}
+
 		try
 		{
 			Console.WriteLine($"Initiate Running Test {metadataName}");
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_ = UnitTestDispatcherCompat.From(_mainWindow).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					try
@@ -69,8 +86,8 @@ partial class App
 						var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
 						if (statusBar != null)
 						{
-							_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-								Windows.UI.Core.CoreDispatcherPriority.Normal,
+							_ = UnitTestDispatcherCompat.From(_mainWindow).RunAsync(
+								UnitTestDispatcherCompat.Priority.Normal,
 								async () => await statusBar.HideAsync()
 							);
 						}
@@ -121,40 +138,70 @@ partial class App
 		}
 	}
 
-
 	private bool HandleAutoScreenshots(string args)
 	{
 #if __SKIA__ || __MACOS__
-		var runAutoScreenshotsParam =
-		args.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
+		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
+		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
 
-		var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
-
-		if (!string.IsNullOrEmpty(screenshotsPath))
+		// SamplesApp can be opened with --runtime-tests option, which is currently manually handled in HandleLaunchArguments.
+		var runtimeTestsOption = new Option<string>("--runtime-tests");
+		var rootCommand = new RootCommand
 		{
-			if (Windows.UI.Xaml.Window.Current is null)
+			autoScreenshotsOption,
+			totalGroupsOption,
+			currentGroupIndexOption,
+			runtimeTestsOption,
+		};
+
+		bool commandReturn = false;
+
+		rootCommand.SetHandler<string, int, int>((screenshotsPath, totalGroups, currentGroupIndex) =>
+		{
+			if (totalGroups < 1)
 			{
-				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
+				throw new ArgumentException("Total groups must be >= 1");
 			}
 
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
-				_ =>
+			if (currentGroupIndex < 0 || currentGroupIndex >= totalGroups)
+			{
+				throw new ArgumentException("Group index is out of range.");
+			}
+
+			Console.WriteLine($"Screenshots path: {screenshotsPath}");
+			Console.WriteLine($"Total groups: {totalGroups}");
+			Console.WriteLine($"Current group index: {currentGroupIndex}");
+
+			if (!string.IsNullOrEmpty(screenshotsPath))
+			{
+				if (MainWindow is null)
 				{
-					var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
-						async () =>
-						{
-							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
-						}
-					);
+					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
+				}
 
-				});
+				var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
+					_ =>
+					{
+						var n = UnitTestDispatcherCompat.From(MainWindow).RunAsync(
+							UnitTestDispatcherCompat.Priority.Normal,
+							async () =>
+							{
+								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, totalGroups, currentGroupIndex, () => System.Environment.Exit(0));
+							}
+						);
 
-			return true;
-		}
-#endif
+					});
 
+				commandReturn = true;
+			}
+		}, autoScreenshotsOption, totalGroupsOption, currentGroupIndexOption);
+
+		rootCommand.Invoke(args);
+		return commandReturn;
+#else
 		return false;
+#endif
 	}
 
 	private bool TryNavigateToLaunchSample(string args)

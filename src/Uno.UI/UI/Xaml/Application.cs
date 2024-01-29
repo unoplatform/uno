@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Uno;
 using Uno.UI;
 using Uno.Diagnostics.Eventing;
@@ -11,7 +11,7 @@ using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Uno.Foundation.Extensibility;
 using Windows.UI.Popups.Internal;
 using Windows.UI.Popups;
@@ -21,7 +21,7 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -32,7 +32,7 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -43,11 +43,11 @@ using ViewGroup = AppKit.NSView;
 using AppKit;
 using Windows.UI.Core;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
+using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	/// <summary>
 	/// Encapsulates the app and its available services.
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() =>
@@ -95,6 +95,8 @@ namespace Windows.UI.Xaml
 
 			InitializePartial();
 		}
+
+		internal bool InitializationComplete => _initializationComplete;
 
 		partial void InitializePartial();
 
@@ -160,7 +162,7 @@ namespace Windows.UI.Xaml
 				// Sync with core application's theme
 				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
 
-				UpdateRootVisualBackground();
+				UpdateRootElementBackground();
 				UpdateRequestedThemesForResources();
 			}
 		}
@@ -252,7 +254,7 @@ namespace Windows.UI.Xaml
 		public void Exit() => CoreApplication.Exit();
 #endif
 
-		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
+		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
 			StartPartial(callback);
 		}
@@ -270,9 +272,14 @@ namespace Windows.UI.Xaml
 			_initializationComplete = true;
 
 #if !HAS_UNO_WINUI
-			// Delayed raise of OnWindowCreated.
-			Windows.UI.Xaml.Window.Current.RaiseCreated();
+			Microsoft.UI.Xaml.Window.EnsureWindowCurrent();
 #endif
+
+			// Initialize all windows that have been created before the application was initialized.
+			foreach (var window in ApplicationHelper.Windows)
+			{
+				window.Initialize();
+			}
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
@@ -418,10 +425,15 @@ namespace Windows.UI.Xaml
 
 		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 
-		private void UpdateRootVisualBackground()
+		private void UpdateRootElementBackground()
 		{
-			var rootVisual = WinUICoreServices.Instance.MainRootVisual;
-			rootVisual?.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				if (contentRoot.VisualTree.RootElement is IRootElement rootElement)
+				{
+					rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+				}
+			}
 		}
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)

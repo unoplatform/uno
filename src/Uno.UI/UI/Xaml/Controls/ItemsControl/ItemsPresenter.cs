@@ -6,35 +6,35 @@ using System.Linq;
 using Uno.UI.DataBinding;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using Android.Widget;
 using Android.Views;
 using _ViewGroup = Android.Views.ViewGroup;
 #elif __IOS__
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using UIKit;
 using _ViewGroup = UIKit.UIView;
 #elif __MACOS__
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 using AppKit;
 using _ViewGroup = AppKit.NSView;
 #else
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
-		// TODO: support for Header/Footer when inside a ListView
+		// TODO: support for Header/Footer when inside a ListViewBase
 		private bool HeaderFooterEnabled =>
 #if __ANDROID__ || __IOS__
-		TemplatedParent is not ListView
+		TemplatedParent is not ListViewBase
 #else
 		true
 #endif

@@ -5,9 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -18,19 +15,23 @@ using Uno.UI.RuntimeTests.MUX.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
-using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
-using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
-using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+
+using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using MenuBarItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -56,7 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				try
 				{
 					await ControlHelper.DoClickUsingAP(page.SUT);
-#if !NETFX_CORE
+#if !WINAPPSDK
 					Assert.AreEqual(false, flyout.UseNativePopup);
 #endif
 					var flyoutItem = page.FirstFlyoutItem;
@@ -421,5 +422,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Toggle_Item_HasToggle()
+		{
+			var toggleItem = new ToggleMenuFlyoutItem();
+			Assert.IsTrue(toggleItem.HasToggle());
+		}
+
+		[TestMethod]
+		public async Task When_Menu_Contains_Toggle()
+		{
+			var menu = new MenuFlyout();
+			menu.Items.Add(new MenuFlyoutItem() { Text = "Text" });
+
+			var trigger = new Button();
+			TestServices.WindowHelper.WindowContent = trigger;
+			await TestServices.WindowHelper.WaitForLoaded(trigger);
+
+			await ValidateToggleAsync(false);
+
+			var toggleItem = new ToggleMenuFlyoutItem() { Text = "Toggle!" };
+			menu.Items.Add(toggleItem);
+			await ValidateToggleAsync(true);
+
+			menu.Items.Remove(toggleItem);
+			await ValidateToggleAsync(false);
+
+			async Task ValidateToggleAsync(bool expected)
+			{
+				menu.ShowAt(trigger);
+				await TestServices.WindowHelper.WaitForIdle();
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+				var popup = popups[0];
+				Assert.IsInstanceOfType(popup.Child, typeof(MenuFlyoutPresenter));
+				var presenter = (MenuFlyoutPresenter)popup.Child;
+				Assert.AreEqual(expected, presenter.GetContainsToggleItems());
+				popup.IsOpen = false;
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+		}
+#endif
 	}
 }

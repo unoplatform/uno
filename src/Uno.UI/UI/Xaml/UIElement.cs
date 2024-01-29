@@ -3,13 +3,13 @@
 #endif
 
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno;
 using Uno.UI.Controls;
@@ -18,19 +18,19 @@ using System;
 using System.Collections;
 using System.Numerics;
 using System.Reflection;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Composition;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Documents;
 using Windows.ApplicationModel.Core;
 using Uno.UI.Xaml.Media;
 
@@ -38,7 +38,7 @@ using Uno.UI.Xaml.Media;
 using UIKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
 	{
@@ -73,11 +73,6 @@ namespace Windows.UI.Xaml
 		// This is expressed in local coordinate space.
 		internal Rect Viewport { get; private set; } = Rect.Infinite;
 		#endregion
-
-		/// <summary>
-		/// Is this view set to Window.Current.Content?
-		/// </summary>
-		internal bool IsWindowRoot { get; set; }
 
 		/// <summary>
 		/// Is this view the top of the managed visual tree
@@ -762,7 +757,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var bounds = root.XamlRoot.Bounds;
+			var bounds = root.XamlRoot.VisualTree.VisibleBounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);
@@ -1297,17 +1292,17 @@ namespace Windows.UI.Xaml
 		/// The code was moved here to override the LogLevel.
 		/// </remarks>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.UIElement, global::Windows.UI.Xaml.Input.AccessKeyInvokedEventArgs> AccessKeyInvoked
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyInvokedEventArgs> AccessKeyInvoked
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
 		}
 	}

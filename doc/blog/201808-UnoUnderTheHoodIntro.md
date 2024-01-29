@@ -15,7 +15,7 @@ First, let's get the lay of the land.
 
 Uno is a cross-platform UI framework. You write an app in C\#
 and [UWP-flavoured XAML
-markup](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/). It
+markup](https://learn.microsoft.com/windows/uwp/xaml-platform/). It
 runs on Windows because it's a UWP app. With Uno, it runs on Android,
 iOS, and (for the brave) in the browser via WebAssembly as well.
 
@@ -31,15 +31,15 @@ top of [WebAssembly](https://webassembly.org/).
 
 There are a few things that need to be done to get your app running:
 
--  At compile time, Uno parses XAML files into C\# code, creating the
+- At compile time, Uno parses XAML files into C\# code, creating the
    information needed to build the app's visual tree;
 
--  It implements a
-   complete [databinding](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview) engine,
+- It implements a
+   complete [databinding](https://learn.microsoft.com/windows/uwp/xaml-platform/dependency-properties-overview) engine,
    optimized for static type-checking where possible;
 
--  It implements the views and controls in the
-   [UWP framework](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/controls-by-function),
+- It implements the views and controls in the
+   [UWP framework](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/controls-by-function),
    using each platform's native UI framework as a basis.
 
 Each of those items warrants a post on its own, so I'll move on before
@@ -51,17 +51,17 @@ Before I end this introductory post, I want to briefly lay out the
 philosophy of Uno, which has guided our major architectural decisions as
 we've built this thing.
 
--   **Leverage existing tools**
+- **Leverage existing tools**
 
     > We stand on the shoulders of  giants. Microsoft's tooling is a
     > treat to work with:
-    > [Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/edit-and-continue),
-    > [Live Visual Tree](https://docs.microsoft.com/en-us/visualstudio/debugger/inspect-xaml-properties-while-debugging),
+    > [Edit and Continue](https://learn.microsoft.com/visualstudio/debugger/edit-and-continue),
+    > [Live Visual Tree](https://learn.microsoft.com/visualstudio/debugger/inspect-xaml-properties-while-debugging),
     > the list goes on. The promise of Uno is to build your app with
     > those tools and then deploy it to iOS, Android, and ultimately
     > to the web.
 
--   **Create rich, responsive UIs**
+- **Create rich, responsive UIs**
 
     > Bland apps don't quite cut it these days. Strong support for
     > animations, templating, and custom visual effects is a must.
@@ -70,20 +70,20 @@ we've built this thing.
     > area](https://www.cnet.com/pictures/phones-with-notches/),
     > your app's layout had better be responsive.
 
--   **Let views do views**
+- **Let views do views**
 
     > Separation of model, view and presentation keeps your code
     > loosely coupled and easy to maintain. Features like
     > databinding and attached properties let you write clean,
     > elegant MVVM-style code.
 
--   **Native inter-compatibility (leave an escape hatch)**
+- **Native inter-compatibility (leave an escape hatch)**
 
     > 100% code reuse is the ideal, but it should also be easy to
     > access functionality specific to a single platform, or to
     > incorporate native third-party libraries.
 
--   **Performance is a feature**
+- **Performance is a feature**
 
     > The slow antelope gets eaten, and the slow app gets 1-star
     > ratings. We've done a lot of optimization on the basis of
@@ -92,4 +92,4 @@ we've built this thing.
 
 That's a good place to stop. In the next post I'll take up the tale of
 my favorite UI
-control: [ListView and GridView](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/listview-and-gridview).
+control: [ListView and GridView](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/listview-and-gridview).

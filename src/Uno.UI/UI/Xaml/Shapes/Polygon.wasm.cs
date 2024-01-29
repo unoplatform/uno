@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Windows.Foundation;
-using Windows.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Wasm;
 using Uno.Extensions;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Polygon
 	{

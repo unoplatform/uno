@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Color = Windows.UI.Color;
 
-namespace Windows.UI.Composition
+namespace Microsoft.UI.Composition
 {
 	public partial class CompositionPropertySet : CompositionObject
 	{

@@ -4,25 +4,24 @@ uid: Uno.SilverlightMigration.CreateUnoSolution
 
 # Create the Uno solution for UWP and WASM
 
-You can use the dotnet cli templates to create an Uno solution with just the project heads you requires. Alternatively, you can create the solution using the Visual Studio templates and just delete the project heads you don't require.
+You can use the .NET CLI templates to create an Uno solution with just the project heads you requires. Alternatively, you can create the solution using the [Visual Studio Wizard](../../getting-started/wizard/using-wizard.md).
 
 > [!TIP]
 > See the Uno documentation for how to configure Visual Studio for Uno development:
 >
-> * [Getting Started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
-
+> * [Getting Started on Visual Studio](../../get-started-vs-2022.md)
 
 1. Open a command line prompt and navigate to the location you wish to create the Uno solution.
 
 1. To install the Uno dotnet cli templates, enter the following command:
 
-    ```powershell
+    ```dotnetcli
     dotnet new -i Uno.Templates
     ```
 
 1. To create the Uno solution with just UWP and WASM heads, enter the following command:
 
-    ```powershell
+    ```dotnetcli
     dotnet new unoapp -o TimeEntryUno -android=false -macos=false -ios=false --skia-wpf=false --skia-gtk=false --skia-tizen=false
     ```
 
@@ -54,7 +53,7 @@ When working with Uno, it is important to ensure that the latest and greatest ve
     * **Uno.Wasm.Bootstrap**
     * **Uno.Wasm.Bootstrap.DevServer**
 
-    > [!Important]
+    > [!IMPORTANT]
     > **Do not** update the **Microsoft.Extensions.Logging.Console** and **Microsoft.Extensions.Logging.Filter** packages. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
 
 1. Click **Update** to install the latest versions of the NuGet packages.
@@ -68,11 +67,11 @@ As part of the continuing evolution of desktop development on Windows, Microsoft
 >
 > * For WinUI 2.5, see [Fluent-styled controls](https://platform.uno/docs/articles/features/fluent-styles.html)
 > * For WinUI 3, see [Uno Platform 3.3 – Day 0 support for WinUI 3 Preview 3, Android 11](https://platform.uno/blog/uno-platform-3-3-day-0-support-for-winui-3-preview-3-android-11/).
-
+>
 > [!TIP]
 > You can learn more about the Windows UI Library here:
 >
-> * [Windows UI Library (WinUI)](https://docs.microsoft.com/windows/apps/winui/)
+> * [Windows UI Library (WinUI)](https://learn.microsoft.com/windows/apps/winui/)
 
 There are a few steps to adding WinUI 2.5 to the Uno project:
 
@@ -107,7 +106,7 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
 
     > [!NOTE]
     > Visual Studio will prompt to reload the project when you update the **Target version**.
-
+    >
     > [!TIP]
     > If you do not see the desired version in the dropdown, you will need to install the appropriate version of the SDK using the Visual Studio Installer:
     >

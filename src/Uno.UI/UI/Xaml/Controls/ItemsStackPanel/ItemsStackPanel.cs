@@ -7,9 +7,9 @@ using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsStackPanel : Panel, IVirtualizingPanel, IInsertionPanel
 	{

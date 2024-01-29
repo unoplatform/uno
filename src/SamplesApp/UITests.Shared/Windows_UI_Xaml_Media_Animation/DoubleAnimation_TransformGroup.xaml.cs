@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Samples.Controls;
 using Uno.Extensions;
 
@@ -94,7 +94,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 				{
 					From = property.from,
 					To = property.to,
-					Duration = DurationHelper.FromTimeSpan(_duration),
+					Duration = new Duration(_duration),
 				};
 
 				Storyboard.SetTarget(animation, target);

@@ -5,10 +5,10 @@ using System;
 using System.Reflection;
 using System.Threading;
 using Windows.ApplicationModel.Contacts;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Utilities;
 using Common;
 using System.Threading.Tasks;
@@ -23,9 +23,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using PersonPicture = Microsoft.UI.Xaml.Controls.PersonPicture;
+using PersonPicture = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PersonPicture;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class PersonPictureTests
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyAutomationName()
 		{
-			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
+			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
+				Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
 				var picturePersonType = provider.GetXamlType(typeof(PersonPicture).FullName);
 				var contactMember = picturePersonType.GetMember("Contact");
 				var memberType = contactMember.Type;
@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			PersonPicture personPicture = null;
 			TextBlock initialsTextBlock = null;
-#if WINDOWS_UWP
+#if WINAPPSDK
 			string symbolsFontName = "Segoe MDL2 Assets";
 #else
 			string symbolsFontName = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";

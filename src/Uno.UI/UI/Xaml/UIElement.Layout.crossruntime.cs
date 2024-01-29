@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Uno.UI;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -41,11 +41,7 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateMeasure();
 				if (IsVisualTreeRoot)
 				{
-#if __SKIA__
 					XamlRoot.InvalidateMeasure();
-#else
-					Window.InvalidateMeasure();
-#endif
 				}
 			}
 		}
@@ -72,11 +68,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (IsVisualTreeRoot)
 			{
-#if __SKIA__
 				XamlRoot.InvalidateMeasure();
-#else
-				Window.InvalidateMeasure();
-#endif
 			}
 		}
 
@@ -103,11 +95,7 @@ namespace Windows.UI.Xaml
 				(this.GetParent() as UIElement)?.InvalidateArrange();
 				if (IsVisualTreeRoot)
 				{
-#if __SKIA__
 					XamlRoot.InvalidateArrange();
-#else
-					Window.InvalidateArrange();
-#endif
 				}
 			}
 		}
@@ -134,11 +122,7 @@ namespace Windows.UI.Xaml
 			}
 			else //TODO: Why not check IsVisualTreeRoot as in InvalidateParentMeasureDirtyPath?
 			{
-#if __SKIA__
 				XamlRoot?.InvalidateArrange();
-#else
-				Window.InvalidateArrange();
-#endif
 			}
 		}
 

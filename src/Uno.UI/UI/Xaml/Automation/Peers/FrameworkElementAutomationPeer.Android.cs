@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using Android.Runtime;
 using Android.Text;
 using Android.Views.Accessibility;
 using Uno;
-using Windows.UI.Xaml.Automation.Provider;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class FrameworkElementAutomationPeer : AutomationPeer
 	{

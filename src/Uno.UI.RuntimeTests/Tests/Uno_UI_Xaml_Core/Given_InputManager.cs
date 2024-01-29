@@ -8,10 +8,10 @@ using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -24,7 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 public class Given_InputManager
 {
 	[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 	[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 	public async Task When_VisibilityChangesWhileDispatching_Then_RecomputeOriginalSource()
@@ -65,7 +65,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 	[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 	public async Task When_LeaveElementWhileManipulating_Then_CaptureNotLost()
@@ -120,7 +120,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 	[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 	public async Task When_Hover_No_Delay_For_VisualState_Update()
@@ -143,7 +143,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 	[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 	public async Task When_Scroll_No_Delay_For_VisualState_Update()

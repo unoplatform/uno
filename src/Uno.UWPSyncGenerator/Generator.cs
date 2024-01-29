@@ -135,7 +135,7 @@ namespace Uno.UWPSyncGenerator
 			InitializeRoslyn();
 		}
 
-		public virtual async Task Build(string basePath, string baseName, string sourceAssembly)
+		public virtual async Task Build(string baseName, string sourceAssembly)
 		{
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
 
@@ -143,7 +143,7 @@ namespace Uno.UWPSyncGenerator
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			var topProject = Path.Combine(Path.GetDirectoryName(basePath), "Uno.UI", "Uno.UI");
+			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
 			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-ios");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-android");
@@ -161,23 +161,9 @@ namespace Uno.UWPSyncGenerator
 			FlagsAttributeSymbol = s_referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 
-			var origins = from externalRedfs in s_referenceCompilation.ExternalReferences
-						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
-						  where fileNameWithoutExtension.StartsWith("Windows.Foundation", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.WinUI", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.UI", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Foundation", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.Services.Store.StoreContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
-						  || fileNameWithoutExtension.StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
-						  let asm = s_referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
-						  where asm != null
-						  select asm;
+			var origins = s_referenceCompilation.ExternalReferences
+				.Select(@ref => s_referenceCompilation.GetAssemblyOrModuleSymbol(@ref) as IAssemblySymbol)
+				.Where(s => s?.Name == sourceAssembly);
 
 			var excludeNamespaces = new List<string>();
 			var includeNamespaces = new List<string>();
@@ -201,7 +187,6 @@ namespace Uno.UWPSyncGenerator
 #endif
 
 			var q = from asm in origins
-					where asm.Name == sourceAssembly
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
 					where !SkipNamespace(targetType)
 					where targetType.DeclaredAccessibility == Accessibility.Public
@@ -1210,6 +1195,27 @@ namespace Uno.UWPSyncGenerator
 				{
 					// This member uses the experimental input layer from UWP
 					case "StartDragAsync":
+						return true;
+				}
+			}
+#else
+			if (method.ContainingType.Name == "CoreIndependentInputSourceController")
+			{
+				switch (method.Name)
+				{
+					// Avoid circular reference in UWP
+					case "CreateForVisual":
+					case "CreateForIVisualElement":
+						return true;
+				}
+			}
+
+			if (method.ContainingType.Name == "ElementCompositionPreview")
+			{
+				switch (method.Name)
+				{
+					// Adjust for already implemented member
+					case "SetElementChildVisual":
 						return true;
 				}
 			}

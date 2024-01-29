@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -14,9 +14,12 @@ using Android.Views;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.WindowManagement;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace Uno.UI
 {
@@ -155,7 +158,7 @@ namespace Uno.UI
 		{
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
-			ApplicationView.GetForCurrentView();
+			ApplicationView.InitializeForWindowId(AppWindow.MainWindowId);
 
 			NotifyCreatingInstance();
 		}
@@ -194,9 +197,9 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
+			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
+				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -206,13 +209,13 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
-			Windows.UI.Xaml.Application.Current?.RaiseResuming();
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(
+			NativeWindowWrapper.Instance.OnNativeActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -222,15 +225,15 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
-			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
+			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
 		partial void InnerDestroy() => ResignCurrent();

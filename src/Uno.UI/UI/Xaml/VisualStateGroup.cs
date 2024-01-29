@@ -1,20 +1,17 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.Foundation.Collections;
 
-using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
+using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
 #if __IOS__
 using UIKit;
@@ -22,7 +19,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
 	public sealed partial class VisualStateGroup : DependencyObject
@@ -31,6 +28,8 @@ namespace Windows.UI.Xaml
 		/// The xaml scope in force at the time the VisualStateGroup was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
+		private readonly SerialDisposable _parentLoadedDisposable = new();
+
 		private (VisualState state, VisualTransition transition) _current;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
@@ -138,12 +137,49 @@ namespace Windows.UI.Xaml
 		//Modifies the Owner FrameworkElement when Collection is modified
 		private void VisualStateChanged(object sender, IVectorChangedEventArgs e)
 		{
+			OnOwnerElementChanged();
 			RefreshStateTriggers();
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
 			RefreshStateTriggers(force: true);
+
+			_parentLoadedDisposable.Disposable = null;
+			if (this.GetParent() is IFrameworkElement fe)
+			{
+				OnOwnerElementChanged();
+				fe.Loaded += OnOwnerElementLoaded;
+				fe.Unloaded += OnOwnerElementUnloaded;
+				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
+				{
+					fe.Loaded -= OnOwnerElementLoaded;
+					fe.Unloaded -= OnOwnerElementUnloaded;
+				});
+			}
+		}
+
+		private void OnOwnerElementChanged() =>
+			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
+
+		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementLoaded());
+
+		private void OnOwnerElementUnloaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementUnloaded());
+
+		private void ExecuteOnTriggers(Action<StateTriggerBase> action)
+		{
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
+			{
+				var state = States[stateIndex];
+				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				{
+					var trigger = state.StateTriggers[triggerIndex];
+
+					action(trigger);
+				}
+			}
 		}
 
 		internal void RaiseCurrentStateChanging(VisualState oldState, VisualState newState)

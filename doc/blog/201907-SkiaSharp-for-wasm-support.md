@@ -12,9 +12,10 @@ Head on over [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) 
 
 You can find the source code for [skiasharp-wasm.platform.uno](https://skiasharp-wasm.platform.uno) over at [unoplatform/Uno.SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp). Internally this application uses [SkiaSharp](https://github.com/mono/SkiaSharp), a .NET binding to [P/Invoke the Skia API](https://github.com/mono/SkiaSharp/blob/master/binding/Binding/SkiaApi.cs#L96-L97) and a [custom Skia build](https://github.com/mono/skia) to provide the [C API to allow for the .NET interop](https://github.com/mono/skia/blob/xamarin-mobile-bindings/include/c/sk_canvas.h#L18).
 
-Inside of the `Uno.SkiaSharp.Views` package you'll find support for the [SKXamlCanvas](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.uwp.skxamlcanvas?view=skiasharp-views-uwp-1.68.0) UWP control which enables drawing using Skia in a specific section of the XAML visual tree. You can experiment with `SKXamlCanvas` by playing with [this sample](https://github.com/unoplatform/uno.Samples/tree/master/UI/SkiaSharpTest)  in our samples repository. Alternatively, you can take it for a spin with the following XAML and Code Behind.
+Inside of the `Uno.SkiaSharp.Views` package you'll find support for the [SKXamlCanvas](https://learn.microsoft.com/dotnet/api/skiasharp.views.uwp.skxamlcanvas?view=skiasharp-views-uwp-1.68.0) UWP control which enables drawing using Skia in a specific section of the XAML visual tree. You can experiment with `SKXamlCanvas` by playing with [this sample](https://github.com/unoplatform/uno.Samples/tree/master/UI/SkiaSharpTest)  in our samples repository. Alternatively, you can take it for a spin with the following XAML and Code Behind.
 
 XAML:
+
 ```xml
 <Grid>
     <skia:SKXamlCanvas x:Name="test" PaintSurface="OnPaintSurface" />
@@ -71,7 +72,7 @@ Thankfully, Mono supports static linking pretty well out-of-the-box and it enabl
 
 There are a few items outstanding before we will consider support for Skia as complete:
 
-**First**, we needed to fork SkiaSharp to enable WebAssembly support because of the specificities of the native interop layer, notable because [`Marshal.GetFunctionPointerForDelegate`](https://docs.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.marshal.getfunctionpointerfordelegate?view=netframework-4.8) is not supported yet, and [emscripten's `addFunction`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) function pointers feature [needs to be used](https://github.com/unoplatform/Uno.SkiaSharp/blob/uno/binding/SkiaSharp.Wasm/ts/SkiaSharpCanvasKit.ts#L21-L32) for the time being.
+**First**, we needed to fork SkiaSharp to enable WebAssembly support because of the specificities of the native interop layer, notable because [`Marshal.GetFunctionPointerForDelegate`](https://learn.microsoft.com/dotnet/api/system.runtime.interopservices.marshal.getfunctionpointerfordelegate?view=netframework-4.8) is not supported yet, and [emscripten's `addFunction`](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) function pointers feature [needs to be used](https://github.com/unoplatform/Uno.SkiaSharp/blob/uno/binding/SkiaSharp.Wasm/ts/SkiaSharpCanvasKit.ts#L21-L32) for the time being.
 
 We're [working with the SkiaSharp team](https://github.com/mono/SkiaSharp/issues/876) to add an adjustable interop layer that would enable WebAssembly support to be plugged-in at runtime, allowing proper support for packages such as [`SkiaSharp.Extended`](https://www.nuget.org/packages/SkiaSharp.Extended) to be used without being forked to be supported by WebAssembly.
 

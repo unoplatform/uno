@@ -1,26 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
-using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Media;
-using Uno.UI.RuntimeTests.MUX.Helpers;
-using Windows.UI;
-using Windows.UI.Xaml.Input;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using System.Linq;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if !WINDOWS_UWP
+#if !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 public class Given_CalendarView
 {
+#if __WASM__
+	[TestMethod]
+	public async Task When_ItemCornerRadius()
+	{
+		var calendarView = new CalendarView();
+		calendarView.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		calendarView.CalendarItemCornerRadius = new CornerRadius(40);
+		calendarView.DayItemCornerRadius = new CornerRadius(20);
+
+		await UITestHelper.Load(calendarView);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var hasOutOfScope = false;
+
+		foreach (var dayItem in calendarView.EnumerateDescendants().OfType<CalendarViewDayItem>())
+		{
+			var color = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({dayItem.HtmlId}).style[\"background-color\"]");
+			if (color == "rgb(255, 0, 0)")
+			{
+				hasOutOfScope = true;
+				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({dayItem.HtmlId}).style[\"border-radius\"]");
+				Assert.AreEqual("21px", result);
+			}
+		}
+
+		Assert.IsTrue(hasOutOfScope);
+	}
+#endif
 #if __ANDROID__ || __IOS__ || __MACOS__
 	[Ignore("Test fails on these platforms")]
 #endif

@@ -128,6 +128,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> SolidColorBrushHelperSymbol { get; }
 		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> NativePageSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> WindowSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ApplicationSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
 		internal Lazy<INamedTypeSymbol> TextBlockSymbol { get; }
@@ -280,7 +281,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			IListSymbol = GetMandatorySymbolAsLazy("System.Collections.IList");
 			IListOfTSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Collections_Generic_IList_T);
 			IDictionaryOfTKeySymbol = GetMandatorySymbolAsLazy("System.Collections.Generic.IDictionary`2");
-			DataBindingSymbol = GetMandatorySymbolAsLazy("Windows.UI.Xaml.Data.Binding");
+			DataBindingSymbol = GetMandatorySymbolAsLazy("Microsoft.UI.Xaml.Data.Binding");
 			StyleSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Style);
 			ColorSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Color);
 			ColorsSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Colors);
@@ -292,6 +293,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
 			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
+			WindowSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.Window);
 			ApplicationSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Application);
 			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
 			TextBlockSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextBlock);
@@ -845,7 +847,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						// Declare master dictionary
 						writer.AppendLine();
-						writer.AppendLineIndented("internal static global::Windows.UI.Xaml.ResourceDictionary MasterDictionary { get; } = new global::Windows.UI.Xaml.ResourceDictionary();");
+						writer.AppendLineIndented("internal static global::Microsoft.UI.Xaml.ResourceDictionary MasterDictionary { get; } = new global::Microsoft.UI.Xaml.ResourceDictionary();");
 					}
 
 					// Generate all the partial methods, even if they don't exist. That avoids

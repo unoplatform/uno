@@ -13,10 +13,6 @@
 		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<Prefer32Bit>true</Prefer32Bit>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />

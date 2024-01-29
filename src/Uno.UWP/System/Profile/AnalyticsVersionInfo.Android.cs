@@ -13,7 +13,7 @@ public partial class AnalyticsVersionInfo
 	{
 		DeviceFamily = $"{OsName}.{AnalyticsInfo.DeviceForm}";
 		var versionString = Build.VERSION.Release;
-		if (int.TryParse(versionString, out var intVersion))
+		if (int.TryParse(versionString, CultureInfo.InvariantCulture, out var intVersion))
 		{
 			versionString = $"{intVersion}.0.0.0";
 		}

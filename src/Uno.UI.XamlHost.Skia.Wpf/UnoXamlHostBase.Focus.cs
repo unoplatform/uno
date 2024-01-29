@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHostBase.Focus.cs
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using WF = Windows.Foundation;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 
 //TODO: We need to make sure that when the UnoXamlHost loses focus, focus is changed in the XamlRoot as well,
 //so that for active input fields the native overlay is closed and changes are committed to underlying TextBox text

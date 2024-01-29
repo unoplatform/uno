@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -16,13 +16,13 @@ using Android.Views;
 #endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-using XamlWindow = Microsoft.UI.Xaml.Window;
+using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
+using XamlWindow = Microsoft/* UWP don't rename */.UI.Xaml.Window;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class PopupPanel
 {
@@ -75,7 +75,7 @@ partial class PopupPanel
 	/// </summary>
 	protected virtual int PopupPlacementTargetMargin => 0;
 
-	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		=> InvalidateMeasure();
 
 	// TODO: Use this whenever popup placement is Auto
@@ -390,7 +390,5 @@ partial class PopupPanel
 		return fits;
 	}
 
-	private Rect GetVisibleBounds() =>
-		WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly ?
-			(XamlRoot?.Bounds ?? default) : ApplicationView.GetForCurrentView().VisibleBounds;
+	private Rect GetVisibleBounds() => XamlRoot?.VisualTree.VisibleBounds ?? default;
 }

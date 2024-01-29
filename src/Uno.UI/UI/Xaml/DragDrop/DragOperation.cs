@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -13,9 +13,9 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	internal class DragOperation
 	{
@@ -64,7 +64,9 @@ namespace Windows.UI.Xaml
 			}
 
 			var wasOverWindow = _isOverWindow;
-			_isOverWindow = Window.Current.Bounds.Contains(src.GetPosition(null));
+
+			//TODO: Multi-window support #13982
+			_isOverWindow = Window.CurrentSafe?.Bounds.Contains(src.GetPosition(null)) ?? false;
 
 			Update(src); // It's required to do that as soon as possible in order to update the view's location
 

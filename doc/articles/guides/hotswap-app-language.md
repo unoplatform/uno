@@ -7,43 +7,14 @@ uid: Uno.Tutorials.ChangeAppLanguage
 This guide will walk you through the necessary steps for changing app language at runtime.
 
 > [!TIP]
-> The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [RuntimeCultureSwitching](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
+> The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [RuntimeCultureSwitching sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
 
 ## Prerequisites
 
-# [Visual Studio for Windows](#tab/tabid-vswin)
+Make sure to setup your environment for Uno Platform. Follow [Get Started on Visual Studio 2022](../../articles/get-started-vs-2022.md), [Get Started on VS Code](../../articles/get-started-vscode.md), or [Get Started on JetBrains Rider](../../articles/get-started-rider.md).
 
-* [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
-  * **Universal Windows Platform** workload installed
-  * **Mobile Development with .NET (Xamarin)** workload installed
-  * **ASP**.**NET and web** workload installed
-  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) installed
+## Steps to change application language at runtime
 
-# [VS Code](#tab/tabid-vscode)
-
-* [**Visual Studio Code**](https://code.visualstudio.com/)
-
-* [**Mono**](https://www.mono-project.com/download/stable/)
-
-* **.NET Core SDK**
-    * [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) (**version 3.1.8 (SDK 3.1.402)** or later)
-    * [.NET Core 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (**version 5.0 (SDK 5.0.100)** or later)
-
-    > Use `dotnet --version` from the terminal to get the version installed.
-
-# [JetBrains Rider](#tab/tabid-rider)
-
-* [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
-* [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
-
-***
-
-<br>
-
-> [!Tip]
-> For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
-
-## Step-by-steps
 > [!NOTE]
 > This guide is an extension of ["How to use localization"](localization.md), and will build on top the sample from that guide.
 > Make sure you have completed the previous guide or downloaded the [full localization sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization), before continuing.
@@ -52,7 +23,9 @@ This guide will walk you through the necessary steps for changing app language a
     Right-click on `Localization.Shared` > Add > New Item ... > Visual C# > XAML > Blank Page
     And, name them `Page1` and `LanguageSettings`
 1. Add some content to the two new pages:
-    - `Page1.xaml`:
+
+    * `Page1.xaml`:
+
         ```xml
         <Page x:Class="UnoLocalization.Page1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -66,11 +39,15 @@ This guide will walk you through the necessary steps for changing app language a
             </StackPanel>
         </Page>
         ```
-    - `Page1.xaml.cs`:
-        ```cs
+
+    * `Page1.xaml.cs`:
+
+        ```csharp
         private void GoBack(object sender, RoutedEventArgs e) => Frame.GoBack();
         ```
-    - `LanguageSettings.xaml`:
+
+    * `LanguageSettings.xaml`:
+
         ```xml
         <Page x:Class="UnoLocalization.LanguageSettings"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -90,8 +67,10 @@ This guide will walk you through the necessary steps for changing app language a
             </StackPanel>
         </Page>
         ```
-    - `LanguageSettings.xaml.cs`:
-        ```cs
+
+    * `LanguageSettings.xaml.cs`:
+
+        ```csharp
         private void SetAppLanguage(object sender, RoutedEventArgs e)
         {
             if ((sender as Button)?.Tag is string tag)
@@ -111,7 +90,8 @@ This guide will walk you through the necessary steps for changing app language a
         ```
 
 1. Add two new buttons to `MainPage` for navigation:
-    - `MainPage.xaml`:
+    * `MainPage.xaml`:
+
         ```xml
         <StackPanel toolkit:VisibleBoundsPadding.PaddingMask="Top">
             <TextBlock x:Uid="MainPage_IntroText" Text="Hello, world!" Margin="20" FontSize="30" />
@@ -121,11 +101,14 @@ This guide will walk you through the necessary steps for changing app language a
             <Button x:Uid="MainPage_GotoLanguageSettings" Content="Language Settings" Click="GotoLanguageSettings" />
         </StackPanel>
         ```
-    - `MainPage.xaml.cs`:
-        ```cs
+
+    * `MainPage.xaml.cs`:
+
+        ```csharp
         private void GotoNextPage(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(Page1));
         private void GotoLanguageSettings(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(LanguageSettings));
         ```
+
 1. Add a new folder fr under the Strings folder by: Right-click on String > Add > New Folder
 
 1. Add a new resource file `Resources.resw` under the fr folder by: Right-click on fr > Add > New Item ... > Visual C# > Xaml > Resources File
@@ -147,9 +130,8 @@ This guide will walk you through the necessary steps for changing app language a
 See the completed sample on GitHub: [RuntimeCultureSwitching](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
 
 ## Additional Resources
-https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
 
-<br>
+* [Globalization and localization](https://learn.microsoft.com/windows/uwp/design/globalizing/globalizing-portal)
 
 ***
 

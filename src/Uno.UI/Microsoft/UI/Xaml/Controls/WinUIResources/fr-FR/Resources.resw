@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Bleu clair</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Bleu glacier</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>document</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>bouton partagé</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>fenêtre</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>volet</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>en-tête</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>élément d’en-tête</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>tableau</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>barre de titre</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>séparateur</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>zoom sémantique</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>bouton bascule</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>élément</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 éléments</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>annuler le déplacement de %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Précédent</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Lecture</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Suspendre</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Temps écoulé </value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Temps restant</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Progression de la mise en mémoire tampon</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Recherche</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Muet</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Jour </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Mois </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Année </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Heure </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Minute </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 minute</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 minutes</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 seconde</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 secondes</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Diminution verticale importante</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Légère diminution verticale</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Couper</value>
   </data>

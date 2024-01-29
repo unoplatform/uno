@@ -12,9 +12,9 @@ using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{

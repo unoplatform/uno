@@ -3,7 +3,7 @@ using SkiaSharp;
 using Uno.Foundation.Extensibility;
 using System.Threading;
 using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Windows.UI.Core;
 
 namespace SkiaSharpExample
@@ -20,7 +20,7 @@ namespace SkiaSharpExample
 				Console.CursorVisible = false;
 				var host = new FrameBufferHost(() =>
 				{
-					CoreWindow.GetForCurrentThread().KeyDown += (s, e) =>
+					CoreWindow.GetForCurrentThreadSafe().KeyDown += (s, e) =>
 					{
 						if (e.VirtualKey == Windows.System.VirtualKey.F12)
 						{

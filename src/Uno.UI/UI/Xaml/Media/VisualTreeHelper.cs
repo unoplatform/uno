@@ -7,15 +7,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Uno.Collections;
-using Uno.Extensions;
 
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using static Uno.Extensions.Matrix3x2Extensions;
+using static Uno.Extensions.EnumerableExtensions;
 
 #if TRACE_HIT_TESTING
 using System.Runtime.CompilerServices;
@@ -35,11 +36,11 @@ using _ViewGroup = AppKit.NSView;
 using _View = Android.Views.View;
 using _ViewGroup = Android.Views.ViewGroup;
 #else
-using _View = Windows.UI.Xaml.UIElement;
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Microsoft.UI.Xaml.UIElement;
+using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
@@ -211,14 +212,12 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
-			if (window == Window.Current)
+			if (window.RootElement?.XamlRoot?.VisualTree is { } visualTree)
 			{
-				var mainVisualTree = WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.VisualTree;
-				return GetOpenPopups(mainVisualTree);
+				return GetOpenPopups(visualTree);
 			}
 
-			// TODO Uno: Multi-window support #8341.
-			throw new InvalidOperationException("Using multiple windows is not supported on this platform yet.");
+			return Array.Empty<Popup>();
 		}
 
 		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
@@ -812,8 +811,10 @@ namespace Windows.UI.Xaml.Media
 
 		internal struct Branch
 		{
-			public static Branch ToWindowRoot(UIElement leaf)
-				=> new Branch(Window.Current.RootElement, leaf);
+			public static Branch ToPublicRoot(UIElement leaf)
+				=> new Branch(
+					leaf.XamlRoot?.VisualTree?.RootElement ?? throw new InvalidOperationException("Element must be part of a visual tree"),
+					leaf);
 
 			public Branch(UIElement root, UIElement leaf)
 			{

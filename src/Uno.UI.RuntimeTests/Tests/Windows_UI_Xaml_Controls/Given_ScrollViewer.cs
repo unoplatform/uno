@@ -7,13 +7,13 @@ using FluentAssertions.Execution;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
@@ -171,7 +171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				using var _ = new AssertionScope($"{name} [{width}x{height}]");
 
-#if !NETFX_CORE
+#if !WINAPPSDK
 				sut.ViewportMeasureSize.Width.Should().Be(width, "ViewportMeasureSize.Width");
 				sut.ViewportMeasureSize.Height.Should().Be(height, "ViewportMeasureSize.Height");
 
@@ -291,7 +291,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_ScrollViewer_Pressed()
@@ -562,7 +562,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_WheelChanged_OnlyHorizontallyScrollable()
@@ -615,7 +615,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Nested_ScrollViewers_WheelChanged()
@@ -710,6 +710,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, SUT.VerticalOffset);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Pointer_Clicks_Inside_ScrollViewer()
+		{
+			var ts = new ToggleSwitch();
+			var tb = new TextBox();
+			var SUT = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Children =
+					{
+						tb,
+						ts
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(ts.GetAbsoluteBounds().GetCenter() - new Point(SUT.ActualWidth / 2 - 10, 0));
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The ScrollViewer should NOT grab focus here.
+			Assert.AreEqual(ts, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+			mouse.Press(tb.GetAbsoluteBounds().GetCenter() + new Point(0, 20)); // click somewhere empty inside the ScrollViewer
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// This time, since no element inside handled PointerPressed, ScrollViewer should focus the first element inside.
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+		}
+#endif
 
 		[TestMethod]
 #if __WASM__
@@ -1050,7 +1093,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Spacing = 5,
 				Children =
 				{
-					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
 					SUT,
 				},
 			};
@@ -1123,7 +1166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Spacing = 5,
 				Children =
 				{
-					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
 					SUT,
 				},
 			};
@@ -1159,7 +1202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__ && !WINDOWS_UWP
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
@@ -1199,7 +1242,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
@@ -1239,12 +1282,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_ReversedMouseWheel_Then_ScrollInReversedDirection()
 		{
-#if WINDOWS_UWP
+#if WINAPPSDK
 			Assert.Inconclusive("Mouse pointer helper not supported on UWP.");
 #else
 			var sut = new ScrollViewer

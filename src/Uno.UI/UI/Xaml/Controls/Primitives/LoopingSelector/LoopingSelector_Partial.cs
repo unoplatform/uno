@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI;
 
@@ -18,7 +18,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls.Primitives
+namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	partial class LoopingSelector
 	{
@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//(Private.SetDefaultStyleKey(
 			//        spInnerInspectable,
-			//        "Microsoft.UI.Xaml.Controls.Primitives.LoopingSelector"));
+			//        "Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.LoopingSelector"));
 			DefaultStyleKey = typeof(LoopingSelector);
 
 			//QueryInterface(__uuidof(UIElement), &spUIElement);
@@ -1794,6 +1794,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			FrameworkElement spPanelAsFE;
 			UIElement spThisAsUI;
+
+#if HAS_UNO
+			// Uno specific: Due to lifecycle differences, the ScrollViewer is may not be initialized at this point.
+			// If ViewportHeight is 0, we would temporarily size the panel incorrectly, which could cause the selected
+			// item to be changed.
+			if (_tpScrollViewer is null || _tpScrollViewer.ViewportHeight == 0)
+			{
+				return;
+			}
+#endif
 
 			var shouldLoop = false;
 			shouldLoop = ShouldLoop;

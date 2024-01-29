@@ -130,7 +130,7 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        
+
                         <!-- Content layouts -->
                         <Grid>
                             <Grid.RowDefinitions>
@@ -152,7 +152,7 @@
                                       Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPadding}"
                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPaneVisibility}"/>
 
-                                <Grid x:Name="TopNavGrid" 
+                                <Grid x:Name="TopNavGrid"
                                       Height="{ThemeResource NavigationViewTopPaneHeight}"
                                       Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.TopPaneVisibility}">
                                     <Grid.ColumnDefinitions>
@@ -167,8 +167,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid 
-                                        x:Name="TopNavLeftPadding" 
+                                    <Grid
+                                        x:Name="TopNavLeftPadding"
                                         Grid.Column="1"
                                         Width="0"/>
 
@@ -194,7 +194,7 @@
                                             HorizontalScrollBarVisibility="Hidden"
                                             VerticalScrollMode="Disabled"
                                             VerticalScrollBarVisibility="Hidden">
-                                            <local:ItemsRepeater 
+                                            <local:ItemsRepeater
                                                 AutomationProperties.LandmarkType="Navigation"
                                                 AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}"
                                                 AutomationProperties.AccessibilityView = "Content"
@@ -206,7 +206,7 @@
                                         </ScrollViewer>
                                     </local:ItemsRepeaterScrollHost>
 
-                                    <Button 
+                                    <Button
                                         x:Name="TopNavOverflowButton"
                                         Grid.Column="4"
                                         Content="More"
@@ -264,7 +264,12 @@
                                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                         <local:ItemsRepeater
                                                                     AutomationProperties.AccessibilityView = "Content"
-                                                                    x:Name="TopNavMenuItemsOverflowHost"/>
+                                                                    x:Name="TopNavMenuItemsOverflowHost">
+                                                            <!-- Uno specific: This matches Fluent v2 version and avoids a memory leak related to the use of the singleton StackLayout in ItemsRepeater -->
+                                                            <local:ItemsRepeater.Layout>
+                                                                <local:StackLayout />
+                                                            </local:ItemsRepeater.Layout>
+                                                        </local:ItemsRepeater>
                                                     </ScrollViewer>
                                                 </local:ItemsRepeaterScrollHost>
                                             </Flyout>
@@ -325,11 +330,11 @@
                                 IsTabStop="False"
                                 OpenPaneLength="{TemplateBinding OpenPaneLength}"
                                 PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}"
-                            
+
                                 Grid.Row="1">
 
                                 <SplitView.Pane>
-                                    <Grid 
+                                    <Grid
                                         x:Name="PaneContentGrid"
                                         HorizontalAlignment="Left"
                                         Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.LeftPaneVisibility}">
@@ -480,7 +485,7 @@
                                     </Grid>
                                 </SplitView.Content>
                             </SplitView>
-                            
+
                         </Grid>
 
 						<!-- Button grid -->
@@ -511,7 +516,7 @@
                                         <ToolTip x:Name="NavigationViewBackButtonToolTip"/>
                                     </ToolTipService.ToolTip>
                                 </Button>
-                                <Button 
+                                <Button
                                     x:Name="NavigationViewCloseButton"
                                     Style="{StaticResource NavigationBackButtonNormalStyle}"
                                     VerticalAlignment="Top">
@@ -527,7 +532,7 @@
                                     VerticalAlignment="Top"
                                     MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.PaneToggleButtonWidth}">
                                     <TextBlock
-                                        x:Name="PaneTitleTextBlock" 
+                                        x:Name="PaneTitleTextBlock"
                                         Grid.Column="0"
                                         Text="{TemplateBinding PaneTitle}"
                                         HorizontalAlignment="Left"
@@ -573,7 +578,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="ItemOnNavigationViewListPositionStates">
                                 <VisualState x:Name="OnLeftNavigation">
@@ -807,7 +812,7 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Rectangle 
+                        <Rectangle
                             x:Name="SeparatorLine"
                             Height="{ThemeResource NavigationViewItemSeparatorHeight}"
                             Margin="{ThemeResource NavigationViewItemSeparatorMargin}"

@@ -1,0 +1,53 @@
+<Project>
+	<PropertyGroup>
+		<IsAndroid>false</IsAndroid>
+		<IsIOS>false</IsIOS>
+		<IsMacOS>false</IsMacOS>
+		<IsMacCatalyst>false</IsMacCatalyst>
+		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
+		<IsWinAppSdk>false</IsWinAppSdk>
+		<IsBrowser>false</IsBrowser>
+		<IsSkia>false</IsSkia>
+	</PropertyGroup>
+
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<PropertyGroup>
+				<IsAndroid>true</IsAndroid>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<PropertyGroup>
+				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
+				<IsIOS>true</IsIOS>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+			<PropertyGroup>
+				<IsMacOS>true</IsMacOS>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+			<PropertyGroup>
+				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
+				<IsMacCatalyst>true</IsMacCatalyst>
+			</PropertyGroup>
+		</When>
+		<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
+		<When Condition="$(TargetFramework.Contains('windows10'))">
+			<PropertyGroup>
+				<IsWinAppSdk>true</IsWinAppSdk>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+			<PropertyGroup>
+				<IsBrowser>true</IsBrowser>
+			</PropertyGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+			<PropertyGroup>
+				<IsSkia>true</IsSkia>
+			</PropertyGroup>
+		</When>
+	</Choose>
+</Project>

@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Xaml.Data
+﻿namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>
 	/// Describes how the data propagates in a binding.

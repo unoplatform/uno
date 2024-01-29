@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
 
-namespace Windows.UI.Xaml.Media.Animation
+namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = nameof(KeyFrames))]
 	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline

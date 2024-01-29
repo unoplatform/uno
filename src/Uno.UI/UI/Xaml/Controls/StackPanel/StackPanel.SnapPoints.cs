@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class StackPanel
 	{
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		public bool AreVerticalSnapPointsRegular => false;
 
 		public static DependencyProperty AreScrollSnapPointsRegularProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(AreScrollSnapPointsRegular), typeof(bool),
 				typeof(StackPanel),
 				new FrameworkPropertyMetadata(default(bool)));

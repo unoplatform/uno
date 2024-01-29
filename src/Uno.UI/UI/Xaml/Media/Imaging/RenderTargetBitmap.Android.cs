@@ -9,10 +9,9 @@ using Windows.Foundation;
 using Java.Nio;
 using Android.Views;
 using Uno.UI.Xaml.Media;
-using Uno.Extensions;
 using System.Runtime.InteropServices;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{

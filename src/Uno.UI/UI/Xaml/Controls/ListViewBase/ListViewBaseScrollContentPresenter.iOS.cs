@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using ObjCRuntime;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ListViewBaseScrollContentPresenter : IScrollContentPresenter
 	{

@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHostBase.Layout.cs
@@ -6,7 +6,7 @@
 using System;
 using System.Windows;
 using Uno.UI.XamlHost.Extensions;
-using WUX = Windows.UI.Xaml;
+using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -26,7 +26,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			if (IsXamlContentLoaded())
 			{
-				_xamlSource.Content.Measure(new Windows.Foundation.Size(constraint.Width, constraint.Height));
+				_xamlSource.XamlIsland.Measure(new Windows.Foundation.Size(constraint.Width, constraint.Height));
 				desiredSize.Width = _xamlSource.Content.DesiredSize.Width;
 				desiredSize.Height = _xamlSource.Content.DesiredSize.Height;
 			}
@@ -50,7 +50,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				// set to 'Stretch'.  The UWP XAML content will be 0 in the stretch alignment direction
 				// until Arrange is called, and the UWP XAML content is expanded to fill the available space.
 				var finalRect = new Windows.Foundation.Rect(0, 0, finalSize.Width, finalSize.Height);
-				_xamlSource.Content.Arrange(finalRect);
+				_xamlSource.XamlIsland.Arrange(finalRect);
 			}
 
 			return base.ArrangeOverride(finalSize);

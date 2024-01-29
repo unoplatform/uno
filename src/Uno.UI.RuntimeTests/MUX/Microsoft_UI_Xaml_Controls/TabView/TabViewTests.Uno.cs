@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	public partial class TabViewTests
 	{

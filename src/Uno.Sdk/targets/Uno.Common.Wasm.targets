@@ -1,0 +1,8 @@
+<Project>
+	<PropertyGroup>
+		<IsBrowser>true</IsBrowser>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
+			Condition=" $(SingleProject) == 'true' " />
+</Project>

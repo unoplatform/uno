@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>হালকা নীল</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>আইস ব্লু</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>দস্তাবেজ</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>বিভাজন বোতাম</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>উইন্ডো</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>ফলক</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>শিরোলেখ</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>শিরোলেখ আইটেম</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>সারণী</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>টাইটেল বার</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>বিভাজক</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>সেমানটিক জুম</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>অদলবদলের স্যুইচ</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>আইটেম</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1টি আইটেম</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>%1 টানা বাতিল করুন</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>পরবর্তী</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>পূর্ববর্তী</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>প্লে করুন</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>বিরাম</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>সময় অতিক্রান্ত হয়েছে</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>বাকি সময়</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>বাফারিংয়ের প্রগতি</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>অন্বেষণ</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>মৌন</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>স্বর প্রাবল্য</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>ত্রুটি</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>দিন </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>মাস </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>বছর </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>ঘণ্টা </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>মিনিট </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 মিনিট</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 মিনিট</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 সেকেন্ড</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 সেকেন্ড</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>উল্লম্ব বড় হ্রাস</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>উল্লম্ব ছোট হ্রাস</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>ছেদন</value>
   </data>

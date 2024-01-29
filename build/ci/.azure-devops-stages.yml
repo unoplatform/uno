@@ -11,21 +11,25 @@ stages:
     parameters:
       vmImage: '$(linuxVMImage)'
 
+  - template: .azure-devops-markdown-lint.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
   - template: .azure-devops-pipeline-validations.yml
     parameters:
       vmImage: '$(linuxVMImage)'
 
 - stage: convert_tree
-  displayName: WinUI Tree Conversion
+  displayName: UWP Tree Conversion
   dependsOn:
     - Setup
   jobs:
-  - template: .azure-devops-winui-convert.yml
+  - template: .azure-devops-uwp-convert.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
-- stage: binaries_build
-  displayName: Build Binaries
+- stage: binaries_build_uwp
+  displayName: Build Binaries UWP
   dependsOn:
     - Setup
     - convert_tree
@@ -34,23 +38,62 @@ stages:
   - template: .azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+      UNO_UWP_BUILD: true
+      XAML_FLAVOR_BUILD: UWP
   
   - template: .azure-devops-package-wasm.yml
     parameters:
       poolName: '$(linuxScaledPool)'
-  
+      UNO_UWP_BUILD: true
+      XAML_FLAVOR_BUILD: UWP
+
   - template: .azure-devops-package-reference.yml
     parameters:
       poolName: '$(linuxScaledPool)'
-      
+      UNO_UWP_BUILD: true
+      XAML_FLAVOR_BUILD: UWP
+
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      UNO_UWP_BUILD: true
+      XAML_FLAVOR_BUILD: UWP
+
+- stage: binaries_build_winui
+  displayName: Build Binaries WinUI
+  dependsOn:
+    - Setup
+
+  jobs: 
+  - template: .azure-devops-package-netcoremobile.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+  
+  - template: .azure-devops-package-wasm.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+
+  - template: .azure-devops-package-reference.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+
+  - template: .azure-devops-package-skia.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_build
   displayName: Generate Packages
   dependsOn:
-    - binaries_build
+    - binaries_build_uwp
+    - binaries_build_winui
 
   jobs: 
   - template: .azure-devops-package.yml
@@ -66,7 +109,8 @@ stages:
 - stage: unit_tests
   displayName: Tests - Unit
   dependsOn:
-    - binaries_build
+    - binaries_build_uwp
+    - binaries_build_winui
     - convert_tree
 
   jobs:
@@ -86,8 +130,8 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- stage: skia_tests
-  displayName: Tests - Skia
+- stage: skia_tests_uwp
+  displayName: Tests - Skia UWP
   dependsOn:
     - Setup
     - convert_tree
@@ -98,7 +142,23 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
       poolName: '$(windowsScaledPool)'
-  
+      UNO_UWP_BUILD: true
+      XAML_FLAVOR_BUILD: UWP
+
+- stage: skia_tests_winui
+  displayName: Tests - Skia WinUI
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-skia-tests.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+      vmMacImage: '$(macOSVMImage)'
+      poolName: '$(windowsScaledPool)'
+      UNO_UWP_BUILD: false
+      XAML_FLAVOR_BUILD: WinUI
+
 - stage: macos_tests
   displayName: Tests - macOS
   dependsOn:
@@ -139,13 +199,13 @@ stages:
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
-- stage: uap_tests
-  displayName: Tests - UAP
+- stage: wasdk_tests
+  displayName: Tests - WinAppSDK  
   dependsOn:
     - Setup
 
   jobs:
-  - template: .azure-devops-uap.yml
+  - template: .azure-devops-wasdk.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -157,7 +217,7 @@ stages:
     - ios_tests
     - android_tests
     - macos_tests
-    - skia_tests
+    - skia_tests_winui
 
   jobs:
   - template: .azure-devops-screenshot-compare.yml

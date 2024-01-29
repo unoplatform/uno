@@ -4,8 +4,9 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Sensors;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_Devices
 {
@@ -33,7 +34,7 @@ namespace UITests.Shared.Windows_Devices
 			private double _headingTrueNorth;
 			private string _timestamp;
 
-			public CompassTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public CompassTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 				_compass = Compass.GetDefault();
@@ -121,7 +122,7 @@ namespace UITests.Shared.Windows_Devices
 
 			private async void Compass_ReadingChanged(Compass sender, CompassReadingChangedEventArgs args)
 			{
-				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					HeadingMagneticNorth = args.Reading.HeadingMagneticNorth;
 					HeadingTrueNorth = args.Reading.HeadingTrueNorth ?? double.NaN;

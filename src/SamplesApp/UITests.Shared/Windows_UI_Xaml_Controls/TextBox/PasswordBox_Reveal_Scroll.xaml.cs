@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
@@ -16,8 +17,8 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			// As this test focus the password, it's easier to always make it visible
 			// and then make sure to compare only well-known parts of the screen.
 			var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-			_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					await statusBar.ShowAsync();

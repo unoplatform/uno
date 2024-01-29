@@ -7,7 +7,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Slider
 	{
 		private double _sliderValue;
 
-		public SliderViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public SliderViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.Repeater
@@ -17,12 +17,12 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 
 		private void SetSource(object sender, RoutedEventArgs e)
 		{
-#if !NETFX_CORE
+#if !WINAPPSDK
 			var dt = new DataTemplate(() => new Border
 			{
 				Child = new MyItem()
 			});
-			var SUT = new Microsoft.UI.Xaml.Controls.ItemsRepeater
+			var SUT = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater
 			{
 				ItemTemplate = dt
 			};

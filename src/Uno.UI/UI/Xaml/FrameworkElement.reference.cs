@@ -6,9 +6,9 @@ using Uno.Collections;
 using Uno.UI;
 using Windows.Foundation;
 
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
@@ -28,8 +28,6 @@ namespace Windows.UI.Xaml
 		internal MaterializableList<View> GetChildren() => throw new NotSupportedException("Reference assembly");
 
 		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
-
-		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
 
 		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
 

@@ -1,4 +1,4 @@
-namespace Windows.UI.Xaml.Automation;
+﻿namespace Microsoft.UI.Xaml.Automation;
 
 /// <summary>
 /// Specifies whether data in a table should be read primarily by row or by column.

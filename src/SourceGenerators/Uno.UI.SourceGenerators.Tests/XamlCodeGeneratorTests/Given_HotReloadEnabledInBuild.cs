@@ -10,7 +10,7 @@ using Verify = XamlSourceGeneratorVerifier;
 public class Given_HotReloadEnabledInBuild
 {
 	// Specify this centrally for all tests that rely on Uno5 or above
-	private static readonly ReferenceAssemblies _net7Uno5Refs = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "5.0.64")));
+	private static readonly ReferenceAssemblies _net7Uno5Refs = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118")));
 
 	[TestMethod]
 	public async Task SetBaseUriIncludedInOutputForFrameworkElements()
@@ -41,8 +41,8 @@ public class Given_HotReloadEnabledInBuild
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -94,8 +94,8 @@ public class Given_HotReloadEnabledInBuild
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -144,8 +144,8 @@ public class Given_HotReloadEnabledInBuild
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -203,8 +203,8 @@ public class Given_HotReloadEnabledInBuild
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{
@@ -288,8 +288,8 @@ public class Given_HotReloadEnabledInBuild
 				Sources =
 				{
 					"""
-					using Windows.UI.Xaml;
-					using Windows.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
 
 					namespace TestRepro
 					{

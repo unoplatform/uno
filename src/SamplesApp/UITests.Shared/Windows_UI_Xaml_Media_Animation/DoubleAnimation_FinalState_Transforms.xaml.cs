@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
+using Private.Infrastructure;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
@@ -55,8 +56,8 @@ If 'Set From' was selected, then rollback means back to value before animation, 
 			};
 
 			Status.Text = "Animating";
-			await Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			await UnitTestDispatcherCompat.From(this).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
 					var halfAnimation = (int)_duration.TotalMilliseconds / 2;
@@ -75,7 +76,7 @@ If 'Set From' was selected, then rollback means back to value before animation, 
 			var animation = new DoubleAnimation
 			{
 				To = 150,
-				Duration = DurationHelper.FromTimeSpan(_duration),
+				Duration = new Duration(_duration),
 				FillBehavior = fill
 			};
 

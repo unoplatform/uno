@@ -4,8 +4,8 @@ using System;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
@@ -149,12 +149,12 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void UpdatePosition()
 	{
-		if (_contentElement is null || _textBoxView is not { IsDisplayed: true })
+		if (_contentElement?.XamlRoot is null || _textBoxView is not { IsDisplayed: true })
 		{
 			return;
 		}
 
-		var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
+		var transformToRoot = _contentElement.TransformToVisual(_contentElement.XamlRoot.VisualTree.RootElement);
 		var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
 		var pointX = _owner?.TextBox?.FlowDirection is FlowDirection.RightToLeft
 			? (int)(point.X - _contentElement.RenderSize.Width)

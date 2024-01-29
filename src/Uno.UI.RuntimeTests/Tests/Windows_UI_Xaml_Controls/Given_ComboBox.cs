@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,24 +7,24 @@ using System.Collections.Specialized;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
-using Windows.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 
 
 
-#if NETFX_CORE
+#if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -32,9 +32,9 @@ using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
 
 using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 #elif __MACOS__
 using AppKit;
@@ -696,8 +696,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				c.Add("2-Five");
 				c.Add("2-Six");
 
-				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("MySource") });
-				SUT.SetBinding(ComboBox.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
+				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("MySource") });
+				SUT.SetBinding(ComboBox.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
 
 				SUT.DataContext = new { MySource = c, SelectedItem = "One" };
 
@@ -738,8 +738,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -801,8 +801,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -937,7 +937,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_Mouse_Opened_And_Closed()
@@ -1008,7 +1008,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_Mouse_Opened_And_Closed_Fluent()
@@ -1052,6 +1052,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, dc.ItemGetCount);
 			Assert.AreEqual(1, dc.ItemSetCount);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Closed(bool isTextSearchEnabled)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.Items.Add("Elephant");
+
+			// Assert the default value of IsTextSearchEnabled.
+			Assert.IsTrue(comboBox.IsTextSearchEnabled);
+
+			// Set the isTextSearchEnabled value being tested.
+			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
+
+			await UITestHelper.Load(comboBox);
+
+			comboBox.Focus(FocusState.Programmatic);
+
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			Assert.AreEqual(false, comboBox.IsDropDownOpen);
+			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+
+			var expectedSelectedIndex = isTextSearchEnabled ? 2 : -1;
+			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : null;
+			Assert.AreEqual(expectedSelectedIndex, comboBox.SelectedIndex);
+			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.Items.Add("Elephant");
+			comboBox.SelectedIndex = 3;
+
+			// Assert the default value of IsTextSearchEnabled.
+			Assert.IsTrue(comboBox.IsTextSearchEnabled);
+
+			// Set the isTextSearchEnabled value being tested.
+			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
+
+			comboBox.IsDropDownOpen = true;
+
+			await UITestHelper.Load(comboBox);
+
+			comboBox.Focus(FocusState.Programmatic);
+
+			Assert.AreEqual(3, comboBox.SelectedIndex);
+			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+
+			var expectedSelectedIndex = isTextSearchEnabled ? 2 : 3;
+			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : "Elephant";
+			Assert.AreEqual(expectedSelectedIndex, comboBox.SelectedIndex);
+			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
+
+			Assert.IsTrue(comboBox.IsDropDownOpen);
+			KeyboardHelper.Space();
+			Assert.AreEqual(isTextSearchEnabled, comboBox.IsDropDownOpen);
+
+			await Task.Delay(1100); // Make sure to wait enough so that HasSearchStringTimedOut becomes true.
+
+			KeyboardHelper.Space();
+
+			Assert.AreEqual(!isTextSearchEnabled, comboBox.IsDropDownOpen);
 		}
 
 		public sealed class TwoWayBindingClearViewModel : IDisposable

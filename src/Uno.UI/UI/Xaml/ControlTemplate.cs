@@ -15,10 +15,10 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{

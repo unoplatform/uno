@@ -10,10 +10,10 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit;
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
@@ -58,7 +58,12 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 				await WindowHelper.WaitForLoaded(inner);
 
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				var windowBounds = Window.Current.Bounds;
+				var windowBounds =
+#if HAS_UNO
+					WindowHelper.XamlRoot.Bounds;
+#else
+					Window.Current.Bounds;
+#endif
 				RectAssert.AreNotEqual(windowBounds, visibleBounds);
 
 				var containerBounds = container.GetOnScreenBounds();

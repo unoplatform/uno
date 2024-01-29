@@ -116,11 +116,16 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.WaitForConnection();
 
-		await UpdateServerFile<T>(originalText, replacementText, ct);
+		try
+		{
+			await UpdateServerFile<T>(originalText, replacementText, ct);
 
-		await callback();
-
-		await UpdateServerFile<T>(replacementText, originalText, ct);
+			await callback();
+		}
+		finally
+		{
+			await UpdateServerFile<T>(replacementText, originalText, ct);
+		}
 	}
 
 	/// <summary>

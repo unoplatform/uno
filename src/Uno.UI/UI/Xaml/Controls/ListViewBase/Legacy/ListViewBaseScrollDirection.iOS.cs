@@ -1,5 +1,5 @@
-using Uno.Extensions;
-using Windows.UI.Xaml;
+﻿using Uno.Extensions;
+using Microsoft.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +9,7 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public enum ListViewBaseScrollDirection
 	{

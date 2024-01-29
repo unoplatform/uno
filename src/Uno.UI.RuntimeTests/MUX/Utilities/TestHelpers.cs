@@ -12,10 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Common;
 using Private.Infrastructure;
 #if USING_TAEF
@@ -175,7 +175,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static IList<T> FindDescendents<T>(DependencyObject root)
-#if WINDOWS_UWP
+#if WINAPPSDK
 			where T : DependencyObject
 #else
 			where T : class, DependencyObject

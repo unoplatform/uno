@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Specialized;
 using System.Linq;
@@ -9,9 +9,9 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
@@ -20,7 +20,7 @@ using UIKit;
 using AppKit;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AutoSuggestBox : ItemsControl, IValueChangedListener
 	{
@@ -178,15 +178,7 @@ namespace Windows.UI.Xaml.Controls
 				popupChild.MinWidth = _layoutRoot.ActualWidth;
 				popupChild.MaxHeight = MaxSuggestionListHeight;
 
-				Rect windowRect;
-				if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-				{
-					windowRect = XamlRoot.Bounds;
-				}
-				else
-				{
-					windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
-				}
+				Rect windowRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
@@ -535,6 +527,15 @@ namespace Windows.UI.Xaml.Controls
 			if (descriptionPresenter != null)
 			{
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
+
+		internal void ProgrammaticSubmitQuery()
+		{
+			//UNO TODO: Implement ProgrammaticSubmitQuery on AutoSuggestBox
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"ProgrammaticSubmitQuery on AutoSuggestBox is not yet implemented.");
 			}
 		}
 	}

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation;
@@ -13,13 +13,13 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 using System.Reflection;
 
 using Uno.Core.Comparison;
 
-namespace Windows.UI.Xaml
+namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{

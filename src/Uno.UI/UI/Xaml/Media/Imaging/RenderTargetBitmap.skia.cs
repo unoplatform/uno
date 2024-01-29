@@ -3,11 +3,11 @@ using System;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.UI.Composition;
+using Microsoft.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
 
-namespace Windows.UI.Xaml.Media.Imaging
+namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{

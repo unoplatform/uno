@@ -12,12 +12,12 @@ using AndroidX.RecyclerView.Widget;
 using AndroidX.SwipeRefreshLayout.Widget;
 using Uno.UI.Controls;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Rect = Windows.Foundation.Rect;
 using ScrollView = Android.Widget.ScrollView;
-using UnoScrollViewer = Windows.UI.Xaml.Controls.ScrollViewer;
+using UnoScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
 namespace Uno.UI.Xaml.Controls;
 

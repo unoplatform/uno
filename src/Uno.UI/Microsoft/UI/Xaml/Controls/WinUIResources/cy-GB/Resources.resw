@@ -117,6 +117,138 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="TEXT_DATEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_TIMEPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_LISTPICKERFLYOUT_TITLE" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_ACCEPTBTNLABEL" xml:space="preserve">
+    <value>Glas golau</value>
+  </data>
+  <data name="TEXT_PICKERFLYOUTBASE_CANCELBTNLABEL" xml:space="preserve">
+    <value>Glas rhewllyd</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_NAME" xml:space="preserve">
+    <value>dogfen</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_DAYNAME" xml:space="preserve">
+    <value>botwm hollti</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_MONTHNAME" xml:space="preserve">
+    <value>ffenestr</value>
+  </data>
+  <data name="UIA_AP_DATEPICKER_YEARNAME" xml:space="preserve">
+    <value>cwarel</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_NAME" xml:space="preserve">
+    <value>pennyn</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_MINUTENAME" xml:space="preserve">
+    <value>eitem pennyn</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_HOURNAME" xml:space="preserve">
+    <value>tabl</value>
+  </data>
+  <data name="UIA_AP_TIMEPICKER_PERIODNAME" xml:space="preserve">
+    <value>bar teitl</value>
+  </data>
+  <data name="UIA_AP_LISTPICKERFLYOUT_NAME" xml:space="preserve">
+    <value>gwahanydd</value>
+  </data>
+  <data name="UIA_AP_PICKERFLYOUT_NAME" xml:space="preserve">
+    <value>nesáu/pellhau semantig</value>
+  </data>
+  <data name="UIA_AP_MAP_NAME" xml:space="preserve">
+    <value>switsh toglo</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_ALL" xml:space="preserve">
+    <value>eitem</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_DISTANCE" xml:space="preserve">
+    <value>%1 eitem</value>
+  </data>
+  <data name="UIA_AP_MAP_FORMATTEDNAME_NOLOCATION" xml:space="preserve">
+    <value>canslo’r llusgo %1</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTH" xml:space="preserve">
+    <value>Nesaf</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHEAST" xml:space="preserve">
+    <value>Blaenorol</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_NORTHWEST" xml:space="preserve">
+    <value>Chwarae</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_EAST" xml:space="preserve">
+    <value>Rhewi</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_WEST" xml:space="preserve">
+    <value>Amser wedi mynd heibio</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTH" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHEAST" xml:space="preserve">
+    <value>Amser ar ôl</value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_SOUTHWEST" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_HEADING_FORMATTEDSTRING" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILE" xml:space="preserve">
+    <value>Hynt Byffro</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_MILES" xml:space="preserve">
+    <value>Chwilio am</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FOOT" xml:space="preserve">
+    <value>Tewi</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_FEET" xml:space="preserve">
+    <value>Lefel y sain</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARD" xml:space="preserve">
+    <value>Gwall</value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_YARDS" xml:space="preserve">
+    <value>Diwrnod </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETER" xml:space="preserve">
+    <value>Mis </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_KILOMETERS" xml:space="preserve">
+    <value>Blwyddyn </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METER" xml:space="preserve">
+    <value>Awr </value>
+  </data>
+  <data name="UIA_AP_MAP_UNIT_METERS" xml:space="preserve">
+    <value>Munud </value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOT" xml:space="preserve">
+    <value>%1 munud</value>
+  </data>
+  <data name="UIA_CONTROLTYPE_PIVOTITEM" xml:space="preserve">
+    <value>%1 o funudau</value>
+  </data>
+  <data name="UIA_DIALOG_ACCEPT" xml:space="preserve">
+    <value>%1 eiliad</value>
+  </data>
+  <data name="UIA_DIALOG_DISMISS" xml:space="preserve">
+    <value>%1 eiliad</value>
+  </data>
+  <data name="IDS_ELEMENT_ENABLED_ONLY_IN_APP" xml:space="preserve">
+    <value>Gostyngiad Mawr Ar i Fyny</value>
+  </data>
+  <data name="IDS_MAP_MISSING_CREDENTIALS_WARNING" xml:space="preserve">
+    <value>Gostyngiad Bach Ar i Fyny</value>
+  </data>
   <data name="TEXT_CONTEXT_MENU_CUT" xml:space="preserve">
     <value>Torri</value>
   </data>

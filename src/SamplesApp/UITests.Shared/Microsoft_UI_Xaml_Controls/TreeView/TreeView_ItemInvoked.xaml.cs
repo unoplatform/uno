@@ -8,14 +8,14 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
@@ -28,9 +28,9 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 			Tree.ItemInvoked += OnItemInvoked;
 		}
 
-		private void OnItemInvoked(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
+		private void OnItemInvoked(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView sender, Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
 		{
-			StatusTextBlock.Text = $"{DateTime.UtcNow.ToLongTimeString()}: {(args.InvokedItem as Microsoft.UI.Xaml.Controls.TreeViewNode)?.Content}";
+			StatusTextBlock.Text = $"{DateTime.UtcNow.ToLongTimeString()}: {(args.InvokedItem as Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode)?.Content}";
 		}
 	}
 }

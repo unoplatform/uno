@@ -15,7 +15,7 @@ using ObjCRuntime;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 #elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;
@@ -223,27 +223,6 @@ namespace Uno.UI
 			}
 
 			return lastBottom;
-		}
-
-		/// <summary>
-		/// Gets the orientation-dependent screen size
-		/// </summary>
-		/// <returns></returns>
-		internal static CGSize GetMainWindowSize()
-		{
-			return GetWindowSize(window: Windows.UI.Xaml.Window.Current);
-		}
-
-		internal static CGSize GetWindowSize(Windows.UI.Xaml.Window window)
-		{
-#if __IOS__
-			var nativeFrame = window?.NativeWindow?.Frame ?? CGRect.Empty;
-
-			return new CGSize(nativeFrame.Width, nativeFrame.Height);
-#else
-			var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
-			return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
-#endif
 		}
 	}
 }

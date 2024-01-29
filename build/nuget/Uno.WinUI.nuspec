@@ -17,12 +17,12 @@
 		<dependencies>
 
 			<!-- References from Uno.UI.Toolkit -->
-			<!-- BEGIN WinUI-specific
+			<!-- BEGIN UWP-excluded -->
 			<group targetFramework="net7.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
-			  END WinUI-specific -->
+			<!-- END UWP-excluded -->
 
 			<!-- net7.0-android30.0 -->
 			<group targetFramework="net7.0-android30.0">
