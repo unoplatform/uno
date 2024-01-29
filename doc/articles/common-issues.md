@@ -17,6 +17,7 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 - [All Development Environments](xref:Uno.UI.CommonIssues.AllIDEs)
 - [Visual Studio 2022 for Windows](xref:Uno.UI.CommonIssues.vs2022)
 - [VS Code](xref:Uno.UI.CommonIssues.vscode)
+- [Rider](xref:Uno.UI.CommonIssues.rider)
 
 ## Platforms
 
