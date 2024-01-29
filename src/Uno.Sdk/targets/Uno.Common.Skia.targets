@@ -1,6 +1,11 @@
 <Project>
 	<PropertyGroup>
 		<IsSkia>true</IsSkia>
+
+		<EnableDefaultSkiaItems>false</EnableDefaultSkiaItems>
+		<SkiaProjectFolder Condition=" '$(SkiaProjectFolder)' == '' ">$(PlatformsProjectFolder)Skia\</SkiaProjectFolder>
+		<SkiaProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(SkiaProjectFolder)'))</SkiaProjectFolder>
+		<SkiaProjectFolder Condition=" !Exists('$(SkiaProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Skia'))</SkiaProjectFolder>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Skia.targets"

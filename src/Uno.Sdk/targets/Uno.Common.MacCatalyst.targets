@@ -3,5 +3,12 @@
 		<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 		<IsMacCatalyst>true</IsMacCatalyst>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
+
+		<EnableDefaultMacCatalystItems>false</EnableDefaultMacCatalystItems>
+		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">$(PlatformsProjectFolder)MacCatalyst\</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacCatalystProjectFolder)'))</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
 	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOSMac.targets" Condition="$(SingleProject) == 'true'" />
 </Project>

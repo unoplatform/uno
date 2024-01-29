@@ -1,3 +1,47 @@
 <Project>
+	<PropertyGroup>
+		<WasmHeadBaseDirectory Condition="$(WasmHeadBaseDirectory) == ''">$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::Combine('Platforms', 'Wasm'))))</WasmHeadBaseDirectory>
+		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmHeadBaseDirectory)manifest.webmanifest</WasmPWAManifestFile>
+		<AppDesignerFolder Condition="$(AppDesignerFolder) == ''">$(WasmHeadBaseDirectory)Properties</AppDesignerFolder>
+		<!--
+			Supports Deep Linking Routes
+			https://aka.platform.uno/wasm-deeplink
+		-->
+		<WasmShellWebAppBasePath Condition="$(WasmShellWebAppBasePath) == ''">/</WasmShellWebAppBasePath>
+	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants Condition="!$(DefineConstants.Contains(DEBUG))">$(DefineConstants);DEBUG</DefineConstants>
+		<DefineConstants Condition="!$(DefineConstants.Contains(TRACE))">$(DefineConstants);TRACE</DefineConstants>
+		<!--
+			IL Linking is disabled in Debug configuration.
+			When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-WebAssembly.html
+		-->
+		<WasmShellILLinkerEnabled Condition="$(WasmShellILLinkerEnabled) == ''">false</WasmShellILLinkerEnabled>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
+		<Content Include="$(WasmHeadBaseDirectory)manifest.webmanifest"
+			Condition="Exists('$(WasmHeadBaseDirectory)manifest.webmanifest')"
+			Exclude="@(Content)"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
+			IsDefaultItem="true" />
+		<EmbeddedResource Include="$(WasmHeadBaseDirectory)WasmCSS\Fonts.css"
+			Condition="Exists('$(WasmHeadBaseDirectory)WasmCSS\Fonts.css')"
+			Condition="@(EmbeddedResource)"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
+			IsDefaultItem="true" />
+		</EmbeddedResource>
+		<EmbeddedResource Include="$(WasmHeadBaseDirectory)WasmScripts\AppManifest.js"
+			Condition="Exists('$(WasmHeadBaseDirectory)WasmScripts\AppManifest.js')"
+			Condition="@(EmbeddedResource)"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
+			IsDefaultItem="true" />
+		<LinkerDescriptor Include="$(WasmHeadBaseDirectory)LinkerConfig.xml"
+			Condition="Exists('$(WasmHeadBaseDirectory)LinkerConfig.xml')"
+			Exclude="@(LinkerDescriptor)"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
+			IsDefaultItem="true" />
+	</ItemGroup>
 </Project>
