@@ -19,7 +19,7 @@ On iOS, Android and macOS the `ms-settings:` special URI is supported.
 
 On iOS, launching the special URI opens the main page of system settings because deep-linking to specific settings is not available.
 
-For WASM, launching the special URI will work properly only when opening the website on Windows. The method will return `true` even if the user cancels the application launch, as there is currently no way to detect if the app was successfully launched. When using `LaunchUriAsync` on WASM please also note that there should be no await between user interaction (button click / command etc) and the Launcher invocation. Otherwise the browser may ignore it due to security reasons.
+For WASM, launching the special URI will work properly only when opening the website on Windows. The method will return `true` even if the user cancels the application launch, as there is currently no way to detect if the app was successfully launched. When using `LaunchUriAsync` on WASM, note that there should be no await between user interaction (button click / command etc) and the Launcher invocation. Otherwise, the browser may ignore it due to security reasons.
 
 In case of Android, we support the following nested URIs.
 
