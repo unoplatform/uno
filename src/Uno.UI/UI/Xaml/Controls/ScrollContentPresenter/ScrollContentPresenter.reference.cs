@@ -8,24 +8,27 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Drawing;
+using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class ScrollContentPresenter : ContentPresenter
 {
-	public partial class ScrollContentPresenter : ContentPresenter
-	{
-		public bool CanHorizontallyScroll { get; set; }
+	public bool CanHorizontallyScroll { get; set; }
 
-		public bool CanVerticallyScroll { get; set; }
+	public bool CanVerticallyScroll { get; set; }
 
-		public double ExtentHeight { get; internal set; }
+	public double ExtentHeight { get; internal set; }
 
-		public double ExtentWidth { get; internal set; }
+	public double ExtentWidth { get; internal set; }
 
-		internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+	internal ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
-		internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+	internal ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
 
-		private object RealContent { get; set; }
-	}
+	private object RealContent { get; set; }
+
+	protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+
+	protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
 }
