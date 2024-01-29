@@ -695,7 +695,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBox
 			{
 				Width = 40,
-				Text = "This should be a lot longer than the width of the TextBox."
+				Text = "This should be a lot longer than the width of the TextBox.",
 				FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf") // no Segoe UI on Linux, so we set something common
 			};
 

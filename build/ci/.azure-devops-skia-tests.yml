@@ -370,10 +370,13 @@ jobs:
     vmImage: ${{ parameters.vmLinuxImage }}
 
   dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
     SamplesAppArtifactName: skia-x11-samples-app-UWP
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -405,16 +408,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
 
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-
   dependsOn: Skia_Tests_Build
 
   variables:
@@ -425,6 +418,9 @@ jobs:
     # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
 
