@@ -194,9 +194,13 @@ public partial class TextBox
 
 					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight));
 
+					bool lastFoundCaret = false;
+					bool currentFoundCaret = false;
+
 					var inlines = displayBlock.Inlines;
 					inlines.DrawingStarted += () =>
 					{
+						currentFoundCaret = false;
 						_rectsChanged = false;
 						_usedRects = 0;
 					};
@@ -207,7 +211,7 @@ public partial class TextBox
 						// we accumulate all the rects and compare with the preexisting canvas.Children
 						// We only update if there is actually a change. This avoids a lot of problems
 						// that lead to an infinite layout-invalidate-layout-invalidate loop
-						if (_rectsChanged || _cachedRects.Count != _usedRects)
+						if (_rectsChanged || _cachedRects.Count != _usedRects || lastFoundCaret != currentFoundCaret)
 						{
 							// Might be better to use some table-doubling logic, but shouldn't matter very much.
 							// If so, don't forget to also change canvas.Children.AddRange(_cachedRects) below, which
@@ -216,7 +220,14 @@ public partial class TextBox
 
 							canvas.Children.Clear();
 							canvas.Children.AddRange(_cachedRects);
+
+							if (currentFoundCaret)
+							{
+								canvas.Children.Add(_caretRect);
+							}
 						}
+
+						lastFoundCaret = currentFoundCaret;
 					};
 
 					inlines.SelectionFound += t =>
@@ -259,7 +270,6 @@ public partial class TextBox
 					inlines.CaretFound += rect =>
 					{
 						var oldCaretState = (_caretRect.Width, _caretRect.Height, (double)_caretRect.GetValue(Canvas.LeftProperty), (double)_caretRect.GetValue(Canvas.TopProperty), _caretRect.Fill);
-
 						if (oldCaretState != (Math.Ceiling(rect.Width), Math.Ceiling(rect.Height), rect.Left, rect.Top, DefaultBrushes.TextForegroundBrush))
 						{
 							_rectsChanged = true;
@@ -267,7 +277,10 @@ public partial class TextBox
 							_caretRect.Height = Math.Ceiling(rect.Height);
 							_caretRect.SetValue(Canvas.LeftProperty, rect.Left);
 							_caretRect.SetValue(Canvas.TopProperty, rect.Top);
+							_caretRect.Fill = DefaultBrushes.TextForegroundBrush;
 						}
+
+						currentFoundCaret = true;
 					};
 
 					ContentElement.Content = grid;
