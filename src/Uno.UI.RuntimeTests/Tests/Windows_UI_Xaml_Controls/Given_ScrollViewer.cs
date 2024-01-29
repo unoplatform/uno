@@ -531,7 +531,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ScrollViewer
 			{
 				Height = 300,
-				Width = 400,
+				Width = 450,
 				Content = new StackPanel
 				{
 					Orientation = Orientation.Horizontal,
@@ -738,7 +738,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			mouse.Press(ts.FindFirstChild<TextBlock>().GetAbsoluteBounds().GetCenter());
+			mouse.Press(ts.FindVisualChildByType<TextBlock>().GetAbsoluteBounds().GetCenter());
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
