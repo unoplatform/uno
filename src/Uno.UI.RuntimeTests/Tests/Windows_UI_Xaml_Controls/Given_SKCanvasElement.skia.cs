@@ -53,7 +53,7 @@ public class Given_SKCanvasElement
 		var SUT = new BlueAndRedFillSKCanvasElement
 		{
 			Width = 200,
-			RespectFlowDirection = true
+			MirroredWhenRightToLeft = true
 		};
 
 		await UITestHelper.Load(SUT);

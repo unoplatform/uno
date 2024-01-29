@@ -26,20 +26,20 @@ public abstract class SKCanvasElement : FrameworkElement
 		ElementCompositionPreview.SetElementChildVisual(this, _skiaVisual!);
 	}
 
-	public static DependencyProperty RespectFlowDirectionProperty { get; } = DependencyProperty.Register(
-		nameof(RespectFlowDirection),
+	public static DependencyProperty MirroredWhenRightToLeftProperty { get; } = DependencyProperty.Register(
+		nameof(MirroredWhenRightToLeft),
 		typeof(bool),
 		typeof(SKCanvasElement),
 		new FrameworkPropertyMetadata((dO, _) => ((SKCanvasElement)dO).RespectFlowDirectionChanged()));
 
 	/// <summary>
 	/// By default, SKCanvasElement will have the origin at the top-left of the drawing area with the normal directions increasing down and right.
-	/// If RespectFlowDirection is true, the drawing will be horizontally reflected when <see cref="SKCanvasElement.FlowDirection"/> is <see cref="FlowDirection.RightToLeft"/>.
+	/// If MirroredWhenRightToLeft is true, the drawing will be horizontally reflected when <see cref="SKCanvasElement.FlowDirection"/> is <see cref="FlowDirection.RightToLeft"/>.
 	/// </summary>
-	public bool RespectFlowDirection
+	public bool MirroredWhenRightToLeft
 	{
-		get => (bool)GetValue(RespectFlowDirectionProperty);
-		set => SetValue(RespectFlowDirectionProperty, value);
+		get => (bool)GetValue(MirroredWhenRightToLeftProperty);
+		set => SetValue(MirroredWhenRightToLeftProperty, value);
 	}
 
 	private void RespectFlowDirectionChanged()
@@ -76,7 +76,7 @@ public abstract class SKCanvasElement : FrameworkElement
 	private bool ApplyFlowDirection()
 	{
 		var oldMatrix = _skiaVisual.TransformMatrix;
-		if (FlowDirection == FlowDirection.RightToLeft && !RespectFlowDirection)
+		if (FlowDirection == FlowDirection.RightToLeft && !MirroredWhenRightToLeft)
 		{
 			_skiaVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)LayoutSlot.Width, 0.0f));
 		}
