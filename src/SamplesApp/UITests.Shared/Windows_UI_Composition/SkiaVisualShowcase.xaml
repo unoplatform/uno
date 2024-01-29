@@ -16,9 +16,9 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<ToggleSwitch Grid.Row="0" x:Name="toggleSwitch" Header="RespectFlowDirection"></ToggleSwitch>
+		<ToggleSwitch Grid.Row="0" x:Name="toggleSwitch" Header="MirroredWhenRightToLeft"></ToggleSwitch>
 		<Slider Grid.Row="1" x:Name="slider" Header="Sample" Minimum="0" Maximum="{x:Bind MaxSampleIndex}" />
-		<local:SkiaCanvasShowcaser Grid.Row="2" Sample="{x:Bind slider.Value, Mode=OneWay}" RespectFlowDirection="{x:Bind toggleSwitch.IsOn, Mode=OneWay}" />
+		<local:SkiaCanvasShowcaser Grid.Row="2" Sample="{x:Bind slider.Value, Mode=OneWay}" MirroredWhenRightToLeft="{x:Bind toggleSwitch.IsOn, Mode=OneWay}" />
 	</skia:Grid>
 	<not_skia:TextBlock Text="This sample is only supported on skia." />
 </UserControl>
