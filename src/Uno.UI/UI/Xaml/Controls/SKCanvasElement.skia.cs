@@ -18,11 +18,7 @@ public abstract class SKCanvasElement : FrameworkElement
 		protected override void RenderOverride(SKCanvas canvas) => owner.RenderOverride(canvas, Size.ToSize());
 	}
 
-	private const float DpiBase = 96.0f;
-	private double _dpi = 1;
-
 	private readonly SkiaVisual _skiaVisual;
-	private readonly SerialDisposable _dpiChangedDisposable = new SerialDisposable();
 
 	protected SKCanvasElement()
 	{
@@ -69,9 +65,8 @@ public abstract class SKCanvasElement : FrameworkElement
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var dpiAwareSize = new Size(finalSize.Width * _dpi, finalSize.Height * _dpi);
-		_skiaVisual.Size = new Vector2((float)dpiAwareSize.Width, (float)dpiAwareSize.Height);
-		_skiaVisual.Clip = _skiaVisual.Compositor.CreateRectangleClip(0, 0, (float)dpiAwareSize.Width, (float)dpiAwareSize.Height);
+		_skiaVisual.Size = new Vector2((float)finalSize.Width, (float)finalSize.Height);
+		_skiaVisual.Clip = _skiaVisual.Compositor.CreateRectangleClip(0, 0, (float)finalSize.Width, (float)finalSize.Height);
 
 		ApplyFlowDirection(); // if FlowDirection Changes, it will cause an InvalidateArrange, so we recalculate the TransformMatrix here
 
@@ -91,21 +86,5 @@ public abstract class SKCanvasElement : FrameworkElement
 		}
 
 		return oldMatrix != _skiaVisual.TransformMatrix;
-	}
-
-	private protected override void OnLoaded()
-	{
-		var display = DisplayInformation.GetForCurrentView();
-		_dpiChangedDisposable.Disposable = Disposable.Create(() => display.DpiChanged -= OnDpiChanged);
-		display.DpiChanged += OnDpiChanged;
-		OnDpiChanged(display);
-	}
-
-	private protected override void OnUnloaded() => _dpiChangedDisposable.Dispose();
-
-	private void OnDpiChanged(DisplayInformation sender, object args = null)
-	{
-		_dpi = sender.LogicalDpi / DpiBase;
-		_skiaVisual.Invalidate();
 	}
 }
