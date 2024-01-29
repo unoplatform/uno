@@ -696,6 +696,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 40,
 				Text = "This should be a lot longer than the width of the TextBox."
+				FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf") // no Segoe UI on Linux, so we set something common
 			};
 
 			WindowHelper.WindowContent = SUT;
@@ -712,7 +713,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
 
-			for (var i = 0; i < 6; i++)
+			for (var i = 0; i < 5; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
@@ -727,7 +728,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
-			for (var i = 0; i < 7; i++)
+			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
@@ -2237,6 +2238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 250,
 				AcceptsReturn = true,
 				TextWrapping = TextWrapping.Wrap,
+				FontSize = 12,
 				Text =
 					"""
 					Lorem ipsum dolor sit amet consectetur adipiscing, elit aliquam u
