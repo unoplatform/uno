@@ -9,6 +9,14 @@
 	<PropertyGroup>
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
+
+		<WindowsPackageType Condition="'$(WindowsPackageType)'=='' and Exists('$(WindowsProjectFolder)Package.appxmanifest')">MSIX</WindowsPackageType>
+		<WindowsPackageType Condition="'$(WindowsPackageType)'==''">None</WindowsPackageType>
+	</PropertyGroup>
+
+	<!-- Required to allow `dotnet build` to work without extra parameters -->
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+		<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 	</PropertyGroup>
 
 	<ItemGroup>
