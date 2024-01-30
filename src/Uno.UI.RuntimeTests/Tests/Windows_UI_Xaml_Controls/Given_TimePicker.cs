@@ -66,11 +66,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_TimePicker_Unloaded(true);
+		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_And_Unloaded_Unloaded(true);
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_TimePicker_Unloaded(false);
+		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded_Unloaded(false);
 
 		private async Task When_Opened_And_Unloaded_Unloaded(bool useNative)
 		{

@@ -32,6 +32,8 @@ partial class NativeTimePickerFlyout
 		};
 	}
 
+	internal bool IsNativeDialogOpen { get; private set; }
+
 	/// <summary>
 	/// This method sets the Content property of the Flyout.
 	/// </summary>
@@ -155,6 +157,8 @@ partial class NativeTimePickerFlyout
 			_headerUntapZone.PointerPressed += OnTap;
 		}
 
+		IsNativeDialogOpen = true;
+
 		base.Open();
 	}
 
@@ -166,6 +170,8 @@ partial class NativeTimePickerFlyout
 		}
 
 		_timeSelector?.Cancel();
+
+		IsNativeDialogOpen = false;
 
 		base.Close();
 	}
