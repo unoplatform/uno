@@ -21,20 +21,20 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
-		<Content Include="$(WasmProjectFolder)manifest.webmanifest"
+		<Content Include="$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', '$(WasmProjectFolder)', 'manifest.webmanifest'))"
 			Condition="Exists('$(WasmProjectFolder)manifest.webmanifest')"
 			Exclude="@(Content)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
 			Condition="Exists('$(WasmProjectFolder)WasmCSS\Fonts.css')"
-			Condition="@(EmbeddedResource)"
+			Exclude="@(EmbeddedResource)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 		</EmbeddedResource>
 		<EmbeddedResource Include="$(WasmProjectFolder)WasmScripts\AppManifest.js"
 			Condition="Exists('$(WasmProjectFolder)WasmScripts\AppManifest.js')"
-			Condition="@(EmbeddedResource)"
+			Exclude="@(EmbeddedResource)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 		<LinkerDescriptor Include="$(WasmProjectFolder)LinkerConfig.xml"
