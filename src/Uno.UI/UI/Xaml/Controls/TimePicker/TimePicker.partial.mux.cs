@@ -50,7 +50,7 @@ partial class TimePicker
 	//private const int TIMEPICKER_PM_INDEX = 1;
 	private const int TIMEPICKER_RTL_CHARACTER_CODE = 8207;
 	private const int TIMEPICKER_MINUTEINCREMENT_MIN = 0;
-	private const int TIMEPICKER_MINUTEINCREMENT_MAX = 9;
+	private const int TIMEPICKER_MINUTEINCREMENT_MAX = 59;
 	// When the minute increment is set to 0, we want to only have 00 at the minute picker. This
 	// can be easily obtained by treating 0 as 60 with our existing logic. So during our logic, if we see
 	// that minute increment is zero we will use 60 in our calculations.
