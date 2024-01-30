@@ -68,14 +68,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
-		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_And_Unloaded_Unloaded(true);
+		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_And_Unloaded(true);
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
-		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded_Unloaded(false);
+		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
 
-		private async Task When_Opened_And_Unloaded_Unloaded(bool useNative)
+		private async Task When_Opened_And_Unloaded(bool useNative)
 		{
 			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
 #if HAS_UNO
@@ -119,6 +119,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
@@ -133,9 +134,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			// Open flyout, close it via method or via native dismiss, check if event on flyoutbase was invoked
 			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
-#if HAS_UNO
 			timePicker.UseNativeStyle = useNative;
-#endif
 
 			TestServices.WindowHelper.WindowContent = timePicker;
 
@@ -143,15 +142,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
-#if !HAS_UNO
-			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
-			var flyoutBase = openFlyouts[0];
-			var associatedFlyout = flyoutBase.AssociatedFlyout;
-#else // FlyoutBase.OpenFlyouts also includes native popups like NativeTimePickerFlyout
 			var openFlyouts = FlyoutBase.OpenFlyouts;
 			Assert.AreEqual(1, openFlyouts.Count);
 			var associatedFlyout = openFlyouts[0];
-#endif
+
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
 			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;
 			bool flyoutClosed = false;
@@ -168,6 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 #endif
 		}
+#endif
 	}
 
 	class MyContext
