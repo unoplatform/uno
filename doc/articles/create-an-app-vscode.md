@@ -26,11 +26,11 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
     ![A screen showing the dotnet new command to create the new app](Assets/quick-start/live-wizard-03-create-app.png)
 
-1. In your terminal, navigate to the folder that will contains your new app.
+1. In your terminal, navigate to the folder that will contain your new app.
 1. Create a new project by pasting and executing the command that was previously generated in the Live Wizard.
 
 > [!IMPORTANT]
-> Apple targets cannot be built under Linux. If you are using Linux, you'll need to remove `ios` and `maccatalyst` from the `platforms` list.
+> Apple targets cannot be built under Linux. If you are using Linux, you'll need to remove iOS and Catalyst from the platforms list.
 
 Next, open the project using Visual Studio Code:
 
