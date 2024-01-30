@@ -36,7 +36,7 @@ To create a blank template, using minimal dependencies:
 dotnet new unoapp -preset=blank -o test
 ```
 
-To create from a recommended template using [Uno.Extensions](xref:Overview.Extensions):
+To create from a recommended template using [Uno.Extensions](xref:Uno.Extensions.Overview):
 
 ```dotnetcli
 dotnet new unoapp -preset=recommended -o test
