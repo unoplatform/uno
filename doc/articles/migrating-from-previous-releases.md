@@ -6,6 +6,12 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
 
+## Uno Platform 5.1
+
+Uno Platform 5.1 does not contain breaking changes that require attention when upgrading.
+
+This version however introduces the MSBuild Uno.SDK, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk is entirely optional and previous projects templates are fully supported. If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Uno.Sdk](xref:Uno.Development.MigratingToUnoSdk) guide.
+
 ## Uno Platform 5.0
 
 Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes.
