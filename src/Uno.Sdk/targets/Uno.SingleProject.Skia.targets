@@ -15,6 +15,15 @@
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
+		<_TargetPlatformFiles Include="$(SkiaProjectFolder)**/*" />
+		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
+
 	<Target Name="_UnoRemoveTransitiveWPFDependency"
 			BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies"
 			Condition="('$(OutputType)' == 'WinExe' or '$(OutputType)' == 'Exe') and '$(UnoDisable_RemoveTransitiveWPFDependency)'==''">
