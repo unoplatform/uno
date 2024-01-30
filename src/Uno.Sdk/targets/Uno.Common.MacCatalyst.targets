@@ -10,5 +10,5 @@
 		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOSMac.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacCatalyst.targets" Condition="$(SingleProject) == 'true'" />
 </Project>
