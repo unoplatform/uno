@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation DependencyProperty
 
-		internal override Orientation? InternalOrientation => Orientation;
+		internal override Orientation? PhysicalOrientation => Orientation;
 
 		public Orientation Orientation
 		{
