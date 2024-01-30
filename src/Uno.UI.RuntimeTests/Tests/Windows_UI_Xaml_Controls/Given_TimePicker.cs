@@ -13,6 +13,7 @@ using Uno.UI.RuntimeTests.MUX.Helpers;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -66,10 +67,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_And_Unloaded_Unloaded(true);
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded_Unloaded(false);
 
 		private async Task When_Opened_And_Unloaded_Unloaded(bool useNative)
@@ -118,10 +121,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
 
 		private async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
