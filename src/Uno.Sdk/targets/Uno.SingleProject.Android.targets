@@ -11,7 +11,7 @@
 
 	<ItemGroup>
 		<AndroidEnvironment Include="$(AndroidProjectFolder)environment.conf"
-			Condition=" Exists($(AndroidProjectFolder)environment.conf) "
+			Condition=" Exists('$(AndroidProjectFolder)environment.conf') "
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 	</ItemGroup>

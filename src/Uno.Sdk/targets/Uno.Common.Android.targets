@@ -7,7 +7,7 @@
 		<AndroidProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(AndroidProjectFolder)'))</AndroidProjectFolder>
 		<AndroidProjectFolder Condition=" !Exists('$(AndroidProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Android'))</AndroidProjectFolder>
 		
-		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($(AndroidProjectFolder)AndroidManifest.xml) ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
+		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition="$(SingleProject) == 'true'" />
