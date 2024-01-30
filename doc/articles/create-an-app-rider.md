@@ -12,7 +12,7 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 ## Create the App
 
-Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and Uno Platform Live Wizard by following these steps:
+Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
 
 1. Open a browser and navigate to the <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a>
 1. Configure your new project by providing a project name, then click **Start**
