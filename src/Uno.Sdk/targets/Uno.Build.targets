@@ -19,4 +19,21 @@
 			Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
 			Condition="$(_UnoSdkVersionCheck_Resolved_UnoWinUI) != 'DefaultUnoVersion'" />
 	</Target>
+
+	<!--
+		This prevents other targets from accidently picking up files that are in the Platforms 
+		directory but not part of the current TargetFramework
+	-->
+	<Target Name="RemoveUnoSingleProjectPlatformFiles"
+		BeforeTargets="PrepareForBuild"
+		Condition="$(SingleProject) == 'true'">
+		<ItemGroup>
+			<None Remove="@(_IgnorePlatformFiles)" />
+			<Compile Remove="@(_IgnorePlatformFiles)" />
+			<Content Remove="@(_IgnorePlatformFiles)" />
+			<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+			<Manifest Remove="@(_IgnorePlatformFiles)" />
+			<AppxManifest Remove="@(_IgnorePlatformFiles)" />
+		</ItemGroup>
+	</Target>
 </Project>
