@@ -18,7 +18,5 @@ namespace Microsoft.UI.Composition
 			get => _path;
 			set => SetObjectProperty(ref _path, value);
 		}
-
-		internal override IGeometrySource2D? BuildGeometry() => Path?.GeometrySource;
 	}
 }
