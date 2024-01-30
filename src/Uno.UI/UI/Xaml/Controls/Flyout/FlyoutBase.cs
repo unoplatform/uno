@@ -18,6 +18,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using System.Runtime.CompilerServices;
+
 
 #if __IOS__
 using View = UIKit.UIView;
@@ -64,6 +66,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		protected FlyoutBase()
 		{
 		}
+
+		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
 
 		private void EnsurePopupCreated()
 		{
@@ -308,20 +312,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				OnClosed();
 
-				if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
-				{
-					_openFlyouts.Remove(this);
-
-					Closed?.Invoke(this, EventArgs.Empty);
-
-					if (_openFlyouts.Count > 0)
-					{
-						_openFlyouts[0].Hide();
-					}
-				}
+				RemoveFromOpenFlyouts();
 			}
 
 			return cancel;
+		}
+
+		private protected void RemoveFromOpenFlyouts()
+		{
+			if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
+			{
+				_openFlyouts.Remove(this);
+
+				Closed?.Invoke(this, EventArgs.Empty);
+
+				if (_openFlyouts.Count > 0)
+				{
+					_openFlyouts[0].Hide();
+				}
+			}
 		}
 
 		public void ShowAt(FrameworkElement placementTarget)
@@ -526,6 +535,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			_popup.IsOpen = true;
 
+			AddToOpenFlyouts();
+		}
+
+		private protected void AddToOpenFlyouts()
+		{
 			if (!_openFlyouts.Contains(this))
 			{
 				_openFlyouts.Add(this);
