@@ -5,8 +5,9 @@
 			BeforeTargets="BeforeBuild"
 			Condition="'$(PkgUno_WinUI)' != ''">
 		<Error Code="UNOB0004"
-		 	   HelpLink="https://aka.platform.uno/UNOB0004"
-		       Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " Text="The '%24(UnoVersion)' property must match the version of the Uno.Sdk defined in global.json (found $(UnoVersion) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages" />
+			HelpLink="https://aka.platform.uno/UNOB0004"
+			Text="The '%24(UnoVersion)' property must match the version of the Uno.Sdk defined in global.json (found $(UnoVersion) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
+			Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " />
 
 		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
 		<PropertyGroup>
@@ -14,8 +15,8 @@
 		</PropertyGroup>
 
 		<Error Code="UNOB0005"
-		 	   HelpLink="https://aka.platform.uno/UNOB0005"
-		       Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
-			   Condition="$(_UnoSdkVersionCheck_Resolved_UnoWinUI) != 'DefaultUnoVersion'" />
+			HelpLink="https://aka.platform.uno/UNOB0005"
+			Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
+			Condition="$(_UnoSdkVersionCheck_Resolved_UnoWinUI) != 'DefaultUnoVersion'" />
 	</Target>
 </Project>
