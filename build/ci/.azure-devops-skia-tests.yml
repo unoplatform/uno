@@ -413,11 +413,6 @@ jobs:
   variables:
     SamplesAppArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-    UnoEnableHRuntimeTests: true
-
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -435,23 +430,11 @@ jobs:
   - template: templates/linux-install-xvfb.yml
 
   - script: |
-      # Build source generators for hot reload runtime tests
-      # Used to build the hot reload test secondary app during runtime tests
-      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
-      dotnet build -c Debug
-      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
-      dotnet build -c Debug
-      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
-      dotnet build -c Debug -p:UnoDisableNet8=true
-    displayName: Build HR dependencies
-
-  - script: |
         cd $(SamplesAppArtifactPath)
         xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
 
     displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
     env:
-      UnoEnableHRuntimeTests: $(UnoEnableHRuntimeTests)
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
 
