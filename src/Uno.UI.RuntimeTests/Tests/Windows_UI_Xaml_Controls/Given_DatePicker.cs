@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Disposables;
@@ -121,13 +122,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Opened_DatePicker_Unloaded_Native() => await When_Opened_DatePicker_Unloaded(true);
+		public async Task When_Opened_And_Unloaded_Native() => await When_Opened_And_Unloaded(true);
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Opened_DatePicker_Unloaded_Managed() => await When_Opened_DatePicker_Unloaded(false);
+		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
 
-		private async Task When_Opened_DatePicker_Unloaded(bool useNative)
+		private async Task When_Opened_And_Unloaded(bool useNative)
 		{
 			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
 #if HAS_UNO
@@ -140,10 +141,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
-			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
-			var flyoutBase = openFlyouts[0];
-			var associatedFlyout = flyoutBase.AssociatedFlyout;
+#if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeDatePickerFlyout
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+#endif
 
 			bool unloaded = false;
 			datePicker.Unloaded += (s, e) => unloaded = true;
@@ -154,6 +157,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var openFlyoutsCount = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
 			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
+
+#if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeDatePickerFlyout
+			openFlyoutsCount = FlyoutBase.OpenFlyouts.Count;
+			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
+#endif
 
 #if __ANDROID__ || __IOS__
 			if (useNative)
@@ -166,13 +174,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_DatePicker_Flyout_Closed_Native() => await When_DatePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
+		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_DatePicker_Flyout_Closed_Managed() => await When_DatePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
+		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
 
-		private async Task When_DatePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
+		private async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
 		{
 			// Open flyout, close it via method or via native dismiss, check if event on flyoutbase was invoked
 			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
@@ -186,9 +194,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
+#if !HAS_UNO
 			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 			var flyoutBase = openFlyouts[0];
 			var associatedFlyout = flyoutBase.AssociatedFlyout;
+#else // FlyoutBase.OpenFlyouts also includes native popups like NativeDatePickerFlyout
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+#endif
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
 			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
 
