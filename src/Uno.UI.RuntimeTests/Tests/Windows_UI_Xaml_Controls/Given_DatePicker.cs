@@ -1,17 +1,15 @@
 ﻿#if !WINAPPSDK
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.MUX.Helpers;
+using Windows.Globalization;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -119,6 +117,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CheckDateTimeTextBlockPartPosition(datePicker, "YearTextBlock", expectedColumn: 0);
 			CheckDateTimeTextBlockPartPosition(datePicker, "MonthTextBlock", expectedColumn: 2);
 			CheckDateTimeTextBlockPartPosition(datePicker, "DayTextBlock", expectedColumn: 4);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Opened_DatePicker_Unloaded_Native() => await When_Opened_DatePicker_Unloaded(true);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Opened_DatePicker_Unloaded_Managed() => await When_Opened_DatePicker_Unloaded(false);
+
+		private async Task When_Opened_DatePicker_Unloaded(bool useNative)
+		{
+			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+#if HAS_UNO
+			datePicker.UseNativeStyle = useNative;
+#endif
+
+			TestServices.WindowHelper.WindowContent = datePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+			bool unloaded = false;
+			datePicker.Unloaded += (s, e) => unloaded = true;
+
+			TestServices.WindowHelper.WindowContent = null;
+
+			await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
+
+			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+			openFlyouts.Should().Be(0, "There should be no open flyouts");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DatePicker_Flyout_Closed_Native() => await When_DatePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DatePicker_Flyout_Closed_Managed() => await When_DatePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
+
+		private async Task When_DatePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
+		{
+			// Open flyout, close it via method or via native dismiss, check if event on flyoutbase was invoked
+			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+#if HAS_UNO
+			datePicker.UseNativeStyle = useNative;
+#endif
+
+			TestServices.WindowHelper.WindowContent = datePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+			var flyoutBase = openFlyouts[0];
+			var associatedFlyout = flyoutBase.AssociatedFlyout;
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
+			bool flyoutClosed = false;
+			datePickerFlyout.Closed += (s, e) => flyoutClosed = true;
+			datePickerFlyout.Close();
+
+			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 		}
 
 		private static IDisposable SetAmbiantLanguage(string language)

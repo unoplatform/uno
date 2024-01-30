@@ -10,6 +10,8 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.MUX.Helpers;
+using Microsoft.UI.Xaml.Media;
+using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -59,6 +61,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(expectedTime, timePicker.SelectedTime);
 			Assert.AreEqual(expectedTime, timePicker.Time);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Opened_TimePicker_Unloaded_Native() => await When_Opened_TimePicker_Unloaded(true);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Opened_TimePicker_Unloaded_Managed() => await When_Opened_TimePicker_Unloaded(false);
+
+		private async Task When_Opened_TimePicker_Unloaded(bool useNative)
+		{
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = useNative;
+#endif
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			bool unloaded = false;
+			timePicker.Unloaded += (s, e) => unloaded = true;
+
+			TestServices.WindowHelper.WindowContent = null;
+
+			await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
+
+			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+			openFlyouts.Should().Be(0, "There should be no open flyouts");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TimePicker_Flyout_Closed_Native() => await When_TimePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TimePicker_Flyout_Closed_Managed() => await When_TimePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
+
+		private async Task When_TimePicker_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
+		{
+			// Open flyout, close it via method or via native dismiss, check if event on flyoutbase was invoked
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = useNative;
+#endif
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+			var flyoutBase = openFlyouts[0];
+			var associatedFlyout = flyoutBase.AssociatedFlyout;
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
+			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;
+			bool flyoutClosed = false;
+			timePickerFlyout.Closed += (s, e) => flyoutClosed = true;
+			timePickerFlyout.Close();
+
+			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 		}
 	}
 
