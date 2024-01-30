@@ -16,8 +16,7 @@
 			<Member fullName="Uno.UI.Toolkit" reason="Android 12 support"/>
 			<Member fullName="Uno.Xaml" reason="Android 12 support"/>
 		</Assemblies>
-		<Methods>
-			<Member
+		<Methods><Member
 				fullName="System.Void Uno.Media.StreamGeometryContext.BeginFigure(Windows.Foundation.Point startPoint, System.Boolean isFilled, System.Boolean isClosed)"
 				reason="isClosed paramater is not used and is misleading" />
 			<Member
@@ -1791,6 +1790,32 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.1">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- Multiple XamlRoots -->
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+		</Methods>
+	</IgnoreSet>
+
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
