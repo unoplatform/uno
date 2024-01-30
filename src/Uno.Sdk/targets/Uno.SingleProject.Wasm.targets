@@ -1,8 +1,7 @@
 <Project>
 	<PropertyGroup>
-		<WasmHeadBaseDirectory Condition="$(WasmHeadBaseDirectory) == ''">$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::Combine('Platforms', 'Wasm'))))</WasmHeadBaseDirectory>
-		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmHeadBaseDirectory)manifest.webmanifest</WasmPWAManifestFile>
-		<AppDesignerFolder Condition="$(AppDesignerFolder) == ''">$(WasmHeadBaseDirectory)Properties</AppDesignerFolder>
+		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmProjectFolder)manifest.webmanifest</WasmPWAManifestFile>
+		<AppDesignerFolder Condition="$(AppDesignerFolder) == ''">$(WasmProjectFolder)Properties</AppDesignerFolder>
 		<!--
 			Supports Deep Linking Routes
 			https://aka.platform.uno/wasm-deeplink
@@ -22,24 +21,24 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
-		<Content Include="$(WasmHeadBaseDirectory)manifest.webmanifest"
-			Condition="Exists('$(WasmHeadBaseDirectory)manifest.webmanifest')"
+		<Content Include="$(WasmProjectFolder)manifest.webmanifest"
+			Condition="Exists('$(WasmProjectFolder)manifest.webmanifest')"
 			Exclude="@(Content)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
-		<EmbeddedResource Include="$(WasmHeadBaseDirectory)WasmCSS\Fonts.css"
-			Condition="Exists('$(WasmHeadBaseDirectory)WasmCSS\Fonts.css')"
+		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
+			Condition="Exists('$(WasmProjectFolder)WasmCSS\Fonts.css')"
 			Condition="@(EmbeddedResource)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 		</EmbeddedResource>
-		<EmbeddedResource Include="$(WasmHeadBaseDirectory)WasmScripts\AppManifest.js"
-			Condition="Exists('$(WasmHeadBaseDirectory)WasmScripts\AppManifest.js')"
+		<EmbeddedResource Include="$(WasmProjectFolder)WasmScripts\AppManifest.js"
+			Condition="Exists('$(WasmProjectFolder)WasmScripts\AppManifest.js')"
 			Condition="@(EmbeddedResource)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
-		<LinkerDescriptor Include="$(WasmHeadBaseDirectory)LinkerConfig.xml"
-			Condition="Exists('$(WasmHeadBaseDirectory)LinkerConfig.xml')"
+		<LinkerDescriptor Include="$(WasmProjectFolder)LinkerConfig.xml"
+			Condition="Exists('$(WasmProjectFolder)LinkerConfig.xml')"
 			Exclude="@(LinkerDescriptor)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
