@@ -26,7 +26,7 @@ To determine all parameters available for a template use `dotnet new [templatena
 This template can be used to create a multi-platform application for iOS, Android, WebAssembly, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
 > [!TIP]
-> To create a new Uno Platform app and browse all the capabilities of the template, head to our [Live Wizard](https://aka.platform.uno/app-wizard) to create a `dotnet new` command line. For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+> To create a new Uno Platform app and browse all the capabilities of the template, head to our <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a> to create a `dotnet new` command line. For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
 
 It comes with the **Blank** and **Recommended** presets.
 
