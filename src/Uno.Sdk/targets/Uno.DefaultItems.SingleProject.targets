@@ -4,7 +4,7 @@
 			SubType="Designer"
 			XamlRuntime="WinUI"
 			Generator="MSBuild:Compile" />
-		<Compile Include="App.xaml.cs"
+		<Compile Update="App.xaml.cs"
 			XamlRuntime="WinUI"
 			DependentUpon="App.xaml" />
 	</ItemGroup>
