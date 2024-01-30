@@ -84,6 +84,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 
+			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+			var flyoutBase = openFlyouts[0];
+			var associatedFlyout = flyoutBase.AssociatedFlyout;
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
+
 			bool unloaded = false;
 			timePicker.Unloaded += (s, e) => unloaded = true;
 
@@ -91,8 +96,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
 
-			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
-			openFlyouts.Should().Be(0, "There should be no open flyouts");
+			var openFlyoutsCount = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
+
+#if __ANDROID__ || __IOS__
+			if (useNative)
+			{
+				var nativeTimePickerFlyout = (NativeTimePickerFlyout)associatedFlyout;
+				Assert.IsFalse(nativeTimePickerFlyout.IsNativeDialogOpen);
+			}
+#endif
 		}
 
 		[TestMethod]
@@ -127,6 +140,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			timePickerFlyout.Close();
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
+
+#if __ANDROID__ || __IOS__
+			if (useNative)
+			{
+				var nativeTimePickerFlyout = (NativeTimePickerFlyout)timePickerFlyout;
+				Assert.IsFalse(nativeTimePickerFlyout.IsNativeDialogOpen);
+			}
+#endif
 		}
 	}
 

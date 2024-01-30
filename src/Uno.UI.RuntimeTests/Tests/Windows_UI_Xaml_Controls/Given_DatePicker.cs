@@ -140,6 +140,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
+			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+			var flyoutBase = openFlyouts[0];
+			var associatedFlyout = flyoutBase.AssociatedFlyout;
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+
 			bool unloaded = false;
 			datePicker.Unloaded += (s, e) => unloaded = true;
 
@@ -147,8 +152,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
 
-			var openFlyouts = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
-			openFlyouts.Should().Be(0, "There should be no open flyouts");
+			var openFlyoutsCount = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
+
+#if __ANDROID__ || __IOS__
+			if (useNative)
+			{
+				var nativeDatePickerFlyout = (NativeDatePickerFlyout)associatedFlyout;
+				Assert.IsFalse(nativeDatePickerFlyout.IsNativeDialogOpen);
+			}
+#endif
 		}
 
 		[TestMethod]
@@ -178,11 +191,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var associatedFlyout = flyoutBase.AssociatedFlyout;
 			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
 			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
+
 			bool flyoutClosed = false;
 			datePickerFlyout.Closed += (s, e) => flyoutClosed = true;
 			datePickerFlyout.Close();
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
+
+#if __ANDROID__ || __IOS__
+			if (useNative)
+			{
+				var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;
+				Assert.IsFalse(nativeDatePickerFlyout.IsNativeDialogOpen);
+			}
+#endif
 		}
 
 		private static IDisposable SetAmbiantLanguage(string language)
