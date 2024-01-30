@@ -18,14 +18,12 @@
 			ForegroundScale="$(UnoIconForegroundScale)"
 			Color="$(UnoIconBackgroundColor)"
 			IsDefaultItem="true"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			Exclude="@(UnoIcon)"
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
 			Color="$(UnoSplashScreenColor)"
 			IsDefaultItem="true"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			Exclude="@(UnoSplashScreen)"
 			Condition="Exists('$(UnoSplashScreenFile)')" />
 	</ItemGroup>
