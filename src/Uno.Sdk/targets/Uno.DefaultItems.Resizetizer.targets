@@ -19,7 +19,7 @@
 			Color="$(UnoIconBackgroundColor)"
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
-			Exclude="@(UnoIcom)"
+			Exclude="@(UnoIcon)"
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
@@ -31,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<UnoImage Include="Assets\**\*.svg"
+		<UnoImage Include="$(AssetsFolder)**\*.svg"
 			Exclude="@(UnoImage);@(UnoIcon);@(UnoSplashScreen);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />

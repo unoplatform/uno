@@ -1,6 +1,6 @@
 <Project>
 	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" IsDefaultItem="true" />
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="$(DefaultItemExcludes)" IsDefaultItem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" !$(IsWinAppSdk) ">
