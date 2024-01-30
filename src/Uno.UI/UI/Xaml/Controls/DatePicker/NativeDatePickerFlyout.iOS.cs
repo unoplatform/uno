@@ -27,13 +27,15 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
+		private DatePickerSelector _selector;
 
 		private NativeDatePickerFlyoutPresenter _presenter
 		{
 			get => _tpPresenter as NativeDatePickerFlyoutPresenter;
 			set => _tpPresenter = value;
 		}
-		private DatePickerSelector _selector;
+
+		internal bool IsNativeDialogOpen { get; private set; }
 
 		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
 			"UseNativeMinMaxDates",
@@ -168,12 +170,14 @@ namespace Windows.UI.Xaml.Controls
 			AttachFlyoutCommand(DismissButtonPartName, x => x.Dismiss());
 
 			_presenterLoadedDisposable.Disposable = null;
+			IsNativeDialogOpen = true;
 		}
 
 		private void OnPresenterUnloaded(object sender, RoutedEventArgs e)
 		{
 			_presenterLoadedDisposable.Disposable = null;
 			_presenterUnloadedDisposable.Disposable = null;
+			IsNativeDialogOpen = false;
 		}
 
 		private void OnDateChanged(DependencyObject sender, DependencyProperty dp)
