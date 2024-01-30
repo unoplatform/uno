@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using SamplesApp.UITests;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -198,6 +199,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsFalse(nativeTimePickerFlyout.IsNativeDialogOpen);
 			}
 #endif
+		}
+#endif
+
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
+		{
+			using var _ = ThemeHelper.UseDarkTheme();
+			await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Dark);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
+
+		private async Task When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle expectedStyle)
+		{
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+			timePicker.UseNativeStyle = true;
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
+			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;
+
+			var nativeTimePickerFlyout = (NativeTimePickerFlyout)timePickerFlyout;
+
+			var nativeTimePicker = nativeTimePickerFlyout._timeSelector;
+			Assert.AreEqual(expectedStyle, nativeTimePicker.OverrideUserInterfaceStyle);
 		}
 #endif
 	}
