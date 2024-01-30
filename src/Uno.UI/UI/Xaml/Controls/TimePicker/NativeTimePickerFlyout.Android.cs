@@ -10,8 +10,11 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class NativeTimePickerFlyout
 {
+	private bool _programmaticallyDismissed;
 	private UnoTimePickerDialog _dialog;
 	private TimeSpan _initialTime;
+
+	internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
 
 	internal protected override void Open()
 	{
@@ -26,11 +29,11 @@ partial class NativeTimePickerFlyout
 		var tryEnforceSpinnerStyle = isSamsungAndMarshmellow || MinuteIncrement > 1;
 
 		ShowTimePicker(tryEnforceSpinnerStyle);
+
+		AddToOpenFlyouts();
 	}
 
 	private void SaveInitialTime() => _initialTime = Time;
-
-	internal protected override void Close() { base.Close(); }
 
 	private void SaveTime(TimeSpan time)
 	{
@@ -82,7 +85,19 @@ partial class NativeTimePickerFlyout
 
 	private void OnDismiss(object sender, EventArgs e)
 	{
-		Hide(canCancel: false);
+		if (!_programmaticallyDismissed)
+		{
+			Hide(canCancel: false);
+			RemoveFromOpenFlyouts();
+		}
+	}
+
+	private protected override void OnClosed()
+	{
+		_programmaticallyDismissed = true;
+		_dialog?.Dismiss();
+		base.OnClosed();
+		_programmaticallyDismissed = false;
 	}
 
 	//partial void OnTimeChangedPartialNative(TimeSpan oldTime, TimeSpan newTime) { }
