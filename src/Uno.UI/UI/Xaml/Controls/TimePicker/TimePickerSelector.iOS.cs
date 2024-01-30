@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_picker.Mode = UIDatePickerMode.Time;
 
 			UpdatePickerStyle();
-			DatePickerSelector.OverrideUIDatePickerTheme();
+			DatePickerSelector.OverrideUIDatePickerTheme(_picker);
 			SetPickerTime(Time.RoundToNextMinuteInterval(MinuteIncrement));
 			SetPickerClockIdentifier(ClockIdentifier);
 			SaveInitialTime();
@@ -69,7 +69,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public void Initialize()
 		{
 			UpdatePickerStyle();
-			DatePickerSelector.OverrideUIDatePickerTheme();
 			SetPickerClockIdentifier(ClockIdentifier);
 			SetPickerMinuteIncrement(MinuteIncrement);
 		}
