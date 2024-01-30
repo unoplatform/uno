@@ -10,5 +10,5 @@
 		<iOSProjectFolder Condition=" !Exists($(iOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('iOS'))</iOSProjectFolder>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOSMac.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition="$(SingleProject) == 'true'" />
 </Project>

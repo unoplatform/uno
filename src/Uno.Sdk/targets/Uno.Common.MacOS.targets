@@ -14,5 +14,5 @@
 		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOSMac.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacOS.targets" Condition="$(SingleProject) == 'true'" />
 </Project>

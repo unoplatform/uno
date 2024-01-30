@@ -1,0 +1,26 @@
+<Project>
+	<PropertyGroup>
+		<!-- Full globalization is required for Uno -->
+		<InvariantGlobalization Condition="$(InvariantGlobalization) == ''">false</InvariantGlobalization>
+
+		<IPhoneResourcePrefix>$(MacCatalystProjectFolder)Resources</IPhoneResourcePrefix>
+		<CodesignEntitlements Condition=" Exists('$(MacCatalystProjectFolder)Entitlements.plist') ">$(MacCatalystProjectFolder)Entitlements.plist</CodesignEntitlements>
+		<CodesignEntitlements Condition=" Exists('$(MacCatalystProjectFolder)Entitlements-$(Configuration).plist') ">$(MacCatalystProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
+		<_SingleProjectMacCatalystExcludes>$(MacCatalystProjectFolder)/**/.*/**</_SingleProjectMacCatalystExcludes>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
+		<MtouchExtraArgs Condition="!$(MtouchExtraArgs.Contains('--marshal-objectivec-exceptions'))">$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
+
+	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
+		<_TargetPlatformFiles Include="$(MacCatalystProjectFolder)**/*" />
+		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
+</Project>

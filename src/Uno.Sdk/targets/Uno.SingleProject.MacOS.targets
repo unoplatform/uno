@@ -1,0 +1,19 @@
+<Project>
+	<!--
+		We aren't currently fully supporting macos because of
+		https://github.com/xamarin/xamarin-macios/issues/16401
+		https://github.com/dotnet/sdk/issues/21877
+	-->
+	<PropertyGroup>
+		<TrimMode Condition="'$(Configuration)'=='Release'">link</TrimMode>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
+		<_TargetPlatformFiles Include="$(MacOSProjectFolder)**/*" />
+		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
+</Project>
