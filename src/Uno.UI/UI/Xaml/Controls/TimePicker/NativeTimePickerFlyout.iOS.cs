@@ -122,12 +122,14 @@ partial class NativeTimePickerFlyout
 			}
 
 			_onLoad.Disposable = null;
+			IsNativeDialogOpen = true;
 		}
 
 		void onUnload(object sender, RoutedEventArgs e)
 		{
 			_onUnloaded.Disposable = null;
 			_onLoad.Disposable = null;
+			IsNativeDialogOpen = false;
 		}
 
 		if (_timePickerPresenter != null)
@@ -156,8 +158,6 @@ partial class NativeTimePickerFlyout
 			_headerUntapZone.PointerPressed += OnTap;
 		}
 
-		IsNativeDialogOpen = true;
-
 		base.Open();
 	}
 
@@ -169,8 +169,6 @@ partial class NativeTimePickerFlyout
 		}
 
 		_timeSelector?.Cancel();
-
-		IsNativeDialogOpen = false;
 
 		base.Close();
 	}
