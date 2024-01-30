@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
-		private DatePickerSelector _selector;
+		internal DatePickerSelector _selector;
 
 		private NativeDatePickerFlyoutPresenter _presenter
 		{
