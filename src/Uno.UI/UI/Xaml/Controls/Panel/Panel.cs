@@ -110,14 +110,11 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		/// <summary>
-		/// Panels don't have an Orientation in UWP, but many derived types do.
-		/// This should be overriden by the derived types to refer to match their
-		/// own Orientation. We don't set a default here since different scenarios
-		/// use different defaults. E.g. ListView assumes a vertical orientation
-		/// for keyboard navigation by default, but ItemsPresenter assumes a
-		/// horizontal orientation for header/footer placement.
+		/// This corresponds to WinUI's IOrientedPanel::get_PhysicalOrientation, but its overrides
+		/// are not yet ported from WinUI. Generally speaking, the override should point to
+		/// the corresponding Orientation property in the subclass (e.g. StackPanel.Orientation)
 		/// </summary>
-		internal virtual Orientation? InternalOrientation { get; }
+		internal virtual Orientation? PhysicalOrientation { get; }
 
 		internal Thickness PaddingInternal { get; set; }
 

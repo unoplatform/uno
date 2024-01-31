@@ -4313,6 +4313,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_GridView_Header_Orientation()
+		{
+			var header = new TextBlock
+			{
+				Text = "0",
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+
+			var SUT = new GridView
+			{
+				ItemsSource = "12345",
+				Header = header
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var item1 = SUT.ContainerFromIndex(0).FindVisualChildByType<TextBlock>();
+			Assert.AreEqual("1", item1.Text);
+
+			header.GetAbsoluteBounds().Y.Should().BeLessThan(item1.GetAbsoluteBounds().Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __WASM__ || __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/234")]
 #endif

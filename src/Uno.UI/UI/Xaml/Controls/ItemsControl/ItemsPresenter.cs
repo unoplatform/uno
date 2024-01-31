@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__
 			_itemsPanel is NativeListViewBase nlvb ? nlvb.NativeLayout.Orientation :
 #endif
-				(Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
+				(Panel as Panel)?.PhysicalOrientation ?? Orientation.Horizontal;
 
 		public object Header
 		{
@@ -423,7 +423,7 @@ namespace Microsoft.UI.Xaml.Controls
 				size.Height - padding.Top - padding.Bottom
 			);
 
-			var isHorizontal = ((Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal) == Orientation.Horizontal;
+			var isHorizontal = ((Panel as Panel)?.PhysicalOrientation ?? Orientation.Horizontal) == Orientation.Horizontal;
 
 			var desiredSize = default(Size);
 
