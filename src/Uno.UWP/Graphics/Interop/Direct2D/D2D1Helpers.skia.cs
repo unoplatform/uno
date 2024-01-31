@@ -14,8 +14,8 @@ internal static partial class D2D1Helpers
 
 	public static SKPoint ToSkia(this Point point) => new((float)point.X, (float)point.Y);
 
-	// This is not a mistake, enum members are in the reverse order
-	public static SKPathDirection ToSkia(this D2D1SweepDirection direction) => direction is D2D1SweepDirection.CounterClockwise ? SKPathDirection.Clockwise : SKPathDirection.CounterClockwise;
+	// Enum members are in the reverse order so we can't cast directly
+	public static SKPathDirection ToSkia(this D2D1SweepDirection direction) => direction is D2D1SweepDirection.CounterClockwise ? SKPathDirection.CounterClockwise : SKPathDirection.Clockwise;
 
 	public static SKPathArcSize ToSkia(this D2D1ArcSize size) => (SKPathArcSize)size;
 }

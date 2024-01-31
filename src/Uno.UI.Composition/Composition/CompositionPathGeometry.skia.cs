@@ -26,7 +26,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 		if (Path?.GeometrySource is IGeometrySource2DInterop geometrySourceInterop)
 		{
-			switch (geometrySourceInterop)
+			switch (geometrySourceInterop.GetGeometry())
 			{
 				case ID2D1RectangleGeometry rectangleGeometry:
 					{
@@ -58,20 +58,26 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 						}
 
 						geometrySource = InternalBuildPathGeometry();
+						_commands.Clear();
+
 						break;
 					}
 				default:
 					throw new InvalidOperationException($"Path geometry source type {geometrySourceInterop.GetType().Name} is no supported");
 			}
+
+			_geometrySource2D?.Dispose();
+		}
+		else if (Path?.GeometrySource is SkiaGeometrySource2D skiaGeometry)
+		{
+			geometrySource = skiaGeometry;
 		}
 		else
 		{
 			throw new InvalidOperationException($"Path geometry source type doesn't implement IGeometrySource2DInterop");
 		}
 
-		_geometrySource2D?.Dispose();
 		_geometrySource2D = geometrySource;
-		_commands.Clear();
 	}
 
 	private SkiaGeometrySource2D? InternalBuildPathGeometry()
