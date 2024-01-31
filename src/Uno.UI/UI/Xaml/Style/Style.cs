@@ -3,10 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using Microsoft.UI.Xaml.Data;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
 {
@@ -71,6 +72,8 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
+			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
+
 			IDisposable? localPrecedenceDisposable = null;
 
 			EnsureSetterMap();
@@ -86,26 +89,40 @@ namespace Microsoft.UI.Xaml
 					{
 						try
 						{
-							_flattenedSetters[i].ApplyTo(o);
+							// On WinUI, when default style is applied and there is an explicit
+							// style that contains a setter for the same DP, the value from that explicit style is used.
+							// Note that having two different precedences isn't sufficient to handle this case.
+							// The setter application could be throwing an exception, and in this case we don't
+							// want the value from the default style to take effect.
+							// This bit of code isn't ported from WinUI, but is the equivalent of the following call chain:
+							// OnStyleChanged -> InvalidateProperty -> UpdateEffectiveValue -> EvaluateEffectiveValue -> EvaluateBaseValue -> GetValueFromSetter
+							// In DependencyObject::EvaluateBaseValue (DependencyObject.cpp file), the value is updated to that returned from GetValueFromStyle
+							// Then, baseValueSource is updated from BaseValueSourceBuiltInStyle to BaseValueSourceStyle
+							// The OverrideLocalPrecedence call below is the equivalent of the baseValueSource update.
+							if (precedence == DependencyPropertyValuePrecedences.ImplicitStyle &&
+								o is FrameworkElement fe &&
+								fe.GetActiveStyle() is { } activeStyle &&
+								activeStyle != this &&
+								_flattenedSetters[i] is Setter { Property: { } property } &&
+								activeStyle.EnsureSetterMap().TryGetValue(property, out var setter))
+							{
+								using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+								{
+									setter.ApplyTo(o);
+								}
+							}
+							else
+							{
+								_flattenedSetters[i].ApplyTo(o);
+							}
 						}
-						catch (Exception)
+						catch (Exception ex)
 						{
+							// This empty catch is to keep parity with WinUI's IGNOREHR in
+							// https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
 							if (this.Log().IsEnabled(LogLevel.Warning))
 							{
-								this.Log().LogWarning($"An exception occurred while applying style setter.");
-							}
-
-							// Ideally, this should be an empty catch, keeping parity equivalent to WinUI's IGNOREHR in https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
-							// However, Later when default style is applied (using ImplicitStyle precedence), we don't observe that value in WinUI.
-							// As a workaround, we force-set the current value to Local precedence.
-							// Note: This workaround can be removed as long as When_Unbound_FullFlyout is passing.
-							// Maybe we are applying default styles later than we should?
-							// For now, this is very uncommon code path for already bad code that throws.
-							if (_flattenedSetters[i] is Setter { Property: { } dp })
-							{
-								var value = o.GetValue(dp);
-								this.Log().LogWarning($"Force-setting local value to '{value}'.");
-								o.SetValue(dp, value);
+								this.Log().LogWarning($"An exception occurred while applying style setter. {ex}");
 							}
 						}
 					}
