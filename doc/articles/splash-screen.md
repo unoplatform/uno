@@ -203,39 +203,39 @@ While the new templates simplify adding a splash screen, this article covers how
 
 You can customize the splash screen image and background color by adjusting several key properties:
 
-    | Property | Description | Notes |
-    |----------|-------------|-----|
-    | `accentColor` | Color of the progress indicator's filled-in portion displayed during application launch | Default value is `#F85977` |
-    | `displayName` | Default name visible in the browser window's title to represent the application | N/A |
-    | `splashScreenColor` | Background color of the screen displayed during application launch | Any values assigned to the theme-aware properties are ignored unless this property is set to `transparent`. <br><br>If the theme-aware properties are unassigned, the default browser background color will be used instead. |
-    | `splashScreenImage` | Path to an image that will be visible on the screen displayed during application launch | You currently need to set an explicit scale for the image |
+  | Property | Description | Notes |
+  |----------|-------------|-----|
+  | `accentColor` | Color of the progress indicator's filled-in portion displayed during application launch | Default value is `#F85977` |
+  | `displayName` | Default name visible in the browser window's title to represent the application | N/A |
+  | `splashScreenColor` | Background color of the screen displayed during application launch | Any values assigned to the theme-aware properties are ignored unless this property is set to `transparent`. <br><br>If the theme-aware properties are unassigned, the default browser background color will be used instead. |
+  | `splashScreenImage` | Path to an image that will be visible on the screen displayed during application launch | You currently need to set an explicit scale for the image |
 
-    > [!TIP]
-    > `splashScreenColor` allows you to maintain a background color regardless of the system theme. However, a simple method to make the splash screen theme-aware is to assign `transparent` as its value or by omitting that property altogether.
+  > [!TIP]
+  > `splashScreenColor` allows you to maintain a background color regardless of the system theme. However, a simple method to make the splash screen theme-aware is to assign `transparent` as its value or by omitting that property altogether.
 
-    #### Theme-aware properties
+#### Theme-aware properties
 
-    > [!NOTE]
-    > The section below contains optional properties. If nothing is assigned to them, the value of `splashScreenColor` will be used under both themes as the background color.
+  > [!NOTE]
+  > The section below contains optional properties. If nothing is assigned to them, the value of `splashScreenColor` will be used under both themes as the background color.
 
-    Uno Platform supports theme-aware backgrounds as an optional customization for splash screens. Set the following properties to adjust the splash screen based on a system theme:
+  Uno Platform supports theme-aware backgrounds as an optional customization for splash screens. Set the following properties to adjust the splash screen based on a system theme:
 
-    | Property | Description | Notes |
-    | --- | --- | --- |
-    | `lightThemeAccentColor` | Color of the progress indicator's filled-in portion displayed during application launch if a system light theme is enabled | Default value is `#F85977` |
-    | `darkThemeAccentColor` | Color of the progress indicator's filled-in portion displayed during application launch if a system dark theme is enabled | Default value is `#F85977` |
-    | `lightThemeBackgroundColor` | Background color of the screen displayed during application launch if a system light theme is enabled | Default value is `#F3F3F3` |
-    | `darkThemeBackgroundColor` | Background color of the screen displayed during application launch if a system dark theme is enabled | Default value is `#202020` |
+  | Property | Description | Notes |
+  | --- | --- | --- |
+  | `lightThemeAccentColor` | Color of the progress indicator's filled-in portion displayed during application launch if a system light theme is enabled | Default value is `#F85977` |
+  | `darkThemeAccentColor` | Color of the progress indicator's filled-in portion displayed during application launch if a system dark theme is enabled | Default value is `#F85977` |
+  | `lightThemeBackgroundColor` | Background color of the screen displayed during application launch if a system light theme is enabled | Default value is `#F3F3F3` |
+  | `darkThemeBackgroundColor` | Background color of the screen displayed during application launch if a system dark theme is enabled | Default value is `#202020` |
 
 * Code example:
 
-    ```javascript
-    var UnoAppManifest = {
-        splashScreenImage: "Assets/SplashScreen.scale-200.png",
-        splashScreenColor: "transparent",
-        displayName: "SplashScreenSample"
-    }
-    ```
+  ```javascript
+  var UnoAppManifest = {
+      splashScreenImage: "Assets/SplashScreen.scale-200.png",
+      splashScreenColor: "transparent",
+      displayName: "SplashScreenSample"
+  }
+  ```
 
 ## See also
 
