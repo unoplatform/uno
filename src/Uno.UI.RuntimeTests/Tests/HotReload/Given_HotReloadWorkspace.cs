@@ -100,9 +100,10 @@ internal partial class Given_HotReloadWorkspace
 	}
 
 	[TestCleanup]
-	public async Task TestCleanupWrapper()
+	public void TestCleanupWrapper()
 	{
 		_testAppProcess?.Kill();
+		_testAppProcess?.WaitForExit();
 	}
 
 	public static async Task InitializeServer()
