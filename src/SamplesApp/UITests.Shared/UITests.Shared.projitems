@@ -1630,6 +1630,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Managed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Placement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2571,6 +2575,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_Header.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_Managed.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -6398,6 +6406,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Header.xaml.cs">
       <DependentUpon>DatePicker_Header.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Managed.xaml.cs">
+      <DependentUpon>DatePicker_Managed.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePicker_Placement.xaml.cs">
       <DependentUpon>DatePicker_Placement.xaml</DependentUpon>
     </Compile>
@@ -7049,6 +7060,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_Header.xaml.cs">
       <DependentUpon>TimePicker_Header.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_Managed.xaml.cs">
+      <DependentUpon>TimePicker_Managed.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\TimePicker_TimePickerFlyoutStyle.xaml.cs">
       <DependentUpon>TimePicker_TimePickerFlyoutStyle.xaml</DependentUpon>
