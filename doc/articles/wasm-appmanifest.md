@@ -8,7 +8,7 @@ The `[AppName].Wasm` project in your solution typically includes a manifest file
 
 ## AppManifest properties
 
-This app manifest file allows you to customize certain aspects of the WebAssembly application, including its loading screen. This loading UI is often referred to as the "splash screen" in documentation. See the WebAssembly [section](xref:Uno.Development.SplashScreen#5-webassembly) for more information, including how to customize using the properties in the app manifest.
+This app manifest file allows you to customize certain aspects of the WebAssembly application, including its loading screen. This loading UI is often referred to as the "splash screen" in documentation. For more information, see [How to manually add a splash screen](xref:Uno.Development.SplashScreen#5-webassembly).
 
 ## Add a missing manifest file
 

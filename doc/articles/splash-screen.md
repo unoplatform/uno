@@ -150,11 +150,11 @@ While the new templates simplify adding a splash screen, this article covers how
 
 * The default splash screen configuration for WebAssembly is to use the Uno Platform logo as a placeholder
 
-* An `AppManifest.js` file contains settings for your WebAssembly application, including properties to customize its splash screen. This file found in the `[AppName].Wasm` project typically located at `WasmScripts/AppManifest.js`
+* An `AppManifest.js` file contains settings for your WebAssembly application, including properties to customize its splash screen. This file is found in the `[AppName].Wasm` project, typically located at `WasmScripts/AppManifest.js`.
 
-    #### General properties
+#### General properties
 
-    Customize the splash screen image and background color by adjusting several key properties:
+You can customize the splash screen image and background color by adjusting several key properties:
 
     | Property | Description | Notes |
     |----------|-------------|-----|
