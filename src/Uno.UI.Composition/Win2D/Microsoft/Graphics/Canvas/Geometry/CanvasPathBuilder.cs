@@ -149,8 +149,5 @@ internal class CanvasPathBuilder : IDisposable
 		_commands.Add(CompositionPathCommand.Create((D2D1PathSegment)figureSegmentOptions));
 	}
 
-	public void Dispose()
-	{
-		_commands.Clear();
-	}
+	public void Dispose() { }
 }
