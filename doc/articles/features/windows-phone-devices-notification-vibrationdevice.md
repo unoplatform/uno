@@ -11,6 +11,16 @@ uid: Uno.Features.WPDNotification
 
 ## `VibrationDevice` class
 
+### Platform-specific requirements
+
+#### Android
+
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+
 ### Limitations
 
 #### iOS
