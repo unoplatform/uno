@@ -59,6 +59,7 @@ internal partial class PointerCapture
 
 	private UIElement? _nativeCaptureElement;
 	private readonly Dictionary<UIElement, PointerCaptureTarget> _targets = new(2);
+	private PointerCaptureOptions _currentOptions;
 
 	private PointerCapture(Pointer pointer)
 	{
@@ -92,7 +93,7 @@ internal partial class PointerCapture
 			.Values
 			.Where(target => (target.Kind & kinds) != PointerCaptureKind.None);
 
-	internal PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs? relatedArgs = null)
+	internal PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerCaptureOptions opts, PointerRoutedEventArgs? relatedArgs = null)
 	{
 		global::System.Diagnostics.Debug.Assert(
 			kind is PointerCaptureKind.Explicit or PointerCaptureKind.Implicit,
@@ -100,7 +101,7 @@ internal partial class PointerCapture
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"{element.GetDebugName()}: Capturing ({kind}) pointer {Pointer}");
+			this.Log().Debug($"{element.GetDebugName()}: Capturing ({kind}) pointer {Pointer} (options: {opts})");
 		}
 
 		if (_targets.TryGetValue(element, out var target))
@@ -108,6 +109,8 @@ internal partial class PointerCapture
 			// Validate if the requested kind is not already handled
 			if (target.Kind.HasFlag(kind))
 			{
+				UpdateOptions(opts);
+
 				return PointerCaptureResult.AlreadyCaptured;
 			}
 			else
@@ -137,7 +140,7 @@ internal partial class PointerCapture
 			}
 		}
 
-		// If we added an explicit capture, we update the _localExplicitCaptures of the target element
+		// If we added an explicit capture, we update the PointerCapturesBackingField of the target element
 		if (kind == PointerCaptureKind.Explicit)
 		{
 			IsImplicitOnly = false;
@@ -146,6 +149,7 @@ internal partial class PointerCapture
 
 		// Make sure that this capture is effective
 		EnsureEffectiveCaptureState();
+		UpdateOptions(opts);
 
 		return PointerCaptureResult.Added;
 	}
@@ -190,7 +194,7 @@ internal partial class PointerCapture
 			this.Log().Debug($"{target.Element.GetDebugName()}: Releasing ({kinds}) capture of pointer {Pointer}");
 		}
 
-		// If we remove an explicit capture, we update the _localExplicitCaptures of the target element
+		// If we remove an explicit capture, we update the PointerCapturesBackingField of the target element
 		if (kinds.HasFlag(PointerCaptureKind.Explicit)
 			&& target.Kind.HasFlag(PointerCaptureKind.Explicit))
 		{
@@ -208,6 +212,7 @@ internal partial class PointerCapture
 		IsImplicitOnly = _targets.None(t => t.Value.Kind.HasFlag(PointerCaptureKind.Explicit));
 
 		// Validate / update the state of this capture
+		ClearOptions(); // Before the EnsureEffectiveCaptureState so _nativeCaptureElement is not yet reset to null
 		EnsureEffectiveCaptureState();
 	}
 
@@ -310,6 +315,55 @@ internal partial class PointerCapture
 		}
 	}
 
+	private void UpdateOptions(PointerCaptureOptions options)
+	{
+		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		if (_nativeCaptureElement is null)
+		{
+			return;
+		}
+
+		var newOptions = options & ~_currentOptions;
+		if (newOptions is PointerCaptureOptions.None)
+		{
+			return;
+		}
+
+		try
+		{
+			AddOptions(_nativeCaptureElement, newOptions);
+		}
+		catch (Exception e)
+		{
+			this.Log().Error($"Failed to add capture options {options} for pointer {Pointer}.", e);
+		}
+
+		_currentOptions |= newOptions;
+	}
+
+	private void ClearOptions()
+	{
+		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		if (_nativeCaptureElement is null)
+		{
+			return;
+		}
+
+		if (_currentOptions is PointerCaptureOptions.None)
+		{
+			return;
+		}
+
+		try
+		{
+			RemoveOptions(_nativeCaptureElement, _currentOptions);
+		}
+		catch (Exception e)
+		{
+			this.Log().Error($"Failed to remove capture options {_currentOptions} for pointer {Pointer}.", e);
+		}
+	}
+
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and can
 	/// be significantly slower than other methods as a result on WebAssembly.
@@ -318,12 +372,15 @@ internal partial class PointerCapture
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void CapturePointerNative()
 	{
+		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		if (_nativeCaptureElement is null)
+		{
+			return;
+		}
+
 		try
 		{
-			if (_nativeCaptureElement is not null)
-			{
-				CaptureNative(_nativeCaptureElement, Pointer);
-			}
+			CaptureNative(_nativeCaptureElement, Pointer);
 		}
 		catch (Exception e)
 		{
@@ -335,6 +392,22 @@ internal partial class PointerCapture
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	partial void CaptureNative(UIElement target, Pointer pointer);
 
+	/// <summary>
+	/// Apply capture options.
+	/// Note: Options are only additive for now, they won't be removed until the capture is released.
+	/// </summary>
+	/// <param name="options">New set of options to apply.</param>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	partial void AddOptions(UIElement target, PointerCaptureOptions options);
+
+	/// <summary>
+	/// Apply capture options.
+	/// Note: Options are only additive for now, they won't be removed until the capture is released.
+	/// </summary>
+	/// <param name="options">New set of options to apply.</param>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	partial void RemoveOptions(UIElement target, PointerCaptureOptions options);
+
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
@@ -343,12 +416,15 @@ internal partial class PointerCapture
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void ReleasePointerNative()
 	{
+		global::System.Diagnostics.Debug.Assert(_nativeCaptureElement is not null);
+		if (_nativeCaptureElement is null)
+		{
+			return;
+		}
+
 		try
 		{
-			if (_nativeCaptureElement is not null)
-			{
-				ReleaseNative(_nativeCaptureElement, Pointer);
-			}
+			ReleaseNative(_nativeCaptureElement, Pointer);
 		}
 		catch (Exception e)
 		{
