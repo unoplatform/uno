@@ -239,7 +239,13 @@ You can customize the splash screen image and background color by adjusting seve
 
 ## See also
 
+<<<<<<< HEAD
 - [Completed sample on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample)
 - [Ask for help on Discord](https://www.platform.uno/discord)
 - [Uno.Resizetizer repository](https://github.com/unoplatform/uno.resizetizer)
 >>>>>>> 20fb76b60b (docs: Align wasm manifest resources)
+=======
+* [Completed sample on GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SplashScreenSample)
+* [Ask for help on Discord](https://www.platform.uno/discord)
+* [Uno.Resizetizer repository](https://github.com/unoplatform/uno.resizetizer)
+>>>>>>> 021fab44b3 (chore: Fix to pass markdown linting check)
