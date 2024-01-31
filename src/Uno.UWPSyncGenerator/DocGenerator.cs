@@ -57,7 +57,7 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
-				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
+				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS, and Skia)"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Main, true);
 				}
