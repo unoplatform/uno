@@ -85,7 +85,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
-				child.Loaded += OnPresenterLoaded;
+				if (child is not null)
+				{
+					child.Loaded += OnPresenterLoaded;
+				}
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
