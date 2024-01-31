@@ -42,7 +42,7 @@ Additionally, on Skia targets (Gtk, WPF, Framebuffer), you'll need the following
 * `SkiaSharp.Views.Uno.WinUI` version 2.88.3 or later
 * `SkiaSharp.Skottie` version 2.88.3 or later
 
-On Windows/WinAppSDK, [the support for Lottie is still pending](https://github.com/CommunityToolkit/Lottie-Windows/issues/478).
+On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
 ### [**UWP**](#tab/uwp)
 
