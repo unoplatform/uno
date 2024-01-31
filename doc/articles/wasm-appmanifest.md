@@ -9,6 +9,7 @@ The `[AppName].Wasm` project in your solution typically includes a manifest file
 ## AppManifest properties
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The properties are :
 
 * **splashScreenImage**: defines the image that will be centered on the window during the application's loading time.
@@ -19,6 +20,9 @@ This app manifest file allows you to customize certain aspects of the WebAssembl
 >>>>>>> 20fb76b60b (docs: Align wasm manifest resources)
 
 See [this](xref:Uno.Development.SplashScreen#5-webassembly) section for more information about the supported properties.
+=======
+This app manifest file allows you to customize certain aspects of the WebAssembly application, including its loading screen. This loading UI is often referred to as the "splash screen" in documentation. For more information, see [How to manually add a splash screen](xref:Uno.Development.SplashScreen#5-webassembly).
+>>>>>>> 98b7c36e94 (docs: Apply suggestions from code review)
 
 ## Add a missing manifest file
 
