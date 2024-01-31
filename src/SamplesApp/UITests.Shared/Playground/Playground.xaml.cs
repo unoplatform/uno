@@ -11,9 +11,11 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using MUXControlsTestApp;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 
 namespace UITests.Playground;
 
@@ -23,25 +25,15 @@ public sealed partial class Playground : UserControl
 	public Playground()
 	{
 		this.InitializeComponent();
+		xamlText.Text = ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] as string ?? "";
 	}
 
 #if __WASM__
 	private async void OnXamlEditorLoaded(object sender, RoutedEventArgs e)
 	{
 		xamlText.CodeLanguage = "xml";
-	}
-
-	private void OnApply()
-	{
-		try
-		{
-			renderSurface.Content = XamlReader.Load(GetXamlInput());
-		}
-		catch (Exception e)
-		{
-			renderSurface.Content = e;
-		}
-	}
+	}	
+#endif
 
 	private string GetXamlInput()
 	{
@@ -60,14 +52,26 @@ public sealed partial class Playground : UserControl
 
 		var nsTags = string.Join(" ", ns.Select(v => $"xmlns:{v.Item1}=\"{v.Item2}\""));
 
-		
+
 		return
 			$@"<Grid
 				xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
 				{nsTags}>
 			{xamlText.Text}
 			</Grid>";
-		
+
 	}
-#endif
+
+	private void OnApply()
+	{
+		try
+		{
+			ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] = xamlText.Text;
+			renderSurface.Content = XamlReader.Load(GetXamlInput());
+		}
+		catch (Exception e)
+		{
+			renderSurface.Content = e;
+		}
+	}
 }
