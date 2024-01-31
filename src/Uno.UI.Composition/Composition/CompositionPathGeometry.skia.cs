@@ -7,6 +7,7 @@ using SkiaSharp;
 using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.Graphics;
+using Windows.Graphics.Interop;
 using Windows.Graphics.Interop.Direct2D;
 using static Uno.FoundationFeatureConfiguration;
 
@@ -23,33 +24,49 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 	{
 		SkiaGeometrySource2D? geometrySource = null;
 
-		switch (Path?.GeometrySource.GetType())
+		if (Path?.GeometrySource is IGeometrySource2DInterop geometrySourceInterop)
 		{
-			case ID2D1RectangleGeometry rectangleGeometry:
-				{
-					var rect = rectangleGeometry.GetRect();
-					geometrySource = new(BuildRectangleGeometry(rect.Location.ToVector2(), rect.Size.ToVector2()));
-					break;
-				}
-			case ID2D1RoundedRectangleGeometry roundedRectangleGeometry:
-				{
-					var rect = roundedRectangleGeometry.GetRoundedRect();
-					geometrySource = new(BuildRoundedRectangleGeometry(rect.Rect.Location.ToVector2(), rect.Rect.Size.ToVector2(), new(rect.RadiusX, rect.RadiusY)));
-					break;
-				}
-			case ID2D1EllipseGeometry ellipseGeometry:
-				{
-					var ellipse = ellipseGeometry.GetEllipse();
-					geometrySource = new(BuildEllipseGeometry(ellipse.Point.ToVector2(), new(ellipse.RadiusX, ellipse.RadiusY)));
-					break;
-				}
-			case ID2D1PathGeometry pathGeometry:
-				{
-					geometrySource = InternalBuildPathGeometry(pathGeometry);
-					break;
-				}
-			default:
-				throw new InvalidOperationException($"Path geometry source type {Path?.GeometrySource.GetType()} is no supported");
+			switch (geometrySourceInterop)
+			{
+				case ID2D1RectangleGeometry rectangleGeometry:
+					{
+						var rect = rectangleGeometry.GetRect();
+						geometrySource = new(BuildRectangleGeometry(rect.Location.ToVector2(), rect.Size.ToVector2()));
+						break;
+					}
+				case ID2D1RoundedRectangleGeometry roundedRectangleGeometry:
+					{
+						var rect = roundedRectangleGeometry.GetRoundedRect();
+						geometrySource = new(BuildRoundedRectangleGeometry(rect.Rect.Location.ToVector2(), rect.Rect.Size.ToVector2(), new(rect.RadiusX, rect.RadiusY)));
+						break;
+					}
+				case ID2D1EllipseGeometry ellipseGeometry:
+					{
+						var ellipse = ellipseGeometry.GetEllipse();
+						geometrySource = new(BuildEllipseGeometry(ellipse.Point.ToVector2(), new(ellipse.RadiusX, ellipse.RadiusY)));
+						break;
+					}
+				case ID2D1PathGeometry pathGeometry:
+					{
+						if (pathGeometry is ICompositionPathCommandsProvider { Commands: List<CompositionPathCommand> commands })
+						{
+							_commands.AddRange(commands);
+						}
+						else
+						{
+							pathGeometry.Stream(this);
+						}
+
+						geometrySource = InternalBuildPathGeometry();
+						break;
+					}
+				default:
+					throw new InvalidOperationException($"Path geometry source type {geometrySourceInterop.GetType().Name} is no supported");
+			}
+		}
+		else
+		{
+			throw new InvalidOperationException($"Path geometry source type doesn't implement IGeometrySource2DInterop");
 		}
 
 		_geometrySource2D?.Dispose();
@@ -57,10 +74,8 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 		_commands.Clear();
 	}
 
-	private SkiaGeometrySource2D? InternalBuildPathGeometry(ID2D1PathGeometry pathGeometry)
+	private SkiaGeometrySource2D? InternalBuildPathGeometry()
 	{
-		pathGeometry.Stream(this);
-
 		SKPath path = new();
 		foreach (var command in _commands)
 		{
