@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
-		internal override Orientation? InternalOrientation => Orientation;
+		internal override Orientation? PhysicalOrientation => Orientation;
 
 #if __ANDROID__
 		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
