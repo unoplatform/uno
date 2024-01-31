@@ -26,11 +26,11 @@ uid: Uno.Features.Flashlight
 * On **iOS**, in case the device supports the torch, `BrightnessLevel` is fully supported. In case the device has only flash, any non-zero `BrightnessLevel` will result in the full brightness of the flashlight.
 * On **Android**, flashlight brightness cannot be controlled, hence any non-zero `BrightnessLevel` results in the full brightness of the flashlight.
 
-## Platform-specific
+## Platform-specific requirements
 
 ### Android
 
-For Android there are two permissions you must configure before using this API in your project:
+For Android, there are two permissions you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.FLASHLIGHT" />
