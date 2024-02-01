@@ -5,6 +5,7 @@ uid: Uno.Features.ProgressRing
 # ProgressRing
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 There are two implementations of the `ProgressRing` control available in Uno:
 
 Uno Platform provides two versions of the `ProgressRing` control:
@@ -21,6 +22,9 @@ Uno Platform provides two versions of the `ProgressRing` control:
 =======
 # [**WinUI**](#tab/winui)
 >>>>>>> 79dc6e13ce (docs: Refresh progessring docs)
+=======
+## [**WinUI**](#tab/winui)
+>>>>>>> 85064af654 (docs: Apply suggestions from code review)
 
 ![MUX `ProgressRing`](../Assets/features/progressring/muxprogressring.png)
 
@@ -29,7 +33,7 @@ This version comes with [WinUI 2.x and WinUI 3](https://learn.microsoft.com/wind
 > [!IMPORTANT]
 > To use this Control, you must add a [reference the Lottie package](xref:Uno.Features.Lottie) in your projects, or the ring will not be displayed.
 
-# [**UWP**](#tab/uwp)
+## [**UWP**](#tab/uwp)
 
 ![WUX `ProgressRing`](../Assets/features/progressring/wuxprogressring.png)
 
