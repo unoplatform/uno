@@ -40,7 +40,7 @@
 				   Loaded="OnXamlEditorLoaded" />
 			</wasm:Grid>
 			<not_wasm:Grid>
-				<TextBox x:Name="xamlText" FontWeight="Bold"  AcceptsReturn="True" FontFamily="ms-appx:///Assets/Fonts/CascadiaCode.ttf#Cascadia Code" />
+				<TextBox x:Name="xamlText" AcceptsReturn="True" FontFamily="ms-appx:///Assets/Fonts/CascadiaCode.ttf#Cascadia Code" />
 			</not_wasm:Grid>
 
 			<ContentControl Grid.Column="1"

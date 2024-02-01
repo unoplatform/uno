@@ -28,7 +28,7 @@
 											u:StarStackPanel.Size="*"
 											Padding="10,10,10,0"/>
 							<StackPanel Background="{StaticResource Color08Brush}"
-										Visibility="{TemplateBinding SampleDescription, Converter={StaticResource StringEmptyToVisibilityConverter}}"
+										Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SampleDescription, Converter={StaticResource StringEmptyToVisibilityConverter}}"
 										u:StarStackPanel.Size="Auto"
 										Padding="10,0">
 								<TextBlock Text="DESCRIPTION"
