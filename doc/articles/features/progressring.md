@@ -4,7 +4,7 @@ uid: Uno.Features.ProgressRing
 
 # ProgressRing
 
-# [**WinUI**](#tab/winui)
+## [**WinUI**](#tab/winui)
 
 ![MUX `ProgressRing`](../Assets/features/progressring/muxprogressring.png)
 
@@ -13,7 +13,7 @@ This version comes with [WinUI 2.x and WinUI 3](https://learn.microsoft.com/wind
 > [!IMPORTANT]
 > To use this Control, you must add a [reference the Lottie package](xref:Uno.Features.Lottie) in your projects, or the ring will not be displayed.
 
-# [**UWP**](#tab/uwp)
+## [**UWP**](#tab/uwp)
 
 ![WUX `ProgressRing`](../Assets/features/progressring/wuxprogressring.png)
 
