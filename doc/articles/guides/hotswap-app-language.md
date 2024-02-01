@@ -135,4 +135,4 @@ See the completed sample on GitHub: [RuntimeCultureSwitching](https://github.com
 
 ***
 
-[!include[getting-help](../getting-help.md)]
+[!include[getting-help](../includes/getting-help.md)]

@@ -29,7 +29,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.8 or 
 
 ## Check your environment
 
-[!include[getting-help](use-uno-check-inline-windows-noheader.md)]
+[!include[use-uno-check](includes/use-uno-check-inline-windows-noheader.md)]
 
 ## Install the Uno Platform Extension
 
@@ -57,11 +57,11 @@ To setup your environment for WSL:
 
 # [**Windows**](#tab/windows)
 
-[!include[windows-setup](additional-windows-setup-inline.md)]
+[!include[windows-setup](includes/additional-windows-setup-inline.md)]
 
 # [**WSL**](#tab/linux)
 
-[!include[linux-setup](additional-linux-setup-inline.md)]
+[!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
 ***
 
