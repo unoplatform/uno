@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using SkiaSharp;
 
 namespace Microsoft.UI.Composition
@@ -9,7 +10,7 @@ namespace Microsoft.UI.Composition
 		private protected override void UpdatePaintCore(SKPaint paint, SKRect bounds)
 		{
 			var center = EllipseCenter.ToSKPoint();
-			var gradientOrigin = EllipseCenter.ToSKPoint() + GradientOriginOffset.ToSKPoint();
+			var gradientOrigin = GradientOriginOffset.ToSKPoint();
 			var radius = EllipseRadius.ToSKPoint();
 			var transform = CreateTransformMatrix(bounds);
 
@@ -48,13 +49,37 @@ namespace Microsoft.UI.Composition
 
 			if (gradientRadius > 0)
 			{
-				// Create radial gradient shader.
-				SKShader shader =
-					SKShader.CreateTwoPointConicalGradient(
-						/* start */ gradientOrigin, /* start radius */ 0,
-						/* end */ center, /* gradient radius */ gradientRadius,
-						Colors, ColorPositions,
-						TileMode, transform.PreConcat(matrix));
+				SKShader shader;
+				if (EllipseCenter == GradientOriginOffset)
+				{
+					// Fast path for when ellipse center is the same as gradient origin
+					shader =
+						SKShader.CreateRadialGradient(
+							center, gradientRadius, Colors, ColorPositions, TileMode, transform.PreConcat(matrix));
+				}
+				else
+				{
+					var reversedColors = new SKColor[Colors!.Length];
+					for (int i = 0; i < reversedColors.Length; i++)
+					{
+						reversedColors[i] = Colors[reversedColors.Length - 1 - i];
+					}
+
+					var reversedColorPositions = new float[ColorPositions!.Length];
+					for (var i = 0; i < ColorPositions.Length; i++)
+					{
+						var colorPosition = ColorPositions[i];
+						reversedColorPositions[i] = (colorPosition > 0 && colorPosition < 1) ? Math.Abs(1 - colorPosition) : colorPosition;
+					}
+
+					var totalMatrix = transform.PreConcat(matrix);
+					gradientOrigin = totalMatrix.Invert().MapPoint(gradientOrigin);
+
+					shader = SKShader.CreateCompose(
+						SKShader.CreateColor(GetLastColorOrTransparent()),
+						SKShader.CreateTwoPointConicalGradient(center, gradientRadius, gradientOrigin, 0, reversedColors, reversedColorPositions, TileMode, totalMatrix)
+					);
+				}
 
 				paint.Shader = shader;
 				paint.Color = SKColors.Black;
@@ -65,15 +90,22 @@ namespace Microsoft.UI.Composition
 				// But we expect last gradient color.
 
 				// If there are no gradient stops available, use transparent.
-				SKColor color = SKColors.Transparent;
-				if (Colors!.Length > 0)
-				{
-					color = Colors[Colors.Length - 1];
-				}
+
+				SKColor color = GetLastColorOrTransparent();
 
 				double alpha = (color.Alpha / 255.0);
 				paint.Color = color.WithAlpha((byte)(alpha * 255));
 			}
+		}
+
+		private SKColor GetLastColorOrTransparent()
+		{
+			if (Colors!.Length > 0)
+			{
+				return Colors[Colors.Length - 1];
+			}
+
+			return SKColors.Transparent;
 		}
 
 		private void ComputeRadiusAndScale(SKPoint center, float radiusX, float radiusY, out float radius, out SKMatrix matrix)

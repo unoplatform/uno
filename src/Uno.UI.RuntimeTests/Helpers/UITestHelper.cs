@@ -55,7 +55,7 @@ public static class UITestHelper
 		{
 			case ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling:
 				await renderer.RenderAsync(element);
-				bitmap = await RawBitmap.From(renderer, element, DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1);
+				bitmap = await RawBitmap.From(renderer, element, element.XamlRoot?.RasterizationScale ?? 1);
 				break;
 			case ScreenShotScalingMode.UseLogicalPixels:
 				await renderer.RenderAsync(element, (int)element.RenderSize.Width, (int)element.RenderSize.Height);
