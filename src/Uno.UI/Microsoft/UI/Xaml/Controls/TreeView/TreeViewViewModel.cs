@@ -88,7 +88,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 			}
 			if (item != null)
 			{
-				selectedItems.Add(item);
+				selectedItems.Append(item);
 			}
 		}
 		finally
@@ -110,12 +110,12 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 				{
 					selectedNodes.Clear();
 				}
-				selectedNodes.Add(node);
+				selectedNodes.Append(node);
 			}
 			else
 			{
 				int index;
-				if ((index = selectedNodes.IndexOf(node)) > -1)
+				if ((index = SelectedNodes.IndexOf(node)) > -1)
 				{
 					selectedNodes.RemoveAt(index);
 				}
@@ -647,9 +647,9 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		}
 	}
 
-	internal IList<TreeViewNode> SelectedNodes => m_selectedNodes;
+	internal SelectedTreeNodeVector SelectedNodes => m_selectedNodes;
 
-	internal IList<object> SelectedItems => m_selectedItems;
+	internal SelectedItemsVector SelectedItems => m_selectedItems;
 
 	internal void TrackItemSelected(object item)
 	{

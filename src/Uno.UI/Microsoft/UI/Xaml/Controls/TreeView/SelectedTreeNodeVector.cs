@@ -103,7 +103,7 @@ internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 					var item = listControl?.ItemFromNode(node);
 					if (item != null)
 					{
-						selectedItems.Insert(index, item);
+						selectedItems.Append(item);
 						viewModel.TrackItemSelected(item);
 					}
 				}

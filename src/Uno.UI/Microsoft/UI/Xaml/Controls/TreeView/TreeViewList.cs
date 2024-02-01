@@ -365,11 +365,6 @@ public partial class TreeViewList : ListView
 		templateSettings.CollapsedGlyphVisibility = !itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 
 		base.PrepareContainerForItemOverride(element, item);
-
-		if (selectionState != itemNodeImplNoRef.SelectionState)
-		{
-			ListViewModel.UpdateSelection(itemNodeImplNoRef, selectionState);
-		}
 	}
 
 	protected override DependencyObject GetContainerForItemOverride()
