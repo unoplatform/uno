@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-    <PackageReference Include="Uno.WinUI" Version="5.1.0-dev.1447" />
+    <PackageReference Include="Uno.WinUI" Version="$(GITVERSION_SemVer)" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.19041'">
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230602002" />

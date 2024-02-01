@@ -9,11 +9,11 @@
     <Content Include="..\UnoAppWinUILinuxValidation.Windows\Images\StoreLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="5.1.0-dev.1447" />
+    <PackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(GITVERSION_SemVer)" />
     <!-- Keep RemoteControl (instead of devserver) as-is for backward compatibility testing -->
-    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.1.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.1.0-dev.1447" />
-    <PackageReference Include="Uno.WinUI.Lottie" Version="5.1.0-dev.1447" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="$(GITVERSION_SemVer)" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.WinUI.Lottie" Version="$(GITVERSION_SemVer)" />
     <PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
     <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
   </ItemGroup>
