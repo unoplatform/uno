@@ -82,6 +82,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
+			if (_inlines is { })
+			{
+				_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
+			}
+
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
 		}
@@ -202,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			};
 
-			_inlines.FireDrawingEventsOnEveryRedraw = true;
+			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
 			_inlines.RenderSelection = IsTextSelectionEnabled;
 		}
 
