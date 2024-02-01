@@ -6,7 +6,7 @@ uid: Uno.Workshop.Counter.CSharp.MVVM
 
 [Download the complete C# Markup + MVVM sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM)  
 
-[!INCLUDE [Intro](include-intro.md)]
+[!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:
 
@@ -17,7 +17,7 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform or C#.
 
-[!INCLUDE [VS](include-create.md)]
+[!INCLUDE [VS](includes/include-create.md)]
 
 ## [Visual Studio](#tab/vs)
 
@@ -69,23 +69,23 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ---
 
-[!INCLUDE [Counter Solution](include-solution.md)]
+[!INCLUDE [Counter Solution](includes/include-solution.md)]
 
 ![Counter Solution](Assets/counter-solution-csharp.png)
 
-[!INCLUDE [Main Window](include-mainwindow.md)]
+[!INCLUDE [Main Window](includes/include-mainwindow.md)]
 
-[!INCLUDE [Main Page - C# Markup](include-mainpage-csharp.md)]
+[!INCLUDE [Main Page - C# Markup](includes/include-mainpage-csharp.md)]
 
-[!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-image-csharp.md)]
+[!INCLUDE [Main Page - Image](includes/include-image-csharp.md)]
 
-[!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-elements-csharp.md)]
+[!INCLUDE [Main Page - Other Elements](includes/include-elements-csharp.md)]
 
-[!INCLUDE [View Model](include-mvvm.md)]
+[!INCLUDE [View Model](includes/include-mvvm.md)]
 
 ## Data Binding
 
@@ -177,6 +177,6 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
     }
     ```
 
-[!INCLUDE [View Model](include-wrap.md)]
+[!INCLUDE [View Model](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/CSharp-MVVM).

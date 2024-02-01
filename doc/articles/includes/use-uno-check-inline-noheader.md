@@ -1,14 +1,14 @@
 ## [**Windows**](#tab/windows)
 
-[!include[getting-help](use-uno-check-inline-windows-noheader.md)]
+[!include[use-uno-check](use-uno-check-inline-windows-noheader.md)]
 
 ## [**macOS**](#tab/macos)
 
-[!include[getting-help](use-uno-check-inline-macos-noheader.md)]
+[!include[use-uno-check](use-uno-check-inline-macos-noheader.md)]
 
 ## [**Linux**](#tab/linux)
 
-[!include[getting-help](use-uno-check-inline-linux-noheader.md)]
+[!include[use-uno-check](use-uno-check-inline-linux-noheader.md)]
 
 ***
 
