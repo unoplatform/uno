@@ -26,6 +26,7 @@
 					</DataTemplate>
 				</muxcontrols:TreeView.ItemTemplate>
 			</muxcontrols:TreeView>
+			<StackPanel x:Name="SecondTreeView"/>
 		</StackPanel>
 	</Grid>
 </utilities:MUXTestPage>

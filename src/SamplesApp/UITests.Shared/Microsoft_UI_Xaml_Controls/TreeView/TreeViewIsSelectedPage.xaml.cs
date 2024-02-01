@@ -2,37 +2,15 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Windows.ApplicationModel.DataTransfer;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Media;
 using System.Collections.ObjectModel;
-
-using TreeViewSelectionMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewSelectionMode;
-using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
-using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
-using TreeViewItemInvokedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItemInvokedEventArgs;
-using TreeViewExpandingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewExpandingEventArgs;
-using TreeViewDragItemsStartingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewDragItemsStartingEventArgs;
-using TreeViewDragItemsCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs;
-using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
-using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
-//using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
-using System.Threading.Tasks;
-
-// Uno specific
-using Uno.UI.Samples.Controls;
-using MUXControlsTestApp.Utilities;
-using Uno.Extensions.Specialized;
 using System.ComponentModel;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using MUXControlsTestApp.Utilities;
 
-// Replace listControl.GetItems().Count() with listControl.GetItems().Count()
+using Uno.UI.Samples.Controls;
+using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
+using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
@@ -77,6 +55,42 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			var item2 = new TreeViewItemSource() { Content = "item2", Children = children2 };
 
 			TestTreeViewItemsSource = new ObservableCollection<TreeViewItemSource>() { /*item1,*/ item2 };
+
+
+			StackPanel panel = new StackPanel
+			{
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+			};
+
+			TreeView treeView = new TreeView
+			{
+				RootNodes =
+			{
+				new TreeViewNode
+				{
+					Content = "1111",
+				},
+				new TreeViewNode
+				{
+					Content = "2222"
+				},
+				new TreeViewNode
+				{
+					Content = "333"
+				}
+			}
+			};
+
+			treeView.Loaded += (s, e) =>
+			{
+				treeView.SelectedItem = treeView.RootNodes[1];
+			};
+
+			panel.Children.Add(treeView);
+			SecondTreeView.Children.Add(panel);
+
+
 		}
 	}
 }
