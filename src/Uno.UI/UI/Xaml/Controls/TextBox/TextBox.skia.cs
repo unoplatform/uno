@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -26,7 +27,7 @@ public partial class TextBox
 
 	private TextBoxView _textBoxView;
 
-	private readonly Rectangle _caretRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
+	private readonly Rectangle _caretRect = new Rectangle();
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
 	private int _usedRects;
 
@@ -228,6 +229,7 @@ public partial class TextBox
 						_caretRect.Height = Math.Ceiling(rect.Height);
 						_caretRect.SetValue(Canvas.LeftProperty, rect.Left);
 						_caretRect.SetValue(Canvas.TopProperty, rect.Top);
+						_caretRect.Fill = DefaultBrushes.TextForegroundBrush;
 						canvas.Children.Add(_caretRect);
 					};
 
