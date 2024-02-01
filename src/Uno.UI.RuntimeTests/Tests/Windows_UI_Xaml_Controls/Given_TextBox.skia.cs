@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,6 +18,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Xaml.Core;
 using static Private.Infrastructure.TestServices;
+using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -3209,6 +3211,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(new Button()); // a random control to unload SUT
 
 			Assert.AreEqual(1, SUT.TextBoxView.DisplayBlock.Opacity);
+		}
+
+		[TestMethod]
+		public async Task When_Caret_Color_DarkMode()
+		{
+			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			using var _1 = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
+
+			// The TextBox is purposefully empty. We want the only content pixels to come from the caret.
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var i = 0;
+			for (;i < 20; i++)
+			{
+				await Task.Delay(100);
+				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) &&
+					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black))
+				{
+					break;
+				}
+			}
+			Assert.IsTrue(i < 20);
+
+			using var _2 = ThemeHelper.UseDarkTheme();
+			await WindowHelper.WaitForIdle();
+
+			screenshot = await UITestHelper.ScreenShot(SUT);
+			for (;i < 20; i++)
+			{
+				await Task.Delay(100);
+				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.White) &&
+					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.White))
+				{
+					break;
+				}
+			}
+			Assert.IsTrue(i < 20);
+		}
+
+		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
+		{
+			for (var x = rect.Left; x < rect.Right; x++)
+			{
+				for (var y = rect.Top; y < rect.Bottom; y++)
+				{
+					var pixel = screenshot.GetPixel(x, y);
+					if (expectedColor == pixel)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
