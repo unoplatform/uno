@@ -9249,7 +9249,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\filter.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\CascadiaCode.ttf" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\CascadiaCode-Regular.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Even Badder Mofo.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\FamilyGuy-4grW.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Nillambari-K7y1W.ttf" />
