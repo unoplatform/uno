@@ -138,6 +138,6 @@ If ever the need arises to view the generated source code of a *failing* CI buil
 
 ## Xaml fuzzy matching
 
-The XAML source generator used to do fuzzy matching for types. This doesn't match Windows behavior and can cause performance issues. It is planned that fuzzy matching will be removed in Uno 5. You can set `UnoEnableXamlFuzzyMatching` MSBuild property to false to get the behavior planned in Uno 5. This property will be removed in Uno 5 and you will not be able to get the legacy fuzzy matching behavior. So, it's recommended to set this property to false. The property defaults to `true`.
+The XAML source generator used to do fuzzy matching for types. This doesn't match Windows behavior and can cause performance issues. The MSBuild property `UnoEnableXamlFuzzyMatching` controls whether fuzzy matching is enabled or not. The property was introduced in Uno 4.8 and defaulted to `true`. Starting with Uno 5.0, this property defaults to `false`. It is planned that fuzzy matching will be removed completely Uno 6.
 
 Note that for XAML-included namespaces (for example `android`, `ios`, etc.), The default namespaces are used (it's considered as if it is `http://schemas.microsoft.com/winfx/2006/xaml/presentation`).
