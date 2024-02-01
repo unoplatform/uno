@@ -19,11 +19,7 @@ Add the following namespaces:
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-<<<<<<< HEAD
-  xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
-=======
     xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
->>>>>>> 62e6a6eadf (chore: Address review comment)
     ...>
 ```
 
