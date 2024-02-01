@@ -1048,7 +1048,7 @@ public partial class TextBox
 		return index;
 	}
 
-	private InlineCollection DisplayBlockInlines => TextBoxView.DisplayBlock.Inlines;
+	private InlineCollection DisplayBlockInlines => TextBoxView?.DisplayBlock.Inlines;
 
 	/// <param name="right">Where to look for a chunk to the right or left of the caret when the caret is between chunks</param>
 	private (int start, int length) FindChunkAt(int index, bool right)
