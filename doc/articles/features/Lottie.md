@@ -7,7 +7,7 @@ uid: Uno.Features.Lottie
 > [!TIP]
 > This article covers Uno-specific information for `Lottie`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/windows/communitytoolkit/animations/lottie
 
-* The `Microsoft.Toolkit.Uwp.UI.Lottie` namespace provides classes for rendering Lottie animations in a `Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer`.
+* The `CommunityToolkit.WinUI.Lottie` (for WinUI) and `Microsoft.Toolkit.Uwp.UI.Lottie` (for UWP) namespaces provide classes for rendering Lottie animations in a `Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer`.
 
 ## Using the `LottieVisualSource`
 
@@ -19,7 +19,11 @@ Add the following namespaces:
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+<<<<<<< HEAD
   xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+=======
+    xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
+>>>>>>> 62e6a6eadf (chore: Address review comment)
     ...>
 ```
 
