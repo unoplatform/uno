@@ -413,34 +413,20 @@ partial class TimePicker
 
 	private async void ShowPickerFlyout()
 	{
-		//if (m_tpAsyncSelectionInfo is null)
-		//{
-		//	object spAsyncAsInspectable;
-		//	IAsyncOperation<TimeSpan?> spAsyncOperation;
-		//	var wpThis = WeakReferencePool.RentSelfWeakReference(this);
-		//	var callbackPtr = (IAsyncOperation<TimeSpan?> getOperation, AsyncStatus status) =>
-		//	{
-		//		if (wpThis.IsAlive && wpThis.Target is TimePicker spThis)
-		//		{
-		//			spThis.OnGetTimePickerSelectionAsyncCompleted(getOperation, status);
-		//		}
-		//	};
-
-		//	var xamlControlsGetTimePickerSelectionPtr = reinterpret_cast < decltype(&XamlControlsGetTimePickerSelection) > (.GetProcAddress(GetPhoneModule(), "XamlControlsGetTimePickerSelection"));
-		//	xamlControlsGetTimePickerSelectionPtr(as_iinspectable(this), as_iinspectable(m_tpFlyoutButton), spAsyncAsInspectable.GetAddressOf());
-
-		//	spAsyncOperation = spAsyncAsInspectable.AsOrNull<IAsyncOperation<IReference<TimeSpan>*>>();
-		//	IFCEXPECT(spAsyncOperation);
-		//	spAsyncOperation.Completed = callbackPtr;
-		//	m_tpAsyncSelectionInfo = sp);
-		//}
-
 		if (m_tpAsyncSelectionInfo == null)
 		{
 			var asyncOperation = SelectionExports.XamlControls_GetTimePickerSelection(this, m_tpFlyoutButton);
+			m_tpAsyncSelectionInfo = asyncOperation;
 			var getOperation = asyncOperation.AsTask();
-			await getOperation;
-			OnGetTimePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+			try
+			{
+				await getOperation;
+				OnGetTimePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+			}
+			catch (TaskCanceledException)
+			{
+				// The user canceled the flyout or the control was unloaded. We don't need to do anything.
+			}
 		}
 	}
 

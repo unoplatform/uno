@@ -195,13 +195,14 @@ namespace Microsoft.UI.Xaml.Controls
 			m_todaysDate = NullDateSentinelValue;
 
 			DefaultStyleKey = typeof(DatePicker);
+			this.Unloaded += DatePicker_Unloaded;
 
 			InitPartial();
 
 			PrepareState();
 		}
 
-		~DatePicker()
+		private void DatePicker_Unloaded(object sender, RoutedEventArgs e)
 		{
 			// This will ensure the pending async operation
 			// completes, closed the open dialog, and doesn't
@@ -233,7 +234,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				pCurrentWindow.Activated += (s, pArgs) =>
 				{
-
 					DatePicker spThis;
 
 					spThis = wrWeakThis.Target as DatePicker;
@@ -880,8 +880,15 @@ namespace Microsoft.UI.Xaml.Controls
 				var asyncOperation = _flyout.ShowAtAsync(this);
 				m_tpAsyncSelectionInfo = asyncOperation;
 				var getOperation = asyncOperation.AsTask();
-				await getOperation;
-				OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+				try
+				{
+					await getOperation;
+					OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+				}
+				catch (TaskCanceledException)
+				{
+					// The user canceled the flyout or the control was unloaded. We don't need to do anything.
+				}
 			}
 		}
 
