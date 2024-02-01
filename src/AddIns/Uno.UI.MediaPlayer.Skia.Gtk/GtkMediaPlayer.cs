@@ -307,10 +307,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 				videoWidth = videoTrack.Value.Width;
 				videoHeight = videoTrack.Value.Height;
 
-				if (videoTrack.Value.SarDen != 0)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 
@@ -335,7 +332,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 				if (TryGetVideoDetails(out var videoWidth, out var videoHeight, out var videoSettings))
 				{
 					// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
-					videoWidth = videoWidth * videoSettings.Value.SarNum / videoSettings.Value.SarDen;
+					if (videoSettings.Value.SarDen != 0) // SarNum and SarDen might be supplied layer even though the video details are present
+					{
+						videoWidth = videoWidth * videoSettings.Value.SarNum / videoSettings.Value.SarDen;
+					}
 
 					// Update video ratio first, so that the cover can be
 					// removed properly without the mediaplayerpresenter to be
