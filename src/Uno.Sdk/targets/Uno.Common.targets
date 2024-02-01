@@ -21,13 +21,10 @@
 	<Import Project="Uno.Common.MacOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' " />
 	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia' " />
-	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $(MSBuildProjectName.Contains('.Skia.')) " />
+		Condition="'$(UnoRuntimeIdentifier)' == 'Skia' OR $(MSBuildProjectName.Contains('.Skia.')) " />
 	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' " />
-	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) " />
+		Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly' OR  $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' OR $(MSBuildProjectName.EndsWith('.Wasm')) OR $(MSBuildProjectName.EndsWith('.WebAssembly'))" />
+
 	<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
 	<Import Project="Uno.Common.WinAppSdk.targets"
 		Condition=" $(TargetFramework.Contains('windows10')) " />
