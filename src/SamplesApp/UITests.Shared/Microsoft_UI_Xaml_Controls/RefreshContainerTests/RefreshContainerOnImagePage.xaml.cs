@@ -54,7 +54,6 @@ namespace MUXControlsTestApp
 		// See point #2 in https://github.com/unoplatform/uno/issues/15059#issuecomment-1891551501
 		private void OnMainPageUnloaded(object sender, RoutedEventArgs e)
 		{
-			base.OnNavigatedFrom(e);
 			timer.Stop();
 		}
 
