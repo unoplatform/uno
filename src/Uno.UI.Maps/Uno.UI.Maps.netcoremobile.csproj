@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-netprevious.props" />
 
 	<PropertyGroup>
 		<Authors>uno platform</Authors>
