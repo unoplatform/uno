@@ -5,331 +5,396 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
+using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using StreamJsonRpc;
+using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
+using Uno.UI.RemoteControl.VS.IdeChannel;
+using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
 
-namespace Uno.UI.RemoteControl.VS
+namespace Uno.UI.RemoteControl.VS;
+
+public class EntryPoint : IDisposable
 {
-	public class EntryPoint : IDisposable
+	private const string UnoPlatformOutputPane = "Uno Platform";
+	private const string FolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
+	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
+	private readonly DTE _dte;
+	private readonly DTE2 _dte2;
+	private readonly string _toolsPath;
+	private readonly AsyncPackage _asyncPackage;
+	private Action<string>? _debugAction;
+	private Action<string>? _infoAction;
+	private Action<string>? _verboseAction;
+	private Action<string>? _warningAction;
+	private Action<string>? _errorAction;
+	private int _msBuildLogLevel;
+	private System.Diagnostics.Process? _process;
+
+	private int RemoteControlServerPort;
+	private bool _closing;
+	private bool _isDisposed;
+	private IdeChannelClient? _ideChannelClient;
+	private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
+	private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
+	private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
+
+	public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 	{
-		private const string UnoPlatformOutputPane = "Uno Platform";
-		private const string FolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
-		private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
-		private readonly DTE _dte;
-		private readonly DTE2 _dte2;
-		private readonly string _toolsPath;
-		private readonly AsyncPackage _asyncPackage;
-		private Action<string> _debugAction;
-		private Action<string> _infoAction;
-		private Action<string> _verboseAction;
-		private Action<string> _warningAction;
-		private Action<string> _errorAction;
-		private System.Diagnostics.Process _process;
+		_dte = dte2 as DTE;
+		_dte2 = dte2;
+		_toolsPath = toolsPath;
+		_asyncPackage = asyncPackage;
+		globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
 
-		private int RemoteControlServerPort;
-		private bool _closing;
-		private bool _isDisposed;
+		SetupOutputWindow();
 
-		private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
-		private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
-		private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
+		_closeHandler = () => SolutionEvents_BeforeClosing();
+		_dte.Events.SolutionEvents.BeforeClosing += _closeHandler;
 
-		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
+		_onBuildDoneHandler = (s, a) => BuildEvents_OnBuildDone(s, a);
+		_dte.Events.BuildEvents.OnBuildDone += _onBuildDoneHandler;
+
+		_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+		_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
+
+		// Start the RC server early, as iOS and Android projects capture the globals early
+		// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
+		//
+		// This will can possibly be removed when all projects are migrated to the sdk project system.
+		_ = UpdateProjectsAsync();
+	}
+
+	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+	{
+		if (RemoteControlServerPort == 0)
 		{
-			_dte = dte2 as DTE;
-			_dte2 = dte2;
-			_toolsPath = toolsPath;
-			_asyncPackage = asyncPackage;
-			globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
-
-			SetupOutputWindow();
-
-			_closeHandler = () => SolutionEvents_BeforeClosing();
-			_dte.Events.SolutionEvents.BeforeClosing += _closeHandler;
-
-			_onBuildDoneHandler = (s, a) => BuildEvents_OnBuildDone(s, a);
-			_dte.Events.BuildEvents.OnBuildDone += _onBuildDoneHandler;
-
-			_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
-			_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
-
-			// Start the RC server early, as iOS and Android projects capture the globals early
-			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
-			//
-			// This will can possibly be removed when all projects are migrated to the sdk project system.
-			_ = UpdateProjectsAsync();
+			_warningAction?.Invoke(
+				$"The Remote Control server is not yet started, providing [0] as the server port. " +
+				$"Rebuilding the application may fix the issue.");
 		}
 
-		private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
-		{
-			if (RemoteControlServerPort == 0)
-			{
-				_warningAction(
-					$"The Remote Control server is not yet started, providing [0] as the server port. " +
-					$"Rebuilding the application may fix the issue.");
-			}
+		return Task.FromResult(new Dictionary<string, string> {
+			{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
+		});
+	}
 
-			return Task.FromResult(new Dictionary<string, string> {
-				{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
-			});
+	private void SetupOutputWindow()
+	{
+		var ow = _dte2.ToolWindows.OutputWindow;
+
+		_msBuildLogLevel = _dte2.GetMSBuildOutputVerbosity();
+
+		// Add a new pane to the Output window.
+		var owPane = ow
+			.OutputWindowPanes
+			.OfType<OutputWindowPane>()
+			.FirstOrDefault(p => p.Name == UnoPlatformOutputPane);
+
+		if (owPane == null)
+		{
+			owPane = ow
+			.OutputWindowPanes
+			.Add(UnoPlatformOutputPane);
 		}
 
-		private void SetupOutputWindow()
+		_debugAction = s =>
 		{
-			var ow = _dte2.ToolWindows.OutputWindow;
-
-			// Add a new pane to the Output window.
-			var owPane = ow
-				.OutputWindowPanes
-				.OfType<OutputWindowPane>()
-				.FirstOrDefault(p => p.Name == UnoPlatformOutputPane);
-
-			if (owPane == null)
+			if (!_closing && _msBuildLogLevel >= 3 /* MSBuild Log Detailed */)
 			{
-				owPane = ow
-				.OutputWindowPanes
-				.Add(UnoPlatformOutputPane);
+				owPane.OutputString("[DEBUG] " + s + "\r\n");
 			}
-
-			_debugAction = s =>
-			{
-				if (!_closing)
-				{
-					owPane.OutputString("[DEBUG] " + s + "\r\n");
-				}
-			};
-			_infoAction = s =>
-			{
-				if (!_closing)
-				{
-					owPane.OutputString("[INFO] " + s + "\r\n");
-				}
-			};
-			_verboseAction = s =>
-			{
-				if (!_closing)
-				{
-					owPane.OutputString("[VERBOSE] " + s + "\r\n");
-				}
-			};
-			_warningAction = s =>
-			{
-				if (!_closing)
-				{
-					owPane.OutputString("[WARNING] " + s + "\r\n");
-				}
-			};
-			_errorAction = e =>
-			{
-				if (!_closing)
-				{
-					owPane.OutputString("[ERROR] " + e + "\r\n");
-				}
-			};
-
-			_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
-		}
-
-		private object GetAssemblyVersion()
+		};
+		_infoAction = s =>
 		{
-			var assembly = GetType().GetTypeInfo().Assembly;
-
-			if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+			if (!_closing && _msBuildLogLevel >= 2 /* MSBuild Log Normal */)
 			{
-				return aiva.InformationalVersion;
+				owPane.OutputString("[INFO] " + s + "\r\n");
 			}
-			else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is AssemblyVersionAttribute ava)
-			{
-				return ava.Version;
-			}
-			else
-			{
-				return "Unknown";
-			}
-		}
-
-		private async Task BuildEvents_OnBuildProjConfigBeginAsync(string project, string projectConfig, string platform, string solutionConfig)
+		};
+		_verboseAction = s =>
 		{
-			await UpdateProjectsAsync();
-		}
+			if (!_closing && _msBuildLogLevel >= 4 /* MSBuild Log Diagnostic */)
+			{
+				owPane.OutputString("[VERBOSE] " + s + "\r\n");
+			}
+		};
+		_warningAction = s =>
+		{
+			if (!_closing && _msBuildLogLevel >= 1 /* MSBuild Log Minimal */)
+			{
+				owPane.OutputString("[WARNING] " + s + "\r\n");
+			}
+		};
+		_errorAction = e =>
+		{
+			if (!_closing && _msBuildLogLevel >= 0 /* MSBuild Log Quiet */)
+			{
+				owPane.OutputString("[ERROR] " + e + "\r\n");
+			}
+		};
 
-		private async Task UpdateProjectsAsync()
+		_infoAction($"Uno Remote Control initialized ({GetAssemblyVersion()})");
+	}
+
+	private object GetAssemblyVersion()
+	{
+		var assembly = GetType().GetTypeInfo().Assembly;
+
+		if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+		{
+			return aiva.InformationalVersion;
+		}
+		else if (assembly.GetCustomAttribute<AssemblyVersionAttribute>() is AssemblyVersionAttribute ava)
+		{
+			return ava.Version;
+		}
+		else
+		{
+			return "Unknown";
+		}
+	}
+
+	private async Task BuildEvents_OnBuildProjConfigBeginAsync(string project, string projectConfig, string platform, string solutionConfig)
+	{
+		await UpdateProjectsAsync();
+	}
+
+	private async Task UpdateProjectsAsync()
+	{
+		try
+		{
+			StartServer();
+			var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
+			foreach (var p in await GetProjectsAsync())
+			{
+				var filename = string.Empty;
+				try
+				{
+					filename = p.FileName;
+				}
+				catch (Exception ex)
+				{
+					_debugAction?.Invoke($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
+					_warningAction?.Invoke($"Cannot read {p.UniqueName} project details (It may be unloaded).");
+				}
+				if (string.IsNullOrWhiteSpace(filename) == false
+					&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
+					&& IsApplication(msbProject))
+				{
+					SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_debugAction?.Invoke($"UpdateProjectsAsync failed: {e}");
+		}
+	}
+
+	private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
+	{
+		StartServer();
+	}
+
+	private void SolutionEvents_BeforeClosing()
+	{
+		// Detach event handler to avoid this being called multiple times
+		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
+
+		if (_process is not null)
 		{
 			try
 			{
-				StartServer();
-				var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-				foreach (var p in await GetProjectsAsync())
-				{
-					var filename = string.Empty;
-					try
-					{
-						filename = p.FileName;
-					}
-					catch (Exception ex)
-					{
-						_debugAction($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
-						_warningAction($"Cannot read {p.UniqueName} project details (It may be unloaded).");
-					}
-					if (string.IsNullOrWhiteSpace(filename) == false
-						&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
-						&& IsApplication(msbProject))
-					{
-						SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
-					}
-				}
+				_debugAction?.Invoke($"Terminating Remote Control server (pid: {_process.Id})");
+				_process.Kill();
+				_debugAction?.Invoke($"Terminated Remote Control server (pid: {_process.Id})");
+
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
 			}
 			catch (Exception e)
 			{
-				_debugAction($"UpdateProjectsAsync failed: {e}");
+				_debugAction?.Invoke($"Failed to terminate Remote Control server (pid: {_process.Id}): {e}");
+			}
+			finally
+			{
+				_closing = true;
+				_process = null;
+
+				// Invoke Dispose to make sure other event handlers are detached
+				Dispose();
+			}
+		}
+	}
+
+	private int GetDotnetMajorVersion()
+	{
+		var result = ProcessHelpers.RunProcess("dotnet", "--version", Path.GetDirectoryName(_dte.Solution.FileName));
+
+		if (result.exitCode != 0)
+		{
+			throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" exited with code {result.exitCode})");
+		}
+
+		if (result.output.Contains("."))
+		{
+			if (int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
+			{
+				return majorVersion;
 			}
 		}
 
-		private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
-		{
-			StartServer();
-		}
+		throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
+	}
 
-		private void SolutionEvents_BeforeClosing()
+	private void StartServer()
+	{
+		if (_process?.HasExited ?? true)
 		{
-			// Detach event handler to avoid this being called multiple times
-			_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
+			RemoteControlServerPort = GetTcpPort();
 
-			if (_process != null)
+			var version = GetDotnetMajorVersion();
+			if (version < 7)
 			{
-				try
-				{
-					_debugAction($"Terminating Remote Control server (pid: {_process.Id})");
-					_process.Kill();
-					_debugAction($"Terminated Remote Control server (pid: {_process.Id})");
-				}
-				catch (Exception e)
-				{
-					_debugAction($"Failed to terminate Remote Control server (pid: {_process.Id}): {e}");
-				}
-				finally
-				{
-					_closing = true;
-					_process = null;
+				throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
+			}
+			var runtimeVersionPath = $"net{version}.0";
 
-					// Invoke Dispose to make sure other event handlers are detached
-					Dispose();
-				}
+			var sb = new StringBuilder();
+
+			var pipeGuid = Guid.NewGuid();
+
+			var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
+			string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
+			var pi = new ProcessStartInfo("dotnet", arguments)
+			{
+				UseShellExecute = false,
+				CreateNoWindow = true,
+				WindowStyle = ProcessWindowStyle.Hidden,
+				WorkingDirectory = Path.Combine(_toolsPath, "host"),
+			};
+
+			// redirect the output
+			pi.RedirectStandardOutput = true;
+			pi.RedirectStandardError = true;
+
+			_process = new System.Diagnostics.Process();
+
+			// hookup the event handlers to capture the data that is received
+			_process.OutputDataReceived += (sender, args) => _debugAction?.Invoke(args.Data);
+			_process.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
+
+			_process.StartInfo = pi;
+			_process.Start();
+
+			// start our event pumps
+			_process.BeginOutputReadLine();
+			_process.BeginErrorReadLine();
+
+			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
+			_ideChannelClient.ForceHotReloadRequested += IdeChannelClient_ForceHotReloadRequested;
+			_ideChannelClient.ConnectToHost();
+		}
+	}
+
+#pragma warning disable VSTHRD100 // Avoid async void methods
+	private async void IdeChannelClient_ForceHotReloadRequested(object sender, ForceHotReloadIdeMessage message)
+#pragma warning restore VSTHRD100 // Avoid async void methods
+	{
+		try
+		{
+			_dte.ExecuteCommand("Debug.ApplyCodeChanges");
+
+			// Send a message back to indicate that the request has been received and acted upon.
+			if (_ideChannelClient is not null)
+			{
+				await _ideChannelClient.SendToDevServerAsync(new HotReloadRequestedIdeMessage());
 			}
 		}
-
-		private int GetDotnetMajorVersion()
+		catch (Exception e)
 		{
-			var result = ProcessHelpers.RunProcess("dotnet", "--version", Path.GetDirectoryName(_dte.Solution.FileName));
+			_debugAction?.Invoke($"Failed to execute command to ForceHotReload: {e}");
+		}
+	}
 
-			if (result.exitCode != 0)
-			{
-				throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" exited with code {result.exitCode})");
-			}
+	private static int GetTcpPort()
+	{
+		var l = new TcpListener(IPAddress.Loopback, 0);
+		l.Start();
+		var port = ((IPEndPoint)l.LocalEndpoint).Port;
+		l.Stop();
+		return port;
+	}
 
-			if (result.output.Contains("."))
+	private async System.Threading.Tasks.Task<IEnumerable<EnvDTE.Project>> GetProjectsAsync()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		var projectService = await _asyncPackage.GetServiceAsync(typeof(IProjectService)) as IProjectService;
+
+		var solutionProjectItems = _dte.Solution.Projects;
+
+		if (solutionProjectItems != null)
+		{
+			return EnumerateProjects(solutionProjectItems);
+		}
+		else
+		{
+			return Array.Empty<EnvDTE.Project>();
+		}
+	}
+
+	private IEnumerable<EnvDTE.Project> EnumerateProjects(EnvDTE.Projects vsSolution)
+	{
+		foreach (var project in vsSolution.OfType<EnvDTE.Project>())
+		{
+			if (project.Kind == FolderKind /* Folder */)
 			{
-				if (int.TryParse(result.output.Substring(0, result.output.IndexOf('.')), out int majorVersion))
+				foreach (var subProject in EnumSubProjects(project))
 				{
-					return majorVersion;
+					yield return subProject;
 				}
-			}
-
-			throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
-		}
-
-		private void StartServer()
-		{
-			if (_process?.HasExited ?? true)
-			{
-				RemoteControlServerPort = GetTcpPort();
-
-				var version = GetDotnetMajorVersion();
-				if (version < 7)
-				{
-					throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
-				}
-				var runtimeVersionPath = $"net{version}.0";
-
-				var sb = new StringBuilder();
-
-				var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id}";
-				var pi = new ProcessStartInfo("dotnet", arguments)
-				{
-					UseShellExecute = false,
-					CreateNoWindow = true,
-					WindowStyle = ProcessWindowStyle.Hidden,
-					WorkingDirectory = Path.Combine(_toolsPath, "host"),
-				};
-
-				// redirect the output
-				pi.RedirectStandardOutput = true;
-				pi.RedirectStandardError = true;
-
-				_process = new System.Diagnostics.Process();
-
-				// hookup the eventhandlers to capture the data that is received
-				_process.OutputDataReceived += (sender, args) => _debugAction(args.Data);
-				_process.ErrorDataReceived += (sender, args) => _errorAction(args.Data);
-
-				_process.StartInfo = pi;
-				_process.Start();
-
-				// start our event pumps
-				_process.BeginOutputReadLine();
-				_process.BeginErrorReadLine();
-			}
-		}
-
-		private static int GetTcpPort()
-		{
-			var l = new TcpListener(IPAddress.Loopback, 0);
-			l.Start();
-			var port = ((IPEndPoint)l.LocalEndpoint).Port;
-			l.Stop();
-			return port;
-		}
-
-		private async System.Threading.Tasks.Task<IEnumerable<EnvDTE.Project>> GetProjectsAsync()
-		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-
-			var projectService = await _asyncPackage.GetServiceAsync(typeof(IProjectService)) as IProjectService;
-
-			var solutionProjectItems = _dte.Solution.Projects;
-
-			if (solutionProjectItems != null)
-			{
-				return EnumerateProjects(solutionProjectItems);
 			}
 			else
 			{
-				return Array.Empty<EnvDTE.Project>();
+				yield return project;
 			}
 		}
+	}
 
-		private IEnumerable<EnvDTE.Project> EnumerateProjects(EnvDTE.Projects vsSolution)
+	private IEnumerable<EnvDTE.Project> EnumSubProjects(EnvDTE.Project folder)
+	{
+		if (folder.ProjectItems != null)
 		{
-			foreach (var project in vsSolution.OfType<EnvDTE.Project>())
+			var subProjects = folder.ProjectItems
+				.OfType<EnvDTE.ProjectItem>()
+				.Select(p => p.Object)
+				.Where(p => p != null)
+				.Cast<EnvDTE.Project>();
+
+			foreach (var project in subProjects)
 			{
-				if (project.Kind == FolderKind /* Folder */)
+				if (project.Kind == FolderKind)
 				{
 					foreach (var subProject in EnumSubProjects(project))
 					{
@@ -342,97 +407,80 @@ namespace Uno.UI.RemoteControl.VS
 				}
 			}
 		}
+	}
 
-		private IEnumerable<EnvDTE.Project> EnumSubProjects(EnvDTE.Project folder)
+	public void SetGlobalProperty(string projectFullName, string propertyName, string propertyValue)
+	{
+		var msbuildProject = GetMsbuildProject(projectFullName);
+		if (msbuildProject == null)
 		{
-			if (folder.ProjectItems != null)
-			{
-				var subProjects = folder.ProjectItems
-					.OfType<EnvDTE.ProjectItem>()
-					.Select(p => p.Object)
-					.Where(p => p != null)
-					.Cast<EnvDTE.Project>();
+			_debugAction?.Invoke($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
+		}
+		else
+		{
+			SetGlobalProperty(msbuildProject, propertyName, propertyValue);
+		}
+	}
 
-				foreach (var project in subProjects)
-				{
-					if (project.Kind == FolderKind)
-					{
-						foreach (var subProject in EnumSubProjects(project))
-						{
-							yield return subProject;
-						}
-					}
-					else
-					{
-						yield return project;
-					}
-				}
+	private static Microsoft.Build.Evaluation.Project GetMsbuildProject(string projectFullName)
+		=> ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
+
+	public void SetGlobalProperties(string projectFullName, IDictionary<string, string> properties)
+	{
+		var msbuildProject = ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
+		if (msbuildProject == null)
+		{
+			_debugAction?.Invoke($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
+		}
+		else
+		{
+			foreach (var property in properties)
+			{
+				SetGlobalProperty(msbuildProject, property.Key, property.Value);
 			}
 		}
+	}
 
-		public void SetGlobalProperty(string projectFullName, string propertyName, string propertyValue)
-		{
-			var msbuildProject = GetMsbuildProject(projectFullName);
-			if (msbuildProject == null)
-			{
-				_debugAction($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
-			}
-			else
-			{
-				SetGlobalProperty(msbuildProject, propertyName, propertyValue);
-			}
-		}
+	private void SetGlobalProperty(Microsoft.Build.Evaluation.Project msbuildProject, string propertyName, string propertyValue)
+	{
+		msbuildProject.SetGlobalProperty(propertyName, propertyValue);
 
-		private static Microsoft.Build.Evaluation.Project GetMsbuildProject(string projectFullName)
-			=> ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
+	}
 
-		public void SetGlobalProperties(string projectFullName, IDictionary<string, string> properties)
-		{
-			var msbuildProject = ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
-			if (msbuildProject == null)
-			{
-				_debugAction($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
-			}
-			else
-			{
-				foreach (var property in properties)
-				{
-					SetGlobalProperty(msbuildProject, property.Key, property.Value);
-				}
-			}
-		}
-
-		private void SetGlobalProperty(Microsoft.Build.Evaluation.Project msbuildProject, string propertyName, string propertyValue)
-		{
-			msbuildProject.SetGlobalProperty(propertyName, propertyValue);
-
-		}
-
-		private bool IsApplication(Microsoft.Build.Evaluation.Project project)
-		{
-			var outputType = project.GetPropertyValue("OutputType");
-			return outputType is not null &&
+	private bool IsApplication(Microsoft.Build.Evaluation.Project project)
+	{
+		var outputType = project.GetPropertyValue("OutputType");
+		return outputType is not null &&
    				(outputType.Equals("Exe", StringComparison.OrdinalIgnoreCase) || outputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase));
-		}
+	}
 
-		public void Dispose()
+	public void Dispose()
+	{
+		if (_isDisposed)
 		{
-			if (_isDisposed)
-			{
-				return;
-			}
-			_isDisposed = true;
-
-			try
-			{
-				_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
-				_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
-			}
-			catch (Exception e)
-			{
-				_debugAction($"Failed to dispose Remote Control server: {e}");
-			}
+			return;
 		}
+		_isDisposed = true;
 
+		try
+		{
+			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
+			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+		}
+		catch (Exception e)
+		{
+			_debugAction?.Invoke($"Failed to dispose Remote Control server: {e}");
+		}
+	}
+
+	private class Logger(EntryPoint entryPoint) : ILogger
+	{
+		private readonly EntryPoint _entryPoint = entryPoint;
+
+		public void Debug(string message) => _entryPoint._debugAction?.Invoke(message);
+		public void Error(string message) => _entryPoint._errorAction?.Invoke(message);
+		public void Info(string message) => _entryPoint._infoAction?.Invoke(message);
+		public void Warn(string message) => _entryPoint._warningAction?.Invoke(message);
+		public void Verbose(string message) => _entryPoint._verboseAction?.Invoke(message);
 	}
 }

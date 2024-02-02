@@ -6,7 +6,8 @@ uid: Uno.Development.MigratingFromNet7ToNet8
 Migrating from .NET 7 to .NET 8 is a generally straightforward process. You may find below some specific adjustments to make to your projects and libraries when upgrading.
 
 To upgrade to .NET 8:
-- First, read [What's New in .NET 8](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
+
+- First, read [What's New in .NET 8](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-8)
 - Install [Visual Studio 17.8](https://visualstudio.microsoft.com/vs/) or later and run [uno.check(xref:UnoCheck.UsingUnoCheck)] to install .NET 8.
 - Change all your target framework (TFM) references from `net7.0` to `net8.0`, and `net7.0-*` to `net8.0-*`. If you are using a TFM like net7.0-ios13.6, be sure to match the shipping version of that platform or just remove the platform version (i.e. 13.6).
 - Delete your bin and obj folders

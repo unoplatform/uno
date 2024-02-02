@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private protected virtual string GetPlainText() => "";
 
-		private protected static string GetStringFromObject(object pObject)
+		internal protected static string GetStringFromObject(object pObject)
 		{
 			// First, try IFrameworkElement
 			var spFrameworkElement = pObject as FrameworkElement;

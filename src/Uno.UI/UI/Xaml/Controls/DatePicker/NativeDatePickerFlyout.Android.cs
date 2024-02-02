@@ -12,6 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeDatePickerFlyout : DatePickerFlyout
 	{
+		private bool _programmaticallyDismissed;
 		private DatePickerDialog _dialog;
 
 		public static DependencyProperty UseNativeMinMaxDatesProperty { get; } = DependencyProperty.Register(
@@ -33,6 +34,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			this.RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
 		}
+
+		internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
 
 		protected internal override void Open()
 		{
@@ -82,6 +85,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_dialog.DismissEvent += OnDismiss;
 			_dialog.Show();
+
+			AddToOpenFlyouts();
 		}
 
 		private void OnDateChanged(DependencyObject sender, DependencyProperty dp)
@@ -92,12 +97,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnDismiss(object sender, EventArgs e)
 		{
-			Hide(canCancel: false);
+			if (!_programmaticallyDismissed)
+			{
+				Hide(canCancel: false);
+				RemoveFromOpenFlyouts();
+			}
 		}
 
-		internal protected override void Close()
+		private protected override void OnClosed()
 		{
+			_programmaticallyDismissed = true;
 			_dialog?.Dismiss();
+			base.OnClosed();
+			_programmaticallyDismissed = false;
 		}
 
 		private void OnDateSet(object sender, DatePickerDialog.DateSetEventArgs e)

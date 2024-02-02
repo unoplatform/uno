@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Text;
@@ -14,10 +13,19 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
+using System.Drawing;
+using Uno.Extensions;
+using Point = Windows.Foundation.Point;
+using Size = Windows.Foundation.Size;
 
 #if __SKIA__
+using System;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Windows.UI.Input.Preview.Injection;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Input;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -738,6 +746,231 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
 			Assert.IsTrue(states.Count == 0, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
+#endif
+
+#if HAS_UNO // GetMouse is not available on WinUI
+		#region IsTextSelectionEnabled
+
+#if __SKIA__ // enable this region when InputInjector and IsTextSelectionEnabled are supported on more platforms
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_PointerDrag()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.MoveTo(bounds.GetCenter() with { X = bounds.Right });
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 10; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			mouse.Press();
+			mouse.MoveTo(bounds.GetCenter() with { X = bounds.Right });
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight(bounds.GetCenter());
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+		}
+#endif
+
+		#endregion
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Inside_TextBox_FireDrawingEventsOnEveryRedraw()
+		{
+			var textBox = new TextBox
+			{
+				Text = "test"
+			};
+
+			await UITestHelper.Load(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.DisplayBlock.Inlines.FireDrawingEventsOnEveryRedraw);
+		}
+#endif
 #endif
 	}
 }

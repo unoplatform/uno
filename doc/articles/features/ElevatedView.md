@@ -3,29 +3,31 @@ uid: Uno.Features.ElevatedView
 ---
 
 # ElevatedView
+
 In many design languages (like [_Material Design_](https://material.io/design)), there's a notion of 'elevation' where a portion of the UI should be presented as being _elevated_ over the rest of the content.
 
-In this case, UWP's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (UWP, Android, iOS, macOS, WebAssembly, and Skia).
+In this case, WinUI's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (WinUI, Android, iOS, macOS, WebAssembly, and Skia).
 
-This control is very useful to create cards with both rounded corners and an elevated effect - which could otherwise be challenging to produce on some platforms.
+This control is very useful for creating cards with both rounded corners and an elevated effect - which could otherwise be challenging to produce on some platforms.
 
 ## How to use the `ElevatedView`
 
 First you need to add the `toolkit` namespace in your XAML file:
 
-```
+```xml
 xmlns:toolkit="using:Uno.UI.Toolkit"
 ```
 
 After that, use the `ElevatedView` to host the content you need to be elevated:
+
 ``` xml
 <StackPanel Orientation="Horizontal" Spacing="20">
 
-	<Button>Non-Elevated Button</Button>
+    <Button>Non-Elevated Button</Button>
 
-	<toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
-		<Button>Elevated Button</Button>
-	</toolkit:ElevatedView>
+    <toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
+        <Button>Elevated Button</Button>
+    </toolkit:ElevatedView>
 
 </StackPanel>
 ```
@@ -34,7 +36,7 @@ Will produce the following result:
 
 ![ElevatedView sample](../Assets/features/elevatedview/elevatedview-sample.png)
 
-> **ATTENTION FOR UWP**: When there is an error seeing the `<toolkit:ElevatedView>` on UWP, the common mistake is to forget to include the `Uno.UI` package for all platforms, including UWP. On UWP, the only component that the `Uno.UI` package adds is the Toolkit.
+> **ATTENTION FOR WinUI**: When there is an error resolving the `<toolkit:ElevatedView>` on WinUI, the common mistake is to forget to include the `Uno.WinUI` package for all platforms, including WinUI. On WinUI, the only component that the `Uno.WinUI` package adds is the Toolkit.
 
 ## Settings
 
@@ -47,6 +49,4 @@ You can set the following properties:
 
 ## Particularities
 
-* Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<toolkit:ElevatedView>` directly in a `<ScrollViewer> ` because it's designed to clip its content.
-
-
+* Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<toolkit:ElevatedView>` directly in a `<ScrollViewer>` because it's designed to clip its content.

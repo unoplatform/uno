@@ -86,8 +86,20 @@ namespace Uno.UI.Toolkit
 #if WINUI
 				return new();
 #else
+				var window =
+#if HAS_UNO
+					Microsoft.UI.Xaml.Window.CurrentSafe;
+#else
+					Microsoft.UI.Xaml.Window.Current;
+#endif
+
+				if (window is null)
+				{
+					return new();
+				}
+
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				var bounds = Window.Current?.Bounds ?? Rect.Empty;
+				var bounds = window.Bounds;
 				var result = new Thickness
 				{
 					Left = visibleBounds.Left - bounds.Left,
@@ -146,33 +158,6 @@ namespace Uno.UI.Toolkit
 		}
 
 #if !WINUI
-		/// <summary>
-		/// VisibleBounds offset to the reference frame of the window Bounds.
-		/// </summary>
-		private static Rect OffsetVisibleBounds
-		{
-			get
-			{
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-
-				if (Window.Current is Window window)
-				{
-					var bounds = window.Bounds;
-					visibleBounds.X -= bounds.X;
-					visibleBounds.Y -= bounds.Y;
-				}
-
-				return visibleBounds;
-			}
-		}
-
-		/// <summary>
-		/// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which
-		/// might arise transiently when the screen orientation changes.
-		/// </summary>
-		private static bool AreBoundsAspectRatiosConsistent
-			=> ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == Window.Current?.Bounds.GetOrientation();
-
 		public class VisibleBoundsDetails
 		{
 			private static readonly ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances =
@@ -208,14 +193,63 @@ namespace Uno.UI.Toolkit
 
 			private FrameworkElement? Owner => _owner.Target as FrameworkElement;
 
+			/// <summary>
+			/// VisibleBounds offset to the reference frame of the window Bounds.
+			/// </summary>
+			private Rect OffsetVisibleBounds
+			{
+				get
+				{
+					Rect visibleBounds = default;
+					if (GetOwnerWindow() is Window window)
+					{
+						visibleBounds = GetApplicationView(window).VisibleBounds;
+						var bounds = window.Bounds;
+						visibleBounds.X -= bounds.X;
+						visibleBounds.Y -= bounds.Y;
+					}
+
+					return visibleBounds;
+				}
+			}
+
+			private ApplicationView GetApplicationView(Window window)
+			{
+#if HAS_UNO
+				return ApplicationView.GetForWindowId(window.AppWindow.Id);
+#else
+				return ApplicationView.GetForCurrentView();
+#endif
+			}
+
+			private Microsoft.UI.Xaml.Window? GetOwnerWindow()
+			{
+#if HAS_UNO
+				return Owner?.XamlRoot?.HostWindow ?? Microsoft.UI.Xaml.Window.CurrentSafe;
+#else
+				return Microsoft.UI.Xaml.Window.Current;
+#endif
+			}
+
 			private void UpdatePadding()
 			{
-				if (Window.Current?.Content == null)
+				var window = GetOwnerWindow();
+
+				if (window?.Content == null)
 				{
 					return;
 				}
 
-				if (!AreBoundsAspectRatiosConsistent)
+#if HAS_UNO
+				var areBoundsConsistent =
+					window.Bounds.GetOrientation() == ApplicationView.GetForWindowId(window.AppWindow.Id).VisibleBounds.GetOrientation();
+#else
+				var areBoundsConsistent =
+					ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetOwnerWindow()?.Bounds.GetOrientation();
+#endif
+				// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which
+				// might arise transiently when the screen orientation changes.
+				if (!areBoundsConsistent)
 				{
 					return;
 				}

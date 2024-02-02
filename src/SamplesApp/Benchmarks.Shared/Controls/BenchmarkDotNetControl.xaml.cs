@@ -30,6 +30,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace Benchmarks.Shared.Controls
 {
@@ -56,8 +57,8 @@ namespace Benchmarks.Shared.Controls
 
 		private void OnRunTests(object sender, object args)
 		{
-			_ = Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_ = UnitTestDispatcherCompat.From(this).RunAsync(
+				UnitTestDispatcherCompat.Priority.Normal,
 				async () => await Run()
 			);
 		}

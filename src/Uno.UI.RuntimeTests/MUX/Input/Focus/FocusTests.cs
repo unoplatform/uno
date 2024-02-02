@@ -1150,6 +1150,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			await FocusAsyncValidation(FocusAsyncMethod.TryFocusAsync, FocusElementType.TextBlock, true, expectedString);
 		}
 
+		//TODO: Requires support for RichTextBlock #81
 		//[TestMethod]
 		//[TestProperty("Description", "Verify that we successfully await the operation, but the Succeeded value is false, RichTextBlock variant")]
 		//[TestProperty("Hosting:Mode", "UAP")] // fails in WPF mode due to final release queue is not empty cleanup issue
@@ -1159,7 +1160,6 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 		//	await FocusAsyncValidation(FocusAsyncMethod.TryFocusAsync, FocusElementType.RichTextBlock, true, expectedString);
 		//}
 
-		//TODO:MZ:Fails
 		private async Task FocusAsyncValidation(FocusAsyncMethod method, FocusElementType elementType, bool shouldCancel, string expectedString)
 		{
 			string rootPanelXaml = null;

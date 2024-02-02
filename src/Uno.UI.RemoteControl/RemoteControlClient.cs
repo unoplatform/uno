@@ -172,7 +172,7 @@ public class RemoteControlClient : IRemoteControlClient
 			}
 
 #if __WASM__
-				var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
+			var isHttps = WebAssemblyRuntime.InvokeJS("window.location.protocol == 'https:'").Equals("true", StringComparison.OrdinalIgnoreCase);
 #else
 			const bool isHttps = false;
 #endif
@@ -294,15 +294,15 @@ public class RemoteControlClient : IRemoteControlClient
 			else if (port == 443)
 			{
 #if __WASM__
-					if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
-					{
-						var originParts = endpoint.Split('-');
+				if (endpoint.EndsWith("gitpod.io", StringComparison.Ordinal))
+				{
+					var originParts = endpoint.Split('-');
 
-						var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
-						var targetParts = currentHost.Split('-');
+					var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
+					var targetParts = currentHost.Split('-');
 
-						endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
-					}
+					endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
+				}
 #endif
 
 				serverUri = new Uri($"wss://{endpoint}/rc");

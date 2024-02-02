@@ -19,6 +19,10 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class ImageSource
 	{
+		public ImageSource()
+		{
+		}
+
 		partial void InitFromResource(Uri uri)
 		{
 			var path = uri.PathAndQuery.TrimStart("/");

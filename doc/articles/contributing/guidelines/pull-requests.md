@@ -4,7 +4,7 @@ uid: Uno.Contributing.PullRequests
 
 # Guidelines for pull-requests
 
-If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. 
+If you don't know what a pull request is, read the [About pull requests documentation from GitHub](https://docs.github.com/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
 
 ## Creating a PR
 
@@ -19,18 +19,25 @@ Pull requests should all be made to the **master** branch.
 Make sure to rebase your work on the latest default branch of the Uno repository, when working on a fork:
 
 - Add the official uno repository to your remotes:
+
     ```bash
     git remote add uno-origin https://github.com/unoplatform/uno
     ```
+
 - Fetch the official repository
-    ```bash
+
+   ```bash
     git fetch uno-origin
    ```
+
 - Rebase your work on the default branch
+
     ```bash
     git rebase uno-origin/master
     ```
+
 - Then push your branch to your fork:
+
     ```bash
     git push -f
     ```
@@ -42,14 +49,17 @@ All commits **must** be in the [Conventional Commits format](../../uno-developme
 We use this convention to automatically generate release notes for new releases, and means that your commit messages will appear untouched in the release notes.
 
 Make sure that:
+
 - You create only the least possible commits, where each commit details a specific added feature or bug fix.
 - Try using the category feature as frequently as possible. (e.g. `feat(NavigationView): Updated the main panel`, or `fix(ProgressRing): Fix visibility`)
 - Squash your commits, using interactive rebase:
-   ```
+
+   ```bash
    git fetch uno-origin
    git rebase uno-origin/master -i # Rebase your branch on top of the latest master, squash using fixups
    git push -f
    ```
+
 - If you're fixing a regression introduced by a PR that has not been released in a stable version yet, use the `reg` category. Example: `fix(reg): Fixing issue of previous PR`.
 
 When opening a PR, you'll see the description is filled by a template. Make sure to read through the template and fill the missing parts in it.

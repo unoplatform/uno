@@ -75,6 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(RelativePanel), 15)]
 		[DataRow(typeof(FlipView), 15)]
 		[DataRow(typeof(DatePicker), 15)]
+		[DataRow(typeof(TimePicker), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(CalendarView), 15)]
 #endif
@@ -107,9 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
-#if false // Disabled for #10309
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
-#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
 #if !WINAPPSDK
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15)]

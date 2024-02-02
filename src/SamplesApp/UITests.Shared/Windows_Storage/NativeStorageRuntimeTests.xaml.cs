@@ -47,7 +47,7 @@ namespace UITests.Windows_Storage
 
 		public string ErrorMessage { get; set; }
 
-		public NativeStorageRuntimeTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public NativeStorageRuntimeTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

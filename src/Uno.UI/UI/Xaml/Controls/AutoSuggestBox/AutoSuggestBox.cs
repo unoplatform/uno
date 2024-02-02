@@ -178,15 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 				popupChild.MinWidth = _layoutRoot.ActualWidth;
 				popupChild.MaxHeight = MaxSuggestionListHeight;
 
-				Rect windowRect;
-				if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-				{
-					windowRect = XamlRoot.Bounds;
-				}
-				else
-				{
-					windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
-				}
+				Rect windowRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
@@ -535,6 +527,15 @@ namespace Microsoft.UI.Xaml.Controls
 			if (descriptionPresenter != null)
 			{
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
+			}
+		}
+
+		internal void ProgrammaticSubmitQuery()
+		{
+			//UNO TODO: Implement ProgrammaticSubmitQuery on AutoSuggestBox
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"ProgrammaticSubmitQuery on AutoSuggestBox is not yet implemented.");
 			}
 		}
 	}

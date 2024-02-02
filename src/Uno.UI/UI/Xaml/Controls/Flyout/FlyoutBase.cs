@@ -18,6 +18,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using System.Runtime.CompilerServices;
+
 
 #if __IOS__
 using View = UIKit.UIView;
@@ -65,6 +67,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 		}
 
+		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
+
 		private void EnsurePopupCreated()
 		{
 			if (_popup == null)
@@ -110,14 +114,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			var focusState = contentRoot.FocusManager.GetRealFocusStateForFocusedElement();
 
-			var presenter = GetPresenter();
-			if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
+			if (focusState != FocusState.Unfocused)
 			{
-				var childFocused = presenter.Focus(focusState);
-
-				if (!childFocused)
+				var presenter = GetPresenter();
+				if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
 				{
-					_popup.Focus(focusState);
+					var childFocused = presenter.Focus(focusState);
+
+					if (!childFocused)
+					{
+						_popup.Focus(focusState);
+					}
 				}
 			}
 
@@ -305,20 +312,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				OnClosed();
 
-				if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
-				{
-					_openFlyouts.Remove(this);
-
-					Closed?.Invoke(this, EventArgs.Empty);
-
-					if (_openFlyouts.Count > 0)
-					{
-						_openFlyouts[0].Hide();
-					}
-				}
+				RemoveFromOpenFlyouts();
 			}
 
 			return cancel;
+		}
+
+		private protected void RemoveFromOpenFlyouts()
+		{
+			if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
+			{
+				_openFlyouts.Remove(this);
+
+				Closed?.Invoke(this, EventArgs.Empty);
+
+				if (_openFlyouts.Count > 0)
+				{
+					_openFlyouts[0].Hide();
+				}
+			}
 		}
 
 		public void ShowAt(FrameworkElement placementTarget)
@@ -370,7 +382,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
 						UIElement reference =
 #if __ANDROID__
-							Window.Current.Content;
+							// TODO: Adjust for multiwindow #13827
+							Window.CurrentSafe?.Content;
 #else
 							null;
 #endif
@@ -384,16 +397,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						throw new ArgumentException("Invalid flyout position");
 					}
 
-					Rect visibleBounds;
-					if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-					{
-						var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
-						visibleBounds = xamlRoot.Bounds;
-					}
-					else
-					{
-						visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-					}
+					var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
+					Rect visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 					positionValue = new Point(
 						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
 						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
@@ -523,6 +528,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			_popup.IsOpen = true;
 
+			AddToOpenFlyouts();
+		}
+
+		private protected void AddToOpenFlyouts()
+		{
 			if (!_openFlyouts.Contains(this))
 			{
 				_openFlyouts.Add(this);
@@ -587,13 +597,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
-			if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-			{
-				var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
-				return xamlRoot.Bounds;
-			}
-
-			return ApplicationView.GetForCurrentView().VisibleBounds;
+			var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
+			return xamlRoot.VisualTree.VisibleBounds;
 		}
 
 		internal void SetPresenterStyle(

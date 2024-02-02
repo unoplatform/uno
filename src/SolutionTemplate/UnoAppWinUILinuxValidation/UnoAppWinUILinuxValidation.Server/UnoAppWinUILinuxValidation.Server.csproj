@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\UnoAppWinUILinuxValidation.Wasm\UnoAppWinUILinuxValidation.Wasm.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Uno.Wasm.Bootstrap.Server" Version="7.0.0-dev.195" />
+	</ItemGroup>
+
+</Project>

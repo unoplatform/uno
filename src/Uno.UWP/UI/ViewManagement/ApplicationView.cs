@@ -4,14 +4,18 @@
 
 using System;
 using System.Collections.Generic;
-using Windows.Foundation;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
-using System.Threading.Tasks;
-
+using Windows.ApplicationModel.Resources.Core;
+using Windows.Foundation;
 using Windows.Storage;
+using Windows.UI.WindowManagement;
+using MUXWindowId = Microsoft.UI.WindowId;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.UI.ViewManagement
 {
@@ -21,7 +25,7 @@ namespace Windows.UI.ViewManagement
 		private const string PreferredLaunchViewWidthKey = "__Uno.PreferredLaunchViewSizeKey.Width";
 		private const string PreferredLaunchViewHeightKey = "__Uno.PreferredLaunchViewSizeKey.Height";
 
-		private static ApplicationView _instance = new ApplicationView();
+		private static readonly Dictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
@@ -88,11 +92,34 @@ namespace Windows.UI.ViewManagement
 
 		public global::Windows.UI.ViewManagement.ApplicationViewTitleBar TitleBar => _titleBar;
 
-		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView() => _instance;
+		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView()
+		{
+			if (!CoreApplication.IsFullFledgedApp)
+			{
+				// This is specifically needed to provide a stub for Uno Islands.
+				InitializeForWindowId(AppWindow.MainWindowId);
+			}
+
+			return GetForWindowId(AppWindow.MainWindowId);
+		}
+
+#pragma warning disable RS0030 // Do not use banned APIs
+		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentViewSafe() => GetForCurrentView();
+#pragma warning restore RS0030 // Do not use banned APIs
+
+		internal static global::Windows.UI.ViewManagement.ApplicationView GetForWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
+
+		internal static void InitializeForWindowId(MUXWindowId windowId)
+		{
+			if (!_windowIdMap.ContainsKey(windowId))
+			{
+				ApplicationView applicationView = new();
+				_windowIdMap[windowId] = applicationView;
+			}
+		}
 
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
-
 
 		public ApplicationViewMode ViewMode
 		{

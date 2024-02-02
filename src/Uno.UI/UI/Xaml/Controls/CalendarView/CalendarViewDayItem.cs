@@ -140,11 +140,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		}
 
-#if DEBUG && false
+#if DEBUG
 		private void put_Date(DateTime value)
 		{
 			SetDateForDebug(value);
-			CalendarViewDayItemGenerated.Date = value;
+			//CalendarViewDayItemGenerated.Date = value;
 
 		}
 #endif

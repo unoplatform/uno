@@ -6,6 +6,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
@@ -37,7 +38,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			{
 				var that = wr.GetTarget();
 				that._measureCount++;
-				await that.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await UnitTestDispatcherCompat.From(that).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					that._measureCountTextBlock.Text = that._measureCount.ToString();
 					that._stateTextBlock.Text = "Measuring";
@@ -50,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			{
 				var that = wr.GetTarget();
 				that._arrangeCount++;
-				await that.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				await UnitTestDispatcherCompat.From(that).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 				{
 					that._arrangeCountTextBlock.Text = that._arrangeCount.ToString();
 					that._stateTextBlock.Text = "Measuring";
@@ -66,7 +67,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			that._stateSetterDisposable.Disposable = cd;
 			var ct = cd.Token;
 			await Task.Delay(50);
-			await that.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await UnitTestDispatcherCompat.From(that).RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				if (!ct.IsCancellationRequested)
 				{

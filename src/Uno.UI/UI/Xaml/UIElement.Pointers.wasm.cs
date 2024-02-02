@@ -206,7 +206,12 @@ public partial class UIElement : DependencyObject
 
 						if (result.ShouldStop)
 						{
-							WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
+							IRootElement? rootElement = WinUICoreServices.Instance.MainRootVisual as IRootElement;
+							if (rootElement is null)
+							{
+								rootElement = element.XamlRoot?.VisualTree.RootElement as IRootElement;
+							}
+							rootElement?.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
 						}
 
 						break;

@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 	internal partial class ItemTemplateSelectorTestPageViewModel : ViewModelBase
 	{
 
-		public ItemTemplateSelectorTestPageViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public ItemTemplateSelectorTestPageViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			ListItemsObsStatic = GetSampleItemsSync();
 		}

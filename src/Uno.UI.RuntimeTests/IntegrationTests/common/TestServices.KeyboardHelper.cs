@@ -13,6 +13,14 @@ namespace Private.Infrastructure
 	{
 		public static class KeyboardHelper
 		{
+			static KeyboardHelper()
+			{
+				for (VirtualKey key = VirtualKey.A; key <= VirtualKey.Z; key++)
+				{
+					m_vKeyMapping.Add(char.ToLower((char)key).ToString(), key);
+				}
+			}
+
 			private static Dictionary<string, VirtualKey> m_vKeyMapping = new Dictionary<string, VirtualKey>()
 			{
 				{"cancel",                      VirtualKey.Cancel},

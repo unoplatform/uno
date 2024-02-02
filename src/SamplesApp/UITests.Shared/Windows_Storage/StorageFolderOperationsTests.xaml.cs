@@ -42,7 +42,7 @@ namespace UITests.Windows_Storage
 		private string _errorMessage;
 		private CreationCollisionOption _selectedCreationCollisionOption = CreationCollisionOption.FailIfExists;
 
-		public StorageFolderOperationsTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public StorageFolderOperationsTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

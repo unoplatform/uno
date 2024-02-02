@@ -76,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Slider_Dragged()

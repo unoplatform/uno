@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -30,7 +31,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 
 		private void ShowComboBoxDialog_Click(object sender, RoutedEventArgs e)
 		{
-			var viewModel = new ComboBoxDialogViewModel(Dispatcher);
+			var viewModel = new ComboBoxDialogViewModel(UnitTestDispatcherCompat.From(this));
 			var dialog = new ContentDialog
 			{
 				Content = new ComboBoxContentDialog(),
@@ -39,12 +40,13 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			};
 
 			ResultsTextBlock.DataContext = viewModel;
+			dialog.XamlRoot = this.XamlRoot;
 			var dummy = dialog.ShowAsync();
 		}
 
 		internal class ComboBoxDialogViewModel : ViewModelBase
 		{
-			public ComboBoxDialogViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+			public ComboBoxDialogViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 			{
 
 			}

@@ -149,11 +149,23 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			try
 			{
+				if (XamlRoot?.HostWindow is null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().LogWarning(
+							$"Cannot toggle Full Screen as the media player was not yet " +
+							$"loaded in the visual tree.");
+					}
+
+					return;
+				}
+
 				_mediaPlayerPresenter.IsTogglingFullscreen = true;
 
 				if (showFullscreen)
 				{
-					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).TryEnterFullScreenMode();
 
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
@@ -163,14 +175,14 @@ namespace Microsoft.UI.Xaml.Controls
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Microsoft.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
-					ApplicationView.GetForCurrentView().ExitFullScreenMode();
+					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).ExitFullScreenMode();
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Microsoft.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(null);
 #endif
 
 #if __ANDROID__

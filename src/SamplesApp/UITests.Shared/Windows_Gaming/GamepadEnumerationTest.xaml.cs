@@ -45,7 +45,7 @@ namespace UITests.Windows_Gaming
 		private string _gamepadAddedInvokeInfo = "Not triggered yet.";
 		private string _gamepadRemovedInvokeInfo = "Not triggered yet.";
 
-		public GamepadEnumerationViewModel(CoreDispatcher dispatcher)
+		public GamepadEnumerationViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
 		{
 		}

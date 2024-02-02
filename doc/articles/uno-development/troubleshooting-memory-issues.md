@@ -2,12 +2,13 @@
 uid: Uno.Contributing.MemoryIssues
 ---
 
-# Troubleshooting Memory Issues 
+# Troubleshooting Memory Issues
 
 Uno Platform provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
 an Uno.UI issue or from an invalid pattern in user code.
 
 ## WebAssembly memory profiling
+
 Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Bootstrap) 3.2, the Xamarin Profiler can be used to profile memory usage. See [this documentation](https://github.com/unoplatform/Uno.Wasm.Bootstrap#memory-profiling) for additional details.
 
 ## Enable Memory instances counter
@@ -25,49 +26,53 @@ using Uno.Logging;
 // ....
 private void EnableViewsMemoryStatistics()
 {
-	//
-	// Call this method to enable Views memory tracking.
-	// Make sure that you've added the following :
-	//
+ //
+ // Call this method to enable Views memory tracking.
+ // Make sure that you've added the following :
+ //
         //  builder.AddFilter("Uno.UI.DataBinding", LogLevel.Information );
-	//
-	// in the logger settings, so that the statistics are showing up.
-	//
+ //
+ // in the logger settings, so that the statistics are showing up.
+ //
 
-	var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-		CoreDispatcherPriority.Normal,
-		async () =>
-		{
-			BinderReferenceHolder.IsEnabled = true;
+ var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+  CoreDispatcherPriority.Normal,
+  async () =>
+  {
+   BinderReferenceHolder.IsEnabled = true;
 
-			while (true)
-			{
-				await Task.Delay(1500);
+   while (true)
+   {
+    await Task.Delay(1500);
 
-				try
-				{
-					BinderReferenceHolder.LogReport();
+    try
+    {
+     BinderReferenceHolder.LogReport();
 
-					var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
+     var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
 
-					// Force the variable to be kept by the linker so we can see it with the debugger.
-					// Put a breakpoint on this line to dig into the inactive views.
-					inactiveInstances.ToString();
-				}
-				catch (Exception ex)
-				{
-					this.Log().Error("Report generation failed", ex);
-				}
-			}
-		}
-	);
+     // Force the variable to be kept by the linker so we can see it with the debugger.
+     // Put a breakpoint on this line to dig into the inactive views.
+     inactiveInstances.ToString();
+    }
+    catch (Exception ex)
+    {
+     this.Log().Error("Report generation failed", ex);
+    }
+   }
+  }
+ );
 }
 ```
+
   You'll also need to add the following logger filter:
+
 ```csharp
 builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information );
 ```
+
   As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
+
 ```xaml
 <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
 ```
@@ -75,6 +80,7 @@ builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Informati
 ## Interpreting the statistics output
 
 The output provides two sets of DependencyObject in memory:
+
 - Active, for which the instances have a parent dependency object (e.g. an item in a Grid)
 - Inactive, for which the instances do not have a parent dependency object
 
@@ -92,4 +98,4 @@ var myItem = new Grid(){ Tag = grid };
 grid.Children.Add(myItem);
 ```
 
-For Xamarin.iOS specifically, see [this article about performance tuning](https://docs.microsoft.com/en-us/xamarin/ios/deploy-test/performance).
+For Xamarin.iOS specifically, see [this article about performance tuning](https://learn.microsoft.com/xamarin/ios/deploy-test/performance).

@@ -51,7 +51,7 @@ namespace Private.Infrastructure
 #endif
 			Task RunOnUIThread(Action action)
 		{
-#if __WASM__
+#if __WASM__ // TODO Uno: To be adjusted for #2302
 			action();
 			return Task.CompletedTask;
 #else
@@ -83,6 +83,18 @@ namespace Private.Infrastructure
 #endif
 		}
 
+		internal static bool HasDispatcherAccess
+		{
+			get
+			{
+#if __WASM__ // TODO Uno: To be adjusted for #2302
+				return false;
+#else
+				return WindowHelper.RootElementDispatcher.HasThreadAccess;
+#endif
+			}
+		}
+
 		internal static void EnsureInitialized() { }
 
 		public static void VERIFY_IS_NOT_NULL(object value)
@@ -93,6 +105,11 @@ namespace Private.Infrastructure
 		public static void VERIFY_IS_NULL(object value)
 		{
 			Assert.IsNull(value);
+		}
+
+		public static void THROW_IF_NULL(object value)
+		{
+			Assert.IsNotNull(value);
 		}
 
 		public static void THROW_IF_NULL_WITH_MSG(object value, string msg)

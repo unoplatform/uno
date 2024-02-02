@@ -25,7 +25,7 @@ namespace Uno.UWPSyncGenerator
 		private IGrouping<INamespaceSymbol, PlatformSymbols<INamedTypeSymbol>>[] _viewsGrouped;
 		private HashSet<(string name, string namespaceString)> _kosherFrameworkViews;
 
-		public override async Task Build(string basePath, string baseName, string sourceAssembly)
+		public override async Task Build(string baseName, string sourceAssembly)
 		{
 			_sb = new MarkdownStringBuilder();
 
@@ -36,7 +36,7 @@ namespace Uno.UWPSyncGenerator
 
 			try
 			{
-				await base.Build(basePath, baseName, sourceAssembly);
+				await base.Build(baseName, sourceAssembly);
 			}
 			catch (Exception e)
 			{
@@ -57,7 +57,7 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
-				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
+				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS, and Skia)"))
 				{
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.Main, true);
 				}

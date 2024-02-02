@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
+using Private.Infrastructure;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
@@ -16,7 +17,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 	</body>
 </html>";
 
-		public WebView2ViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public WebView2ViewModel(UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 		}
 

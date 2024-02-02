@@ -7,6 +7,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Private.Infrastructure;
 
 using ICommand = System.Windows.Input.ICommand;
 
@@ -42,7 +43,7 @@ namespace UITests.Shared.Windows_Devices
 		private bool _statusChangedAttached;
 		private string _error = "";
 
-		public GeolocatorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public GeolocatorTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			PositionStatus = _geolocator.LocationStatus;
 			timeout = TimeSpan.FromSeconds(10);
@@ -204,7 +205,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				PositionStatus = args.Status;
 			});
@@ -212,7 +213,7 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void Geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				TrackedGeoposition = args.Position;
 			});

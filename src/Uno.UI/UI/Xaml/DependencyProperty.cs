@@ -63,6 +63,18 @@ namespace Microsoft.UI.Xaml
 			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
+			if (ownerType == typeof(FrameworkElement))
+			{
+				if (name is
+					nameof(FrameworkElement.MaxHeight) or
+					nameof(FrameworkElement.MinHeight) or
+					nameof(FrameworkElement.MinWidth) or
+					nameof(FrameworkElement.MaxWidth))
+				{
+					_flags |= Flags.ValidateNotNegativeAndNotNaN;
+				}
+			}
+
 			_uniqueId = Interlocked.Increment(ref _globalId);
 
 			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
@@ -70,6 +82,22 @@ namespace Microsoft.UI.Xaml
 
 			// Improve the performance of the hash code by
 			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
+		}
+
+		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
+		internal void ValidateValue(object value)
+		{
+			if ((_flags & Flags.ValidateNotNegativeAndNotNaN) != 0)
+			{
+				if (value is double doubleValue)
+				{
+					//negative values and NaN are not allowed for these properties
+					if (double.IsNaN(doubleValue) || doubleValue < 0)
+					{
+						throw new ArgumentException($"Property '{_name}' cannot be set to {doubleValue}. It must not be NaN or negative.");
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -525,6 +553,8 @@ namespace Microsoft.UI.Xaml
 			/// Set when the property type is declared in Uno.UI
 			/// </summary>
 			IsUnoType = (1 << 4),
+
+			ValidateNotNegativeAndNotNaN = (1 << 5),
 		}
 	}
 }

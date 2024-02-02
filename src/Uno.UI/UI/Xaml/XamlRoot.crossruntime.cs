@@ -14,9 +14,24 @@ public sealed partial class XamlRoot
 
 	internal event Action InvalidateRender = () => { };
 
-	internal void InvalidateMeasure() => ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
+	internal void InvalidateMeasure()
+	{
+#if !__WASM__ // TODO: Can we use the same approach on WASM? #8978
+		ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
+#else
+		InnerInvalidateMeasure();
+#endif
+	}
 
-	internal void InvalidateArrange() => ScheduleInvalidateMeasureOrArrange(invalidateMeasure: false);
+	internal void InvalidateArrange()
+	{
+#if !__WASM__ // TODO: Can we use the same approach on WASM? #8978
+		ScheduleInvalidateMeasureOrArrange(invalidateMeasure: false);
+#else
+		// We are invalidating both arrange and measure the same way on WASM.
+		InnerInvalidateMeasure();
+#endif
+	}
 
 	internal void QueueInvalidateRender()
 	{

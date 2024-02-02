@@ -16,8 +16,7 @@
 			<Member fullName="Uno.UI.Toolkit" reason="Android 12 support"/>
 			<Member fullName="Uno.Xaml" reason="Android 12 support"/>
 		</Assemblies>
-		<Methods>
-			<Member
+		<Methods><Member
 				fullName="System.Void Uno.Media.StreamGeometryContext.BeginFigure(Windows.Foundation.Point startPoint, System.Boolean isFilled, System.Boolean isClosed)"
 				reason="isClosed paramater is not used and is misleading" />
 			<Member
@@ -1732,6 +1731,20 @@
 		</Events>
 
 		<Fields>
+			<!-- BEGIN TimePicker -->
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::HourTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::MinuteTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::FlyoutButtonPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::HourTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::MinuteTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::PeriodTextBlockPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::ThirdTextBlockColumnPartName" reason="Not present in WinUI" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.TimePicker::FlyoutButtonContentGridPartName" reason="Not present in WinUI" />
+			<!-- END TimePicker -->
 		</Fields>
 
 		<Properties>
@@ -1751,8 +1764,58 @@
 			<Member fullName="System.Void Uno.Media.Playback.IMediaPlayerEventsExtension.RaiseVideoRatioChanged(System.Double videoRatio)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.add_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.remove_VideoRatioChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.Media.Playback.MediaPlayer,System.Double&gt; value)" reason="Required for a bug fix and intended for internal use. It's not part of WinAppSDK" />
+
+			<!-- BEGIN TimePicker -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickedEventArgs..ctor(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePicker.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnTimeChanged(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickedEventArgs..ctor(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePicker.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnTimeChanged(System.TimeSpan oldTime, System.TimeSpan newTime)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnMinuteIncrementChanged(System.Int32 oldMinuteIncrement, System.Int32 newMinuteIncrement)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
+			<!-- END TimePicker -->
+			
+			<!-- Multiple XamlRoots -->
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.1">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- Multiple XamlRoots -->
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+		</Methods>
+	</IgnoreSet>
+
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">

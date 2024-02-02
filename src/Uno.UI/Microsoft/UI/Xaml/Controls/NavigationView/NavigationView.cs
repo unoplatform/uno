@@ -4511,8 +4511,8 @@ public partial class NavigationView : ContentControl
 		var coreTitleBar = m_coreTitleBar;
 		if (coreTitleBar != null)
 		{
-			coreTitleBar.LayoutMetricsChanged += OnTitleBarMetricsChanged;
-			coreTitleBar.IsVisibleChanged += OnTitleBarIsVisibleChanged;
+			coreTitleBar.LayoutMetricsChanged -= OnTitleBarMetricsChanged;
+			coreTitleBar.IsVisibleChanged -= OnTitleBarIsVisibleChanged;
 		}
 	}
 
@@ -5141,11 +5141,11 @@ public partial class NavigationView : ContentControl
 				}
 			}
 
-			if (needsTopPadding)
+			if (needsTopPadding && XamlRoot?.HostWindow is { } window)
 			{
 				// Only add extra padding if the NavView is the "root" of the app,
 				// but not if the app is expanding into the titlebar
-				UIElement root = Microsoft.UI.Xaml.Window.Current.Content;
+				UIElement root = window.Content;
 				GeneralTransform gt = TransformToVisual(root);
 				Point pos = gt.TransformPoint(Point.Zero);
 
@@ -5259,7 +5259,7 @@ public partial class NavigationView : ContentControl
 		// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 		if (m_applicationView == null)
 		{
-			m_applicationView = ApplicationView.GetForCurrentView();
+			m_applicationView = ApplicationView.GetForCurrentViewSafe();
 		}
 
 		// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings

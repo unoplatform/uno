@@ -20,7 +20,7 @@ namespace SkiaSharpExample
 				Console.CursorVisible = false;
 				var host = new FrameBufferHost(() =>
 				{
-					CoreWindow.GetForCurrentThread().KeyDown += (s, e) =>
+					CoreWindow.GetForCurrentThreadSafe().KeyDown += (s, e) =>
 					{
 						if (e.VirtualKey == Windows.System.VirtualKey.F12)
 						{

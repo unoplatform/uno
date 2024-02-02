@@ -19,15 +19,11 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="Content" Value="&#xE72B;" />
-        <Setter Property="Margin"  Value="4,2" />
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid x:Name="RootGrid"
-                        Background="{TemplateBinding Background}"
-                        contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                        contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
+                        Background="{TemplateBinding Background}">
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -43,9 +39,6 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
-                                    <VisualState.Setters>
-                                        <Setter Target="Content.(local:AnimatedIcon.State)" Value="PointerOver"/>
-                                    </VisualState.Setters>
                                 </VisualState>
 
                                 <VisualState x:Name="Pressed">
@@ -58,9 +51,6 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
-                                    <VisualState.Setters>
-                                        <Setter Target="Content.(local:AnimatedIcon.State)" Value="Pressed"/>
-                                    </VisualState.Setters>
                                 </VisualState>
 
                                 <VisualState x:Name="Disabled">
@@ -74,29 +64,23 @@
                             </VisualStateGroup>
 
                         </VisualStateManager.VisualStateGroups>
-                        <local:AnimatedIcon x:Name="Content"
-                            Height="16"
-                            Width="16"
-                            local:AnimatedIcon.State="Normal"
+                        <FontIcon x:Name="Content"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            Glyph="{TemplateBinding Content}"
                             MirroredWhenRightToLeft="True"
+                            Foreground="{TemplateBinding Foreground}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            AutomationProperties.AccessibilityView="Raw">
-                            <animatedvisuals:AnimatedBackVisualSource/>
-                            <local:AnimatedIcon.FallbackIconSource>
-                                <local:FontIconSource
-                                    FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
-                                    FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}"
-                                    Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    MirroredWhenRightToLeft="True"/>
-                            </local:AnimatedIcon.FallbackIconSource>
-                        </local:AnimatedIcon>
+                            AutomationProperties.AccessibilityView="Raw" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
     <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
-        <Setter Property="Margin" Value="4,2,0,2" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Width" Value="32" />
     </Style>
 </ResourceDictionary>

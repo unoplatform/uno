@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 using Microsoft.UI.Xaml.Media.Animation;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -163,10 +164,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/3543")]
 		public async Task When_InsertingChildren_Then_ResultIsInRightOrder()
 		{
-			// This is an illustration of the bug https://github.com/unoplatform/uno/issues/3543
-
 			var pnl = new StackPanel();
 			pnl.Children.Add(new Button { Content = "abc" });
 			pnl.Children.Insert(0, new TextBlock { Text = "TextBlock" });

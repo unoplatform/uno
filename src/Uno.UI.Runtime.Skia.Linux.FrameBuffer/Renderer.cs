@@ -10,6 +10,7 @@ using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Hosting;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -21,14 +22,12 @@ namespace Uno.UI.Runtime.Skia
 		private bool _needsScanlineCopy;
 		private int renderCount;
 		private DisplayInformation? _displayInformation;
-		private bool _isWindowInitialized;
 
 		public Renderer(IXamlRootHost host)
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
 
-			WUX.Window.Current.ToString();
 			_host = host;
 		}
 
@@ -61,13 +60,7 @@ namespace Uno.UI.Runtime.Skia
 
 				_needsScanlineCopy = _fbDev.RowBytes != _bitmap.BytesPerPixel * width;
 
-				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
-
-				if (!_isWindowInitialized)
-				{
-					_isWindowInitialized = true;
-					WUX.Window.Current.OnNativeWindowCreated();
-				}
+				FrameBufferWindowWrapper.Instance.RaiseNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
 			}
 
 			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
@@ -77,7 +70,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WUX.Window.Current.Compositor.RenderRootVisual(surface, rootVisual);
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual);
 				}
 
 				_fbDev.VSync();

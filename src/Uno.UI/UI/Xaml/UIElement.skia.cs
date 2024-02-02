@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml
 
 				if (_visual is null)
 				{
-					_visual = Window.Current.Compositor.CreateShapeVisual();
+					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
@@ -226,8 +226,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
-
-		internal bool IsPointerCaptured { get; set; }
 
 		internal MaterializableList<UIElement> GetChildren() => _children;
 

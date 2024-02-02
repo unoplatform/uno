@@ -2,6 +2,15 @@ parameters:
   vmImage: ''
   vmMacImage: ''
   poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
+
+  snapshotGroups:
+    - 0
+    - 1
+    - 2
+
+  snapshotGroupCount: 3
 
 jobs:
 - job: Skia_Tests_Build
@@ -22,15 +31,8 @@ jobs:
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
 
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self
@@ -106,13 +108,23 @@ jobs:
   timeoutInMinutes: 60
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
-    SamplesAppArtifactName: skia-gtk-samples-app-UWP
+    SamplesAppArtifactName: skia-gtk-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    SnapshotGroupCount: ${{ parameters.snapshotGroupCount }}
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  strategy:
+    matrix:
+      ${{ each testGroup in parameters.snapshotGroups }}:
+        Group_${{ testGroup }}:
+          SNAPSHOT_GROUP: ${{ testGroup }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -121,11 +133,11 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/gtk-install-macos.yml
+  - template: templates/gtk-install-windows.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
+        dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots --total-groups=$(SnapshotGroupCount) --current-group-index=$(SNAPSHOT_GROUP)
 
     displayName: Run Skia GTK Snapshot Tests
 
@@ -142,17 +154,21 @@ jobs:
   timeoutInMinutes: 60
 
   pool:
-    vmImage: ${{ parameters.vmMacImage }}
+    vmImage: ${{ parameters.vmImage }}
 
   strategy:
     matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
+      GROUP_0:
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
+      GROUP_1:
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+
+      GROUP_2:
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
   dependsOn: Skia_Tests_Build
 
@@ -161,9 +177,14 @@ jobs:
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UnoEnableHRuntimeTests: true
 
+    CI_Build: true
+
     # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
 
@@ -175,7 +196,7 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/gtk-install-macos.yml
+  - template: templates/gtk-install-windows.yml
 
   - script: |
       # Build source generators for hot reload runtime tests
@@ -218,10 +239,14 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
-    SamplesAppArtifactName: skia-wpf-samples-app-UWP
+    SamplesAppArtifactName: skia-wpf-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -252,21 +277,14 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-
   dependsOn: Skia_Tests_Build
 
   variables:
     SamplesAppArtifactName: skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -293,15 +311,18 @@ jobs:
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
   displayName: 'Run Uno Islands Skia WPF Runtime Tests'
   timeoutInMinutes: 45
-
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
   pool:
     vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-UWP
+    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - task: DownloadBuildArtifacts@0

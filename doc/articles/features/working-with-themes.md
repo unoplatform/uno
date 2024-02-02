@@ -10,25 +10,29 @@ These themes affect both the `Background` and `Foreground` colors to accommodate
 
 ## Enable dark mode
 
-As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms. 
+As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms.
 
 High Contrast mode is often available to enable separately, from a dedicated _Accessibility_ page. For the purpose of this documentation, we will assume the user wants to use Dark mode.
 
-# [**Windows**](#tab/windows)
-Windows PCs can enable Dark mode from Windows Settings. See [this guide](https://support.microsoft.com/windows/change-colors-in-windows-d26ef4d6-819a-581c-1581-493cfcc005fe) for more information.
+### [**Windows**](#tab/windows)
 
-# [**iOS**](#tab/ios)
-Devices running iOS or iPadOS can enable Dark mode from Control Center or Settings. See [this guide](https://support.apple.com/HT210332) for more information.
+Windows PCs can enable Dark mode from Windows Settings. See [Change colors in Windows](https://support.microsoft.com/windows/change-colors-in-windows-d26ef4d6-819a-581c-1581-493cfcc005fe) for more information.
 
-# [**Android**](#tab/android)
-Android devices can enable Dark mode from Settings. See [this guide](https://support.google.com/android/answer/9730472) for more information.
+### [**iOS**](#tab/ios)
 
-# [**Browser**](#tab/browser)
+Devices running iOS or iPadOS can enable Dark mode from Control Center or Settings. See [Use Dark Mode on your iPhone and iPad](https://support.apple.com/HT210332) for more information.
+
+### [**Android**](#tab/android)
+
+Android devices can enable Dark mode from Settings. See [Change to dark or color mode on your Android device](https://support.google.com/android/answer/9730472) for more information.
+
+### [**Browser**](#tab/browser)
+
 The steps to enable Dark mode in a browser vary by browser. See the following guides for more information:
 
-- [Chrome](https://support.google.com/chrome/answer/9275525)
-- [Edge](https://support.microsoft.com/microsoft-edge/use-the-dark-theme-in-microsoft-edge-9b74617b-f542-77ed-033b-1a5cfb17a2df)
-- [Firefox](http://mzl.la/1BAQGDX)
+- [Browse in dark mode or Dark theme (Chrome)](https://support.google.com/chrome/answer/9275525)
+- [Use the dark theme in Microsoft Edge](https://support.microsoft.com/microsoft-edge/use-the-dark-theme-in-microsoft-edge-9b74617b-f542-77ed-033b-1a5cfb17a2df)
+- [Use themes to change the look of Firefox](http://mzl.la/1BAQGDX)
 
 ---
 
@@ -36,12 +40,12 @@ The steps to enable Dark mode in a browser vary by browser. See the following gu
 
 When you change the theme mode on your device, the system will send a notification to your app. The colors of UI elements in your app will automatically switch over as long as you do _not_ specify a theme in any of the following places:
 
-* `App` constructor
-* `App.xaml` 
-* `AppResources.xaml`
-* The `RequestedTheme` property of a parent `FrameworkElement`
+- `App` constructor
+- `App.xaml`
+- `AppResources.xaml`
+- The `RequestedTheme` property of a parent `FrameworkElement`
 
-However, your app can still react manually to changes in the theme mode. To do so, you can use the [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI) NuGet package. This package is not required to change the app color theme, but it contains a `ThemeListener` class that can be used to listen for OS theme changes. To actually change the app color theme at runtime, you need to install the [Uno.Toolkit.UI](https://www.nuget.org/packages/Uno.Toolkit.UI) NuGet package which contains a `SystemThemeHelper` class.
+However, your app can still react manually to changes in the theme mode. To do so, you can use the [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI) NuGet package. This package is not required to change the app color theme, but it contains a `ThemeListener` class that can be used to listen for OS theme changes. To actually change the app color theme at runtime, you need to install the [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) NuGet package which contains a `SystemThemeHelper` class.
 
 Below is an example of how to use these classes to change the app theme at runtime based on a raised event:
 
@@ -106,12 +110,12 @@ Another method to change the app theme is to adjust it immediately upon startup.
 ```csharp
 public App()
 {
-	this.InitializeComponent();
+    this.InitializeComponent();
 
 #if HAS_UNO
-	Uno.UI.ApplicationHelper.RequestedCustomTheme = nameof(ApplicationTheme.Dark);
+    Uno.UI.ApplicationHelper.RequestedCustomTheme = nameof(ApplicationTheme.Dark);
 #else
-	this.RequestedTheme = ApplicationTheme.Dark;
+    this.RequestedTheme = ApplicationTheme.Dark;
 #endif
 }
 ```

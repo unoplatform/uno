@@ -21,6 +21,7 @@ using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
 
 
@@ -58,19 +59,18 @@ namespace Microsoft.UI.Xaml
 		internal static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Microsoft.UI.Xaml.Application.Current;
-			var window = Microsoft.UI.Xaml.Window.Current;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>
 				{
-					window?.OnNativeVisibilityChanged(true);
-					window?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+					NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true);
+					NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.OnNativeActivated(CoreWindowActivationState.Deactivated);
-				window?.OnNativeVisibilityChanged(false);
+				NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
 
@@ -108,15 +108,13 @@ namespace Microsoft.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-				Window.Current.ToString();
-
 				var arguments = WindowManagerInterop.BeforeLaunch();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
+
 				InitializationCompleted();
 
 				if (!string.IsNullOrEmpty(arguments))

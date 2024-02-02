@@ -15,5 +15,5 @@ internal class TextBoxViewExtension : OverlayTextBoxViewExtension
 	}
 
 	public override bool IsOverlayLayerInitialized(XamlRoot xamlRoot) =>
-		GtkCoreWindowExtension.GetOverlayLayer(xamlRoot) is not null;
+		GtkNativeElementHostingExtension.GetOverlayLayer(xamlRoot) is not null;
 }

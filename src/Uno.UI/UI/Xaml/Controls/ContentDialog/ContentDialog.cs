@@ -105,8 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(ContentDialog);
 		}
 
-		// Uno specific: Ensure we respond to window sizing
-		private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
+		private void XamlRootChanged(object sender, XamlRootChangedEventArgs e) =>
 			UpdateSizeProperties();
 
 		private void UpdateSizeProperties()
@@ -395,11 +394,11 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			}
 
-			var window = Microsoft.UI.Xaml.Window.Current;
-			window.SizeChanged += WindowSizeChanged;
+			var xamlRoot = XamlRoot;
+			xamlRoot.Changed += XamlRootChanged;
 			d.Add(() =>
 			{
-				window.SizeChanged -= WindowSizeChanged;
+				xamlRoot.Changed -= XamlRootChanged;
 			});
 
 			// Here we are relying on the BackRequested event to be able to close the ContentDialog on back button pressed.

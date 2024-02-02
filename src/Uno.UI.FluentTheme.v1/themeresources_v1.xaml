@@ -14845,12 +14845,10 @@
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="Content" Value="&#xE72B;" />
-    <Setter Property="Margin" Value="4,2" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -14863,9 +14861,6 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
-                  <VisualState.Setters>
-                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="PointerOver" />
-                  </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Pressed">
                   <Storyboard>
@@ -14876,9 +14871,6 @@
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
-                  <VisualState.Setters>
-                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="Pressed" />
-                  </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Disabled">
                   <Storyboard>
@@ -14889,19 +14881,16 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <controls:AnimatedIcon x:Name="Content" Height="16" Width="16" local:AnimatedIcon.State="Normal" MirroredWhenRightToLeft="True" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" xmlns:local="using:Microsoft.UI.Xaml.Controls">
-              <animatedvisuals:AnimatedBackVisualSource />
-              <controls:AnimatedIcon.FallbackIconSource>
-                <controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
-              </controls:AnimatedIcon.FallbackIconSource>
-            </controls:AnimatedIcon>
+            <FontIcon x:Name="Content" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Glyph="{TemplateBinding Content}" MirroredWhenRightToLeft="True" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
   <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
-    <Setter Property="Margin" Value="4,2,0,2" />
+    <Setter Property="FontSize" Value="20" />
+    <Setter Property="Height" Value="32" />
+    <Setter Property="Width" Value="32" />
   </Style>
   <Thickness x:Key="NavigationViewAutoSuggestBoxMargin">10,0,16,0</Thickness>
   <Thickness x:Key="TopNavigationViewAutoSuggestBoxMargin">12,0,12,0</Thickness>
@@ -15998,7 +15987,12 @@
                         </Flyout.FlyoutPresenterStyle>
                         <controls:ItemsRepeaterScrollHost>
                           <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <controls:ItemsRepeater AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsOverflowHost" />
+                            <controls:ItemsRepeater AutomationProperties.AccessibilityView="Content" x:Name="TopNavMenuItemsOverflowHost">
+                              <!-- Uno specific: This matches Fluent v2 version and avoids a memory leak related to the use of the singleton StackLayout in ItemsRepeater -->
+                              <controls:ItemsRepeater.Layout>
+                                <controls:StackLayout />
+                              </controls:ItemsRepeater.Layout>
+                            </controls:ItemsRepeater>
                           </ScrollViewer>
                         </controls:ItemsRepeaterScrollHost>
                       </Flyout>

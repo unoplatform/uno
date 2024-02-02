@@ -4,7 +4,7 @@ uid: Uno.GettingStarted.Requirements
 
 # Supported platforms
 
-Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [mac Catalyst](#catalyst), [Linux](#linux), Tizen, and [Windows](#windows). 
+Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [mac Catalyst](#catalyst), [Linux](#linux), Tizen, and [Windows](#windows).
 
 See below for minimum supported versions for each platform.
 
@@ -15,12 +15,13 @@ Uno Platform runs in browsers that support WebAssembly, including Chrome, Edge, 
 ## Windows
 
 Two paths are available:
-- Applications built with Uno.UI's [Skia.WPF](xref:Uno.Skia.Gtk) and [Skia.GTK](xref:Uno.Skia.Wpf) heads, which support run on Windows 7 and above.
-- Running apps built with WinAppSDK or WinUI run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041). Lower versions can be targeted.
+
+- Applications built with Uno.UI's [Skia.WPF](xref:Uno.Skia.Wpf) and [Skia.GTK](xref:Uno.Skia.Gtk) heads, which support run on Windows 7 and above.
+- Running apps built with WinAppSDK or WinUI run on Windows 10. Currently Uno.UI's API definition is aligned with [Windows 10 2004 (19041)](https://learn.microsoft.com/windows/uwp/whats-new/windows-10-build-19041). Lower versions can be targeted.
 
 ## Android
 
-Uno Platform apps run on devices running Android 5 and above. 
+Uno Platform apps run on devices running Android 5 and above.
 
 At compile time, Uno typically supports two versions of the Android SDK, the latest and the immediately previous. At present, this is Android 11 and Android 10. It's generally recommended to use the latest version of the SDK. (Note that this **does not** affect the runtime version - apps compiled with Android 11 will run happily on devices running Android 5.)
 
@@ -34,4 +35,4 @@ Uno Platform applications run on all macOS versions supported by Mac Catalyst - 
 
 ## Linux
 
-Uno Platform applications run on Linux distributions and versions where .NET 7 is supported, [listed here](https://docs.microsoft.com/en-ca/dotnet/core/install/linux).
+Uno Platform applications run on Linux distributions and versions where .NET 7 is supported, [listed here](https://learn.microsoft.com/dotnet/core/install/linux).

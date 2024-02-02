@@ -13,8 +13,8 @@ public class Given_TabView
 {
 #if HAS_UNO
 	[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is only supported on skia")]
 #endif
 	public async Task When_First_Item_Unselected()
 	{

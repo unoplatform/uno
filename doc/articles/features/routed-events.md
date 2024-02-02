@@ -4,7 +4,7 @@ uid: Uno.Features.RoutedEvents
 
 # Uno Platform Support for Routed Events
 
-Per the WinUI contract, Uno Platform provides support for [routed events](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/events-and-routed-events-overview), events which are 'bubbled' from a child object to each of its successive parents in the XAML object tree. In most cases, you can expect routed events to behave the same way on Windows and non-Windows platforms.
+Per the WinUI contract, Uno Platform provides support for [routed events](https://learn.microsoft.com/windows/uwp/xaml-platform/events-and-routed-events-overview), events which are 'bubbled' from a child object to each of its successive parents in the XAML object tree. In most cases, you can expect routed events to behave the same way on Windows and non-Windows platforms.
 
 This article covers some of the finer technical details of Uno Platform's routed events implementation that may be relevant in advanced scenarios, eg those involving custom native (non-WinUI) views in your visual tree.
 
@@ -118,16 +118,15 @@ When using a managed bubbling for a routed event, you'll have a the following li
 Due to serious differences between various platforms, some compromises were done during the
 implementation of RoutedEvents:
 
-
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
-In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
+In some cases/events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`
 or referencing the element where the event crossed the _native-to-managed_ boundary.
 
-This property is however always accurate for "Pointers", "Manipulation", "Gesture" and "Drag and drop" events.
+This property is however always accurate for "Pointers", "Manipulation", "Gesture", and "Drag and drop" events.
 
 ### Resetting `Handled` to false won't behave like in UWP
 
 There's a strange behavior in UWP where you can switch back the `event.Handle` to `false` when
-intercepted by a handler with `handledEventsToo: true`. In UWP the event will continue to bubble normally.
+intercepted by a handler with `handledEventsToo: true`. In UWP, the event will continue to bubble normally.
 Trying to do this in Uno can lead to unreliable results.

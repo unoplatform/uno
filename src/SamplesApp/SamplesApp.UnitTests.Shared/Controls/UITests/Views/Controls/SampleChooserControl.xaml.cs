@@ -30,8 +30,6 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
-			RTLCheckBox.Checked += (_, _) => this.FlowDirection = FlowDirection.RightToLeft;
-			RTLCheckBox.Unchecked += (_, _) => this.FlowDirection = FlowDirection.LeftToRight;
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

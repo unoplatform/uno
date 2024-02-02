@@ -6,6 +6,8 @@ using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
+using Windows.UI.Composition;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
@@ -27,15 +29,23 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands https://github.com/unoplatform/uno/issues/8978
 	/// <summary>
 	/// Gets the root element of the XAML element tree.
 	/// </summary>
-	public UIElement? Content =>
-		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
-			Microsoft.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
+	public UIElement? Content
+	{
+		get
+		{
+			var publicRoot = VisualTree.PublicRootVisual;
+			if (publicRoot is WindowChrome chrome)
+			{
+				return chrome.Content as UIElement;
+			}
 
-	//TODO Uno specific: This logic is most likely not implemented here in MUX:
+			return publicRoot;
+		}
+	}
+
 	/// <summary>
 	/// Gets the width and height of the content area.
 	/// </summary>
@@ -51,10 +61,14 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual)
 			{
-				// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
-				return Window.Current.Bounds.Size;
+				if (Window.CurrentSafe is null)
+				{
+					throw new InvalidOperationException("Window.Current must be set.");
+				}
+
+				return Window.CurrentSafe.Bounds.Size;
 			}
-			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			else if (rootElement is XamlIsland xamlIslandRoot)
 			{
 				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
 				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
@@ -65,7 +79,6 @@ public sealed partial class XamlRoot
 		}
 	}
 
-	//TODO Uno specific: This logic is most likely not implemented here in MUX:
 	internal Rect Bounds
 	{
 		get
@@ -73,19 +86,25 @@ public sealed partial class XamlRoot
 			var rootElement = VisualTree.RootElement;
 			if (rootElement is RootVisual rootVisual)
 			{
-				//TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
-				return Window.Current.Bounds;
+				if (Window.CurrentSafe is null)
+				{
+					throw new InvalidOperationException("Window.Current must be set.");
+				}
+
+				return Window.CurrentSafe.Bounds;
 			}
-			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			else if (rootElement is XamlIsland xamlIsland)
 			{
-				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
-				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
+				var width = !double.IsNaN(xamlIsland.Width) ? xamlIsland.Width : 0;
+				var height = !double.IsNaN(xamlIsland.Height) ? xamlIsland.Height : 0;
 				return new Rect(0, 0, width, height);
 			}
 
 			return default;
 		}
 	}
+
+	internal Microsoft.UI.Composition.Compositor Compositor => Microsoft.UI.Composition.Compositor.GetSharedCompositor();
 
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
@@ -95,7 +114,7 @@ public sealed partial class XamlRoot
 	/// <summary>
 	/// Gets a value that indicates whether the XamlRoot is visible.
 	/// </summary>
-	public bool IsHostVisible { get; internal set; } // TODO: This should reflect the actual state of the visual tree
+	public bool IsHostVisible => VisualTree.IsVisible;
 
 #if !HAS_UNO_WINUI // This is a UWP-only property
 	/// <summary>
@@ -104,10 +123,9 @@ public sealed partial class XamlRoot
 	public UIContext UIContext { get; } = new UIContext();
 #endif
 
-	internal void NotifyChanged()
-	{
-		Changed?.Invoke(this, new XamlRootChangedEventArgs());
-	}
+	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
+
+	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
 
 	internal static XamlRoot? GetForElement(DependencyObject element)
 	{

@@ -12,7 +12,8 @@ namespace UITests.Shared.Windows_UI_Xaml.Enability
 		{
 			this.InitializeComponent();
 
-			FocusManager.GotFocus += FocusManager_GotFocus;
+			this.Loaded += (_, _) => FocusManager.GotFocus += FocusManager_GotFocus;
+			this.Unloaded += (_, _) => FocusManager.GotFocus -= FocusManager_GotFocus;
 
 			disableGroup1.Click += (snd, evt) => enableCtl1.IsChecked = false;
 			disableGroup2.Click += (snd, evt) => enableCtl2.IsChecked = false;

@@ -51,7 +51,7 @@
 		-->
 		<PropertyGroup>
 			<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
-			<DefineConstants Condition="$(_IsUnoWinUIPackage)">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+			<DefineConstants Condition="$(_IsUnoWinUIPackage)">$(DefineConstants);HAS_UNO_WINUI;WINUI_WINDOWING</DefineConstants>
 			<DefineConstants>$(DefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</DefineConstants>
 			<DefineConstants>$(DefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</DefineConstants>
 		</PropertyGroup>

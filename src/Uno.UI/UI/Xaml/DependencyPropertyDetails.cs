@@ -130,6 +130,8 @@ namespace Microsoft.UI.Xaml
 		/// <param name="precedence">The precedence level to set the value at</param>
 		internal void SetValue(object? value, DependencyPropertyValuePrecedences precedence)
 		{
+			Property.ValidateValue(value);
+
 			if (!SetValueFast(value, precedence))
 			{
 				SetValueFull(value, precedence);

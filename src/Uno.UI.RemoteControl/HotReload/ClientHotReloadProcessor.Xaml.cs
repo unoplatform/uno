@@ -13,6 +13,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.Xaml;
 using Windows.Storage.Pickers.Provider;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -41,6 +42,10 @@ namespace Uno.UI.RemoteControl.HotReload
 		private string? _lastUpdatedFilePath;
 		private bool _supportsXamlReader;
 
+#if __IOS__ || __CATALYST__ || __ANDROID__
+		private bool? _isIssue93860Fixed;
+#endif
+
 		private void InitializeXamlReader()
 		{
 			var targetFramework = GetMSBuildProperty("TargetFramework");
@@ -50,15 +55,65 @@ namespace Uno.UI.RemoteControl.HotReload
 			//
 			// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
 			//
-			_supportsXamlReader = (targetFramework.Contains("-android", StringComparison.OrdinalIgnoreCase)
-				|| targetFramework.Contains("-ios", StringComparison.OrdinalIgnoreCase)
-				|| targetFramework.Contains("-maccatalyst", StringComparison.OrdinalIgnoreCase));
+			_supportsXamlReader =
+				!IsIssue93860Fixed()
+				&& (targetFramework.Contains("-android", StringComparison.OrdinalIgnoreCase)
+					|| targetFramework.Contains("-ios", StringComparison.OrdinalIgnoreCase)
+					|| targetFramework.Contains("-maccatalyst", StringComparison.OrdinalIgnoreCase));
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"XamlReader Hot Reload Enabled:{_supportsXamlReader} " +
 					$"targetFramework:{targetFramework}");
 			}
+		}
+
+		private bool IsIssue93860Fixed()
+		{
+#if __IOS__ || __CATALYST__ || __ANDROID__
+
+#if __IOS__ || __CATALYST__
+			var assembly = typeof(global::Foundation.NSObject).GetTypeInfo().Assembly;
+#elif __ANDROID__
+			var assembly = typeof(global::Android.Views.ViewGroup).GetTypeInfo().Assembly;
+#endif
+			if (_isIssue93860Fixed is null)
+			{
+				// If we can't find or parse the version attribute, we're assuming #93860 is fixed.
+				_isIssue93860Fixed = true;
+
+				if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
+				{
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($".NET Platform Bindings Version: {aiva.InformationalVersion}");
+					}
+
+					// From 8.0.100 assemblies:
+					// 34.0.1.42; git-rev-head:f1b7113; git-branch:release/8.0.1xx
+
+					var parts = aiva.InformationalVersion.Split(';');
+
+					if (parts.Length > 0 && Version.TryParse(parts[0], out var version))
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace(
+								$"The .NET Platform Bindings version {version} is too old " +
+								$"and contains this issue: https://github.com/dotnet/runtime/issues/93860. " +
+								$"Make sure to upgrade to .NET 8.0.102 or later");
+						}
+
+						_isIssue93860Fixed = version >= new Version(34, 0, 1, 52);
+					}
+				}
+			}
+
+			return _isIssue93860Fixed.Value;
+#else
+			// XAML Reader should not be used for non-mobile targets.
+			return false;
+#endif
 		}
 
 		private void ReloadFileWithXamlReader(FileReload fileReload)
@@ -112,11 +167,19 @@ namespace Uno.UI.RemoteControl.HotReload
 						|| uri.OriginalString == i.BaseUri?.OriginalString;
 				}
 
-				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri).OfType<FrameworkElement>())
+				foreach (var window in ApplicationHelper.Windows)
 				{
-					if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
+					if (window.Content is null)
 					{
-						SwapViews(instance, newContent);
+						return;
+					}
+
+					foreach (var instance in EnumerateInstances(window.Content, IsSameBaseUri).OfType<FrameworkElement>())
+					{
+						if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
+						{
+							SwapViews(instance, newContent);
+						}
 					}
 				}
 

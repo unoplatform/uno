@@ -10,70 +10,70 @@ Both the Visual Studio Template Wizard, which comes with the [Uno Platform Visua
 
 ## Preset selection
 
-[!INCLUDE [Startup](startup.md)]
+[!INCLUDE [Startup](includes/startup.md)]
 
 ---
 
 ### 1. Framework
 
-[!INCLUDE [Framework](framework.md)]
+[!INCLUDE [Framework](includes/framework.md)]
 
 ---
 
 ### 2. Platforms
 
-[!INCLUDE [Platforms](platforms.md)]
+[!INCLUDE [Platforms](includes/platforms.md)]
 
 ---
 
 ### 3. Presentation
 
-[!INCLUDE [Presentation](presentation.md)]
+[!INCLUDE [Presentation](includes/presentation.md)]
 
 ---
 
 ### 4. Markup
 
-[!INCLUDE [Markup](markup.md)]
+[!INCLUDE [Markup](includes/markup.md)]
 
 ---
 
 ### 5. Theme
 
-[!INCLUDE [Theme](themes.md)]
+[!INCLUDE [Theme](includes/themes.md)]
 
 ---
 
 ### 6. Extensions
 
-[!INCLUDE [Extensions](extensions.md)]
+[!INCLUDE [Extensions](includes/extensions.md)]
 
 ---
 
 ### 7. Features
 
-[!INCLUDE [Features](features.md)]
+[!INCLUDE [Features](includes/features.md)]
 
 ---
 
 ### 8. Authentication
 
-[!INCLUDE [Authentication](authentication.md)]
+[!INCLUDE [Authentication](includes/authentication.md)]
 
 ---
 
 ### 9. Application
 
-[!INCLUDE [Application](application.md)]
+[!INCLUDE [Application](includes/application.md)]
 
 ---
 
 ### 10. Testing
 
-[!INCLUDE [Testing](testing.md)]
+[!INCLUDE [Testing](includes/testing.md)]
 
 ---
 
 ### 11. CI Pipeline
 
-[!INCLUDE [CI Pipeline](cipipeline.md)]
+[!INCLUDE [CI Pipeline](includes/cipipeline.md)]

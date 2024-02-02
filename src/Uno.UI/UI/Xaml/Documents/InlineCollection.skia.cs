@@ -56,8 +56,11 @@ namespace Microsoft.UI.Xaml.Documents
 			get => _caretAtEndOfSelection;
 			set
 			{
-				_caretAtEndOfSelection = value;
-				((IBlock)_collection.GetParent()).Invalidate(false);
+				if (_caretAtEndOfSelection != value)
+				{
+					_caretAtEndOfSelection = value;
+					((IBlock)_collection.GetParent()).Invalidate(false);
+				}
 			}
 		}
 		internal bool RenderSelection
@@ -65,8 +68,11 @@ namespace Microsoft.UI.Xaml.Documents
 			get => _renderSelection;
 			set
 			{
-				_renderSelection = value;
-				((IBlock)_collection.GetParent()).Invalidate(false);
+				if (_renderSelection != value)
+				{
+					_renderSelection = value;
+					((IBlock)_collection.GetParent()).Invalidate(false);
+				}
 			}
 		}
 		internal bool RenderCaret
@@ -74,8 +80,11 @@ namespace Microsoft.UI.Xaml.Documents
 			get => _renderCaret;
 			set
 			{
-				_renderCaret = value;
-				((IBlock)_collection.GetParent()).Invalidate(false);
+				if (_renderCaret != value)
+				{
+					_renderCaret = value;
+					((IBlock)_collection.GetParent()).Invalidate(false);
+				}
 			}
 		}
 
@@ -100,8 +109,12 @@ namespace Microsoft.UI.Xaml.Documents
 				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
 				var startLine = GetRenderLineAt(GetRectForIndex(value.start).GetCenter().Y, true)?.index ?? 0;
 				var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
-				_selection = new SelectionDetails(startLine, value.start, endLine, value.end);
-				((IBlock)_collection.GetParent()).Invalidate(false);
+				var selection = new SelectionDetails(startLine, value.start, endLine, value.end);
+				if (selection != _selection)
+				{
+					_selection = selection;
+					((IBlock)_collection.GetParent()).Invalidate(false);
+				}
 			}
 		}
 
@@ -811,13 +824,13 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		internal int GetIndexAt(Point p, bool ignoreEndingSpace)
+		internal int GetIndexAt(Point p, bool ignoreEndingSpace, bool extendedSelection)
 		{
-			var line = GetRenderLineAt(p.Y, true)?.line;
+			var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
 			if (line is not { })
 			{
-				return 0;
+				return -1;
 			}
 
 			var characterCount = _renderLines
@@ -918,6 +931,7 @@ namespace Microsoft.UI.Xaml.Documents
 			return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 		}
 
+		/// <param name="extendedSelection">returns the most appropriate match even if y is completely outside the textblock</param>
 		internal (RenderLine line, int index)? GetRenderLineAt(double y, bool extendedSelection)
 		{
 			if (_renderLines.Count == 0)

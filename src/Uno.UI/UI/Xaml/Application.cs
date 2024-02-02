@@ -96,6 +96,8 @@ namespace Microsoft.UI.Xaml
 			InitializePartial();
 		}
 
+		internal bool InitializationComplete => _initializationComplete;
+
 		partial void InitializePartial();
 
 		private static void RegisterExtensions()
@@ -160,7 +162,7 @@ namespace Microsoft.UI.Xaml
 				// Sync with core application's theme
 				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
 
-				UpdateRootVisualBackground();
+				UpdateRootElementBackground();
 				UpdateRequestedThemesForResources();
 			}
 		}
@@ -270,9 +272,14 @@ namespace Microsoft.UI.Xaml
 			_initializationComplete = true;
 
 #if !HAS_UNO_WINUI
-			// Delayed raise of OnWindowCreated.
-			Microsoft.UI.Xaml.Window.Current.RaiseCreated();
+			Microsoft.UI.Xaml.Window.EnsureWindowCurrent();
 #endif
+
+			// Initialize all windows that have been created before the application was initialized.
+			foreach (var window in ApplicationHelper.Windows)
+			{
+				window.Initialize();
+			}
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
@@ -418,10 +425,15 @@ namespace Microsoft.UI.Xaml
 
 		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 
-		private void UpdateRootVisualBackground()
+		private void UpdateRootElementBackground()
 		{
-			var rootVisual = WinUICoreServices.Instance.MainRootVisual;
-			rootVisual?.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			{
+				if (contentRoot.VisualTree.RootElement is IRootElement rootElement)
+				{
+					rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+				}
+			}
 		}
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)

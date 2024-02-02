@@ -42,7 +42,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		private void ChangeTheme()
 		{
-			if (XamlWindow.Current?.Content is FrameworkElement root)
+			if (XamlRoot?.Content is FrameworkElement root)
 			{
 				var theme = root.ActualTheme switch
 				{

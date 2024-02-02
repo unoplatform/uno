@@ -30,18 +30,21 @@ namespace UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 		private async void ShowTermsAndConditions(object sender, RoutedEventArgs args)
 		{
 			var dialog = new ContentDialog_TermsAndConditions();
+			dialog.XamlRoot = this.XamlRoot;
 			await dialog.ShowAsync();
 		}
 
 		private async void ShowSignIn(object sender, RoutedEventArgs args)
 		{
 			var dialog = new ContentDialog_SignIn();
+			dialog.XamlRoot = this.XamlRoot;
 			await dialog.ShowAsync();
 		}
 
 		private async void ShowRateApp(object sender, RoutedEventArgs args)
 		{
 			var dialog = new ContentDialogRateApp();
+			dialog.XamlRoot = this.XamlRoot;
 			await dialog.ShowAsync();
 		}
 	}

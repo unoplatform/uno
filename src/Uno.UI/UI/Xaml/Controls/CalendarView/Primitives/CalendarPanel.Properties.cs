@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		internal override Orientation? InternalOrientation => Orientation;
+		internal override Orientation? PhysicalOrientation => Orientation;
 
 		internal static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(
 			"Orientation", typeof(Orientation), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(Orientation)));

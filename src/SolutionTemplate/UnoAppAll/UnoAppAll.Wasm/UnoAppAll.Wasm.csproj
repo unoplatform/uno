@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <NoWarn>NU1701</NoWarn>
+	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <!--
+		IL Linking is disabled in Debug configuration.
+		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		-->
+    <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Assets\SplashScreen.png" />
+	</ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Include="..\UnoAppAll.Shared\**\*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WasmCSS\Fonts.css" />
+    <EmbeddedResource Include="WasmScripts\AppManifest.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <LinkerDescriptor Include="LinkerConfig.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+		This item group is required by the project template because of the
+		new SDK-Style project, otherwise some files are not added automatically.
+
+		You can safely remove this ItemGroup completely.
+		-->
+    <None Include="Program.cs" />
+    <None Include="LinkerConfig.xml" />
+    <None Include="wwwroot\web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
+    <PackageReference Include="Uno.UI.WebAssembly" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.UI.RemoteControl" Version="$(GITVERSION_SemVer)" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.20" />
+    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.20" />
+  </ItemGroup>
+  <Import Project="..\UnoAppAll.Shared\UnoAppAll.Shared.projitems" Label="Shared" />
+</Project>

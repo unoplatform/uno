@@ -50,7 +50,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 		private FileTypeChoiceViewModel _newFileTypeChoice = new FileTypeChoiceViewModel();
 		private FileTypeChoiceViewModel _selectedFileTypeChoice = null;
 
-		public FileSavePickerTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
+		public FileSavePickerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 #if __WASM__
 			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;

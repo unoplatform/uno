@@ -75,11 +75,6 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		/// <summary>
-		/// Is this view set to Window.Current.Content?
-		/// </summary>
-		internal bool IsWindowRoot { get; set; }
-
-		/// <summary>
 		/// Is this view the top of the managed visual tree
 		/// </summary>
 		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
@@ -762,7 +757,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var bounds = root.XamlRoot.Bounds;
+			var bounds = root.XamlRoot.VisualTree.VisibleBounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);

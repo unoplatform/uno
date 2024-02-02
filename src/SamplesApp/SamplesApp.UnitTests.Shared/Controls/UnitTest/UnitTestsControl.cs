@@ -94,15 +94,8 @@ namespace Uno.UI.Samples.Tests
 				}
 			);
 
-			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
 				Microsoft.UI.Xaml.Window.Current;
-
-			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
-#if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
-#else
-				false;
-#endif
 
 			DataContext = null;
 
@@ -118,6 +111,13 @@ namespace Uno.UI.Samples.Tests
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				XamlRoot.HostWindow is null;
+#else
+				false;
+#endif
 		}
 
 		private static void OverrideDebugProviderAsserts()
@@ -274,8 +274,12 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
-
-#if !WINAPPSDK
+#if HAS_UNO_WINUI
+				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
+				{
+					window.Title = message;
+				}
+#else
 				_applicationView.Title = message;
 #endif
 			}
@@ -752,13 +756,16 @@ namespace Uno.UI.Samples.Tests
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 
-					var cleanupActions = new List<Func<Task>>();
 					var sw = new Stopwatch();
 					var canRetry = true;
 
 					while (canRetry)
 					{
 						canRetry = false;
+						var cleanupActions = new List<Func<Task>>
+						{
+							CloseRemainingPopupsAsync
+						};
 
 						try
 						{
@@ -961,6 +968,21 @@ namespace Uno.UI.Samples.Tests
 					_ = ReportMessage("Stopped by user.", false);
 					return; // finish processing
 				}
+			}
+
+			async Task CloseRemainingPopupsAsync()
+			{
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+					if (popups.Count > 0)
+					{
+						foreach (var popup in popups)
+						{
+							popup.IsOpen = false;
+						}
+					}
+				});
 			}
 
 			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, string testName, bool runsOnUIThread)

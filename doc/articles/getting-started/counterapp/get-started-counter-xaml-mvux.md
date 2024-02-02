@@ -6,7 +6,7 @@ uid: Uno.Workshop.Counter.XAML.MVUX
 
 [Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX)  
 
-[!INCLUDE [Intro](include-intro.md)]
+[!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:
 
@@ -17,11 +17,11 @@ In this tutorial you will learn how to:
 
 To complete this tutorial you don't need any prior knowledge of the Uno Platform, XAML, or C#.
 
-[!INCLUDE [VS](include-create.md)]
+[!INCLUDE [VS](includes/include-create.md)]
 
-# [Visual Studio](#tab/vs)
+## [Visual Studio](#tab/vs)
 
-> [!NOTE] 
+> [!NOTE]
 > If you don't have the **Uno Platform Extension for Visual Studio** installed, follow [these instructions](xref:Uno.GetStarted.vs2022).
 
 - Launch **Visual Studio** and click on **Create new project** on the Start Window. Alternatively, if you're already in Visual Studio, click **New, Project** from the **File** menu.
@@ -46,15 +46,14 @@ Before completing the wizard, take a look through each of the sections and see w
 
 The template will create a new solution with a number of projects. The main project is a class library called **Counter** which contains the application code. The other projects are platform-specific heads that contain the platform-specific code required to run the application on each platform.
 
+## [Command Line](#tab/cli)
 
-# [Command Line](#tab/cli)
-
-> [!NOTE] 
-> If you don't have the Uno Platform dotnet new templates installed, follow [these instructions](xref:Uno.GetStarted.dotnet-new).
+> [!NOTE]
+> If you don't have the Uno Platform dotnet new templates installed, follow [dotnet new templates for Uno Platform](xref:Uno.GetStarted.dotnet-new).
 
 From the command line, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -preset blank -presentation mvux -markup xaml -o Counter
 ```
 
@@ -62,33 +61,31 @@ This will create a new folder called **Counter** containing the new application.
 
 If you want to discover all the options available in the **unoapp** template, run the following command:
 
-```
+```dotnetcli
 dotnet new unoapp -h
 ```
 
 Also, for more information on all the template options, see [Using the Uno Platform Template](xref:Uno.GettingStarted.UsingWizard).
 
-
 ---
 
-[!INCLUDE [Counter Solution](include-solution.md)]
+[!INCLUDE [Counter Solution](includes/include-solution.md)]
 
 ![Counter Solution](Assets/counter-solution-xaml.png)
 
-[!INCLUDE [Main Window](include-mainwindow.md)]
+[!INCLUDE [Main Window](includes/include-mainwindow.md)]
 
-[!INCLUDE [Main Page - XAML](include-mainpage-xaml.md)]
+[!INCLUDE [Main Page - XAML](includes/include-mainpage-xaml.md)]
 
-[!INCLUDE [Main Page - Layout](include-mainpage-layout.md)]
+[!INCLUDE [Main Page - Layout](includes/include-mainpage-layout.md)]
 
-[!INCLUDE [Main Page - Image](include-image-xaml.md)]
+[!INCLUDE [Main Page - Image](includes/include-image-xaml.md)]
 
-[!INCLUDE [Main Page - Change Layout](include-mainpage-change-layout.md)]
+[!INCLUDE [Main Page - Change Layout](includes/include-mainpage-change-layout.md)]
 
-[!INCLUDE [Main Page - Other Elements](include-elements-xaml.md)]
+[!INCLUDE [Main Page - Other Elements](includes/include-elements-xaml.md)]
 
-[!INCLUDE [View Model](include-mvux.md)]
-
+[!INCLUDE [View Model](includes/include-mvux.md)]
 
 ## Data Binding
 
@@ -111,6 +108,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
         <Run Text="Counter: " /><Run Text="{Binding Count}" />
     </TextBlock>
     ```
+
 - Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```xml
@@ -168,6 +166,6 @@ The final code for **MainPage.xaml** should look like this:
 </Page>
 ```
 
-[!INCLUDE [View Model](include-wrap.md)]
+[!INCLUDE [View Model](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Counter/XAML-MVUX).

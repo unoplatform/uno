@@ -1,5 +1,7 @@
 parameters:
   poolName: ''
+  UNO_UWP_BUILD: ''
+  XAML_FLAVOR_BUILD: ''
 
 jobs:
 - job: skia_package_build
@@ -7,16 +9,6 @@ jobs:
   container: nv-bionic-wasm
 
   pool: ${{ parameters.poolName }}
-
-  strategy:
-    matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-
-      WinUI:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -26,6 +18,9 @@ jobs:
 
     # We're building packages on linux, so we need to enable WPF support
     EnableWindowsTargeting: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
   - checkout: self

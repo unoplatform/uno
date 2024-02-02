@@ -5,21 +5,21 @@ uid: Uno.Features.WS
 # URI Launcher
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.System` namespace. For a full description of the feature and instructions on using it, consult the UWP documentation: https://learn.microsoft.com/en-us/uwp/api/windows.system
+> This article covers Uno-specific information for the `Windows.System` namespace. For a full description of the feature and instructions on using it, see [Windows.System Namespace](https://learn.microsoft.com/uwp/api/windows.system).
 
 * The `Windows.System.Launcher` class provides functionality for launching URIs and apps.
 
-## `LaunchUriAsync` 
+## `LaunchUriAsync`
 
-This API is supported on iOS, Android, WASM and macOS.
+This API is supported on iOS, Android, WASM, and macOS.
 
-On iOS, Android and macOS the `ms-settings:` special URI is supported. 
+On iOS, Android, and macOS the `ms-settings:` special URI is supported.
 
 ### Platform-specifics
 
 On iOS, launching the special URI opens the main page of system settings because deep-linking to specific settings is not available.
 
-For WASM, launching the special URI will work properly only when opening the website on Windows. The method will return `true` even if the user cancels the application launch, as there is currently no way to detect if the app was successfully launched.
+For WASM, launching the special URI will work properly only when opening the website on Windows. The method will return `true` even if the user cancels the application launch, as there is currently no way to detect if the app was successfully launched. When using `LaunchUriAsync` on WASM, note that there should be no await between user interaction (button click / command etc) and the Launcher invocation. Otherwise, the browser may ignore it due to security reasons.
 
 In case of Android, we support the following nested URIs.
 
@@ -62,14 +62,13 @@ In case of Android, we support the following nested URIs.
 | `ms-settings:regionlanguage` | `Settings.ActionLocaleSettings` |
 | `ms-settings:developers` | `Settings.ActionApplicationDevelopmentSettings` |
 
-
 In case of macOS, Uno supports the following nested URIs, mapped to Preference Panes (/System/Library/PreferencePanes)
 
 | Settings URI | macOS Mapping |
 |--------------|----------|
 | `ms-settings:signinoptions-launchfaceenrollment` | `TouchID` |
 | `ms-settings:launchfingerprintenrollment` | `TouchID` |
-| `ms-settings:signinoptions ` | `Accounts` |
+| `ms-settings:signinoptions` | `Accounts` |
 | `ms-settings:emailandaccounts` | `InternetAccounts` |
 | `ms-settings:appsforwebsites` | `Settings.ActionManageDefaultAppsSettings` |
 | `ms-settings:tabletmode` | `Expose` |
@@ -105,14 +104,14 @@ In case of macOS, Uno supports the following nested URIs, mapped to Preference P
 
 ### Exceptions
 
-- When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
-- When the method is called from non-UI thread `InvalidOperationException` is thrown.
+* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
+* When the method is called from a non-UI thread, `InvalidOperationException` is thrown.
 
 Exceptions are in line with UWP.
 
-## `QueryUriSupportAsync` 
+## `QueryUriSupportAsync`
 
-This API is supported on iOS, Android and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
+This API is supported on iOS, Android, and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
 
 ### Platform-specific requirements
 
@@ -150,6 +149,6 @@ Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSch
 
 ### Exceptions
 
-- When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.
+* When the `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.
 
 Exceptions are in line with UWP.

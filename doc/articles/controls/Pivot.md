@@ -2,18 +2,18 @@
 uid: Uno.Controls.Pivot
 ---
 
-# Pivot in Uno.UI
+# Pivot in Uno Platform
 
-## Pivot UWP Default Style
+## Pivot WinUI Default Style
 
-Uno provides a full support of the Pivot UWP style.
+Uno provides a full support of the Pivot WinUI style.
 The Pivot with the default style looks the same on all platforms, both statically and in motion.
-If you need to have a custom design, you can just update the Pivot UWP default style for your needs.
+If you need to have a custom design, you can just update the Pivot WinUI default style for your needs.
 
 ## Pivot Native Default Style
 
-With the 'NativeDefaultPivot' style on Android and iOS, however, the Pivot uses the native implementations of each platform.
-Of course you can still bind to its properties in XAML as you normally would.
+With the `NativeDefaultPivot` style on Android and iOS, the Pivot uses the native implementations of each platform.
+Of course, you can still bind to its properties in XAML as you normally would.
 This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others it's desirable to have a rich, customized UI.
 You may even want to mix and match different approaches for different screens in your app.
 
@@ -36,6 +36,7 @@ If you want to use the native Pivot style for either Android or iOS, you'll need
 ```
 
 #### NativePivotPresenter Android Style
+
 Note that this one is written in C# rather than XAML because of the `SlidingTabLayout` object.
 
 ```csharp

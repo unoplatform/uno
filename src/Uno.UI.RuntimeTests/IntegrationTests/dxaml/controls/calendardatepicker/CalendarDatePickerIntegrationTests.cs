@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !WINAPPSDK
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task CanOpenFlyoutByTapping()
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !WINAPPSDK
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task CanCloseFlyoutBySelectingADate()
@@ -535,7 +535,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-#if !__SKIA__ && !WINAPPSDK
+#if !HAS_INPUT_INJECTOR
 		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
 #endif
 		public async Task PressingDoesNotOpenMenuFlyout()

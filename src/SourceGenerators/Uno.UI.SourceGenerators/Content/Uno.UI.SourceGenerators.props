@@ -45,7 +45,7 @@
 							">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
-		<XamarinProjectType Condition="$(DefineConstants.Contains('IS_UNIT_TESTS'))">IS_UNIT_TESTS</XamarinProjectType>
+		<XamarinProjectType Condition="'$(_IsUnitTests)'=='true'">IS_UNIT_TESTS</XamarinProjectType>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
@@ -216,7 +216,8 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_macos" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_skia" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_netstdref" />
-
+		<!-- netstdref from class library -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'!='IS_UNIT_TESTS' AND ('$(TargetFramework)'=='net7.0' OR '$(TargetFramework)'=='net8.0')" Include="netstdref" />
 		<!--
 		A list of analyzer suppressions to include in every generated class.
 		This is required for roslyn analyzers that do not support the GeneratedCodeAttribute.

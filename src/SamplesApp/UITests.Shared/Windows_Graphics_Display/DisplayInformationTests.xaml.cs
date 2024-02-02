@@ -25,7 +25,7 @@ namespace UITests.Shared.Windows_Graphics_Display
 		private bool _dpiChangesOn = false;
 		private bool _orientationChangesOn = false;
 
-		public DisplayInformationTestsViewModel(CoreDispatcher coreDispatcher) : base(coreDispatcher)
+		public DisplayInformationTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
 			RefreshDisplayInformation();
 			Disposables.Add(Disposable.Create(() =>

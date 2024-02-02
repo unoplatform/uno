@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Core;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -366,7 +368,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var pointerPoint = args.GetCurrentPoint(this);
 				if (pointerPoint.Properties.IsLeftButtonPressed)
 				{
-					var isCtrlDown = (Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+					var isCtrlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 					if (isCtrlDown)
 					{
 						// Return here so the base class will not pick it up, but let it remain unhandled so someone else could handle it.

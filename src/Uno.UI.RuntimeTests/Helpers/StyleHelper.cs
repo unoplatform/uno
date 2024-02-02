@@ -107,7 +107,8 @@ namespace Uno.UI.RuntimeTests.Helpers
 #if !WINAPPSDK
 		private static void ResetIslandRootForeground()
 		{
-			if (TestServices.WindowHelper.IsXamlIsland && VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.Content) is { } control)
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly &&
+				VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement) is { } control)
 			{
 				// Ensure the root element's Foreground is set correctly
 				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);

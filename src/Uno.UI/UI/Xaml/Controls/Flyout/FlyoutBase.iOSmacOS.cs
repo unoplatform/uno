@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
 using Uno.UI;
+using Uno.UI.Xaml.Controls;
 #if __IOS__
 using UIKit;
 using View = UIKit.UIView;
@@ -11,31 +12,30 @@ using AppKit;
 using View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
-{
-	public partial class FlyoutBase
-	{
-		internal virtual View NativeTarget => null;
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-		partial void InitializePopupPanelPartial()
+public partial class FlyoutBase
+{
+	internal virtual View NativeTarget => null;
+
+	partial void InitializePopupPanelPartial()
+	{
+		_popup.PopupPanel = new FlyoutBasePopupPanel(this)
 		{
-			_popup.PopupPanel = new FlyoutBasePopupPanel(this)
-			{
-				Visibility = Visibility.Collapsed,
-				Background = SolidColorBrushHelper.Transparent,
+			Visibility = Visibility.Collapsed,
+			Background = SolidColorBrushHelper.Transparent,
 #if __IOS__
-				AutoresizingMask = UIViewAutoresizing.All,
+			AutoresizingMask = UIViewAutoresizing.All,
 #else
-				AutoresizingMask =
-					NSViewResizingMask.HeightSizable |
-					NSViewResizingMask.WidthSizable |
-					NSViewResizingMask.MinXMargin |
-					NSViewResizingMask.MaxXMargin |
-					NSViewResizingMask.MinYMargin |
-					NSViewResizingMask.MaxYMargin,
+			AutoresizingMask =
+				NSViewResizingMask.HeightSizable |
+				NSViewResizingMask.WidthSizable |
+				NSViewResizingMask.MinXMargin |
+				NSViewResizingMask.MaxXMargin |
+				NSViewResizingMask.MinYMargin |
+				NSViewResizingMask.MaxYMargin,
 #endif
-				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetMainWindowSize())
-			};
-		}
+			Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
+		};
 	}
 }

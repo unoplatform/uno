@@ -18,7 +18,7 @@ Throughout the how-to, there will be notes on recommended practices and tips tha
 
 > [!TIP]
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
-
+>
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
 
@@ -75,12 +75,11 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
 1. In the **Search** field, enter **System.Text.Json** and select **System.Text.Json**.
 
     > [!TIP]
-    > The **System.Text.Json** package provides functionality for serializing to and deserializing from JavaScript Object Notation (JSON). You can learn more about how to serialize and deserialize here: [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
+    > The **System.Text.Json** package provides functionality for serializing to and deserializing from JavaScript Object Notation (JSON). You can learn more about how to serialize and deserialize here: [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
 
 1. In the right pane of the **Manage Packages for Solution** page, select every project and click **Install**.
 
     ![Install System.Text.Json nuget package](Assets/how-to-webservice/json-install.png)
-
 
 1. To workaround a Visual studio issue regarding the XAML editor, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it.
 
@@ -277,7 +276,7 @@ The primary objective of this tutorial is to demonstrate how to implement a REST
     ```
 
     > [!TIP]
-    > This class is using the **JsonPropertyNameAttribute** from the **System.Text.Json** package to map the lowercase JSON property names to the [PascalCase](https://techterms.com/definition/pascalcase) convention used in C#. To learn more about **System.Text.Json**, you can review the documentation here - [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to).
+    > This class is using the **JsonPropertyNameAttribute** from the **System.Text.Json** package to map the lowercase JSON property names to the [PascalCase](https://techterms.com/definition/pascalcase) convention used in C#. To learn more about **System.Text.Json**, you can review the documentation here - [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-how-to).
 
 You have now created a simple data model that can be used to deserialize the JSON returned by the breed search API. Next, you will create a service that interacts with the web service API.
 
@@ -332,7 +331,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     Notice that the **_client** variable is declared as **static**. This means there will only be one instance of the **HttpClient** shared by every instance of **WebApiBase** as **HttpClient** is intended to be instantiated once and re-used throughout the life of an application.
 
     > [!TIP]
-    > You can review the Microsoft remarks on **HttpClient** here - [HttpClient Remarks](https://docs.microsoft.com/dotnet/api/system.net.http.httpclient#remarks).
+    > You can review the Microsoft remarks on **HttpClient** here - [HttpClient Remarks](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient#remarks).
 
 1. To initialize the static **_client** variable, locate the comment **// Insert static constructor below here** and replace it with the following code:
 
@@ -510,8 +509,8 @@ At this point, you have implemented a simple breed search service. Now, it is ti
 
 In this sample application, you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task, you will be creating the base view model that will be used in the following task to create the view model for the main page.
 
-    > [!TIP]
-    > If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
+> [!TIP]
+> If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
 
 1. To add a base view-model class, in the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 
@@ -560,7 +559,7 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
     The **Dispatcher** property is used later to ensure property updates are performed on the UI thread - an essential detail for updating controls in multi-tasking applications.
 
     > [!TIP]
-    > You can learn more about the UI Thread and multi-tasking here - [Keep the UI thread responsive](https://docs.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
+    > You can learn more about the UI Thread and multi-tasking here - [Keep the UI thread responsive](https://learn.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
 
 1. To add the method that will be used to set a property value and raise the property changed event, locate the comment **// Insert SetProperty below here** and replace it with the following code:
 
@@ -586,7 +585,7 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
     The **value** is then assigned to the **backingVariable** (updating the variable in the caller). The property changed event is raised (you will add that next) and a true value is returned.
 
     > [!TIP]
-    > You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
+    > You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://learn.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
 
 1. To add the method that will actually raise the property changed event, locate the comment **// Insert RaisePropertyChanged below here** and replace it with the following code:
 
@@ -603,7 +602,7 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
     This method uses a helper method (added next) to ensure the event is raised on the UI thread. As the code does not await this execution, the compiler would usually display a warning with the assumption that this is a mistake. As it is intentional, the code includes `#pragma` directives that temporarily disable that warning.
 
     > [!TIP]
-    > If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
+    > If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
 
 1. To add a helper method that will ensure a callback is executed on the UI thread, locate the comment **// Insert Dispatch below here** and replace it with the following code:
 
@@ -760,7 +759,7 @@ In this task, you will build the view-model that implements a simple breed searc
     The final variable, **_breedSearchApi**, holds a reference to an instance of the **BreedSearchApi** you created earlier.
 
     > [!TIP]
-    > You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://docs.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
+    > You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
 
 1. To add the properties that will be used in XAML bindings, locate the comment **// Insert properties below here** and replace it with the following code:
 
@@ -1675,7 +1674,6 @@ In this task, you will add the favorites capability to the Main view-model.
 
     You should notice the use of the `.ConfigureAwait(false)` code throughout to ensure the UI is not blocked. You will also notice the use of the **DispatchAsync** helper to ensure the **CollectionChanged** event raised by the insertion is raised on the UI thread so any bound control updates correctly.
 
-
 1. Finally, to add support for deleting a favorite, locate the **// Insert DeleteFavorite below here** comment and replace it with the following code:
 
     ```csharp
@@ -1833,16 +1831,16 @@ The full source code for this tutorial is available here - [Tutorial Source Code
   * [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples)
   * [Tutorial Source Code - TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
 * Microsoft Documentation
-  * [HttpClient class](https://docs.microsoft.com/dotnet/api/system.net.http.httpclient)
-  * [REST Client tutorial](https://docs.microsoft.com/dotnet/csharp/tutorials/console-webapiclient)
-  * [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
-  * [HttpClient Remarks](https://docs.microsoft.com/dotnet/api/system.net.http.httpclient#remarks)
+  * [HttpClient class](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient)
+  * [REST Client tutorial](https://learn.microsoft.com/dotnet/csharp/tutorials/console-webapiclient)
+  * [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://learn.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
+  * [HttpClient Remarks](https://learn.microsoft.com/dotnet/api/system.net.http.httpclient#remarks)
   * [HttpClient - Error handling, a test driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/)
-  * [The Model-View-ViewModel Pattern](https://docs.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)
-  * [Keep the UI thread responsive](https://docs.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
-  * [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information)
-  * [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
-  * [ObservableCollection<T> Class](https://docs.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
+  * [The Model-View-ViewModel Pattern](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm)
+  * [Keep the UI thread responsive](https://learn.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
+  * [Reserved attributes: Determine caller information](https://learn.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information)
+  * [Lambda expressions](https://learn.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
+  * [ObservableCollection<T> Class](https://learn.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
 * The Cat API Documentation
   * [Key sign-up](https://thecatapi.com/signup)
   * [API documentation](https://docs.thecatapi.com/)

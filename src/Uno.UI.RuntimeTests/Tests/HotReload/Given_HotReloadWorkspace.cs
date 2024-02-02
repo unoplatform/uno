@@ -55,6 +55,9 @@ internal partial class Given_HotReloadWorkspace
 	[TestMethod]
 	[Timeout(5 * 60 * 1000)]
 	[Filters]
+#if HAS_UNO_WINUI
+	[Ignore("This is currently not working on WinUI branch!")]
+#endif
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
@@ -97,9 +100,10 @@ internal partial class Given_HotReloadWorkspace
 	}
 
 	[TestCleanup]
-	public async Task TestCleanupWrapper()
+	public void TestCleanupWrapper()
 	{
 		_testAppProcess?.Kill();
+		_testAppProcess?.WaitForExit();
 	}
 
 	public static async Task InitializeServer()

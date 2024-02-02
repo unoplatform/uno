@@ -15,7 +15,6 @@ public partial class Application
 {
 	partial void InitializePartial()
 	{
-		Window.Current.ToString();
 		PermissionsHelper.Initialize();
 	}
 

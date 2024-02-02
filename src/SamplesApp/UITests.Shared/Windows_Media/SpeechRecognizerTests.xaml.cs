@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Private.Infrastructure;
 
 namespace UITests.Windows_Media
 {
@@ -44,7 +45,7 @@ namespace UITests.Windows_Media
 
 		private string _lastResult = "";
 
-		public SpeechRecognizerTestsViewModel(CoreDispatcher dispatcher)
+		public SpeechRecognizerTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
 		{
 			_speechRecognizer.HypothesisGenerated += HypothesisGenerated;
@@ -76,7 +77,7 @@ namespace UITests.Windows_Media
 
 		private async void HypothesisGenerated(SpeechRecognizer sender, SpeechRecognitionHypothesisGeneratedEventArgs args)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () =>
 			{
 				LastResult = args.Hypothesis.Text;
 			});

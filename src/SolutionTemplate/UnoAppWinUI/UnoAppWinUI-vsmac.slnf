@@ -1,0 +1,16 @@
+{
+  "solution": {
+    "path": "UnoAppWinUI.sln",
+    "projects": [
+		"UnoAppWinUI\\UnoAppWinUI.csproj",
+
+		"UnoAppWinUI.Mobile\\UnoAppWinUI.Mobile.csproj",
+
+		"UnoAppWinUI.Wasm\\UnoAppWinUI.Wasm.csproj",
+
+		"UnoAppWinUI.Skia.Gtk\\UnoAppWinUI.Skia.Gtk.csproj",
+
+		"UnoAppWinUI.Skia.Gtk\\UnoAppWinUI.Skia.Gtk.csproj",
+    ]
+  }
+}

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
@@ -31,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async void When_ResourceDictionary_DP()
+		public async Task When_ResourceDictionary_DP()
 		{
 			var SUT = new When_ResourceDictionary_DP();
 			await UITestHelper.Load(SUT);

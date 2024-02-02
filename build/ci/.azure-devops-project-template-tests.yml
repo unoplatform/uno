@@ -4,53 +4,6 @@ parameters:
   vmImageLinux: ''
 
 jobs:
-- job: templates_package_build
-  displayName: 'Build Template Package'
-
-  pool:
-    vmImage: ${{ parameters.vmImageWindows }}
-
-  variables:
-    CombinedConfiguration: Release|Any CPU
-    CI_Build: true
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    UNO_UWP_BUILD: true
-    XAML_FLAVOR_BUILD: UWP
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - template: templates/download-winui-converted-tree.yml
-
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
-  - template: templates/gitversion.yml
-  - template: templates/dotnet-install.yml
-
-  # This task is required to run in separately to avoid hitting targets file
-  # caching issues with msbuild 17.3 or later
-  - powershell: |
-      Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /nr:false /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-prepare-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Adjust versions
-
-  - powershell: |
-      Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildTemplatePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building Template Packages
-
-  - template: templates/copy-package-assets.yml
-
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
 
 - job: Dotnet_Template_Tests_NetCoreMobile
   displayName: 'Run .NET Mobile Templates Tests'
@@ -58,7 +11,6 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   dependsOn:
-    - templates_package_build
     - Generate_Packages
 
   steps:
@@ -66,22 +18,12 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: private-templates
-
   - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-windows.yml
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
-
-  - script: copy $(System.ArtifactsDirectory)\private-templates\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
-    displayName: Copy Private Artifacts to PackageCache
-
-  - script: dotnet new -i $(System.ArtifactsDirectory)\private-templates\Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
 
   - powershell: build\test-scripts\run-netcore-mobile-template-tests.ps1
     displayName: Run Project Templates Tests
@@ -92,7 +34,6 @@ jobs:
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
   dependsOn:
-    - templates_package_build
     - Generate_Packages
 
   pool: ${{ parameters.vmPoolLinux }}
@@ -104,22 +45,12 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: private-templates
-
   - template: templates/gitversion.yml
   
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: cp $(System.ArtifactsDirectory)/private-templates/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
-    displayName: Copy Private Artifacts to PackageCache
-
   - template: templates/dotnet-install.yml
-
-  - script: dotnet new -i $(Build.SourcesDirectory)/src/PackageCache/Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
 
   - pwsh: build/test-scripts/run-net7-template-linux.ps1
     displayName: Run Project Templates Tests

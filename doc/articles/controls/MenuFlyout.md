@@ -6,7 +6,7 @@ uid: Uno.Controls.MenuFlyout
 
 MenuFlyout is implemented to provide support for `ContextMenu` and `MenuBar` features.
 
-## Platform specific behavior
+## Platform-specific behavior
 
 On iOS and Android, the flyout can either be displayed using native popup, or Uno managed popups.
 
@@ -15,6 +15,7 @@ The default behavior of the MenuFlyout is to follow the value `FeatureConfigurat
 ### iOS (native)
 
 #### Destructive action
+
 > If an alert button results in a destructive action, such as deleting content, set the button’s style to Destructive so that it gets appropriate formatting by the system.
 
 ```xml
@@ -25,6 +26,7 @@ xmlns:toolkit="using:Uno.UI.Toolkit"
 ```
 
 #### Cancel button text
+
 ```xml
 xmlns:toolkit="using:Uno.UI.Toolkit"
 
