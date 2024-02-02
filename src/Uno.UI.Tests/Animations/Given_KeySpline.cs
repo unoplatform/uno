@@ -31,8 +31,8 @@ namespace Uno.UI.Tests.Animations
 			var uno = new Microsoft.UI.Xaml.Media.Animation.KeySpline() { ControlPoint1 = new Point(x1, y1), ControlPoint2 = new Point(x2, y2) };
 			var unoResults = Compute(uno.GetSplineProgress);
 
-			string r1String = string.Join(" ", originalResults.Select(x => x.ToString(".000")));
-			string r2String = string.Join(" ", unoResults.Select(x => x.ToString(".000")));
+			string r1String = string.Join(' ', originalResults.Select(x => x.ToString(".000")));
+			string r2String = string.Join(' ', unoResults.Select(x => x.ToString(".000")));
 			Console.WriteLine($"[{x1};{y1}]/[{x2};{y2}]");
 			Console.WriteLine($"{r1String}");
 			Console.WriteLine($"{r2String}");

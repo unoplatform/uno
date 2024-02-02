@@ -78,7 +78,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 							.Concat("Path=" + encodedPath)
 							.Concat(parts.Skip(endIndex));
 
-						return string.Join(",", finalParts);
+						return string.Join(',', finalParts);
 					}
 					else
 					{
@@ -90,7 +90,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					// First parameter is unnamed, it's the path.
 					GetEncodedPath(parts, 0, out var endIndex, out var encodedPath);
 
-					var remainder = string.Join(",", parts.Skip(endIndex)) switch
+					var remainder = string.Join(',', parts.Skip(endIndex)) switch
 					{
 						var r when r.Length > 0 => "," + r,
 						_ => ""
@@ -108,7 +108,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		private static void GetEncodedPath(string[] parts, int startIndex, out int end, out string encodedPath)
 		{
 			end = GetFunctionRange(parts, startIndex) + 1;
-			var sourceString = string.Join(",", parts.Skip(startIndex).Take(end));
+			var sourceString = string.Join(',', parts.Skip(startIndex).Take(end));
 			var pathBytes = Encoding.Unicode.GetBytes(sourceString);
 			encodedPath = Convert.ToBase64String(pathBytes).Replace("=", "_");
 		}

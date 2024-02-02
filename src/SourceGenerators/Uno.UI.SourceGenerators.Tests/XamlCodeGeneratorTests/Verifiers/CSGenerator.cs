@@ -280,7 +280,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 
 				if (unoTarget is null)
 				{
-					throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
+					throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(',', availableTargets)}");
 				}
 
 				return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")

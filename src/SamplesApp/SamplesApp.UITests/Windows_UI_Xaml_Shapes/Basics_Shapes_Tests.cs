@@ -99,11 +99,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			// To improve performance, we run all test for a given stretch at once.
 			var testGroups = _tests
 				.Where(t => t.StartsWith(shapeName))
-				.GroupBy(t => string.Join("_", t.Split(new[] { '_' }, 3, StringSplitOptions.RemoveEmptyEntries).Take(2)));
+				.GroupBy(t => string.Join('_', t.Split(new[] { '_' }, 3, StringSplitOptions.RemoveEmptyEntries).Take(2)));
 
 			foreach (var testGroup in testGroups)
 			{
-				ctrl.SetDependencyPropertyValue("RunTest", string.Join(";", testGroup));
+				ctrl.SetDependencyPropertyValue("RunTest", string.Join(';', testGroup));
 				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")), timeout: TimeSpan.FromMinutes(1));
 				var testResultsRaw = ctrl.GetDependencyPropertyValue<string>("TestResult");
 

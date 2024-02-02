@@ -62,7 +62,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			var pool = PooledStringBuilder.GetInstance();
 			var builder = pool.Builder;
 			builder.AppendLine($"private static bool TryGetInstance_xBind_{_xBindCounter}({_contextType} {_contextName}, out object o)");
-			builder.AppendLine("{");
+			builder.AppendLine('{');
 			builder.AppendLine("	o = null;");
 
 			if (ExpressionAfterLastNullAccess is not null)
@@ -135,7 +135,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				builder.AppendLine("	return true;");
 			}
 
-			builder.AppendLine("}");
+			builder.AppendLine('}');
 			return pool.ToStringAndFree();
 		}
 
@@ -144,7 +144,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			var pool = PooledStringBuilder.GetInstance();
 			var builder = pool.Builder;
 			builder.AppendLine($"private static bool TrySetInstance_xBind_{_xBindCounter}({_contextType} {_contextName}, object __value)");
-			builder.AppendLine("{");
+			builder.AppendLine('{');
 
 			if (ExpressionAfterLastNullAccess is not null)
 			{
@@ -166,7 +166,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			builder.AppendLine("	return true;");
 
-			builder.AppendLine("}");
+			builder.AppendLine('}');
 			return pool.ToStringAndFree();
 		}
 	}

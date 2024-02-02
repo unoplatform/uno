@@ -129,7 +129,7 @@ namespace Uno.UI.Foldable
 
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
-								this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", spanningRects)}");
+								this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(';', spanningRects)}");
 							}
 
 							_previousMode.result = spanningRects;
@@ -157,7 +157,7 @@ namespace Uno.UI.Foldable
 
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
-								this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", spanningRects)}");
+								this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(';', spanningRects)}");
 							}
 
 							_previousMode.result = spanningRects;

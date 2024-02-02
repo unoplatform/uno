@@ -275,7 +275,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 				items.RemoveAt(movedItem - 1);
 				items.Insert(expectedTo, _items[movedItem - 1]);
 
-				return string.Join(";", items);
+				return string.Join(';', items);
 			}
 		}
 	}

@@ -5369,13 +5369,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static string ReplaceWhitespaceByCommas(string memberValue)
 		{
 			// empty delimiter array = whitespace in string.Split
-			return string.Join(",", memberValue.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries));
+			return string.Join(',', memberValue.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries));
 		}
 
 		private static string AppendFloatSuffix(string memberValue)
 		{
 			return memberValue.Split(',')
-					.Select(s => s.Contains(".") ? s + "f" : s)
+					.Select(s => s.Contains('.') ? s + "f" : s)
 					.Aggregate((s1, s2) => "{0},{1}".InvariantCultureFormat(s1, s2));
 		}
 

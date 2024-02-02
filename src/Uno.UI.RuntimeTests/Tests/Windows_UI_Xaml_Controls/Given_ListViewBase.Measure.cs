@@ -285,7 +285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				"Mauris pharetra quam lacinia purus interdum, vitae suscipit lorem lobortis.",
 			};
 			var source = Enumerable.Range(0, 100)
-				.Select(x => string.Join(" ", lines.Take(2 * (2 + x % 3)).Prepend($"#{x}:")))
+				.Select(x => string.Join(' ', lines.Take(2 * (2 + x % 3)).Prepend($"#{x}:")))
 				.ToArray();
 
 			var SUT = new ListView
@@ -550,7 +550,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				for (int i = 0; i < count; i++)
 				{
 					sb.Append(GetRandomWord(random));
-					sb.Append(" ");
+					sb.Append(' ');
 				}
 				sb.Remove(sb.Length - 1, 1);
 				return sb.ToString();

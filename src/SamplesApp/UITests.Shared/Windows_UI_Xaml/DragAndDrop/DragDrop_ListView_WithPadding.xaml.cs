@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			Dump();
 
 			void Dump()
-				=> Result.Text = string.Join(";", source);
+				=> Result.Text = string.Join(';', source);
 		}
 	}
 }

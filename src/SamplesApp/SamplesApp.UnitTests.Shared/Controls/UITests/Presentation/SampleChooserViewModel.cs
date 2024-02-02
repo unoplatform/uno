@@ -1042,7 +1042,7 @@ namespace SampleControl.Presentation
 					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
 
-			return string.Join(";", q.Distinct());
+			return string.Join(';', q.Distinct());
 		}
 
 		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)

@@ -133,7 +133,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			var linkerPath = Path.Combine(ILLinkerPath, "illink.dll");
 
-			var referencedAssemblies = string.Join(" ", _referencedAssemblies
+			var referencedAssemblies = string.Join(' ', _referencedAssemblies
 				// Java interop does not link properly when included in our own
 				// set of parameters provided to the linker.
 				// As we're skipping unresolved symbols already, and that
@@ -262,7 +262,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 			var hints = FindAvailableLinkerHints(assemblySearchList);
 
-			var output = string.Join(" ", hints.Select(h => $"--feature {h} false"));
+			var output = string.Join(' ', hints.Select(h => $"--feature {h} false"));
 
 			assemblySearchList.ForEach(a => a.Dispose());
 

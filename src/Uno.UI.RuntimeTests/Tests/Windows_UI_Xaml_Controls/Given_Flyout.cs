@@ -33,7 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_Flyout
 	{
-		private string GetAllIsOpens(FlyoutBase flyout1) => string.Join(" ", VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Select(p => p.IsOpen));
+		private string GetAllIsOpens(FlyoutBase flyout1) => string.Join(' ', VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Select(p => p.IsOpen));
 
 		[TestMethod]
 		[RunsOnUIThread]

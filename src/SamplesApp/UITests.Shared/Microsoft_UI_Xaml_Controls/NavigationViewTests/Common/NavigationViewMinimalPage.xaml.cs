@@ -17,7 +17,7 @@ namespace MUXControlsTestApp
 		private void GetNavViewActiveVisualStates_Click(object sender, RoutedEventArgs e)
 		{
 			var visualstates = Utilities.VisualStateHelper.GetCurrentVisualStateName(NavView);
-			NavViewActiveVisualStatesResult.Text = string.Join(",", visualstates);
+			NavViewActiveVisualStatesResult.Text = string.Join(',', visualstates);
 		}
 	}
 }

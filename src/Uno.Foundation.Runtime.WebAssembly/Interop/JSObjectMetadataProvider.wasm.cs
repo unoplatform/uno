@@ -113,7 +113,7 @@ namespace Uno.Foundation.Interop
 
 						this.Log().Warn(
 							$"The following methods have multiple overloads, " +
-							$"so they cannot be called directly: {string.Join(",", reportMethods)}");
+							$"so they cannot be called directly: {string.Join(',', reportMethods)}");
 					}
 				}
 

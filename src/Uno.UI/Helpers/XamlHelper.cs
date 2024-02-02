@@ -75,7 +75,7 @@ internal static partial class XamlHelper
 	/// <param name="xmlnses">Xmlns to inject; use string.Empty for the default xmlns' key</param>
 	public static T LoadXaml<T>(string xaml, Dictionary<string, string> xmlnses) where T : class
 	{
-		var injection = " " + string.Join(" ", xmlnses
+		var injection = " " + string.Join(' ', xmlnses
 			.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}=\"{x.Value}\"")
 		);
 

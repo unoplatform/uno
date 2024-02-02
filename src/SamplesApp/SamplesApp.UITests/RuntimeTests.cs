@@ -101,7 +101,7 @@ namespace SamplesApp.UITests.Runtime
 					.ToArray();
 				var details = GetValue(nameof(failedTestsDetails), failedTestsDetails);
 
-				Assert.Fail($"{tests.Length} unit test(s) failed (count={count}).\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
+				Assert.Fail($"{tests.Length} unit test(s) failed (count={count}).\n\tFailing Tests:\n{string.Concat(tests)}\n\n---\n\tDetails:\n{details}");
 			}
 
 			TakeScreenshot("Runtime Tests Results", ignoreInSnapshotCompare: true);

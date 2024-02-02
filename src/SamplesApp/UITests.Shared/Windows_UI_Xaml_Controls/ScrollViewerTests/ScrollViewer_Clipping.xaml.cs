@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		private void OnClick(object sender, object args)
 		{
-			myContent.Text = string.Join(" ", Enumerable.Range(0, 1000).Select(i => $"String {i}"));
+			myContent.Text = string.Join(' ', Enumerable.Range(0, 1000).Select(i => $"String {i}"));
 		}
 	}
 }

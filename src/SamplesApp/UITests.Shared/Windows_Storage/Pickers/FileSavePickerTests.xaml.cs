@@ -295,7 +295,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 
 		public ObservableCollection<string> Extensions { get; } = new ObservableCollection<string>();
 
-		public string Description => $"{Name} ({string.Join(",", Extensions)})";
+		public string Description => $"{Name} ({string.Join(',', Extensions)})";
 
 		public void RaiseDescriptionChanged()
 		{

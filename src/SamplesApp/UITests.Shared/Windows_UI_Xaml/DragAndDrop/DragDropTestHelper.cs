@@ -64,6 +64,6 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			=> uiElt is null ? "--null--" : (uiElt as FrameworkElement)?.Name ?? uiElt.GetType().Name;
 
 		private static string GetData(DataPackageView data)
-			=> $"<{string.Join("|", data.AvailableFormats)}>";
+			=> $"<{string.Join('|', data.AvailableFormats)}>";
 	}
 }

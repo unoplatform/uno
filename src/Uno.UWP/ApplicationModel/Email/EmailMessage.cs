@@ -50,17 +50,17 @@ namespace Windows.ApplicationModel.Email
 
 			if (To.Count > 0)
 			{
-				uriBuilder.Append("to=" + Uri.EscapeDataString(string.Join(",", To.Select(m => m.Address))));
+				uriBuilder.Append("to=" + Uri.EscapeDataString(string.Join(',', To.Select(m => m.Address))));
 				uriBuilder.Append('&');
 			}
 			if (CC.Count > 0)
 			{
-				uriBuilder.Append("cc=" + Uri.EscapeDataString(string.Join(",", CC.Select(m => m.Address))));
+				uriBuilder.Append("cc=" + Uri.EscapeDataString(string.Join(',', CC.Select(m => m.Address))));
 				uriBuilder.Append('&');
 			}
 			if (Bcc.Count > 0)
 			{
-				uriBuilder.Append("bcc=" + Uri.EscapeDataString(string.Join(",", Bcc.Select(m => m.Address))));
+				uriBuilder.Append("bcc=" + Uri.EscapeDataString(string.Join(',', Bcc.Select(m => m.Address))));
 				uriBuilder.Append('&');
 			}
 			if (!string.IsNullOrEmpty(Body))

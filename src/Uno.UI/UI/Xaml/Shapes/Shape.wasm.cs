@@ -188,7 +188,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 			else
 			{
-				var str = string.Join(",", strokeDashArray.Select(d => $"{d.ToStringInvariant()}px"));
+				var str = string.Join(',', strokeDashArray.Select(d => $"{d.ToStringInvariant()}px"));
 				svgElement.SetStyle("stroke-dasharray", str);
 			}
 		}

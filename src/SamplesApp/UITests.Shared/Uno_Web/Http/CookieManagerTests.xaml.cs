@@ -104,7 +104,7 @@ namespace UITests.Uno_Web.Http
 		private void GetCookies()
 		{
 			var cookies = CookieManager.GetDefault().GetCookies();
-			CookiesText = string.Join(",", cookies.Select(cookie => $"{cookie.Name}:{cookie.Value}"));
+			CookiesText = string.Join(',', cookies.Select(cookie => $"{cookie.Name}:{cookie.Value}"));
 		}
 
 		public ICommand DeleteCommand => GetOrCreateCommand(DeleteCookie);

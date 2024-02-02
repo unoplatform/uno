@@ -70,7 +70,7 @@ public partial class WebView : Control, IWebView
 		var argument = string.Empty;
 		if (arguments != null && arguments.Length > 0)
 		{
-			argument = string.Join(",", arguments);
+			argument = string.Join(',', arguments);
 		}
 
 		return argument;

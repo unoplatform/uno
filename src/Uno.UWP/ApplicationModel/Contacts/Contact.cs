@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Contacts
 			{
 				if (string.IsNullOrEmpty(DisplayNameOverride))
 				{
-					return string.Join(" ", new[] { HonorificNamePrefix, FirstName, MiddleName, LastName, HonorificNameSuffix }.Where(n => !string.IsNullOrEmpty(n)));
+					return string.Join(' ', new[] { HonorificNamePrefix, FirstName, MiddleName, LastName, HonorificNameSuffix }.Where(n => !string.IsNullOrEmpty(n)));
 				}
 				return DisplayNameOverride;
 			}
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Contacts
 			{
 				if (string.IsNullOrEmpty(DisplayNameOverride))
 				{
-					return string.Join(" ", new[] { HonorificNamePrefix, FirstName, LastName, HonorificNameSuffix }.Where(n => !string.IsNullOrEmpty(n)));
+					return string.Join(' ', new[] { HonorificNamePrefix, FirstName, LastName, HonorificNameSuffix }.Where(n => !string.IsNullOrEmpty(n)));
 				}
 				return DisplayNameOverride;
 			}

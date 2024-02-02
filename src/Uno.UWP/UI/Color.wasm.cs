@@ -37,7 +37,7 @@ namespace Windows.UI
 
 			if (A != 255)
 			{
-				// Include alpha chanel only when required.
+				// Include alpha channel only when required.
 				builder.Append(A.ToString("X2", CultureInfo.InvariantCulture));
 			}
 

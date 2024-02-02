@@ -63,7 +63,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 			if (filterIndex == -1)
 			{
-				var fullFilter = string.Join(";", _picker.FileTypeFilter.Select(fileType => $"*{fileType}"));
+				var fullFilter = string.Join(';', _picker.FileTypeFilter.Select(fileType => $"*{fileType}"));
 				filterBuilder.Append($"|All|{fullFilter}");
 				filterIndex = fileTypeFilterCount + 1;
 			}

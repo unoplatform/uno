@@ -40,7 +40,7 @@ partial class StorageFileHelper
 			//Replace original filename in our array by our normalized resource filename.
 			nameArray[nameArray.Length - 1] = normalizedResName;
 			//Join our normalized elements without extension
-			normalizedResName = string.Join("_", nameArray);
+			normalizedResName = string.Join('_', nameArray);
 		}
 
 		//Look in drawable resources***

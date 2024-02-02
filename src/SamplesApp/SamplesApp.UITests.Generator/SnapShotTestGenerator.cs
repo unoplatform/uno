@@ -216,7 +216,7 @@ namespace Uno.Samples.UITest.Generator
 		}
 
 		private static object Sanitize(string category)
-			=> string.Join("", category.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
+			=> string.Concat(category.Select(c => char.IsLetterOrDigit(c) ? c : '_'));
 
 		private static Compilation GetCompilation(GeneratorExecutionContext context)
 		{

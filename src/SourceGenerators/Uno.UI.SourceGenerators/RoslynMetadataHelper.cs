@@ -41,7 +41,7 @@ namespace Uno.Roslyn
 		{
 			if (symbol is IErrorTypeSymbol errorTypeSymbol)
 			{
-				var candidates = string.Join(";", errorTypeSymbol.CandidateSymbols);
+				var candidates = string.Join(';', errorTypeSymbol.CandidateSymbols);
 				var location = symbol.Locations.FirstOrDefault()?.ToString() ?? "Unknown";
 
 				throw new InvalidOperationException(

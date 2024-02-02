@@ -194,7 +194,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					}}
 					return result;
 				}})();";
-			var expectedIds = ";" + string.Join(";", pnl.Children.Select(c => c.HtmlId));
+			var expectedIds = ";" + string.Join(';', pnl.Children.Select(c => c.HtmlId));
 
 			var ids = global::Uno.Foundation.WebAssemblyRuntime.InvokeJS(js);
 

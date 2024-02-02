@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Media
 				}
 			}
 
-			return string.Join(" ", GenerateDataParts().Select(FormattableExtensions.ToStringInvariant));
+			return string.Join(' ', GenerateDataParts().Select(FormattableExtensions.ToStringInvariant));
 		}
 
 		internal override SvgElement GetSvgElement() => _svgElement;

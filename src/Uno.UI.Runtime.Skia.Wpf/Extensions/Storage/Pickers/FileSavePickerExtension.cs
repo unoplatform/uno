@@ -43,7 +43,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 				filterBuilder.Append(choice.Key);
 				filterBuilder.Append('|');
-				filterBuilder.Append(string.Join(";", choice.Value.Select(item => $"*{item}")));
+				filterBuilder.Append(string.Join(';', choice.Value.Select(item => $"*{item}")));
 			}
 
 			saveFileDialog.Filter = filterBuilder.ToString();

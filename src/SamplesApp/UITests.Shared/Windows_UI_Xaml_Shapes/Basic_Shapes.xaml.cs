@@ -298,7 +298,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			foreach (var shape in _shapes)
 				foreach (var alterators in alteratorsMap)
 				{
-					var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
+					var fileName = shape.Name + "_" + string.Join('_', alterators.Select(a => a.Id)) + ".png";
 					var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
 					var loaded = new TaskCompletionSource<object>();
 					grid.SizeChanged += (snd, e) =>

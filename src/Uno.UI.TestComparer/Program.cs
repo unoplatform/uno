@@ -196,7 +196,7 @@ namespace Umbrella.UI.TestComparer
 				comment.AppendLine($"The [build {currentBuild}](https://dev.azure.com/uno-platform/Uno%20Platform/_build/results?buildId={currentBuild}) found UI Test snapshots differences: {summary}\r\n");
 				comment.AppendLine("<details>");
 				comment.AppendLine($"<summary>Details</summary>\r\n");
-				comment.AppendLine("");
+				comment.AppendLine();
 
 				foreach (var result in results)
 				{
@@ -209,7 +209,7 @@ namespace Umbrella.UI.TestComparer
 
 						comment.AppendLine("  <details>");
 						comment.AppendLine("  <summary>🚨🚨 Comparison Details (first 20) 🚨🚨</summary>");
-						comment.AppendLine("");
+						comment.AppendLine();
 
 						foreach (var test in lastChangedTests.Take(20))
 						{
@@ -217,7 +217,7 @@ namespace Umbrella.UI.TestComparer
 						}
 
 						comment.AppendLine("  </details>");
-						comment.AppendLine("");
+						comment.AppendLine();
 					}
 				}
 
