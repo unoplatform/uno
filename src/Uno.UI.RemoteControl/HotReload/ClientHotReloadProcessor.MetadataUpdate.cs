@@ -172,6 +172,11 @@ partial class ClientHotReloadProcessor
 				}
 			}
 
+			// Wait for the tree to be layouted before restoring state
+			var tcs = new TaskCompletionSource();
+			CurrentWindow?.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => tcs.TrySetResult());
+			await tcs.Task;
+
 			isCapturingState = false;
 			// Forced iteration again to restore all state after doing ui update
 			_ = await treeIterator.ToArrayAsync();

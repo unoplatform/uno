@@ -123,12 +123,16 @@ internal class ProcessHelpers
 			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Debug(logMessage);
+			Console.Write("==> ");
+			Console.WriteLine(logMessage);
 		};
 		process.ErrorDataReceived += (sender, args) =>
 		{
 			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Error(logMessage);
+			Console.Error.Write("==> ");
+			Console.Error.WriteLine(logMessage);
 		};
 
 		process.StartInfo = pi;
