@@ -13,8 +13,7 @@ namespace UITests.Shared.Lottie
 		{
 			this.InitializeComponent();
 
-			stretch.ItemsSource = Enum.GetValues(typeof(Stretch))
-				.Cast<Stretch>()
+			stretch.ItemsSource = Enum.GetValues<Stretch>()
 				.Select(x => x.ToString());
 			stretch.SelectedIndex = 2;
 
