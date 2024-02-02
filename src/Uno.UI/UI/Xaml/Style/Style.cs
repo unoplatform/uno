@@ -152,9 +152,9 @@ namespace Microsoft.UI.Xaml
 						{
 							// This empty catch is to keep parity with WinUI's IGNOREHR in
 							// https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
-							if (this.Log().IsEnabled(LogLevel.Warning))
+							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
-								this.Log().LogWarning($"An exception occurred while applying style setter. {ex}");
+								this.Log().LogDebug($"An exception occurred while applying style setter. {ex}");
 							}
 						}
 					}
