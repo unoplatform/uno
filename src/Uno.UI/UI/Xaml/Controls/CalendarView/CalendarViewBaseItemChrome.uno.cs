@@ -4,6 +4,7 @@ using System.Text;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -65,6 +66,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
+#if __SKIA__
+			_borderRenderer ??= new BorderLayerRenderer(this);
+
+			// DrawBackground			=> General background for all items
+			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
+			// DrawDensityBar			=> Not supported yet
+			// DrawFocusBorder			=> Not supported yet
+			// OR DrawBorder			=> Draws the border ...
+			// DrawInnerBorder			=> The today / selected state
+
+			_borderRenderer.Update();
+#else
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
 			// DrawDensityBar			=> Not supported yet
@@ -112,8 +125,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
 			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
+#endif
 #endif
 		}
 

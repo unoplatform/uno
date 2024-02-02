@@ -5,33 +5,24 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
-		private void InitializeBorder()
+		public Page()
 		{
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
+			_borderRenderer = new BorderLayerRenderer(this);
 		}
 
 		private void UpdateBorder()
 		{
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					InternalBackgroundSizing,
-					Thickness.Empty,
-					null,
-					CornerRadius.None,
-					null
-				);
+				_borderRenderer.Update();
 			}
 		}
 	}

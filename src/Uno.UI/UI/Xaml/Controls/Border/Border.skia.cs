@@ -14,19 +14,18 @@ using Microsoft.UI.Composition;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
-
 		public Border()
 		{
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
+			BorderRenderer = new BorderLayerRenderer(this);
 		}
+
+		internal BorderLayerRenderer BorderRenderer { get; }
 
 		partial void OnChildChangedPartial(View previousValue, View newValue)
 		{
@@ -42,15 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Visual != null)
 			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
+				BorderRenderer.Update();
 			}
 		}
 

@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Rect = Windows.Foundation.Rect;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Uno.UI.Xaml.Controls
 {
 	partial class BorderLayerRenderer
 	{

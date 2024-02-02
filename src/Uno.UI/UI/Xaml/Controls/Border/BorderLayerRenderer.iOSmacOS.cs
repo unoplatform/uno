@@ -31,7 +31,7 @@ using _Image = AppKit.NSImage;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Uno.UI.Xaml.Controls
 {
 	partial class BorderLayerRenderer
 	{

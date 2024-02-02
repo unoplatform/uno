@@ -13,7 +13,7 @@ using Uno.UI.Helpers;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Uno.UI.Xaml.Controls
 {
 	partial class BorderLayerRenderer
 	{

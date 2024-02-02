@@ -15,20 +15,19 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
-			Initialize();
+			_borderRenderer = new BorderLayerRenderer(this);
 
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
+			Initialize();
 		}
 
 		partial void Initialize();
@@ -38,15 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Checking for Window avoids re-creating the layer until it is actually used.
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					null
-				);
+				_borderRenderer.Update();
 			}
 		}
 
