@@ -433,7 +433,7 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
 				// Adjust logging when debugging the Given_HotReloadWorkspace tests
-				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Warning);
+				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
@@ -525,6 +525,7 @@ namespace SamplesApp
 				}
 			}
 
+#pragma warning disable
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
