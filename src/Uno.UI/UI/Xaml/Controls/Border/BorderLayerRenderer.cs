@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __SKIA__
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
@@ -100,3 +101,4 @@ internal partial class BorderLayerRenderer
 
 	partial void ClearPlatform();
 }
+#endif
