@@ -220,7 +220,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private async Task MaxSizingTest(Size maxConstraints)
 		{
-			foreach (var orientation in Enum.GetValues(typeof(Orientation)).OfType<Orientation>())
+			foreach (var orientation in Enum.GetValues<Orientation>())
 			{
 				var outer = new StackPanel()
 				{

@@ -181,13 +181,13 @@ public class Given_ContentPresenter
 		var configurations = new List<AlignmentTestConfiguration>();
 		// Centered content
 
-		foreach (var outerHorizontalAlignment in Enum.GetValues(typeof(HorizontalAlignment)).OfType<HorizontalAlignment>())
+		foreach (var outerHorizontalAlignment in Enum.GetValues<HorizontalAlignment>())
 		{
-			foreach (var outerVerticalAlignment in Enum.GetValues(typeof(VerticalAlignment)).OfType<VerticalAlignment>())
+			foreach (var outerVerticalAlignment in Enum.GetValues<VerticalAlignment>())
 			{
-				foreach (var innerHorizontalAlignment in Enum.GetValues(typeof(HorizontalAlignment)).OfType<HorizontalAlignment>())
+				foreach (var innerHorizontalAlignment in Enum.GetValues<HorizontalAlignment>())
 				{
-					foreach (var innerVerticalAlignment in Enum.GetValues(typeof(VerticalAlignment)).OfType<VerticalAlignment>())
+					foreach (var innerVerticalAlignment in Enum.GetValues<VerticalAlignment>())
 					{
 						double expectedX = 0;
 						if (outerHorizontalAlignment == HorizontalAlignment.Center)

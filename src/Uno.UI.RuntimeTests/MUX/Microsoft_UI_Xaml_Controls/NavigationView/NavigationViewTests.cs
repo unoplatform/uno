@@ -185,19 +185,17 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		//    using(VisualTreeVerifier visualTreeVerifier = new VisualTreeVerifier())
 		//    {
 		//        // Generate a basic NavigationView verification file for all the pane display modes
-		//        foreach (var paneDisplayMode in Enum.GetValues(typeof(NavigationViewPaneDisplayMode)))
+		//        foreach (var paneDisplayMode in Enum.GetValues<NavigationViewPaneDisplayMode>())
 		//        {
 		//            var filePrefix = "NavigationView" + paneDisplayMode;
-		//            NavigationViewPaneDisplayMode displayMode = (NavigationViewPaneDisplayMode)paneDisplayMode;
-
 		//            // We can skip generating a verification file for Left mode since Auto is achieving the same result.
-		//            if (displayMode == NavigationViewPaneDisplayMode.Left)
+		//            if (paneDisplayMode == NavigationViewPaneDisplayMode.Left)
 		//            {
 		//                continue;
 		//            }
 
 		//            Log.Comment($"Verify visual tree for NavigationViewPaneDisplayMode: {paneDisplayMode}");
-		//            var navigationView = SetupNavigationView(displayMode);
+		//            var navigationView = SetupNavigationView(paneDisplayMode);
 		//            visualTreeVerifier.VerifyVisualTreeNoException(root: navigationView, verificationFileNamePrefix: filePrefix);
 		//        }
 
@@ -282,7 +280,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			var navView = SetupNavigationView();
 
-			foreach (var paneDisplayMode in Enum.GetValues(typeof(NavigationViewPaneDisplayMode)))
+			foreach (var paneDisplayMode in Enum.GetValues<NavigationViewPaneDisplayMode>())
 			{
 				RunOnUIThread.Execute(() =>
 				{
@@ -293,13 +291,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 					Content.UpdateLayout();
 
-					navView.PaneDisplayMode = (NavigationViewPaneDisplayMode)paneDisplayMode;
+					navView.PaneDisplayMode = paneDisplayMode;
 
 					Content.UpdateLayout();
 
 					// We only want to open the pane when explicitly set, otherwise it should be closed
 					// since we set the width below the threshold width
-					Verify.AreEqual((NavigationViewPaneDisplayMode)paneDisplayMode == NavigationViewPaneDisplayMode.Left, navView.IsPaneOpen);
+					Verify.AreEqual(paneDisplayMode == NavigationViewPaneDisplayMode.Left, navView.IsPaneOpen);
 				});
 			}
 		}
