@@ -3232,7 +3232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var screenshot = await UITestHelper.ScreenShot(SUT);
 			var i = 0;
-			for (;i < 20; i++)
+			for (; i < 20; i++)
 			{
 				await Task.Delay(100);
 				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) &&
@@ -3241,13 +3241,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					break;
 				}
 			}
+
 			Assert.IsTrue(i < 20);
 
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
 
 			screenshot = await UITestHelper.ScreenShot(SUT);
-			for (;i < 20; i++)
+			for (; i < 20; i++)
 			{
 				await Task.Delay(100);
 				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.White) &&
@@ -3256,6 +3257,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					break;
 				}
 			}
+
 			Assert.IsTrue(i < 20);
 		}
 
