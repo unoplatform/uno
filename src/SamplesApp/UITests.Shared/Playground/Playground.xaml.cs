@@ -32,7 +32,7 @@ public sealed partial class Playground : UserControl
 	private async void OnXamlEditorLoaded(object sender, RoutedEventArgs e)
 	{
 		xamlText.CodeLanguage = "xml";
-	}	
+	}
 #endif
 
 	private string GetXamlInput()
