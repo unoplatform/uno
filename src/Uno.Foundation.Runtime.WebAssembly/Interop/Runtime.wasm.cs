@@ -194,7 +194,7 @@ namespace Uno.Foundation
 					);
 				}
 
-				throw new Exception(exception);
+				throw new(exception);
 			}
 
 			return res != IntPtr.Zero;

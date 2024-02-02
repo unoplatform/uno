@@ -224,7 +224,7 @@ namespace SamplesApp
 								_ =>
 								{
 									Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
-									throw new Exception($"Watchdog failed");
+									throw new($"Watchdog failed");
 								});
 						}
 
@@ -363,7 +363,7 @@ namespace SamplesApp
 		/// <param name="e">Details about the navigation failure</param>
 		void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
 		{
-			throw new Exception($"Failed to load Page {e.SourcePageType}: {e.Exception}");
+			throw new($"Failed to load Page {e.SourcePageType}: {e.Exception}");
 		}
 
 		/// <summary>

@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.Performance
 			{
 				if (item.FontSize != root.FontSize)
 				{
-					throw new Exception();
+					throw new();
 				}
 			}
 		}
@@ -90,7 +90,7 @@ namespace Uno.UI.Tests.Performance
 			{
 				if (item.DataContext != root.DataContext)
 				{
-					throw new Exception();
+					throw new();
 				}
 			}
 		}

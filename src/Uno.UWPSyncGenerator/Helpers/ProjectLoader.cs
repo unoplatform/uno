@@ -182,7 +182,7 @@ namespace Uno.SourceGeneration.Host
 				var evaluatedConfig = project.GetProperty("Configuration")?.EvaluatedValue;
 				var evaluatedPlatform = project.GetProperty("Platform")?.EvaluatedValue;
 
-				throw new Exception(
+				throw new(
 					$"The current project does not define an OutputPath property for [{evaluatedConfig}|{evaluatedPlatform}]. " +
 					$"Validate that the fallback platform at the top of [{project.FullPath}] matches one of the " +
 					$"sections defining an OutputPath property with the [{evaluatedConfig}|{evaluatedPlatform}] condition."

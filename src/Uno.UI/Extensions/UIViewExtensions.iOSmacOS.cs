@@ -158,7 +158,7 @@ namespace AppKit
 		{
 			if (child.Superview != view)
 			{
-				throw new Exception("This child not part of this view");
+				throw new("This child not part of this view");
 			}
 
 			child.RemoveFromSuperview();

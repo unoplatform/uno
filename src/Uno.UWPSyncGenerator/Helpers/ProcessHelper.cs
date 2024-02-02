@@ -56,7 +56,7 @@ namespace Uno.UWPSyncGenerator
 			}
 			else
 			{
-				throw new Exception($"Failed to start [{executable}]");
+				throw new($"Failed to start [{executable}]");
 			}
 		}
 	}

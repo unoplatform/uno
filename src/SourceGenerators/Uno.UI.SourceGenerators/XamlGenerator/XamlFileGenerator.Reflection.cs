@@ -252,7 +252,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (definition == null)
 			{
-				throw new Exception("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
+				throw new("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
 			}
 
 			return definition;
@@ -754,7 +754,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new Exception($"Unable to find the type {typeName} in key {resource.Key}");
+						throw new($"Unable to find the type {typeName} in key {resource.Key}");
 					}
 				}
 			}

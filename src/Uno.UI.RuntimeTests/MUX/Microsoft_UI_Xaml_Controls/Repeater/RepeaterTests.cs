@@ -784,7 +784,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			{
 				if (!scrollViewerScrolledEvent.WaitOne(TimeSpan.FromMilliseconds(5000)))
 				{
-					throw new Exception("Timeout expiration in WaitForEvent.");
+					throw new("Timeout expiration in WaitForEvent.");
 				}
 			}
 

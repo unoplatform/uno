@@ -585,7 +585,7 @@ namespace Uno.UI.Samples.Controls
 					continue;
 				}
 
-				throw new Exception("Unknown parsing error");
+				throw new("Unknown parsing error");
 			}
 
 			return result.ToArray();

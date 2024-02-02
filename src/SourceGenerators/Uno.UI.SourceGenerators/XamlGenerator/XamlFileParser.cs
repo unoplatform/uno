@@ -91,7 +91,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var sourceText = file.GetText(cancellationToken)!;
 				if (sourceText is null)
 				{
-					throw new Exception($"Failed to read additional file '{file.Path}'");
+					throw new($"Failed to read additional file '{file.Path}'");
 				}
 
 				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());

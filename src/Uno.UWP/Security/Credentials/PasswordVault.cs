@@ -36,7 +36,7 @@ namespace Windows.Security.Credentials
 			var result = _credentials.Where(cred => cred.Resource == resource).ToImmutableList();
 			if (result.IsEmpty)
 			{
-				throw new Exception("No match"); // UWP: Throw 'Exception' if no match
+				throw new("No match"); // UWP: Throw 'Exception' if no match
 			}
 
 			return result;
@@ -48,7 +48,7 @@ namespace Windows.Security.Credentials
 			var result = _credentials.Where(cred => cred.UserName == userName).ToImmutableList();
 			if (result.IsEmpty)
 			{
-				throw new Exception("No match"); // UWP: Throw 'Exception' if no match
+				throw new("No match"); // UWP: Throw 'Exception' if no match
 			}
 
 			return result;
@@ -60,7 +60,7 @@ namespace Windows.Security.Credentials
 			var result = _credentials.FirstOrDefault(cred => Comparer.Instance.Equals(cred, resource, userName));
 			if (result == null)
 			{
-				throw new Exception("No match"); // UWP: Throw 'Exception' if no match
+				throw new("No match"); // UWP: Throw 'Exception' if no match
 			}
 
 			return result;

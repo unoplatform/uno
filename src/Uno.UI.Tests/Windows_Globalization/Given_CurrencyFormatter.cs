@@ -215,7 +215,7 @@ public class Given_CurrencyFormatter
 
 		if (sut.NumberRounder is not IncrementNumberRounder rounder)
 		{
-			throw new Exception("NumberRounder should be of type IncrementNumberRounder");
+			throw new("NumberRounder should be of type IncrementNumberRounder");
 		}
 
 		var expected = FormatSymbolModePositiveNumber("1.80", USDSymbol);

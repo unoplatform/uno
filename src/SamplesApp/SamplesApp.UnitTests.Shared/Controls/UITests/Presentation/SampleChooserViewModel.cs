@@ -1224,7 +1224,7 @@ namespace SampleControl.Presentation
 #else
 			var element = content?.Parent is FrameworkElement parent
 				? parent
-				: (FrameworkElement)content ?? throw new Exception("Invalid element");
+				: (FrameworkElement)content ?? throw new("Invalid element");
 
 			(double oldMinWidth, double oldMinHeight, double oldWidth, double oldHeight)
 				= (element.MinWidth, element.MinHeight, element.Width, element.Height);

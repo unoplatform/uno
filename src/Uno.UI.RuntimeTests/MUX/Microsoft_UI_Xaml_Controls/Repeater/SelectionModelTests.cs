@@ -1085,7 +1085,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			void ThrowIfRaisedSelectionChanged(SelectionModel sender, SelectionModelSelectionChangedEventArgs args)
 			{
-				throw new Exception("SelectionChangedEvent was raised, but shouldn't have been raised as selection did not change. Tested method: " + testName);
+				throw new("SelectionChangedEvent was raised, but shouldn't have been raised as selection did not change. Tested method: " + testName);
 			}
 		}
 
@@ -1142,7 +1142,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			void ThrowIfRaisedSelectionChanged(SelectionModel sender, SelectionModelSelectionChangedEventArgs args)
 			{
-				throw new Exception("SelectionChangedEvent was raised, but shouldn't have been raised as selection did not change. Tested method: " + testName);
+				throw new("SelectionChangedEvent was raised, but shouldn't have been raised as selection did not change. Tested method: " + testName);
 			}
 		}
 

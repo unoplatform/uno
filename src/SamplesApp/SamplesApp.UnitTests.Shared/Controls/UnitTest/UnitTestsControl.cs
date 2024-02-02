@@ -77,7 +77,7 @@ namespace Uno.UI.Samples.Tests
 #if DEBUG
 			if (_ciTestsGroupCountCache != -1 || _ciTestGroupCache != -1)
 			{
-				throw new Exception("_ciTestsGroupCountCache or _ciTestGroupCache values are incorrect");
+				throw new("_ciTestsGroupCountCache or _ciTestGroupCache values are incorrect");
 			}
 #endif
 
@@ -134,7 +134,7 @@ namespace Uno.UI.Samples.Tests
 		}
 
 		static void FailCore(string stackTrace, string message, string detailMessage, string errorSource)
-			=> throw new Exception($"{message} ({detailMessage}) {stackTrace}");
+			=> throw new($"{message} ({detailMessage}) {stackTrace}");
 
 		private void OnSampleChanging(object sender, EventArgs e)
 		{
@@ -1079,7 +1079,7 @@ namespace Uno.UI.Samples.Tests
 
 				if (totalCount != unfilteredTestCount)
 				{
-					throw new Exception($"Test filter inconsistent (Got {totalCount}, expected {unfilteredTestCount})");
+					throw new($"Test filter inconsistent (Got {totalCount}, expected {unfilteredTestCount})");
 				}
 
 				this.Log().Info($"Filtering with group #{_ciTestGroupCache}");

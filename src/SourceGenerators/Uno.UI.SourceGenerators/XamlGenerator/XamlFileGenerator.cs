@@ -273,7 +273,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			catch (Exception e)
 			{
-				throw new Exception($"Processing failed for file {_fileDefinition.FilePath} ({e})", e);
+				throw new($"Processing failed for file {_fileDefinition.FilePath} ({e})", e);
 			}
 		}
 
@@ -1600,7 +1600,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								if (explicitVersion < 1 || explicitVersion > XamlConstants.MaxFluentResourcesVersion)
 								{
-									throw new Exception($"Unsupported XamlControlsResources version {explicitVersion}. Max version is {XamlConstants.MaxFluentResourcesVersion}");
+									throw new($"Unsupported XamlControlsResources version {explicitVersion}. Max version is {XamlConstants.MaxFluentResourcesVersion}");
 								}
 							}
 
@@ -2291,7 +2291,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (classMember == null)
 			{
-				throw new Exception("Unable to find class name for toplevel control");
+				throw new("Unable to find class name for toplevel control");
 			}
 
 			return classMember;
@@ -2335,7 +2335,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_xClassName == null)
 			{
-				throw new Exception($"Unable to find x:Class on the top level element");
+				throw new($"Unable to find x:Class on the top level element");
 			}
 		}
 
@@ -3017,13 +3017,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var source = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Source");
 				if (source != null && dictObject.Members.Any(m => m.Member.Name == "_UnknownContent"))
 				{
-					throw new Exception("Local values are not allowed in resource dictionary with Source set");
+					throw new("Local values are not allowed in resource dictionary with Source set");
 				}
 
 				var key = GetDictionaryResourceKey(dictObject);
 				if (isDict && key == null)
 				{
-					throw new Exception("Each dictionary entry must have an associated key.");
+					throw new("Each dictionary entry must have an associated key.");
 				}
 
 				var former = _themeDictionaryCurrentlyBuilding; //Will 99% of the time be null.
@@ -3811,7 +3811,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								if (dataTypeObject?.Value == null)
 								{
-									throw new Exception($"Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
+									throw new($"Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
 								}
 
 								var dataTypeSymbol = GetType(dataTypeObject.Value.ToString() ?? "");
@@ -3837,7 +3837,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 								else
 								{
-									throw new Exception($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}");
+									throw new($"Unable to find the type {_xClassName?.Namespace}.{_xClassName?.ClassName}");
 								}
 							}
 						}
@@ -4369,7 +4369,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataTypeObject = FindMember(dataTemplateObject!, "DataType", XamlConstants.XamlXmlNamespace);
 				if (dataTypeObject?.Value == null)
 				{
-					throw new Exception($"Unable to find x:DataType in enclosing DataTemplate");
+					throw new($"Unable to find x:DataType in enclosing DataTemplate");
 				}
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
@@ -5057,7 +5057,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						SpecialType.System_Int64 => true,
 						SpecialType.System_UInt64 => false,
 
-						_ => throw new Exception($"The enum underlying type '{propertyType.EnumUnderlyingType}' is not expected."),
+						_ => throw new($"The enum underlying type '{propertyType.EnumUnderlyingType}' is not expected."),
 					};
 
 					var definedFlags = propertyType.GetFields().Select(field => field.Name).ToArray();
@@ -5077,7 +5077,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var invalidFlags = flags.Where(x => x.DefinedName == null && !x.IsValidNumeric).ToArray();
 					if (invalidFlags.Any())
 					{
-						throw new Exception($"Failed to create a '{propertyTypeWithoutGlobal}' from the text '{value}'.");
+						throw new($"Failed to create a '{propertyTypeWithoutGlobal}' from the text '{value}'.");
 					}
 
 					var values = flags.Select(x => x.DefinedName is { }
@@ -5114,7 +5114,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "null";
 				}
 
-				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
+				throw new("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 
 				static string? SplitAndJoin(string? value)
 					=> value == null ? null : splitRegex.Replace(value, ", ");
@@ -5229,7 +5229,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return "new global::Microsoft.UI.Xaml.Media.BitmapCache()";
 			}
 
-			throw new Exception($"The [{memberValue}] cache mode is not supported");
+			throw new($"The [{memberValue}] cache mode is not supported");
 		}
 
 		private static string? DoubleEscape(string? thisString)
@@ -5283,7 +5283,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
+						throw new($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
 					}
 				}
 				else
@@ -5538,7 +5538,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							SpecialType.System_Int64 => "(long)",
 							SpecialType.System_UInt64 => "(ulong)",
 
-							_ => throw new Exception($"The enum underlying type '{actualValueType.EnumUnderlyingType}' is not expected."),
+							_ => throw new($"The enum underlying type '{actualValueType.EnumUnderlyingType}' is not expected."),
 						};
 					}
 				}

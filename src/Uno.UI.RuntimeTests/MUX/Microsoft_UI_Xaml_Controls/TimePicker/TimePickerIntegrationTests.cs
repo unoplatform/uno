@@ -446,7 +446,7 @@ public class TimePickerIntegrationTests
 			periodTextBlock = (TextBlock)TreeHelper.GetVisualChildByName(timePicker, "PeriodTextBlock");
 			if (hourTextBlock == null || minuteTextBlock == null || periodTextBlock == null)
 			{
-				throw new Exception("Failed to find required TextBlock elements");
+				throw new("Failed to find required TextBlock elements");
 			}
 
 			Assert.AreEqual("5", hourTextBlock.Text);

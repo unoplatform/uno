@@ -460,7 +460,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 			else
 			{
-				throw new Exception($"Failed to start [{executable}]");
+				throw new($"Failed to start [{executable}]");
 			}
 
 		}

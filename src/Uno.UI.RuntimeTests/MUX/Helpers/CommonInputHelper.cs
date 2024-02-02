@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 					KeyboardHelper.GamepadB(element);
 					break;
 				default:
-					throw new Exception("Invalid input device.");
+					throw new("Invalid input device.");
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 					KeyboardHelper.GamepadA(element);
 					break;
 				default:
-					throw new Exception("Invalid input device.");
+					throw new("Invalid input device.");
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 					KeyboardHelper.GamepadDpadRight(element);
 					break;
 				default:
-					throw new Exception("Invalid input device.");
+					throw new("Invalid input device.");
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 					KeyboardHelper.GamepadDpadLeft(element);
 					break;
 				default:
-					throw new Exception("Invalid input device.");
+					throw new("Invalid input device.");
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 					KeyboardHelper.GamepadDpadUp(element);
 					break;
 				default:
-					throw new Exception("Invalid input device.");
+					throw new("Invalid input device.");
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 					KeyboardHelper.GamepadDpadDown(element);
 					break;
 				default:
-					throw new Exception("Invalid input device.");
+					throw new("Invalid input device.");
 			}
 		}
 	}
