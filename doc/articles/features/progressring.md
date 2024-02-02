@@ -4,27 +4,7 @@ uid: Uno.Features.ProgressRing
 
 # ProgressRing
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-There are two implementations of the `ProgressRing` control available in Uno:
-
-Uno Platform provides two versions of the `ProgressRing` control:
-
-* `Windows.UI.Xaml.Controls.ProgressRing` - "WUX `ProgressRing`" - implementation based on the built-in control in Universal Windows Platform, with support for both native & UWP styling.
-* `Microsoft.UI.Xaml.Controls.ProgressRing` - "MUX `ProgressRing`", implementation based on WinUI 2.x and WinUI 3 (see [here](https://github.com/microsoft/microsoft-ui-xaml/tree/main/dev/ProgressRing),  powered by Lottie animations.
-
-| Control            | iOS | macOS | Android | WASM | Skia (GTK, WPF, FrameBuffer, Tizen) |
-|--------------------|-----|-------|---------|------|-------------------------------------|
-| MUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                                   |
-| WUX `ProgressRing` | ✔   | ✔     | ✔       | ✔    | ✔                                   |
-
-## Using the `Microsoft.UI.Xaml.Controls.ProgressRing`
-=======
-# [**WinUI**](#tab/winui)
->>>>>>> 79dc6e13ce (docs: Refresh progessring docs)
-=======
 ## [**WinUI**](#tab/winui)
->>>>>>> 85064af654 (docs: Apply suggestions from code review)
 
 ![MUX `ProgressRing`](../Assets/features/progressring/muxprogressring.png)
 
