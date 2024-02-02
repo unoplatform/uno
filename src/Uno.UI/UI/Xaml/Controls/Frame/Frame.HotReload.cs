@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if HAS_UNO // We don't have access to the instance of the page entry in the backstack on Windows
+
+using System;
 using System.Reflection.Metadata;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -53,3 +55,4 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
+#endif
