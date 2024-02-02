@@ -24,12 +24,12 @@ namespace Uno.UI.RuntimeTests.Helpers
 #if WINAPPSDK
 			return null;
 #else
-			var originallyEnabled = FrameworkTemplatePool.InternalIsPoolingEnabled;
-			FrameworkTemplatePool.InternalIsPoolingEnabled = true;
+			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;
+			FrameworkTemplatePool.IsPoolingEnabled = true;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(new MockProvider());
 			return Disposable.Create(() =>
 			{
-				FrameworkTemplatePool.InternalIsPoolingEnabled = originallyEnabled;
+				FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled;
 				FrameworkTemplatePool.Instance.SetPlatformProvider(null);
 			});
 #endif

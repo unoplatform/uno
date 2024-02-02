@@ -45,8 +45,6 @@ using Microsoft.UI.Xaml.Markup;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
-using System.Text;
-using System.Runtime.CompilerServices;
 #endif
 
 
@@ -89,7 +87,6 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Dictionary<FrameworkTemplate, List<TemplateEntry>> _pooledInstances = new Dictionary<FrameworkTemplate, List<TemplateEntry>>(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
 		private IFrameworkTemplatePoolPlatformProvider _platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
-		private static bool _isPoolingEnabled;
 
 #if USE_HARD_REFERENCES
 		/// <summary>
@@ -115,28 +112,12 @@ namespace Microsoft.UI.Xaml
 		/// Determines if the pooling is enabled. If false, all requested instances are new.
 		/// </summary>
 		/// <remarks>
-		/// This feature is currently disabled and has no effect. See: https://github.com/unoplatform/uno/issues/13969
+		/// Disabled by default on Android. See: https://github.com/unoplatform/uno/issues/13969
 		/// </remarks>
-		public static bool IsPoolingEnabled
-		{
-			// Pooling is forced disabled, see InternalIsPoolingEnabled.
-			get => false;
-			set
-			{
-				if (typeof(FrameworkTemplatePool).Log().IsEnabled(LogLevel.Warning))
-				{
-					typeof(FrameworkTemplatePool).Log().LogWarn($"Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969");
-				}
-			}
-		}
-
-		// Pooling is disabled until https://github.com/unoplatform/uno/issues/13969 is fixed, but we
-		// allow some runtime tests to use it.
-		internal static bool InternalIsPoolingEnabled
-		{
-			get => _isPoolingEnabled;
-			set => _isPoolingEnabled = value;
-		}
+		public static bool IsPoolingEnabled { get; set; }
+#if !__ANDROID__
+			 = true;
+#endif
 
 		/// <summary>
 		/// Gets a value indicating whether the pool is currently recycling a template.
@@ -259,12 +240,12 @@ namespace Microsoft.UI.Xaml
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{_isPoolingEnabled}");
+					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
 				instance = ((IFrameworkTemplateInternal)template).LoadContent();
 
-				if (_isPoolingEnabled && instance is IFrameworkElement)
+				if (IsPoolingEnabled && instance is IFrameworkElement)
 				{
 					DependencyObjectExtensions.RegisterParentChangedCallback((DependencyObject)instance, template, OnParentChanged);
 				}
@@ -287,7 +268,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 #if USE_HARD_REFERENCES
-			if (_isPoolingEnabled && instance is { })
+			if (IsPoolingEnabled && instance is { })
 			{
 				_activeInstances.Add(instance);
 			}
@@ -385,7 +366,7 @@ namespace Microsoft.UI.Xaml
 
 		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
-			if (!_isPoolingEnabled)
+			if (!IsPoolingEnabled)
 			{
 				return;
 			}

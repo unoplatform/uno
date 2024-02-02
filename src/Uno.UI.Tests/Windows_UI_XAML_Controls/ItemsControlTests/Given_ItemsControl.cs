@@ -524,7 +524,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			}
 
 			Assert.AreEqual(SUT.Items.Count, 5);
-			Assert.AreEqual(count, FrameworkTemplatePool.IsPoolingEnabled ? 5 : 8);
+			Assert.AreEqual(count, 5);
 			Assert.IsNotNull(SUT.ContainerFromItem("One"));
 			Assert.IsNotNull(SUT.ContainerFromItem("Four"));
 			Assert.IsNotNull(SUT.ContainerFromItem("Five"));
