@@ -68,6 +68,4 @@ To use the MUX `ProgressRing` on non-Skia targets and WUX `ProgressRing` on Skia
 </Page>
 ```
 
-*** 
-
-
+***
