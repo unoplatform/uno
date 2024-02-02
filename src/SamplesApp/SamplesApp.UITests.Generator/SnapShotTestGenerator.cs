@@ -71,7 +71,7 @@ namespace Uno.Samples.UITest.Generator
 			var sampleSymbol = compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
 			if (sampleControlInfoSymbol is null || sampleSymbol is null)
 			{
-				throw new Exception("Cannot find 'SampleControlInfoAttribute' or 'SampleAttribute'.");
+				throw new("Cannot find 'SampleControlInfoAttribute' or 'SampleAttribute'.");
 			}
 
 			var query = from typeSymbol in compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()

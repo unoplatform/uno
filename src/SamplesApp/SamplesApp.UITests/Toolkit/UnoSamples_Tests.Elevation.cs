@@ -43,7 +43,7 @@ namespace SamplesApp.UITests.Toolkit
 
 			if (img1.Size != img2.Size)
 			{
-				throw new Exception("Images are of different sizes");
+				throw new("Images are of different sizes");
 			}
 			else
 			{

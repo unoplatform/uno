@@ -100,7 +100,7 @@ namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 				case "img2":
 					return _image2;
 				default:
-					throw new Exception();
+					throw new();
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace UITests.Windows_UI_Xaml_Media.BrushesTests
 			if (sender is RadioButton radioButton)
 			{
 				var brush = radioButton.GroupName.EndsWith("1") ? _solid1 : _solid2;
-				var color = (radioButton.Background as SolidColorBrush)?.Color ?? throw new Exception();
+				var color = (radioButton.Background as SolidColorBrush)?.Color ?? throw new();
 				brush.Color = color;
 			}
 		}

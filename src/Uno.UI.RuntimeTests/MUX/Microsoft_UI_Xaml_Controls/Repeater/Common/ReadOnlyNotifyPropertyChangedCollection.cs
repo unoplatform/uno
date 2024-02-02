@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 
 		public int IndexFromKey(string key)
 		{
-			throw new Exception();
+			throw new();
 		}
 
 		public ObservableCollection<T> Data

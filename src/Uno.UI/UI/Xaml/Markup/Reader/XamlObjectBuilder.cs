@@ -1250,12 +1250,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							}
 							else
 							{
-								throw new Exception($"The property {declaringType?.ToString() ?? g["type"].Name}.{propertyName} does not exist");
+								throw new($"The property {declaringType?.ToString() ?? g["type"].Name}.{propertyName} does not exist");
 							}
 						}
 						else
 						{
-							throw new Exception($"Invalid property path: {memberValue}");
+							throw new($"Invalid property path: {memberValue}");
 						}
 					}
 					else
@@ -1265,7 +1265,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 				else
 				{
-					throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown");
+					throw new($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown");
 				}
 			}
 			else

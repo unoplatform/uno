@@ -130,7 +130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						}
 						else
 						{
-							throw new Exception("Unexpected XBindArgument type.");
+							throw new("Unexpected XBindArgument type.");
 						}
 
 						if (i < invocation.Arguments.Length - 1)
@@ -154,7 +154,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					return (_contextName, ImmutableArray<string>.Empty);
 				}
 
-				throw new Exception("Unexpected XBindRoot");
+				throw new("Unexpected XBindRoot");
 			}
 
 			public void BuildPath(XBindPath path, StringBuilder? propertyBuilder, bool isType = false)
@@ -226,7 +226,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else
 				{
-					throw new Exception("Unexpected XBindPath");
+					throw new("Unexpected XBindPath");
 				}
 			}
 
@@ -319,7 +319,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				if (node.ArgumentList.Arguments.Count != 1 ||
 					node.ArgumentList.Arguments[0].Expression is not LiteralExpressionSyntax index)
 				{
-					throw new Exception("x:Bind indexing expects a single literal argument");
+					throw new("x:Bind indexing expects a single literal argument");
 				}
 
 				Visit(node.Expression);
@@ -328,7 +328,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				{
 					IPropertySymbol property => property.Type,
 					IFieldSymbol field => field.Type,
-					_ => throw new Exception("Only properties and fields can be indexed.")
+					_ => throw new("Only properties and fields can be indexed.")
 				};
 
 				var expectedIndexerParameterType = index is LiteralExpressionSyntax indexLiteral && indexLiteral.IsKind(SyntaxKind.StringLiteralExpression)
@@ -341,7 +341,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else
 				{
-					throw new Exception("Type is unsupported for indexing.");
+					throw new("Type is unsupported for indexing.");
 				}
 
 				_builder.Append('[');
@@ -421,7 +421,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					IPropertySymbol property => (property.Type, true),
 					IFieldSymbol field => (field.Type, true),
 					INamespaceOrTypeSymbol namespaceOrType => (namespaceOrType, false),
-					_ => throw new Exception($"Unexpected _lastAccessed symbol '{_lastAccessed.Symbol?.Kind}'."),
+					_ => throw new($"Unexpected _lastAccessed symbol '{_lastAccessed.Symbol?.Kind}'."),
 				};
 
 				var member = previousType.GetMemberInlcudingBaseTypes(node.Identifier.ValueText);

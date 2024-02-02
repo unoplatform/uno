@@ -170,7 +170,7 @@ namespace MUXControlsTestApp.Utilities
 		{
 			if (!e.WaitOne(TimeSpan.FromMilliseconds(DefaultWaitMs)))
 			{
-				throw new Exception("Event was not raised.");
+				throw new("Event was not raised.");
 			}
 		}
 
@@ -231,7 +231,7 @@ namespace MUXControlsTestApp.Utilities
 			var child = (FrameworkElement)VisualTreeHelper.GetChild(element, 0);
 			if (child == null)
 			{
-				throw new Exception("First child doesn't exist or is not a FrameworkElement");
+				throw new("First child doesn't exist or is not a FrameworkElement");
 			}
 			return child;
 		}

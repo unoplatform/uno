@@ -29,7 +29,7 @@ namespace Uno.UI.Controls
 		{
 			if ((int)Android.OS.Build.VERSION.SdkInt <= 10)
 			{
-				throw new Exception("The target SDK version must be higher than 10 (Honeycomb and higher).");
+				throw new("The target SDK version must be higher than 10 (Honeycomb and higher).");
 			}
 		}
 

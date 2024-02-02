@@ -1668,7 +1668,7 @@ namespace Microsoft.UI.Xaml
 					{
 						if (!hashSet.Add(instance))
 						{
-							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
+							throw new($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}
 					}
 #endif

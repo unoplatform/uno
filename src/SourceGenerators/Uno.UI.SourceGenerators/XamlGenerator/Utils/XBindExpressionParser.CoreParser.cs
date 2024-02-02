@@ -49,7 +49,7 @@ internal partial class XBindExpressionParser
 
 			if (Current != '(')
 			{
-				throw new Exception("Expected end of x:Bind expression or start of argument list.");
+				throw new("Expected end of x:Bind expression or start of argument list.");
 			}
 
 			_position++;
@@ -61,7 +61,7 @@ internal partial class XBindExpressionParser
 					return new XBindInvocation() { Path = bindPath, Arguments = Array.Empty<XBindArgument>() };
 				}
 
-				throw new Exception("Expected end of expression after invocation.");
+				throw new("Expected end of expression after invocation.");
 			}
 
 
@@ -75,13 +75,13 @@ internal partial class XBindExpressionParser
 
 			if (Current != ')')
 			{
-				throw new Exception("Expected ')' after parsing invocation arguments");
+				throw new("Expected ')' after parsing invocation arguments");
 			}
 
 			_position++;
 			if (!IsDone)
 			{
-				throw new Exception("Expected end of expression after invocation.");
+				throw new("Expected end of expression after invocation.");
 			}
 
 			return new XBindInvocation() { Path = bindPath, Arguments = arguments.ToArray() };
@@ -101,7 +101,7 @@ internal partial class XBindExpressionParser
 
 				if (Current != '"')
 				{
-					throw new Exception("Missing closing quote");
+					throw new("Missing closing quote");
 				}
 
 				var literal = _xBind.Substring(oldPosition, ++_position - oldPosition);
@@ -121,7 +121,7 @@ internal partial class XBindExpressionParser
 					_position++;
 					if (!char.IsDigit(Current))
 					{
-						throw new Exception("Expected digits after floating point.");
+						throw new("Expected digits after floating point.");
 					}
 
 					while (char.IsDigit(Current))
@@ -154,7 +154,7 @@ internal partial class XBindExpressionParser
 				var expression = ParseXBindPath();
 				if (Current != ')')
 				{
-					throw new Exception("Missing parenthesis?");
+					throw new("Missing parenthesis?");
 				}
 
 				_position++;
@@ -186,12 +186,12 @@ internal partial class XBindExpressionParser
 
 						if (attachedPropertyPath is not XBindMemberAccess memberAccess)
 						{
-							throw new Exception("Expected attached property path to be member access.");
+							throw new("Expected attached property path to be member access.");
 						}
 
 						if (Current != ')')
 						{
-							throw new Exception("Expected ')' in attached property syntax.");
+							throw new("Expected ')' in attached property syntax.");
 						}
 
 						path = new XBindAttachedPropertyAccess() { Member = path, PropertyClass = memberAccess.Path, PropertyName = memberAccess.Identifier };
@@ -228,7 +228,7 @@ internal partial class XBindExpressionParser
 			var identifierStart = _position;
 			if (!TryEatValidIdentifier())
 			{
-				throw new Exception($"Invalid identifier character {Current}");
+				throw new($"Invalid identifier character {Current}");
 			}
 
 			if (Current == ':' && LookAhead == ':')
@@ -237,7 +237,7 @@ internal partial class XBindExpressionParser
 
 				if (!TryEatValidIdentifier())
 				{
-					throw new Exception($"Invalid identifier character {Current}");
+					throw new($"Invalid identifier character {Current}");
 				}
 			}
 

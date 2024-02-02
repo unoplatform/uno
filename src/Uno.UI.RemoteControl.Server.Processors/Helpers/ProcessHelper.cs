@@ -54,7 +54,7 @@ namespace Uno.UI.RemoteControl.Server.Processors.Helpers
 			}
 			else
 			{
-				throw new Exception($"Failed to start [{executable}]");
+				throw new($"Failed to start [{executable}]");
 			}
 		}
 	}

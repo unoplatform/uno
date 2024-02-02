@@ -26,7 +26,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& xamlMember.PreferredXamlNamespace != XamlConstants.XamlXmlNamespace) // e.g., x:Class, x:Name
 			{
 				xamlMember = XamlMember.WithDeclaringType(xamlMember, owner.Type)
-					?? throw new Exception($"Unable to find {xamlMember} on {owner.Type}");
+					?? throw new($"Unable to find {xamlMember} on {owner.Type}");
 			}
 
 			_xamlMember = xamlMember;

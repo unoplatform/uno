@@ -97,7 +97,7 @@ partial class PropertyValue
 								ulong oldValueAsULong => oldValueAsULong == (ulong)newValue,
 
 								// CS1008 Type byte, sbyte, short, ushort, int, uint, long, or ulong expected
-								_ => throw new Exception($"The '{oldValueType.Name}' enum underlying type '{oldValueType.GetEnumUnderlyingType().Name}' is not expected."),
+								_ => throw new($"The '{oldValueType.Name}' enum underlying type '{oldValueType.GetEnumUnderlyingType().Name}' is not expected."),
 							};
 						}
 					}

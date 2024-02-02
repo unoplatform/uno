@@ -44,7 +44,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		if (!(ContextHelper.Current is Activity activity))
 		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
+			throw new("Cannot check NavigationBar translucent property. Activity is not defined yet.");
 		}
 
 		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
@@ -107,7 +107,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		if (!(ContextHelper.Current is Activity activity))
 		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
+			throw new("Cannot check NavigationBar translucent property. Activity is not defined yet.");
 		}
 
 		var flags = activity.Window.Attributes.Flags;

@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Setters =
 				{
-					new Setter(ContentControl.TemplateProperty, new ControlTemplate(() => throw new Exception("Inner exception")))
+					new Setter(ContentControl.TemplateProperty, new ControlTemplate(() => throw new("Inner exception")))
 				}
 			};
 

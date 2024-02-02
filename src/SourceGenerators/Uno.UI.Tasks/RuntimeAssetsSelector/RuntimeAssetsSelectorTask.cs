@@ -112,7 +112,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			{
 				// Require because the task is running out of process
 				// and can't marshal non-CLR known exceptions.
-				throw new Exception(e.ToString());
+				throw new(e.ToString());
 			}
 		}
 	}

@@ -885,7 +885,7 @@ namespace Uno.Xaml
 						foreach (var ni in ReadObjectElement(parentType, xm))
 						{
 							if (ni.NodeType == XamlNodeType.None)
-								throw new Exception("should not happen");
+								throw new("should not happen");
 							yield return ni;
 						}
 					}

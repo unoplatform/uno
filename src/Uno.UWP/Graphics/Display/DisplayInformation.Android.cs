@@ -26,7 +26,7 @@ namespace Windows.Graphics.Display
 				}
 				else
 				{
-					throw new Exception($"Failed to get current activity, DisplayInformation is not available. On Android, DisplayInformation is available as early as Application.OnLaunched.");
+					throw new($"Failed to get current activity, DisplayInformation is not available. On Android, DisplayInformation is available as early as Application.OnLaunched.");
 				}
 			}
 

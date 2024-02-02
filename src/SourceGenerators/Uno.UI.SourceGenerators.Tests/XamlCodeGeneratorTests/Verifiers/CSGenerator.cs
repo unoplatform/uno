@@ -219,7 +219,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					{
 						"XamlCodeGenerator" => typeof(XamlCodeGenerator),
 						"ObservablePropertyGenerator" => typeof(ObservablePropertyGenerator),
-						_ => throw new Exception("Unexpected generator name"),
+						_ => throw new("Unexpected generator name"),
 					};
 					TestState.GeneratedSources.Add((type, name, reader.ReadToEnd()));
 				}

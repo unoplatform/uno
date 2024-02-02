@@ -166,7 +166,7 @@ namespace Uno.UI.TestComparer
 				}
 			} while (tries-- > 0);
 
-			throw new Exception("Retry failed");
+			throw new("Retry failed");
 		}
 	}
 

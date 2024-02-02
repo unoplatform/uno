@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Subviews.Length != 0)
 			{
-				throw new Exception("A Xaml control may not contain more than one child.");
+				throw new("A Xaml control may not contain more than one child.");
 			}
 
 			AddSubview(child);
