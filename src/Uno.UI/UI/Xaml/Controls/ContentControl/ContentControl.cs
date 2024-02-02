@@ -235,6 +235,8 @@ namespace Microsoft.UI.Xaml.Controls
 					UnregisterContentTemplateRoot();
 
 					UpdateContentTransitions(this.ContentTransitions, null);
+
+					_dataTemplateUsedLastUpdate?.ReleaseTemplateRoot(previousValue);
 				}
 
 				_contentTemplateRoot = value;
@@ -349,8 +351,9 @@ namespace Microsoft.UI.Xaml.Controls
 				//Only apply template if it has changed
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 				{
-					_dataTemplateUsedLastUpdate = dataTemplate;
 					ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+
+					_dataTemplateUsedLastUpdate = dataTemplate;
 				}
 
 				if (Content != null

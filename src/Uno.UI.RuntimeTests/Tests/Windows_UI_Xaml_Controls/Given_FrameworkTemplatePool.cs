@@ -40,7 +40,7 @@ internal class Given_FrameworkTemplatePool
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
-			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
+			FrameworkTemplatePool.Instance.Scavenge(force: true);
 
 			async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
 			{
@@ -72,9 +72,9 @@ internal class Given_FrameworkTemplatePool
 			Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
 			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
 
-			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
+			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
 
-			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
+			FrameworkTemplatePool.Instance.Scavenge(force: true);
 
 			var timeout2 = Stopwatch.StartNew();
 			while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
@@ -85,7 +85,7 @@ internal class Given_FrameworkTemplatePool
 				await Task.Delay(50);
 			}
 
-			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
+			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
 		}
 	}
 #endif
