@@ -86,6 +86,9 @@
 
 				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+
+				<!-- Only the invariant culture is support in globalization-invariant mode. See https://aka.ms/GlobalizationInvariantMode -->
+				<InvariantGlobalization>false</InvariantGlobalization>
 			</PropertyGroup>
 			
 			<ItemGroup>
