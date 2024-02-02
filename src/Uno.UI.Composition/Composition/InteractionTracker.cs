@@ -6,8 +6,11 @@ namespace Microsoft.UI.Composition.Interactions;
 
 public partial class InteractionTracker : CompositionObject
 {
+	private InteractionTrackerState _state;
+
 	private InteractionTracker(Compositor compositor, IInteractionTrackerOwner? owner = null) : base(compositor)
 	{
+		_state = new InteractionTrackerIdleState(this);
 		Owner = owner;
 		InteractionSources = new CompositionInteractionSourceCollection(compositor);
 	}
@@ -31,4 +34,11 @@ public partial class InteractionTracker : CompositionObject
 	public static InteractionTracker Create(Compositor compositor) => new InteractionTracker(compositor);
 
 	public static InteractionTracker CreateWithOwner(Compositor compositor, IInteractionTrackerOwner owner) => new InteractionTracker(compositor, owner);
+
+	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond) => TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse: false);
+
+	internal int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
+	{
+		return 0;
+	}
 }

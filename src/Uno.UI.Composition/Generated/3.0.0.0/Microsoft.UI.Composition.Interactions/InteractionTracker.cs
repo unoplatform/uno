@@ -182,13 +182,6 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdatePositionWithAdditionalVelocity(global::System.Numerics.Vector3 velocityInPixelsPerSecond)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionWithAdditionalVelocity%28Vector3%20velocityInPixelsPerSecond%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public int TryUpdateScale(float value, global::System.Numerics.Vector3 centerPoint)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScale(float value, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScale%28float%20value%2C%20Vector3%20centerPoint%29");
