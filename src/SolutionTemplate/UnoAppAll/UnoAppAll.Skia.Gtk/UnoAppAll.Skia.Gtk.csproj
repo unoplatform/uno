@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+    <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup Condition="exists('..\UnoAppAll.UWP')">
+    <EmbeddedResource Include="..\UnoAppAll.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+    <Content Include="..\UnoAppAll.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Include="..\UnoAppAll.Shared\**\*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="Uno.UI.Skia.Gtk" Version="$(GITVERSION_SemVer)" />
+    <PackageReference Include="Uno.UI.RemoteControl" Version="$(GITVERSION_SemVer)" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+  <Import Project="..\UnoAppAll.Shared\UnoAppAll.Shared.projitems" Label="Shared" />
+</Project>

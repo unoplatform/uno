@@ -12,9 +12,6 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn:
-  - templates_package_build
-
   strategy:
     matrix:
       UWP:
@@ -116,24 +113,4 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
-      ArtifactType: Container
-
-  - task: CopyFiles@2
-    displayName: Copy private templates package
-    condition: eq(variables['UNO_UWP_BUILD'], 'true')
-    inputs:
-      SourceFolder: $(Agent.WorkFolder)/
-      Contents: |
-        NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
-      TargetFolder: $(build.sourcesdirectory)/Build/private-templates
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: true
-
-  - task: PublishBuildArtifacts@1
-    condition: eq(variables['UNO_UWP_BUILD'], 'true')
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.sourcesdirectory)/Build/private-templates
-      ArtifactName: private-templates
       ArtifactType: Container
