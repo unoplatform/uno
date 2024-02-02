@@ -17,6 +17,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 
+	// TODO: On other platforms, we could let Visual delegate to NativeOwner (UIElement) for these two properties.
+	internal bool IsTouchPadRedirected { get; set; }
+	internal bool IsPointerWheelRedirected { get; set; }
+
 	public CompositionClip? Clip
 	{
 		get => _clip;

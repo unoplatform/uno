@@ -1,14 +1,18 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 
 namespace Microsoft.UI.Composition.Interactions;
 
 public partial class VisualInteractionSource : CompositionObject, ICompositionInteractionSource
 {
+	private VisualInteractionSourceRedirectionMode _manipulationRedirectionMode;
+
 	private VisualInteractionSource(Visual source) : base(source.Compositor)
 	{
 		Source = source;
+		ManipulationRedirectionMode = VisualInteractionSourceRedirectionMode.CapableTouchpadOnly;
 	}
 
 	/// <summary>
@@ -53,7 +57,17 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	/// <summary>
 	/// Indicates what input should be redirected to the InteractionTracker.
 	/// </summary>
-	public VisualInteractionSourceRedirectionMode ManipulationRedirectionMode { get; set; } = VisualInteractionSourceRedirectionMode.CapableTouchpadOnly;
+	public VisualInteractionSourceRedirectionMode ManipulationRedirectionMode
+	{
+		get => _manipulationRedirectionMode;
+		set
+		{
+			_manipulationRedirectionMode = value;
+
+			Source.IsTouchPadRedirected = (value & VisualInteractionSourceRedirectionMode.CapableTouchpadOnly) != 0;
+			Source.IsPointerWheelRedirected = (value & VisualInteractionSourceRedirectionMode.PointerWheelOnly) != 0;
+		}
+	}
 
 	public static VisualInteractionSource Create(Visual source) => new VisualInteractionSource(source);
 }
