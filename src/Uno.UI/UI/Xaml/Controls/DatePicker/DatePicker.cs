@@ -883,8 +883,15 @@ namespace Windows.UI.Xaml.Controls
 				var asyncOperation = _flyout.ShowAtAsync(this);
 				m_tpAsyncSelectionInfo = asyncOperation;
 				var getOperation = asyncOperation.AsTask();
-				await getOperation;
-				OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+				try
+				{
+					await getOperation;
+					OnGetDatePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+				}
+				catch (TaskCanceledException)
+				{
+					// The user canceled the flyout or the control was unloaded. We don't need to do anything.
+				}
 			}
 		}
 

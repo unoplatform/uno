@@ -18,6 +18,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using System.Runtime.CompilerServices;
+
 
 #if __IOS__
 using View = UIKit.UIView;
@@ -65,6 +67,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 		}
 
+		internal static IReadOnlyList<FlyoutBase> OpenFlyouts => _openFlyouts.AsReadOnly();
+
 		private void EnsurePopupCreated()
 		{
 			if (_popup == null)
@@ -81,7 +85,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
-				child.Loaded += OnPresenterLoaded;
+				if (child is not null)
+				{
+					child.Loaded += OnPresenterLoaded;
+				}
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
@@ -305,20 +312,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				OnClosed();
 
-				if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
-				{
-					_openFlyouts.Remove(this);
-
-					Closed?.Invoke(this, EventArgs.Empty);
-
-					if (_openFlyouts.Count > 0)
-					{
-						_openFlyouts[0].Hide();
-					}
-				}
+				RemoveFromOpenFlyouts();
 			}
 
 			return cancel;
+		}
+
+		private protected void RemoveFromOpenFlyouts()
+		{
+			if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
+			{
+				_openFlyouts.Remove(this);
+
+				Closed?.Invoke(this, EventArgs.Empty);
+
+				if (_openFlyouts.Count > 0)
+				{
+					_openFlyouts[0].Hide();
+				}
+			}
 		}
 
 		public void ShowAt(FrameworkElement placementTarget)
@@ -523,6 +535,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			_popup.IsOpen = true;
 
+			AddToOpenFlyouts();
+		}
+
+		private protected void AddToOpenFlyouts()
+		{
 			if (!_openFlyouts.Contains(this))
 			{
 				_openFlyouts.Add(this);

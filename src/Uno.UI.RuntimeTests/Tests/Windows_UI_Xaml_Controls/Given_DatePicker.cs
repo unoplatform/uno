@@ -1,17 +1,16 @@
 ﻿#if !WINDOWS_UWP
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Windows.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Private.Infrastructure;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.MUX.Helpers;
+using Windows.Globalization;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

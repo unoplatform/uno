@@ -53,7 +53,6 @@ namespace Windows.UI.Xaml.Controls
 				parent.RemoveChild(_picker);
 				parent.AddSubview(_picker);
 			}
-
 		}
 
 		private void OnEditingDidBegin(object sender, EventArgs e)
