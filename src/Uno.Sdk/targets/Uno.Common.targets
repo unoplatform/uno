@@ -21,7 +21,7 @@
 	<Import Project="Uno.Common.MacOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' " />
 	<Import Project="Uno.Common.Skia.targets"
-		Condition="'$(UnoRuntimeIdentifier)' == 'Skia' OR $(MSBuildProjectName.Contains('.Skia.')) " />
+		Condition="'$(UnoRuntimeIdentifier)' == 'Skia' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia' OR $(MSBuildProjectName.Contains('.Skia.')) " />
 	<Import Project="Uno.Common.Wasm.targets"
 		Condition="'$(UnoRuntimeIdentifier)' == 'WebAssembly' OR  $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' OR $(MSBuildProjectName.EndsWith('.Wasm')) OR $(MSBuildProjectName.EndsWith('.WebAssembly'))" />
 
