@@ -955,9 +955,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-
-
 		#endregion
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Inside_TextBox_FireDrawingEventsOnEveryRedraw()
+		{
+			var textBox = new TextBox
+			{
+				Text = "test"
+			};
+
+			await UITestHelper.Load(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.DisplayBlock.Inlines.FireDrawingEventsOnEveryRedraw);
+		}
+#endif
 #endif
 	}
 }

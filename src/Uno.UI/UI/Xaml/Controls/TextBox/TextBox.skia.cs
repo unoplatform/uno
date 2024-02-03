@@ -295,7 +295,7 @@ public partial class TextBox
 		set => Select(SelectionStart, value);
 	}
 
-	internal void UpdateDisplaySelection()
+	private void UpdateDisplaySelection()
 	{
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{

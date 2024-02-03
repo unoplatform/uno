@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetPreviousNetCoreMobile)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-netprevious.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Foldable</AssemblyName>
