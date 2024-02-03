@@ -13,9 +13,7 @@ namespace UITests.Shared.Lottie
 		{
 			this.InitializeComponent();
 
-			stretch.ItemsSource = Enum.GetValues(typeof(Stretch))
-				.Cast<Stretch>()
-				.Select(x => x.ToString());
+			stretch.ItemsSource = Enum.GetNames<Stretch>();
 			stretch.SelectedIndex = 2;
 
 			play1.Tapped += (snd, evt) => _ = player.PlayAsync(from.Value, to.Value, false);

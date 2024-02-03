@@ -273,8 +273,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var propertyDetails = GetStore(instance).GetPropertyDetails(property).ToList();
 
-			return Enum.GetValues(typeof(DependencyPropertyValuePrecedences))
-				.Cast<DependencyPropertyValuePrecedences>()
+			return Enum.GetValues<DependencyPropertyValuePrecedences>()
 				.Select(precedence => (propertyDetails[(int)precedence], precedence))
 				.ToArray();
 		}

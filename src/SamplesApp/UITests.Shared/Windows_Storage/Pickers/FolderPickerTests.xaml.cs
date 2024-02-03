@@ -41,7 +41,7 @@ namespace UITests.Windows_Storage.Pickers
 		{
 		}
 
-		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues(typeof(PickerLocationId)).OfType<PickerLocationId>().ToArray();
+		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues<PickerLocationId>();
 
 		public PickerLocationId SuggestedStartLocation { get; set; } = PickerLocationId.ComputerFolder;
 
@@ -49,7 +49,7 @@ namespace UITests.Windows_Storage.Pickers
 
 		public string CommitButtonText { get; set; } = string.Empty;
 
-		public PickerViewMode[] ViewModes { get; } = Enum.GetValues(typeof(PickerViewMode)).OfType<PickerViewMode>().ToArray();
+		public PickerViewMode[] ViewModes { get; } = Enum.GetValues<PickerViewMode>();
 
 		public PickerViewMode ViewMode { get; set; } = PickerViewMode.List;
 

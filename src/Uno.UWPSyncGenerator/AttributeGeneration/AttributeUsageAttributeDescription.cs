@@ -48,7 +48,7 @@ internal class AttributeUsageAttributeDescription : AttributeDescriptionBase
 	{
 		var isFirst = true;
 		var result = "";
-		var values = Enum.GetValues(typeof(AttributeTargets)).Cast<AttributeTargets>().OrderByDescending(a => (int)a);
+		var values = Enum.GetValues<AttributeTargets>().OrderByDescending(a => (int)a);
 		foreach (var value in values)
 		{
 			if ((value & valueToConvert) == value)
