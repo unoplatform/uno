@@ -21,7 +21,7 @@ The `GetDefaultAsync` method is implemented on all platforms and returns `null` 
 
 #### Android
 
-For Android, there are is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.VIBRATE" />
@@ -29,7 +29,7 @@ For Android, there are is one permission you must configure before using this AP
 
 #### Tizen
 
-In the case of Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared in `config.xml` file.
+For Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared in `config.xml` file.
 
 ## `SimpleHapticsController`
 
