@@ -39,7 +39,7 @@ namespace Uno.UI.DataBinding
 		public interface IPropertyChangedRegistrationHandler
 		{
 			/// <summary>
-			/// Registere a new <see cref="IPropertyChangedValueHandler"/> for the specified property
+			/// Retrieves a new <see cref="IPropertyChangedValueHandler"/> for the specified property
 			/// </summary>
 			/// <param name="dataContext">The datacontext to use</param>
 			/// <param name="propertyName">The property in the datacontext</param>
@@ -63,7 +63,7 @@ namespace Uno.UI.DataBinding
 			void NewValue(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args);
 
 			/// <summary>
-			/// Processa a property changed using <see cref="Action"/>-like signature (e.g. for <see cref="BindingItem"/>)
+			/// Process a property changed using <see cref="Action"/>-like signature (e.g. for <see cref="BindingItem"/>)
 			/// </summary>
 			void NewValue();
 		}

@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 	public partial class CalendarViewBaseItem : Control
 	{
-		internal CalendarViewBaseItem() // Make sure the ctor is not publically visible
+		internal CalendarViewBaseItem() // Make sure the ctor is not publicly visible
 		{
 			m_pParentCalendarView = null;
 #if DEBUG
@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//private void UpdateTextBlockAlignments();
 
 #if DEBUG && false
-		// DateTime has an int64 member which is not intutive enough. This method will convert it
+		// DateTime has an int64 member which is not intuutive enough. This method will convert it
 		// into numbers that we can easily read.
 		private void SetDateForDebug(DateTime value);
 #endif

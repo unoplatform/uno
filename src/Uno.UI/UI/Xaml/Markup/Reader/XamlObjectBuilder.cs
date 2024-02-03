@@ -1364,7 +1364,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		/// where 'xmlns', 'type' and the parentheses are optional.
 		/// </summary>
 		/// <remarks>
-		/// The presence of both 'type' and 'property', doesnt automatically imply an attached property:
+		/// The presence of both 'type' and 'property', doesn't automatically imply an attached property:
 		/// "The XAML parser also accepts dependency property names that include a qualifying class.
 		/// For example the parser interprets either "Button.Background" or "Control.Background"
 		/// as being a reference to the Background property in a style for a Button."

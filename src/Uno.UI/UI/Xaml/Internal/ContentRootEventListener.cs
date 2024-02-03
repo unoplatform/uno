@@ -55,7 +55,7 @@ internal class ContentRootEventListener
 
 	//	//FocusManager focusManager = VisualTree.GetFocusManagerForElement(sender as DependencyObject);
 
-	//	//// For TH2 we shipped without bubling up errors from TAB focus navigation
+	//	//// For TH2 we shipped without bubbling up errors from TAB focus navigation
 	//	//focusManager.ProcessTabStop(e.IsShiftPressed, out e.Handled);
 	//}
 

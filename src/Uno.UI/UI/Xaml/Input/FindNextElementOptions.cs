@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Input
 		public Rect ExclusionRect { get; set; }
 
 		/// <summary>
-		/// Gets or sets a valud indicating whether occlusivity
+		/// Gets or sets a value indicating whether occlusivity
 		/// should be ignored in the search.
 		/// </summary>
 		internal bool IgnoreOcclusivity { get; set; }

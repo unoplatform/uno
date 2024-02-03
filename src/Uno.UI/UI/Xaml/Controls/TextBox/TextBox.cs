@@ -1330,7 +1330,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
 			// For mouse and pen, the TextBox should focus on pointer press
-			// (and then capture pointer to make sure to handle the whol down->move->up sequence).
+			// (and then capture pointer to make sure to handle the whole down->move->up sequence).
 			// For touch we wait for the release to focus (avoid flickering in case of cancel due to scroll for instance).
 			args.Pointer.PointerDeviceType != PointerDeviceType.Touch;
 	}

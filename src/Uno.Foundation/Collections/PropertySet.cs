@@ -80,7 +80,7 @@ public sealed partial class PropertySet :
 	/// Tries to get the value for the specified key.
 	/// </summary>
 	/// <param name="key">The key to retrieve.</param>
-	/// <param name="value">The value correspodning with the key.</param>
+	/// <param name="value">The value corresponding with the key.</param>
 	/// <returns>True if found.</returns>
 	public bool TryGetValue(string key, out object? value)
 	{
@@ -101,7 +101,7 @@ public sealed partial class PropertySet :
 		get => _dictionary[key];
 		set
 		{
-			// Add or update and raise map changed accrodingly			
+			// Add or update and raise map changed accordingly
 			if (_dictionary.TryGetValue(key, out var existingValue))
 			{
 				if (value != existingValue)

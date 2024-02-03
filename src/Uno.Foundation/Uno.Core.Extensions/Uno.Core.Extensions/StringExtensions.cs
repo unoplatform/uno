@@ -101,7 +101,7 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Check if the specified string occures in the current System.String object. A parameter specifies the type of search to use for the specified string.
+		/// Check if the specified string occurs in the current System.String object. A parameter specifies the type of search to use for the specified string.
 		/// </summary>
 		/// <param name="instance"></param>
 		/// <param name="value">The string to seek.</param>

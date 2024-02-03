@@ -296,7 +296,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if DEBUG
-		// DateTime has an int64 member which is not intutive enough. This method will convert it
+		// DateTime has an int64 member which is not intuitive enough. This method will convert it
 		// into numbers that we can easily read.
 		private protected void SetDateForDebug(DateTime value)
 		{

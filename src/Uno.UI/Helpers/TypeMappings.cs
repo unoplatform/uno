@@ -20,7 +20,7 @@ public static class TypeMappings
 	/// <summary>
 	/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 	/// of the original type.
-	/// Similiar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
+	/// Similar to AllMappedTypeToOriginalTypeMappings but doesn't update whilst hot reload is paused
 	/// </summary>
 	private static IDictionary<Type, Type> MappedTypeToOriginalTypeMappings { get; set; } = new Dictionary<Type, Type>();
 
@@ -33,7 +33,7 @@ public static class TypeMappings
 	/// <summary>
 	/// This maps an original type to the most recent replacement type. This dictionary will only grow when
 	/// a different original type is modified.
-	/// Similiar to AllOriginalTypeToMappedType but doesn't update whilst hot reload is paused
+	/// Similar to AllOriginalTypeToMappedType but doesn't update whilst hot reload is paused
 	/// </summary>
 	private static IDictionary<Type, Type> OriginalTypeToMappedType { get; set; } = new Dictionary<Type, Type>();
 

@@ -450,7 +450,7 @@
 							<VisualStateGroup x:Name="ConsciousStates">
 
 								<VisualStateGroup.Transitions>
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 									<VisualTransition From="Expanded" To="Collapsed">
 
 										<Storyboard>
@@ -725,7 +725,7 @@
 								</VisualState>
 
 								<VisualState x:Name="NoIndicator">
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 									<VisualState.Setters>
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
 										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
@@ -754,7 +754,7 @@
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Vertical_NoIndicator">
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 									<VisualState.Setters>
 										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
 										<Setter Target="VerticalThumbTransform.ScaleX" Value="{ThemeResource SmallScrollThumbScale}" />
@@ -771,7 +771,7 @@
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Horizontal_NoIndicator">
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 									<VisualState.Setters>
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarPanningThumbBackgroundColor}" />
 										<Setter Target="HorizontalThumbTransform.ScaleY" Value="{ThemeResource SmallScrollThumbScale}" />
@@ -803,7 +803,7 @@
 										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 
-										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="VerticalThumbTransform.ScaleX" Value="1.0" />
@@ -829,7 +829,7 @@
 										<Setter Target="VerticalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
 										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 
-										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="VerticalThumbTransform.ScaleX" Value="1.0" />
 										<Setter Target="VerticalThumbTransform.TranslateX" Value="0" />
@@ -847,7 +847,7 @@
 										<Setter Target="HorizontalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
 										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 
-										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="HorizontalThumbTransform.ScaleY" Value="1.0" />
 										<Setter Target="HorizontalThumbTransform.TranslateY" Value="0" />
@@ -868,7 +868,7 @@
 										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 
-										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="VerticalThumbTransform.ScaleX" Value="1.0" />
@@ -895,7 +895,7 @@
 										<Setter Target="VerticalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
 										<Setter Target="VerticalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 
-										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 										<Setter Target="VerticalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="VerticalThumbTransform.ScaleX" Value="1.0" />
 										<Setter Target="VerticalThumbTransform.TranslateX" Value="0" />
@@ -913,7 +913,7 @@
 										<Setter Target="HorizontalTrackRect.Stroke" Value="{ThemeResource ScrollBarTrackStrokePointerOver}" />
 										<Setter Target="HorizontalTrackRect.Fill" Value="{ThemeResource ScrollBarTrackFillPointerOver}" />
 
-										<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+										<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 										<Setter Target="HorizontalThumb.Background.Color" Value="{ThemeResource ScrollBarThumbBackgroundColor}" />
 										<Setter Target="HorizontalThumbTransform.ScaleY" Value="1.0" />
 										<Setter Target="HorizontalThumbTransform.TranslateY" Value="0" />
@@ -926,7 +926,7 @@
 								</VisualState>
 
 								<VisualState x:Name="CollapsedWithoutAnimation">
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 
 									<!-- The storyboard below cannot be moved to a transition since transitions
                                              will not be run by the framework when animations are disabled in the system -->
@@ -951,7 +951,7 @@
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Vertical_CollapsedWithoutAnimation">
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 
 									<!-- The storyboard below cannot be moved to a transition since transitions
                                              will not be run by the framework when animations are disabled in the system -->
@@ -968,7 +968,7 @@
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Horizontal_CollapsedWithoutAnimation">
-									<!-- Animations are disbaled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
+									<!-- Animations are disabled on WASM : https://github.com/unoplatform/uno/issues/3378 -->
 
 									<!-- The storyboard below cannot be moved to a transition since transitions
                                              will not be run by the framework when animations are disabled in the system -->

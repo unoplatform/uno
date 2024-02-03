@@ -497,7 +497,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				m_layoutExtent = default;
 			}
 
-			// We got a new viewport, we dont need to wait for layout updated anymore to
+			// We got a new viewport, we don't need to wait for layout updated anymore to
 			// see if our request for a pending shift was handled.
 			m_layoutUpdatedRevoker?.Dispose();
 		}

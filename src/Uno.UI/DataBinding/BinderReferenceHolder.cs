@@ -119,7 +119,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Retreives a list of binders that are native views that
+		/// Retrieves a list of binders that are native views that
 		/// don't have a parent, and are not attached to the window.
 		/// An inactive binder may be a memory leak.
 		/// </summary>
@@ -160,7 +160,7 @@ namespace Uno.UI.DataBinding
 		public static T[] GetInactiveChildInstancesOfType<T>() => GetInactiveChildViewBinders().Select(h => h._target.Target).OfType<T>().ToArray();
 
 		/// <summary>
-		/// Retreives statistics about the live instances.
+		/// Retrieves statistics about the live instances.
 		/// </summary>
 		public static System.Tuple<Type, int>[] GetReferenceStats()
 		{
@@ -179,7 +179,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Retreives statistics about the live instances.
+		/// Retrieves statistics about the live instances.
 		/// </summary>
 		public static void LogReferenceStatsWithDetails()
 		{
@@ -257,7 +257,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Retreives statistics about the live inactive instances.
+		/// Retrieves statistics about the live inactive instances.
 		/// </summary>
 		public static System.Tuple<Type, int>[] GetInactiveViewReferencesStats()
 		{

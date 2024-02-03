@@ -119,7 +119,7 @@ namespace Uno.Extensions
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list"></param>
 		/// <param name="selector">Select items that have to be replaced</param>
-		/// <param name="replacement">Teh remplacement item</param>
+		/// <param name="replacement">The replacement item</param>
 		/// <returns>Number of items replaced</returns>
 		public static int Replace<T>(this IList<T> list, Func<T, bool> selector, T replacement)
 		{
@@ -202,7 +202,7 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Gets wether a list contains a given index
+		/// Gets whether a list contains a given index
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list">List to test</param>
@@ -214,7 +214,7 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Gets wether a list contains a given index
+		/// Gets whether a list contains a given index
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="list">List to test</param>

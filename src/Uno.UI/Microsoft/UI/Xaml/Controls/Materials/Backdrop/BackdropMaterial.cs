@@ -57,7 +57,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			{
 				_micaController.Value = new MicaController();
 				// TODO Uno specific: Actual Mica is not yet supported on any target, we skip the application for now,
-				// it will be superseeded by SystemBackdrop in https://github.com/unoplatform/uno/issues/14853.
+				// it will be superseded by SystemBackdrop in https://github.com/unoplatform/uno/issues/14853.
 				//if (!_micaController.Value.SetTarget(currentWindow))
 				//{
 				//	_micaController.Value = null;

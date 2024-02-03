@@ -159,7 +159,7 @@ internal partial class FontFamilyLoader
 	/// <summary>
 	/// Loads a font asynchronously
 	/// </summary>
-	/// <returns>A task indicating if the font loaded sucessfuly</returns>
+	/// <returns>A task indicating if the font loaded successfully</returns>
 	internal async Task<bool> LoadFontAsync()
 	{
 		try

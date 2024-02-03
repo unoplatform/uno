@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml
 
 	/// <summary>
 	/// A marking interface used to determine if a <see cref="SetterBase"/> instance is a <see cref="Setter{T}"/>. 
-	/// This is used for binary backward compatitility
+	/// This is used for binary backward compatibility
 	/// </summary>
 	internal interface ICSharpPropertySetter
 	{

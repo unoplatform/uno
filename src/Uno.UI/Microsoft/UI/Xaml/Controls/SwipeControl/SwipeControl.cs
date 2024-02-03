@@ -210,8 +210,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		//Swipe control is usually placed in a list view item. When this is the case the swipe item needs to be the same size as the list view item.
 		//This is to ensure that swiping from anywhere on the list view item causes pointer pressed events in the SwipeControl.  Without this measure
 		//override it is usually not the case that swipe control will fill the available space.  This is because list view item is a content control
-		//and those by convension only provide it's children space for at most their desired size. However list view item itself will take up a different
-		//ammount of space. In the past we solved this issue by requiring the list view item to have the HorizontalContentAlignment and VerticalContentAlignment
+		//and those by convention only provide it's children space for at most their desired size. However list view item itself will take up a different
+		//amount of space. In the past we solved this issue by requiring the list view item to have the HorizontalContentAlignment and VerticalContentAlignment
 		//set to stretch. This property changes the measure cycle to give as much space as possible to the list view items children.  Instead we can
 		//just do this ourselves in this measure override and prevent the confusing need for properties set on the parent of swipe control to use it at all.
 		protected override Size MeasureOverride(Size availableSize)
@@ -985,8 +985,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			// Create and initialize the Swipe animations:
 			// If the swipe control is already opened it should not be possible to open the opposite side's items, without first closing the swipe control.
-			// This prevents the user from flicking the swipe control closed and accidently opening the other due to inertia.
-			// To acheive this we insert the isFarOpen and isNearOpen boolean properties on the interaction tracker and alter the expression output based on these.
+			// This prevents the user from flicking the swipe control closed and accidentally opening the other due to inertia.
+			// To achieve this we insert the isFarOpen and isNearOpen boolean properties on the interaction tracker and alter the expression output based on these.
 			// The opened state is maintained in the interaction trackers IdleStateEntered handler, this means we need to ensure this state is entered each time the swipe control
 			// is opened or closed.
 
@@ -1878,7 +1878,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private bool IsTranslationFacadeAvailableForSwipeControl(UIElement element)
 		{
-			//For now Facade's are causing more issues than they are worth for swipe control. Revist this
+			//For now Facade's are causing more issues than they are worth for swipe control. Revisit this
 			//when we have a little more time.
 
 			//There are concerns about swipe consumers having taken a dependency on the ElementCompositionPreview

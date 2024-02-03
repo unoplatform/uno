@@ -407,7 +407,7 @@ namespace Uno.UI.Tests.GridTests
 			Assert.AreEqual(new Size(20, 5), c1.RequestedDesiredSize);
 			Assert.AreEqual(new Size(11, 11), c2.RequestedDesiredSize);
 			Assert.AreEqual(1, c1.MeasureCallCount);
-			Assert.AreEqual(1, c2.MeasureCallCount); // The measure count is 1 beceause the grid has a recognized pattern (Nx1). It would be 2 otherwise.
+			Assert.AreEqual(1, c2.MeasureCallCount); // The measure count is 1 because the grid has a recognized pattern (Nx1). It would be 2 otherwise.
 			Assert.AreEqual(0, c1.ArrangeCallCount);
 			Assert.AreEqual(0, c2.ArrangeCallCount);
 

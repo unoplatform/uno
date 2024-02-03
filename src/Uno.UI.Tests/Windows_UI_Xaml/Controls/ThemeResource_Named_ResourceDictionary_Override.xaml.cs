@@ -42,7 +42,7 @@ public class ThemeResource_Named_ResourceDictionary_Override_Custom : ResourceDi
 		// Toggle whether we use MyColorGreen.xaml or MyColorRed.xaml as the merged-dict override
 		_selectedColorUri = ColorUri = ColorUri == RedUri ? GreenUri : RedUri;
 
-		// Instanciating this dictionary multiple times in different XAML scopes
+		// Instantiating this dictionary multiple times in different XAML scopes
 		// should not force the inner merged dictionaries to the first instance ever
 		// created for "BrushUri".
 		var myBrush = new ResourceDictionary { Source = new Uri(BrushUri) };

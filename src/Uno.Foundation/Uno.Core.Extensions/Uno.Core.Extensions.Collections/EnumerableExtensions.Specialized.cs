@@ -149,7 +149,7 @@ namespace Uno.Extensions.Specialized
 		/// </summary>
 		/// <remarks>
 		/// This method allows looping on every item of the source without enumerating it
-		/// If enumeration is not a concern, you should avoid using this method if you're doing fuctionnal or declarative programming.
+		/// If enumeration is not a concern, you should avoid using this method if you're doing functional or declarative programming.
 		/// </remarks>
 		public static void ForEach(this IEnumerable enumerable, Action<object> action)
 		{

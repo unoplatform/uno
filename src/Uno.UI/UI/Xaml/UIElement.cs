@@ -844,7 +844,7 @@ namespace Microsoft.UI.Xaml
 		/// Sets the specified dependency property value using the format "name|value"
 		/// </summary>
 		/// <param name="dependencyPropertyNameAndValue">The name and value of the property</param>
-		/// <returns>The currenty set value at the Local precedence</returns>
+		/// <returns>The currently set value at the Local precedence</returns>
 		/// <remarks>
 		/// The signature of this method was chosen to work around a limitation of Xamarin.UITest with regards to
 		/// parameters passing on iOS, where the number of parameters follows a unconventional set of rules. Using

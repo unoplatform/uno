@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 		{
 			this.InitializeComponent();
 #if __ANDROID__
-			// When we open yhe keyboard on Anbdroid, it will display the status bar
+			// When we open yhe keyboard on Android, it will display the status bar
 			// As this test focus the password, it's easier to always make it visible
 			// and then make sure to compare only well-known parts of the screen.
 			var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();

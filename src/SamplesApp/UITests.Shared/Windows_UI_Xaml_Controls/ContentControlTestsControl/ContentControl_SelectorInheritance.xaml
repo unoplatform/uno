@@ -57,7 +57,7 @@
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-                        <!-- TODO : Remove ContentTemplateSelector/Content/ContentTenplate when bug #7078 will be fixed (proper ContentPresenter/ContentControl hirerarchy -->
+                        <!-- TODO : Remove ContentTemplateSelector/Content/ContentTemplate when bug #7078 will be fixed (proper ContentPresenter/ContentControl hierarchy -->
 						<ContentPresenter x:Name="ContentPresenterIcon" 
 										  Opacity="1"
 										  AutomationProperties.AccessibilityView="Raw"

@@ -13,7 +13,7 @@ namespace Uno.UI.DataBinding
 	/// This pool provides <see cref="ManagedWeakReference"/> instances, which are expensive to create (<see cref="GCHandle.Alloc(object)"/> and forces the GC
 	/// to track many of those references to the same object. This pool also handles the detection 
 	/// of <see cref="IWeakReferenceProvider"/> instances. Those instances are most likely to be 
-	/// weakly referenceed, and can provide their own reference more efficiently.
+	/// weakly referenced, and can provide their own reference more efficiently.
 	/// </remarks>
 	public static class WeakReferencePool
 	{

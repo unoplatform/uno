@@ -121,7 +121,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 
 			// Wait until loaded to apply the fallback icon source property because we need the icon source
-			// properties to be set before we create the icon element from it.  If those poperties are bound in,
+			// properties to be set before we create the icon element from it.  If those properties are bound in,
 			// they will not have been set during OnApplyTemplate.
 			OnFallbackIconSourcePropertyChanged(null);
 		}
@@ -130,7 +130,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			if (m_animatedVisual is { } visual)
 			{
-				// Animated Icon scales using the Uniform strategy, meaning that it scales the horizonal and vertical
+				// Animated Icon scales using the Uniform strategy, meaning that it scales the horizontal and vertical
 				// dimensions equally by the maximum amount that doesn't exceed the available size in either dimension.
 				// If the available size is infinite in both dimensions then we don't scale the visual. Otherwise, we
 				// calculate the scale factor by comparing the default visual size to the available size. This produces 2

@@ -131,12 +131,12 @@ public partial class MediaTransportControls // Strings
 			public const string Error = nameof(Error);
 			public const string Disabled = nameof(Disabled);
 		}
-		public class AudioSelectionAvailablityStates
+		public class AudioSelectionAvailabilityStates
 		{
 			public const string AudioSelectionAvailable = nameof(AudioSelectionAvailable);
 			public const string AudioSelectionUnavailable = nameof(AudioSelectionUnavailable);
 		}
-		public class CCSelectionAvailablityStates
+		public class CCSelectionAvailabilityStates
 		{
 			public const string CCSelectionAvailable = nameof(CCSelectionAvailable);
 			public const string CCSelectionUnavailable = nameof(CCSelectionUnavailable);

@@ -4373,7 +4373,7 @@
 				Value="Hidden" />
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
-		<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
+		<!-- macOS PasswordBox implementation will not display the RevealButton -->
 		<macos:Setter Property="IsPasswordRevealButtonEnabled"
 					  Value="False" />
 		<Setter Property="Template">
@@ -6902,7 +6902,7 @@
 							</VisualStateGroup>
 							<!-- Media state visual states -->
 							<!-- Audio Selection Button visibility states -->
-							<VisualStateGroup x:Name="AudioSelectionAvailablityStates">
+							<VisualStateGroup x:Name="AudioSelectionAvailabilityStates">
 								<VisualState x:Name="AudioSelectionAvailable">
 									<Storyboard>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
@@ -6919,7 +6919,7 @@
 							</VisualStateGroup>
 							<!-- Video volume visibility states -->
 							<!-- Closed Captioning Selection Button visibility states -->
-							<VisualStateGroup x:Name="CCSelectionAvailablityStates">
+							<VisualStateGroup x:Name="CCSelectionAvailabilityStates">
 								<VisualState x:Name="CCSelectionAvailable">
 									<Storyboard>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"

@@ -215,7 +215,7 @@ namespace Uno.UI.Xaml.Core
 					//_rootScrollViewer.tIsStandardNameScopeOwner = true;
 					//_rootScrollViewer.IsStandardNameScopeMember = false;
 
-					//// Add the visual root as the child of the root ScrollViwer
+					//// Add the visual root as the child of the root ScrollViewer
 					//AddVisualRootToRootScrollViewer(PublicRootVisual);
 
 					//// Add the root ScrollViewer to the hidden root visual
@@ -260,7 +260,7 @@ namespace Uno.UI.Xaml.Core
 		/// the object is a Popup, or if the root of its visual tree is the
 		/// logical child of a Popup. If so, it gets the PopupRoot associated
 		/// with that Popup. Otherwise, this method falls back to returning
-		/// the PopupRoot of the core's main VisuaTree.
+		/// the PopupRoot of the core's main VisualTree.
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns></returns>
@@ -419,7 +419,7 @@ namespace Uno.UI.Xaml.Core
 
 		private void ResetRoots()
 		{
-			//TODO Uno: We currently never reset existing roots for backwards compatability
+			//TODO Uno: We currently never reset existing roots for backwards compatibility
 			//with existing infrastructure. This should be adjusted later.
 			//if (_connectedAnimationRoot != null)
 			//{

@@ -280,7 +280,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 
 #if DEBUG
-					// We should not be registring the same element twice. Even through it is functionally ok,
+					// We should not be registering the same element twice. Even through it is functionally ok,
 					// we will end up spending more time during arrange than we must.
 					// However checking if an element is already in the list every time a new element is registered is worse for perf.
 					// So, I'm leaving an assert here to catch regression in our code but in release builds we run without the check.

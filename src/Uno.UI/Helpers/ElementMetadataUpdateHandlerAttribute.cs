@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Defines a handler for an type of element that is found in the visual tree
-/// which will be invokved if there are metadata updates
+/// which will be invoked if there are metadata updates
 /// </summary>
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
 public sealed class ElementMetadataUpdateHandlerAttribute : Attribute

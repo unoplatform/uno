@@ -202,7 +202,7 @@ namespace Uno.UI.Helpers.WinUI
 				s_IsCoreWindowActivationModeAvailable_isAvailable = IsSystemDll() || IsRS3OrHigher();
 			}
 			// In RS3 we got CoreWindow.ActivationMode API which can be queried for window activation state,
-			// and particularly in a Component UI host appto check if the compoenent is active (while host isn't).
+			// and particularly in a Component UI host app to check if the component is active (while host isn't).
 			return s_IsCoreWindowActivationModeAvailable_isAvailable.Value;
 		}
 
@@ -379,7 +379,7 @@ namespace Uno.UI.Helpers.WinUI
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
 			// Uno specific: WinUI caches using static variables inside of a template function,
-			// which creates a separate cache for eache apiVersion value. Instead, we use a dictionary
+			// which creates a separate cache for each apiVersion value. Instead, we use a dictionary
 			// for the same functionality.
 			if (!isApiContractVxAvailable.TryGetValue(apiVersion, out var available))
 			{

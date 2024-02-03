@@ -48,9 +48,9 @@ public sealed partial class XamlRoot
 		{
 			if (_isMeasureWaiting || _isArrangeWaiting)
 			{
-				// If the Render request happends during a UI update pass, and later in the same
+				// If the Render request happens during a UI update pass, and later in the same
 				// dispatched iteration a measure is requested, visuals may be in an
-				// inconstistent state. We need to skip this request to be rescheduled
+				// inconsistent state. We need to skip this request to be rescheduled
 				// to run after the pending measure/arrange so the visuals are drawn properly.
 				DispatchQueueRender();
 

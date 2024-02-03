@@ -133,7 +133,7 @@ partial class App
 
 	/// <summary>
 	/// Verifies that ApplicationData are available immediately after the application class is created
-	/// and the data are stored in proper application specific lcoations.
+	/// and the data are stored in proper application specific locations.
 	/// </summary>
 	public void AssertApplicationData()
 	{

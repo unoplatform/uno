@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// Use this to launch the loading of a font before it is actually required to
 		/// minimize loading time and prevent potential flicking.
 		/// </summary>
-		/// <returns>True is the font loaded successfuly, otherwise false.</returns>
+		/// <returns>True is the font loaded successfully, otherwise false.</returns>
 		internal static Task<bool> PreloadAsync(FontFamily family)
 			=> family._loader.LoadFontAsync();
 

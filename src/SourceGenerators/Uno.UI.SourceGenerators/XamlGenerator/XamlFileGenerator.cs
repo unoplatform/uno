@@ -1547,7 +1547,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		/// <summary>
 		/// Determines if the provided object is setting the "IsNativeStyle" property, used in
-		/// conjuction with "FeatureConfiguration.Style.UseUWPDefaultStyles"
+		/// conjunction with "FeatureConfiguration.Style.UseUWPDefaultStyles"
 		/// </summary>
 		private bool IsNativeStyle(XamlObjectDefinition style)
 			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
@@ -3775,7 +3775,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									if (isStaticTarget)
 									{
 										// First part is a type for static method binding and should
-										// overide the original source type
+										// override the original source type
 										currentType = GetType(RewriteNamespaces(parts[0]));
 										parts.RemoveAt(0);
 									}
@@ -6204,7 +6204,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		/// <remarks>
 		/// The lookup is performed by searching for the x:Name, then determine if one of the ancestors
-		/// is known. This avoids doing linear lookups at many levels recusively for the same nodes.
+		/// is known. This avoids doing linear lookups at many levels recursively for the same nodes.
 		/// </remarks>
 		private void BuildNameCache(XamlObjectDefinition topLevelControl)
 		{
@@ -6334,7 +6334,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (HasImplicitViewPinning)
 					{
-						// Build the ElemenStub builder holder variable to ensute that the element stub
+						// Build the ElementStub builder holder variable to ensute that the element stub
 						// does not keep a hard reference to "this" through the closure needed to keep
 						// the namescope and other variables. The ElementStub, in turn keeps a weak
 						// reference to the builder's target instance.

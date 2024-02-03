@@ -32,7 +32,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			this.InitializeComponent();
 			TestTarget.Stroke = _brushes[0];
 
-			// Apperently, these scenarios already work without the fix..?:
+			// Apparently, these scenarios already work without the fix..?:
 			// - 1 OK: assign Shape.Stroke directly
 			// - 2 OK: assign Shape.Stroke.Color directly
 			// - 3 OK: updating Shape.Stroke.Color(ThemeResource) with (dark/light) theme change

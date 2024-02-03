@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			// On Windows, explicitly calling SetValue(dp, DP.UnsetValue) or ClearValue(dp) doesnt clear the animation value.
+			// On Windows, explicitly calling SetValue(dp, DP.UnsetValue) or ClearValue(dp) doesn't clear the animation value.
 			// (note: Both the methods target local value)
 			// This means that we should not be handling those special case in here. Instead,
 			// when Timeline clears the animation value, it should also clears the filling animation value at the same time.

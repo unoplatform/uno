@@ -409,7 +409,7 @@ namespace Microsoft.UI.Xaml.Controls
 				case DirectUI.TrackableDateCollection.CollectionChanging.ItemInserting:
 					{
 						// when inserting an item, we should verify the new adding date is not blackout.
-						// also we need to verify this adding operation doesn't break the limition of Selection mode.
+						// also we need to verify this adding operation doesn't break the limitation of Selection mode.
 						ValidateSelectingDateIsNotBlackout(addingDate);
 
 						uint size = 0;

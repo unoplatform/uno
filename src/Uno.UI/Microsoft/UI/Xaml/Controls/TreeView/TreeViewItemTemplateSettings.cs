@@ -12,7 +12,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 public partial class TreeViewItemTemplateSettings : DependencyObject
 {
 	/// <summary>
-	/// Gets the visibilty of a collapsed glyph.
+	/// Gets the visibility of a collapsed glyph.
 	/// </summary>
 	public Visibility CollapsedGlyphVisibility
 	{
@@ -30,7 +30,7 @@ public partial class TreeViewItemTemplateSettings : DependencyObject
 	}
 
 	/// <summary>
-	/// Gets the visibilty of an expanded glyph.
+	/// Gets the visibility of an expanded glyph.
 	/// </summary>
 	public Visibility ExpandedGlyphVisibility
 	{

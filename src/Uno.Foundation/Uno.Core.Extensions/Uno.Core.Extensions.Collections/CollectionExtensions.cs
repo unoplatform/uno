@@ -110,7 +110,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Projects the specified collection to a <see cref="List{T}"/>.
 		/// </summary>
-		/// <remarks>This method can be useful when the enumeation of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
+		/// <remarks>This method can be useful when the enumeration of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
 		public static List<TResult> SelectToList<TSource, TResult>(this ICollection<TSource> source, Func<TSource, TResult> selector)
 		{
 			var output = new List<TResult>(source.Count);
@@ -126,7 +126,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Projects the specified collection to a <see cref="List{T}"/>.
 		/// </summary>
-		/// <remarks>This method can be useful when the enumeation of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
+		/// <remarks>This method can be useful when the enumeration of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
 		public static List<TResult> SelectToList<TSource, TResult>(this IList<TSource> source, Func<TSource, TResult> selector)
 		{
 			var output = new List<TResult>(source.Count);
@@ -142,7 +142,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Projects a <see cref="List{T}"/>. to an other <see cref="List{T}"/>.
 		/// </summary>
-		/// <remarks>This method can be useful when the enumeation of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
+		/// <remarks>This method can be useful when the enumeration of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
 		public static List<TResult> SelectToList<TSource, TResult>(this List<TSource> source, Func<TSource, TResult> selector)
 		{
 			var output = new List<TResult>(source.Count);
@@ -158,7 +158,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Projects the specified <see cref="List{T}"/> to an other <see cref="List{T}"/> with an index.
 		/// </summary>
-		/// <remarks>This method can be useful when the enumeation of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
+		/// <remarks>This method can be useful when the enumeration of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
 		public static List<TResult> SelectToList<TSource, TResult>(this List<TSource> source, Func<TSource, int, TResult> selector)
 		{
 			var output = new List<TResult>(source.Count);
@@ -175,7 +175,7 @@ namespace Uno.Extensions
 		/// <summary>
 		/// Filters the specified <see cref="List{T}"/> using a predicate.
 		/// </summary>
-		/// <remarks>This method can be useful when the enumeation of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
+		/// <remarks>This method can be useful when the enumeration of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
 		public static List<TSource> WhereToList<TSource>(this List<TSource> source, Func<TSource, bool> selector)
 		{
 			var output = new List<TSource>(source.Count);

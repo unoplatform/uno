@@ -17426,7 +17426,7 @@
               </VisualStateGroup>
               <!-- Media state visual states -->
               <!-- Audio Selection Button visibility states -->
-              <VisualStateGroup x:Name="AudioSelectionAvailablityStates">
+              <VisualStateGroup x:Name="AudioSelectionAvailabilityStates">
                 <VisualState x:Name="AudioSelectionAvailable">
                   <VisualState.Setters>
                     <Setter Target="AudioTracksSelectionButton.Visibility" Value="Visible" />
@@ -17436,7 +17436,7 @@
               </VisualStateGroup>
               <!-- Video volume visibility states -->
               <!-- Closed Captioning Selection Button visibility states -->
-              <VisualStateGroup x:Name="CCSelectionAvailablityStates">
+              <VisualStateGroup x:Name="CCSelectionAvailabilityStates">
                 <VisualState x:Name="CCSelectionAvailable">
                   <VisualState.Setters>
                     <Setter Target="CCSelectionButton.Visibility" Value="Visible" />
