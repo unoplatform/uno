@@ -10,6 +10,11 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	{
 	}
 
+	protected override void EnterState(IInteractionTrackerOwner owner)
+	{
+		owner.InteractingStateEntered(_interactionTracker, null);
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
 	{
 		// Request ignored
