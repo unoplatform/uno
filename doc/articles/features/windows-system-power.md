@@ -37,7 +37,7 @@ For general usage, see [PowerManager Class](https://learn.microsoft.com/uwp/api/
 
 ### Android
 
-For Android, there are is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.BATTERY_STATS" />
