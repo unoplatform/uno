@@ -3,6 +3,7 @@
 // MUX Reference TreeView.cpp, tag winui3/release/1.4.2
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -295,7 +296,7 @@ public partial class TreeView : Control
 		DragItemsCompleted?.Invoke(this, treeViewArgs);
 	}
 
-	private void OnListControlSelectionChanged(object sender, SelectionChangedEventArgs args)
+	private async void OnListControlSelectionChanged(object sender, SelectionChangedEventArgs args)
 	{
 		if (SelectionMode == TreeViewSelectionMode.Single)
 		{
@@ -324,7 +325,12 @@ public partial class TreeView : Control
 
 			if (SelectedItem != newSelectedItem)
 			{
+				//This Yield is necessary here, to allow selection of items that have children.
+				//Preventing errors in UIElement PointerReleasedEvent
+				//The given key 'UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests.TreeViewItemSource' was not present in the dictionary.
+				await Task.Yield();
 				SelectedItem = newSelectedItem;
+
 			}
 		}
 	}

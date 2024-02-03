@@ -32,6 +32,19 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 				}
 			}
 		}
+		private TreeViewItemSource m_testTreeViewSelectedItem;
+		public TreeViewItemSource TestTreeViewSelectedItem
+		{
+			get { return m_testTreeViewSelectedItem; }
+			set
+			{
+				if (m_testTreeViewSelectedItem != value)
+				{
+					m_testTreeViewSelectedItem = value;
+					NotifyPropertyChanged(nameof(TestTreeViewSelectedItem));
+				}
+			}
+		}
 
 		private void NotifyPropertyChanged(String propertyName)
 		{
@@ -46,16 +59,17 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			this.DataContext = this;
 			this.InitializeComponent();
 
-			//var child1 = new TreeViewItemSource() { Content = "child1" };
-			//var children1 = new ObservableCollection<TreeViewItemSource>() { child1 };
-			//var item1 = new TreeViewItemSource() { Content = "item1", Children = children1 };
+			var child1 = new TreeViewItemSource() { Content = "child1" };
+			var children1 = new ObservableCollection<TreeViewItemSource>() { child1 };
+			var item1 = new TreeViewItemSource() { Content = "item1", Children = children1 };
 
-			var child2 = new TreeViewItemSource() { Content = "child1", IsSelected = true };
+			var child2 = new TreeViewItemSource() { Content = "child2", IsSelected = true };
 			var children2 = new ObservableCollection<TreeViewItemSource>() { child2 };
 			var item2 = new TreeViewItemSource() { Content = "item2", Children = children2 };
 
-			TestTreeViewItemsSource = new ObservableCollection<TreeViewItemSource>() { /*item1,*/ item2 };
+			TestTreeViewItemsSource = new ObservableCollection<TreeViewItemSource>() { item1, item2 };
 
+			//TestTreeViewSelectedItem = item1;
 
 			StackPanel panel = new StackPanel
 			{

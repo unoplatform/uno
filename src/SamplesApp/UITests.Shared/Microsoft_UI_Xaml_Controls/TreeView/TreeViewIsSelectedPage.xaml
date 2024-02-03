@@ -26,7 +26,24 @@
 					</DataTemplate>
 				</muxcontrols:TreeView.ItemTemplate>
 			</muxcontrols:TreeView>
-			<StackPanel x:Name="SecondTreeView"/>
+
+			<TextBlock Text="TreeView to Test SelectedItem"/>
+			<muxcontrols:TreeView 
+				HorizontalAlignment="Left"
+				ItemsSource="{Binding TestTreeViewItemsSource}"
+				SelectedItem="{Binding TestTreeViewSelectedItem}">
+				<muxcontrols:TreeView.ItemTemplate>
+					<DataTemplate>
+						<muxcontrols:TreeViewItem 
+								ItemsSource="{Binding Children}"
+								Content="{Binding Content}"
+								IsExpanded="True"/>
+					</DataTemplate>
+				</muxcontrols:TreeView.ItemTemplate>
+			</muxcontrols:TreeView>
+
+			<TextBlock Text="TreeView to Test Content"/>
+			<StackPanel HorizontalAlignment="Left" x:Name="SecondTreeView"/>
 		</StackPanel>
 	</Grid>
 </utilities:MUXTestPage>
