@@ -11,5 +11,6 @@
 	<StackPanel Orientation="Horizontal" Spacing="20" VerticalAlignment="Top" HorizontalAlignment="Left">
 		<ContentPresenter x:Name="compPresenter1" Width="200" Height="200"/>
 		<ContentPresenter x:Name="compPresenter2" Width="200" Height="200"/>
+		<ContentPresenter x:Name="compPresenter3" Width="200" Height="200"/>
 	</StackPanel>
 </UserControl>
