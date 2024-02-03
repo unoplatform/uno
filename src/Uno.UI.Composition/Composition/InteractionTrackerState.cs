@@ -11,7 +11,13 @@ internal abstract class InteractionTrackerState
 	public InteractionTrackerState(InteractionTracker interactionTracker)
 	{
 		_interactionTracker = interactionTracker;
+		if (interactionTracker.Owner is { } owner)
+		{
+			// TODO: Should be enqueued to dispatcher or called directly?
+			EnterState(owner);
+		}
 	}
 
+	protected abstract void EnterState(IInteractionTrackerOwner owner);
 	internal abstract int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse);
 }

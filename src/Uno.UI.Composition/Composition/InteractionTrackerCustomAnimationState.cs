@@ -10,6 +10,12 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
+	protected override void EnterState(IInteractionTrackerOwner owner)
+	{
+		// TODO: Args.
+		owner.CustomAnimationStateEntered(_interactionTracker, null);
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
 	{
 		// TODO: Stop current animation
