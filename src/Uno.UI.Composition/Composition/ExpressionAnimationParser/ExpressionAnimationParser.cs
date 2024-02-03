@@ -29,7 +29,6 @@ internal sealed class ExpressionAnimationParser
 
 	private ExpressionAnimationToken Current => _tokens[_position];
 
-
 	public AnimationExpressionSyntax Parse()
 	{
 		var expression = ParseExpression();
@@ -97,9 +96,9 @@ internal sealed class ExpressionAnimationParser
 	{
 		if (Current.Kind == ExpressionAnimationTokenKind.OpenParenToken)
 		{
-			var open = NextToken();
+			_ = NextToken(); // open
 			var expression = ParseExpression();
-			var close = Match(ExpressionAnimationTokenKind.CloseParenToken);
+			Match(ExpressionAnimationTokenKind.CloseParenToken);
 			return new AnimationParenthesizedExpressionSyntax(expression);
 		}
 
@@ -118,9 +117,10 @@ internal sealed class ExpressionAnimationParser
 			identifierOrMemberAccess = new AnimationMemberAccessExpression(identifierOrMemberAccess, identifier);
 		}
 
-
 		if (Current.Kind == ExpressionAnimationTokenKind.OpenParenToken)
 		{
+			_ = NextToken();
+
 			// Function call.
 			var argumentsBuilder = ImmutableArray.CreateBuilder<AnimationExpressionSyntax>();
 			if (Current.Kind != ExpressionAnimationTokenKind.CloseParenToken)

@@ -77,7 +77,6 @@ internal sealed class ExpressionAnimationLexer
 				value = int.Parse(numberText, CultureInfo.InvariantCulture);
 			}
 
-
 			return new ExpressionAnimationToken(ExpressionAnimationTokenKind.NumericLiteralToken, value);
 		}
 
@@ -92,7 +91,7 @@ internal sealed class ExpressionAnimationLexer
 		if (char.IsLetter(Current))
 		{
 			int start = _position;
-			while (char.IsLetterOrDigit(Current))
+			while (char.IsLetterOrDigit(Current) || Current == '_')
 			{
 				_position++;
 			}

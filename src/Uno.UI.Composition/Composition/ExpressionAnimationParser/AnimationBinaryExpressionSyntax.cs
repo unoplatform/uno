@@ -72,7 +72,7 @@ internal class AnimationBinaryExpressionSyntax : AnimationExpressionSyntax
 				(float leftFloat, float rightFloat) => leftFloat / rightFloat,
 				(double leftDouble, double rightDouble) => leftDouble / rightDouble,
 				(decimal leftDecimal, decimal rightDecimal) => leftDecimal / rightDecimal,
-				(byte leftByte, int rightByte) => leftByte / rightByte,
+				(byte leftByte, byte rightByte) => leftByte / rightByte,
 				(short leftShort, short rightShort) => leftShort / rightShort,
 				(int leftInt, int rightInt) => leftInt / rightInt,
 				(Vector3 leftVector3, Vector3 rightVector3) => leftVector3 / rightVector3,
