@@ -52,13 +52,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="AssemblyInfo.cs" />
+		<UpToDateCheckInput Remove="AssemblyInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
-	  <Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\CachedTuple.cs" Link="Helpers\CachedTuple.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\FuncMemoizeExtensions.cs" Link="Helpers\FuncMemoizeExtensions.cs" />
+		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions\Funcs.cs" Link="Helpers\Funcs.cs" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

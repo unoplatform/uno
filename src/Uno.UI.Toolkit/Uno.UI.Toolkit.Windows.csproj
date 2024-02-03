@@ -26,9 +26,9 @@
 		<Compile Include="..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
 	</ItemGroup>
 
-	<ItemGroup   Condition="'$(UNO_UWP_BUILD)'!='true'" >
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'" >
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
-		
+
 		<Compile Include="..\Uno.UI\Extensions\ViewExtensions.visual-tree.cs" Link="Uno.UI\Extensions\ViewExtensions.visual-tree.cs" />
 		<Compile Include="..\Uno.UI\Helpers\XamlHelper.cs" Link="Uno.UI\Helpers\XamlHelper.cs" />
 
@@ -46,7 +46,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"  Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />

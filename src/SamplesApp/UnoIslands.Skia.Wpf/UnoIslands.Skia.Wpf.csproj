@@ -24,11 +24,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="TestData.json" />
+		<None Remove="TestData.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="TestData.json" />
+		<EmbeddedResource Include="TestData.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -63,9 +63,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Properties\Resources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	  </Compile>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+		</Compile>
 	</ItemGroup>
 
 	<PropertyGroup>

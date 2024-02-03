@@ -74,14 +74,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AndroidAsset Remove="Assets\Border_Snapshot.bgra8" />
+		<AndroidAsset Remove="Assets\Border_Snapshot.bgra8" />
 		<AndroidAsset Remove="Assets\UnoA4.pdf" />
 		<AndroidAsset Remove="Assets\UnoA4.png" />
 		<AndroidAsset Remove="Assets\UnoA4_Protected.pdf" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
 		<EmbeddedResource Include="Assets\UnoA4.pdf" />
 		<EmbeddedResource Include="Assets\UnoA4.png" />
 		<EmbeddedResource Include="Assets\UnoA4_Crop.png" />

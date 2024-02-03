@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
@@ -21,9 +21,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
-	    <LogicalName>$(AssemblyName).xml</LogicalName>
-	  </EmbeddedResource>
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

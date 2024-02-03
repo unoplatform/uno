@@ -177,7 +177,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	  <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+		<DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -216,8 +216,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="MacOS\" />
-	  <Folder Include="Properties\" />
+		<Folder Include="MacOS\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
@@ -233,10 +233,12 @@
 			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
 			Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec Command="git rev-list --count HEAD"
-              ConsoleToMSBuild="true">
-			<Output TaskParameter="ConsoleOutput"
-                      PropertyName="_VersionCode" />
+		<Exec
+			Command="git rev-list --count HEAD"
+			ConsoleToMSBuild="true">
+			<Output
+				TaskParameter="ConsoleOutput"
+				PropertyName="_VersionCode" />
 		</Exec>
 
 		<PropertyGroup>
