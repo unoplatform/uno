@@ -35,10 +35,13 @@ public partial class InteractionTracker : CompositionObject
 
 	public static InteractionTracker CreateWithOwner(Compositor compositor, IInteractionTrackerOwner owner) => new InteractionTracker(compositor, owner);
 
-	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond) => TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse: false);
+	internal void ChangeState(InteractionTrackerState newState) => _state = newState;
+
+	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
+		=> TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse: false);
 
 	internal int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
 	{
-		return 0;
+		return _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse);
 	}
 }
