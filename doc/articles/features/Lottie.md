@@ -39,8 +39,8 @@ On all Uno Platform targets, you'll need the following packages:
 
 Additionally, on Skia targets (Gtk, WPF, FrameBuffer), you'll need the following packages:
 
-* `SkiaSharp.Views.Uno.WinUI` version 2.88.3 or later
-* `SkiaSharp.Skottie` version 2.88.3 or later
+* `SkiaSharp.Views.Uno.WinUI` version 2.88.7 or later
+* `SkiaSharp.Skottie` version 2.88.7 or later
 
 On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
@@ -72,8 +72,8 @@ On all Uno Platform targets, you'll need the following packages:
 
 Additionally, on Skia targets (Gtk, WPF, FrameBuffer), you'll need the following packages:
 
-* `SkiaSharp.Views.Uno` version 2.88.3 or later
-* `SkiaSharp.Skottie` version 2.88.3 or later
+* `SkiaSharp.Views.Uno` version 2.88.7 or later
+* `SkiaSharp.Skottie` version 2.88.7 or later
 
 On UWP, you'll need to reference the following packages in your head project:
 

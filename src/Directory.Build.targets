@@ -98,23 +98,23 @@
 			Note that project templats are updated, which means that end users won't
 			be affected.
 		-->
-		<PackageReference Update="SkiaSharp.Views" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Views" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.7" NoWarn="NU1903"  />
+		<PackageReference Update="SkiaSharp" Version="2.88.7" NoWarn="NU1903"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.7" NoWarn="NU1903"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.7" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.7" NoWarn="NU1903" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.7" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
