@@ -158,6 +158,9 @@ namespace Microsoft.UI.Composition
 		public CompositionNineGridBrush CreateNineGridBrush()
 			=> new CompositionNineGridBrush(this);
 
+		public ExpressionAnimation CreateExpressionAnimation(string expression)
+			=> new ExpressionAnimation() { Expression = expression };
+
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
 
 		partial void InvalidateRenderPartial(Visual visual);
