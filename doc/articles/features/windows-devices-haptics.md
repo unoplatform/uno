@@ -25,7 +25,7 @@ For Android, there is one permission you must configure before using this API in
 
 #### Tizen
 
-For Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared in `config.xml` file.
+For Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared in `tizen-manifest.xml` file.
 
 ## `SimpleHapticsController`
 
