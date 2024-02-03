@@ -33,6 +33,16 @@ uid: Uno.Features.WSPower
 
 For general usage you can follow the documentation provided by [Microsoft](https://learn.microsoft.com/en-us/uwp/api/windows.system.power.powermanager).
 
+## Platform-specific requirements
+
+### Android
+
+For Android, there are is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.BATTERY_STATS" />
+```
+
 ### Limitations
 
 #### Android
