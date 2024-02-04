@@ -2,8 +2,10 @@
 //#define TRACE_COMPOSITION
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Microsoft.UI.Composition.Interactions;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
@@ -20,6 +22,42 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// TODO: On other platforms, we could let Visual delegate to NativeOwner (UIElement) for these two properties.
 	internal bool IsTouchPadRedirected { get; set; }
 	internal bool IsPointerWheelRedirected { get; set; }
+
+	internal List<WeakReference<InteractionTracker>> _interactionTrackers = new();
+
+	// Mouse correct behavior: No Interacting state. Only Inertia
+	// Touch correct behavior: Interacting state, then after gesture ends, go to Inertia. Only works if TryRedirectForManipulation was called.
+	// Touchpad correct behavior: Interacting state, then after lifting finger, go to Inertia.
+	// Note that if MinPosition.Y == MaxPosition.Y, inertia does nothing.
+	// So, if all interaction trackers did nothing
+	internal bool TryRedirectPointerWheel(int mouseWheelDelta)
+	{
+		// TODO: We should check IsTouchPadRedirected or IsPointerWheelRedirected depending on the device.
+		if (!IsTouchPadRedirected)
+		{
+			return false;
+		}
+
+		// If there are no interaction trackers at all, we respect IsTouchPadRedirected/IsPointerWheelRedirected.
+		var hasTrackers = false;
+		var anyTrackedHandledWheel = false;
+		foreach (var weakTracker in _interactionTrackers)
+		{
+			if (weakTracker.TryGetTarget(out var tracker))
+			{
+				hasTrackers = true;
+				//if (!tracker.TryHandlePointerWheel())
+				//{
+				//	anyTrackedHandledWheel = false;
+				//}
+			}
+		}
+
+		// We consider a successful redirection if there are no
+		// trackers at all (respecting the IsTouchPadRedirected/IsPointerWheelRedirected)
+		// Or if one of the trackers handled the wheel.
+		return !hasTrackers || anyTrackedHandledWheel;
+	}
 
 	public CompositionClip? Clip
 	{

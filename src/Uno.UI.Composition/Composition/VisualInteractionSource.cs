@@ -64,8 +64,8 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 		{
 			_manipulationRedirectionMode = value;
 
-			Source.IsTouchPadRedirected = (value & VisualInteractionSourceRedirectionMode.CapableTouchpadOnly) != 0;
-			Source.IsPointerWheelRedirected = (value & VisualInteractionSourceRedirectionMode.PointerWheelOnly) != 0;
+			//Source.IsTouchPadRedirected = (value & VisualInteractionSourceRedirectionMode.CapableTouchpadOnly) != 0;
+			//Source.IsPointerWheelRedirected = (value & VisualInteractionSourceRedirectionMode.PointerWheelOnly) != 0;
 		}
 	}
 

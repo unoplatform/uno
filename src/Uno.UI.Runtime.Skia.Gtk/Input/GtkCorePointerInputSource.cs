@@ -44,6 +44,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		| Gdk.EventMask.ProximityInMask // Pen
 		| Gdk.EventMask.ProximityOutMask // Pen
 		| Gdk.EventMask.KeyPressMask
+		| Gdk.EventMask.TouchpadGestureMask
 		| Gdk.EventMask.KeyReleaseMask;
 
 #pragma warning disable CS0067 // Some event are not raised on GTK ... yet!

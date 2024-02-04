@@ -15,6 +15,17 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 		owner.InteractingStateEntered(_interactionTracker, null);
 	}
 
+	internal override void ReceiveUserManipulation()
+	{
+		// This probably shouldn't happen.
+		// We ignore.
+	}
+
+	internal override void CompleteUserManipulation()
+	{
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker));
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
 	{
 		// Request ignored

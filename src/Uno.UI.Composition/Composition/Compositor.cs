@@ -159,7 +159,7 @@ namespace Microsoft.UI.Composition
 			=> new CompositionNineGridBrush(this);
 
 		public ExpressionAnimation CreateExpressionAnimation(string expression)
-			=> new ExpressionAnimation() { Expression = expression };
+			=> new ExpressionAnimation(this) { Expression = expression };
 
 		internal void InvalidateRender() => InvalidateRenderPartial();
 
