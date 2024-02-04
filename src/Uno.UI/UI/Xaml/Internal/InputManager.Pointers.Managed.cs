@@ -129,11 +129,7 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			if (originalSource.Visual.IsPointerWheelRedirected)
-			{
-				// TODO: ??
-			}
-			else
+			if (!originalSource.Visual.TryRedirectPointerWheel(args.CurrentPoint.Properties.MouseWheelDelta))
 			{
 				// First raise the event, either on the OriginalSource or on the capture owners if any
 				RaiseUsingCaptures(Wheel, originalSource, routedArgs);
