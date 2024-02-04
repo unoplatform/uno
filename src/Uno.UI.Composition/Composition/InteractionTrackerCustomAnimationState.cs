@@ -16,6 +16,15 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 		owner.CustomAnimationStateEntered(_interactionTracker, null);
 	}
 
+	internal override void CompleteUserManipulation()
+	{
+	}
+
+	internal override void ReceiveUserManipulation()
+	{
+		_interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker));
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
 	{
 		// TODO: Stop current animation

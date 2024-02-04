@@ -15,6 +15,15 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 		owner.IdleStateEntered(_interactionTracker, null);
 	}
 
+	internal override void ReceiveUserManipulation()
+	{
+		_interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker));
+	}
+
+	internal override void CompleteUserManipulation()
+	{
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity

@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 
 namespace Microsoft.UI.Composition.Interactions;
@@ -19,5 +20,7 @@ internal abstract class InteractionTrackerState
 	}
 
 	protected abstract void EnterState(IInteractionTrackerOwner owner);
+	internal abstract void ReceiveUserManipulation();
+	internal abstract void CompleteUserManipulation();
 	internal abstract int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse);
 }

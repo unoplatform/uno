@@ -46,4 +46,22 @@ public partial class InteractionTracker : CompositionObject
 	{
 		return _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse);
 	}
+
+	internal void ReceiveUserManipulation()
+	{
+		_state.ReceiveUserManipulation();
+	}
+
+	internal void CompleteUserManipulation()
+	{
+		_state.CompleteUserManipulation();
+	}
+
+	// TODO: Inertia -> Idle
+	// This state transition happens when the function(s) being used to update position and/or scale are no longer
+	// resulting in change. In other words, position and scale velocity have both gotten to zero.
+	// This state transition can also happen if a call is made to explicitly update position or scale without animation or velocity.
+	// These calls will end inertia and transition to Idle with the updated property values.
+
+
 }

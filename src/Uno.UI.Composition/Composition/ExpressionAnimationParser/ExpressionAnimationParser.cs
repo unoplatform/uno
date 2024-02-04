@@ -29,13 +29,15 @@ internal sealed class ExpressionAnimationParser
 
 	private ExpressionAnimationToken Current => _tokens[_position];
 
+	private bool HasCurrent => _position < _tokens.Length;
+
 	public AnimationExpressionSyntax Parse()
 	{
 		var expression = ParseExpression();
 
-		if (_position != _tokens.Length)
+		if (HasCurrent)
 		{
-			throw new ArgumentException("Failed to parse expression.");
+			throw new ArgumentException($"Unexpected token {Current.Kind}.");
 		}
 
 		return expression;
@@ -76,7 +78,7 @@ internal sealed class ExpressionAnimationParser
 			left = ParsePrimaryExpression();
 		}
 
-		while (true)
+		while (HasCurrent)
 		{
 			var precedence = GetBinaryPrecedence(Current);
 			if (precedence == 0 || precedence <= parentPrecedence)
@@ -117,7 +119,7 @@ internal sealed class ExpressionAnimationParser
 			identifierOrMemberAccess = new AnimationMemberAccessExpression(identifierOrMemberAccess, identifier);
 		}
 
-		if (Current.Kind == ExpressionAnimationTokenKind.OpenParenToken)
+		if (HasCurrent && Current.Kind == ExpressionAnimationTokenKind.OpenParenToken)
 		{
 			_ = NextToken();
 
@@ -153,7 +155,7 @@ internal sealed class ExpressionAnimationParser
 		if (_position + 1 < _tokens.Length)
 		{
 			return _tokens[_position].Kind == ExpressionAnimationTokenKind.DotToken &&
-				_tokens[_position + 1].Kind == ExpressionAnimationTokenKind.IdentifierToken; 
+				_tokens[_position + 1].Kind == ExpressionAnimationTokenKind.IdentifierToken;
 		}
 
 		return false;

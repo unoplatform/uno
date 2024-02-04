@@ -7,6 +7,23 @@ namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class UnoEventBox : EventBox
 {
+	public UnoEventBox()
+	{
+		var swipe = new GestureSwipe(this);
+		swipe.End += Swipe_End;
+		swipe.Begin += Swipe_Begin;
+	}
+
+	private void Swipe_End(object o, EndArgs args)
+	{
+		Console.WriteLine("SwipeEnd: " + ((GestureSwipe)o).Device.InputSource);
+	}
+
+	private void Swipe_Begin(object o, BeginArgs args)
+	{
+		Console.WriteLine("SwipeBegin: " + ((GestureSwipe)o).Device.InputSource);
+	}
+
 	// On some windowing platforms, multitouch devices perform pointer emulation,
 	// this works by granting a “pointer emulating” hint to one of the currently interacting touch sequences,
 	// which will be reported on every GdkEventTouch event from that sequence.
