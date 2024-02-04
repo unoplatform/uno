@@ -11,9 +11,9 @@ uid: Uno.Features.WDHaptics
 
 ## `VibrationDevice` class
 
-### Platform-specific requirements
-
 The `GetDefaultAsync` method is implemented on all platforms and returns `null` for the unsupported platforms (WPF, GTK).
+
+### Platform-specific requirements
 
 #### Android
 
