@@ -70,7 +70,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		// might need to explicitly set _NET_WM_NAME as well?
+		// We could use _NET_WM_NAME instead
 		using var _ = X11Helper.XLock(X11Window.Display);
 		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
 	}

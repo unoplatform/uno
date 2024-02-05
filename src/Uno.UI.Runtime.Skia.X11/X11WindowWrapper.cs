@@ -35,7 +35,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	// TODO: might need to send _NET_ACTIVE_WINDOW as well
+	// We could send _NET_ACTIVE_WINDOW as well
 	public override void Activate()
 	{
 		if (NativeWindow is X11Window x11Window)
