@@ -56,12 +56,12 @@ internal partial class InputManager : IInputInjectorTarget
 		return false;
 	}
 
-	internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
+	internal void NotifyFocusChanged(DependencyObject focusedElement, bool bringIntoView, bool animateIfBringIntoView)
 	{
 		//TODO Uno: match WinUI
 		if (bringIntoView)
 		{
-			((UIElement)focusedElement!).StartBringIntoView(new BringIntoViewOptions
+			((UIElement)focusedElement).StartBringIntoView(new BringIntoViewOptions
 			{
 				AnimationDesired = animateIfBringIntoView
 			});
