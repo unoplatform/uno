@@ -1,6 +1,5 @@
 ﻿using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
-using Uno.WinUI.Runtime.Skia.X11;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

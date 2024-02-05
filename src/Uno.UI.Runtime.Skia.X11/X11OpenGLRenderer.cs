@@ -41,17 +41,26 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			using var _1 = X11Helper.XLock(_x11Window.Display);
 
-			this.Log().Trace($"Render {_renderCount++}");
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Render {_renderCount++}");
+			}
 
 			if (_x11Window.glXInfo is not { } glXInfo)
 			{
-				this.Log().Error($"No glX information associated with this OpenGL renderer, so it cannot be used.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"No glX information associated with this OpenGL renderer, so it cannot be used.");
+				}
 				return;
 			}
 
 			if (!GlxInterface.glXMakeCurrent(_x11Window.Display, _x11Window.Window, glXInfo.context))
 			{
-				this.Log().Error($"glXMakeCurrent failed for renderCount {_renderCount} and Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"glXMakeCurrent failed for renderCount {_renderCount} and Window {_x11Window.Window.GetHashCode().ToString("X", CultureInfo.InvariantCulture)}");
+				}
 				return;
 			}
 

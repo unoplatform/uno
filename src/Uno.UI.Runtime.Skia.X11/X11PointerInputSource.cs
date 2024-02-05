@@ -6,7 +6,6 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Uno.WinUI.Runtime.Skia.X11;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -152,7 +151,12 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		=> PointerEntered?.Invoke(this, args);
 
 	private void LogNotSupported([CallerMemberName] string member = "")
-		=> this.Log().Debug($"{member} not supported on Skia for X11.");
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"{member} not supported on Skia for X11.");
+		}
+	}
 
 	public void ProcessLeaveEvent(XCrossingEvent ev)
 	{

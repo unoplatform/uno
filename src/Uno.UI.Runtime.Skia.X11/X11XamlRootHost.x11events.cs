@@ -4,7 +4,6 @@ using System.Threading;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Uno.WinUI.Runtime.Skia.X11;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 

@@ -112,7 +112,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (display == IntPtr.Zero)
 		{
-			this.Log().Error("XLIB ERROR: Cannot connect to X server");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("XLIB ERROR: Cannot connect to X server");
+			}
 		}
 
 		int screen = XLib.XDefaultScreen(display);
@@ -165,14 +168,20 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (XLib.XGetSelectionOwner(_x11Window.Display, X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD)) == _x11Window.Window)
 		{
-			this.Log().LogInfo($"Successfully acquired x11 selection ownership");
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInfo($"Successfully acquired x11 selection ownership");
+			}
 
 			_clipboardData = content.GetView();
 			_currentlyOwningClipboard = true;
 		}
 		else
 		{
-			this.Log().Error($"Failed to acquire x11 selection");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed to acquire x11 selection");
+			}
 
 			_currentlyOwningClipboard = false;
 		}
@@ -306,11 +315,17 @@ internal class X11ClipboardExtension : IClipboardExtension
 			{
 				XLib.XNextEvent(_x11Window.Display, out var event_);
 
-				this.Log().Trace($"XSEL EVENT: {event_.type}");
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"XSEL EVENT: {event_.type}");
+				}
 
 				if (!_currentlyOwningClipboard)
 				{
-					this.Log().Debug($"Not currently owning clipboard, skipping event: {event_.type}");
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Not currently owning clipboard, skipping event: {event_.type}");
+					}
 					continue;
 				}
 
@@ -320,19 +335,28 @@ internal class X11ClipboardExtension : IClipboardExtension
 					case XEventName.SelectionClear:
 						if (event_.SelectionEvent.selection == X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 						{
-							this.Log().LogInfo($"Lost X11 selection ownership");
+							if (this.Log().IsEnabled(LogLevel.Information))
+							{
+								this.Log().LogInfo($"Lost X11 selection ownership");
+							}
 
 							_currentlyOwningClipboard = false;
 						}
 						else
 						{
-							this.Log().Trace($"Somehow losing X11 selection {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().Trace($"Somehow losing X11 selection {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+							}
 						}
 						break;
 					case XEventName.SelectionRequest:
 						if (event_.SelectionRequestEvent.selection != X11Helper.GetAtom(_x11Window.Display, X11Helper.CLIPBOARD))
 						{
-							this.Log().Trace($"Somehow getting a SelectionRequest for {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().Trace($"Somehow getting a SelectionRequest for {XLib.GetAtomName(_x11Window.Display, event_.SelectionEvent.selection)}, even though we don't currently own it");
+							}
 							break;
 						}
 
@@ -347,7 +371,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 						ev.send_event = 1;
 						ev.target = xsr.target;
 
-						this.Log().LogInfo($"Received SelectionRequest with target {XLib.GetAtomName(_x11Window.Display, ev.target)} and requestor {ev.requestor.ToString("X", CultureInfo.InvariantCulture)}");
+						if (this.Log().IsEnabled(LogLevel.Information))
+						{
+							this.Log().LogInfo($"Received SelectionRequest with target {XLib.GetAtomName(_x11Window.Display, ev.target)} and requestor {ev.requestor.ToString("X", CultureInfo.InvariantCulture)}");
+						}
 
 						if (xsr.property == X11Helper.None && ev.target != X11Helper.GetAtom(_x11Window.Display, X11Helper.MULTIPLE))
 						{
@@ -449,7 +476,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (!HasOwner)
 		{
-			this.Log().Error($"Found the X11 clipboard to be owner-less.");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Found the X11 clipboard to be owner-less.");
+			}
 
 			return null;
 		}
@@ -468,7 +498,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (event_.type != XEventName.SelectionNotify)
 		{
-			this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+			}
 
 			return null;
 		}
@@ -476,17 +509,26 @@ internal class X11ClipboardExtension : IClipboardExtension
 		var sel = event_.SelectionEvent;
 		if (sel.property != targetsAtom)
 		{
-			this.Log().Error($"EXPECTED XSELECTION PROPERTY {targetsAtom}, INSTEAD FOUND {sel.property}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"EXPECTED XSELECTION PROPERTY {targetsAtom}, INSTEAD FOUND {sel.property}");
+			}
 
 			return null;
 		}
 
 		if (sel.selection != clipboardAtom)
 		{
-			this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
+			}
 		}
 
-		this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+		}
 
 		var _4 = XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, X11Helper.AnyPropertyType,
 			out var _, out var actualFormat, out var nitems, out var _, out var prop);
@@ -503,7 +545,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (actualFormat != 32)
 		{
-			this.Log().Error($"EXPECTED XSELECTION actual_format TO BE 32 (IntPtr), INSTEAD FOUND {actualFormat}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"EXPECTED XSELECTION actual_format TO BE 32 (IntPtr), INSTEAD FOUND {actualFormat}");
+			}
 
 			return null;
 		}
@@ -519,7 +564,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (!HasOwner)
 		{
-			this.Log().Error($"Found the X11 clipboard to be owner-less.");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Found the X11 clipboard to be owner-less.");
+			}
 
 			return null;
 		}
@@ -537,7 +585,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (event_.type != XEventName.SelectionNotify)
 		{
-			this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"UNEXPECTED XSELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+			}
 
 			return null;
 		}
@@ -545,17 +596,26 @@ internal class X11ClipboardExtension : IClipboardExtension
 		var sel = event_.SelectionEvent;
 		if (sel.property != format)
 		{
-			this.Log().Error($"EXPECTED XSELECTION PROPERTY {format}, INSTEAD FOUND {sel.property}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"EXPECTED XSELECTION PROPERTY {format}, INSTEAD FOUND {sel.property}");
+			}
 
 			return null;
 		}
 
 		if (sel.selection != clipboardAtom)
 		{
-			this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"EXPECTED SelectionEvent.selection TO BE {clipboardAtom}, INSTEAD FOUND {event_.SelectionEvent.selection}");
+			}
 		}
 
-		this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"XSELELECTION EVENT: {event_.type} {event_.SelectionEvent}");
+		}
 
 		var _4 = XLib.XGetWindowProperty(_x11Window.Display, _x11Window.Window, sel.property, IntPtr.Zero, new IntPtr(0x7fffffff), true, X11Helper.AnyPropertyType,
 			out var actualTypeAtom, out var actualFormat, out var nitems, out var bytes_after, out var prop);
@@ -622,7 +682,10 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (actualTypeAtom != format)
 		{
-			this.Log().Error($"EXPECTED XSELECTION FORMAT {format}, INSTEAD FOUND {actualTypeAtom}");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"EXPECTED XSELECTION FORMAT {format}, INSTEAD FOUND {actualTypeAtom}");
+			}
 
 			return null;
 		}

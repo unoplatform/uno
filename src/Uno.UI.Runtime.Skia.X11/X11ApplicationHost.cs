@@ -74,7 +74,10 @@ public class X11ApplicationHost : ISkiaApplicationHost
 		// This probably doesn't need a lock, since it doesn't modify anything and reading outdated values is fine
 		SpinWait.SpinUntil(X11XamlRootHost.AllWindowsDone);
 
-		this.Log().Debug($"{nameof(X11ApplicationHost)} is exiting");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"{nameof(X11ApplicationHost)} is exiting");
+		}
 	}
 
 	private void StartApp()

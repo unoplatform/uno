@@ -9,7 +9,6 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
-using Uno.WinUI.Runtime.Skia.X11;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
@@ -205,7 +204,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		typeof(X11XamlRootHost).Log().Error($"{nameof(GetWindow)} didn't find any window.");
+		if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
+		{
+			typeof(X11XamlRootHost).Log().Error($"{nameof(GetWindow)} didn't find any window.");
+		}
 
 		return default;
 	}
@@ -236,7 +238,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		if (display == IntPtr.Zero)
 		{
-			this.Log().Error("XLIB ERROR: Cannot connect to X server");
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("XLIB ERROR: Cannot connect to X server");
+			}
 		}
 
 		int screen = XLib.XDefaultScreen(display);
