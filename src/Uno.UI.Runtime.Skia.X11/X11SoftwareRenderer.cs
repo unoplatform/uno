@@ -1,7 +1,7 @@
 ﻿using System;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Avalonia.X11;
+using Uno.WinUI.Runtime.Skia.X11;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11

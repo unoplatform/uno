@@ -2,7 +2,6 @@
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
-using Avalonia.X11;
 using Microsoft.UI.Windowing;
 
 namespace Uno.WinUI.Runtime.Skia.X11

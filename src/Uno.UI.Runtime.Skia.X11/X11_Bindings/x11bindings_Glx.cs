@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Glx/Glx.cs
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +30,7 @@ using System.Runtime.InteropServices;
 
 // ReSharper disable UnassignedGetOnlyAutoProperty
 
-namespace Avalonia.X11.Glx
+namespace Uno.WinUI.Runtime.Skia.X11
 {
 	unsafe internal class GlxInterface
 	{

@@ -21,11 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Glx/GlxConsts.cs
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedMember.Global
 #pragma warning disable 414
-namespace Avalonia.X11.Glx
+namespace Uno.WinUI.Runtime.Skia.X11
 {
 	internal class GlxConsts
 	{

@@ -3,13 +3,11 @@ using System.Drawing;
 using System.Globalization;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Avalonia.X11;
-using Avalonia.X11.Glx;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	// https://github.com/gamedevtech/X11OpenGLWindow
+	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
 	internal class X11OpenGLRenderer : IX11Renderer, IDisposable
 	{

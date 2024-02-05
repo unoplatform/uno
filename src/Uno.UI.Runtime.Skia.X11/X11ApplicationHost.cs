@@ -2,7 +2,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.UI.Core;
-using Avalonia.X11;
 using Microsoft.UI.Xaml;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.System;

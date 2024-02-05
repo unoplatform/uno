@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using Avalonia.X11;
 using Uno.WinUI.Runtime.Skia.X11;
 
 namespace SkiaSharpExample

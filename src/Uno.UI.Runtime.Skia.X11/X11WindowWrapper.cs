@@ -3,7 +3,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
-using Avalonia.X11;
+using Uno.WinUI.Runtime.Skia.X11;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

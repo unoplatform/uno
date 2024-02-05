@@ -21,7 +21,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Avalonia.X11;
 using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11;

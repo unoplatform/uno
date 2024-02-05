@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Avalonia.X11;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

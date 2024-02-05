@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/XLib.cs
+
 #nullable disable
 #pragma warning disable CS8500
 #pragma warning disable CS0649
@@ -36,7 +38,7 @@ using System.Runtime.InteropServices;
 // ReSharper disable NotAccessedField.Global
 // ReSharper disable UnusedMethodReturnValue.Global
 
-namespace Avalonia.X11
+namespace Uno.WinUI.Runtime.Skia.X11
 {
 	public unsafe static class XLib
 	{

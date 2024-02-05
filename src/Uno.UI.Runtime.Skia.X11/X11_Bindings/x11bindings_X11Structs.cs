@@ -48,18 +48,14 @@
 //	Peter Bartok	pbartok@novell.com
 //
 
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/X11Structs.cs
 
 // NOT COMPLETE
 
 using System;
-using System.ComponentModel;
-using System.Collections;
-using System.Drawing;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable MemberCanBePrivate.Global
@@ -70,7 +66,7 @@ using System.Diagnostics.CodeAnalysis;
 #pragma warning disable 649
 #pragma warning disable CA1815 // Override equals and operator equals on value types
 
-namespace Avalonia.X11
+namespace Uno.WinUI.Runtime.Skia.X11
 {
 	//
 	// In the structures below, fields of type long are mapped to IntPtr.

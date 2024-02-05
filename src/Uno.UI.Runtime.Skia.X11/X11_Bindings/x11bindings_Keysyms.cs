@@ -21,10 +21,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Keysyms.cs
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable CommentTypo
-namespace Avalonia.X11
+namespace Uno.WinUI.Runtime.Skia.X11
 {
 	internal enum X11Key
 	{

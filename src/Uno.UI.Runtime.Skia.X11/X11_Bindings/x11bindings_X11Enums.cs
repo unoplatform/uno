@@ -21,9 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/X11Enums.cs
+
 using System;
 
-namespace Avalonia.X11
+namespace Uno.WinUI.Runtime.Skia.X11
 {
 	[Flags]
 	public enum XEventMask : int

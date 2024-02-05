@@ -33,6 +33,8 @@
 // representations are made about the suitability of this software for any
 // purpose. It is provided "as is" without express or implied warranty.
 
+// https://github.com/kfish/xsel/blob/0ee15bfc8139d8eb595004ea093c6a57b7134470/xsel.c
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/X11Clipboard.cs
 
 #nullable disable
 
@@ -48,14 +50,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Avalonia.X11;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
-using EventMask = Avalonia.X11.EventMask;
-using PropertyMode = Avalonia.X11.PropertyMode;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

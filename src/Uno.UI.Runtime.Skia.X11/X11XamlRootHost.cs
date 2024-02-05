@@ -9,8 +9,7 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
-using Avalonia.X11;
-using Avalonia.X11.Glx;
+using Uno.WinUI.Runtime.Skia.X11;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
@@ -291,7 +290,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
 	}
 
-	// https://github.com/gamedevtech/X11OpenGLWindow
+	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
 	private unsafe X11Window CreateGLXWindow(IntPtr display, int screen, Size size)
 	{

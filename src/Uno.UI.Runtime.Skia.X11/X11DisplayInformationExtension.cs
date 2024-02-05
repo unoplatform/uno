@@ -68,11 +68,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// https://gitlab.freedesktop.org/xorg/app/xdpyinfo/-/blob/d14333b852377f1e43ee2fe0fc737453e6dfccd9/xdpyinfo.c
+// https://gitlab.freedesktop.org/xorg/app/xrandr/-/blob/71ab94418ead8f59c6124e8b3e53f8df7340f095/xrandr.c
+// https://github.com/AvaloniaUI/Avalonia/blob/5fa3ffaeab7e5cd2662ef02d03e34b9d4cb1a489/src/Avalonia.X11/Screens/X11Screen.Providers.cs
+
 using System;
 using System.Drawing;
 using System.Globalization;
 using Windows.Graphics.Display;
-using Avalonia.X11;
 using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11
