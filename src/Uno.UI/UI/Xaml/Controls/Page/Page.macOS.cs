@@ -5,6 +5,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
