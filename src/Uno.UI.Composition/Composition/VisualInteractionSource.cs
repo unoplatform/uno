@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Microsoft.UI.Composition.Interactions;
@@ -14,6 +15,8 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 		Source = source;
 		ManipulationRedirectionMode = VisualInteractionSourceRedirectionMode.CapableTouchpadOnly;
 	}
+
+	internal List<InteractionTracker> Trackers { get; } = new();
 
 	/// <summary>
 	/// The visual that is used for hit-testing and defines the co-ordinate space for gesture recognition.
@@ -71,7 +74,25 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 		}
 	}
 
-	public static VisualInteractionSource Create(Visual source) => new VisualInteractionSource(source);
+	public static VisualInteractionSource Create(Visual source)
+	{
+		// WinUI doesn't allow a second `VisualInteractionSource`s with the same source, unless the previous one is disposed.
+		if (source.VisualInteractionSource is not null)
+		{
+			throw new ArgumentException();
+		}
+
+		var vis = new VisualInteractionSource(source);
+		source.VisualInteractionSource = vis;
+		return vis;
+	}
+
+	private protected override void DisposeInternal()
+	{
+		base.DisposeInternal();
+
+		Source.VisualInteractionSource = null;
+	}
 
 	// IMPORTANT: The correct API is Microsoft.UI.Input.PointerPoint!
 	// Currently, Microsoft.UI.Input.PointerPoint is in Uno.UI assembly.
@@ -83,7 +104,8 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	{
 		if (pointerPoint.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
 		{
-			Source.RedirectTouchForPointerId(pointerPoint.PointerId);
+			var redirector = Compositor.PointerRedirector ?? Compositor.GetSharedCompositor().PointerRedirector;
+			redirector?.RedirectPointer(pointerPoint, Trackers);
 		}
 	}
 }

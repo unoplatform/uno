@@ -17,7 +17,7 @@ public partial class InteractionTracker : CompositionObject
 	{
 		_state = new InteractionTrackerIdleState(this);
 		Owner = owner;
-		InteractionSources = new CompositionInteractionSourceCollection(compositor);
+		InteractionSources = new CompositionInteractionSourceCollection(compositor, this);
 	}
 
 	public IInteractionTrackerOwner? Owner { get; }
