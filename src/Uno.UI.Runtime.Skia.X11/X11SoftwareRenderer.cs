@@ -12,6 +12,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		private SKBitmap? _bitmap;
 		private SKSurface? _surface;
+		private IntPtr? _xImage;
 		private int renderCount;
 
 		void IX11Renderer.InvalidateRender()
@@ -44,6 +45,19 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				_bitmap?.Dispose();
 				_surface?.Dispose();
+				
+				if (_xImage is { } xImage)
+				{
+					unsafe
+					{
+						// XDestroyImage frees the buffer as well, so we unset it first
+						var ptr = (XImage*)xImage.ToPointer();
+						ptr->data = IntPtr.Zero;
+					}
+					var _3 = XLib.XDestroyImage(xImage);
+					_xImage = null;
+				}
+
 				_bitmap = new SKBitmap(width, height);
 				_surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
 			}
@@ -55,7 +69,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
 			}
 
-			IntPtr ximage = X11Helper.XCreateImage(
+			_xImage ??= X11Helper.XCreateImage(
 				display: x11window.Display,
 				visual: /* CopyFromParent */ 0,
 				depth: ColorDepth,
@@ -71,21 +85,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				display: x11window.Display,
 				drawable: x11window.Window,
 				gc: X11Helper.XDefaultGC(x11window.Display, XLib.XDefaultScreen(x11window.Display)),
-				image: ximage,
+				image: _xImage.Value,
 				srcx: 0,
 				srcy: 0,
 				destx: 0,
 				desty: 0,
 				width: (uint)width,
 				height: (uint)height);
-
-			unsafe
-			{
-				// XDestroyImage frees the buffer as well, so we unset it first
-				var ptr = (XImage*)ximage.ToPointer();
-				ptr->data = IntPtr.Zero;
-			}
-			var _3 = XLib.XDestroyImage(ximage);
 
 			var _4 = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
 		}
