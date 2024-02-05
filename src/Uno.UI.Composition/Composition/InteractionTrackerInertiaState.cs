@@ -13,7 +13,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 
 	protected override void EnterState(IInteractionTrackerOwner owner)
 	{
-		owner.InertiaStateEntered(_interactionTracker, null);
+		owner.InertiaStateEntered(_interactionTracker, new InteractionTrackerInertiaStateEnteredArgs());
 	}
 
 	internal override void StartUserManipulation()
