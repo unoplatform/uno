@@ -11,6 +11,8 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
+	private static int ThreadCount = 0;
+
 	private Thread? _eventsThread;
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
@@ -24,7 +26,7 @@ internal partial class X11XamlRootHost
 	{
 		_eventsThread = new Thread(Run)
 		{
-			Name = "Uno XEvents", // TODO: add a counter to differentiate between different windows
+			Name = $"Uno XEvents {Interlocked.Increment(ref ThreadCount) - 1}",
 			IsBackground = true
 		};
 
