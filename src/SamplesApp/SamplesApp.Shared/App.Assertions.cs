@@ -93,6 +93,41 @@ partial class App
 #endif
 	}
 
+	/// <summary>
+	/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
+	/// </summary>
+	public void AssertIssue8641NativeOverlayInitialized()
+	{
+#if __SKIA__
+		if (!ApiExtensibility.IsRegistered<IOverlayTextBoxViewExtension>())
+		{
+			return;
+		}
+
+		// Temporarily add a TextBox to the current page's content to verify native overlay is available
+		if (_mainWindow?.Content is not Frame rootFrame)
+		{
+			throw new InvalidOperationException("Native overlay verification executed too early");
+		}
+
+		var textBox = new TextBox();
+		var xamlRoot = _mainWindow.RootElement.XamlRoot;
+		textBox.XamlRoot = xamlRoot;
+		var textBoxView = new TextBoxView(textBox);
+		ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+		Assert.IsNotNull(textBoxViewExtension);
+
+		if (textBoxViewExtension is not null)
+		{
+			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(xamlRoot));
+		}
+		else
+		{
+			Console.WriteLine($"TextBoxView is not available for this platform");
+		}
+#endif
+	}
+
 	public void AssertInitialWindowSize()
 	{
 #if !__SKIA__ // Will be fixed as part of #8341
