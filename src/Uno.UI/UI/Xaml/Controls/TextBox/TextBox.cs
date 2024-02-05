@@ -209,6 +209,11 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializePropertiesPartial();
 		}
 
+		protected override void OnGotFocus(RoutedEventArgs e) => StartBringIntoView(new BringIntoViewOptions
+		{
+			AnimationDesired = false
+		});
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
