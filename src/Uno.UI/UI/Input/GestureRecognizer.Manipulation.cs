@@ -49,8 +49,8 @@ namespace Windows.UI.Input
 			private readonly PointerDeviceType _deviceType;
 			private readonly GestureSettings _settings;
 			private bool _isDraggingEnable; // Note: This might get disabled if user moves out of range while initial hold delay with finger
-			private readonly bool _isTranslateXEnabled;
-			private readonly bool _isTranslateYEnabled;
+			private bool _isTranslateXEnabled;
+			private bool _isTranslateYEnabled;
 			private readonly bool _isRotateEnabled;
 			private readonly bool _isScaleEnabled;
 
@@ -153,13 +153,58 @@ namespace Windows.UI.Input
 				}
 
 				_isDraggingEnable = (_settings & GestureSettings.Drag) != 0;
-				_isTranslateXEnabled = (_settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
-				_isTranslateYEnabled = (_settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
+				_isTranslateXEnabled = (_settings & GestureSettings.ManipulationTranslateX) != 0;
+				_isTranslateYEnabled = (_settings & GestureSettings.ManipulationTranslateY) != 0;
 				_isRotateEnabled = (_settings & GestureSettings.ManipulationRotate) != 0;
 				_isScaleEnabled = (_settings & GestureSettings.ManipulationScale) != 0;
 
 				_recognizer.ManipulationConfigured?.Invoke(_recognizer, this);
 				StartDragTimer();
+			}
+
+			private bool _isTranslateDirectionDecided;
+
+			private void DecideTranslateDirection(Point oldPosition, Point newPosition, ref ManipulationDelta cumulative, ref ManipulationDelta delta, ref ManipulationVelocities velocities)
+			{
+				if (_isTranslateDirectionDecided)
+				{
+					return;
+				}
+
+				_isTranslateDirectionDecided = true;
+				double slope;
+				if (newPosition.X == oldPosition.X)
+				{
+					slope = double.PositiveInfinity;
+				}
+				else
+				{
+					slope = (newPosition.Y - oldPosition.Y) / (newPosition.X - oldPosition.X);
+				}
+
+				if ((_settings & GestureSettings.ManipulationTranslateRailsX) != 0 && isAngleNearXAxis(slope))
+				{
+					_isTranslateYEnabled = false;
+					cumulative.Translation.Y = 0;
+					delta = GetDelta(cumulative);
+					velocities = GetVelocities(delta);
+
+				}
+				else if ((_settings & GestureSettings.ManipulationTranslateRailsY) != 0 && isAngleNearYAxis(slope))
+				{
+					_isTranslateXEnabled = false;
+					cumulative.Translation.X = 0;
+					delta = GetDelta(cumulative);
+					velocities = GetVelocities(delta);
+				}
+
+				// The horizontal rail is 22.5 degrees around the X-axis
+				static bool isAngleNearXAxis(double slope)
+					=> Math.Abs(slope) <= Math.Tan(22.5 * Math.PI / 180);
+
+				// The vertical rail is 22.5 degrees around the Y-axis
+				static bool isAngleNearYAxis(double slope)
+					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
 			}
 
 			public bool IsActive(PointerIdentifier pointer)
@@ -355,6 +400,8 @@ namespace Windows.UI.Input
 						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
 						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
 						//		 but there is no side effect to use the same behavior for all pointer types.
+
+						DecideTranslateDirection(_origins.Center, position, ref cumulative, ref delta, ref velocities);
 
 						UpdatePublishedState(cumulative);
 						_recognizer.ManipulationStarted?.Invoke(
