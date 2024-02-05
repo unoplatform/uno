@@ -11,7 +11,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
-	private static int ThreadCount = 0;
+	private static int ThreadCount;
 
 	private Thread? _eventsThread;
 	private X11PointerInputSource? _pointerSource;

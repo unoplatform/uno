@@ -25,7 +25,7 @@ public class X11ApplicationHost : ISkiaApplicationHost
 	{
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
-		X11Helper.XInitThreads();
+		var _ = X11Helper.XInitThreads();
 
 		[DllImport("libc")]
 		static extern void setlocale(int type, string s);
