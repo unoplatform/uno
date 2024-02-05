@@ -19,45 +19,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 
-	// TODO: On other platforms, we could let Visual delegate to NativeOwner (UIElement) for these two properties.
-	internal bool IsTouchPadRedirected { get; set; }
-	internal bool IsPointerWheelRedirected { get; set; }
+	internal uint? RedirectedPointerId { get; private set; }
+
+	// For now, this is always UIElement.
+	// But because UIElement isn't accessible from Composition, we introduce this interface.
+	internal IManipulationUpdater? ManipulationUpdater { get; set; }
 
 	internal List<WeakReference<InteractionTracker>> _interactionTrackers = new();
-
-	// Mouse correct behavior: No Interacting state. Only Inertia
-	// Touch correct behavior: Interacting state, then after gesture ends, go to Inertia. Only works if TryRedirectForManipulation was called.
-	// Touchpad correct behavior: Interacting state, then after lifting finger, go to Inertia.
-	// Note that if MinPosition.Y == MaxPosition.Y, inertia does nothing.
-	// So, if all interaction trackers did nothing
-	internal bool TryRedirectPointerWheel(int mouseWheelDelta)
-	{
-		// TODO: We should check IsTouchPadRedirected or IsPointerWheelRedirected depending on the device.
-		if (!IsTouchPadRedirected)
-		{
-			return false;
-		}
-
-		// If there are no interaction trackers at all, we respect IsTouchPadRedirected/IsPointerWheelRedirected.
-		var hasTrackers = false;
-		var anyTrackedHandledWheel = false;
-		foreach (var weakTracker in _interactionTrackers)
-		{
-			if (weakTracker.TryGetTarget(out var tracker))
-			{
-				hasTrackers = true;
-				//if (!tracker.TryHandlePointerWheel())
-				//{
-				//	anyTrackedHandledWheel = false;
-				//}
-			}
-		}
-
-		// We consider a successful redirection if there are no
-		// trackers at all (respecting the IsTouchPadRedirected/IsPointerWheelRedirected)
-		// Or if one of the trackers handled the wheel.
-		return !hasTrackers || anyTrackedHandledWheel;
-	}
 
 	public CompositionClip? Clip
 	{
@@ -184,5 +152,52 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		DrawingSession.PushOpacity(ref session, Opacity);
 
 		return session;
+	}
+
+	internal void RedirectTouchForPointerId(uint pointerId)
+	{
+		RedirectedPointerId = pointerId;
+		ManipulationUpdater?.SetManipulations(isRegistering: true);
+	}
+	internal void UnredirectTouch()
+	{
+		if (RedirectedPointerId.HasValue)
+		{
+			RedirectedPointerId = null;
+			ManipulationUpdater?.SetManipulations(isRegistering: false);
+		}
+	}
+
+	internal void StartManipulation()
+	{
+		foreach (var weakTracker in _interactionTrackers)
+		{
+			if (weakTracker.TryGetTarget(out var tracker))
+			{
+				tracker.StartUserManipulation();
+			}
+		}
+	}
+
+	internal void CompleteManipulation()
+	{
+		foreach (var weakTracker in _interactionTrackers)
+		{
+			if (weakTracker.TryGetTarget(out var tracker))
+			{
+				tracker.CompleteUserManipulation();
+			}
+		}
+	}
+
+	internal void RouteManipulationDelta()
+	{
+		foreach (var weakTracker in _interactionTrackers)
+		{
+			if (weakTracker.TryGetTarget(out var tracker))
+			{
+				tracker.ReceiveManipulationDelta();
+			}
+		}
 	}
 }

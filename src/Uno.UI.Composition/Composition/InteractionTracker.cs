@@ -40,21 +40,21 @@ public partial class InteractionTracker : CompositionObject
 	internal void ChangeState(InteractionTrackerState newState) => _state = newState;
 
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
-		=> TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse: false);
+		=> _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond);
 
-	internal int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, bool isInertiaFromImpulse)
+	internal void StartUserManipulation()
 	{
-		return _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, isInertiaFromImpulse);
-	}
-
-	internal void ReceiveUserManipulation()
-	{
-		_state.ReceiveUserManipulation();
+		_state.StartUserManipulation();
 	}
 
 	internal void CompleteUserManipulation()
 	{
 		_state.CompleteUserManipulation();
+	}
+
+	internal void ReceiveManipulationDelta()
+	{
+		_state.ReceiveManipulationDelta();
 	}
 
 	// TODO: Inertia -> Idle

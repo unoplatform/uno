@@ -311,7 +311,13 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
+			// Note: ManipulationStarting is raised in WinUI, even if RedirectWithManipulation was called.
 			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
+
+			if (that.Visual.RedirectedPointerId == args.Pointer.Id)
+			{
+				that.Visual.StartManipulation();
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
@@ -319,7 +325,15 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that, sender, args));
+			if (that.Visual.RedirectedPointerId == args.Pointers[0].Id)
+			{
+				// TODO: Provide correct arguments for PointerRoutedEventArgs constructor.
+				that.SafeRaiseEvent(PointerCaptureLostEvent, new PointerRoutedEventArgs());
+			}
+			else
+			{
+				that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that, sender, args));
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
@@ -327,7 +341,14 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that, sender, args));
+			if (that.Visual.RedirectedPointerId == args.Pointers[0].Id)
+			{
+				that.Visual.RouteManipulationDelta();
+			}
+			else
+			{
+				that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that, sender, args));
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
@@ -350,7 +371,15 @@ namespace Microsoft.UI.Xaml
 			}
 #endif
 
-			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
+			if (that.Visual.RedirectedPointerId == args.Pointers[0].Id)
+			{
+				that.Visual.UnredirectTouch();
+				that.Visual.CompleteManipulation();
+			}
+			else
+			{
+				that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
+			}
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
@@ -1051,6 +1080,11 @@ namespace Microsoft.UI.Xaml
 
 		internal bool OnPointerUp(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
+			if (this.Visual.RedirectedPointerId == args.Pointer.PointerId)
+			{
+				this.Visual.UnredirectTouch();
+			}
+
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, out var isOver);
 			if (!isOverOrCaptured)
