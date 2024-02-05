@@ -378,6 +378,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Playground\Playground.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Resources\StaticResource\StaticResource_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5524,6 +5528,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Msal\MsalLoginAndGraph.xaml.cs">
       <DependentUpon>MsalLoginAndGraph.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Playground\Playground.xaml.cs">
+      <DependentUpon>Playground.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedViewTests.xaml.cs">
       <DependentUpon>ElevatedViewTests.xaml</DependentUpon>
     </Compile>
@@ -9242,6 +9249,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\filter.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\CascadiaCode-Regular.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Even Badder Mofo.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\FamilyGuy-4grW.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Nillambari-K7y1W.ttf" />
