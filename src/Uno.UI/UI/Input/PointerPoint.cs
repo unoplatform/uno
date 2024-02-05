@@ -49,7 +49,7 @@ namespace Windows.UI.Input
 			Properties = new PointerPointProperties(point.Properties);
 		}
 
-		public static explicit operator Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
+		public static implicit operator Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
 		{
 			return new Windows.UI.Input.PointerPoint(
 				muxPointerPoint.FrameId,
