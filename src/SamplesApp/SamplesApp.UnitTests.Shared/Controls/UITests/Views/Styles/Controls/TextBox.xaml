@@ -125,6 +125,7 @@
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
 								Background="{TemplateBinding Background}"
+								CornerRadius="16"
 								Grid.ColumnSpan="3"
 								Grid.Row="1"
 								Grid.RowSpan="1" />
@@ -135,15 +136,12 @@
 										  Content="{TemplateBinding Header}"
 										  Foreground="{StaticResource Color04Brush}"
 										  FontWeight="Normal"
-										  Margin="0,0,0,8"
+										  Margin="0,0,0,0"
 										  Grid.Row="0"
 										  Visibility="Collapsed"
 										  x:DeferLoadStrategy="Lazy" />
 
-						<u:PathControl Style="{StaticResource Icon_Search}"
-									   Grid.Row="1"
-									   Margin="8,0,0,0"
-									   VerticalAlignment="Center" />
+						<FontIcon Glyph="&#xE721;" FontSize="14" Grid.Row="1" Margin="8,0,0,0" />
 
 						<ScrollViewer x:Name="ContentElement"
 									  AutomationProperties.AccessibilityView="Raw"
