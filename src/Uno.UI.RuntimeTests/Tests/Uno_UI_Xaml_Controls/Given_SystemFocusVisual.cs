@@ -157,7 +157,7 @@ public class Given_SystemFocusVisual
 
 		button.Focus(FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
-		var visualTree = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.VisualTree;
+		var visualTree = TestServices.WindowHelper.XamlRoot.VisualTree;
 		var focusVisualLayer = visualTree?.FocusVisualRoot;
 
 		Assert.IsNotNull(focusVisualLayer);
@@ -165,10 +165,10 @@ public class Given_SystemFocusVisual
 
 		var focusVisual = focusVisualLayer.Children.First();
 
-		var focusTransform = focusVisual.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
+		var focusTransform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 		var focusPoint = focusTransform.TransformPoint(default);
 
-		var buttonTransform = button.TransformToVisual(Microsoft.UI.Xaml.Window.Current.RootElement);
+		var buttonTransform = button.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 		var buttonPoint = buttonTransform.TransformPoint(default);
 
 		Assert.AreEqual(focusPoint.X, buttonPoint.X);
