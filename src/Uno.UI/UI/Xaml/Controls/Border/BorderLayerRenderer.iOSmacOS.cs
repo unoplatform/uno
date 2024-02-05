@@ -18,7 +18,6 @@ using Uno.UI.Xaml.Media;
 using ObjCRuntime;
 using Microsoft.UI.Xaml;
 
-
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
