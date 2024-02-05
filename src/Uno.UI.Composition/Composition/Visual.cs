@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Numerics;
+using Microsoft.UI.Composition.Interactions;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
@@ -27,6 +28,8 @@ namespace Microsoft.UI.Composition
 		}
 
 		partial void InitializePartial();
+
+		internal VisualInteractionSource? VisualInteractionSource { get; set; }
 
 		public Matrix4x4 TransformMatrix
 		{

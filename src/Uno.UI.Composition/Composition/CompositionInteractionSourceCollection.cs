@@ -1,23 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.UI.Composition.Interactions;
 
 public partial class CompositionInteractionSourceCollection : CompositionObject, IEnumerable<ICompositionInteractionSource>
 {
-	private List<ICompositionInteractionSource> _list = new();
+	private readonly List<ICompositionInteractionSource> _list = new();
+	private readonly InteractionTracker _tracker;
 
-	internal CompositionInteractionSourceCollection(Compositor compositor) : base(compositor)
+	internal CompositionInteractionSourceCollection(Compositor compositor, InteractionTracker tracker) : base(compositor)
 	{
+		_tracker = tracker;
 	}
 
 	public int Count => _list.Count;
 
-	public void RemoveAll() => _list.Clear();
+	public void RemoveAll()
+	{
+		_list.Clear();
 
-	public void Add(ICompositionInteractionSource value) => _list.Add(value);
+		foreach (var vis in _list.OfType<VisualInteractionSource>())
+		{
+			vis.Trackers.Remove(_tracker);
+		}
+	}
 
-	public void Remove(ICompositionInteractionSource value) => _list.Remove(value);
+	public void Add(ICompositionInteractionSource value)
+	{
+		_list.Add(value);
+		if (value is VisualInteractionSource vis)
+		{
+			vis.Trackers.Add(_tracker);
+		}
+	}
+
+	public void Remove(ICompositionInteractionSource value)
+	{
+		_list.Remove(value);
+		if (value is VisualInteractionSource vis)
+		{
+			vis.Trackers.Remove(_tracker);
+		}
+	}
 
 	public IEnumerator<ICompositionInteractionSource> GetEnumerator() => _list.GetEnumerator();
 

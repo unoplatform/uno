@@ -16,6 +16,8 @@ namespace Microsoft.UI.Composition
 
 		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
+		internal IPointerRedirector? PointerRedirector { get; set; }
+
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this);
 
