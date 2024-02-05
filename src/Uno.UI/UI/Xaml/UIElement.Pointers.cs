@@ -1051,11 +1051,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool OnPointerUp(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
-			if (this.Visual.RedirectedPointerId == args.Pointer.PointerId)
-			{
-				this.Visual.UnredirectTouch();
-			}
-
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args, out var isOver);
 			if (!isOverOrCaptured)
