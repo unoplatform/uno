@@ -8,7 +8,7 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>Uno.UI.Composition</AssemblyName>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
@@ -22,7 +22,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="AssemblyInfo.skia.cs" />
+		<None Remove="AssemblyInfo.skia.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
@@ -26,33 +26,33 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
-  </ItemGroup>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="System" />
+		<Reference Include="System.Drawing" />
+		<Reference Include="System.Net.Http" />
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+		<Reference Include="System.Xaml" />
+		<Reference Include="System.Xml" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
 
-  <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
-  <Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1" />
+	<Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-    <ProjectReference Include="..\Uno.UI.Tests\Uno.UI.Tests.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\Uno.UI.Tests\Uno.UI.Tests.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+	<ItemGroup>
+		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+	</ItemGroup>
 
 </Project>

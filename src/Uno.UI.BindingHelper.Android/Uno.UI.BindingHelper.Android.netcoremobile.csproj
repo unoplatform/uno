@@ -64,7 +64,7 @@
 	</Target>
 
 	<ItemGroup>
-		<!-- This feature does not take androidx dependencies in (yet? https://github.com/xamarin/xamarin-android/blob/3b164b02772a13204ecb244b7be542505d4f2cb6/Documentation/guides/BindingJavaSource.md)  -->
+		<!-- This feature does not take androidx dependencies in (yet? https://github.com/xamarin/xamarin-android/blob/3b164b02772a13204ecb244b7be542505d4f2cb6/Documentation/guides/BindingJavaSource.md) -->
 		<AndroidJavaSource Remove="Uno\**\*.java" />
 	</ItemGroup>
 

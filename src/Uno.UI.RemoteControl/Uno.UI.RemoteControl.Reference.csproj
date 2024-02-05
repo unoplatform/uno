@@ -28,10 +28,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="buildTransitive\Uno.UI.DevServer.targets">
-	    <PackagePath>build</PackagePath>
-	    <Pack>true</Pack>
-	  </Content>
+		<Content Include="buildTransitive\Uno.UI.DevServer.targets">
+			<PackagePath>build</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>

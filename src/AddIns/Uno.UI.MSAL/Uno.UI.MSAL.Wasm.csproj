@@ -32,13 +32,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 	</ItemGroup>
 
 	<ItemGroup>
