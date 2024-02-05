@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Numerics;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -25,7 +26,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
-	internal override void ReceiveManipulationDelta()
+	internal override void ReceiveManipulationDelta(Point translationDelta)
 	{
 	}
 

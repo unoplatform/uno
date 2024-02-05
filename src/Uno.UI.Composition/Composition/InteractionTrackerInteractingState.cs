@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Numerics;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -26,8 +27,10 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker));
 	}
 
-	internal override void ReceiveManipulationDelta()
+	internal override void ReceiveManipulationDelta(Point translationDelta)
 	{
+		_interactionTracker.SetPosition(_interactionTracker.Position + new Vector3((float)translationDelta.X, (float)translationDelta.Y, 0), isFromUserManipulation: true);
+		// Set interaction tracker position.
 	}
 
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)

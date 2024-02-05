@@ -129,11 +129,8 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			if (!originalSource.Visual.TryRedirectPointerWheel(args.CurrentPoint.Properties.MouseWheelDelta))
-			{
-				// First raise the event, either on the OriginalSource or on the capture owners if any
-				RaiseUsingCaptures(Wheel, originalSource, routedArgs);
-			}
+			// First raise the event, either on the OriginalSource or on the capture owners if any
+			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
 			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
