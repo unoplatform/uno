@@ -85,34 +85,11 @@ namespace Microsoft.UI.Xaml.Controls
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
 
-			var background = Background;
-			var borderThickness = GetItemBorderThickness();
-			var borderBrush = GetItemBorderBrush(forFocus: false);
-			var cornerRadius = GetItemCornerRadius();
-
-			if (IsClear(background))
-			{
-				if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
-					&& !IsClear(todaySelectedBackground))
-				{
-					background = todaySelectedBackground;
-				}
-				else if (FindSelectedBackgroundBrush() is { } selectedBackground
-					&& !IsClear(selectedBackground))
-				{
-					background = selectedBackground;
-				}
-				else
-				{
-					background = GetItemBackgroundBrush();
-				}
-			}
-
-			if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
-			{
-				// We don't support inner border yet, so even if not optimal we just use it as border.
-				borderBrush = selectedBrush;
-			}
+			var borderInfoProvider = (IBorderInfoProvider)this;
+			var background = borderInfoProvider.Background;
+			var borderThickness = borderInfoProvider.BorderThickness;
+			var borderBrush = borderInfoProvider.BorderBrush;
+			var cornerRadius = borderInfoProvider.CornerRadius;
 
 #if __WASM__
 			if (borderBrush is not null)

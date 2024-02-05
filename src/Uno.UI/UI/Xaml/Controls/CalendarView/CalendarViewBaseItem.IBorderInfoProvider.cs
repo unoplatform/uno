@@ -10,6 +10,13 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class CalendarViewBaseItem : IBorderInfoProvider
 {
+	// DrawBackground			=> General background for all items
+	// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
+	// DrawDensityBar			=> Not supported yet
+	// DrawFocusBorder			=> Not supported yet
+	// OR DrawBorder			=> Draws the border ...
+	// DrawInnerBorder			=> The today / selected state
+
 	Brush IBorderInfoProvider.Background
 	{
 		get
