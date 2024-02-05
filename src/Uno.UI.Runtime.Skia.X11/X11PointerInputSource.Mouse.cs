@@ -14,8 +14,7 @@ internal partial class X11PointerInputSource
 	private const int SCROLL_RIGHT = 7;
 
 	private Point _mousePosition;
-	// TODO: CURRENTLY ASSUMING ONLY ONE BUTTON CAN BE PRESSED. NEED TO REEVALUATE
-	private byte _pressedButtons; // bit 0 is not used, the next 7 bits are used, and the remaining aren't used
+	private byte _pressedButtons; // // bit 0 is not used
 
 	public void ProcessMotionNotifyEvent(XMotionEvent ev)
 	{
