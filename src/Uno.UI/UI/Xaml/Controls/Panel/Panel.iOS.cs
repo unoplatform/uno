@@ -3,6 +3,7 @@ using UIKit;
 using Uno.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
