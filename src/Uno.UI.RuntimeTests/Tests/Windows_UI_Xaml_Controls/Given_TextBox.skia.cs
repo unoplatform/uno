@@ -3230,11 +3230,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var random = new Random();
 			var i = 0;
 			for (; i < 20; i++)
 			{
-				await Task.Delay(100);
+				await Task.Delay(random.Next(75, 126));
+				var screenshot = await UITestHelper.ScreenShot(SUT);
 				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) &&
 					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black))
 				{
@@ -3247,10 +3248,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _2 = ThemeHelper.UseDarkTheme();
 			await WindowHelper.WaitForIdle();
 
-			screenshot = await UITestHelper.ScreenShot(SUT);
 			for (; i < 20; i++)
 			{
-				await Task.Delay(100);
+				await Task.Delay(random.Next(75, 126));
+				var screenshot = await UITestHelper.ScreenShot(SUT);
 				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.White) &&
 					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.White))
 				{
