@@ -30,7 +30,7 @@ using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2, IManipulationUpdater
+	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
 		private ShapeVisual _visual;
 		private Rect _currentFinalRect;
@@ -74,18 +74,6 @@ namespace Microsoft.UI.Xaml
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
-		void IManipulationUpdater.SetManipulations(bool isRegistering)
-		{
-			if (isRegistering)
-			{
-				GestureRecognizer.GestureSettings |= GestureSettingsHelper.Manipulations;
-			}
-			else
-			{
-				UpdateManipulations(ManipulationMode, HasManipulationHandler);
-			}
-		}
-
 		internal ShapeVisual Visual
 		{
 			get
@@ -94,7 +82,6 @@ namespace Microsoft.UI.Xaml
 				if (_visual is null)
 				{
 					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
-					_visual.ManipulationUpdater = this;
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif

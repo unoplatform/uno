@@ -20,14 +20,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 
-	internal uint? RedirectedPointerId { get; private set; }
-
-	// For now, this is always UIElement.
-	// But because UIElement isn't accessible from Composition, we introduce this interface.
-	internal IManipulationUpdater? ManipulationUpdater { get; set; }
-
-	internal List<WeakReference<InteractionTracker>> _interactionTrackers = new();
-
 	public CompositionClip? Clip
 	{
 		get => _clip;
@@ -153,52 +145,5 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		DrawingSession.PushOpacity(ref session, Opacity);
 
 		return session;
-	}
-
-	internal void RedirectTouchForPointerId(uint pointerId)
-	{
-		RedirectedPointerId = pointerId;
-		ManipulationUpdater?.SetManipulations(isRegistering: true);
-	}
-	internal void UnredirectTouch()
-	{
-		if (RedirectedPointerId.HasValue)
-		{
-			RedirectedPointerId = null;
-			ManipulationUpdater?.SetManipulations(isRegistering: false);
-		}
-	}
-
-	internal void StartManipulation()
-	{
-		foreach (var weakTracker in _interactionTrackers)
-		{
-			if (weakTracker.TryGetTarget(out var tracker))
-			{
-				tracker.StartUserManipulation();
-			}
-		}
-	}
-
-	internal void CompleteManipulation()
-	{
-		foreach (var weakTracker in _interactionTrackers)
-		{
-			if (weakTracker.TryGetTarget(out var tracker))
-			{
-				tracker.CompleteUserManipulation();
-			}
-		}
-	}
-
-	internal void RouteManipulationDelta(Point translationDelta)
-	{
-		foreach (var weakTracker in _interactionTrackers)
-		{
-			if (weakTracker.TryGetTarget(out var tracker))
-			{
-				tracker.ReceiveManipulationDelta(translationDelta);
-			}
-		}
 	}
 }
