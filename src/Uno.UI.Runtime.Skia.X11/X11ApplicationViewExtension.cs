@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
@@ -21,10 +22,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		private bool TrySetFullScreenMode(bool on)
 		{
-			// TODO: this is a ridiculous amount of indirection, find something better
-			if (AppWindow.GetFromWindowId(_owner.WindowId) is { } appWindow &&
-				Window.GetFromAppWindow(appWindow) is { } window &&
-				X11WindowWrapper.GetHostFromWindow(window) is { } host)
+			if (HostFromWindowId(out var host))
 			{
 				using var _1 = X11Helper.XLock(host.X11Window.Display);
 
@@ -56,13 +54,24 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			return true;
 		}
-
-		public bool TryResizeView(Size size)
+		private bool HostFromWindowId([NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
 		{
 			// TODO: this is a ridiculous amount of indirection, find something better
 			if (AppWindow.GetFromWindowId(_owner.WindowId) is { } appWindow &&
 				Window.GetFromAppWindow(appWindow) is { } window &&
 				X11WindowWrapper.GetHostFromWindow(window) is { } host)
+			{
+				x11XamlRootHost = host;
+				return true;
+			}
+
+			x11XamlRootHost = null;
+			return false;
+		}
+
+		public bool TryResizeView(Size size)
+		{
+			if (HostFromWindowId(out var host))
 			{
 				using var _1 = X11Helper.XLock(host.X11Window.Display);
 				var _2 = XLib.XResizeWindow(host.X11Window.Display, host.X11Window.Window, (int)size.Width, (int)size.Height);
