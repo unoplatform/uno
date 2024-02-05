@@ -1512,7 +1512,7 @@ namespace Uno.UI {
 				throw `Element id ${elementId} is not focusable.`;
 			}
 
-			element.focus();
+			element.focus({ preventScroll: true });
 		}
 
 		/**
