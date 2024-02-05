@@ -739,6 +739,69 @@ namespace UITests.Shared.Windows_UI_Composition
 
 			multiShapeVisual.Size = new(200);
 			ElementCompositionPreview.SetElementChildVisual(compPresenter3, multiShapeVisual);
+
+			// Other CanvasGeometry methods
+
+			// Circle
+			var circleVisual = compositor.CreateShapeVisual();
+
+			var circlePath = new CompositionPath(CanvasGeometry.CreateCircle(device, new(100, 100), 100));
+			var circleGeometry = compositor.CreatePathGeometry(circlePath);
+			var circleShape = compositor.CreateSpriteShape(circleGeometry);
+
+			circleShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightPink);
+
+			circleVisual.Shapes.Add(circleShape);
+			circleVisual.Size = new(200);
+
+			ElementCompositionPreview.SetElementChildVisual(compPresenter4, circleVisual);
+
+			// Rounded Rectangle
+			var rectVisual = compositor.CreateShapeVisual();
+
+			var rectPath = new CompositionPath(CanvasGeometry.CreateRoundedRectangle(device, new(0, 0, 200, 200), 16, 16));
+			var rectGeometry = compositor.CreatePathGeometry(rectPath);
+			var rectShape = compositor.CreateSpriteShape(rectGeometry);
+
+			rectShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightBlue);
+
+			rectVisual.Shapes.Add(rectShape);
+			rectVisual.Size = new(200);
+
+			ElementCompositionPreview.SetElementChildVisual(compPresenter5, rectVisual);
+
+			// Polygon
+			var polyVisual = compositor.CreateShapeVisual();
+
+			var polyPath = new CompositionPath(CanvasGeometry.CreatePolygon(device, GetStarPoints(new(100), 100, 5, 0.5f)));
+			var polyGeometry = compositor.CreatePathGeometry(polyPath);
+			var polyShape = compositor.CreateSpriteShape(polyGeometry);
+
+			polyShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightYellow);
+
+			polyVisual.Shapes.Add(polyShape);
+			polyVisual.Size = new(200);
+
+			ElementCompositionPreview.SetElementChildVisual(compPresenter6, polyVisual);
+		}
+
+		private Vector2[] GetStarPoints(Vector2 center, float radius, int numPoints, float innerRadiusFactor)
+		{
+			var angleDelta = 2 * MathF.PI / numPoints;
+			var points = new Vector2[numPoints * 2];
+
+			for (int i = 0; i < numPoints * 2; i++)
+			{
+				float angle = i * angleDelta;
+				float currentRadius = (i % 2 == 0) ? radius : radius * innerRadiusFactor;
+
+				float x = center.X + currentRadius * MathF.Cos(angle);
+				float y = center.Y + currentRadius * MathF.Sin(angle);
+
+				points[i] = new(x, y);
+			}
+
+			return points;
 		}
 	}
 }

@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Composition;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.Graphics.Interop;
 using Windows.Graphics.Interop.Direct2D;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
@@ -87,11 +89,16 @@ internal class CanvasPathBuilder : IDisposable
 		_commands.Add(CompositionPathCommand.Create(segment));
 	}
 
-	// TODO
-	/*public void AddGeometry(CanvasGeometry geometry)
+	// TODO: Implement rest of supported CanvasGeometry types, we might need something like ID2D1Geometry::Simplify for that
+	public void AddGeometry(CanvasGeometry geometry)
 	{
-
-	}*/
+		if (geometry is IGeometrySource2DInterop geometryInterop
+		&& geometryInterop.GetGeometry() is ICompositionPathCommandsProvider commandsProvider
+		&& commandsProvider.Commands is List<CompositionPathCommand> { Count: > 0 } commands)
+		{
+			Commands.AddRange(commands);
+		}
+	}
 
 	public void AddLine(Vector2 endPoint)
 	{
@@ -100,7 +107,7 @@ internal class CanvasPathBuilder : IDisposable
 
 	public void AddLine(float x, float y)
 	{
-		_commands.Add(CompositionPathCommand.Create(new Point(x, y)));
+		AddLine(new(x, y));
 	}
 
 	public void AddQuadraticBezier(Vector2 controlPoint, Vector2 endPoint)
@@ -114,16 +121,6 @@ internal class CanvasPathBuilder : IDisposable
 		_commands.Add(CompositionPathCommand.Create(segment));
 	}
 
-	public void BeginFigure(Vector2 startPoint)
-	{
-		_commands.Add(CompositionPathCommand.Create(startPoint.ToPoint(), D2D1FigureBegin.Hollow));
-	}
-
-	public void BeginFigure(float startX, float startY)
-	{
-		_commands.Add(CompositionPathCommand.Create(new(startX, startY), D2D1FigureBegin.Hollow));
-	}
-
 	public void BeginFigure(Vector2 startPoint, CanvasFigureFill figureFill)
 	{
 		_commands.Add(CompositionPathCommand.Create(startPoint.ToPoint(), (D2D1FigureBegin)figureFill));
@@ -131,7 +128,17 @@ internal class CanvasPathBuilder : IDisposable
 
 	public void BeginFigure(float startX, float startY, CanvasFigureFill figureFill)
 	{
-		_commands.Add(CompositionPathCommand.Create(new(startX, startY), (D2D1FigureBegin)figureFill));
+		BeginFigure(new(startX, startY), figureFill);
+	}
+
+	public void BeginFigure(Vector2 startPoint)
+	{
+		BeginFigure(startPoint, (CanvasFigureFill)D2D1FigureBegin.Hollow);
+	}
+
+	public void BeginFigure(float startX, float startY)
+	{
+		BeginFigure(new(startX, startY), (CanvasFigureFill)D2D1FigureBegin.Hollow);
 	}
 
 	public void EndFigure(CanvasFigureLoop figureLoop)

@@ -18,9 +18,9 @@ internal class CanvasGeometry : IDisposable, IGeometrySource2D, IGeometrySource2
 
 	private CanvasGeometry(ID2D1Geometry geometry) => _geometry = geometry ?? throw new ArgumentNullException("geometry");
 
-	public ID2D1Geometry GetGeometry() => _geometry;
+	ID2D1Geometry IGeometrySource2DInterop.GetGeometry() => _geometry;
 
-	public ID2D1Geometry? TryGetGeometryUsingFactory(object factory) => null;
+	ID2D1Geometry? IGeometrySource2DInterop.TryGetGeometryUsingFactory(object factory) => null;
 
 	public void Dispose() { }
 

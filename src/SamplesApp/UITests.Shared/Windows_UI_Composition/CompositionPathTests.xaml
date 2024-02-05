@@ -8,9 +8,12 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<StackPanel Orientation="Horizontal" Spacing="20" VerticalAlignment="Top" HorizontalAlignment="Left">
+	<GridView SelectionMode="None" VerticalAlignment="Top" HorizontalAlignment="Left">
 		<ContentPresenter x:Name="compPresenter1" Width="200" Height="200"/>
 		<ContentPresenter x:Name="compPresenter2" Width="200" Height="200"/>
 		<ContentPresenter x:Name="compPresenter3" Width="200" Height="200"/>
-	</StackPanel>
+		<ContentPresenter x:Name="compPresenter4" Width="200" Height="200"/>
+		<ContentPresenter x:Name="compPresenter5" Width="200" Height="200"/>
+		<ContentPresenter x:Name="compPresenter6" Width="200" Height="200"/>
+	</GridView>
 </UserControl>
