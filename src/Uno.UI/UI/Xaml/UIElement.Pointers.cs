@@ -343,7 +343,7 @@ namespace Microsoft.UI.Xaml
 
 			if (that.Visual.RedirectedPointerId == args.Pointers[0].Id)
 			{
-				that.Visual.RouteManipulationDelta();
+				that.Visual.RouteManipulationDelta(args.Delta.Translation);
 			}
 			else
 			{

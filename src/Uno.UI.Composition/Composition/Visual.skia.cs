@@ -10,6 +10,7 @@ using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -190,13 +191,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	internal void RouteManipulationDelta()
+	internal void RouteManipulationDelta(Point translationDelta)
 	{
 		foreach (var weakTracker in _interactionTrackers)
 		{
 			if (weakTracker.TryGetTarget(out var tracker))
 			{
-				tracker.ReceiveManipulationDelta();
+				tracker.ReceiveManipulationDelta(translationDelta);
 			}
 		}
 	}

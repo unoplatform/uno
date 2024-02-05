@@ -1,12 +1,17 @@
 #nullable enable
 
 using System.Numerics;
+using System.Threading;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
 
 public partial class InteractionTracker : CompositionObject
 {
 	private InteractionTrackerState _state;
+	private Vector3 _position;
+
+	private static int _currentRequestId;
 
 	private InteractionTracker(Compositor compositor, IInteractionTrackerOwner? owner = null) : base(compositor)
 	{
@@ -27,7 +32,7 @@ public partial class InteractionTracker : CompositionObject
 
 	public Vector3 MaxPosition { get; set; }
 
-	public Vector3 Position { get; }
+	public Vector3 Position => _position;
 
 	public CompositionInteractionSourceCollection InteractionSources { get; }
 
@@ -39,8 +44,21 @@ public partial class InteractionTracker : CompositionObject
 
 	internal void ChangeState(InteractionTrackerState newState) => _state = newState;
 
+	internal void SetPosition(Vector3 newPosition, bool isFromUserManipulation)
+	{
+		if (_position != newPosition)
+		{
+			_position = newPosition;
+			int requestId = isFromUserManipulation ? 0 : _currentRequestId;
+			Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(Position, Scale, requestId));
+		}
+	}
+
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
-		=> _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond);
+	{
+		Interlocked.Increment(ref _currentRequestId);
+		return _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond);
+	}
 
 	internal void StartUserManipulation()
 	{
@@ -52,9 +70,9 @@ public partial class InteractionTracker : CompositionObject
 		_state.CompleteUserManipulation();
 	}
 
-	internal void ReceiveManipulationDelta()
+	internal void ReceiveManipulationDelta(Point translationDelta)
 	{
-		_state.ReceiveManipulationDelta();
+		_state.ReceiveManipulationDelta(translationDelta);
 	}
 
 	// TODO: Inertia -> Idle

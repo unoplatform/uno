@@ -2,6 +2,7 @@
 
 using System;
 using System.Numerics;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -22,6 +23,6 @@ internal abstract class InteractionTrackerState
 	protected abstract void EnterState(IInteractionTrackerOwner owner);
 	internal abstract void StartUserManipulation();
 	internal abstract void CompleteUserManipulation();
-	internal abstract void ReceiveManipulationDelta();
+	internal abstract void ReceiveManipulationDelta(Point translationDelta);
 	internal abstract int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond);
 }
