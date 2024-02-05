@@ -1,6 +1,8 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.UI.Core;
+using Avalonia.X11;
 using Microsoft.UI.Xaml;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.System;
@@ -22,6 +24,25 @@ public class X11ApplicationHost : ISkiaApplicationHost
 
 	static X11ApplicationHost()
 	{
+		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
+		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
+		X11Helper.XInitThreads();
+
+		[DllImport("libc")]
+		static extern void setlocale(int type, string s);
+
+		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls.
+		setlocale(/* LC_ALL */ 6, "");
+		if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+		{
+			setlocale(/* LC_ALL */ 6, "en_US.UTF-8");
+			if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+			{
+				setlocale(/* LC_ALL */ 6, "C.UTF-8");
+				XLib.XSetLocaleModifiers("@im=none");
+			}
+		}
+
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new X11DisplayInformationExtension(o, null));
