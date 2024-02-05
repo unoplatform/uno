@@ -118,6 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 
 #if __SKIA__
+			ActualThemeChanged += (_, _) => TextBoxView?.DisplayBlock.InvalidateInlines(false);
 			_timer.Tick += TimerOnTick;
 			EnsureHistory();
 #endif
