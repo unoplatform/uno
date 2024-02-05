@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml
 			var newFlags = evt.ModifierFlags;
 			var modifiers = VirtualKeyHelper.FromFlagsToVirtualModifiers(newFlags);
 
-			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
+			var flags = Enum.GetValues<NSEventModifierMask>();
 			foreach (var flag in flags)
 			{
 				var key = VirtualKeyHelper.FromFlagsToKey(flag);

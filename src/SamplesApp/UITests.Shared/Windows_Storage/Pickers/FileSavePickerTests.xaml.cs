@@ -61,7 +61,7 @@ namespace UITests.Shared.Windows_Storage.Pickers
 #endif
 		}
 
-		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues(typeof(PickerLocationId)).OfType<PickerLocationId>().ToArray();
+		public PickerLocationId[] SuggestedStartLocations { get; } = Enum.GetValues<PickerLocationId>();
 
 		public PickerLocationId SuggestedStartLocation { get; set; } = PickerLocationId.ComputerFolder;
 

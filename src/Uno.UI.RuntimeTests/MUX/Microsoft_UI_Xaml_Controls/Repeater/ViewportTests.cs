@@ -452,7 +452,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 			});
 
-			foreach (ScrollOrientation scrollOrientation in Enum.GetValues(typeof(ScrollOrientation)))
+			foreach (var scrollOrientation in Enum.GetValues<ScrollOrientation>())
 			{
 				RunOnUIThread.Execute(() =>
 				{
