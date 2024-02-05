@@ -147,8 +147,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 			var wmIconAtom = X11Helper.GetAtom(display, X11Helper._NET_WM_ICON);
 			var cardinalAtom = X11Helper.GetAtom(display, X11Helper.XA_CARDINAL);
-			var res = XLib.XChangeProperty(display, _x11Window!.Value.Window, wmIconAtom, cardinalAtom, 32, PropertyMode.Replace,
-				data, pixels.Length);
+			var res = XLib.XChangeProperty(
+				display,
+				_x11Window!.Value.Window,
+				wmIconAtom,
+				cardinalAtom,
+				32,
+				PropertyMode.Replace,
+				data,
+				pixels.Length);
 
 			var _3 = XLib.XFlush(display);
 			var _4 = XLib.XSync(display, false); // wait until the pixels are actually copied
@@ -260,8 +267,16 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		else
 		{
-			window = XLib.XCreateSimpleWindow(display, XLib.XRootWindow(display, screen), 0, 0, (int)size.Width, (int)size.Height, 0,
-				XLib.XBlackPixel(display, screen), XLib.XWhitePixel(display, screen));
+			window = XLib.XCreateSimpleWindow(
+				display,
+				XLib.XRootWindow(display, screen),
+				0,
+				0,
+				(int)size.Width,
+				(int)size.Height,
+				0,
+				XLib.XBlackPixel(display, screen),
+				XLib.XWhitePixel(display, screen));
 			XLib.XSelectInput(display, window, EventsMask);
 			_x11Window = new X11Window(display, window);
 		}
@@ -346,8 +361,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, XLib.XRootWindow(display, screen), visual->visual, /* AllocNone */ 0);
 		attribs.event_mask = EventsMask;
-		var window = XLib.XCreateWindow(display, XLib.XRootWindow(display, screen), 0, 0, (int)size.Width, (int)size.Height, 0,
-			(int)visual->depth, /* InputOutput */ 1, visual->visual,
+		var window = XLib.XCreateWindow(
+			display,
+			XLib.XRootWindow(display, screen),
+			0,
+			0,
+			(int)size.Width,
+			(int)size.Height,
+			0,
+			(int)visual->depth,
+			/* InputOutput */ 1,
+			visual->visual,
 			(UIntPtr)(XCreateWindowFlags.CWBackPixel | XCreateWindowFlags.CWColormap | XCreateWindowFlags.CWBorderPixel | XCreateWindowFlags.CWEventMask),
 			ref attribs);
 
