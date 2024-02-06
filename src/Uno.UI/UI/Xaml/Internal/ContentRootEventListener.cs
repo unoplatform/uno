@@ -4,20 +4,13 @@
 
 // TODO Uno: Mostly not implemented for now.
 
-using System;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Windows.UI.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 
 internal class ContentRootEventListener
 {
-	private UIElement m_element;
+	private readonly UIElement m_element;
 
 	public ContentRootEventListener(ContentRoot contentRoot)
 	{
@@ -30,10 +23,10 @@ internal class ContentRootEventListener
 
 	//~ContentRootEventListener()
 	//{
-	//	//UnregisterTabProcessEventHandler();
-	//	//UnregisterContextMenuOpeningEventHandler();
-	//	//UnregisterManipulationInertiaProcessingEventHandler();
-	//	//UnregisterRightTappedEventHandler();
+	//	UnregisterTabProcessEventHandler();
+	//	UnregisterContextMenuOpeningEventHandler();
+	//	UnregisterManipulationInertiaProcessingEventHandler();
+	//	UnregisterRightTappedEventHandler();
 	//}
 
 	//private void RegisterTabProcessEventHandler()

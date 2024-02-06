@@ -45,6 +45,7 @@ using Windows.UI.Core;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using System.Threading.Tasks;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -89,7 +90,7 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__ || __WASM__
 			Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
-			Current = this;
+			Initialize();
 			ApplicationLanguages.ApplyCulture();
 			InitializeSystemTheme();
 
@@ -253,13 +254,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public void Exit() => CoreApplication.Exit();
 #endif
-
-		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
-		{
-			StartPartial(callback);
-		}
-
-		static partial void StartPartial(ApplicationInitializationCallback callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 

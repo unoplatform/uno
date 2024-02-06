@@ -32,6 +32,8 @@ namespace Windows.System
 		public DispatcherQueueTimer CreateTimer()
 			=> new DispatcherQueueTimer();
 
+		internal static void CreateOnCurrentThread() => _current ??= new();
+
 		public static DispatcherQueue GetForCurrentThread()
 		{
 			if (_current == null) // Do not even check for thread access if we already have a value!

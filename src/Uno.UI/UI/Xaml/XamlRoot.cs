@@ -19,11 +19,6 @@ namespace Microsoft.UI.Xaml;
 /// </remarks>
 public sealed partial class XamlRoot
 {
-	internal XamlRoot(VisualTree visualTree)
-	{
-		VisualTree = visualTree;
-	}
-
 	/// <summary>
 	/// Occurs when a property of XamlRoot has changed.
 	/// </summary>
@@ -123,9 +118,9 @@ public sealed partial class XamlRoot
 	public UIContext UIContext { get; } = new UIContext();
 #endif
 
-	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
+	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerXamlWindow();
 
-	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
+	internal void RaiseChangedEvent() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
 
 	internal static XamlRoot? GetForElement(DependencyObject element)
 	{
@@ -139,6 +134,8 @@ public sealed partial class XamlRoot
 
 		return result;
 	}
+
+	internal static XamlRoot? GetImplementationForElement(DependencyObject element) => GetForElement(element);
 
 	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
 	{
@@ -167,4 +164,5 @@ public sealed partial class XamlRoot
 
 		return VisualTree.PopupRoot.OpenPopup(popup);
 	}
+
 }

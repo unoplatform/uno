@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Xaml.Islands;
 
@@ -21,13 +22,17 @@ internal partial class XamlIsland
 		_contentRoot.XamlIslandRoot = this;
 	}
 
-	internal ContentRoot ContentRoot => _contentRoot;
-
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
 		ScrollViewer? rootScrollViewer,
 		ContentPresenter? contentPresenter) =>
 		_contentRoot.VisualTree.SetPublicRootVisual(rootVisual, rootScrollViewer, contentPresenter);
+
+	internal VisualTree? VisualTree => _contentRoot?.VisualTree;
+
+	internal UIElement? PublicRootVisual => _contentRoot?.VisualTree.PublicRootVisual;
+
+	internal ContentRoot ContentRoot => _contentRoot;
 
 	/// <summary>
 	/// Overriding virtual to add specific logic to measure pass.
@@ -99,4 +104,6 @@ internal partial class XamlIsland
 	}
 
 	public Size GetSize() => new Size(ActualWidth, ActualHeight);
+
+	internal PopupRoot? PopupRoot => _contentRoot?.VisualTree.PopupRoot;
 }

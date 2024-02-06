@@ -31,7 +31,9 @@ internal partial class ContentManager
 
 	internal Microsoft.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
 
-	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.NotifyChanged();
+	internal ContentPresenter? RootSVContentPresenter { get; private set; }
+
+	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.RaiseChangedEvent();
 
 	private void SetContent(UIElement? newContent)
 	{
@@ -116,4 +118,10 @@ internal partial class ContentManager
 	internal static void AttachToWindow(UIElement rootElement, Microsoft.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
 
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window);
+
+
+	internal void OnWindowSizeChanged()
+	{
+		// TODO MZ: Port this.
+	}
 }

@@ -48,11 +48,6 @@ namespace Microsoft.UI.Xaml
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
-		{
-			callback(new ApplicationInitializationCallbackParams());
-		}
-
 		public override void OpenUrls(NSApplication application, NSUrl[] urls)
 		{
 			if (!_initializationComplete)

@@ -77,7 +77,7 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
-			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.XamlRoot;
+			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.Unsafe_XamlIslandsIncompatible_CoreWindowContentRoot?.XamlRoot;
 
 			if (xamlRoot != XamlRoot)
 			{
