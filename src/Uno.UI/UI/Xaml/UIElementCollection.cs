@@ -70,8 +70,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details
 			var itemsEnumerator = items.GetEnumerator();
+			var hasItems = false;
 			while (itemsEnumerator.MoveNext())
 			{
+				hasItems = true;
 				var item = itemsEnumerator.Current;
 
 				if (item is IDependencyObjectStoreProvider provider)
@@ -83,6 +85,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_owner is FrameworkElement fe)
 			{
 				fe.InvalidateMeasure();
+			}
+
+			if (!hasItems)
+			{
+				return;
 			}
 
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
