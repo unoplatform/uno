@@ -45,7 +45,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			{
 				_bitmap?.Dispose();
 				_surface?.Dispose();
-				
+
 				if (_xImage is { } xImage)
 				{
 					unsafe
