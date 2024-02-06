@@ -141,7 +141,7 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		var trackers = (List<InteractionTracker>)sender.Owner;
 		foreach (var tracker in trackers)
 		{
-			tracker.ReceiveInertiaStarting(args.Velocities.Linear);
+			tracker.ReceiveInertiaStarting(new Point(args.Velocities.Linear.X * 1000, args.Velocities.Linear.Y * 1000));
 		}
 	};
 
@@ -153,7 +153,7 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		{
 			Console.WriteLine($"ReceiveManipulationDelta");
 			_pointerRedirections!.Remove(args.Pointers[0].Id);
-			tracker.CompleteUserManipulation(new Vector3((float)args.Velocities.Linear.X, (float)args.Velocities.Linear.Y, 0));
+			tracker.CompleteUserManipulation(new Vector3((float)(args.Velocities.Linear.X * 1000), (float)(args.Velocities.Linear.Y * 1000), 0));
 		}
 	};
 

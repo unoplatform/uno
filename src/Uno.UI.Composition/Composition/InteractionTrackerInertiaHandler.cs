@@ -37,9 +37,12 @@ internal class InteractionTrackerInertiaHandler
 
 		// Based on experiment on WinUI.
 		// This was based on setting PositionInertiaDecayRate to 0.95 (the default)
-		// Note that if velocity is too small, we can get negative delta. In this case, we consider it zero and make no changes in position.
+		// Note that if velocity is too small, we can get delta in the opposite direction. In this case, we consider it zero and make no changes in position.
 		static float CalculateDeltaPosition(float velocity)
-			=> (float)Math.Max(0.3338081907 * velocity - 10.01424572, 0.0);
+		{
+			var delta = (float)(0.3338081907 * velocity - 10.01424572);
+			return Math.Sign(delta) == Math.Sign(velocity) ? delta : 0;
+		}
 	}
 
 	public void Start()
@@ -49,7 +52,7 @@ internal class InteractionTrackerInertiaHandler
 			throw new InvalidOperationException("Cannot start inertia timer twice.");
 		}
 
-		_timer = new Timer(OnTick, null, IntervalInMilliseconds, IntervalInMilliseconds);
+		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
 	}
 
 	private void OnTick(object? state)
@@ -66,6 +69,10 @@ internal class InteractionTrackerInertiaHandler
 			_interactionTracker.SetPosition(_currentPosition, isFromUserManipulation: false/*TODO*/);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker));
 			_timer!.Dispose();
+		}
+		else
+		{
+			_interactionTracker.SetPosition(_currentPosition, isFromUserManipulation: false/*TODO*/);
 		}
 
 		bool ReachedOrExceededFinalPosition(float current, float final, float delta)
