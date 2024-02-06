@@ -40,22 +40,18 @@ namespace Uno.UI.RuntimeTests
 
 	partial class UnitTestsControl
 	{
-		partial void ConstructPartial()
-		{
-			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
-#if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
-#else
-				false;
-#endif
-		}
-
 		/// <inheritdoc />
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
+#else
+				false;
+#endif
 		}
 	}
 }
