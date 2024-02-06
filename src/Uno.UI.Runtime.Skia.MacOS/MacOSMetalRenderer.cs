@@ -13,7 +13,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal static class MacOSMetalRenderer
 {
-	internal static Dictionary<nint,WeakReference<MacOSWindowWrapper>> windows = new();
+	internal static Dictionary<nint, WeakReference<MacOSWindowWrapper>> windows = new();
 
 	public static unsafe void Register()
 	{
@@ -44,7 +44,7 @@ internal static class MacOSMetalRenderer
 		return null;
 	}
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void Draw(nint handle, double width, double height, nint texture)
 	{
 		var window = GetWindow(handle);
@@ -58,7 +58,7 @@ internal static class MacOSMetalRenderer
 		}
 	}
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void Resize(nint handle, double width, double height)
 	{
 		var window = GetWindow(handle);

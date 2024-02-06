@@ -58,7 +58,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
 		// net8+ alternative -> https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
 		var get = typeof(GRContext).GetMethod("GetObject", BindingFlags.Static | BindingFlags.NonPublic)!;
-		_context = (GRContext?) get?.Invoke(null, new object [] { ctx, true });
+		_context = (GRContext?)get?.Invoke(null, new object[] { ctx, true });
 		if (_context is null)
 		{
 			// Macs since 2012 have Metal 2 support and macOS 10.14 Mojave (2018) requires Metal
@@ -169,7 +169,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 			}
 		}
 		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
-       	using var target = (GRBackendRenderTarget)_rt?.Invoke(new object[] { nt, true })!;
+		using var target = (GRBackendRenderTarget)_rt?.Invoke(new object[] { nt, true })!;
 		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
 		using var canvas = surface.Canvas;
 
