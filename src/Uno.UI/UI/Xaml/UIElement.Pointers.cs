@@ -967,7 +967,7 @@ namespace Microsoft.UI.Xaml
 #if NEEDS_IMPLICIT_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
-					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventOsStole, args);
+					Capture(args.Pointer, PointerCaptureKind.Implicit, PointerCaptureOptions.PreventOSSteal, args);
 				}
 #endif
 			}

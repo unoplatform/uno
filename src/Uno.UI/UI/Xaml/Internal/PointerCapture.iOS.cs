@@ -15,9 +15,9 @@ partial class PointerCapture
 
 	partial void AddOptions(UIElement target, PointerCaptureOptions options)
 	{
-		if (options.HasFlag(PointerCaptureOptions.PreventOsStole))
+		if (options.HasFlag(PointerCaptureOptions.PreventOSSteal))
 		{
-			RemoveOptions(target, PointerCaptureOptions.PreventOsStole);
+			RemoveOptions(target, PointerCaptureOptions.PreventOSSteal);
 			_currentManagers = TouchesManager.GetAllParents(target).ToList();
 
 			foreach (var manager in _currentManagers)
@@ -30,7 +30,7 @@ partial class PointerCapture
 
 	partial void RemoveOptions(UIElement target, PointerCaptureOptions options)
 	{
-		if (options.HasFlag(PointerCaptureOptions.PreventOsStole))
+		if (options.HasFlag(PointerCaptureOptions.PreventOSSteal))
 		{
 			// The 'target' will not change between Add and Remove, so we can use the same _currentManagers list.
 

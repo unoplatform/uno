@@ -12,5 +12,5 @@ internal enum PointerCaptureOptions : byte
 	/// <summary>
 	/// This applies mainly for iOS and Android, where the OS can steal the pointer when it detects a scroll gesture (touch and pen).
 	/// </summary>
-	PreventOsStole = 1,
+	PreventOSSteal = 1,
 }

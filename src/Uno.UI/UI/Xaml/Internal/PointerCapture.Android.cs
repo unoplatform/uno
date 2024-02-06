@@ -11,7 +11,7 @@ partial class PointerCapture
 {
 	partial void AddOptions(UIElement target, PointerCaptureOptions options)
 	{
-		if (options.HasFlag(PointerCaptureOptions.PreventOsStole))
+		if (options.HasFlag(PointerCaptureOptions.PreventOSSteal))
 		{
 			target.RequestDisallowInterceptTouchEvent(true);
 		}
