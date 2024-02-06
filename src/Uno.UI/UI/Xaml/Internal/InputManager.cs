@@ -102,18 +102,15 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
 		recognizer.ProcessDownEvent(new PointerPoint(pointer));
 
-		Console.WriteLine($"Pointer {pointer.PointerId} redirected.");
 		_pointerRedirections[pointer.PointerId] = recognizer;
 	}
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
 	{
-		Console.WriteLine($"OnRecognizerManipulationStarting");
 		// TODO: Make sure ManipulationStarting is fired on UIElement.
 		var trackers = (List<InteractionTracker>)sender.Owner;
 		foreach (var tracker in trackers)
 		{
-			Console.WriteLine($"StartUserManipulation");
 			tracker.StartUserManipulation();
 		}
 	};
@@ -121,23 +118,19 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
 	{
 		// TODO: We should raise PointerCaptureLost on the right UIElement that received ManipulationStarting.
-		Console.WriteLine($"OnRecognizerManipulationStarted");
 	};
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
 	{
-		Console.WriteLine($"OnRecognizerManipulationUpdated");
 		var trackers = (List<InteractionTracker>)sender.Owner;
 		foreach (var tracker in trackers)
 		{
-			Console.WriteLine($"ReceiveManipulationDelta");
 			tracker.ReceiveManipulationDelta(args.Delta.Translation);
 		}
 	};
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
 	{
-		Console.WriteLine($"OnRecognizerManipulationInertiaStarting");
 		var trackers = (List<InteractionTracker>)sender.Owner;
 		foreach (var tracker in trackers)
 		{
@@ -147,11 +140,9 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
 	{
-		Console.WriteLine($"OnRecognizerManipulationCompleted");
 		var trackers = (List<InteractionTracker>)sender.Owner;
 		foreach (var tracker in trackers)
 		{
-			Console.WriteLine($"ReceiveManipulationDelta");
 			_pointerRedirections!.Remove(args.Pointers[0].Id);
 			tracker.CompleteUserManipulation(new Vector3((float)(args.Velocities.Linear.X * 1000), (float)(args.Velocities.Linear.Y * 1000), 0));
 		}

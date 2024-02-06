@@ -26,7 +26,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
-using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml
 {
