@@ -19,7 +19,7 @@ namespace Microsoft.UI.Composition
 		private bool _isVisible = true;
 		private float _opacity = 1.0f;
 		private CompositionCompositeMode _compositeMode;
-		private CompositionTarget? _compositionTarget;
+		private object? _compositionTarget; // this should be a Microsoft.UI.Xaml.Media.CompositionTarget
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
@@ -116,7 +116,7 @@ namespace Microsoft.UI.Composition
 
 		public ContainerVisual? Parent { get; set; }
 
-		internal CompositionTarget? CompositionTarget
+		internal object? CompositionTarget
 		{
 			get => _compositionTarget ?? Parent?.CompositionTarget; // TODO: can this be cached?
 			set => _compositionTarget = value;

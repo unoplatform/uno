@@ -1,13 +1,11 @@
-namespace Microsoft.UI.Composition;
+using Microsoft.UI.Composition;
+namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
 	private Visual _root;
-	internal CompositionTarget()
-	{
-	}
 
-	public Visual Root
+	internal Visual Root
 	{
 		get => _root;
 		set

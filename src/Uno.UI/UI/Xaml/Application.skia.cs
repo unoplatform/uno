@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
 using Windows.ApplicationModel.Core;
-using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 

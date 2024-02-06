@@ -8,10 +8,10 @@ using System;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.UI;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 /*
