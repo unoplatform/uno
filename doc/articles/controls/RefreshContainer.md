@@ -19,9 +19,9 @@ private async void OnRefreshRequested(
     object sender,
     RefreshRequestedEventArgs e)
 {
-	var deferral = e.GetDeferral();
-	await Task.Delay(3000); // Do some asynchronous work
-	deferral.Complete();
+    var deferral = e.GetDeferral();
+    await Task.Delay(3000); // Do some asynchronous work
+    deferral.Complete();
 }
 ```
 
