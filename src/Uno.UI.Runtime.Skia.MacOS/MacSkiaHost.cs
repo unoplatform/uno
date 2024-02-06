@@ -53,6 +53,10 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 	{
 		if (!InitializeMac())
 		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Could not create the native NSApplication host");
+			}
 			return;
 		}
 
@@ -90,8 +94,7 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 		try
 		{
 			// Create the native NSApplication and a main window
-			NativeUno.uno_app_initialize();
-			return true;
+			return NativeUno.uno_app_initialize();
 		}
 		catch (Exception e)
 		{

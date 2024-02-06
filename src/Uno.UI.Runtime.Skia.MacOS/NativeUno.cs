@@ -12,7 +12,8 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal static partial class NativeUno 
 {
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial nint uno_app_initialize();
+	[return: MarshalAs (UnmanagedType.I1)]
+	internal static partial bool uno_app_initialize();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_app_get_main_window();

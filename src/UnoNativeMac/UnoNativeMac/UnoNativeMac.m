@@ -8,18 +8,6 @@
 static draw_fn_ptr draw;
 static resize_fn_ptr resize;
 
-static UNOApplicationDelegate *ad;
-
-void uno_app_initialize(void)
-{
-    NSApplication *app = [NSApplication sharedApplication];
-    app.delegate = ad = [[UNOApplicationDelegate alloc] init];
-    [app setActivationPolicy:NSApplicationActivationPolicyRegular];
-    
-    // KVO observation for dark/light theme
-    [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:nil];
-}
-
 inline draw_fn_ptr uno_get_draw_callback(void)
 {
     return draw;

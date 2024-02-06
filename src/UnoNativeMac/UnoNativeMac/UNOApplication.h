@@ -15,6 +15,9 @@ system_theme_change_fn_ptr uno_get_system_theme_change_callback(void);
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p);
 uint32 uno_get_system_theme(void);
 
+bool uno_app_initialize(void);
+NSWindow* uno_app_get_main_window(void);
+
 void uno_application_set_icon(const char *path);
 bool uno_application_open_url(const char *url);
 bool uno_application_query_url_support(const char *url);

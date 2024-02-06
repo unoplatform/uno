@@ -4,6 +4,7 @@
 
 #import "UNOApplication.h"
 
+static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
@@ -23,6 +24,19 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     NSAppearanceName appearanceName = [appearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua,
                                                                                       NSAppearanceNameDarkAqua]];
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
+}
+
+bool uno_app_initialize(void)
+{
+    NSApplication *app = [NSApplication sharedApplication];
+    if (app) {
+        app.delegate = ad = [[UNOApplicationDelegate alloc] init];
+        [app setActivationPolicy:NSApplicationActivationPolicyRegular];
+
+        // KVO observation for dark/light theme
+        [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:nil];
+    }
+    return app != nil;
 }
 
 void uno_application_set_icon(const char *path)
