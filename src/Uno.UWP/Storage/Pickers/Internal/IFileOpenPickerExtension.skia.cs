@@ -16,6 +16,8 @@ namespace Uno.Extensions.Storage.Pickers
 
 		// called just before Pick* methods to allow the customization of the native picker to match,
 		// as much as possible, the user selected properties of the WinUI picker
-		void Customize(FileOpenPicker picker) {}
+		void Customize(FileOpenPicker picker)
+		{
+		}
 	}
 }
