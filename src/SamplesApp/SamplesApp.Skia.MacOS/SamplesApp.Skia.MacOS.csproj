@@ -50,6 +50,17 @@
 	<Import Project="..\..\..\build\nuget\*.Skia.MacOS.targets" />
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
+	<PropertyGroup>
+		<_XcodeBuildArgs Condition="'$(Configuration)'=='Debug'">build-for-testing -scheme UnoNativeMac</_XcodeBuildArgs>
+	</PropertyGroup>
+
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile">
+		<Exec Command="$(MSBuildThisFileDirectory)../../UnoNativeMac/build.sh $(_XcodeBuildArgs)" WorkingDirectory="$(MSBuildThisFileDirectory)../../UnoNativeMac/" />
+		<Copy
+			SourceFiles="$(MSBuildThisFileDirectory)../../UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
+			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
+	</Target>
+
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />

@@ -5,7 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA</DefineConstants>
-    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <Import Project="../targetframework-override.props" />
