@@ -78,5 +78,5 @@ vault.Add(new Windows.Security.Credentials.PasswordCredential(
 var vault = new Windows.Security.Credentials.PasswordVault();
 var credential = vault.Retrieve("My App", userName);
 credential.RetrievePassword();
-var password = loginCredential.Password;
+var password = credential.Password;
 ```
