@@ -332,7 +332,6 @@ internal partial class InputManager
 		{
 			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
-				Console.WriteLine($"recognizer.ProcessMoveEvents");
 				recognizer.ProcessMoveEvents([new Microsoft.UI.Input.PointerPoint(args.CurrentPoint)]);
 				return;
 			}
