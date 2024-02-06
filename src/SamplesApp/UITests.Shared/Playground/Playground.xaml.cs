@@ -24,7 +24,9 @@ public sealed partial class Playground : UserControl
 	public Playground()
 	{
 		this.InitializeComponent();
+#if __WASM__
 		this.Loaded += OnLoaded;
+#endif
 #if !__WASM__
 		xamlText.Text = ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] as string ?? "";
 #endif
