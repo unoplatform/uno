@@ -11,8 +11,8 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal static partial class NativeUno 
 {
-	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_app_initialize(string title);
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_app_initialize();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_app_get_main_window();
@@ -29,10 +29,10 @@ internal static partial class NativeUno
 	internal static partial bool uno_application_query_url_support(string url);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_draw_callback(delegate* unmanaged[Cdecl]<CGSize,nint,void> callback);
+	internal static unsafe partial void uno_set_draw_callback(delegate* unmanaged[Cdecl]<nint,double,double,nint,void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_resize_callback(delegate* unmanaged[Cdecl]<CGSize,void> callback);
+	internal static unsafe partial void uno_set_resize_callback(delegate* unmanaged[Cdecl]<nint,double,double,void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_did_change_screen_callback(ref MacOSDisplayInformationExtension.ScreenData screenData, delegate* unmanaged[Cdecl]<void> callback);
@@ -80,6 +80,9 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_application_exit_full_screen();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_window_get_metal(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]

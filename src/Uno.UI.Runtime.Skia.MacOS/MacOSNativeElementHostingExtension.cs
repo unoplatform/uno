@@ -7,15 +7,15 @@ using Uno.Foundation.Extensibility;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSCoreWindowExtension : ICoreWindowExtension
+internal class MacOSNativeElementHostingExtension : INativeElementHostingExtension
 {
-	public static MacOSCoreWindowExtension Instance = new();
+	public static MacOSNativeElementHostingExtension Instance = new();
 
-	private MacOSCoreWindowExtension()
+	private MacOSNativeElementHostingExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register(typeof(ICoreWindowExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register(typeof(INativeElementHostingExtension), o => Instance);
 
 	public void ArrangeNativeElement(object owner, object content, Rect arrangeRect)
 	{

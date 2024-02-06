@@ -13,7 +13,7 @@
 - (nonnull instancetype)initWithMetalKitView:(nonnull MTKView *)mtkView
 {
     self = [super init];
-    if(self)
+    if (self)
     {
         _device = mtkView.device;
         self.queue = [_device newCommandQueue];
@@ -42,8 +42,9 @@
 
     id<CAMetalDrawable> drawable = view.currentDrawable;
 
+    CGSize size = view.drawableSize;
     // call managed code
-    uno_get_draw_callback()(view.drawableSize, (__bridge void*) drawable.texture);
+    uno_get_draw_callback()((__bridge void*) view.window, size.width, size.height, (__bridge void*) drawable.texture);
 
     id<MTLCommandBuffer> commandBuffer = [self.queue commandBuffer];
     [commandBuffer presentDrawable:drawable];
@@ -52,7 +53,7 @@
 
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
-    uno_get_resize_callback()(size);
+    uno_get_resize_callback()((__bridge void*) view.window, size.width, size.height);
 }
 
 @end

@@ -4,6 +4,107 @@
 
 #import "UNOWindow.h"
 
+static id<MTLDevice> device;
+
+static NSWindow *main_window;
+static id windowDidChangeScreen;
+
+static window_did_change_screen_fn_ptr window_did_change_screen;
+static window_did_change_screen_parameters_fn_ptr window_did_change_screen_parameters;
+
+// libSkiaSharp
+extern void* gr_direct_context_make_metal(id device, id queue);
+
+
+
+@interface windowDidChangeScreenNoteClass : NSObject
+{
+    struct SharedScreenData *sharedScreenData;
+}
++ (windowDidChangeScreenNoteClass*) initWith:(void*) screenData;
+- (void) windowDidChangeScreenNotification:(NSNotification*) note;
+- (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
+@end
+
+@implementation windowDidChangeScreenNoteClass
+
++ (windowDidChangeScreenNoteClass*) initWith:(void*) screenData
+{
+    windowDidChangeScreenNoteClass *windowDidChangeScreen = [windowDidChangeScreenNoteClass new];
+    windowDidChangeScreen->sharedScreenData = screenData;
+    return windowDidChangeScreen;
+}
+
+- (void) windowDidChangeScreenNotification:(NSNotification*) note
+{
+    NSScreen *screen = [note.object screen];
+    CGSize s = [screen convertRectToBacking:screen.frame].size;
+    // store basic, non-calculated values inside shared memory
+    sharedScreenData->ScreenHeightInRawPixels = (uint)s.height;
+    sharedScreenData->ScreenWidthInRawPixels = (uint)s.width;
+    sharedScreenData->RawPixelsPerViewPixel = screen.backingScaleFactor;
+#if DEBUG
+    NSLog(@"ScreenHeightInRawPixels %d ScreenWidthInRawPixels %d RawPixelsPerViewPixel %d", sharedScreenData->ScreenHeightInRawPixels, sharedScreenData->ScreenWidthInRawPixels, sharedScreenData->RawPixelsPerViewPixel);
+#endif
+    uno_get_window_did_change_screen_callback()();
+}
+
+- (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note
+{
+#if DEBUG
+    NSLog(@"NSApplicationDidChangeScreenParametersNotification");
+#endif
+    uno_get_window_did_change_screen_parameters_callback()();
+}
+
+@end
+
+NSWindow* uno_app_get_main_window(void)
+{
+    if (!main_window) {
+        device = MTLCreateSystemDefaultDevice();
+        main_window = (__bridge NSWindow*) uno_window_create();
+    }
+    return main_window;
+}
+
+// TODO
+// - add initial window size (GCSize)
+// - add initial background color
+void* uno_window_create(void)
+{
+    CGRect size = NSMakeRect(0, 0, 800, 600);
+    UNOWindow *window = [[UNOWindow alloc] initWithContentRect:size
+                                                     styleMask:NSWindowStyleMaskTitled|NSWindowStyleMaskClosable|NSWindowStyleMaskMiniaturizable|NSWindowStyleMaskResizable
+                                                       backing:NSBackingStoreBuffered defer:NO];
+    
+    NSViewController *vc = [[NSViewController alloc] init];
+    
+    MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
+    v.enableSetNeedsDisplay = YES;
+    //    v.clearColor = MTLClearColorMake(0.0, 0.5, 1.0, 1.0); // FIXME: remove or set to default background color
+    window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
+    v.delegate = window.metalViewDelegate;
+    vc.view = v;
+    
+    window.contentViewController = vc;
+    
+    // Notifications
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    NSNotification *nw = [[NSNotification alloc] initWithName:NSWindowDidChangeScreenNotification object:window userInfo:nil];
+
+    assert(windowDidChangeScreen);
+    [center addObserver:windowDidChangeScreen selector:@selector(windowDidChangeScreenNotification:) name:NSWindowDidChangeScreenNotification object:window];
+    // we need values for the current screen (before it change, because it might never)
+    [windowDidChangeScreen windowDidChangeScreenNotification:nw];
+
+    [center addObserver:windowDidChangeScreen selector:@selector(applicationDidChangeScreenParametersNotification:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
+    // we need values for the current screen (before it change, because it might never)
+    [windowDidChangeScreen applicationDidChangeScreenParametersNotification:nw];
+    
+    return (__bridge void*) window;
+}
+
 void uno_window_invalidate(NSWindow *window)
 {
     window.contentViewController.view.needsDisplay = true;
@@ -26,15 +127,36 @@ bool uno_window_resize(NSWindow *window, double width, double height)
 
 void uno_window_set_min_size(NSWindow *window, double width, double height)
 {
-    window.minSize = CGSizeMake(width, height);
 #if DEBUG
     NSLog (@"uno_window_set_min_size %@ %f %f", window, width, height);
 #endif
+    window.minSize = CGSizeMake(width, height);
 }
 
 void uno_window_set_title(NSWindow *window, const char* title)
 {
     window.title = [NSString stringWithUTF8String:title];
+}
+
+inline window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void)
+{
+    return window_did_change_screen;
+}
+
+void uno_set_window_did_change_screen_callback(struct SharedScreenData *screenData, window_did_change_screen_fn_ptr p)
+{
+    windowDidChangeScreen = [windowDidChangeScreenNoteClass initWith:screenData];
+    window_did_change_screen = p;
+}
+
+inline window_did_change_screen_parameters_fn_ptr uno_get_window_did_change_screen_parameters_callback(void)
+{
+    return window_did_change_screen_parameters;
+}
+
+void uno_set_window_did_change_screen_parameters_callback(window_did_change_screen_parameters_fn_ptr p)
+{
+    window_did_change_screen_parameters = p;
 }
 
 static window_key_callback_fn_ptr window_key_down;
@@ -240,6 +362,15 @@ inline window_should_close_fn_ptr uno_get_window_should_close_callback(void)
 void uno_set_window_should_close_callback(window_should_close_fn_ptr p)
 {
     window_should_close = p;
+}
+
+void* uno_window_get_metal(UNOWindow* window)
+{
+    id queue = window.metalViewDelegate.queue;
+#if DEBUG
+    NSLog(@"uno_window_get_metal device %p queue %p", device, queue);
+#endif
+    return gr_direct_context_make_metal(device, queue);
 }
 
 @implementation UNOWindow : NSWindow

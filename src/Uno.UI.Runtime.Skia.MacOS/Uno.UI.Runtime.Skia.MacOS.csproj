@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <!-- <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_GTK</DefineConstants> -->
+    <DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA</DefineConstants>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
@@ -16,7 +16,7 @@
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides macOS platform support for Skia in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-2023 Uno Platform Inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-2024 Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.MacOS</PackageId>
 
@@ -36,10 +36,13 @@
 
   <Target Name="BuildUnoNativeMac" BeforeTargets="Compile">
     <Exec Command="$(MSBuildThisFileDirectory)../UnoNativeMac/build.sh" WorkingDirectory="$(MSBuildThisFileDirectory)../UnoNativeMac/" />
+    <Copy
+      SourceFiles="$(MSBuildThisFileDirectory)../UnoNativeMac/build/Release/libUnoNativeMac.dylib"
+      DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
   </Target>
 
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)../UnoNativeMac/build/Release/libUnoNativeMac.*" Visible="False" CopyToOutputDirectory="PreserveNewest" />
+    <!-- <Content Include="$(MSBuildThisFileDirectory)../UnoNativeMac/build/Release/libUnoNativeMac.*" Visible="False" CopyToOutputDirectory="PreserveNewest" /> -->
   </ItemGroup>
 
   <ItemGroup>

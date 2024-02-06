@@ -6,9 +6,29 @@
 
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
+#import <Metal/Metal.h>
+
+#import "UNOMetalViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface UNOWindow : NSWindow
+
+@property (strong) UNOMetalViewDelegate* metalViewDelegate;
+
+- (void)sendEvent:(NSEvent *)event;
+
+@end
+
+@interface UNOWindowDelegate : NSObject <NSWindowDelegate>
+
+- (bool)windowShouldClose:(NSWindow *)sender;
+
+@end
+
+NSWindow* uno_app_get_main_window(void);
+
+void* uno_window_create(void);
 void uno_window_invalidate(NSWindow *window);
 bool uno_window_resize(NSWindow *window, double width, double height);
 void uno_window_set_title(NSWindow *window, const char* title);
@@ -226,16 +246,20 @@ typedef bool (*window_should_close_fn_ptr)(void);
 window_should_close_fn_ptr uno_get_window_should_close_callback(void);
 void uno_set_window_should_close_callback(window_should_close_fn_ptr p);
 
-@interface UNOWindow : NSWindow
+void* uno_window_get_metal(UNOWindow* window);
 
-- (void)sendEvent:(NSEvent *)event;
+struct SharedScreenData {
+    uint32 ScreenHeightInRawPixels;
+    uint32 ScreenWidthInRawPixels;
+    uint32 RawPixelsPerViewPixel;
+};
 
-@end
+typedef void (*window_did_change_screen_fn_ptr)(void);
+window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);
+void uno_set_window_did_change_screen_callback(struct SharedScreenData *screenData, window_did_change_screen_fn_ptr p);
 
-@interface UNOWindowDelegate : NSObject <NSWindowDelegate>
-
-- (bool)windowShouldClose:(NSWindow *)sender;
-
-@end
+typedef void (*window_did_change_screen_parameters_fn_ptr)(void);
+window_did_change_screen_parameters_fn_ptr uno_get_window_did_change_screen_parameters_callback(void);
+void uno_set_window_did_change_screen_parameters_callback(window_did_change_screen_parameters_fn_ptr p);
 
 NS_ASSUME_NONNULL_END

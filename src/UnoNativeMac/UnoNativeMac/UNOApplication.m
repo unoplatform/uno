@@ -107,10 +107,10 @@ void uno_application_quit(void)
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-#if DEBUG
-    NSLog(@"UNOApplicationDelegate.applicationDidFinishLaunching %@", notification);
-#endif
     NSWindow *win = uno_app_get_main_window();
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.applicationDidFinishLaunching notification %@ win %@", notification, win);
+#endif
     [win makeKeyWindow];
     [win orderFrontRegardless];
 }
