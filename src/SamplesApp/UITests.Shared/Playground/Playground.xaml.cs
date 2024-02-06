@@ -6,9 +6,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using Monaco;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
+#if __WASM__
+using Monaco;
+#endif
 
 namespace UITests.Playground;
 
@@ -31,7 +33,7 @@ public sealed partial class Playground : UserControl
 #if __WASM__
 	private async void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		await Task.Delay(100);
+		await Task.Delay(100); // Workaround for https://github.com/unoplatform/uno/issues/15374
 		_codeEditor = new CodeEditor()
 		{
 			Background = new SolidColorBrush(Colors.Transparent),
