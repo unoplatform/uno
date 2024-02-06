@@ -23494,10 +23494,6 @@
                       <!-- Uno specific (LinearGradientBrush borders): Use solid color brush-->
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentDefaultBrush}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <!-- Uno specific (LinearGradientBrush borders): Adjust color for accent overlay -->
-                    <not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
-                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorOnAccentSecondaryBrush}" />
-                    </not_win:ObjectAnimationUsingKeyFrames>
                     <contract7Present:ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BackgroundSizing">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ToggleButtonCheckedStateBackgroundSizing}" />
                     </contract7Present:ObjectAnimationUsingKeyFrames>

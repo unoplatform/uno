@@ -1,57 +1,44 @@
-﻿using Uno.UI.Views.Controls;
-using Uno.Disposables;
-using Uno.Extensions;
-using System;
-using Uno.UI;
+#if XAMARIN_IOS_UNIFIED
 using UIKit;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public abstract class NativePage : UIViewController
 {
-	public abstract class NativePage : UIViewController
+	private UIView _content;
+
+	public NativePage()
 	{
-		public NativePage()
+		AutomaticallyAdjustsScrollViewInsets = false;
+		InitializeComponent();
+	}
+
+	/// <summary>
+	/// Initializes the content of the current UIViewController.
+	/// </summary>
+	protected abstract void InitializeComponent();
+
+	public UIView Content
+	{
+		get => _content;
+		set
 		{
-			Initialize();
-		}
-
-		void Initialize()
-		{
-			AutomaticallyAdjustsScrollViewInsets = false;
-			InitializeComponent();
-		}
-
-		/// <summary>
-		/// Initializes the content of the current UIViewController.
-		/// </summary>
-		protected abstract void InitializeComponent();
-
-		UIView _content;
-
-		public UIView Content
-		{
-			get
+			if (_content != value)
 			{
-				return _content;
-			}
-			set
-			{
-				if (_content != value)
+				if (_content != null)
 				{
-					if (_content != null)
-					{
-						_content.RemoveFromSuperview();
-					}
+					_content.RemoveFromSuperview();
+				}
 
-					_content = value;
-					if (_content != null)
-					{
+				_content = value;
+				if (_content != null)
+				{
 
-						_content.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
-						_content.Frame = View.Frame;
+					_content.AutoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth;
+					_content.Frame = View.Frame;
 
-						View.AddSubview(_content);
-						View.SetNeedsLayout();
-					}
+					View.AddSubview(_content);
+					View.SetNeedsLayout();
 				}
 			}
 		}

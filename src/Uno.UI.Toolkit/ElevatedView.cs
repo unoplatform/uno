@@ -69,6 +69,13 @@ namespace Uno.UI.Toolkit
 			RenderTransform = new CompositeTransform();
 #endif
 			SizeChanged += (snd, evt) => UpdateElevation();
+
+#if __IOS__ || __MACOS__
+			void OnCornerRadiusChanged(DependencyObject sender, DependencyProperty dp) =>
+				((ElevatedView)sender).UpdateElevation();
+
+			this.RegisterPropertyChangedCallback(Control.CornerRadiusProperty, OnCornerRadiusChanged);
+#endif
 		}
 
 		protected override void OnApplyTemplate()
@@ -79,7 +86,7 @@ namespace Uno.UI.Toolkit
 #if __IOS__ || __MACOS__
 			if (_border != null)
 			{
-				_border.BoundsPathUpdated += (s, e) => UpdateElevation();
+				_border.BorderRenderer.BoundsPathUpdated += (s, e) => UpdateElevation();
 			}
 #endif
 
@@ -135,9 +142,13 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-#if !__IOS__ && !__MACOS__
-		private protected override void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
-#endif
+		public new static DependencyProperty CornerRadiusProperty { get; } = Control.CornerRadiusProperty;
+
+		public new CornerRadius CornerRadius
+		{
+			get => base.CornerRadius;
+			set => base.CornerRadius = value;
+		}
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -186,7 +197,7 @@ namespace Uno.UI.Toolkit
 				// Note that the brush will not be used if we pass zero thickness, so we pass null instead of wasting time reading the dependency property.
 				this.SetBorder(default, null, CornerRadius);
 #elif __IOS__ || __MACOS__
-				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
+				this.SetElevationInternal(Elevation, ShadowColor, _border.BorderRenderer.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;
 				((ViewGroup)this).Invalidate();

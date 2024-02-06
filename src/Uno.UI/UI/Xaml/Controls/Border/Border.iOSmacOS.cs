@@ -20,96 +20,10 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
-
-		public Border()
-		{
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			UpdateBorderLayer();
-		}
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			_borderRenderer.Clear();
-		}
-
-		partial void OnBorderBrushChangedPartial()
-		{
-			UpdateBorderLayer();
-		}
-
 		protected override void OnAfterArrange()
 		{
 			base.OnAfterArrange();
-			UpdateBorderLayer();
-		}
-
-		private void UpdateBorderLayer(_Image backgroundImage = null)
-		{
-			if (IsLoaded)
-			{
-				if (backgroundImage == null)
-				{
-					ImageData backgroundImageData = default;
-					if ((Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData) == true &&
-						backgroundImageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
-					{
-						backgroundImage = backgroundImageData.NativeImage;
-					}
-				}
-
-				if (_borderRenderer.UpdateLayer(this, Background, BackgroundSizing, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
-					is CGPath updated) // UpdateLayer may return null if there is no update
-				{
-					BoundsPath = updated;
-					BoundsPathUpdated?.Invoke(this, default);
-				}
-			}
-
-			this.SetNeedsDisplay();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
-		{
-			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
-			// because we're overriding draw.
-
-			var old = args.OldValue as ImageBrush;
-			if (old != null)
-			{
-				old.ImageChanged -= OnBackgroundImageBrushChanged;
-			}
-			var imgBrush = args.NewValue as ImageBrush;
-			if (imgBrush != null)
-			{
-				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
-			}
-			else
-			{
-				UpdateBorderLayer();
-			}
-		}
-
-		private void OnBackgroundImageBrushChanged(_Image backgroundImage)
-		{
-			UpdateBorderLayer(backgroundImage);
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorderLayer();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorderLayer();
+			UpdateBorder();
 		}
 
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
@@ -121,18 +35,13 @@ namespace Microsoft.UI.Xaml.Controls
 				AddSubview(newValue);
 			}
 
-			UpdateBorderLayer();
+			UpdateBorder();
 		}
 
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorderLayer();
-		}
+		partial void UpdateBorderPartial() => this.SetNeedsDisplay(); // TODO: Investigate whether this is actually needed
+
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
-
-		internal event EventHandler BoundsPathUpdated;
-		internal CGPath BoundsPath { get; private set; }
 	}
 }
 #endif

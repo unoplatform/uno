@@ -9,7 +9,6 @@ using CoreAnimation;
 using CoreGraphics;
 using CoreImage;
 using Foundation;
-using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
@@ -29,71 +28,68 @@ using _Color = AppKit.NSColor;
 using _Image = AppKit.NSImage;
 #endif
 
-using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Microsoft.UI.Xaml.Controls
 {
 	partial class BorderLayerRenderer
 	{
+		private CGPath _boundsPath;
+
 		// Creates a unique native CGColor for the transparent color, and make sure to keep a strong ref on it
 		// https://github.com/unoplatform/uno/issues/10283
 		private static readonly CGColor _transparent = Colors.Transparent;
 
-		private LayoutState _previousLayoutState;
-
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
-		/// <summary>
-		/// Updates or creates a sublayer to render a border-like shape.
-		/// </summary>
-		/// <param name="owner">The parent layer to apply the shape</param>
-		/// <param name="area">The rendering area</param>
-		/// <param name="background">The background brush</param>
-		/// <param name="borderThickness">The border thickness</param>
-		/// <param name="borderBrush">The border brush</param>
-		/// <param name="cornerRadius">The corner radius</param>
-		/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
-		/// <returns>An updated BoundsPath if the layer has been created or updated; null if there is no change.</returns>
-		public CGPath UpdateLayer(
-			_View owner,
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
-			_Image backgroundImage)
+		partial void UpdateLayer()
 		{
 			// Bounds is captured to avoid calling twice calls below.
-			var bounds = owner.Bounds;
+			var bounds = _owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new LayoutState(area, borderBrush, borderThickness, cornerRadius, background, backgroundImage, backgroundSizing);
-			if (!newState.Equals(_previousLayoutState))
+			var newState = new BorderLayerState(area, _borderInfoProvider);
+
+			if (!newState.Equals(_currentState))
 			{
 #if __MACOS__
-				owner.WantsLayer = true;
+				_owner.WantsLayer = true;
 #endif
 
 				_layerDisposable.Disposable = null;
-				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, newState, out var updatedBoundsPath);
+				_layerDisposable.Disposable = InnerCreateLayer(_owner as UIElement, _owner.Layer, newState, out var updatedBoundsPath);
 
-				_previousLayoutState = newState;
+				_currentState = newState;
 
-				return updatedBoundsPath;
+				BoundsPath = updatedBoundsPath;
 			}
-
-
-			return null; // no change
 		}
+
+		internal CGPath BoundsPath
+		{
+			get => _boundsPath;
+			set
+			{
+				if (_boundsPath != value)
+				{
+					_boundsPath = value;
+					BoundsPathUpdated?.Invoke(this, EventArgs.Empty);
+				}
+			}
+		}
+
+		internal event EventHandler BoundsPathUpdated;
 
 		/// <summary>
 		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
-		internal void Clear()
+		partial void ClearLayer()
 		{
 			_layerDisposable.Disposable = null;
-			_previousLayoutState = null;
+			_currentState = default;
 		}
+
+		public enum Corner { TopLeft, TopRight, BottomRight, BottomLeft }
 
 		private static Point GetCorner(Rect rect, Corner corner)
 		{
@@ -130,7 +126,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return new(x, y);
 		}
 
-		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state, out CGPath updatedBoundsPath)
+		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, BorderLayerState state, out CGPath updatedBoundsPath)
 		{
 			updatedBoundsPath = null;
 
@@ -150,7 +146,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			var disposables = new CompositeDisposable();
 			var sublayers = new List<CALayer>();
 
-			var adjustedArea = area.Shrink(borderThickness);
+			var adjustedArea = area.DeflateBy(borderThickness);
 
 			if (cornerRadius != CornerRadius.None)
 			{
@@ -241,27 +237,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				parent.AddSublayer(outerLayer);
 				parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-				var borderCALayer = borderBrush switch
-				{
-					GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
-					RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
-					_ => null,
-				};
-
-				if (borderCALayer is not null)
-				{
-					var fillMask = new CAShapeLayer()
-					{
-						Path = path,
-						Frame = area,
-						// We only use the fill color to create the mask area
-						FillColor = _Color.White.CGColor,
-					};
-
-					var borderLayerIndex = parent.Sublayers.Length;
-					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
-				}
-				else if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+				if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
 				{
 					Action onInvalidateRender = () =>
 					{
@@ -284,6 +260,19 @@ namespace Microsoft.UI.Xaml.Shapes
 						borderBrush.InvalidateRender += onInvalidateRender;
 						new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 					}
+				}
+				else if (borderBrush is GradientBrush gradientBorder)
+				{
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
+
+					var borderLayerIndex = parent.Sublayers.Length;
+					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
 				}
 
 				parent.Mask = new CAShapeLayer()
@@ -391,12 +380,11 @@ namespace Microsoft.UI.Xaml.Shapes
 
 					var borderCALayer = borderBrush switch
 					{
-						GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
-						RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
-						_ => null,
-					};
+						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
+							.DisposeWith(disposables);
 
-					if (borderCALayer is not null)
+					}
+					else if (borderBrush is GradientBrush gradientBorder)
 					{
 						var fillMask = new CAShapeLayer()
 						{
@@ -407,14 +395,7 @@ namespace Microsoft.UI.Xaml.Shapes
 						};
 
 						var borderLayerIndex = parent.Sublayers.Length;
-						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
-					}
-					else if (borderBrush is SolidColorBrush scbBorder)
-					{
-						Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
-						onInvalidateRender();
-						scbBorder.InvalidateRender += onInvalidateRender;
-						new DisposableAction(() => scbBorder.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
 					}
 				}
 
@@ -471,9 +452,6 @@ namespace Microsoft.UI.Xaml.Shapes
 			return path;
 		}
 
-		private static readonly int[] _8624Array = new[] { 8, 6, 2, 4 };
-		private static readonly int[] _2684Array = new[] { 2, 6, 8, 4 };
-
 		/// <summary>
 		/// Get the inner/outer contours of the rounded border.
 		/// </summary>
@@ -512,8 +490,8 @@ namespace Microsoft.UI.Xaml.Shapes
 				{
 					var pCorner = GetCorner(cornerBbox, corner);
 					var pNextMid = GetRelativePoint(cornerBbox, numpadDirection: (!inner
-						? _8624Array
-						: _2684Array
+						? new[] { 8, 6, 2, 4 }
+						: new[] { 2, 6, 8, 4 }
 					)[i]);
 
 					// given that AddArcToPoint can only draw arc of a circle (with equal width, height, and diameter),
@@ -537,6 +515,59 @@ namespace Microsoft.UI.Xaml.Shapes
 			path.CloseSubpath();
 
 			return path;
+		}
+
+		private static Rect CalculateBorderEllipseBbox(Rect bbox, Corner corner, CornerRadius cr, Thickness bt, bool inner = false)
+		{
+			var (cr0, hThickness, vThickness, hComplement, vComplement) = corner switch
+			{
+				Corner.TopLeft => (cr.TopLeft, bt.Left, bt.Top, cr.TopRight, cr.BottomLeft),
+				Corner.TopRight => (cr.TopRight, bt.Right, bt.Top, cr.TopLeft, cr.BottomRight),
+				Corner.BottomRight => (cr.BottomRight, bt.Right, bt.Bottom, cr.BottomLeft, cr.TopRight),
+				Corner.BottomLeft => (cr.BottomLeft, bt.Left, bt.Bottom, cr.BottomRight, cr.TopLeft),
+
+				_ => throw new ArgumentOutOfRangeException($"Invalid corner: {corner}"),
+			};
+
+			// there is still a corner to be painted, albeit not rounded.
+			if (cr0 == 0) return AlignCorner(bbox, corner, default);
+
+			// The ellipse can only grow up to twice the available length.
+			// This is further limited by the ratio between the corner-radius
+			// of that corner and the adjacent corner on the same line.
+			var hRatio = hComplement == 0 ? 1 : (cr0 / (cr0 + hComplement));
+			var vRatio = vComplement == 0 ? 1 : (cr0 / (cr0 + vComplement));
+
+			// if size is empty here, there is still a corner to be painted, just not rounded.
+			var size = new Size(
+				width: Math.Max(0, Math.Min(bbox.Width * 2 * hRatio, cr0 * 2 + (inner ? -hThickness : hThickness))),
+				height: Math.Max(0, Math.Min(bbox.Height * 2 * vRatio, cr0 * 2 + (inner ? -vThickness : vThickness)))
+			);
+			var result = AlignCorner(bbox, corner, size);
+
+			return result;
+		}
+
+		/// <summary>
+		/// Arrange a size on the bounding-<paramref name="bbox"/> so that the borders neighboring
+		/// to the <paramref name="corner"/> are overlapped.
+		/// </summary>
+		/// <remarks>The resulting rect can be outside of the bounding-box.</remarks>
+		private static Rect AlignCorner(Rect bbox, Corner corner, Size size)
+		{
+			// note: the ellipse can project outside the bounding-box
+			// because only a quarter needs to be constrained within.
+			var location = (Point)(corner switch
+			{
+				Corner.TopLeft => new(bbox.Left, bbox.Top),
+				Corner.TopRight => new(bbox.Left + bbox.Width - size.Width, bbox.Top),
+				Corner.BottomRight => new(bbox.Left + bbox.Width - size.Width, bbox.Top + bbox.Height - size.Height),
+				Corner.BottomLeft => new(bbox.Left, bbox.Top + bbox.Height - size.Height),
+
+				_ => throw new ArgumentOutOfRangeException($"Invalid corner: {corner}"),
+			});
+
+			return new(location, size);
 		}
 
 		/// <summary>
@@ -661,14 +692,6 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			layer.InsertSublayer(gradientContainerLayer, insertionIndex++);
 			sublayers.Add(gradientContainerLayer);
-		}
-
-		private record LayoutState(
-			CGRect Area,
-			Brush BorderBrush, Thickness BorderThickness, CornerRadius CornerRadius,
-			Brush Background, _Image BackgroundImage, BackgroundSizing BackgroundSizing)
-		{
-			// internal CGPath BoundsPath { get; set; }
 		}
 	}
 }

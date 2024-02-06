@@ -8,16 +8,21 @@ using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Xaml;
-#if __ANDROID__
+#if XAMARIN_ANDROID
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
+#elif XAMARIN_IOS
+using View = MonoTouch.UIKit.UIView;
+using Color = MonoTouch.UIKit.UIColor;
+using Font = MonoTouch.UIKit.UIFont;
+using MonoTouch.UIKit;
 #elif __MACOS__
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
@@ -32,22 +37,35 @@ using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	// TODO: Border should be sealed
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
+		public Border()
+		{
+			BorderRenderer = new BorderLayerRenderer(this);
+		}
 
-		/// <summary>
+		internal BorderLayerRenderer BorderRenderer { get; }
+
+		private void UpdateBorder()
+		{
+			BorderRenderer.Update();
+			UpdateBorderPartial();
+		}
+
+		partial void UpdateBorderPartial();
+
+		/// <summary>        
 		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this
-		/// new Border
+		/// Allows items to be added like this 
+		/// new Border 
 		/// {
 		///    new Border()
 		/// }
 		/// </summary>
 		/// <param name="view"></param>
 		public
-#if __IOS__
+#if XAMARIN_IOS
 			new
 #endif
 			void Add(View view)
@@ -62,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Child DependencyProperty
 
-		public UIElement Child
+		public virtual UIElement Child
 		{
 			get => (UIElement)this.GetValue(ChildProperty);
 			set => this.SetValue(ChildProperty, value);
@@ -70,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty ChildProperty { get; } =
 			DependencyProperty.Register(
-				"Child",
+				nameof(Child),
 				typeof(UIElement),
 				typeof(Border),
 				new FrameworkPropertyMetadata(
@@ -83,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnChildChanged(UIElement oldValue, UIElement newValue)
+		protected void OnChildChanged(UIElement oldValue, UIElement newValue)
 		{
 			ReAttachChildTransitions(oldValue, newValue);
 
@@ -106,12 +124,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			OnCornerRadiusUpdatedPartial(oldValue, newValue);
-		}
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue);
 		#endregion
 
 		#region ChildTransitions
@@ -172,12 +186,13 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
-			OnPaddingChangedPartial(oldValue, newValue);
+			OnPaddingChangedPartial();
+			UpdateBorder();
 		}
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		partial void OnPaddingChangedPartial();
 
 		#endregion
 
@@ -192,11 +207,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnBackgroundSizingChangedPartial(e);
+			UpdateBorder();
 			base.OnBackgroundSizingChangedInner(e);
 		}
 
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
 
 		#region BorderThickness DependencyProperty
@@ -211,20 +225,13 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnBorderThicknessChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
+		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
 		#region BorderBrush Dependency Property
 
-		private Action _borderBrushChanged;
-
-#if __ANDROID__
+#if XAMARIN_ANDROID
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 		private Brush _borderBrushStrongReference;
 #endif
@@ -236,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				SetBorderBrushValue(value);
 
-#if __ANDROID__
+#if XAMARIN_ANDROID
 				_borderBrushStrongReference = value;
 #endif
 			}
@@ -247,21 +254,18 @@ namespace Microsoft.UI.Xaml.Controls
 		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
-		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => OnBorderBrushChangedPartial()));
-#if __WASM__
-			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
-			{
-				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-				Child?.InvalidateArrange();
-			}
-#endif
-		}
-
-		partial void OnBorderBrushChangedPartial();
+		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue) => UpdateBorder();
 
 		#endregion
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundChanged(e);
+			OnBackgroundChangedPartial(e);
+			UpdateBorder();
+		}
+
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		internal override bool CanHaveChildren() => true;
 
