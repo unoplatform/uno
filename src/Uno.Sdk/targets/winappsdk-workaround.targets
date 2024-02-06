@@ -1,6 +1,8 @@
-<Project>
+	<Project>
 	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
-	<Target Name="WinUI8857_AdjustGetPackagingOutput1" AfterTargets="GetMrtPackagingOutputs">
+	<Target Name="WinUI8857_AdjustGetPackagingOutput1"
+			AfterTargets="GetMrtPackagingOutputs"
+			Condition="'$(OutputType)' != 'WinExe'">
 		<Message Importance="high" Text="Applying NuGet packaging workaround for dependent PRI files exclusion" />
 		<ItemGroup>
 			<_OtherPriFiles Include="@(PackagingOutputs)" Condition="'%(Extension)' == '.pri' and ('%(PackagingOutputs.ReferenceSourceTarget)' == 'ProjectReference' or '%(PackagingOutputs.NugetSourceType)'=='Package')" />
@@ -8,7 +10,9 @@
 		</ItemGroup>
 	</Target>
 	
-	<Target Name="WinUI8857_AdjustGetPackagingOutput2" BeforeTargets="AddPriPayloadFilesToCopyToOutputDirectoryItems">
+	<Target Name="WinUI8857_AdjustGetPackagingOutput2"
+			BeforeTargets="AddPriPayloadFilesToCopyToOutputDirectoryItems"
+			Condition="'$(OutputType)' != 'WinExe'">
 		<Message Importance="high" Text="Applying NuGet packaging workaround for dependent PRI files exclusion" />
 		<ItemGroup>
 			<_OtherPriFiles1 Include="@(_ReferenceRelatedPaths)" Condition="'%(Extension)' == '.pri' and ('%(_ReferenceRelatedPaths.ReferenceSourceTarget)' == 'ProjectReference' or '%(_ReferenceRelatedPaths.NugetSourceType)'=='Package')" />
