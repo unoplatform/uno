@@ -30,6 +30,10 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
+	internal override void ReceiveInertiaStarting(Point linearVelocity)
+	{
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
 		// TODO: Stop current animation

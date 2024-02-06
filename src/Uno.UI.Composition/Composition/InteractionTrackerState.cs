@@ -24,5 +24,6 @@ internal abstract class InteractionTrackerState
 	internal abstract void StartUserManipulation();
 	internal abstract void CompleteUserManipulation();
 	internal abstract void ReceiveManipulationDelta(Point translationDelta);
+	internal abstract void ReceiveInertiaStarting(Point linearVelocity);
 	internal abstract int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond);
 }

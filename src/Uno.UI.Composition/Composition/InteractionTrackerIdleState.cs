@@ -29,6 +29,10 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	{
 	}
 
+	internal override void ReceiveInertiaStarting(Point linearVelocity)
+	{
+	}
+
 	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity
