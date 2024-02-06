@@ -97,6 +97,7 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		recognizer.ManipulationStarting += OnRecognizerManipulationStarting;
 		recognizer.ManipulationStarted += OnRecognizerManipulationStarted;
 		recognizer.ManipulationUpdated += OnRecognizerManipulationUpdated;
+		recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
 		recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
 		recognizer.ProcessDownEvent(new PointerPoint(pointer));
 
@@ -130,6 +131,16 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		{
 			Console.WriteLine($"ReceiveManipulationDelta");
 			tracker.ReceiveManipulationDelta(args.Delta.Translation);
+		}
+	};
+
+	private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
+	{
+		Console.WriteLine($"OnRecognizerManipulationInertiaStarting");
+		var trackers = (List<InteractionTracker>)sender.Owner;
+		foreach (var tracker in trackers)
+		{
+			tracker.ReceiveInertiaStarting(args.Velocities.Linear);
 		}
 	};
 

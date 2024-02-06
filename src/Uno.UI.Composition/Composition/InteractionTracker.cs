@@ -75,6 +75,11 @@ public partial class InteractionTracker : CompositionObject
 		_state.ReceiveManipulationDelta(translationDelta);
 	}
 
+	internal void ReceiveInertiaStarting(Point linearVelocity)
+	{
+		_state.ReceiveInertiaStarting(linearVelocity);
+	}
+
 	// TODO: Inertia -> Idle
 	// This state transition happens when the function(s) being used to update position and/or scale are no longer
 	// resulting in change. In other words, position and scale velocity have both gotten to zero.
