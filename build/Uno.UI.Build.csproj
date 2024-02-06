@@ -209,6 +209,9 @@
 		<!-- Update Uno.WinUI.Runtime.Skia.Linux.FrameBuffer references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Linux.FrameBuffer']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
+		<!-- Update Uno.WinUI.Runtime.Skia.MacOS references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.MacOS']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+
 		<!-- Update Uno.WinUI.Runtime.Skia.Wpf references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Wpf']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
@@ -238,6 +241,7 @@
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.DevServer.Messaging.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).DevServer.Messaging" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Gtk.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Gtk" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.MacOS.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.MacOS" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.WebAssembly.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).WebAssembly" Namespaces="$(NugetNamespace)" />
 
@@ -255,6 +259,7 @@
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.DevServer.Messaging.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).DevServer.Messaging" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Gtk.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Gtk" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.MacOS.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.MacOS" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.WebAssembly.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).WebAssembly" Namespaces="$(NugetNamespace)" />
 
@@ -262,6 +267,7 @@
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@id" Value="$(PackageNamePrefix)" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Gtk']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Gtk" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Linux.FrameBuffer']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.MacOS']/@id" Value="$(PackageNamePrefix).Runtime.Skia.MacOS" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.Skia.Wpf']/@id" Value="$(PackageNamePrefix).Runtime.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@id" Value="$(PackageNamePrefix).Runtime.WebAssembly" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.XamlHost']/@id" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
