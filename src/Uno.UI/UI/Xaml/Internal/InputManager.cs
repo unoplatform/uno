@@ -5,16 +5,17 @@
 #nullable enable
 
 using System;
-using Uno.UI.Xaml.Input;
-using Windows.Devices.Input;
-using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 using System.Collections.Generic;
-using Microsoft.UI.Input;
+using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Xaml.Input;
+using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.UI.Input.Preview.Injection;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -152,7 +153,7 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		{
 			Console.WriteLine($"ReceiveManipulationDelta");
 			_pointerRedirections!.Remove(args.Pointers[0].Id);
-			tracker.CompleteUserManipulation();
+			tracker.CompleteUserManipulation(new Vector3((float)args.Velocities.Linear.X, (float)args.Velocities.Linear.Y, 0));
 		}
 	};
 

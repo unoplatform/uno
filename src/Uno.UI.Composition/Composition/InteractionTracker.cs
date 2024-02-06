@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using System.Threading;
+using Uno.UI.Dispatching;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
@@ -32,6 +33,8 @@ public partial class InteractionTracker : CompositionObject
 
 	public Vector3 MaxPosition { get; set; }
 
+	public Vector3? PositionInertiaDecayRate { get; set; }
+
 	public Vector3 Position => _position;
 
 	public CompositionInteractionSourceCollection InteractionSources { get; }
@@ -50,7 +53,13 @@ public partial class InteractionTracker : CompositionObject
 		{
 			_position = newPosition;
 			int requestId = isFromUserManipulation ? 0 : _currentRequestId;
-			Owner?.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(Position, Scale, requestId));
+			if (Owner is { } owner)
+			{
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					owner.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(Position, Scale, requestId));
+				});
+			}
 		}
 	}
 
@@ -65,9 +74,9 @@ public partial class InteractionTracker : CompositionObject
 		_state.StartUserManipulation();
 	}
 
-	internal void CompleteUserManipulation()
+	internal void CompleteUserManipulation(Vector3 linearVelocity)
 	{
-		_state.CompleteUserManipulation();
+		_state.CompleteUserManipulation(linearVelocity);
 	}
 
 	internal void ReceiveManipulationDelta(Point translationDelta)

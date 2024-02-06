@@ -22,7 +22,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 		_interactionTracker.ChangeState(new InteractionTrackerInteractingState(_interactionTracker));
 	}
 
-	internal override void CompleteUserManipulation()
+	internal override void CompleteUserManipulation(Vector3 linearVelocity)
 	{
 	}
 
@@ -40,7 +40,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 
 		// State changes to inertia with inertia modifiers evaluated using requested velocity as initial velocity.
 		// TODO: Understand more the "inertia modifiers" part.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond));
 
 		// TODO: Return RequestId
 		return 0;
