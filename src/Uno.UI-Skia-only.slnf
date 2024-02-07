@@ -10,6 +10,7 @@
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
       "SamplesApp\\SamplesApp.Skia.Linux.FrameBuffer\\SamplesApp.Skia.Linux.FrameBuffer.csproj",
+      "SamplesApp\\SamplesApp.Skia.MacOS\\SamplesApp.Skia.MacOS.csproj",
       "SamplesApp\\SamplesApp.Skia.Wpf\\SamplesApp.Skia.Wpf.csproj",
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",

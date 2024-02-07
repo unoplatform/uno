@@ -54,11 +54,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Build", "..\build\Un
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesApp.Shared", "SamplesApp\SamplesApp.Shared\SamplesApp.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.UWP", "SamplesApp\SamplesApp.UWP\SamplesApp.UWP.csproj", "{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E6872579-B7A0-42CE-AE97-44234BB55625} = {E6872579-B7A0-42CE-AE97-44234BB55625}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Wasm", "SamplesApp\SamplesApp.Wasm\SamplesApp.Wasm.csproj", "{21206058-D5EF-466D-8E4D-AC62357FB479}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesApp.UnitTests.Shared", "SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.shproj", "{04B1B5EB-D42E-47DE-ADA0-EB863E5574FD}"
@@ -319,6 +314,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia.MacOS", "Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj", "{7F6D5A92-ADE8-4DC6-BFEE-11A6575373B8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia", "Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj", "{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.MacOS", "SamplesApp\SamplesApp.Skia.MacOS\SamplesApp.Skia.MacOS.csproj", "{C60CE444-4959-4D84-B63F-D89599A8CCCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -5817,6 +5814,48 @@ Global
 		{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}.Release|x64.Build.0 = Release|Any CPU
 		{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}.Release|x86.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|x64.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Debug|x86.Build.0 = Debug|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|Any CPU.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|Any CPU.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|ARM.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|ARM.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|ARM64.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|ARM64.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|iPhone.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|iPhone.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|iPhoneSimulator.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|x64.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|x64.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|x86.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release_NoSamples|x86.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|ARM.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|ARM64.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|iPhone.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|x64.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|x64.Build.0 = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|x86.ActiveCfg = Release|Any CPU
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -5962,6 +6001,7 @@ Global
 		{85238100-94FF-40E6-98D8-7317F4D49923} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{7F6D5A92-ADE8-4DC6-BFEE-11A6575373B8} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{A8C22BED-2589-48F1-B1D4-0B436A90FC3B} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
+		{C60CE444-4959-4D84-B63F-D89599A8CCCA} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2608F4-D82B-4B72-B399-33E822DF01D0}

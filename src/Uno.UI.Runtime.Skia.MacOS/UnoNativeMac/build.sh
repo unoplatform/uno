@@ -5,5 +5,5 @@ cd UnoNativeMac
 ./getSkiaSharpDylib.sh
 cd ..
 xcodebuild $@
-mkdir ../runtimes/osx/native
-cp UnoNativeMac/build/Release/libUnoNativeMac.* ../runtimes/osx/native
+mkdir -p ../runtimes/osx/native
+cp -R build/Release/libUnoNativeMac.* ../runtimes/osx/native

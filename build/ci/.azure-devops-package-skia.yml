@@ -5,6 +5,7 @@ parameters:
 
 jobs:
 - job: skia_package_macos_native_build
+  displayName: 'Skia macOS Native Binaries'
   pool:
     vmImage: ${{ parameters.macOSImageName }}
 
@@ -27,15 +28,15 @@ jobs:
   - template: templates/download-winui-converted-tree.yml
   - template: templates/gitversion.yml
   
-  - powershell: |
-      Set-PSDebug -Trace 1
-      cd src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build.sh
+  - bash: |
+      cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
+      ./build.sh
     displayName: Build Skia macOS native
 
   - task: PublishPipelineArtifact@1
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(build.sourcesdirectory)
+      targetPath: $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
       artifactName: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
 
 - job: skia_package_build
