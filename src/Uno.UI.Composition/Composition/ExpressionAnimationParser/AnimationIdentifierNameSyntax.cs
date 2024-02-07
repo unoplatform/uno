@@ -15,6 +15,7 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 	{
 		if (expressionAnimation.ReferenceParameters.TryGetValue((string)Identifier.Value, out var value))
 		{
+			value.AddContext(expressionAnimation, "HelloMyProperty");
 			return value;
 		}
 

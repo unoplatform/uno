@@ -37,5 +37,14 @@ namespace Microsoft.UI.Composition
 			get => _bottomInset;
 			set => SetProperty(ref _bottomInset, value);
 		}
+
+		private protected override bool IsAnimatableProperty(string propertyName)
+		{
+			return propertyName is
+				nameof(BottomInset) or
+				nameof(LeftInset) or
+				nameof(RightInset) or
+				nameof(TopInset);
+		}
 	}
 }

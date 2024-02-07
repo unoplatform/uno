@@ -2,12 +2,12 @@
 
 namespace Microsoft.UI.Composition;
 
-internal class AnimationMemberAccessExpression : AnimationExpressionSyntax
+internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 {
 	private readonly AnimationExpressionSyntax _expression;
 	private readonly ExpressionAnimationToken _identifier;
 
-	public AnimationMemberAccessExpression(AnimationExpressionSyntax expression, ExpressionAnimationToken identifier)
+	public AnimationMemberAccessExpressionSyntax(AnimationExpressionSyntax expression, ExpressionAnimationToken identifier)
 	{
 		_expression = expression;
 		_identifier = identifier;

@@ -116,7 +116,7 @@ internal sealed class ExpressionAnimationParser
 		{
 			_ = NextToken(); // DotToken.
 			var identifier = NextToken();
-			identifierOrMemberAccess = new AnimationMemberAccessExpression(identifierOrMemberAccess, identifier);
+			identifierOrMemberAccess = new AnimationMemberAccessExpressionSyntax(identifierOrMemberAccess, identifier);
 		}
 
 		if (HasCurrent && Current.Kind == ExpressionAnimationTokenKind.OpenParenToken)

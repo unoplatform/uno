@@ -21,7 +21,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		{
 			return EvaluateFromIdentifier(identifier, expressionAnimation);
 		}
-		else if (_identifierOrMemberAccess is AnimationMemberAccessExpression memberAccess)
+		else if (_identifierOrMemberAccess is AnimationMemberAccessExpressionSyntax memberAccess)
 		{
 			return EvaluateFromMemberAccess(memberAccess, expressionAnimation);
 		}
@@ -98,7 +98,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		throw new NotSupportedException($"Unsupported function call '{name}'.");
 	}
 
-	private object EvaluateFromMemberAccess(AnimationMemberAccessExpression memberAccess, ExpressionAnimation expressionAnimation)
+	private object EvaluateFromMemberAccess(AnimationMemberAccessExpressionSyntax memberAccess, ExpressionAnimation expressionAnimation)
 	{
 		// From https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.expressionanimation?view=winrt-22621
 		// Supported calls with member access syntax are:

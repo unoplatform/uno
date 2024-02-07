@@ -131,5 +131,19 @@ namespace Microsoft.UI.Composition
 		{
 			Compositor.InvalidateRender(this);
 		}
+
+		private protected override bool IsAnimatableProperty(string propertyName)
+		{
+			return propertyName is
+				nameof(AnchorPoint) or
+				nameof(CenterPoint) or
+				nameof(Offset) or
+				nameof(Opacity) or
+				nameof(Orientation) or
+				nameof(RotationAngle) or
+				nameof(RotationAxis) or
+				nameof(Size) or
+				nameof(TransformMatrix);
+		}
 	}
 }
