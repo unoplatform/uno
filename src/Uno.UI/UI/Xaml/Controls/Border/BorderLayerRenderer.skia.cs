@@ -47,19 +47,14 @@ namespace Uno.UI.Xaml.Controls
 
 			if (!newState.Equals(previousLayoutState))
 			{
-				if (
-					newState.Background != null ||
+				_layerDisposable.Disposable = null;
+
+				if (newState.Background != null ||
 					newState.CornerRadius != CornerRadius.None ||
-					(newState.BorderThickness != Thickness.Empty && newState.BorderBrush != null)
-				)
+					(newState.BorderThickness != Thickness.Empty && newState.BorderBrush != null))
 				{
 
-					_layerDisposable.Disposable = null;
 					_layerDisposable.Disposable = InnerCreateLayer(_owner, newState);
-				}
-				else
-				{
-					_layerDisposable.Disposable = null;
 				}
 
 				_currentState = newState;
@@ -112,10 +107,9 @@ namespace Uno.UI.Xaml.Controls
 				{
 					var backgroundShape = compositor.CreateSpriteShape();
 
-					// First we set the brush as it might alter the adjustedArea
 					if (background is ImageBrush imgBackground)
 					{
-						adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
+						CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
 					}
 					else
 					{
@@ -283,7 +277,7 @@ namespace Uno.UI.Xaml.Controls
 			return disposables;
 		}
 
-		private static Rect CreateImageLayer(Compositor compositor, CompositeDisposable disposables, Thickness borderThickness, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
+		private static void CreateImageLayer(Compositor compositor, CompositeDisposable disposables, Thickness borderThickness, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
 		{
 			Action onInvalidateRender = () =>
 			{
@@ -325,7 +319,6 @@ namespace Uno.UI.Xaml.Controls
 			onInvalidateRender();
 			imgBackground.InvalidateRender += onInvalidateRender;
 			new DisposableAction(() => imgBackground.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
-			return backgroundArea;
 		}
 
 		private static CompositionPath GetBackgroundPath(SKPoint[] radii, Rect area)
