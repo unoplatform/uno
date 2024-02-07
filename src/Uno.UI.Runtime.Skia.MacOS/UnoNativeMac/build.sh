@@ -6,4 +6,4 @@ cd UnoNativeMac
 cd ..
 xcodebuild $@
 mkdir -p ../runtimes/osx/native
-cp -R build/*/libUnoNativeMac.* ../runtimes/osx/native
+cp -R build/Release/libUnoNativeMac.* ../runtimes/osx/native || true
