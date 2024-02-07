@@ -14,6 +14,9 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 [TestClass]
 [RunsOnUIThread]
 [RunsInSecondaryApp]
+#if !DEBUG
+[Ignore("HotReload tests can be run only in DEBUG")]
+#endif
 public class Given_Dictionary : BaseHotReloadTestClass
 {
 	private const string _appResources = "Tests/HotReload/Views/AppResources.xaml";

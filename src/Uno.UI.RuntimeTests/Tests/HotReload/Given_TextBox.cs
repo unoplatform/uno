@@ -11,6 +11,9 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 [TestClass]
 [RunsOnUIThread]
 [RunsInSecondaryApp]
+#if !DEBUG
+[Ignore("HotReload tests can be run only in DEBUG")]
+#endif
 public class Given_TextBox : BaseHotReloadTestClass
 {
 	public const string SimpleTextChange = " (changed)";
