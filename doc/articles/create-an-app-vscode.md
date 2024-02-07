@@ -10,7 +10,7 @@ uid: Uno.GettingStarted.CreateAnApp.VSCode
 
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
 
-1. Open a browser and navigate to the online <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a>
+1. Open a browser (for me, chrome only displayed the uno logo. Howere, in Firefox, it worked as in this documentation) and navigate to the online <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a>
 1. Configure your new project by providing a project name, then click **Start**
 
     ![A screen showing how to choose a solution name](Assets/quick-start/live-wizard-01-choose-name.png)
