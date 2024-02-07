@@ -1,5 +1,4 @@
-#nullable enable
-
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -29,6 +28,7 @@ namespace Windows.Storage.Pickers
 			{
 				return false;
 			}
+
 			if (resultCode == Result.Canceled)
 			{
 				_currentFileOpenPickerRequest.SetResult(null);
@@ -37,6 +37,7 @@ namespace Windows.Storage.Pickers
 			{
 				_currentFileOpenPickerRequest.SetResult(intent);
 			}
+
 			return true;
 		}
 
@@ -53,7 +54,7 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			if (!(ContextHelper.Current is Activity appActivity))
+			if (ContextHelper.Current is not Activity appActivity)
 			{
 				throw new InvalidOperationException("Application activity is not yet set, API called too early.");
 			}
@@ -109,18 +110,19 @@ namespace Windows.Storage.Pickers
 			var resultIntent = await _currentFileOpenPickerRequest.Task;
 			_currentFileOpenPickerRequest = null;
 
-			if (resultIntent?.ClipData != null)
+			if (resultIntent?.ClipData is { } clipData)
 			{
-				List<StorageFile> files = new List<StorageFile>();
-				bool wasPath = false;
+				var files = new List<StorageFile>();
+				var wasPath = false;
 
-				for (var i = 0; i < resultIntent.ClipData.ItemCount; i++)
+				for (var i = 0; i < clipData.ItemCount; i++)
 				{
-					var item = resultIntent.ClipData.GetItemAt(i);
-					if (item?.Uri == null)
+					var item = clipData.GetItemAt(i);
+					if (item?.Uri is null)
 					{
 						continue;
 					}
+
 					var file = StorageFile.GetFromSafUri(item.Uri);
 					files.Add(file);
 
@@ -136,12 +138,13 @@ namespace Windows.Storage.Pickers
 				{   // if we have no path in any of files, remove setting - next call to Picker will not have InitialDir
 					ApplicationData.Current.LocalSettings.Values.Remove(settingName);
 				}
+
 				return new FilePickerSelectedFilesArray(files.ToArray());
 			}
-			else if (resultIntent?.Data != null)
+			else if (resultIntent?.Data is { } data)
 			{
-				var file = StorageFile.GetFromSafUri(resultIntent.Data);
-				return new FilePickerSelectedFilesArray(new[] { file });
+				var file = StorageFile.GetFromSafUri(data);
+				return new FilePickerSelectedFilesArray([file]);
 			}
 
 			return FilePickerSelectedFilesArray.Empty;
@@ -153,7 +156,6 @@ namespace Windows.Storage.Pickers
 			{
 				PickerLocationId.PicturesLibrary => ImageWildcard,
 				PickerLocationId.VideosLibrary => VideoWildcard,
-
 				_ => AnyWildcard,
 			};
 		}
