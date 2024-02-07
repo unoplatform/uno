@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<IsSkia>true</IsSkia>
+		<UsingUnoCommonSkiaTargets>true</UsingUnoCommonSkiaTargets>
 
 		<EnableDefaultSkiaItems>false</EnableDefaultSkiaItems>
 		<SkiaProjectFolder Condition=" '$(SkiaProjectFolder)' == '' ">$(PlatformsProjectFolder)Skia\</SkiaProjectFolder>
