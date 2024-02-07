@@ -6,14 +6,13 @@
 		<IPhoneResourcePrefix>$(iOSProjectFolder)Resources</IPhoneResourcePrefix>
 		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements.plist') ">$(iOSProjectFolder)Entitlements.plist</CodesignEntitlements>
 		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements-$(Configuration).plist') ">$(iOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
-		<_SingleProjectiOSExcludes>$(iOSProjectFolder)/**/.*/**</_SingleProjectiOSExcludes>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
 
 	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$(iOSProjectFolder)**/*" />
-		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(iOSProjectFolder)', '**', '*'))" />
+		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
 		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />

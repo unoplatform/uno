@@ -17,8 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$(AndroidProjectFolder)**\*" />
-		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(AndroidProjectFolder)', '**', '*'))" />
+		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
 		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
