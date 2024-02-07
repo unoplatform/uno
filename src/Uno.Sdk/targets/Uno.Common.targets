@@ -3,6 +3,8 @@
 	<PropertyGroup>
 		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
 		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
+		<_IsExecutable>false</_IsExecutable>
+		<_IsExecutable Condition=" '$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe' ">true</_IsExecutable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
