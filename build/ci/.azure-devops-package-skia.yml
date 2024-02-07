@@ -80,8 +80,7 @@ jobs:
   
   ## Restore skia-macos native assets
   - task: DownloadPipelineArtifact@2
-    displayName: Restoring UWP Converted Source Tree
-    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'true'))
+    displayName: Restoring macOS native assets
     inputs:
       artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
       path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/runtimes/osx/native
