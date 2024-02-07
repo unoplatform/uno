@@ -41,4 +41,19 @@
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
 		<AppxManifest Remove="@(_IgnorePlatformFiles)" />
 	</ItemGroup>
+
+	<!--
+		Sanity Check...
+		The AppxManifest should have come in automatically but if it didn't for some reason we need
+		to ensure that it is added here to prevent the build from failing.
+	-->
+	<Target Name="_EnsureAppxManifestExists"
+		BeforeTargets="_ValidateWindowsPackageType"
+		Condition="'$(WindowsPackageType)' != 'None' and Exists('$(WindowsAppxManifestPath)') and  '@(AppxManifest)'==''">
+		<ItemGroup>
+			<AppxManifest Include="$(WindowsAppxManifestPath)"
+				IsDefaultItem="true"
+				SubType="Designer" />
+		</ItemGroup>
+	</Target>
 </Project>
