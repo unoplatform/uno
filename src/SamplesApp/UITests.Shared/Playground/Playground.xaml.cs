@@ -38,7 +38,7 @@ public sealed partial class Playground : UserControl
 		await Task.Delay(100); // Workaround for https://github.com/unoplatform/uno/issues/15374
 		_codeEditor = new CodeEditor()
 		{
-			Background = new SolidColorBrush(Colors.Transparent),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
 			HasGlyphMargin = true,
 			Text = ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] as string ?? "",
 			CodeLanguage = "XML"
