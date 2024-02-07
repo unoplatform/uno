@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+﻿#if IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 using System;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
@@ -44,7 +44,11 @@ internal partial class BorderLayerRenderer
 	/// <summary>
 	/// Removes added layers and subscriptions.
 	/// </summary>
-	internal void Clear() => ClearPlatform();
+	internal void Clear()
+	{
+		ClearPlatform();
+		_currentState = default;
+	}
 
 	partial void UpdatePlatform();
 

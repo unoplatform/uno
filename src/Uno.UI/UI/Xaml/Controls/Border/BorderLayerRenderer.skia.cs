@@ -67,7 +67,6 @@ namespace Uno.UI.Xaml.Controls
 		partial void ClearPlatform()
 		{
 			_layerDisposable.Disposable = null;
-			_currentState = default;
 		}
 
 		private static IDisposable InnerCreateLayer(UIElement owner, BorderLayerState state)
