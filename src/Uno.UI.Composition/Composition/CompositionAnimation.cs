@@ -16,8 +16,16 @@ public partial class CompositionAnimation
 
 	internal Dictionary<string, CompositionObject> ReferenceParameters { get; } = new();
 
+	internal event Action<CompositionAnimation>? PropertyChanged;
+
 	public void SetReferenceParameter(string key, CompositionObject compositionObject)
 	{
 		ReferenceParameters[key] = compositionObject;
 	}
+
+	internal virtual object? Start() => null;
+	internal virtual object? Evaluate() => null;
+	internal virtual void Stop() { }
+
+	private protected void RaisePropertyChanged() => PropertyChanged?.Invoke(this);
 }

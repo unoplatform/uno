@@ -77,5 +77,8 @@ namespace Microsoft.UI.Composition
 
 			_properties[propertyName] = value;
 		}
+
+		private protected override bool IsAnimatableProperty(string propertyName)
+			=> _properties.ContainsKey(propertyName);
 	}
 }

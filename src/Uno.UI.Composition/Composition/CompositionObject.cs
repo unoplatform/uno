@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
@@ -13,6 +14,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionObject : IDisposable
 	{
 		private readonly ContextStore _contextStore = new ContextStore();
+		private Dictionary<string, CompositionAnimation>? _animations;
 
 		internal CompositionObject()
 		{
@@ -31,24 +33,65 @@ namespace Microsoft.UI.Composition
 
 		public string? Comment { get; set; }
 
+		// Overrides are based on:
+		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
+		private protected virtual bool IsAnimatableProperty(string propertyName) => false;
+
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
-			StartAnimationCore(propertyName, animation);
+			if (!IsAnimatableProperty(propertyName))
+			{
+				throw new ArgumentException($"Property '{propertyName}' is not animatable.");
+			}
+
+			if (_animations?.ContainsKey(propertyName) == true)
+			{
+				StopAnimation(propertyName);
+			}
+
+			_animations ??= new();
+			_animations[propertyName] = animation;
+			animation.PropertyChanged += ReEvaluateAnimation;
+			var animationValue = animation.Start();
+			this.GetType().GetProperty(propertyName)!.SetValue(this, animationValue);
+		}
+
+		private void ReEvaluateAnimation(CompositionAnimation animation)
+		{
+			if (_animations == null)
+			{
+				return;
+			}
+
+			foreach (var (key, value) in _animations)
+			{
+				if (value == animation)
+				{
+					this.GetType().GetProperty(key)!.SetValue(this, animation.Evaluate());
+				}
+			}
 		}
 
 		public void StopAnimation(string propertyName)
 		{
-
+			if (_animations?.TryGetValue(propertyName, out var animation) == true)
+			{
+				animation.PropertyChanged -= ReEvaluateAnimation;
+				animation.Stop();
+				_animations.Remove(propertyName);
+			}
 		}
 
 		public void Dispose() => DisposeInternal();
 
 		private protected virtual void DisposeInternal()
 		{
-
 		}
 
-		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation) { }
+		internal virtual void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		{
+
+		}
 
 		internal void AddContext(CompositionObject context, string? propertyName)
 		{

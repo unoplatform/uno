@@ -19,5 +19,10 @@ namespace Microsoft.UI.Composition
 			get { return _color; }
 			set { SetProperty(ref _color, value); }
 		}
+
+		private protected override bool IsAnimatableProperty(string propertyName)
+		{
+			return propertyName is nameof(Color);
+		}
 	}
 }
