@@ -4,16 +4,21 @@
 		<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
 		<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
 
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' AND ('$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe') ">true</EnableMsixTooling>
 
 		<EnableWindowsTargeting Condition=" $(EnableWindowsTargeting) == '' ">true</EnableWindowsTargeting>
-
 		<EnableDefaultWindowsItems>false</EnableDefaultWindowsItems>
 		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
 		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
 		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" $(_IsExecutable) ">
+		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
+		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">true</EnableMsixTooling>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
@@ -22,7 +27,7 @@
 		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
+	<PropertyGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
 		<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
@@ -30,7 +35,7 @@
 	</PropertyGroup>
 
 	<!-- Legacy Project Support -->
-	<ItemGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
+	<ItemGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
 		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
 		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
 	</ItemGroup>
