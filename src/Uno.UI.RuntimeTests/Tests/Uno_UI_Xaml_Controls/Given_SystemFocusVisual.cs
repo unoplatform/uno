@@ -135,6 +135,9 @@ public class Given_SystemFocusVisual
 
 	[TestMethod]
 	[RequiresFullWindow]
+#if __ANDROID__ || __IOS__
+	[Ignore("Disabled on iOS/Android https://github.com/unoplatform/uno/issues/9080")]
+#endif	
 	public async Task When_Focused_Element_Transformed()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
