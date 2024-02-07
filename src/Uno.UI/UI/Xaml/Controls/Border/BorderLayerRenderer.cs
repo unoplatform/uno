@@ -1,10 +1,6 @@
 ﻿#if __SKIA__
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using Uno.UI;
 using Uno.Disposables;
 
 namespace Uno.UI.Xaml.Controls;
@@ -16,8 +12,6 @@ internal partial class BorderLayerRenderer
 {
 	private readonly FrameworkElement _owner;
 	private readonly IBorderInfoProvider _borderInfoProvider;
-	private readonly SerialDisposable _borderBrushSubscription = new();
-	private readonly SerialDisposable _backgroundBrushSubscription = new();
 
 	private BorderLayerState _currentState;
 
@@ -43,59 +37,14 @@ internal partial class BorderLayerRenderer
 	{
 		if (_owner.IsLoaded)
 		{
-			// Subscribe to brushes to observe their changes.
-			if (_currentState.BorderBrush != _borderInfoProvider.BorderBrush)
-			{
-				_borderBrushSubscription.Disposable = null;
-				if (_borderInfoProvider.BorderBrush is { } borderBrush)
-				{
-					borderBrush.InvalidateRender += OnBorderBrushChanged;
-					_borderBrushSubscription.Disposable = Disposable.Create(() => borderBrush.InvalidateRender -= OnBorderBrushChanged);
-				}
-			}
-
-			if (_currentState.Background != _borderInfoProvider.Background)
-			{
-				_backgroundBrushSubscription.Disposable = null;
-				if (_borderInfoProvider.Background is { } backgroundBrush)
-				{
-					backgroundBrush.InvalidateRender += OnBackgroundBrushChanged;
-					_backgroundBrushSubscription.Disposable = Disposable.Create(() => backgroundBrush.InvalidateRender -= OnBackgroundBrushChanged);
-				}
-			}
-
 			UpdatePlatform();
 		}
-	}
-
-	private void OnBorderBrushChanged()
-	{
-		// Force the border to be recreated during update.
-		_currentState.BorderBrush = null;
-		Update();
-	}
-
-	private void OnBackgroundBrushChanged()
-	{
-		// Force the background to be recreated during update.
-		_currentState.Background = null;
-		Update();
 	}
 
 	/// <summary>
 	/// Removes added layers and subscriptions.
 	/// </summary>
-	internal void Clear()
-	{
-		UnsubscribeBrushChanges();
-		ClearPlatform();
-	}
-
-	private void UnsubscribeBrushChanges()
-	{
-		_borderBrushSubscription.Disposable = null;
-		_backgroundBrushSubscription.Disposable = null;
-	}
+	internal void Clear() => ClearPlatform();
 
 	partial void UpdatePlatform();
 
