@@ -15,6 +15,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 #if !WINUI
 using Windows.System;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 #else
 using Microsoft.UI.Dispatching;
 #endif
@@ -174,7 +175,7 @@ partial class ClientHotReloadProcessor
 
 			// Wait for the tree to be layouted before restoring state
 			var tcs = new TaskCompletionSource();
-			CurrentWindow?.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => tcs.TrySetResult());
+			CurrentWindow?.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => tcs.TrySetResult());
 			await tcs.Task;
 
 			isCapturingState = false;
