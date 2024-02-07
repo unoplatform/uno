@@ -22,7 +22,7 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 
 		/// <inheritdoc />
 		ILogger global::Microsoft.Extensions.Logging.ILoggerFactory.CreateLogger(string categoryName)
-			=> Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(categoryName); 
+			=> Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory.CreateLogger(categoryName);
 		#endregion
 	}
 }

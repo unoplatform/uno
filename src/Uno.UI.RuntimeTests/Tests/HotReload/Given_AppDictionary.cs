@@ -95,7 +95,7 @@ public class Given_Dictionary : BaseHotReloadTestClass
 		{
 			if (root.FindName("tb01") is TextBlock tb)
 			{
-				if(tb.Foreground is SolidColorBrush scb)
+				if (tb.Foreground is SolidColorBrush scb)
 				{
 					return scb.Color == color;
 				}
