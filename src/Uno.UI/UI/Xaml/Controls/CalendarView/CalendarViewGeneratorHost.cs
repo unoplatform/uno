@@ -281,7 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			int index = 0;
 
-			m_lastVisitedDateAndIndex.first = Owner.MinDate;
+			m_lastVisitedDateAndIndex.first = Owner.MinDate.ToUniversalTime();
 			m_lastVisitedDateAndIndex.second = 0;
 
 			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, Owner.MinDate));
@@ -332,10 +332,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			pCalendar.SetDateTime(m_lastVisitedDateAndIndex.first);
 			AddUnits((int)(index) - m_lastVisitedDateAndIndex.second);
-			date = pCalendar.GetDateTime();
+			date = pCalendar.GetDateTime().ToUniversalTime();
 			m_lastVisitedDateAndIndex.first = date;
 			m_lastVisitedDateAndIndex.second = (int)(index);
-			var pDate = date; // .ToUniversalTime() - UNO
+			var pDate = date;
 
 			return pDate;
 		}
@@ -350,7 +350,8 @@ namespace Microsoft.UI.Xaml.Controls
 		internal int CalculateOffsetFromMinDate(DateTime date)
 		{
 			var pIndex = 0;
-			DateTime estimatedDate = m_lastVisitedDateAndIndex.first; //.ToUniversalTime(); - UNO
+			DateTime estimatedDate = m_lastVisitedDateAndIndex.first.ToUniversalTime();
+
 			var pCalendar = GetCalendar();
 			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
 

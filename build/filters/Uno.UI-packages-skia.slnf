@@ -27,6 +27,7 @@
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
       "Uno.UI.Runtime.Skia.MacOS\\Uno.UI.Runtime.Skia.MacOS.csproj",
+      "Uno.UI.Runtime.Skia.X11\\Uno.UI.Runtime.Skia.X11.csproj",
       "Uno.UI.Runtime.Skia.Wpf\\Uno.UI.Runtime.Skia.Wpf.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
       "Uno.UI.XamlHost.Skia.Wpf\\Uno.UI.XamlHost.Skia.Wpf.csproj",

@@ -7,7 +7,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
 
 namespace Uno.UI.Runtime.Skia.Native
 {

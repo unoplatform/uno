@@ -206,6 +206,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void ClearChildren()
 		{
+			if (_children.Count == 0)
+			{
+				return;
+			}
+
 			foreach (var child in _children.ToArray())
 			{
 				InnerRemoveChild(child);

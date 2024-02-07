@@ -17,7 +17,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Type.GetType("Gtk.CheckButton, GtkSharp", false)
 				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
 
-			Assert.IsNotNull(checkButtonType);
+			if (checkButtonType is null)
+			{
+				Assert.Inconclusive("No native button element found on this platform.");
+			}
 
 			var nativeControl = Activator.CreateInstance(checkButtonType);
 
@@ -36,7 +39,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Type.GetType("Gtk.CheckButton, GtkSharp", false)
 				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
 
-			Assert.IsNotNull(checkButtonType);
+			if (checkButtonType is null)
+			{
+				Assert.Inconclusive("No native button element found on this platform.");
+			}
 
 			var nativeControl = Activator.CreateInstance(checkButtonType);
 

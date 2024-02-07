@@ -80,6 +80,14 @@
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+		<PackageReference Include="Uno.Monaco.Editor" Version="2.0.0-dev.50" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PackageReference Include="Uno.Monaco.Editor" Version="1.2.0-dev.25" />
 	</ItemGroup>
 
 	<ItemGroup>

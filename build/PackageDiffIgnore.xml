@@ -1793,6 +1793,7 @@
 
 	<IgnoreSet baseVersion="5.1">
 		<Types>
+			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
 		</Types>
 
 		<Events>

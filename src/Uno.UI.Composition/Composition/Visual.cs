@@ -19,6 +19,7 @@ namespace Microsoft.UI.Composition
 		private bool _isVisible = true;
 		private float _opacity = 1.0f;
 		private CompositionCompositeMode _compositeMode;
+		private object? _compositionTarget; // this should be a Microsoft.UI.Xaml.Media.CompositionTarget
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
@@ -115,18 +116,17 @@ namespace Microsoft.UI.Composition
 
 		public ContainerVisual? Parent { get; set; }
 
+		internal object? CompositionTarget
+		{
+			get => _compositionTarget ?? Parent?.CompositionTarget; // TODO: can this be cached?
+			set => _compositionTarget = value;
+		}
+
 		internal bool HasThemeShadow { get; set; }
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
-			// TODO: Determine whether to invalidate renderer based on the fact whether we are attached to a CompositionTarget.
-			//bool isAttached = false;
-			//if (isAttached)
-			//{
-			//	Compositor.InvalidateRender();
-			//}
-
-			Compositor.InvalidateRender();
+			Compositor.InvalidateRender(this);
 		}
 	}
 }

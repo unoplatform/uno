@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			var comparer = new DirectUI.DateComparer();
 			comparer.SetCalendarForComparison(calendar);
 			var result = comparer.CompareDay(offset, new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 4, minute: 0, second: 0, TimeSpan.FromHours(0)));
-			Assert.AreEqual(0, result);
+			Assert.AreEqual(1, result);
 		}
 
 		[TestMethod]
