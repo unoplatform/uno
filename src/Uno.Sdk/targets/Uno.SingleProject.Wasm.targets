@@ -26,13 +26,12 @@
 			Exclude="@(Content)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
-		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
+		<EmbeddedResource Include="$([System.IO.Path]::Combine('$(WasmProjectFolder)', 'WasmCSS', 'Fonts.css'))"
 			Condition="Exists('$(WasmProjectFolder)WasmCSS\Fonts.css')"
 			Exclude="@(EmbeddedResource)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
-		</EmbeddedResource>
-		<EmbeddedResource Include="$(WasmProjectFolder)WasmScripts\AppManifest.js"
+		<EmbeddedResource Include="$([System.IO.Path]::Combine('$(WasmProjectFolder)', 'WasmScripts', 'AppManifest.js'))"
 			Condition="Exists('$(WasmProjectFolder)WasmScripts\AppManifest.js')"
 			Exclude="@(EmbeddedResource)"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
@@ -45,8 +44,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$(WasmProjectFolder)**/*" />
-		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(WasmProjectFolder)'**', '*'))" />
+		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
 		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
