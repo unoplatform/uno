@@ -9,7 +9,9 @@ using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 /*
@@ -70,6 +72,10 @@ internal partial class ContentRoot
 		FocusAdapter = new FocusAdapter(this);
 		FocusManager.SetFocusObserver(new FocusObserver(this));
 
+		CompositionTarget = new CompositionTarget();
+		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
+		CompositionTarget.Root.CompositionTarget = CompositionTarget;
+
 		switch (type)
 		{
 			case ContentRootType.CoreWindow:
@@ -80,6 +86,8 @@ internal partial class ContentRoot
 				break;
 		}
 	}
+
+	internal CompositionTarget CompositionTarget { get; }
 
 	internal ContentRootType Type { get; }
 

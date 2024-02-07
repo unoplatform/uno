@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 			);
 
-			compositor.InvalidateRender();
+			compositor.InvalidateRender(visual);
 
 			return disposables;
 		}
