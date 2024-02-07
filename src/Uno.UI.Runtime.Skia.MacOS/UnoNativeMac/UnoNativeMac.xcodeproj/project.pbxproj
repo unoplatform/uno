@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		D116C63E2AC79876004B975F /* UNOCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = D116C63D2AC79876004B975F /* UNOCursor.m */; };
 		D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; };
-		D13AB8A92B5839B200693F8E /* libSkiaSharp.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */; };
 		D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = D1A0651F2A8467B200101BE6 /* UNOApplication.h */; };
 		D1A065222A84688000101BE6 /* UNOApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A065212A84688000101BE6 /* UNOApplication.m */; };
@@ -19,20 +18,6 @@
 		D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F248A82A67288B008A609E /* UnoNativeMac.h */; };
 		D1F248AB2A67288B008A609E /* UnoNativeMac.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F248AA2A67288B008A609E /* UnoNativeMac.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D13AB8AA2B5839B200693F8E /* Embed Libraries */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D13AB8A92B5839B200693F8E /* libSkiaSharp.dylib in Embed Libraries */,
-			);
-			name = "Embed Libraries";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		D116C63C2AC793C0004B975F /* UNOCursor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOCursor.h; sourceTree = "<group>"; };
@@ -135,7 +120,6 @@
 				D1F248A12A67288B008A609E /* Headers */,
 				D1F248A22A67288B008A609E /* Sources */,
 				D1F248A32A67288B008A609E /* Frameworks */,
-				D13AB8AA2B5839B200693F8E /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -228,6 +212,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -289,6 +274,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -315,6 +301,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D13AB8AC2B58566400693F8E /* Config.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -336,6 +323,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D13AB8AC2B58566400693F8E /* Config.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
