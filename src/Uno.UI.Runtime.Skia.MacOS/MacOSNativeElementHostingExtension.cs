@@ -33,5 +33,5 @@ internal class MacOSNativeElementHostingExtension : INativeElementHostingExtensi
 
 	public bool IsNativeElementAttached(object owner, object nativeElement) => false;
 
-	public Size MeasureNativeElement(object owner, object content, Size size) => new(0,0);
+	public Size MeasureNativeElement(object owner, object content, Size size) => new(0, 0);
 }

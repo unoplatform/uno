@@ -76,14 +76,15 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static int MouseEvent(int type, double x, double y, VirtualKeyModifiers mods, PointerDeviceType pdt, uint frameId, ulong timestamp, uint pid)
 	{
 		var position = new Point(x, y);
 		try
 		{
 			TypedEventHandler<object, PointerEventArgs>? evnt = null;
-			switch (type) {
+			switch (type)
+			{
 				case 1:
 					evnt = Instance.PointerEntered;
 					break;

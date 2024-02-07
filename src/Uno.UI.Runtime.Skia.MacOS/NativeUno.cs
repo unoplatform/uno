@@ -9,10 +9,10 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal static partial class NativeUno 
+internal static partial class NativeUno
 {
 	[LibraryImport("libUnoNativeMac.dylib")]
-	[return: MarshalAs (UnmanagedType.I1)]
+	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_app_initialize();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -22,18 +22,18 @@ internal static partial class NativeUno
 	internal static partial void uno_application_set_icon(string iconPath);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	[return: MarshalAs (UnmanagedType.I1)]
+	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_application_open_url(string url);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	[return: MarshalAs (UnmanagedType.I1)]
+	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_application_query_url_support(string url);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_draw_callback(delegate* unmanaged[Cdecl]<nint,double,double,nint,void> callback);
+	internal static unsafe partial void uno_set_draw_callback(delegate* unmanaged[Cdecl]<nint, double, double, nint, void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_resize_callback(delegate* unmanaged[Cdecl]<nint,double,double,void> callback);
+	internal static unsafe partial void uno_set_resize_callback(delegate* unmanaged[Cdecl]<nint, double, double, void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_did_change_screen_callback(ref MacOSDisplayInformationExtension.ScreenData screenData, delegate* unmanaged[Cdecl]<void> callback);
@@ -72,11 +72,11 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_window_should_close_callback(delegate* unmanaged[Cdecl]<int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	[return: MarshalAs (UnmanagedType.I1)]
+	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_application_is_full_screen();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	[return: MarshalAs (UnmanagedType.I1)]
+	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_application_enter_full_screen();
 
 	[LibraryImport("libUnoNativeMac.dylib")]

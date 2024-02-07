@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal static partial class NativeSkia 
+internal static partial class NativeSkia
 {
 	[LibraryImport("libSkiaSharp")]
 	[UnmanagedCallConv(CallConvs = new System.Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]

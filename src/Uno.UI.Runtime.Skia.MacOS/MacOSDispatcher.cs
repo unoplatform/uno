@@ -23,7 +23,7 @@ internal static class MacOSDispatcher
 				action();
 			}
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			Console.WriteLine(e);
 		}
@@ -40,6 +40,6 @@ internal static class MacOSDispatcher
 			typeof(MacOSDispatcher).Log().Trace($"Dispatching {d}");
 		}
 
-		NativeMac.dispatch_async_f(_mainQueue, (nint) GCHandle.Alloc(d), &NativeToManaged);
+		NativeMac.dispatch_async_f(_mainQueue, (nint)GCHandle.Alloc(d), &NativeToManaged);
 	}
 }

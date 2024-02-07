@@ -55,7 +55,7 @@ internal class MacOSDisplayInformationExtension : IDisplayInformationExtension
 
 	internal static ref ScreenData SharedScreenData => ref _data;
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void Update()
 	{
 		if (typeof(MacOSDisplayInformationExtension).Log().IsEnabled(LogLevel.Trace))
@@ -72,7 +72,7 @@ internal class MacOSDisplayInformationExtension : IDisplayInformationExtension
 		_resolutionScale = (ResolutionScale)(int)(_data.RawPixelsPerViewPixel * 100.0);
 	}
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void UpdateParameters()
 	{
 		if (typeof(MacOSDisplayInformationExtension).Log().IsEnabled(LogLevel.Trace))

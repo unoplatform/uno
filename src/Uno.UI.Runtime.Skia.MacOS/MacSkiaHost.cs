@@ -18,24 +18,24 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 
 	static unsafe MacSkiaHost()
 	{
-		MacOSMetalRenderer.Register();				// must be initialized first to load libSkiaSharp
+		MacOSMetalRenderer.Register();              // must be initialized first to load libSkiaSharp
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
-		MacOSClipboardExtension.Register();			// work in progress
+		MacOSClipboardExtension.Register();         // work in progress
 		MacOSCoreApplicationExtension.Register();
 		MacOSDisplayInformationExtension.Register();
 		MacOSFileOpenPickerExtension.Register();
 		MacOSFileSavePickerExtension.Register();
 		MacOSFolderPickerExtension.Register();
 		MacOSLauncherExtension.Register();
-		MacOSNativeElementHostingExtension.Register();	// seems used only for native elements, which Skia avoids ?!?
+		MacOSNativeElementHostingExtension.Register();  // seems used only for native elements, which Skia avoids ?!?
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemNavigationManagerPreviewExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
-		MacOSUnoCorePointerInputSource.Register();	// work in progress
+		MacOSUnoCorePointerInputSource.Register();  // work in progress
 		MacOSUnoKeyboardInputSource.Register();
-		
+
 		// Uno.UI.Xaml.Controls.Extensions.IOverlayTextBoxViewExtension is not required
 	}
 

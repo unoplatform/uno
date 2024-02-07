@@ -27,7 +27,7 @@ internal class MacOSSystemNavigationManagerPreviewExtension : ISystemNavigationM
 
 	public void RequestNativeAppClose() => Window.Current?.Close();
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	// System.Boolean is not blittable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
 	internal static int WindowShouldClose()
 	{

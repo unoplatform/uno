@@ -46,7 +46,7 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 		return new KeyEventArgs("keyboard", key, mods, status);
 	}
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static int OnRawKeyDown(VirtualKey key, VirtualKeyModifiers mods, uint scanCode)
 	{
 		try
@@ -72,7 +72,7 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 		}
 	}
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static int OnRawKeyUp(VirtualKey key, VirtualKeyModifiers mods, uint scanCode)
 	{
 		try

@@ -36,7 +36,8 @@ internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 		var array = NativeUno.uno_pick_multiple_files(null);
 		var files = new List<StorageFile>();
 		var ptr = Marshal.ReadIntPtr(array);
-		while (ptr != IntPtr.Zero) {
+		while (ptr != IntPtr.Zero)
+		{
 			var filename = Marshal.PtrToStringUTF8(ptr);
 			if (filename is not null)
 			{

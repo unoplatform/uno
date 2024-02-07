@@ -28,7 +28,7 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 
 	SystemTheme ISystemThemeHelperExtension.GetSystemTheme() => (SystemTheme)NativeUno.uno_get_system_theme();
 
-	[UnmanagedCallersOnly(CallConvs = new[] {typeof(CallConvCdecl)})]
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void Update()
 	{
 		if (typeof(MacOSSystemThemeHelperExtension).Log().IsEnabled(LogLevel.Trace))
