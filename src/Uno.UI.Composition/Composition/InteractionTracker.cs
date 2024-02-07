@@ -45,7 +45,11 @@ public partial class InteractionTracker : CompositionObject
 
 	public static InteractionTracker CreateWithOwner(Compositor compositor, IInteractionTrackerOwner owner) => new InteractionTracker(compositor, owner);
 
-	internal void ChangeState(InteractionTrackerState newState) => _state = newState;
+	internal void ChangeState(InteractionTrackerState newState)
+	{
+		_state.Dispose();
+		_state = newState;
+	}
 
 	internal void SetPosition(Vector3 newPosition, bool isFromUserManipulation)
 	{
@@ -68,7 +72,8 @@ public partial class InteractionTracker : CompositionObject
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
 		Interlocked.Increment(ref _currentRequestId);
-		return _state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond);
+		_state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond);
+		return _currentRequestId;
 	}
 
 	internal void StartUserManipulation()
@@ -91,11 +96,19 @@ public partial class InteractionTracker : CompositionObject
 		_state.ReceiveInertiaStarting(-linearVelocity);
 	}
 
-	// TODO: Inertia -> Idle
-	// This state transition happens when the function(s) being used to update position and/or scale are no longer
-	// resulting in change. In other words, position and scale velocity have both gotten to zero.
-	// This state transition can also happen if a call is made to explicitly update position or scale without animation or velocity.
-	// These calls will end inertia and transition to Idle with the updated property values.
+	public int TryUpdatePosition(Vector3 value)
+		=> TryUpdatePosition(value, InteractionTrackerClampingOption.Auto);
 
+	public int TryUpdatePositionBy(Vector3 amount)
+		=> TryUpdatePosition(Position + amount);
 
+	public int TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
+	{
+		Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdatePosition(value, option);
+		return _currentRequestId;
+	}
+
+	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
+		=> TryUpdatePosition(Position + amount, option);
 }

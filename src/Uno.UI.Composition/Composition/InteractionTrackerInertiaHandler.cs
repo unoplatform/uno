@@ -13,10 +13,9 @@ internal class InteractionTrackerInertiaHandler
 	private readonly Vector3 _positionDecayRate;
 	private readonly Vector3 _initialVelocity;
 	private readonly Vector3 _initialPosition;
-	private Vector3 _deltaPosition;
-	private Vector3 _finalPosition;
-	private Vector3 _timeToMinimumVelocity;
-	private float _maxTimeToMinimumVelocity;
+	private readonly Vector3 _finalPosition;
+	private readonly Vector3 _timeToMinimumVelocity;
+	private readonly float _maxTimeToMinimumVelocity;
 	private Timer? _timer;
 	private Stopwatch? _stopwatch;
 
@@ -25,30 +24,43 @@ internal class InteractionTrackerInertiaHandler
 	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
 	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
 
-	private const float IntervalInSeconds = IntervalInMilliseconds / 1000.0f;
-
 	public InteractionTrackerInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
 	{
 		_interactionTracker = interactionTracker;
 
-		// interactionTracker.PositionInteriaDecayRate not supported yet. It should affect the _finalPosition calculated below
-		_positionDecayRate = /*interactionTracker.PositionInertiaDecayRate ??*/ new Vector3(0.95f);
+		_positionDecayRate = interactionTracker.PositionInertiaDecayRate ?? new Vector3(0.95f);
 
 		_initialVelocity = translationVelocities;
 		_initialPosition = interactionTracker.Position;
-		_deltaPosition = new Vector3(CalculateDeltaPosition(_initialVelocity.X), CalculateDeltaPosition(_initialVelocity.Y), CalculateDeltaPosition(_initialVelocity.Z));
-		_finalPosition = _initialPosition + _deltaPosition;
 
 		_timeToMinimumVelocity = TimeToMinimumVelocity();
 		_maxTimeToMinimumVelocity = Math.Max(Math.Max(_timeToMinimumVelocity.X, _timeToMinimumVelocity.Y), _timeToMinimumVelocity.Z);
 
-		// Based on experiment on WinUI.
-		// This was based on setting PositionInertiaDecayRate to 0.95 (the default)
-		// Note that if velocity is too small, we can get delta in the opposite direction. In this case, we consider it zero and make no changes in position.
-		static float CalculateDeltaPosition(float velocity)
+		var deltaPosition = new Vector3(
+			CalculateDeltaPosition(_initialVelocity.X, 1.0f - _positionDecayRate.X, _timeToMinimumVelocity.X),
+			CalculateDeltaPosition(_initialVelocity.Y, 1.0f - _positionDecayRate.Y, _timeToMinimumVelocity.Y),
+			CalculateDeltaPosition(_initialVelocity.Z, 1.0f - _positionDecayRate.Z, _timeToMinimumVelocity.Z));
+
+		_finalPosition = _initialPosition + deltaPosition;
+
+		static float CalculateDeltaPosition(float velocity, float decayRate, float time)
 		{
-			var delta = (float)(0.3338081907 * velocity - 10.01424572);
-			return Math.Sign(delta) == Math.Sign(velocity) ? delta : 0;
+			float epsilon = 0.0000011920929f;
+
+			if (IsCloseReal(decayRate, 1.0f, epsilon))
+			{
+				return velocity * time;
+			}
+			else if (IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
+			{
+				return 0.0f;
+			}
+			else
+			{
+				float val = MathF.Pow(decayRate, time);
+				return ((val - 1.0f) * velocity) / MathF.Log(decayRate);
+			}
+
 		}
 	}
 
@@ -63,12 +75,19 @@ internal class InteractionTrackerInertiaHandler
 		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
 	}
 
+	public void Stop()
+	{
+		_timer?.Dispose();
+		_stopwatch?.Stop();
+	}
+
 	private void OnTick(object? state)
 	{
 		var currentElapsed = _stopwatch!.ElapsedMilliseconds;
 		if (currentElapsed >= _maxTimeToMinimumVelocity * 1000)
 		{
-			_interactionTracker.SetPosition(_finalPosition, isFromUserManipulation: false/*TODO*/);
+			var position = Vector3.Clamp(_finalPosition, _interactionTracker.MinPosition, _interactionTracker.MaxPosition);
+			_interactionTracker.SetPosition(position, isFromUserManipulation: false/*TODO*/);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker));
 			_timer!.Dispose();
 			_stopwatch!.Stop();
@@ -96,18 +115,18 @@ internal class InteractionTrackerInertiaHandler
 
 		var initialVelocity = Vector3.Abs(_initialVelocity);
 		return new Vector3(
-			TimeToMinimumVelocityCore(initialVelocity.X, 1 - _positionDecayRate.X),
-			TimeToMinimumVelocityCore(initialVelocity.Y, 1 - _positionDecayRate.Y),
-			TimeToMinimumVelocityCore(initialVelocity.Z, 1 - _positionDecayRate.Z)
+			TimeToMinimumVelocityCore(initialVelocity.X, 1 - _positionDecayRate.X, _initialPosition.X),
+			TimeToMinimumVelocityCore(initialVelocity.Y, 1 - _positionDecayRate.Y, _initialPosition.Y),
+			TimeToMinimumVelocityCore(initialVelocity.Z, 1 - _positionDecayRate.Z, _initialPosition.Z)
 			);
 
-		float TimeToMinimumVelocityCore(float initialVelocity, float decayRate)
+		float TimeToMinimumVelocityCore(float initialVelocity, float decayRate, float initialPosition)
 		{
 			if (initialVelocity > minimumVelocity)
 			{
 				if (!IsCloseReal(decayRate, 1.0f, epsilon))
 				{
-					if (IsCloseRealZero(decayRate, epsilon) /*|| (this.m_inertiaEnabled & 1) == 0*/)
+					if (IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
 					{
 						return 0.0f;
 					}
@@ -117,7 +136,7 @@ internal class InteractionTrackerInertiaHandler
 					}
 				}
 
-				time = (Math.Sign(initialVelocity) * float.MaxValue /*- this.m_initialValue*/) / initialVelocity;
+				time = (Math.Sign(initialVelocity) * float.MaxValue - initialPosition) / initialVelocity;
 
 				if (time < 0.0f)
 				{
@@ -129,10 +148,10 @@ internal class InteractionTrackerInertiaHandler
 		}
 	}
 
-	bool IsCloseReal(float a, float b, float epsilon)
+	private static bool IsCloseReal(float a, float b, float epsilon)
 		=> MathF.Abs(a - b) <= epsilon;
 
-	bool IsCloseRealZero(float a, float epsilon)
+	private static bool IsCloseRealZero(float a, float epsilon)
 		=> MathF.Abs(a) < epsilon;
 
 }

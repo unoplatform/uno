@@ -147,20 +147,6 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdatePosition(global::System.Numerics.Vector3 value)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdatePositionBy(global::System.Numerics.Vector3 amount)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public int TryUpdatePositionWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionWithAnimation(CompositionAnimation animation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionWithAnimation%28CompositionAnimation%20animation%29");
@@ -199,20 +185,6 @@ namespace Microsoft.UI.Composition.Interactions
 		public void ConfigureVector2PositionInertiaModifiers(global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier> modifiers)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigureVector2PositionInertiaModifiers(IEnumerable<InteractionTrackerVector2InertiaModifier> modifiers)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdatePosition(global::System.Numerics.Vector3 value, global::Microsoft.UI.Composition.Interactions.InteractionTrackerClampingOption option)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdatePositionBy(global::System.Numerics.Vector3 amount, global::Microsoft.UI.Composition.Interactions.InteractionTrackerClampingOption option)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%2C%20InteractionTrackerClampingOption%20option%29");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.IsInertiaFromImpulse.get

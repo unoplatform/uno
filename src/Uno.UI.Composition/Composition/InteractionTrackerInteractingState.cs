@@ -33,7 +33,6 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	internal override void ReceiveManipulationDelta(Point translationDelta)
 	{
 		_interactionTracker.SetPosition(_interactionTracker.Position + new Vector3((float)translationDelta.X, (float)translationDelta.Y, 0), isFromUserManipulation: true);
-		// Set interaction tracker position.
 	}
 
 	internal override void ReceiveInertiaStarting(Point linearVelocity)
@@ -41,11 +40,13 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0)));
 	}
 
-	internal override int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
+	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
 		// Request ignored
+	}
 
-		// TODO: Return RequestId
-		return 0;
+	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
+	{
+		// Request ignored
 	}
 }

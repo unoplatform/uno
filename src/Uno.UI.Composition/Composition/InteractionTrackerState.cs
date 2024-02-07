@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
 
-internal abstract class InteractionTrackerState
+internal abstract class InteractionTrackerState : IDisposable
 {
 	private protected InteractionTracker _interactionTracker;
 
@@ -22,5 +22,7 @@ internal abstract class InteractionTrackerState
 	internal abstract void CompleteUserManipulation(Vector3 linearVelocity);
 	internal abstract void ReceiveManipulationDelta(Point translationDelta);
 	internal abstract void ReceiveInertiaStarting(Point linearVelocity);
-	internal abstract int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond);
+	internal abstract void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond);
+	internal abstract void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option);
+	public virtual void Dispose() { }
 }
