@@ -8,8 +8,6 @@ namespace Microsoft.UI.Composition.Interactions;
 
 public partial class VisualInteractionSource : CompositionObject, ICompositionInteractionSource
 {
-	private VisualInteractionSourceRedirectionMode _manipulationRedirectionMode;
-
 	private VisualInteractionSource(Visual source) : base(source.Compositor)
 	{
 		Source = source;
@@ -60,19 +58,7 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	/// <summary>
 	/// Indicates what input should be redirected to the InteractionTracker.
 	/// </summary>
-	public VisualInteractionSourceRedirectionMode ManipulationRedirectionMode
-	{
-		get => _manipulationRedirectionMode;
-		set
-		{
-			_manipulationRedirectionMode = value;
-
-			// TODO: Mark the Source visual with correct values.
-			// For now, we only support "Touch" (no Touchpad or PointerWheel support).
-			//Source.IsTouchPadRedirected = (value & VisualInteractionSourceRedirectionMode.CapableTouchpadOnly) != 0;
-			//Source.IsPointerWheelRedirected = (value & VisualInteractionSourceRedirectionMode.PointerWheelOnly) != 0;
-		}
-	}
+	public VisualInteractionSourceRedirectionMode ManipulationRedirectionMode { get; set; }
 
 	public static VisualInteractionSource Create(Visual source)
 	{

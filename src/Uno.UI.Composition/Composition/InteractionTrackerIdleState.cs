@@ -36,7 +36,7 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity
-		// TODO: Understand more the "inertia modifiers" part.
+		// TODO: inertia modifiers not yet implemented.
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond));
 	}
 

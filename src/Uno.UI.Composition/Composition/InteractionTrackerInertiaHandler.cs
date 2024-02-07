@@ -24,6 +24,8 @@ internal class InteractionTrackerInertiaHandler
 	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
 	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
 
+	public Vector3 InitialVelocity => _initialVelocity;
+
 	public InteractionTrackerInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
 	{
 		_interactionTracker = interactionTracker;

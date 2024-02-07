@@ -36,10 +36,10 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
-		// TODO: Stop current animation
+		// TODO: Stop current animation. Currently, the TryUpdate[Position|Scale]WithAnimation methods are not implemented.
 
 		// State changes to inertia with inertia modifiers evaluated using requested velocity as initial velocity.
-		// TODO: Understand more the "inertia modifiers" part.
+		// TODO: inertia modifiers not yet implemented.
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond));
 	}
 
