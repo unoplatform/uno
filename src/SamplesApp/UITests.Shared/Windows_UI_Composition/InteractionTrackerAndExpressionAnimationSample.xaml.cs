@@ -44,24 +44,27 @@ public sealed partial class InteractionTrackerAndExpressionAnimationSample : Pag
 
 		this.Loaded += (_, _) =>
 		{
-			var compositor = _border1Visual.Compositor;
-			var tracker = InteractionTracker.Create(compositor);
+			DispatcherQueue.TryEnqueue(() =>
+			{
+				var compositor = _border1Visual.Compositor;
+				var tracker = InteractionTracker.Create(compositor);
 
-			tracker.MinPosition = new Vector3(0);
-			tracker.MaxPosition = new Vector3((float)XamlRoot.Size.Width, (float)XamlRoot.Size.Height, 0);
+				tracker.MinPosition = new Vector3(0);
+				tracker.MaxPosition = new Vector3((float)XamlRoot.Size.Width, (float)XamlRoot.Size.Height, 0);
 
-			_interactionSource = VisualInteractionSource.Create(_border1Visual);
+				_interactionSource = VisualInteractionSource.Create(_border1Visual);
 
-			tracker.InteractionSources.Add(_interactionSource);
+				tracker.InteractionSources.Add(_interactionSource);
 
-			_interactionSource.ManipulationRedirectionMode = VisualInteractionSourceRedirectionMode.CapableTouchpadAndPointerWheel;
-			_interactionSource.PositionXSourceMode = InteractionSourceMode.EnabledWithInertia;
-			_interactionSource.PositionYSourceMode = InteractionSourceMode.EnabledWithInertia;
+				_interactionSource.ManipulationRedirectionMode = VisualInteractionSourceRedirectionMode.CapableTouchpadAndPointerWheel;
+				_interactionSource.PositionXSourceMode = InteractionSourceMode.EnabledWithInertia;
+				_interactionSource.PositionYSourceMode = InteractionSourceMode.EnabledWithInertia;
 
-			var animation = compositor.CreateExpressionAnimation("Vector3(tracker.Position.X, original.Offset.Y, 0)");
-			animation.SetReferenceParameter("tracker", tracker);
-			animation.SetReferenceParameter("original", _border2Visual);
-			_border2Visual.StartAnimation("Offset", animation);
+				var animation = compositor.CreateExpressionAnimation("Vector3(tracker.Position.X, original.Offset.Y, 0)");
+				animation.SetReferenceParameter("tracker", tracker);
+				animation.SetReferenceParameter("original", _border2Visual);
+				_border2Visual.StartAnimation("Offset", animation);
+			});
 		};
 
 		this.Unloaded += (_, _) =>

@@ -78,17 +78,17 @@ public partial class InteractionTracker : CompositionObject
 
 	internal void CompleteUserManipulation(Vector3 linearVelocity)
 	{
-		_state.CompleteUserManipulation(linearVelocity);
+		_state.CompleteUserManipulation(-linearVelocity);
 	}
 
 	internal void ReceiveManipulationDelta(Point translationDelta)
 	{
-		_state.ReceiveManipulationDelta(translationDelta);
+		_state.ReceiveManipulationDelta(-translationDelta);
 	}
 
 	internal void ReceiveInertiaStarting(Point linearVelocity)
 	{
-		_state.ReceiveInertiaStarting(linearVelocity);
+		_state.ReceiveInertiaStarting(-linearVelocity);
 	}
 
 	// TODO: Inertia -> Idle
