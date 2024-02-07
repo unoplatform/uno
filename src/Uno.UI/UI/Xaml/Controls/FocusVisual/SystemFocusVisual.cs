@@ -132,7 +132,7 @@ internal partial class SystemFocusVisual : Control
 		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 
 		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
-  		if (parentElement is null)
+		if (parentElement is null)
 		{
 			Visibility = Visibility.Collapsed;
 			return;
