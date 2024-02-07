@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -63,9 +63,24 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FileOpenPicker requires Android KitKat (API level 19) or newer");
 			}
 
-			var action = Intent.ActionOpenDocument;
+			Intent GetIntent()
+			{
+				if (SuggestedStartLocation == PickerLocationId.VideosLibrary
+					|| SuggestedStartLocation == PickerLocationId.PicturesLibrary)
+				{
+					// For images and videos we want to use the ANTION_GET_CONTENT since this allows
+					// apps related to Photos and Videos to be suggested on the picker.
+					var intent = new Intent(Intent.ActionGetContent);
+					intent.AddCategory(Intent.CategoryOpenable);
 
-			var intent = new Intent(action);
+					return intent;
+				}
+
+				return new Intent(Intent.ActionOpenDocument);
+			}
+
+			var intent = GetIntent();
+
 			intent.PutExtra(Intent.ExtraAllowMultiple, multiple);
 
 			var settingName = string.Format(CultureInfo.InvariantCulture, StorageIdentifierFormatString, SettingsIdentifier);
@@ -87,7 +102,9 @@ namespace Windows.Storage.Pickers
 
 			_currentFileOpenPickerRequest = new TaskCompletionSource<Intent?>();
 
-			appActivity.StartActivityForResult(intent, RequestCode);
+			var pickerIntent = Intent.CreateChooser(intent, "");
+
+			appActivity.StartActivityForResult(pickerIntent, RequestCode);
 
 			var resultIntent = await _currentFileOpenPickerRequest.Task;
 			_currentFileOpenPickerRequest = null;
