@@ -17,7 +17,18 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
-		owner?.InertiaStateEntered(_interactionTracker, new InteractionTrackerInertiaStateEnteredArgs());
+		owner?.InertiaStateEntered(_interactionTracker, new InteractionTrackerInertiaStateEnteredArgs()
+		{
+			IsFromBinding = false, /* TODO */
+			IsInertiaFromImpulse = false, /* TODO */
+			ModifiedRestingPosition = Vector3.Clamp(_handler.FinalPosition, _interactionTracker.MinPosition, _interactionTracker.MaxPosition),
+			ModifiedRestingScale = Math.Clamp(_handler.FinalScale, _interactionTracker.MinScale, _interactionTracker.MaxScale),
+			NaturalRestingPosition = _handler.FinalPosition,
+			NaturalRestingScale = _handler.FinalScale,
+			PositionVelocityInPixelsPerSecond = _handler.InitialVelocity,
+			RequestId = 0,
+			ScaleVelocityInPercentPerSecond = 0.0f, /* TODO: Scale not yet implemented */
+		});
 
 		// If TryUpdatePosition is called with clamping option disabled, the position set can go outside the [MinPosition..MaxPosition] range.
 		// We adjust MinPosition/MaxPosition when we enter idle.

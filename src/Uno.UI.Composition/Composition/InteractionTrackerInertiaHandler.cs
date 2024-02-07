@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Microsoft.UI.Composition.Interactions;
 
-internal class InteractionTrackerInertiaHandler
+internal sealed class InteractionTrackerInertiaHandler
 {
 	private readonly InteractionTracker _interactionTracker;
 	private readonly Vector3 _positionDecayRate;
@@ -25,6 +25,8 @@ internal class InteractionTrackerInertiaHandler
 	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
 
 	public Vector3 InitialVelocity => _initialVelocity;
+	public Vector3 FinalPosition => _finalPosition;
+	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
 
 	public InteractionTrackerInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
 	{

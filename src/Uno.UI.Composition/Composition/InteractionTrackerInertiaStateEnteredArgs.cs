@@ -8,22 +8,21 @@ public partial class InteractionTrackerInertiaStateEnteredArgs
 	{
 	}
 
-	// TODO: Set the properties.
-	public Vector3? ModifiedRestingPosition { get; }
+	public required Vector3? ModifiedRestingPosition { get; init; }
 
-	public float? ModifiedRestingScale { get; }
+	public required float? ModifiedRestingScale { get; init; }
 
-	public Vector3 NaturalRestingPosition { get; }
+	public required Vector3 NaturalRestingPosition { get; init; }
 
-	public float NaturalRestingScale { get; }
+	public required float NaturalRestingScale { get; init; }
 
-	public Vector3 PositionVelocityInPixelsPerSecond { get; }
+	public required Vector3 PositionVelocityInPixelsPerSecond { get; init; }
 
-	public int RequestId { get; }
+	public required int RequestId { get; init; }
 
-	public float ScaleVelocityInPercentPerSecond { get; }
+	public required float ScaleVelocityInPercentPerSecond { get; init; }
 
-	public bool IsInertiaFromImpulse { get; }
+	public required bool IsInertiaFromImpulse { get; init; }
 
-	public bool IsFromBinding { get; }
+	public required bool IsFromBinding { get; init; }
 }

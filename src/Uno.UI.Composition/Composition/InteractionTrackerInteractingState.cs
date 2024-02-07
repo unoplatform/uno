@@ -42,11 +42,11 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
-		// Request ignored
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(_interactionTracker.CurrentRequestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
 	{
-		// Request ignored
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(_interactionTracker.CurrentRequestId));
 	}
 }

@@ -39,7 +39,7 @@ public partial class InteractionTracker : CompositionObject
 
 	public CompositionInteractionSourceCollection InteractionSources { get; }
 
-	//internal Vector3 EffectivePositionInertiaDecayRate => PositionInertiaDecayRate ?? new Vector3(0.95f);
+	public int CurrentRequestId => _currentRequestId;
 
 	public static InteractionTracker Create(Compositor compositor) => new InteractionTracker(compositor);
 
