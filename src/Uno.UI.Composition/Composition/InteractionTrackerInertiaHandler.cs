@@ -21,6 +21,7 @@ internal sealed class InteractionTrackerInertiaHandler
 
 	private Timer? _timer;
 	private Stopwatch? _stopwatch;
+	private float? _dampingStateTimeInSeconds;
 
 	// InteractionTracker works at 60 FPS, per documentation
 	// https://learn.microsoft.com/en-us/windows/uwp/composition/interaction-tracker-manipulations#why-use-interactiontracker
@@ -90,9 +91,11 @@ internal sealed class InteractionTrackerInertiaHandler
 	private void OnTick(object? state)
 	{
 		var currentElapsedInSeconds = _stopwatch!.ElapsedMilliseconds / 1000.0f;
+		var minPosition = _interactionTracker.MinPosition;
+		var maxPosition = _interactionTracker.MaxPosition;
 		if (currentElapsedInSeconds >= _maxTimeToMinimumVelocity)
 		{
-			var position = Vector3.Clamp(_finalPosition, _interactionTracker.MinPosition, _interactionTracker.MaxPosition);
+			var position = Vector3.Clamp(_finalPosition, minPosition, maxPosition);
 			_interactionTracker.SetPosition(position, isFromUserManipulation: false/*TODO*/);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker));
 			_timer!.Dispose();
@@ -101,19 +104,39 @@ internal sealed class InteractionTrackerInertiaHandler
 		}
 
 		var currentVelocity = VelocityAtTime(currentElapsedInSeconds);
+		var currentPosition = _interactionTracker.Position;
 
 		// Far from WinUI calculations :/
-		var deltaTimeX = currentElapsedInSeconds >= _timeToMinimumVelocity.X * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
-		var deltaTimeY = currentElapsedInSeconds >= _timeToMinimumVelocity.Y * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
-		var deltaTimeZ = currentElapsedInSeconds >= _timeToMinimumVelocity.Z * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
+		var newPosition = new Vector3(
+			CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.X, minPosition.X, maxPosition.X, _initialVelocity.X, currentVelocity.X, _positionDecayRate.X, currentPosition.X),
+			CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.Y, minPosition.Y, maxPosition.Y, _initialVelocity.Y, currentVelocity.Y, _positionDecayRate.Y, currentPosition.Y),
+			CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.Z, minPosition.Z, maxPosition.Z, _initialVelocity.Z, currentVelocity.Z, _positionDecayRate.Z, currentPosition.Z)
+			);
+
+		_interactionTracker.SetPosition(newPosition, isFromUserManipulation: false/*TODO*/);
 		_lastElapsedInSeconds = currentElapsedInSeconds;
+	}
 
-		var deltaPosition = new Vector3(
-			CalculateDeltaPosition(currentVelocity.X, 1.0f - _positionDecayRate.X, deltaTimeX),
-			CalculateDeltaPosition(currentVelocity.Y, 1.0f - _positionDecayRate.Y, deltaTimeY),
-			CalculateDeltaPosition(currentVelocity.Z, 1.0f - _positionDecayRate.Z, deltaTimeZ));
+	private float CalculatePosition(
+		float currentElapsedInSeconds, float timeToMinimumVelocity, float minPosition, float maxPosition, float initialVelocity, float currentVelocity, float positionDecayRate, float currentPosition)
+	{
+		if (_dampingStateTimeInSeconds.HasValue || currentPosition < minPosition || currentPosition > maxPosition)
+		{
+			// This is an overpan from Interacting state. Use damping animation.
+			_dampingStateTimeInSeconds ??= _stopwatch!.ElapsedMilliseconds / 1000.0f;
+			if (initialVelocity <= 50.0)
+			{
+				// Use critically-damped animation.
+			}
+			else
+			{
+				// Use underdamped animation.
+			}
+		}
 
-		_interactionTracker.SetPosition(_interactionTracker.Position + deltaPosition, isFromUserManipulation: false/*TODO*/);
+		var deltaTime = currentElapsedInSeconds >= timeToMinimumVelocity * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
+		var deltaPosition = CalculateDeltaPosition(currentVelocity, 1.0f - positionDecayRate, deltaTime);
+		return currentPosition + deltaPosition;
 	}
 
 	private Vector3 TimeToMinimumVelocity()
