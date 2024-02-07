@@ -1,5 +1,10 @@
 <Project>
 
+	<PropertyGroup>
+		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
+		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
+	</PropertyGroup>
+
 	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
 		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
 		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
@@ -37,9 +42,10 @@
 		Condition=" $(TargetFramework.Contains('windows10')) " />
 
 	<!-- Legacy Project Support -->
+	<!-- Includes sanity check in case someone has a seperate project for the Head with Single Project targets -->
 	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $(MSBuildProjectName.Contains('.Skia.')) " />
+		Condition=" $(MSBuildProjectName.Contains('.Skia.')) and $(UsingUnoCommonSkiaTargets) == '' " />
 	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) " />
+		Condition=" $(_IsStandaloneWasmHead) and $(UsingUnoCommonWasmTargets) == '' " />
 
 </Project>

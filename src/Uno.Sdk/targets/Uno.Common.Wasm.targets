@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<IsBrowser>true</IsBrowser>
+		<UsingUnoCommonWasmTargets>true</UsingUnoCommonWasmTargets>
 
 		<EnableDefaultWasmItems>false</EnableDefaultWasmItems>
 		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
