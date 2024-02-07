@@ -1,0 +1,12 @@
+{
+	"profiles": {
+		"SamplesApp.Skia.X11": {
+			"commandName": "Project",
+			"nativeDebugging": false
+		},
+		"WSL": {
+			"commandName": "WSL2",
+			"distributionName":  ""
+		}
+	}
+}

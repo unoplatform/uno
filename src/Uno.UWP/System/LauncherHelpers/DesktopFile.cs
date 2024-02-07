@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 
-namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers
+namespace Uno.UI.Runtime.Skia.Extensions.System.LauncherHelpers
 {
 	// Implementation based on this: https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
 	internal class DesktopFile

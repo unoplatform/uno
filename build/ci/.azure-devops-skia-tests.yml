@@ -1,6 +1,7 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
+  vmLinuxImage: ''
   poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
@@ -89,6 +90,17 @@ jobs:
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Linux.FrameBuffer\bin\Release\net7.0
       ArtifactName: skia-framebuffer-samples-app-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container
+
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.X11/SamplesApp.Skia.X11.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+    displayName: Build X11 Head
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.X11\bin\Release\net7.0
+      ArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -344,4 +356,92 @@ jobs:
       testRunTitle: 'Uno Islands Skia WPF Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+
+##
+## X11
+##
+
+- job: Skia_X11_Screenshot_Tests
+  displayName: 'Run Skia X11 Snapshot Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  dependsOn: Skia_Tests_Build
+  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+
+  variables:
+    SamplesAppArtifactName: skia-x11-samples-app-WinUI
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+  - template: templates/linux-install-xvfb.yml
+
+  - script: |
+        cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-x11-screenshots'
+
+    displayName: Run Skia X11 Snapshot Tests
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+- job: Skia_X11_Runtime_Tests_Build
+  displayName: 'Run Skia X11 Runtime Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+  - template: templates/linux-install-xvfb.yml
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
+
+    displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
+    env:
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+      SamplesAppArtifactName: $(SamplesAppArtifactName)
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia X11 $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
       failTaskOnFailedTests: true

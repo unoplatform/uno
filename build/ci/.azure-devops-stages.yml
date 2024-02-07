@@ -141,6 +141,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
@@ -155,6 +156,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI

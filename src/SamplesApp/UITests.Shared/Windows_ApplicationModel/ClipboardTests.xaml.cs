@@ -17,7 +17,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.Storage.Streams;
 
 namespace UITests.Windows_ApplicationModel
 {
@@ -43,6 +45,7 @@ namespace UITests.Windows_ApplicationModel
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
+		private BitmapImage _bmp;
 
 		public ClipboardTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
@@ -85,11 +88,23 @@ namespace UITests.Windows_ApplicationModel
 			}
 		}
 
+		public BitmapImage Bitmap
+		{
+			get => _bmp;
+			private set
+			{
+				_bmp = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ICommand ClearCommand => GetOrCreateCommand(Clear);
 
 		public ICommand CopyCommand => GetOrCreateCommand(Copy);
 
-		public ICommand PasteCommand => GetOrCreateCommand(Paste);
+		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
+
+		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
 
 		public ICommand FlushCommand => GetOrCreateCommand(Flush);
 
@@ -104,7 +119,7 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
-		private async void Paste()
+		private async void PasteText()
 		{
 			var content = Clipboard.GetContent();
 			Text = await content.GetTextAsync();
@@ -128,6 +143,46 @@ namespace UITests.Windows_ApplicationModel
 		private void Clipboard_ContentChanged(object sender, object e)
 		{
 			LastContentChangedDate = DateTime.UtcNow.ToLongTimeString();
+		}
+
+		private async void PasteImage()
+		{
+			var dataPackageView = Clipboard.GetContent();
+
+			var formats = new[]
+			{
+				"image/png",
+				"image/jpeg"
+			};
+
+			foreach (var format in formats)
+			{
+				if (dataPackageView.Contains(format))
+				{
+					if (await dataPackageView.GetDataAsync("image/png") is byte[] bytes)
+					{
+						var ims = new InMemoryRandomAccessStream();
+						DataWriter dataWriter = new DataWriter(ims);
+						dataWriter.WriteBytes(bytes);
+						await dataWriter.StoreAsync();
+						ims.Seek(0);
+
+						var bitmapImage = new BitmapImage();
+						bitmapImage.SetSource(ims);
+						Bitmap = bitmapImage;
+						return;
+					}
+				}
+			}
+
+			if (dataPackageView.Contains(StandardDataFormats.Bitmap))
+			{
+				var bitmapReference = await dataPackageView.GetBitmapAsync();
+				var stream = await bitmapReference.OpenReadAsync();
+				var bitmapImage = new BitmapImage();
+				await bitmapImage.SetSourceAsync(stream);
+				Bitmap = bitmapImage;
+			}
 		}
 	}
 }

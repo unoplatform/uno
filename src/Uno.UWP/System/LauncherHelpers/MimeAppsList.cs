@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.IO;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers
+namespace Uno.UI.Runtime.Skia.Extensions.System.LauncherHelpers
 {
 	internal class MimeAppsList
 	{
