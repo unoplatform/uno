@@ -1,4 +1,4 @@
-	<Project>
+<Project>
 	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
 	<Target Name="WinUI8857_AdjustGetPackagingOutput1"
 			AfterTargets="GetMrtPackagingOutputs"
