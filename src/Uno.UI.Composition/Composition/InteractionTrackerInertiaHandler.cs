@@ -16,6 +16,9 @@ internal sealed class InteractionTrackerInertiaHandler
 	private readonly Vector3 _finalPosition;
 	private readonly Vector3 _timeToMinimumVelocity;
 	private readonly float _maxTimeToMinimumVelocity;
+
+	private float _lastElapsedInSeconds;
+
 	private Timer? _timer;
 	private Stopwatch? _stopwatch;
 
@@ -46,25 +49,24 @@ internal sealed class InteractionTrackerInertiaHandler
 			CalculateDeltaPosition(_initialVelocity.Z, 1.0f - _positionDecayRate.Z, _timeToMinimumVelocity.Z));
 
 		_finalPosition = _initialPosition + deltaPosition;
+	}
 
-		static float CalculateDeltaPosition(float velocity, float decayRate, float time)
+	private static float CalculateDeltaPosition(float velocity, float decayRate, float time)
+	{
+		float epsilon = 0.0000011920929f;
+
+		if (IsCloseReal(decayRate, 1.0f, epsilon))
 		{
-			float epsilon = 0.0000011920929f;
-
-			if (IsCloseReal(decayRate, 1.0f, epsilon))
-			{
-				return velocity * time;
-			}
-			else if (IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
-			{
-				return 0.0f;
-			}
-			else
-			{
-				float val = MathF.Pow(decayRate, time);
-				return ((val - 1.0f) * velocity) / MathF.Log(decayRate);
-			}
-
+			return velocity * time;
+		}
+		else if (IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
+		{
+			return 0.0f;
+		}
+		else
+		{
+			float val = MathF.Pow(decayRate, time);
+			return ((val - 1.0f) * velocity) / MathF.Log(decayRate);
 		}
 	}
 
@@ -87,8 +89,8 @@ internal sealed class InteractionTrackerInertiaHandler
 
 	private void OnTick(object? state)
 	{
-		var currentElapsed = _stopwatch!.ElapsedMilliseconds;
-		if (currentElapsed >= _maxTimeToMinimumVelocity * 1000)
+		var currentElapsedInSeconds = _stopwatch!.ElapsedMilliseconds / 1000.0f;
+		if (currentElapsedInSeconds >= _maxTimeToMinimumVelocity)
 		{
 			var position = Vector3.Clamp(_finalPosition, _interactionTracker.MinPosition, _interactionTracker.MaxPosition);
 			_interactionTracker.SetPosition(position, isFromUserManipulation: false/*TODO*/);
@@ -98,20 +100,20 @@ internal sealed class InteractionTrackerInertiaHandler
 			return;
 		}
 
+		var currentVelocity = VelocityAtTime(currentElapsedInSeconds);
+
 		// Far from WinUI calculations :/
-		var currentElapsedInSeconds = currentElapsed / 1000.0f;
+		var deltaTimeX = currentElapsedInSeconds >= _timeToMinimumVelocity.X * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
+		var deltaTimeY = currentElapsedInSeconds >= _timeToMinimumVelocity.Y * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
+		var deltaTimeZ = currentElapsedInSeconds >= _timeToMinimumVelocity.Z * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
+		_lastElapsedInSeconds = currentElapsedInSeconds;
 
-		var positionX = CalculateNewPosition(_initialPosition.X, _finalPosition.X, _timeToMinimumVelocity.X, currentElapsedInSeconds);
-		var positionY = CalculateNewPosition(_initialPosition.Y, _finalPosition.Y, _timeToMinimumVelocity.Y, currentElapsedInSeconds);
-		var positionZ = CalculateNewPosition(_initialPosition.Z, _finalPosition.Z, _timeToMinimumVelocity.Z, currentElapsedInSeconds);
+		var deltaPosition = new Vector3(
+			CalculateDeltaPosition(currentVelocity.X, 1.0f - _positionDecayRate.X, deltaTimeX),
+			CalculateDeltaPosition(currentVelocity.Y, 1.0f - _positionDecayRate.Y, deltaTimeY),
+			CalculateDeltaPosition(currentVelocity.Z, 1.0f - _positionDecayRate.Z, deltaTimeZ));
 
-		_interactionTracker.SetPosition(new(positionX, positionY, positionZ), isFromUserManipulation: false/*TODO*/);
-	}
-
-	private float CalculateNewPosition(float initialPosition, float finalPosition, float timeToMinimumVelocity, float currentElapsedInSeconds)
-	{
-		var percentage = 100.0f * MathF.Exp(MathF.Log(200.0f / 100.0f) / timeToMinimumVelocity * currentElapsedInSeconds) - 100.0f;
-		return initialPosition + (finalPosition - initialPosition) * percentage / 100.0f;
+		_interactionTracker.SetPosition(_interactionTracker.Position + deltaPosition, isFromUserManipulation: false/*TODO*/);
 	}
 
 	private Vector3 TimeToMinimumVelocity()

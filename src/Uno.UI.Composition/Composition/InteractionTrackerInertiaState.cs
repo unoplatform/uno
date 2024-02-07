@@ -37,9 +37,10 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		// > clamped. Instead, the max/min is enforced to the newly input value
 		// > of Position (and potentially clamped) the next time InteractionTracker enters
 		// > the Inertia state.
-		var position = _interactionTracker.Position;
-		_interactionTracker.MinPosition = Vector3.Min(_interactionTracker.MinPosition, position);
-		_interactionTracker.MaxPosition = Vector3.Max(_interactionTracker.MaxPosition, position);
+		// TODO: Commented out for now. It's wrong to do this when transitioning from interacting to inertia.
+		//var position = _interactionTracker.Position;
+		//_interactionTracker.MinPosition = Vector3.Min(_interactionTracker.MinPosition, position);
+		//_interactionTracker.MaxPosition = Vector3.Max(_interactionTracker.MaxPosition, position);
 
 		_handler.Start();
 	}
