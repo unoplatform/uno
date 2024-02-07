@@ -99,15 +99,19 @@ internal sealed class InteractionTrackerInertiaHandler
 		}
 
 		// Far from WinUI calculations :/
-		var percentageX = 100.0f * MathF.Exp(MathF.Log(200.0f / 100.0f) / _timeToMinimumVelocity.X * (currentElapsed / 1000.0f)) - 100.0f;
-		var percentageY = 100.0f * MathF.Exp(MathF.Log(200.0f / 100.0f) / _timeToMinimumVelocity.Y * (currentElapsed / 1000.0f)) - 100.0f;
-		var percentageZ = 100.0f * MathF.Exp(MathF.Log(200.0f / 100.0f) / _timeToMinimumVelocity.Z * (currentElapsed / 1000.0f)) - 100.0f;
+		var currentElapsedInSeconds = currentElapsed / 1000.0f;
 
-		var positionX = _initialPosition.X + (_finalPosition.X - _initialPosition.X) * percentageX / 100.0f;
-		var positionY = _initialPosition.Y + (_finalPosition.Y - _initialPosition.Y) * percentageY / 100.0f;
-		var positionZ = _initialPosition.Z + (_finalPosition.Z - _initialPosition.Z) * percentageZ / 100.0f;
+		var positionX = CalculateNewPosition(_initialPosition.X, _finalPosition.X, _timeToMinimumVelocity.X, currentElapsedInSeconds);
+		var positionY = CalculateNewPosition(_initialPosition.Y, _finalPosition.Y, _timeToMinimumVelocity.Y, currentElapsedInSeconds);
+		var positionZ = CalculateNewPosition(_initialPosition.Z, _finalPosition.Z, _timeToMinimumVelocity.Z, currentElapsedInSeconds);
 
 		_interactionTracker.SetPosition(new(positionX, positionY, positionZ), isFromUserManipulation: false/*TODO*/);
+	}
+
+	private float CalculateNewPosition(float initialPosition, float finalPosition, float timeToMinimumVelocity, float currentElapsedInSeconds)
+	{
+		var percentage = 100.0f * MathF.Exp(MathF.Log(200.0f / 100.0f) / timeToMinimumVelocity * currentElapsedInSeconds) - 100.0f;
+		return initialPosition + (finalPosition - initialPosition) * percentage / 100.0f;
 	}
 
 	private Vector3 TimeToMinimumVelocity()
@@ -150,6 +154,14 @@ internal sealed class InteractionTrackerInertiaHandler
 
 			return time;
 		}
+	}
+
+	private Vector3 VelocityAtTime(float elapsedTime)
+	{
+		return new Vector3(
+			MathF.Pow(1 - _positionDecayRate.X, elapsedTime) * _initialVelocity.X,
+			MathF.Pow(1 - _positionDecayRate.Y, elapsedTime) * _initialVelocity.Y,
+			MathF.Pow(1 - _positionDecayRate.Z, elapsedTime) * _initialVelocity.Z);
 	}
 
 	private static bool IsCloseReal(float a, float b, float epsilon)
