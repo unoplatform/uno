@@ -11,10 +11,10 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
-	protected override void EnterState(IInteractionTrackerOwner owner)
+	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
 		// TODO: Args.
-		owner.CustomAnimationStateEntered(_interactionTracker, new());
+		owner?.CustomAnimationStateEntered(_interactionTracker, new());
 	}
 
 	internal override void StartUserManipulation()

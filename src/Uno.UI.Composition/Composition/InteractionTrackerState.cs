@@ -14,13 +14,10 @@ internal abstract class InteractionTrackerState
 	public InteractionTrackerState(InteractionTracker interactionTracker)
 	{
 		_interactionTracker = interactionTracker;
-		if (interactionTracker.Owner is { } owner)
-		{
-			NativeDispatcher.Main.Enqueue(() => EnterState(owner));
-		}
+		NativeDispatcher.Main.Enqueue(() => EnterState(interactionTracker.Owner));
 	}
 
-	protected abstract void EnterState(IInteractionTrackerOwner owner);
+	protected abstract void EnterState(IInteractionTrackerOwner? owner);
 	internal abstract void StartUserManipulation();
 	internal abstract void CompleteUserManipulation(Vector3 linearVelocity);
 	internal abstract void ReceiveManipulationDelta(Point translationDelta);

@@ -11,9 +11,9 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	{
 	}
 
-	protected override void EnterState(IInteractionTrackerOwner owner)
+	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
-		owner.InteractingStateEntered(_interactionTracker, new InteractionTrackerInteractingStateEnteredArgs(requestId: 0, isFromBinding: false));
+		owner?.InteractingStateEntered(_interactionTracker, new InteractionTrackerInteractingStateEnteredArgs(requestId: 0, isFromBinding: false));
 	}
 
 	internal override void StartUserManipulation()

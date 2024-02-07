@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 using Windows.Foundation;
 
@@ -14,9 +15,9 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		_handler = new InteractionTrackerInertiaHandler(interactionTracker, translationVelocities);
 	}
 
-	protected override void EnterState(IInteractionTrackerOwner owner)
+	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
-		owner.InertiaStateEntered(_interactionTracker, new InteractionTrackerInertiaStateEnteredArgs());
+		owner?.InertiaStateEntered(_interactionTracker, new InteractionTrackerInertiaStateEnteredArgs());
 		_handler.Start();
 	}
 

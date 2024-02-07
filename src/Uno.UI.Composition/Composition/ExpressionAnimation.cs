@@ -40,7 +40,7 @@ public partial class ExpressionAnimation : CompositionAnimation
 
 	internal override void Stop()
 	{
-		// TODO: Do we want to remove added contexts?
+		_parsedExpression?.Dispose();
 		_parsedExpression = null;
 	}
 }
