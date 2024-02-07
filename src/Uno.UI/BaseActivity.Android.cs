@@ -158,7 +158,7 @@ namespace Uno.UI
 		{
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
-			ApplicationView.InitializeForWindowId(AppWindow.MainWindowId);
+			ApplicationView.GetOrCreateForWindowId(AppWindow.MainWindowId);
 
 			NotifyCreatingInstance();
 		}
