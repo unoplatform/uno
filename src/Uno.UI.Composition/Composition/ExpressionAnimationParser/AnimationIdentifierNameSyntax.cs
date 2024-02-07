@@ -4,6 +4,8 @@ namespace Microsoft.UI.Composition;
 
 internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 {
+	private bool _wasEvaluated;
+
 	public ExpressionAnimationToken Identifier { get; }
 
 	public AnimationIdentifierNameSyntax(ExpressionAnimationToken identifier)
@@ -15,7 +17,12 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 	{
 		if (expressionAnimation.ReferenceParameters.TryGetValue((string)Identifier.Value, out var value))
 		{
-			value.AddContext(expressionAnimation, "HelloMyProperty");
+			if (!_wasEvaluated)
+			{
+				_wasEvaluated = true;
+				value.AddContext(expressionAnimation, null);
+			}
+
 			return value;
 		}
 

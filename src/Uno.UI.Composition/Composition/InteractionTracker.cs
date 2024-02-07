@@ -60,6 +60,8 @@ public partial class InteractionTracker : CompositionObject
 					owner.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(Position, Scale, requestId));
 				});
 			}
+
+			OnPropertyChanged(nameof(Position), isSubPropertyChange: false);
 		}
 	}
 
