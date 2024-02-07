@@ -27,6 +27,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" Version="2.8.2.3" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
@@ -53,7 +57,7 @@
 
 	<ItemGroup>
 		<Content Include="buildTransitive/*.targets">
-			<Pack>true</Pack>
+			<Pack>true</Pack>	
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
 	</ItemGroup>
