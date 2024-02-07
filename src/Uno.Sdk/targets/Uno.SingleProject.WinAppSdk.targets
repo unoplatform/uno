@@ -10,7 +10,10 @@
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
 
-		<WindowsPackageType Condition="'$(WindowsPackageType)'=='' and Exists('$(WindowsProjectFolder)Package.appxmanifest')">MSIX</WindowsPackageType>
+		<WindowsAppxManifestPath>$(WindowsProjectFolder)Package.appxmanifest</WindowsAppxManifestPath>
+		<WindowsAppxManifestPath Condition="!Exists($(WindowsAppxManifestPath)) and Exists('Package.appxmanifest')">Package.appxmanifest</WindowsAppxManifestPath>
+
+		<WindowsPackageType Condition="'$(WindowsPackageType)'=='' and Exists('$(WindowsAppxManifestPath)')">MSIX</WindowsPackageType>
 		<WindowsPackageType Condition="'$(WindowsPackageType)'==''">None</WindowsPackageType>
 	</PropertyGroup>
 
@@ -27,13 +30,15 @@
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 	</ItemGroup>
 
+	<!-- Remove all files from other targets -->
 	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$(WindowsProjectFolder)**/*" />
-		<_AllPlatformFiles Include="$(PlatformsProjectFolder)**\*" />
+		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(WindowsProjectFolder)', '**', '*'))" />
+		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
 		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
+		<AppxManifest Remove="@(_IgnorePlatformFiles)" />
 	</ItemGroup>
 </Project>
