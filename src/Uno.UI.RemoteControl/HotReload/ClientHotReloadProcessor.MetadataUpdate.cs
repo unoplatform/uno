@@ -13,12 +13,6 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
-#if !WINUI
-using Windows.System;
-using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
-#else
-using Microsoft.UI.Dispatching;
-#endif
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -80,7 +74,8 @@ partial class ClientHotReloadProcessor
 		var uiUpdating = true;
 		try
 		{
-			if (!await ShouldReload())
+			var window = CurrentWindow;
+			if (window is null || !await ShouldReload())
 			{
 				uiUpdating = false;
 				return;
@@ -96,7 +91,7 @@ partial class ClientHotReloadProcessor
 
 			var isCapturingState = true;
 			var treeIterator = EnumerateHotReloadInstances(
-					CurrentWindow?.Content,
+					window.Content,
 					async (fe, key) =>
 					{
 						// Get the original type of the element, in case it's been replaced
@@ -175,7 +170,11 @@ partial class ClientHotReloadProcessor
 
 			// Wait for the tree to be layouted before restoring state
 			var tcs = new TaskCompletionSource();
-			CurrentWindow?.DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () => tcs.TrySetResult());
+#if HAS_UNO_WINUI || WINDOWS_WINUI
+			window.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => tcs.TrySetResult());
+#else
+			_ = window.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Low, () => tcs.TrySetResult());
+#endif
 			await tcs.Task;
 
 			isCapturingState = false;

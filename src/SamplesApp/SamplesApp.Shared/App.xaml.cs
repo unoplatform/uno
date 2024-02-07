@@ -525,7 +525,6 @@ namespace SamplesApp
 				}
 			}
 
-#pragma warning disable
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
 			foreach (var arg in commandLineArgs.Skip(1))
 			{

@@ -15,7 +15,7 @@ static partial class UIElementExtensions
 		{
 			null => "--null--",
 #if __WASM__
-			FrameworkElement fwElt when !string.IsNullOrWhiteSpace(fwElt.Name.IsNullOrEmpty) => $"{fwElt.Name}-{fwElt.HtmlId}",
+			FrameworkElement fwElt when !string.IsNullOrWhiteSpace(fwElt.Name) => $"{fwElt.Name}-{fwElt.HtmlId}",
 			UIElement uiElt => $"{elt.GetType().Name}-{uiElt.HtmlId}",
 #else
 			FrameworkElement fwElt when !string.IsNullOrWhiteSpace(fwElt.Name) => $"{fwElt.Name}-{elt.GetHashCode():X8}",
