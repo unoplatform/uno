@@ -57,10 +57,11 @@ branches:
     increment: none
 
   feature:
+    mode: ContinuousDeployment
     tag: feature.{BranchName}
     regex: ^feature/(.*?)
     source-branches: ['master','legacy']
-    increment: none
+    increment: Minor
 
   release:
     # disable default release branch
