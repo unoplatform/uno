@@ -69,7 +69,7 @@ namespace Windows.Storage.Pickers
 				if (SuggestedStartLocation == PickerLocationId.VideosLibrary
 					|| SuggestedStartLocation == PickerLocationId.PicturesLibrary)
 				{
-					// For images and videos we want to use the ANTION_GET_CONTENT since this allows
+					// For images and videos we want to use the ACTION_GET_CONTENT since this allows
 					// apps related to Photos and Videos to be suggested on the picker.
 					var intent = new Intent(Intent.ActionGetContent);
 					intent.AddCategory(Intent.CategoryOpenable);
