@@ -16,7 +16,7 @@ public class MainClass
 		// ApiExtensibility.Register(typeof(IMediaPlayerExtension), o => new Uno.UI.Media.MediaPlayerExtension(o));
 		// ApiExtensibility.Register(typeof(IMediaPlayerPresenterExtension), o => new Uno.UI.Media.MediaPlayerPresenterExtension(o));
 
-		AppDomain.CurrentDomain.UnhandledException += delegate(object sender, System.UnhandledExceptionEventArgs args)
+		AppDomain.CurrentDomain.UnhandledException += delegate (object sender, System.UnhandledExceptionEventArgs args)
 		{
 			Console.WriteLine($"UNHANDLED {(args.IsTerminating ? "FINAL" : "")} EXCEPTION {args.ExceptionObject}");
 		};

@@ -55,9 +55,9 @@
 	</PropertyGroup>
 
 	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile">
-		<Exec Command="$(MSBuildThisFileDirectory)../../UnoNativeMac/build.sh $(_XcodeBuildArgs)" WorkingDirectory="$(MSBuildThisFileDirectory)../../UnoNativeMac/" />
+		<Exec Command="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build.sh $(_XcodeBuildArgs)" WorkingDirectory="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/" />
 		<Copy
-			SourceFiles="$(MSBuildThisFileDirectory)../../UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
+			SourceFiles="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
 			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
 	</Target>
 

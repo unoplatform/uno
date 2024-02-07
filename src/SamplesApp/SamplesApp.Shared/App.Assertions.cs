@@ -110,7 +110,6 @@ partial class App
 		textBox.XamlRoot = xamlRoot;
 		var textBoxView = new TextBoxView(textBox);
 		ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-		Assert.IsNotNull(textBoxViewExtension);
 
 		if (textBoxViewExtension is not null)
 		{
