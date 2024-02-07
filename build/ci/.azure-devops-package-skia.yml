@@ -4,9 +4,44 @@ parameters:
   XAML_FLAVOR_BUILD: ''
 
 jobs:
+- job: skia_package_macos_native_build
+  pool:
+    vmImage: ${{ parameters.macOSImageName }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # We're building packages on linux, so we need to enable WPF support
+    EnableWindowsTargeting: true
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+  - template: templates/gitversion.yml
+  
+  - powershell: |
+      Set-PSDebug -Trace 1
+      cd src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build.sh
+    displayName: Build Skia macOS native
+
+  - task: PublishPipelineArtifact@1
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetPath: $(build.sourcesdirectory)
+      artifactName: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+
 - job: skia_package_build
   displayName: 'Skia Package Binaries'
   container: nv-bionic-wasm
+  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -41,6 +76,14 @@ jobs:
     displayName: Replace global.json with .NET 8
 
   - template: templates/dotnet-install.yml
+  
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring UWP Converted Source Tree
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'true'))
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/runtimes/osx/native
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later

@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<DefineConstants>UNO_REFERENCE_API;HAS_UNO_SKIA</DefineConstants>
+	</PropertyGroup>
 
-  <Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -26,36 +26,36 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SkiaSharp.NativeAssets.macos" />
-    <PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" Version="2.8.2.3" />
-    <PackageReference Include="SkiaSharp.Harfbuzz" />
-    <PackageReference Include="SkiaSharp" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" Version="2.8.2.3" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="SkiaSharp" />
+	</ItemGroup>
 
-  <Target Name="BuildUnoNativeMac" BeforeTargets="Compile">
-    <Exec Command="$(MSBuildThisFileDirectory)../UnoNativeMac/build.sh" WorkingDirectory="$(MSBuildThisFileDirectory)../UnoNativeMac/" />
-    <Copy
-      SourceFiles="$(MSBuildThisFileDirectory)../UnoNativeMac/build/Release/libUnoNativeMac.dylib"
-      DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
-  </Target>
+	<Target Name="BuildUnoNativeMac" BeforeTargets="CoreCompile" Condition="'$(OS)'=='Darwin'">
+		<Exec Command="$(MSBuildThisFileDirectory)UnoNativeMac/build.sh" WorkingDirectory="$(MSBuildThisFileDirectory)UnoNativeMac/" />
+	</Target>
 
-  <ItemGroup>
-    <!-- <Content Include="$(MSBuildThisFileDirectory)../UnoNativeMac/build/Release/libUnoNativeMac.*" Visible="False" CopyToOutputDirectory="PreserveNewest" /> -->
-  </ItemGroup>
+	<ItemGroup>
+		 <None Include="$(MSBuildThisFileDirectory)runtimes/osx/native/libUnoNativeMac.*"
+				PackagePath="runtimes/osx/native"
+				Pack="true"
+				Visible="False" /> 
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-    <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-    <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-    <ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
 		<Content Include="buildTransitive/*.targets">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
 	</ItemGroup>
- 
+
 </Project>

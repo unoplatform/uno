@@ -43,6 +43,7 @@
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
+      "Uno.UI.Runtime.Skia.MacOS\\Uno.UI.Runtime.Skia.MacOS.csproj",
       "Uno.UI.Runtime.Skia.Wpf\\Uno.UI.Runtime.Skia.Wpf.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Skia.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
