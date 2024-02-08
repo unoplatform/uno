@@ -22,7 +22,7 @@ partial class AppWindow
 		Id = new(Interlocked.Increment(ref _windowIdIterator));
 
 		_windowIdMap[Id] = this;
-		ApplicationView.InitializeForWindowId(Id);
+		ApplicationView.GetOrCreateForWindowId(Id);
 	}
 
 	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;
