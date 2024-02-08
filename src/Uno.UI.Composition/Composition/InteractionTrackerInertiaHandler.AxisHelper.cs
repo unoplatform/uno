@@ -115,11 +115,6 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		private float CalculatePosition(float t)
 		{
-			if (t >= TimeToMinimumVelocity)
-			{
-				return _dampingStateTimeInSeconds.HasValue ? FinalModifiedValue : FinalValue;
-			}
-
 			if (_dampingStateTimeInSeconds.HasValue)
 			{
 				var settlingTime = TimeToMinimumVelocity - _dampingStateTimeInSeconds.Value;
@@ -159,13 +154,10 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		public float GetPosition(float currentElapsedInSeconds)
 		{
-			var minValue = GetValue(Handler._interactionTracker.MinPosition);
-			var maxValue = GetValue(Handler._interactionTracker.MaxPosition);
-
 			if (currentElapsedInSeconds >= TimeToMinimumVelocity)
 			{
 				HasCompleted = true;
-				return Math.Clamp(FinalValue, minValue, maxValue);
+				return FinalModifiedValue;
 			}
 
 			return CalculatePosition(currentElapsedInSeconds);
