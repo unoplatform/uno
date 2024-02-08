@@ -89,10 +89,10 @@ namespace SamplesApp
 
 			ConfigureFeatureFlags();
 			ParseCommandLineFeatureFlags();
-			 
+
 			AssertIssue1790ApplicationSettingsUsable();
 			AssertApplicationData();
-			
+
 			this.InitializeComponent();
 
 #if !WINAPPSDK
