@@ -42,6 +42,9 @@ steps:
       ## jobs creating packages, and update pushed to the main branch.
       echo "Updating PR Version from [$(GITVERSION.SemVer)] to [$PR_VERSION]"
       echo "##vso[task.setvariable variable=GITVERSION.SemVer]$PR_VERSION"
+      ## Uno.UI.Build.csproj uses GITVERSION_SemVer, so we update it.
+      ## Previously, we didn't have this line and Uno.UI.Build.csproj used to work
+      ## But, it's no longer working (probably due to an update in agents)
       echo "##vso[task.setvariable variable=GITVERSION_SemVer]$PR_VERSION"
 
     condition: eq(variables['Build.Reason'], 'PullRequest')
