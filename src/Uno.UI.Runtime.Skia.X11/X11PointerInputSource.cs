@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Uno.Foundation.Logging;
@@ -26,11 +25,8 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	private readonly DisplayInformation _displayInformation;
-	private Func<VirtualKeyModifiers>? _keyboardInputSource;
 	private readonly X11XamlRootHost _host;
 	private CoreCursor _pointerCursor;
-	private IntPtr? _cursor;
 
 	public X11PointerInputSource(IXamlRootHost host)
 	{
@@ -42,34 +38,24 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		_host = (X11XamlRootHost)host;
 		_host.SetPointerSource(this);
 
-		_displayInformation = DisplayInformation.GetForCurrentView();
+		DisplayInformation.GetForCurrentView();
 
 		// Set this on startup in case a different global default was set beforehand
 		PointerCursor = new(CoreCursorType.Arrow, 0);
 		_pointerCursor = PointerCursor; // initialization is not needed, we're just keeping the compiler happy
 	}
 
-	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
-	{
-		_keyboardInputSource = keyboardInputSource;
-	}
-
 	[NotImplemented] public bool HasCapture => false;
 
 	public CoreCursor PointerCursor
 	{
-		get
-		{
-			return _pointerCursor;
-		}
+		get => _pointerCursor;
 		set
 		{
 			_pointerCursor = value;
 
-			// TODO: should we create our own cursor shapes to deal with the lacking built-in cursors?
-
 			// These will have the look of the DE cursor themes if they exist (instead of the ugly x11 defaults)
-			// TODO: test the themes on other distros (currently only XFCE tested)
+			// using the XCURSOR extension. https://wiki.archlinux.org/title/Cursor_themes
 			var shape = value.Type switch
 			{
 				CoreCursorType.Arrow => CursorFontShape.XC_arrow,
@@ -92,21 +78,15 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 
 			using var _1 = X11Helper.XLock(_host.X11Window.Display);
 
-			if (_cursor is { } c)
-			{
-				var _2 = XLib.XFreeCursor(_host.X11Window.Display, c);
-			}
-			_cursor = XLib.XCreateFontCursor(_host.X11Window.Display, shape);
-			var _3 = XLib.XDefineCursor(_host.X11Window.Display, _host.X11Window.Window, _cursor.Value);
+			var cursor = XLib.XCreateFontCursor(_host.X11Window.Display, shape);
+			var _2 = XLib.XDefineCursor(_host.X11Window.Display, _host.X11Window.Window, cursor);
+			var _3 = XLib.XFreeCursor(_host.X11Window.Display, cursor);
 		}
 	}
 
 	public Point PointerPosition => _mousePosition;
 
-	// X11 only sees a single pointer
-	public void SetPointerCapture(PointerIdentifier pointer) => SetPointerCapture();
-
-	public void SetPointerCapture()
+	public void SetPointerCapture(PointerIdentifier pointer)
 	{
 		LogNotSupported();
 		// XGrabPointer will globally lock pointer actions to the window, preventing any interaction elsewhere.
@@ -125,12 +105,15 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		// XLib.XGrabPointer(_host.Display, _host.Window, false, mask,
 		// 	GrabMode.GrabModeSync, GrabMode.GrabModeSync, /* None */ IntPtr.Zero, /* None */ IntPtr.Zero, /* CurrentTime */ IntPtr.Zero);
 	}
-	public void ReleasePointerCapture(PointerIdentifier pointer) => ReleasePointerCapture();
-	public void ReleasePointerCapture()
+
+	public void ReleasePointerCapture(PointerIdentifier pointer)
 	{
 		LogNotSupported();
 		// XLib.XUngrabPointer(_host.Display, /* CurrentTime */ IntPtr.Zero);
 	}
+
+	public void ReleasePointerCapture() => LogNotSupported();
+	public void SetPointerCapture() => LogNotSupported();
 
 	private void RaisePointerMoved(PointerEventArgs args)
 		=> PointerMoved?.Invoke(this, args);
@@ -206,7 +189,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 			frameId: (uint)time, // UNO TODO: How should set the frame, timestamp may overflow.
 			timestamp: (uint)time,
 			PointerDevice.For(PointerDeviceType.Mouse),
-			0, // TODO: XLib doesn't distinguish between different pointers, how can we discriminate?
+			0, // TODO: XInput
 			_mousePosition,
 			_mousePosition,
 			// TODO: is isInContact correct?
