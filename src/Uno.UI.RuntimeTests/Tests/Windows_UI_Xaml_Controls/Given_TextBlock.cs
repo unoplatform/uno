@@ -14,6 +14,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using Windows.Foundation;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -22,7 +23,6 @@ using Size = Windows.Foundation.Size;
 #if __SKIA__
 using System;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using SkiaSharp;
