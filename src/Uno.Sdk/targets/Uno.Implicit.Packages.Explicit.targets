@@ -1,0 +1,113 @@
+<Project>
+
+	<ItemGroup>
+		<_UnoImplicitPackageReference Include="Uno.WinUI" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Lottie" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.DevServer" Version="$(UnoVersion)" IsImplicitlyDefined="true" Condition="$(Configuration) == 'Debug'" />
+		<_UnoImplicitPackageReference Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftLoggingVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Resizetizer" Version="$(UnoResizetizerVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Lottie" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.UniversalImageLoader" Version="$(UnoUniversalImageLoader)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Xamarin.Google.Android.Material" Version="$(AndroidMaterialVersion)" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.WinUI.WebAssembly" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Microsoft.Windows.Compatibility" Version="$(WindowsCompatibilityVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+
+			<ItemGroup Condition="$(SingleProject) == 'true' or '$(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))'">
+				<_UnoImplicitPackageReference Include="Uno.Wasm.Bootstrap" Version="$(UnoWasmBootstrapVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="$(UnoWasmBootstrapVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Gtk" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$(TargetFramework.Contains('windows10'))">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSdkVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinAppSdkBuildToolsVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+	</Choose>
+
+	<ItemGroup Condition="$(UnoCSharpMarkupVersion) != ''">
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Markup.WinUI" Version="$(UnoCSharpMarkupVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Markup.Generators" Version="$(UnoCSharpMarkupVersion)" IsImplicitlyDefined="true" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoExtensionsVersion) != ''">
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Core.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Hosting.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Http.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Http.Refit" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Localization.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(UseMaui) == 'true'" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(UseMaui) == 'true'" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.WinUI.Markup" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.Toolkit.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(Presentation) == 'Mvux'" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(Presentation) == 'Mvux'"  />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Storage.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Serialization.Http" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Serialization.Refit" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Extensions.Toolkit.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoToolkitVersion) != ''">
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Cupertino" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Cupertino'" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Material" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Material'" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Material'" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Markup" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.Skia.WinUI" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(Presentation) == 'Mvvm'">
+		<_UnoImplicitPackageReference Include="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(Presentation) == 'Prism'">
+		<_UnoImplicitPackageReference Include="Prism.Uno.WinUI" Version="$(PrismVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Prism.Uno.WinUI.Markup" Version="$(PrismVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Prism.DryIoc.Uno.WinUI" Version="$(PrismVersion)" IsImplicitlyDefined="true" Condition=" $(SingleProject) == 'true' or $(OutputType) == 'WinExe' or $(OutputType) == 'Exe' " />
+	</ItemGroup>
+
+</Project>
