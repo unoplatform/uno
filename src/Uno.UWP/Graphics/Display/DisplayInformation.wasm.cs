@@ -14,7 +14,7 @@ namespace Windows.Graphics.Display
 	{
 		private static readonly DisplayInformation _instance;
 
-		private static DisplayInformation InternalGetForCurrentView() => new DisplayInformation();
+		private static DisplayInformation InternalGetForCurrentView() => _instance ??= new DisplayInformation();
 
 		[JSExport]
 		internal static int DispatchDpiChanged()
