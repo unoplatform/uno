@@ -21,7 +21,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		{
 			IsFromBinding = false, /* TODO */
 			IsInertiaFromImpulse = false, /* TODO */
-			ModifiedRestingPosition = Vector3.Clamp(_handler.FinalPosition, _interactionTracker.MinPosition, _interactionTracker.MaxPosition),
+			ModifiedRestingPosition = _handler.FinalModifiedPosition,
 			ModifiedRestingScale = Math.Clamp(_handler.FinalScale, _interactionTracker.MinScale, _interactionTracker.MaxScale),
 			NaturalRestingPosition = _handler.FinalPosition,
 			NaturalRestingScale = _handler.FinalScale,
