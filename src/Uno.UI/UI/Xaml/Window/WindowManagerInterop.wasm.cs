@@ -705,13 +705,6 @@ namespace Uno.UI.Xaml
 		{
 			NativeMethods.DestroyView(htmlId);
 		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct WindowManagerDestroyViewParams
-		{
-			public IntPtr HtmlId;
-		}
 		#endregion
 
 		#region ResetStyle
