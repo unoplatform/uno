@@ -44,8 +44,6 @@ using View = Microsoft.UI.Xaml.UIElement;
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 #else
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-using System.Security;
-
 #endif
 
 #if HAS_UNO_WINUI

@@ -41,7 +41,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private partial void OnLoadedPartial()
 		{
 			SetScrollableContainer();
-			base.OnLoaded();
 		}
 
 		private void SetScrollableContainer()
