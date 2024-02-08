@@ -35,7 +35,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			Axis = axis;
 			Handler = handler;
 			InitialVelocity = GetValue(velocities);
-			DecayRate = GetValue(Handler._interactionTracker.PositionInertiaDecayRate ?? new(0.95f));
+			DecayRate = 1.0f - GetValue(Handler._interactionTracker.PositionInertiaDecayRate ?? new(0.95f));
 			InitialValue = GetValue(Handler._interactionTracker.Position);
 
 			TimeToMinimumVelocity = GetTimeToMinimumVelocity();
@@ -63,7 +63,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 			var minimumVelocity = 50.0f;
 
-			return TimeToMinimumVelocityCore(MathF.Abs(InitialVelocity), 1 - DecayRate, InitialValue);
+			return TimeToMinimumVelocityCore(MathF.Abs(InitialVelocity), DecayRate, InitialValue);
 
 			float TimeToMinimumVelocityCore(float initialVelocity, float decayRate, float initialPosition)
 			{
@@ -96,21 +96,20 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		private float CalculateDeltaPosition(float time)
 		{
-			var decayRate = 1.0f - DecayRate;
 			float epsilon = 0.0000011920929f;
 
-			if (IsCloseReal(decayRate, 1.0f, epsilon))
+			if (IsCloseReal(DecayRate, 1.0f, epsilon))
 			{
 				return InitialVelocity * time;
 			}
-			else if (IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
+			else if (IsCloseRealZero(DecayRate, epsilon) /*|| !_isInertiaEnabled*/)
 			{
 				return 0.0f;
 			}
 			else
 			{
-				float val = MathF.Pow(decayRate, time);
-				return ((val - 1.0f) * InitialVelocity) / MathF.Log(decayRate);
+				float val = MathF.Pow(DecayRate, time);
+				return ((val - 1.0f) * InitialVelocity) / MathF.Log(DecayRate);
 			}
 		}
 
@@ -135,7 +134,6 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			var currentPosition = GetValue(Handler._interactionTracker.Position);
 			var minPosition = GetValue(Handler._interactionTracker.MinPosition);
 			var maxPosition = GetValue(Handler._interactionTracker.MaxPosition);
-			var decayRate = 1.0f - DecayRate;
 			if (currentPosition < minPosition || currentPosition > maxPosition)
 			{
 				// This is an overpan from Interacting state. Use damping animation.
@@ -152,9 +150,10 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 			float myFunc(float t)
 			{
-				var term1 = MathF.Pow(decayRate, 2 * t) / (2 * MathF.Log(decayRate));
-				var term2 = MathF.Pow(decayRate, t) / MathF.Log(decayRate);
-				return (float)(InitialVelocity / decayRate) * (term1 - term2);
+				var lnDecayRate = MathF.Log(DecayRate);
+				var term1 = MathF.Pow(DecayRate, 2 * t) / (2 * lnDecayRate);
+				var term2 = MathF.Pow(DecayRate, t) / lnDecayRate;
+				return (float)(InitialVelocity / lnDecayRate) * (term1 - term2);
 			}
 		}
 
