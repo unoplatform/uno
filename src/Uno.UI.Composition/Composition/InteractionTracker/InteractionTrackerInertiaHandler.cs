@@ -72,11 +72,4 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		_interactionTracker.SetPosition(newPosition, isFromUserManipulation: false/*TODO*/);
 	}
-
-	private static bool IsCloseReal(float a, float b, float epsilon)
-		=> MathF.Abs(a - b) <= epsilon;
-
-	private static bool IsCloseRealZero(float a, float epsilon)
-		=> MathF.Abs(a) < epsilon;
-
 }

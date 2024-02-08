@@ -46,6 +46,12 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			FinalModifiedValue = Math.Clamp(FinalValue, GetValue(Handler._interactionTracker.MinPosition), GetValue(Handler._interactionTracker.MaxPosition));
 		}
 
+		private static bool IsCloseReal(float a, float b, float epsilon)
+			=> MathF.Abs(a - b) <= epsilon;
+
+		private static bool IsCloseRealZero(float a, float epsilon)
+			=> MathF.Abs(a) < epsilon;
+
 		private float GetValue(Vector3 vector)
 		{
 			return Axis switch
@@ -113,8 +119,14 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			}
 		}
 
-		private float CalculatePosition(float t)
+		public float GetPosition(float currentElapsedInSeconds)
 		{
+			if (currentElapsedInSeconds >= TimeToMinimumVelocity)
+			{
+				HasCompleted = true;
+				return FinalModifiedValue;
+			}
+
 			if (_dampingStateTimeInSeconds.HasValue)
 			{
 				var settlingTime = TimeToMinimumVelocity - _dampingStateTimeInSeconds.Value;
@@ -136,31 +148,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 				_dampingStatePosition = currentPosition;
 			}
 
-			var valueAtZero = myFunc(0);
-			var valueAtEnd = myFunc(TimeToMinimumVelocity) - valueAtZero;
-
-			var scaleFactor = (FinalValue - InitialValue) / valueAtEnd;
-
-			return (myFunc(t) - valueAtZero) * scaleFactor + InitialValue;
-
-			float myFunc(float t)
-			{
-				var lnDecayRate = MathF.Log(DecayRate);
-				var term1 = MathF.Pow(DecayRate, 2 * t) / (2 * lnDecayRate);
-				var term2 = MathF.Pow(DecayRate, t) / lnDecayRate;
-				return (float)(InitialVelocity / lnDecayRate) * (term1 - term2);
-			}
-		}
-
-		public float GetPosition(float currentElapsedInSeconds)
-		{
-			if (currentElapsedInSeconds >= TimeToMinimumVelocity)
-			{
-				HasCompleted = true;
-				return FinalModifiedValue;
-			}
-
-			return CalculatePosition(currentElapsedInSeconds);
+			return InitialValue + CalculateDeltaPosition(t);
 		}
 	}
 
