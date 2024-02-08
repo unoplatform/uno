@@ -9,7 +9,7 @@ namespace Windows.Storage.Pickers
 	/// <summary>
 	/// Represents a UI element that lets the user choose folders.
 	/// </summary>
-	public partial class FolderPicker
+	public partial class FolderPicker : IFilePicker
 	{
 		private string _suggestedFileName = string.Empty;
 		private string _settingsIdentifier = string.Empty;

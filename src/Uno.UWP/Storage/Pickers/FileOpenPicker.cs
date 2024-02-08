@@ -9,7 +9,7 @@ namespace Windows.Storage.Pickers
 	/// <summary>
 	/// Represents a UI element that lets the user choose and open files.
 	/// </summary>
-	public partial class FileOpenPicker
+	public partial class FileOpenPicker : IFilePicker
 	{
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
