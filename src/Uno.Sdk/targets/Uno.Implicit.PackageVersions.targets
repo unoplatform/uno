@@ -1,0 +1,27 @@
+<Project>
+
+	<ItemGroup>
+		<_UnoImplicitPackageVersion Include="Uno.WinUI" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.WinUI.Lottie" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.WinUI.Maps" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.WinUI.DevServer" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Microsoft.Extensions.Logging.Console" VersionOverride="8.0.0" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="SkiaSharp.Skottie" VersionOverride="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="SkiaSharp.Views.Uno.WinUI" VersionOverride="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.WinUI.Lottie" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.Extensions.Logging.OSLog" VersionOverride="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.UniversalImageLoader" VersionOverride="1.9.36" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Xamarin.Google.Android.Material" VersionOverride="$(AndroidMaterialVersion)" />
+		<_UnoImplicitPackageVersion Include="Uno.WinUI.WebAssembly" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.Wasm.Bootstrap" VersionOverride="$(UnoWasmBootstrapVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.Wasm.Bootstrap.DevServer" VersionOverride="$(UnoWasmBootstrapVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" VersionOverride="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Microsoft.Windows.Compatibility" VersionOverride="$(WindowsCompatibilityVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageVersion Include="Uno.WinUI.Skia.Gtk" VersionOverride="$(UnoVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageVersion Include="@(_UnoImplicitPackageVersion)" Exclude="@(PackageVersion)" />
+	</ItemGroup>
+
+</Project>
