@@ -56,6 +56,7 @@ stages:
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
 
@@ -86,6 +87,7 @@ stages:
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 

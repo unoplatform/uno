@@ -50,6 +50,8 @@
 		<EnableDefaultPageItems>false</EnableDefaultPageItems>
 		<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
 
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+
 		<NetCurrent>net8.0</NetCurrent>
 		<NetPrevious>net7.0</NetPrevious>
 
