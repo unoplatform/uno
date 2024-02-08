@@ -69,9 +69,10 @@ namespace Microsoft.UI.Xaml
 		// ctor (invoked by IFrameworkElement.Initialize())
 		void IFrameworkElement_EffectiveViewport.InitializeEffectiveViewport()
 		{
-			Loaded += ReconfigureViewportPropagationOnLoad;
-			Unloaded += ReconfigureViewportPropagationOnUnload;
 		}
+
+		private partial void ReconfigureViewportPropagationPartial()
+			=> ReconfigureViewportPropagation();
 
 		/// <summary>
 		/// Indicates if the effective viewport should/will be propagated to/by this element
