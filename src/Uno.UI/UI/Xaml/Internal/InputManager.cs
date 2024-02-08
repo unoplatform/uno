@@ -17,6 +17,10 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 
+#if !HAS_UNO_WINUI
+using Windows.UI.Input;
+#endif
+
 namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
