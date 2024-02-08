@@ -6312,8 +6312,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataContextMember = FindMember(definition, "DataContext");
 				var nameMember = FindMember(definition, "Name");
 
-				// TODO: We know ElementStub derives from FrameworkElement.
-				// Should we use FrameworkElement directly here?
 				var elementStubBaseType = Generation.ElementStubSymbol.Value.BaseType;
 				if (!(targetType?.Is(elementStubBaseType) ?? false))
 				{
