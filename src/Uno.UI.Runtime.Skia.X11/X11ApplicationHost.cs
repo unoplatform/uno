@@ -1,9 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -54,6 +56,9 @@ public class X11ApplicationHost : ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LinuxLauncherExtension(o));
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
+
+		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
+		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)
