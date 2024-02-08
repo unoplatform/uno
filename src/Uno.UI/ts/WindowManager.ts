@@ -1790,6 +1790,12 @@ namespace Uno.UI {
 			
 			return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
 		}
+
+		public setIsFocusable(elementId: number, isFocusable: boolean) {
+			const element = this.getView(elementId) as HTMLElement;
+
+			element.setAttribute("tabindex", isFocusable ? "0" : "-1");
+		}
 	}
 
 	if (typeof define === "function") {
