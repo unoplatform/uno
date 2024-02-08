@@ -59,6 +59,7 @@ public class X11ApplicationHost : ISkiaApplicationHost
 
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
+		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)
