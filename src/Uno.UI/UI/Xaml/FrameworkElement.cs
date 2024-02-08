@@ -441,6 +441,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal Style GetActiveStyle() => _activeStyle;
+
 		private SpecializedResourceDictionary.ResourceKey ThisTypeResourceKey
 		{
 			get

@@ -480,6 +480,11 @@ namespace SampleControl.Presentation
 #endif
 		}
 
+		internal void OpenPlayground()
+		{
+			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;

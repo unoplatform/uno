@@ -1582,8 +1582,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							new Setter(FlyoutPresenter.BorderThicknessProperty, new Thickness(0)),
 
 							// remove limit from default style
-							new Setter(FlyoutPresenter.MaxWidthProperty, double.PositiveInfinity),
-							new Setter(FlyoutPresenter.MaxHeightProperty, double.PositiveInfinity),
+							// Note that NaN isn't allowed to be set for MaxWidth and MaxHeight. However,
+							// WinUI swallows failure HResults specifically when applying style setters.
+							// So, Uno catches the exception as well.
+							new Setter(FlyoutPresenter.MaxWidthProperty, double.NaN),
+							new Setter(FlyoutPresenter.MaxHeightProperty, double.NaN),
 
 							// full stretch
 							new Setter(FlyoutPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Stretch),

@@ -29,7 +29,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		set
 		{
 			SetProperty(ref _anchorPoint, value);
-			Compositor.InvalidateRender();
+			Compositor.InvalidateRender(this);
 		}
 	}
 

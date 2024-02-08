@@ -22,6 +22,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarView
 {
+	[TestMethod]
+	public async Task When_MinDate_Has_Different_Offset()
+	{
+		var calendarView = new CalendarView();
+		calendarView.MinDate = new DateTimeOffset(new DateTime(2010, 1, 1, 22, 0, 0), TimeSpan.Zero);
+		calendarView.MaxDate = new DateTimeOffset(new DateTime(2010, 1, 31), TimeSpan.FromHours(2));
+
+		await UITestHelper.Load(calendarView);
+	}
+
 #if __WASM__
 	[TestMethod]
 	public async Task When_ItemCornerRadius()

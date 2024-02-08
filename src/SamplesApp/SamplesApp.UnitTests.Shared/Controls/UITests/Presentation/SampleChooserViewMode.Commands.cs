@@ -51,6 +51,7 @@ public partial class SampleChooserViewModel : System.ComponentModel.INotifyPrope
 		LoadNextTestCommand = new DelegateCommand(() => _ = LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
 		OpenRuntimeTestsCommand = new DelegateCommand(() => _ = OpenRuntimeTests(CancellationToken.None));
 		CreateNewWindowCommand = new DelegateCommand(() => CreateNewWindow());
+		OpenPlaygroundCommand = new DelegateCommand(() => OpenPlayground());
 	}
 
 	public ICommand LogViewDumpCommand { get; private set; }
@@ -63,4 +64,5 @@ public partial class SampleChooserViewModel : System.ComponentModel.INotifyPrope
 	public ICommand LoadNextTestCommand { get; private set; }
 	public ICommand OpenRuntimeTestsCommand { get; private set; }
 	public ICommand CreateNewWindowCommand { get; private set; }
+	public ICommand OpenPlaygroundCommand { get; private set; }
 }

@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			SetItemType(RadioButtonsSourceType.RadioButton);
 
-			foreach (RadioButtonsSourceLocation location in Enum.GetValues(typeof(RadioButtonsSourceLocation)))
+			foreach (var location in Enum.GetValues<RadioButtonsSourceLocation>())
 			{
 				SetSource(location);
 

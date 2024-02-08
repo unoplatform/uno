@@ -7,7 +7,7 @@
 
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<AssemblyName>Uno</AssemblyName>

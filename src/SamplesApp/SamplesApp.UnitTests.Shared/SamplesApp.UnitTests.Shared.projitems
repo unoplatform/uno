@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableBoolToReverseBoolConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableBoolToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableToDefaultValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\StringEmptyToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\StringFormatConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Entities\Section.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Extensions\InputPanelExtensions.PanIntoView.cs" />

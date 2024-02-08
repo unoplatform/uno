@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -268,7 +269,7 @@ public sealed partial class Thumb
 				args.Handled = true;
 
 				var pointer = args.Pointer;
-				var pointerCaptured = CapturePointer(pointer);
+				var pointerCaptured = CapturePointer(pointer, /* UNO only */ options: PointerCaptureOptions.PreventOSSteal);
 				IsDragging = true;
 
 				// If logical parent is a popup, TransformToVisual can fail because a popup's child

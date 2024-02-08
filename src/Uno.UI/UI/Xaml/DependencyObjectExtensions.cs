@@ -273,8 +273,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var propertyDetails = GetStore(instance).GetPropertyDetails(property).ToList();
 
-			return Enum.GetValues(typeof(DependencyPropertyValuePrecedences))
-				.Cast<DependencyPropertyValuePrecedences>()
+			return Enum.GetValues<DependencyPropertyValuePrecedences>()
 				.Select(precedence => (propertyDetails[(int)precedence], precedence))
 				.ToArray();
 		}
@@ -457,6 +456,24 @@ namespace Microsoft.UI.Xaml
 		internal static DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(this DependencyObject dependencyObject, DependencyProperty property)
 		{
 			return GetStore(dependencyObject).GetCurrentHighestValuePrecedence(property);
+		}
+
+		internal static DependencyPropertyValuePrecedences GetBaseValueSource(this DependencyObject dependencyObject, DependencyProperty property)
+		{
+			var precedence = dependencyObject.GetCurrentHighestValuePrecedence(property);
+			// TODO: Bring this closer to CFrameworkElement::IsPropertySetByStyle from WinUI.
+			if (precedence is DependencyPropertyValuePrecedences.DefaultStyle or DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle)
+			{
+				return DependencyPropertyValuePrecedences.ExplicitStyle;
+			}
+			else if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				return DependencyPropertyValuePrecedences.DefaultValue;
+			}
+			else
+			{
+				return DependencyPropertyValuePrecedences.Local;
+			}
 		}
 
 		internal static void InvalidateMeasure(this DependencyObject d)
