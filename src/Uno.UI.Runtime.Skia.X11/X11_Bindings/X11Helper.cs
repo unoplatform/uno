@@ -20,7 +20,11 @@
 // SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using Windows.UI.ViewManagement;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -28,7 +32,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// <summary>
 /// This class includes missing bindings, atoms and other helper methods for X11.
 /// </summary>
-public static class X11Helper
+internal static class X11Helper
 {
 	private const string libX11 = "libX11.so.6";
 	private const string libX11Randr = "libXrandr.so.2";
@@ -52,6 +56,21 @@ public static class X11Helper
 	public const string XA_CARDINAL = "CARDINAL";
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
+
+	public static bool XamlRootHostFromApplicationView(ApplicationView view, [NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
+	{
+		// TODO: this is a ridiculous amount of indirection, find something better
+		if (AppWindow.GetFromWindowId(view.WindowId) is { } appWindow &&
+			Window.GetFromAppWindow(appWindow) is { } window &&
+			X11WindowWrapper.GetHostFromWindow(window) is { } host)
+		{
+			x11XamlRootHost = host;
+			return true;
+		}
+
+		x11XamlRootHost = null;
+		return false;
+	}
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
 	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
