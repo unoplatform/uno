@@ -1,0 +1,23 @@
+<Project>
+	<PropertyGroup>
+		<DisableImplicitUnoPackages Condition=" '$(DisableImplicitUnoPackages)' == '' ">false</DisableImplicitUnoPackages>
+		<Presentation Condition=" '$(Presentation)' == '' ">None</Presentation>
+		<UnoTheme Condition=" '$(UnoTheme)' == '' ">Fluent</UnoTheme>
+	</PropertyGroup>
+
+	<!-- Default Versions of packages that may be implicitly defined -->
+	<PropertyGroup>
+		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.3.0</UnoResizetizerVersion>
+		<UnoLoggingVersion Condition="$(UnoLoggingVersion) == ''">1.7.0</UnoLoggingVersion>
+		<UnoUniversalImageLoader Condition="$(UnoUniversalImageLoader) == ''">1.9.36</UnoUniversalImageLoader>
+		<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">8.0.8</UnoWasmBootstrapVersion>
+		<SkiaSharpVersion Condition="$(SkiaSharpVersion) == ''">2.88.7</SkiaSharpVersion>
+		<AndroidMaterialVersion Condition="$(AndroidMaterialVersion) == ''">1.10.0.2</AndroidMaterialVersion>
+		<WindowsCompatibilityVersion Condition="$(WindowsCompatibilityVersion) == ''">8.0.0</WindowsCompatibilityVersion>
+		<MicrosoftLoggingVersion Condition="$(MicrosoftLoggingVersion) == ''">8.0.0</MicrosoftLoggingVersion>
+		<WinAppSdkVersion Condition="$(WinAppSdkVersion) == ''">1.4.231219000</WinAppSdkVersion>
+		<WinAppSdkBuildToolsVersion Condition="$(WinAppSdkBuildToolsVersion) == ''">10.0.22621.2428</WinAppSdkBuildToolsVersion>
+		<CommunityToolkitMvvmVersion Condition="$(CommunityToolkitMvvmVersion) == ''">8.2.2</CommunityToolkitMvvmVersion>
+		<PrismVersion Condition="$(PrismVersion) == ''">9.0.271-pre</PrismVersion>
+	</PropertyGroup>
+</Project>
