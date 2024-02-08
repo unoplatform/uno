@@ -169,19 +169,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 				return Math.Clamp(FinalValue, minValue, maxValue);
 			}
 
-			//var currentVelocity = VelocityAtTime(currentElapsedInSeconds);
-			//var currentPosition = _interactionTracker.Position;
-
-			// Far from WinUI calculations :/
-			//var newPosition = new Vector3(
-			//	CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.X, minPosition.X, maxPosition.X, _initialVelocity.X, currentVelocity.X, _positionDecayRate.X, currentPosition.X),
-			//	CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.Y, minPosition.Y, maxPosition.Y, _initialVelocity.Y, currentVelocity.Y, _positionDecayRate.Y, currentPosition.Y),
-			//	CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.Z, minPosition.Z, maxPosition.Z, _initialVelocity.Z, currentVelocity.Z, _positionDecayRate.Z, currentPosition.Z)
-			//	);
-
-			var newPosition = CalculatePosition(currentElapsedInSeconds);
-
-			return newPosition;
+			return CalculatePosition(currentElapsedInSeconds);
 		}
 	}
 
