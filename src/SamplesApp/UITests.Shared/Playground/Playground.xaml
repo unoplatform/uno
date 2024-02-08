@@ -30,14 +30,7 @@
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<wasm:Grid>
-				<monaco:CodeEditor x:Name="xamlText"
-				   Background="Transparent"
-				   RequestedTheme="Light"
-				   HasGlyphMargin="True"
-				   Text="XAML editor"
-				   CodeLanguage="XML"
-				   Loaded="OnXamlEditorLoaded" />
+			<wasm:Grid x:Name="MonacoContainer">
 			</wasm:Grid>
 			<not_wasm:Grid>
 				<TextBox x:Name="xamlText" AcceptsReturn="True" FontFamily="ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf" />

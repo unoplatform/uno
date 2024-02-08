@@ -1,39 +1,66 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using MUXControlsTestApp;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
+#if __WASM__
+using Monaco;
+#endif
 
 namespace UITests.Playground;
 
 [SampleControlInfo("Playground", "Playground", ignoreInSnapshotTests: true)]
 public sealed partial class Playground : UserControl
 {
+#if __WASM__
+	private CodeEditor _codeEditor;
+#endif
+
 	public Playground()
 	{
 		this.InitializeComponent();
+#if __WASM__
+		this.Loaded += OnLoaded;
+#endif
+#if !__WASM__
 		xamlText.Text = ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] as string ?? "";
+#endif
 	}
 
 #if __WASM__
+	private async void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		await Task.Delay(100); // Workaround for https://github.com/unoplatform/uno/issues/15374
+		_codeEditor = new CodeEditor()
+		{
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent),
+			HasGlyphMargin = true,
+			Text = ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] as string ?? "",
+			CodeLanguage = "XML"
+		};
+		_codeEditor.Loaded += OnXamlEditorLoaded;
+		MonacoContainer.Children.Add(_codeEditor);
+	}
+
 	private async void OnXamlEditorLoaded(object sender, RoutedEventArgs e)
 	{
-		xamlText.CodeLanguage = "xml";
+		_codeEditor.CodeLanguage = "xml";
 	}
 #endif
+
+	private string GetEditorText()
+	{
+#if __WASM__
+		return _codeEditor.Text;
+#else
+		return xamlText.Text;
+#endif
+	}
 
 	private string GetXamlInput()
 	{
@@ -57,7 +84,7 @@ public sealed partial class Playground : UserControl
 			$@"<Grid
 				xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
 				{nsTags}>
-			{xamlText.Text}
+			{GetEditorText()}
 			</Grid>";
 
 	}
@@ -66,7 +93,7 @@ public sealed partial class Playground : UserControl
 	{
 		try
 		{
-			ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] = xamlText.Text;
+			ApplicationData.Current.LocalSettings.Values["PlaygroundXaml"] = GetEditorText();
 			renderSurface.Content = XamlReader.Load(GetXamlInput());
 		}
 		catch (Exception e)
