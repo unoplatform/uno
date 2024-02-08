@@ -18,7 +18,7 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 
 	static unsafe MacSkiaHost()
 	{
-		MacOSMetalRenderer.Register();              // must be initialized first to load libSkiaSharp
+		MacOSWindowHost.Register(); // must be initialized first to load libSkiaSharp
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
@@ -47,7 +47,7 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 
 	internal static MacSkiaHost? Current => _current;
 
-	internal MacOSWindowWrapper? InitialWindow { get; set; }
+	internal MacOSWindowNative? InitialWindow { get; set; }
 
 	public void Run()
 	{
