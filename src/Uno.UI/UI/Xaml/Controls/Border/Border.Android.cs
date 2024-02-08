@@ -13,6 +13,7 @@ using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using Android.Views;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {

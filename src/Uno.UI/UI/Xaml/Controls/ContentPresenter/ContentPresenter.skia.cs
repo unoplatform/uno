@@ -9,6 +9,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -23,18 +24,20 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() => ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter)));
 
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
 		private bool _nativeHostRegistered;
 
 		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			InitializeContentPresenter();
 
 			Loaded += (s, e) => RegisterNativeHostSupport();
 			Unloaded += (s, e) => UnregisterNativeHostSupport();
-			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()
@@ -100,15 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsLoaded)
 			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
+				_borderRenderer.Update();
 			}
 		}
 

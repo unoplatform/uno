@@ -18,6 +18,7 @@ using Uno.UI.Xaml;
 using Windows.UI;
 using System.Dynamic;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {

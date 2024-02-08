@@ -8,6 +8,8 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media;
 using CoreGraphics;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Controls;
+
 #if __IOS__
 using UIKit;
 using _Image = UIKit.UIImage;
