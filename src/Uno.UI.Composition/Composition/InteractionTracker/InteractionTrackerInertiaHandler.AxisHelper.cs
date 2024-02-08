@@ -148,7 +148,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 				_dampingStatePosition = currentPosition;
 			}
 
-			return InitialValue + CalculateDeltaPosition(t);
+			return InitialValue + CalculateDeltaPosition(currentElapsedInSeconds);
 		}
 	}
 
