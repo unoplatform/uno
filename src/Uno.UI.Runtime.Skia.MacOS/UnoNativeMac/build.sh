@@ -2,6 +2,7 @@
 
 rm -rf build
 cd UnoNativeMac
+chmod +x getSkiaSharpDylib.sh
 ./getSkiaSharpDylib.sh
 cd ..
 xcodebuild $@

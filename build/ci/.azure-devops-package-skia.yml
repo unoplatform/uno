@@ -30,6 +30,7 @@ jobs:
   
   - bash: |
       cd $(build.sourcesdirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac
+      chmod +x build.sh
       ./build.sh
     displayName: Build Skia macOS native
 
