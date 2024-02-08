@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Windowing;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
-	internal class X11ApplicationViewExtension : IApplicationViewExtension
+	internal class X11ApplicationViewExtension(object owner) : IApplicationViewExtension
 	{
-		private readonly ApplicationView _owner;
-
-		public X11ApplicationViewExtension(object owner)
-		{
-			_owner = (ApplicationView)owner;
-		}
+		private readonly ApplicationView _owner = (ApplicationView)owner;
 
 		public void ExitFullScreenMode() => TrySetFullScreenMode(false);
 
