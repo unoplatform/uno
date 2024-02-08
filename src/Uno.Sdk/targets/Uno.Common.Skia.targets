@@ -3,11 +3,27 @@
 		<IsSkia>true</IsSkia>
 		<UsingUnoCommonSkiaTargets>true</UsingUnoCommonSkiaTargets>
 
-		<EnableDefaultSkiaItems>false</EnableDefaultSkiaItems>
+		<!-- Enable the netx.0-skia target -->
+		<TargetPlatformIdentifier>Skia</TargetPlatformIdentifier>
+		<TargetFrameworkIdentifier>Skia</TargetFrameworkIdentifier>
+		<TargetPlatformSupported>true</TargetPlatformSupported>
+		<TargetPlatformVersion>1.0</TargetPlatformVersion>
+
 		<SkiaProjectFolder Condition=" '$(SkiaProjectFolder)' == '' ">$(PlatformsProjectFolder)Skia\</SkiaProjectFolder>
 		<SkiaProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(SkiaProjectFolder)'))</SkiaProjectFolder>
 		<SkiaProjectFolder Condition=" !Exists('$(SkiaProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Skia'))</SkiaProjectFolder>
 	</PropertyGroup>
+
+	<!-- Enable the netx.0-skia target -->
+	<ItemGroup>
+		<SupportedPlatform Include="skia" />
+		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
+	</ItemGroup>
+
+	<!-- Enable the netx.0-skia target -->
+	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '8.0')) ">
+		<SdkSupportedTargetPlatformIdentifier Include="skia" DisplayName="Skia" />
+	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Skia.targets"
 			Condition=" $(SingleProject) == 'true' " />
