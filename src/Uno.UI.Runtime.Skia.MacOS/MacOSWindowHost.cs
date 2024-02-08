@@ -44,24 +44,17 @@ internal class MacOSWindowHost : IXamlRootHost
 
 		// RegisterForBackgroundColor();
 
-		var ctx = NativeUno.uno_window_get_metal(_nativeWindow.Handle);
-		// TODO: this should be null if Metal is not available and we should switch to a software rendering backend
-
-		// Sadly only the `net6.0-[mac][ios]` version of SkiaSharp supports Metal and depends on Microsoft.[macOS|iOS].dll
-		// IOW neither `net6.0` or `netstandard2.0` have the required API to create a Metal context for Skia
-		// This force us to initialize things manually... so we reflect to create a metal-based GRContext
-		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
-		// net8+ alternative -> https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
-		var get = typeof(GRContext).GetMethod("GetObject", BindingFlags.Static | BindingFlags.NonPublic)!;
-		_context = (GRContext?)get?.Invoke(null, new object[] { ctx, true });
-		if (_context is null)
+		var requestedSurfaceType = MacSkiaHost.Current?.RenderSurfaceType;
+		if (requestedSurfaceType != RenderSurfaceType.Software)
 		{
-			// Macs since 2012 have Metal 2 support and macOS 10.14 Mojave (2018) requires Metal
-			// List of Mac supporting Metal https://support.apple.com/en-us/HT205073
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error("Failed to initialize Metal.");
-			}
+			// Automatic (Metal first) or Metal is requested
+			var ctx = NativeUno.uno_window_get_metal(_nativeWindow.Handle);
+			_context = MacOSMetalRenderer.CreateContext(ctx);
+		}
+		if ((requestedSurfaceType != RenderSurfaceType.Auto) && _context is null)
+		{
+			// Automatic (fallback) or software is requested
+			// TODO: 
 		}
 	}
 
@@ -78,6 +71,8 @@ internal class MacOSWindowHost : IXamlRootHost
 
 	private static readonly ConstructorInfo? _rt = typeof(GRBackendRenderTarget).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, [typeof(nint), typeof(bool)], null);
 
+	private bool hackFirstDraw = true;
+
 	private unsafe void Draw(double nativeWidth, double nativeHeight, nint texture)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -85,18 +80,13 @@ internal class MacOSWindowHost : IXamlRootHost
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
 		}
 
-		// note: size is doubled for retina displays
-		var info = new GRMtlTextureInfoNative() { Texture = texture };
-		var nt = NativeSkia.gr_backendrendertarget_new_metal((int)nativeWidth, (int)nativeHeight, 1, &info);
-		if (nt == IntPtr.Zero)
+		// FIXME: we get the first update for windows sizes before we have completed the initialization
+		if (hackFirstDraw)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error("Failed to initialize Skia with Metal backend.");
-			}
+			UpdateWindowSize(nativeWidth, nativeHeight);
 		}
-		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
-		using var target = (GRBackendRenderTarget)_rt?.Invoke(new object[] { nt, true })!;
+
+		using var target = MacOSMetalRenderer.CreateTarget(_context!, nativeWidth, nativeHeight, texture);
 		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
 		using var canvas = surface.Canvas;
 

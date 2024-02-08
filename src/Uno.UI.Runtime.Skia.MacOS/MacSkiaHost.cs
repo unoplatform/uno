@@ -49,6 +49,8 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 
 	internal MacOSWindowNative? InitialWindow { get; set; }
 
+	public RenderSurfaceType? RenderSurfaceType { get; set; }
+
 	public void Run()
 	{
 		if (!InitializeMac())

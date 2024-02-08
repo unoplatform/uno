@@ -22,6 +22,10 @@ public class MainClass
 		};
 
 		var host = new MacSkiaHost(() => new SamplesApp.App());
+#if IS_CI
+		// TODO: To be confirmed but virtualization often mess up with Metal support
+		host.RenderSurfaceType = RenderSurfaceType.Software;
+#endif
 		host.Run();
 	}
 }
