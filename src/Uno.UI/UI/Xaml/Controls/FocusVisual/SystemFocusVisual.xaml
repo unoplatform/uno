@@ -9,6 +9,8 @@
 		<Setter Property="IsHitTestVisible" Value="False" />
 		<Setter Property="IsTapEnabled" Value="False" />
 		<Setter Property="IsTabStop" Value="False" />
+		<Sttter Property="RenderTransform" Value="{Binding Path=FocusedElement.RenderTransform, RelativeSource={RelativeSource TemplatedParent}}"/>
+		<Setter Property="RenderTransformOrigin" Value="{Binding Path=FocusedElement.RenderTransformOrigin, RelativeSource={RelativeSource TemplatedParent}}"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="localUIXC:SystemFocusVisual">

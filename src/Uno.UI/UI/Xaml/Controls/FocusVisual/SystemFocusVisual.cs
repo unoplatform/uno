@@ -135,9 +135,6 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		RenderTransform = FocusedElement.RenderTransform;
-		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
-
 		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
 		var parentPoint = parentTransform.TransformPoint(new Windows.Foundation.Point(0, 0));
 
