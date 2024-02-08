@@ -11,12 +11,12 @@ namespace Uno.UI.DataBinding;
 internal static partial class BindingPropertyHelper
 {
 
-	private class GetValueGetterCacheKey(Type type, string name, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
+	private sealed class GetValueGetterCacheKey(Type type, string name, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 	{
 		private readonly int _hashCode =
 				type.GetHashCode()
 				^ name.GetHashCode()
-				^ (precedence is not null ? (int)precedence : 0)
+				^ (precedence is not null ? (int)precedence : -1)
 				^ (allowPrivateMembers ? 1 : 0);
 
 		public Type Type { get; } = type;
@@ -28,10 +28,15 @@ internal static partial class BindingPropertyHelper
 
 		public override int GetHashCode() => _hashCode;
 
-		private class EqualityComparer : IEqualityComparer<GetValueGetterCacheKey>
+		private sealed class EqualityComparer : IEqualityComparer<GetValueGetterCacheKey>
 		{
 			public bool Equals(GetValueGetterCacheKey? x, GetValueGetterCacheKey? y)
 			{
+				if (ReferenceEquals(x, y))
+				{
+					return true;
+				}
+
 				if (x is not null && y is not null)
 				{
 					return x.Type.GetType().Equals(y.Type.GetType())
@@ -48,7 +53,7 @@ internal static partial class BindingPropertyHelper
 		}
 	}
 
-	private class GetValueSetterCacheKey(Type type, string name, DependencyPropertyValuePrecedences precedence, bool convert)
+	private sealed class GetValueSetterCacheKey(Type type, string name, DependencyPropertyValuePrecedences precedence, bool convert)
 	{
 		private readonly int _hashCode =
 				type.GetHashCode()
@@ -65,10 +70,15 @@ internal static partial class BindingPropertyHelper
 
 		public override int GetHashCode() => _hashCode;
 
-		private class EqualityComparer : IEqualityComparer<GetValueSetterCacheKey>
+		private sealed class EqualityComparer : IEqualityComparer<GetValueSetterCacheKey>
 		{
 			public bool Equals(GetValueSetterCacheKey? x, GetValueSetterCacheKey? y)
 			{
+				if (ReferenceEquals(x, y))
+				{
+					return true;
+				}
+
 				if (x is not null && y is not null)
 				{
 					return x.Type.GetType().Equals(y.Type.GetType())
@@ -85,7 +95,7 @@ internal static partial class BindingPropertyHelper
 		}
 	}
 
-	private class GenericPropertyCacheKey(Type type, string name, DependencyPropertyValuePrecedences precedence)
+	private sealed class GenericPropertyCacheKey(Type type, string name, DependencyPropertyValuePrecedences precedence)
 	{
 		private readonly int _hashCode =
 				type.GetHashCode()
@@ -100,10 +110,15 @@ internal static partial class BindingPropertyHelper
 
 		public override int GetHashCode() => _hashCode;
 
-		private class EqualityComparer : IEqualityComparer<GenericPropertyCacheKey>
+		private sealed class EqualityComparer : IEqualityComparer<GenericPropertyCacheKey>
 		{
 			public bool Equals(GenericPropertyCacheKey? x, GenericPropertyCacheKey? y)
 			{
+				if (ReferenceEquals(x, y))
+				{
+					return true;
+				}
+
 				if (x is not null && y is not null)
 				{
 					return x.Type.GetType().Equals(y.Type.GetType())
@@ -119,7 +134,7 @@ internal static partial class BindingPropertyHelper
 		}
 	}
 
-	private class EventCacheKey(Type type, string name)
+	private sealed class EventCacheKey(Type type, string name)
 	{
 		private readonly int _hashCode =
 				type.GetHashCode()
@@ -132,10 +147,15 @@ internal static partial class BindingPropertyHelper
 
 		public override int GetHashCode() => _hashCode;
 
-		private class EqualityComparer : IEqualityComparer<EventCacheKey>
+		private sealed class EqualityComparer : IEqualityComparer<EventCacheKey>
 		{
 			public bool Equals(EventCacheKey? x, EventCacheKey? y)
 			{
+				if (ReferenceEquals(x, y))
+				{
+					return true;
+				}
+
 				if (x is not null && y is not null)
 				{
 					return x.Type.GetType().Equals(y.Type.GetType())
