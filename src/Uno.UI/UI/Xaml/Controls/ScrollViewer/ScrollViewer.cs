@@ -44,6 +44,8 @@ using View = Microsoft.UI.Xaml.UIElement;
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 #else
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
+using System.Security;
+
 #endif
 
 #if HAS_UNO_WINUI
@@ -135,9 +137,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 
-			Loaded += AttachScrollBars;
-			Unloaded += DetachScrollBars;
-			Unloaded += ResetScrollIndicator;
 
 			this.RegisterParentChangedCallback(this, (_, _, args) =>
 			{
@@ -149,6 +148,29 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void InitializePartial();
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			EnsureAttachScrollBars();
+
+			OnLoadedPartial();
+		}
+
+		private partial void OnLoadedPartial();
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			DetachScrollBars();
+			ResetScrollIndicator();
+
+			OnUnloadedPartial();
+		}
+		private partial void OnUnloadedPartial();
+
 
 		#region -- Common DP callbacks --
 		private static PropertyChangedCallback OnHorizontalScrollabilityPropertyChanged = (obj, _)
@@ -1180,13 +1202,10 @@ namespace Microsoft.UI.Xaml.Controls
 			PointerMoved -= ShowScrollIndicator;
 		}
 
-		private static void AttachScrollBars(object sender, RoutedEventArgs e) // OnLoaded
+		private void EnsureAttachScrollBars()
 		{
-			if (sender is ScrollViewer sv)
-			{
-				sv.DetachScrollBars(); // Avoid double subscribe due to OnApplyTemplate
-				sv.AttachScrollBars();
-			}
+			DetachScrollBars(); // Avoid double subscribe due to OnApplyTemplate
+			AttachScrollBars();
 		}
 
 		private void AttachScrollBars()
