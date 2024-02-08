@@ -50,7 +50,7 @@ public sealed partial class InteractionTrackerAndExpressionAnimationSample : Pag
 				var tracker = InteractionTracker.Create(compositor);
 
 				tracker.MinPosition = new Vector3(0);
-				tracker.MaxPosition = new Vector3((float)XamlRoot.Size.Width, (float)XamlRoot.Size.Height, 0);
+				tracker.MaxPosition = new Vector3((float)XamlRoot.Size.Width - _border2Visual.Size.X, (float)XamlRoot.Size.Height, 0);
 
 				_interactionSource = VisualInteractionSource.Create(_border1Visual);
 

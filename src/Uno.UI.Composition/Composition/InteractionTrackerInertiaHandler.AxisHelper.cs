@@ -116,7 +116,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		private float CalculatePosition(float t)
 		{
-			if (Math.Abs(InitialVelocity) <= 50 || t >= TimeToMinimumVelocity)
+			if (t >= TimeToMinimumVelocity)
 			{
 				return _dampingStateTimeInSeconds.HasValue ? FinalModifiedValue : FinalValue;
 			}
@@ -125,7 +125,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			{
 				var settlingTime = TimeToMinimumVelocity - _dampingStateTimeInSeconds.Value;
 				var wn = 5.8335 / settlingTime;
-
+				// It seems WinUI can use an underdamped animation in some cases. For now we only use critically damped animation.
 				var value = DampingHelper.SolveCriticallyDamped(wn, t - _dampingStateTimeInSeconds.Value);
 				value = value * (FinalModifiedValue - _dampingStatePosition!.Value) + _dampingStatePosition.Value;
 
