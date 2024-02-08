@@ -12,7 +12,7 @@ public partial class InteractionTracker : CompositionObject
 	private InteractionTrackerState _state;
 	private Vector3 _position;
 
-	private static int _currentRequestId;
+	private int _currentRequestId;
 
 	private InteractionTracker(Compositor compositor, IInteractionTrackerOwner? owner = null) : base(compositor)
 	{
