@@ -1,0 +1,22 @@
+<Project>
+	<PropertyGroup>
+		<UnoLoggingVersion Condition="$(UnoLoggingVersion) == ''">1.7.0</UnoLoggingVersion>
+		<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">8.0.8</UnoWasmBootstrapVersion>
+		<SkiaSharpVersion Condition="$(SkiaSharpVersion) == ''">2.88.7</SkiaSharpVersion>
+		<AndroidMaterialVersion Condition="$(AndroidMaterialVersion) == ''">1.10.0.2</AndroidMaterialVersion>
+		<WindowsCompatibilityVersion Condition="$(WindowsCompatibilityVersion) == ''">8.0.0</WindowsCompatibilityVersion>
+		<MicrosoftLoggingVersion Condition="$(MicrosoftLoggingVersion) == ''">8.0.0</MicrosoftLoggingVersion>
+	</PropertyGroup>
+
+	<Import Project="Uno.Implicit.Packages.Legacy.targets"
+		Condition="$(ManagePackageVersionsCentrally) != 'true'" />
+
+	<Import Project="Uno.Implicit.PackageVersions.targets"
+		Condition="$(ManagePackageVersionsCentrally) == 'true'" />
+	<Import Project="Uno.Implicit.Packages.Global.targets"
+		Condition="$(ManagePackageVersionsCentrally) == 'true'" />
+
+	<ItemGroup>
+		<PackageReference Include="$(_UnoImplicitPackageReference)" Exclude="@(PackageReference)" />
+	</ItemGroup>
+</Project>
