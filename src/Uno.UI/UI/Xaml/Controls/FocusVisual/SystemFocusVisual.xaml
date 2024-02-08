@@ -19,7 +19,7 @@
 						BorderBrush="{Binding Path=FocusedElement.FocusVisualPrimaryBrush, RelativeSource={RelativeSource TemplatedParent}}"
 						BorderThickness="{Binding Path=FocusedElement.FocusVisualPrimaryThickness, RelativeSource={RelativeSource TemplatedParent}}"
 						CornerRadius="{Binding Path=FocusedElement.CornerRadius, RelativeSource={RelativeSource TemplatedParent}}"
-						Margin="{Binding Path=FocusedElement.FocusVisualMargin, RelativeSource={RelativeSource TemplatedParent}}"
+						Margin="{Binding Path=FocusedElement.FocusVisualMargin, RelativeSource={RelativeSource TemplatedParent}}">
 						<Border
 							BorderBrush="{Binding Path=FocusedElement.FocusVisualSecondaryBrush, RelativeSource={RelativeSource TemplatedParent}}"
 							BorderThickness="{Binding Path=FocusedElement.FocusVisualSecondaryThickness, RelativeSource={RelativeSource TemplatedParent}}"
