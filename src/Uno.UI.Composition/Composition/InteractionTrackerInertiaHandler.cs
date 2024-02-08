@@ -14,8 +14,6 @@ internal sealed partial class InteractionTrackerInertiaHandler
 	private readonly AxisHelper _yHelper;
 	private readonly AxisHelper _zHelper;
 
-	//private float _lastElapsedInSeconds;
-
 	private Timer? _timer;
 	private Stopwatch? _stopwatch;
 
@@ -72,58 +70,8 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			_yHelper.GetPosition(currentElapsedInSeconds),
 			_zHelper.GetPosition(currentElapsedInSeconds));
 
-		//var currentVelocity = VelocityAtTime(currentElapsedInSeconds);
-		//var currentPosition = _interactionTracker.Position;
-
-		// Far from WinUI calculations :/
-		//var newPosition = new Vector3(
-		//	CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.X, minPosition.X, maxPosition.X, _initialVelocity.X, currentVelocity.X, _positionDecayRate.X, currentPosition.X),
-		//	CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.Y, minPosition.Y, maxPosition.Y, _initialVelocity.Y, currentVelocity.Y, _positionDecayRate.Y, currentPosition.Y),
-		//	CalculatePosition(currentElapsedInSeconds, _timeToMinimumVelocity.Z, minPosition.Z, maxPosition.Z, _initialVelocity.Z, currentVelocity.Z, _positionDecayRate.Z, currentPosition.Z)
-		//	);
-		//var currentPosition = _interactionTracker.Position;
-		//var newPosition = new Vector3(
-		//	CalculatePosition(_initialPosition.X, _initialVelocity.X, 1.0f - _positionDecayRate.X, _timeToMinimumVelocity.X, _finalPosition.X, minPosition.X, maxPosition.X, currentPosition.X, currentElapsedInSeconds),
-		//	CalculatePosition(_initialPosition.Y, _initialVelocity.Y, 1.0f - _positionDecayRate.Y, _timeToMinimumVelocity.Y, _finalPosition.Y, minPosition.Y, maxPosition.Y, currentPosition.Y, currentElapsedInSeconds),
-		//	CalculatePosition(_initialPosition.Z, _initialVelocity.Z, 1.0f - _positionDecayRate.Z, _timeToMinimumVelocity.Z, _finalPosition.Z, minPosition.Z, maxPosition.Z, currentPosition.Z, currentElapsedInSeconds));
-
-		//Console.WriteLine($"Initial: {_initialPosition.X}, Final: {_finalPosition.X}, Current: {newPosition.X}");
-
 		_interactionTracker.SetPosition(newPosition, isFromUserManipulation: false/*TODO*/);
-		//_lastElapsedInSeconds = currentElapsedInSeconds;
 	}
-
-	//private float CalculatePosition(
-	//	float currentElapsedInSeconds, float timeToMinimumVelocity, float minPosition, float maxPosition, float initialVelocity, float currentVelocity, float positionDecayRate, float currentPosition)
-	//{
-	//	if (_dampingStateTimeInSeconds.HasValue || currentPosition < minPosition || currentPosition > maxPosition)
-	//	{
-	//		// This is an overpan from Interacting state. Use damping animation.
-	//		_dampingStateTimeInSeconds ??= _stopwatch!.ElapsedMilliseconds / 1000.0f;
-	//		if (initialVelocity <= 50.0)
-	//		{
-	//			// Use critically-damped animation.
-	//		}
-	//		else
-	//		{
-	//			// Use underdamped animation.
-	//		}
-	//	}
-
-	//	var deltaTime = currentElapsedInSeconds >= timeToMinimumVelocity * 1000 ? 0.0f : currentElapsedInSeconds - _lastElapsedInSeconds;
-	//	var deltaPosition = CalculateDeltaPosition(currentVelocity, 1.0f - positionDecayRate, deltaTime);
-	//	return currentPosition + deltaPosition;
-	//}
-
-
-
-	//private Vector3 VelocityAtTime(float elapsedTime)
-	//{
-	//	return new Vector3(
-	//		MathF.Pow(1 - _positionDecayRate.X, elapsedTime) * _initialVelocity.X,
-	//		MathF.Pow(1 - _positionDecayRate.Y, elapsedTime) * _initialVelocity.Y,
-	//		MathF.Pow(1 - _positionDecayRate.Z, elapsedTime) * _initialVelocity.Z);
-	//}
 
 	private static bool IsCloseReal(float a, float b, float epsilon)
 		=> MathF.Abs(a - b) <= epsilon;
