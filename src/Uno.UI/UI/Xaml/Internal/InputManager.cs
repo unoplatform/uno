@@ -117,7 +117,10 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
 	{
-		// TODO: We should raise PointerCaptureLost on the right UIElement that received ManipulationStarting.
+		if (PointerCapture.TryGet(new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)args.PointerDeviceType, args.Pointers[0].Id), out var capture))
+		{
+			PointerManager.ReleaseCaptures(capture);
+		}
 	};
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>

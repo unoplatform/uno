@@ -430,10 +430,15 @@ internal partial class InputManager
 		{
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
-				foreach (var target in capture.Targets.ToList())
-				{
-					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
-				}
+				ReleaseCaptures(capture);
+			}
+		}
+
+		internal static void ReleaseCaptures(PointerCapture capture)
+		{
+			foreach (var target in capture.Targets.ToList())
+			{
+				target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
 			}
 		}
 		#endregion
