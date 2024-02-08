@@ -32,6 +32,13 @@ namespace Microsoft.UI.Xaml
 			Initialize();
 		}
 
+		partial void OnLoadedPartial() 
+		{
+			ReconfigureViewportPropagationPartial();
+		}
+
+		private partial void ReconfigureViewportPropagationPartial();
+
 		internal CGSize? XamlMeasure(CGSize availableSize)
 		{
 			if (((ILayouterElement)this).XamlMeasureInternal(availableSize, _lastAvailableSize, out var measuredSize))
