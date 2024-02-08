@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml
 			Initialize();
 		}
 
-		partial void OnLoadedPartial() 
+		partial void OnLoadedPartial()
 		{
 			ReconfigureViewportPropagationPartial();
 		}
