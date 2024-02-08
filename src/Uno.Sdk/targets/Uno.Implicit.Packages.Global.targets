@@ -1,0 +1,55 @@
+<Project>
+
+	<ItemGroup>
+		<_UnoImplicitPackageReference Include="Uno.WinUI" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Lottie" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.DevServer" IsImplicitlyDefined="true" Condition="$(Configuration) == 'Debug'" />
+		<_UnoImplicitPackageReference Include="Microsoft.Extensions.Logging.Console" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="SkiaSharp.Skottie" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="SkiaSharp.Views.Uno.WinUI" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Lottie" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.UniversalImageLoader" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Xamarin.Google.Android.Material" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.WinUI.WebAssembly" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Wasm.Bootstrap" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Wasm.Bootstrap.DevServer" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Microsoft.Windows.Compatibility" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+			<ItemGroup>
+				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Gtk" IsImplicitlyDefined="true" />
+			</ItemGroup>
+		</When>
+	</Choose>
+</Project>

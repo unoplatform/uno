@@ -26,6 +26,9 @@
 		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
 	</PropertyGroup>
 
+	<Import Project="Uno.Implicit.Packages.targets"
+		Condition="$(DisableImplicitUnoPackages) != 'true'" />
+
 	<!-- TFM Specific Targets -->
 	<Import Project="Uno.Common.Android.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
