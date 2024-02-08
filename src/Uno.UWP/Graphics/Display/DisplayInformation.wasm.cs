@@ -12,7 +12,7 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static readonly DisplayInformation _instance;
+		private static DisplayInformation _instance;
 
 		private static DisplayInformation InternalGetForCurrentView() => _instance ??= new DisplayInformation();
 
