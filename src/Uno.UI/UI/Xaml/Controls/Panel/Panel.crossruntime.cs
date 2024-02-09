@@ -3,7 +3,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Panel
+partial class Panel
 {
 	private readonly BorderLayerRenderer _borderRenderer;
 

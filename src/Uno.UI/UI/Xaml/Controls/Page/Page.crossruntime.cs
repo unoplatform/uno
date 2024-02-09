@@ -9,7 +9,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Page
+partial class Page
 {
 	private readonly BorderLayerRenderer _borderRenderer;
 

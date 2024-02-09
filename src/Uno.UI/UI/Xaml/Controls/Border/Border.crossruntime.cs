@@ -18,7 +18,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Border
+partial class Border
 {
 	private readonly BorderLayerRenderer _borderRenderer;
 
@@ -47,25 +47,16 @@ public partial class Border
 	//	base.OnArrangeVisual(rect, clip);
 	//}
 
-	partial void OnBorderBrushChangedPartial()
-	{
-		UpdateBorder();
-	}
+	partial void OnBorderBrushChangedPartial() => UpdateBorder();
 
-	partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-	{
+	partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue) =>
 		UpdateBorder();
-	}
 
-	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-	{
+	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) =>
 		UpdateBorder();
-	}
 
-	partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-	{
+	partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue) =>
 		UpdateBorder();
-	}
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
 	{
