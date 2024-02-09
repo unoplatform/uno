@@ -574,7 +574,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
 			{
-				_controlTemplateUsedLastUpdate = Template;
 
 				if (Template != null)
 				{
@@ -582,8 +581,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
+					var oldTemplateRoot = TemplatedRoot;
 					TemplatedRoot = null;
+					_controlTemplateUsedLastUpdate?.ReleaseTemplateRoot(oldTemplateRoot);
 				}
+
+				_controlTemplateUsedLastUpdate = Template;
 
 				_updateTemplate = false;
 

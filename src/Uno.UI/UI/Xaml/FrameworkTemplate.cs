@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// This is only used in specialized contexts. Normally the template reuse will be automatically handled by the pool.
 		/// </remarks>
-		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.EnqueueTemplate(this, templateRoot);
+		internal void ReleaseTemplateRoot(View templateRoot) => FrameworkTemplatePool.Instance.EnqueueTemplate(this, templateRoot, cleanup: true);
 
 		/// <summary>
 		/// Creates a new instance of the current template.
