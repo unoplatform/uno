@@ -18,6 +18,7 @@ namespace Uno.UI.Xaml.Controls;
 partial class BorderLayerRenderer
 {
 	private Action _backgroundChanged;
+	private Action _borderChanged;
 
 	partial void UpdatePlatform()
 	{
@@ -36,15 +37,32 @@ partial class BorderLayerRenderer
 				SetAndObserveBackgroundBrush(newState, ref _backgroundChanged);
 			}
 
-			var renderSize = newState.ElementSize;
+			if (previousLayoutState.BackgroundSizing != newState.BackgroundSizing)
+			{
+				_owner.SetStyle("background-clip", newState.BackgroundSizing == BackgroundSizing.InnerBorderEdge ? "padding-box" : "border-box");
+			}
+
 			if ((previousLayoutState.BorderBrush, previousLayoutState.BorderThickness, previousLayoutState.CornerRadius, previousLayoutState.ElementSize) !=
 				(newState.BorderBrush, newState.BorderThickness, newState.CornerRadius, newState.ElementSize))
 			{
-				SetBorder(newState);
+				SetAndObserveBorder(newState);
 			}
 
 			_currentState = newState;
 		}
+	}
+
+	private void SetAndObserveBorder(BorderLayerState newState)
+	{
+		SetBorder(newState);
+		Brush.SetupBrushChanged(
+			_currentState.BorderBrush,
+			newState.BorderBrush,
+			ref _borderChanged,
+			() =>
+			{
+				SetBorder(newState);
+			});
 	}
 
 	private void SetBorder(BorderLayerState newState)
