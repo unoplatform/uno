@@ -23,6 +23,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
 			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
 
+		private partial void OnLoadedPartial() { }
+		private partial void OnUnloadedPartial() { }
+
 		#region Over scroll support
 		/// <summary>
 		/// Trim excess scroll, which can be present if the content size is reduced.

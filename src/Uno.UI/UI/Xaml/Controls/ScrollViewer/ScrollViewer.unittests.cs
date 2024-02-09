@@ -25,6 +25,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private partial void OnLoadedPartial() { }
+
+		private partial void OnUnloadedPartial() { }
 		private void UpdateZoomedContentAlignment() { }
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
