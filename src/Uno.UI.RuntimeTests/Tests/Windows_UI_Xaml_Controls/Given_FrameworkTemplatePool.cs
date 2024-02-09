@@ -33,7 +33,6 @@ internal class Given_FrameworkTemplatePool
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-	[Ignore("https://github.com/unoplatform/uno/issues/13969")]
 	public async Task When_Recycle()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
