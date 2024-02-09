@@ -675,9 +675,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
-			if (ContentTemplateRoot != null)
+			if (ContentTemplateRoot is { } currentTemplateRoot)
 			{
 				ContentTemplateRoot = null;
+
+				oldContentTemplate?.ReleaseTemplateRoot(currentTemplateRoot);
 			}
 
 			SetUpdateTemplate();

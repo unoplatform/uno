@@ -15,6 +15,9 @@ using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
+using System.Collections.Generic;
+using System.Reflection;
+
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -88,35 +91,34 @@ internal class Given_FrameworkTemplatePool
 #endif
 
 	[TestMethod]
-	public async Task TestCheckBox()
+	public async Task When_CheckBox()
 	{
-		using (FeatureConfigurationHelper.UseTemplatePooling())
-		{
-			var scrollViewer = new ScrollViewer();
-			var elevatedViewChild = new Uno.UI.Toolkit.ElevatedView();
-			scrollViewer.Content = elevatedViewChild;
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
-			var c = new CheckBox();
-			c.IsChecked = true;
-			bool uncheckedFired = false;
-			c.Unchecked += (_, _) => uncheckedFired = true;
-			elevatedViewChild.ElevatedContent = c;
+		var scrollViewer = new ScrollViewer();
+		var elevatedViewChild = new Uno.UI.Toolkit.ElevatedView();
+		scrollViewer.Content = elevatedViewChild;
 
-			WindowHelper.WindowContent = scrollViewer;
-			await WindowHelper.WaitForLoaded(scrollViewer);
-			var template = scrollViewer.Template;
+		var c = new CheckBox();
+		c.IsChecked = true;
+		bool uncheckedFired = false;
+		c.Unchecked += (_, _) => uncheckedFired = true;
+		elevatedViewChild.ElevatedContent = c;
 
-			scrollViewer.Template = null;
-			scrollViewer.Template = template;
+		WindowHelper.WindowContent = scrollViewer;
+		await WindowHelper.WaitForLoaded(scrollViewer);
+		var template = scrollViewer.Template;
 
-			scrollViewer.ApplyTemplate();
+		scrollViewer.Template = null;
+		scrollViewer.Template = template;
 
-			Assert.IsFalse(uncheckedFired);
-		}
+		scrollViewer.ApplyTemplate();
+
+		Assert.IsFalse(uncheckedFired);
 	}
 
 	[TestMethod]
-	public async Task TestTextBox()
+	public async Task When_TextBox()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
@@ -151,7 +153,7 @@ internal class Given_FrameworkTemplatePool
 	}
 
 	[TestMethod]
-	public async Task TestToggleSwitch()
+	public async Task When_ToggleSwitch()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
@@ -226,6 +228,223 @@ internal class Given_FrameworkTemplatePool
 			}
 
 			AssertEditorContents();
+		}
+	}
+
+	[TestMethod]
+	public void When_ContentControl_Template_Recycled()
+	{
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var TemplateCreated = 0;
+		List<TemplatePoolAwareControl> created = new();
+		var dataTemplate = new ControlTemplate(() =>
+		{
+			TemplateCreated++;
+			var b = new TemplatePoolAwareControl();
+			created.Add(b);
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			Template = dataTemplate
+		};
+		WindowHelper.WindowContent = SUT;
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+
+		Assert.AreEqual(1, TemplateCreated);
+
+		SUT.Template = null;
+
+		Assert.AreEqual(1, TemplateCreated);
+		Assert.AreEqual(1, created.Count);
+		Assert.AreEqual(1, created[0].TemplateRecycled);
+	}
+
+	[TestMethod]
+	public void When_ContentControl_Template_Replaced_Recycled()
+	{
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var template1Created = 0;
+		List<TemplatePoolAwareControl> _created = new();
+		var template1 = new ControlTemplate(() =>
+		{
+			template1Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var template2Created = 0;
+		var template2 = new ControlTemplate(() =>
+		{
+			template2Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			Template = template1
+		};
+		WindowHelper.WindowContent = SUT;
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+
+		Assert.AreEqual(1, template1Created);
+
+		SUT.Template = template2;
+
+		Assert.AreEqual(1, template1Created);
+		Assert.AreEqual(1, template2Created);
+		Assert.AreEqual(2, _created.Count);
+
+		SUT.Template = null;
+
+		Assert.AreEqual(1, _created[0].TemplateRecycled);
+		Assert.AreEqual(1, _created[1].TemplateRecycled);
+	}
+
+	[TestMethod]
+	public void When_ContentControl_ContentTemplate_Recycled()
+	{
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var TemplateCreated = 0;
+		List<TemplatePoolAwareControl> _created = new List<TemplatePoolAwareControl>();
+		var dataTemplate = new DataTemplate(() =>
+		{
+			TemplateCreated++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			ContentTemplate = dataTemplate
+		};
+		WindowHelper.WindowContent = SUT;
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+
+		Assert.AreEqual(1, TemplateCreated);
+
+		SUT.ContentTemplate = null;
+
+		Assert.AreEqual(1, TemplateCreated);
+		Assert.AreEqual(1, _created.Count);
+		Assert.AreEqual(1, _created[0].TemplateRecycled);
+	}
+
+	[TestMethod]
+	public void When_ContentControl_ContentTemplate_Replaced_Recycled()
+	{
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var template1Created = 0;
+		List<TemplatePoolAwareControl> _created = new();
+		var dataTemplate1 = new DataTemplate(() =>
+		{
+			template1Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var template2Created = 0;
+		var dataTemplate2 = new DataTemplate(() =>
+		{
+			template2Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			ContentTemplate = dataTemplate1
+		};
+		WindowHelper.WindowContent = SUT;
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+
+		Assert.AreEqual(1, template1Created);
+
+		SUT.ContentTemplate = dataTemplate2;
+
+		Assert.AreEqual(1, template1Created);
+		Assert.AreEqual(1, template2Created);
+		Assert.AreEqual(2, _created.Count);
+
+		SUT.ContentTemplate = null;
+
+		Assert.AreEqual(1, _created[0].TemplateRecycled);
+		Assert.AreEqual(1, _created[1].TemplateRecycled);
+	}
+
+	[TestMethod]
+	public void When_ContentPresenter_ContentTemplate_Replaced_Recycled()
+	{
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var template1Created = 0;
+		List<TemplatePoolAwareControl> _created = new();
+		var dataTemplate1 = new DataTemplate(() =>
+		{
+			template1Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var template2Created = 0;
+		var dataTemplate2 = new DataTemplate(() =>
+		{
+			template2Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(b);
+			return b;
+		});
+
+		var SUT = new ContentPresenter()
+		{
+			ContentTemplate = dataTemplate1
+		};
+		WindowHelper.WindowContent = SUT;
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+
+		Assert.AreEqual(1, template1Created);
+
+		SUT.ContentTemplate = dataTemplate2;
+
+		Assert.AreEqual(1, template1Created);
+		Assert.AreEqual(1, template2Created);
+		Assert.AreEqual(2, _created.Count);
+
+		SUT.ContentTemplate = null;
+
+		Assert.AreEqual(1, _created[0].TemplateRecycled);
+		Assert.AreEqual(1, _created[1].TemplateRecycled);
+	}
+
+	public class TemplatePoolAwareControl : Grid, IFrameworkTemplatePoolAware
+	{
+		public int TemplateRecycled { get; private set; }
+
+		public void OnTemplateRecycled()
+		{
+			TemplateRecycled++;
 		}
 	}
 }
