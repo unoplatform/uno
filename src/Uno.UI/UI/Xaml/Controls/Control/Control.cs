@@ -76,8 +76,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// this is defined in the FrameworkElement mixin, and must not be used in Control.
 			// When setting the background color in a Control, the property is simply used as a placeholder
 			// for children controls, applied by inheritance.
-
-			// base.OnBackgroundChanged(e);
 		}
 
 		internal virtual void UpdateVisualState(bool useTransitions = true)

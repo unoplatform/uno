@@ -111,13 +111,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-			// Warning some controls (eg. CalendarViewBaseItem) takes ownership of the background rendering.
-			// They override the OnBackgroundChanged and explicitly do not invokes that base method.
-			=> SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
-
-		private protected void SetAndObserveBackgroundBrush(Brush oldValue, Brush newValue)
 		{
-			BorderLayerRenderer.SetAndObserveBackgroundBrush(this, oldValue, newValue, ref _backgroundChanged);
 		}
 		#endregion
 
