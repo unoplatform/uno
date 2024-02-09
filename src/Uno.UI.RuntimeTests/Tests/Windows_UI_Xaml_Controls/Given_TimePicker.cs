@@ -88,9 +88,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
 			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
 
-			Assert.IsNotNull(timePickerFlyoutPresenter);
-			Assert.AreEqual(1, timePickerFlyoutPresenter.Opacity);
-			timePickerFlyout.Close();
+			try
+			{
+				Assert.IsNotNull(timePickerFlyoutPresenter);
+				Assert.AreEqual(1, timePickerFlyoutPresenter.Opacity);
+			}
+			finally
+			{
+				if (popup is not null)
+				{
+					popup.IsOpen = false;
+				}
+			}
 		}
 
 		[TestMethod]

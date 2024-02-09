@@ -149,9 +149,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
 			var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
 
-			Assert.IsNotNull(datePickerFlyoutPresenter);
-			Assert.AreEqual(1, datePickerFlyoutPresenter.Opacity);
-			datePickerFlyout.Close();
+			try
+			{
+				Assert.IsNotNull(datePickerFlyoutPresenter);
+				Assert.AreEqual(1, datePickerFlyoutPresenter.Opacity);
+			}
+			finally
+			{
+				if (popup is not null)
+				{
+					popup.IsOpen = false;
+				}
+			}
 		}
 
 		[TestMethod]
