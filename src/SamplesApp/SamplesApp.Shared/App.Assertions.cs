@@ -213,9 +213,11 @@ partial class App
 
 	private static void AssertWindowSize(WindowSizeChangedEventArgs e)
 	{
+		Assert.AreEqual(e.Size, new global::Windows.Foundation.Size(MainWindow.Bounds.Width, MainWindow.Bounds.Height));
+#if HAS_UNO
 		// The idea is just to make sure the bounds are set correctly before WindowSize event is fired.
 		var applicationViewBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-		Assert.AreEqual(e.Size, new global::Windows.Foundation.Size(applicationViewBounds.Width, applicationViewBounds.Height));
 		Assert.AreEqual(MainWindow.Bounds, applicationViewBounds);
+#endif
 	}
 }
