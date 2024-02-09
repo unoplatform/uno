@@ -1135,18 +1135,6 @@ namespace Uno.UI {
 			}
 		}
 
-		/**
-			* Destroy a html element.
-			*
-			* The element won't be available anymore. Usually indicate the managed
-			* version has been scavenged by the GC.
-			*/
-		public destroyViewNative(pParams: number): boolean {
-			const params = WindowManagerDestroyViewParams.unmarshal(pParams);
-			this.destroyViewInternal(params.HtmlId);
-			return true;
-		}
-
 		public destroyViewNativeFast(htmlId: number) {
 
 			this.destroyViewInternal(htmlId);
