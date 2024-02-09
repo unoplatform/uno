@@ -3344,7 +3344,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name);
 
-								if (member.Objects.Count == 1 && member.Objects[0] is var child && IsType(child.Type, propertyType))
+								if (member.Objects.Count == 1 && member.Objects[0] is var child && IsAssignableTo(child.Type, propertyType))
 								{
 									writer.AppendLineInvariantIndented(
 										"{0}.Set{1}({2}, ",
