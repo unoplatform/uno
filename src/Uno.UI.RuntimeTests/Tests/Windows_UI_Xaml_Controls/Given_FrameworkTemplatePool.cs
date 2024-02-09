@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-internal class Given_FrameworkTemplatePool
+internal partial class Given_FrameworkTemplatePool
 {
 #if HAS_UNO
 	[TestMethod]
