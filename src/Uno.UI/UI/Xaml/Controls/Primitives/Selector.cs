@@ -720,7 +720,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (templateRoot != null)
 			{
 				_itemTemplatesThatArentContainers.Add(template);
-				template.ReleaseTemplateRoot(templateRoot);
+
+				// Don't cleanup the item template so we keep the inner
+				// ScrollContentPresenter on native platforms.
+				template.ReleaseTemplateRoot(templateRoot, cleanup: false);
 			}
 
 			return null;
