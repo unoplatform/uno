@@ -35,7 +35,8 @@ public partial class FlyoutBase
 				NSViewResizingMask.MinYMargin |
 				NSViewResizingMask.MaxYMargin,
 #endif
-			Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
+			// TODO:MZ: Get current Window size
+			//Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
 		};
 	}
 }

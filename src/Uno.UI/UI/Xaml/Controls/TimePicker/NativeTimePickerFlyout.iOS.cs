@@ -28,7 +28,8 @@ partial class NativeTimePickerFlyout
 			Visibility = Visibility.Collapsed,
 			Background = SolidColorBrushHelper.Transparent,
 			AutoresizingMask = UIViewAutoresizing.All,
-			Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
+			// TODO:MZ: Get current window size
+			//Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
 		};
 	}
 

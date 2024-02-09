@@ -76,6 +76,23 @@ public partial class Window : UIWindow
 		FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;
 	}
 
+	public Window(UIWindowScene uiWindowScene) : base(uiWindowScene)
+	{
+
+		_inputPane = InputPane.GetForCurrentView();
+		_inputPane.Window = this;
+
+		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
+		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+		UIApplication.Notifications.ObserveDidEnterBackground(OnApplicationEnteredBackground);
+		UIApplication.Notifications.ObserveContentSizeCategoryChanged(OnContentSizeCategoryChanged);
+
+		//NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillShowNotification, OnKeyboardWillShow);
+
+		FocusedViewBringIntoViewOnKeyboardOpensMode = BringIntoViewMode.BottomRightOfViewPort;
+		FocusedViewBringIntoViewOnKeyboardOpensPadding = 20;
+	}
+
 	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
 	{
 		var handled = false;

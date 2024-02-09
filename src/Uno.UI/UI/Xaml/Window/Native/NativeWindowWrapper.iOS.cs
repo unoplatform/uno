@@ -1,42 +1,72 @@
 ﻿using System;
 using CoreGraphics;
 using Foundation;
+using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
 using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using MUXWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 	private Uno.UI.Controls.Window _nativeWindow;
-
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
 	{
-		_nativeWindow = new Uno.UI.Controls.Window();
+		//		_nativeWindow = new Uno.UI.Controls.Window();
 
-		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
-		_mainController.View.BackgroundColor = UIColor.Clear;
-		_mainController.NavigationBarHidden = true;
+		//		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
+		//		_mainController.View.BackgroundColor = UIColor.Clear;
+		//		_mainController.NavigationBarHidden = true;
 
-		ObserveOrientationAndSize();
+		//		ObserveOrientationAndSize();
 
-#if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
+		//#if __MACCATALYST__
+		//		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
+		//#endif
+	}
+
+	public override void Show()
+	{
+		var userActivity = new NSUserActivity(Application.UnoSceneConfigurationName);
+
+		static void OnError(NSError error)
+		{
+			if (typeof(NativeWindowFactory).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(NativeWindowFactory).Log().Error($"Failed to activate the scene: {error}");
+			}
+		};
+
+#if NET8_0_OR_GREATER
+		if (OperatingSystem.IsIOSVersionAtLeast(17))
+		{
+			var request = UISceneSessionActivationRequest.Create();
+			request.UserActivity = userActivity;
+			UIApplication.SharedApplication.ActivateSceneSession(request, OnError);
+		}
+		else
 #endif
+
+		if (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13, 1))
+		{
+			UIApplication.SharedApplication.RequestSceneSessionActivation(
+				null,
+				userActivity,
+				null,
+				OnError);
+		}
 	}
 
 	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
-
-	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	protected override void ShowCore()
 	{

@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !__SKIA__
+#if !__SKIA__ && !__IOS__
 
 using System;
 using Uno.Foundation.Extensibility;

@@ -11,11 +11,12 @@ partial class ContentManager
 {
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
 	{
-		if (rootElement.Superview is null)
-		{
-			NativeWindowWrapper.Instance.MainController.View!.AddSubview(rootElement);
-		}
-		rootElement.Frame = NativeWindowWrapper.Instance.MainController.View!.Bounds;
-		rootElement.AutoresizingMask = UIViewAutoresizing.All;
+		// TODO: Implement in appropriate location
+		//if (rootElement.Superview is null)
+		//{
+		//	NativeWindowWrapper.Instance.MainController.View!.AddSubview(rootElement);
+		//}
+		//rootElement.Frame = NativeWindowWrapper.Instance.MainController.View!.Bounds;
+		//rootElement.AutoresizingMask = UIViewAutoresizing.All;
 	}
 }

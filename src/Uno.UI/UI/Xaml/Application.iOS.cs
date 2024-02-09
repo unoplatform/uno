@@ -25,6 +25,8 @@ namespace Microsoft.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate
 	{
+		internal const string UnoSceneConfigurationName = "__UnoSceneConfiguration";
+
 		private bool _preventSecondaryActivationHandling;
 
 		partial void InitializePartial()
@@ -113,6 +115,11 @@ namespace Microsoft.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 			return true;
 		}
+
+		[System.Runtime.Versioning.SupportedOSPlatform("ios13.1")]
+		[System.Runtime.Versioning.SupportedOSPlatform("tvos13.1")]
+		public override UISceneConfiguration GetConfiguration(UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options) =>
+			new(UnoSceneConfigurationName, connectingSceneSession.Role);
 
 		public override void PerformActionForShortcutItem(
 			UIApplication application,
@@ -209,7 +216,8 @@ namespace Microsoft.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+			// TODO:MZ: Is this still relevant with multiple windows?
+			//NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(() => RaiseSuspending());
 		}
@@ -217,17 +225,18 @@ namespace Microsoft.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true));
+			// TODO:MZ: Is this still relevant with multiple windows?
+			//RaiseLeavingBackground(() => NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			// TODO:MZ: Is this still relevant with multiple windows?
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			// TODO:MZ: Is this still relevant with multiple windows?
 		}
 
 		private void SetCurrentLanguage()
