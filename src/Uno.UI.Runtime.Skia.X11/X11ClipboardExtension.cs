@@ -62,8 +62,6 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 // https://jameshunt.us/writings/managing-the-x11-clipboard/
 internal class X11ClipboardExtension : IClipboardExtension
 {
-	private const EventMask EVENT_MASK = EventMask.PropertyChangeMask;
-
 	private readonly ImmutableList<IntPtr> _supportedAtoms;
 
 	// TODO: fill these as we encounter new formats
@@ -168,9 +166,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 		using var _1 = X11Helper.XLock(_x11Window.Display);
 
 		_ownershipTimestamp = GetTimestamp();
-		// TODO: should we also acquire CLIPBOARD?
-		// Utilities and apps are conflicted on this. xsel and xclip use PRIMARY.
-		// Gtk uses CLIPBOARD. Firefox expects PRIMARY.
 		// Similar open issue for Gtk: https://github.com/unoplatform/uno/issues/14945
 		var _2 = XLib.XSetSelectionOwner(
 			_x11Window.Display,
@@ -725,22 +720,25 @@ internal class X11ClipboardExtension : IClipboardExtension
 			var _5 = XLib.XDeleteProperty(_x11Window.Display, _x11Window.Window, sel.property);
 			var _6 = XLib.XFlush(_x11Window.Display); // just a precaution
 
-			var _7 = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+			XWindowAttributes attributes = default;
+			var _7 = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+
 			using var maskDisposable = Disposable.Create(() =>
 			{
-				var _ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EVENT_MASK);
+				var _ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, attributes.your_event_mask);
 			});
+			var _8 = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
 
 			while (true)
 			{
-				var _8 = XLib.XNextEvent(_x11Window.Display, out event_);
+				var _9 = XLib.XNextEvent(_x11Window.Display, out event_);
 
 				if (event_.type != XEventName.PropertyNotify || event_.PropertyEvent.state != X11Helper.PropertyNewValue)
 				{
 					continue;
 				}
 
-				var _9 = XLib.XGetWindowProperty(
+				var _10 = XLib.XGetWindowProperty(
 					_x11Window.Display,
 					_x11Window.Window,
 					sel.property,
@@ -818,42 +816,35 @@ internal class X11ClipboardExtension : IClipboardExtension
 		return bitmap.Encode(SKEncodedImageFormat.Bmp, 100).ToArray();
 	}
 
-	/// <summary>
-	/// get_timestamp ()
-	///
-	/// Get the current X server time.
-	///
-	/// This is done by doing a zero-length append to a random property of the
-	/// window, and checking the time on the subsequent PropertyNotify event.
-	///
-	/// PRECONDITION: the window must have PropertyChangeMask set.
-	/// </summary>
-	// TODO: currently hangs
 	private IntPtr GetTimestamp()
 	{
-		return X11Helper.CurrentTime;
+		XWindowAttributes attributes = default;
+		var _1 = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
 
-		// lock (_windowMutex)
-		// {
-		// 	XLib.XChangeProperty(
-		// 		_x11Window.Display,
-		// 		_x11Window.Window,
-		// 		X11Helper.GetAtom(_x11Window.Display, "_NET_WM_NAME"),
-		// 		X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_STRING),
-		// 		8,
-		// 		PropertyMode.Append,
-		// 		IntPtr.Zero,
-		// 		0);
-		//
-		// 	while (true)
-		// 	{
-		// 		XLib.XNextEvent(_x11Window.Display, out var event_);
-		//
-		// 		if (event_.type == XEventName.PropertyNotify)
-		// 		{
-		// 			return event_.PropertyEvent.time;
-		// 		}
-		// 	}
-		// }
+		using var maskDisposable = Disposable.Create(() =>
+		{
+			var _ = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, attributes.your_event_mask);
+		});
+		var _2 = XLib.XSelectInput(_x11Window.Display, _x11Window.Window, (IntPtr)EventMask.PropertyChangeMask);
+
+		var _3 = XLib.XChangeProperty(
+			_x11Window.Display,
+			_x11Window.Window,
+			X11Helper.GetAtom(_x11Window.Display, "DUMMY_PROP_TO_GET_TIMESTAMP"),
+			X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_INTEGER),
+			32,
+			PropertyMode.Replace,
+			new IntPtr[] { 0 },
+			1);
+
+		while (true)
+		{
+			var _4 = XLib.XNextEvent(_x11Window.Display, out var event_);
+
+			if (event_.type == XEventName.PropertyNotify)
+			{
+				return event_.PropertyEvent.time;
+			}
+		}
 	}
 }
