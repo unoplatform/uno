@@ -14,14 +14,4 @@
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 	</ItemGroup>
-
-	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(SkiaProjectFolder)', '**', '*'))" />
-		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
-		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
-		<Compile Remove="@(_IgnorePlatformFiles)" />
-		<Content Remove="@(_IgnorePlatformFiles)" />
-		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
-		<Manifest Remove="@(_IgnorePlatformFiles)" />
-	</ItemGroup>
 </Project>

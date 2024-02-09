@@ -15,11 +15,35 @@
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" $(SingleProject) == 'true' ">
+	<PropertyGroup>
 		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
 		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
 		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
-		<IsUnoHead>true</IsUnoHead>
+		<IsUnoHead Condition="$(SingleProject) == 'true'">true</IsUnoHead>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AndroidProjectFolder Condition=" '$(AndroidProjectFolder)' == '' ">$(PlatformsProjectFolder)Android\</AndroidProjectFolder>
+		<AndroidProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(AndroidProjectFolder)'))</AndroidProjectFolder>
+		<AndroidProjectFolder Condition=" !Exists('$(AndroidProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Android'))</AndroidProjectFolder>
+		<iOSProjectFolder Condition=" '$(iOSProjectFolder)' == '' ">$(PlatformsProjectFolder)iOS\</iOSProjectFolder>
+		<iOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(iOSProjectFolder)'))</iOSProjectFolder>
+		<iOSProjectFolder Condition=" !Exists($(iOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('iOS'))</iOSProjectFolder>
+		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">$(PlatformsProjectFolder)MacCatalyst\</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacCatalystProjectFolder)'))</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
+		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
+		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
+		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
+		<SkiaProjectFolder Condition=" '$(SkiaProjectFolder)' == '' ">$(PlatformsProjectFolder)Skia\</SkiaProjectFolder>
+		<SkiaProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(SkiaProjectFolder)'))</SkiaProjectFolder>
+		<SkiaProjectFolder Condition=" !Exists('$(SkiaProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Skia'))</SkiaProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
+		<WasmProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
+		<WasmProjectFolder Condition=" !Exists('$(WasmProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Wasm'))</WasmProjectFolder>
+		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
+		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
+		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -53,4 +77,24 @@
 	<Import Project="Uno.Common.Wasm.targets"
 		Condition=" $(_IsStandaloneWasmHead) and $(UsingUnoCommonWasmTargets) == '' " />
 
+	<ItemGroup>
+		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
+			Condition=" $(IsAndroid) != 'true' " />
+		<_IgnorePlatformFiles Include="$(iOSProjectFolder)**"
+			Condition=" $(IsIOS) != 'true' " />
+		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
+			Condition=" $(IsMacCatalyst) != 'true' " />
+		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"
+			Condition=" $(IsMacOS) != 'true' " />
+		<_IgnorePlatformFiles Include="$(SkiaProjectFolder)**"
+			Condition=" $(IsSkia) != 'true' " />
+		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
+			Condition=" $(IsBrowser) != 'true' " />
+		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
+			Condition=" $(IsWinAppSdk) != 'true' " />
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Content Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
 </Project>
