@@ -13,14 +13,4 @@
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
-
-	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(MacCatalystProjectFolder)', '**', '*'))" />
-		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
-		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
-		<Compile Remove="@(_IgnorePlatformFiles)" />
-		<Content Remove="@(_IgnorePlatformFiles)" />
-		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
-		<Manifest Remove="@(_IgnorePlatformFiles)" />
-	</ItemGroup>
 </Project>

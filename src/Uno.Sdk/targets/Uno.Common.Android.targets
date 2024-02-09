@@ -3,10 +3,7 @@
 		<IsAndroid>true</IsAndroid>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
 		<EnableDefaultAndroidItems>false</EnableDefaultAndroidItems>
-		<AndroidProjectFolder Condition=" '$(AndroidProjectFolder)' == '' ">$(PlatformsProjectFolder)Android\</AndroidProjectFolder>
-		<AndroidProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(AndroidProjectFolder)'))</AndroidProjectFolder>
-		<AndroidProjectFolder Condition=" !Exists('$(AndroidProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Android'))</AndroidProjectFolder>
-		
+
 		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
 	</PropertyGroup>
 
