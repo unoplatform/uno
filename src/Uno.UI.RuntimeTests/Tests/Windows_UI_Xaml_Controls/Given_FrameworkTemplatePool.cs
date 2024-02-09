@@ -438,7 +438,7 @@ internal class Given_FrameworkTemplatePool
 		Assert.AreEqual(1, _created[1].TemplateRecycled);
 	}
 
-	public class TemplatePoolAwareControl : Grid, IFrameworkTemplatePoolAware
+	public partial class TemplatePoolAwareControl : Grid, IFrameworkTemplatePoolAware
 	{
 		public int TemplateRecycled { get; private set; }
 
