@@ -52,7 +52,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ComboBox
 	{
+#if HAS_UNO
 		private static readonly FieldInfo _editableTextField = typeof(ComboBox).GetField("_editableText", BindingFlags.Instance | BindingFlags.NonPublic);
+#endif
 
 		private ResourceDictionary _testsResources;
 
@@ -78,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		const int BorderThicknessAdjustment = 2; // Deduct BorderThickness on PopupBorder
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_IsEditable_False()
 		{
@@ -123,6 +126,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.IsEditable);
 			Assert.IsNotNull(_editableTextField.GetValue(SUT));
 		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
