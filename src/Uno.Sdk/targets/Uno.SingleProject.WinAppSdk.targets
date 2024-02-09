@@ -30,18 +30,6 @@
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 	</ItemGroup>
 
-	<!-- Remove all files from other targets -->
-	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
-		<_TargetPlatformFiles Include="$([System.IO.Path]::Combine('$(WindowsProjectFolder)', '**', '*'))" />
-		<_AllPlatformFiles Include="$([System.IO.Path]::Combine('$(PlatformsProjectFolder)', '**', '*'))" />
-		<_IgnorePlatformFiles Include="@(_AllPlatformFiles)" Exclude="@(_TargetPlatformFiles)" />
-		<Compile Remove="@(_IgnorePlatformFiles)" />
-		<Content Remove="@(_IgnorePlatformFiles)" />
-		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
-		<Manifest Remove="@(_IgnorePlatformFiles)" />
-		<AppxManifest Remove="@(_IgnorePlatformFiles)" />
-	</ItemGroup>
-
 	<!--
 		Sanity Check...
 		The AppxManifest should have come in automatically but if it didn't for some reason we need

@@ -8,10 +8,6 @@
 		<TargetFrameworkIdentifier>Skia</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
 		<TargetPlatformVersion>1.0</TargetPlatformVersion>
-
-		<SkiaProjectFolder Condition=" '$(SkiaProjectFolder)' == '' ">$(PlatformsProjectFolder)Skia\</SkiaProjectFolder>
-		<SkiaProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(SkiaProjectFolder)'))</SkiaProjectFolder>
-		<SkiaProjectFolder Condition=" !Exists('$(SkiaProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Skia'))</SkiaProjectFolder>
 	</PropertyGroup>
 
 	<!-- Enable the netx.0-skia target -->
