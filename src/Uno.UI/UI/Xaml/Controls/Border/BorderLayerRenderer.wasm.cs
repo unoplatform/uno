@@ -123,13 +123,21 @@ partial class BorderLayerRenderer
 			}
 		}
 
+		SetCornerRadius(_owner, cornerRadius, thickness);
+	}
+
+	internal static void SetCornerRadius(
+		FrameworkElement element,
+		CornerRadius cornerRadius,
+		Thickness borderThickness)
+	{
 		if (cornerRadius == CornerRadius.None)
 		{
 			element.ResetStyle("border-radius", "overflow");
 		}
 		else
 		{
-			var outer = cornerRadius.GetRadii(element.RenderSize, thickness).Outer;
+			var outer = cornerRadius.GetRadii(element.RenderSize, borderThickness).Outer;
 			WindowManagerInterop.SetCornerRadius(element.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
 		}
 	}

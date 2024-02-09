@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Controls;
+
 #if __IOS__
 using CoreGraphics;
 using _View = UIKit.UIView;
@@ -184,7 +186,7 @@ namespace Uno.UI.Toolkit
 				// Note that this line was necessary as of writing it even though we pass zero for BorderThickness. Setting the CornerRadius alone has a noticeable effect.
 				// and not setting CornerRadius properly results in wrong rendering.
 				// Note that the brush will not be used if we pass zero thickness, so we pass null instead of wasting time reading the dependency property.
-				_border.CornerRadius = CornerRadius; // TODO:MZ: Verify this works
+				BorderLayerRenderer.SetCornerRadius(this, CornerRadius, default);
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__

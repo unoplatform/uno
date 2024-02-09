@@ -39,14 +39,6 @@ partial class Border
 
 	private void UpdateBorder() => _borderRenderer.Update();
 
-	// TODO:MZ: Needed on Skia?
-	// internal override void OnArrangeVisual(Rect rect, Rect? clip)
-	//{
-	//	UpdateBorder();
-
-	//	base.OnArrangeVisual(rect, clip);
-	//}
-
 	partial void OnBorderBrushChangedPartial() => UpdateBorder();
 
 	partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue) =>
