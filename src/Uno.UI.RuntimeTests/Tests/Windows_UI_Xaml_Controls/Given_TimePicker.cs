@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Uno.UI.RuntimeTests.MUX.Helpers;
-using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using SamplesApp.UITests;
+using Uno.UI.RuntimeTests.MUX.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -63,6 +61,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(expectedTime, timePicker.SelectedTime);
 			Assert.AreEqual(expectedTime, timePicker.Time);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
+		public async Task When_Opened_From_Button_Flyout()
+		{
+			var button = new Button();
+			var timePickerFlyout = new TimePickerFlyout();
+			button.Flyout = timePickerFlyout;
+
+			var root = new Grid();
+			root.Children.Add(button);
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			await TestServices.WindowHelper.WaitForLoaded(root);
+
+			var buttonAutomationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+			var invokePattern = buttonAutomationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			invokePattern.Invoke();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
+
+			Assert.IsNotNull(timePickerFlyoutPresenter);
+			Assert.AreEqual(1, timePickerFlyoutPresenter.Opacity);
+			timePickerFlyout.Close();
 		}
 
 		[TestMethod]
