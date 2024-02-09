@@ -58,6 +58,8 @@ namespace Microsoft.UI.Xaml.Controls
 			SetDefaultForeground(ForegroundProperty);
 		}
 
+		partial void InitializePlatform();
+
 		/// <summary>
 		/// Indicates if the content should inherit templated parent from the presenter, or its templated parent.
 		/// </summary>
