@@ -193,6 +193,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public static bool AllWindowsDone()
 	{
+		// This probably doesn't need a lock, since it doesn't modify anything and reading outdated values is fine,
+		// but let's be cautious.
 		lock (_x11WindowToXamlRootHostMutex)
 		{
 			return _firstWindowCreated && _x11WindowToXamlRootHost.Count == 0;

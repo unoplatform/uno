@@ -560,9 +560,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		// We don't need an event mask here as Selection events aren't maskable.
 
-		// can probably be optimized with epoll but at the cost of thread preemption
-		SpinWait.SpinUntil(() => X11Helper.XPending(_x11Window.Display) > 0);
-
 		var _3 = XLib.XNextEvent(_x11Window.Display, out var event_);
 
 		if (event_.type != XEventName.SelectionNotify)
@@ -658,9 +655,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		// We don't need an event mask here as Selection events aren't maskable.
 
-		// can probably be optimized with epoll but at the cost of thread preemption
-		SpinWait.SpinUntil(() => X11Helper.XPending(_x11Window.Display) > 0);
-
 		var _3 = XLib.XNextEvent(_x11Window.Display, out var event_);
 
 		if (event_.type != XEventName.SelectionNotify)
@@ -739,7 +733,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			while (true)
 			{
-				SpinWait.SpinUntil(() => X11Helper.XPending(_x11Window.Display) > 0);
 				var _8 = XLib.XNextEvent(_x11Window.Display, out event_);
 
 				if (event_.type != XEventName.PropertyNotify || event_.PropertyEvent.state != X11Helper.PropertyNewValue)
