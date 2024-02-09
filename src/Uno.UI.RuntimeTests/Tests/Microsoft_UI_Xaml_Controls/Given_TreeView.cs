@@ -30,6 +30,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using System.ComponentModel;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+using TreeView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView;
+
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]
@@ -47,6 +49,70 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Setting_SelectedItem_DoesNotTakeEffect()
+		{
+			var treeView = new TreeView();
+			treeView.ItemTemplate = TreeViewItemTemplate;
+			var testViewModelItems = new[]
+			{
+				new TestViewModelItem()
+				{
+					Label = "First item",
+				},
+				new TestViewModelItem()
+				{
+					Label = "Second item",
+				},
+			};
+			treeView.ItemsSource = testViewModelItems;
+
+			await UITestHelper.Load(treeView);
+
+			treeView.SelectedItem = treeView.RootNodes[1];
+
+#if !HAS_UNO
+			var listControl = (TreeViewList)typeof(Control).GetMethod("GetTemplateChild", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(treeView, new[] { "ListControl" });
+#else
+			var listControl = treeView.ListControl;
+#endif
+			// Yes, that's how it behaves on WinUI :/
+			Assert.AreEqual(-1, listControl.SelectedIndex);
+		}
+
+		[TestMethod]
+		public async Task When_Setting_SelectedItem_TakesEffect()
+		{
+			TreeView treeView = new TreeView
+			{
+				RootNodes =
+				{
+					new TreeViewNode
+					{
+						Content = "1",
+					},
+					new TreeViewNode
+					{
+						Content = "2"
+					},
+					new TreeViewNode
+					{
+						Content = "3"
+					}
+				}
+			};
+			await UITestHelper.Load(treeView);
+
+			treeView.SelectedItem = treeView.RootNodes[1];
+
+#if !HAS_UNO
+			var listControl = (TreeViewList)typeof(Control).GetMethod("GetTemplateChild", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(treeView, new[] { "ListControl" });
+#else
+			var listControl = treeView.ListControl;
+#endif
+			Assert.AreEqual(1, listControl.SelectedIndex);
+		}
+
+		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -56,7 +122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var initial_Depth_1 = 64;
 			var initial_Depth_2 = 96;
 
-			var treeView = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView();
+			var treeView = new TreeView();
 			treeView.ItemTemplate = TreeViewItemTemplate;
 			var testViewModelItems = Enumerable.Range(0, 2).Select(_ => Get_Depth_0_Item()).ToArray();
 			treeView.ItemsSource = testViewModelItems;

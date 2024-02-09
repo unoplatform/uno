@@ -669,7 +669,12 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 	internal TreeViewNode GetAssociatedNode(object item)
 	{
-		return m_itemToNodeMap[item];
+		if (m_itemToNodeMap.TryGetValue(item, out var result))
+		{
+			return result;
+		}
+
+		return null;
 	}
 
 	internal bool IndexOfNode(TreeViewNode targetNode, out int index)
