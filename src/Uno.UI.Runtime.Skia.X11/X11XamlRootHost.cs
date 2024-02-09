@@ -114,14 +114,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 
-		// TODO: Currently not working
 		unsafe void SetIconFromFile(string iconPath)
 		{
 			using var fileStream = File.OpenRead(iconPath);
 			using var codec = SKCodec.Create(fileStream);
 			using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-			var bitmapBuffer = bitmap.GetPixels();
-			var result = codec.GetPixels(bitmap.Info, bitmapBuffer);
+			var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
 			if (result != SKCodecResult.Success)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -134,20 +132,21 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			var pixels = bitmap.Pixels;
 			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
 			using var _1 = Disposable.Create(() => Marshal.FreeHGlobal(data));
-			var span = new Span<IntPtr>(data.ToPointer(), pixels.Length + 2)
-			{
-				[0] = bitmap.Width,
-				[1] = bitmap.Height
-			};
 
-			new Span<IntPtr>(bitmap.GetPixels().ToPointer(), pixels.Length).CopyTo(span[2..]);
+			var ptr = (IntPtr*)data.ToPointer();
+			*(ptr++) = bitmap.Width;
+			*(ptr++) = bitmap.Height;
+			foreach (var pixel in bitmap.Pixels)
+			{
+				*(ptr++) = pixel.Alpha << 24 | pixel.Red << 16 | pixel.Green << 8 | pixel.Blue << 0;
+			}
 
 			var display = _x11Window!.Value.Display;
 			using var _2 = X11Helper.XLock(display);
 
 			var wmIconAtom = X11Helper.GetAtom(display, X11Helper._NET_WM_ICON);
 			var cardinalAtom = X11Helper.GetAtom(display, X11Helper.XA_CARDINAL);
-			var res = XLib.XChangeProperty(
+			var _3 = XLib.XChangeProperty(
 				display,
 				_x11Window!.Value.Window,
 				wmIconAtom,
@@ -155,10 +154,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				32,
 				PropertyMode.Replace,
 				data,
-				pixels.Length);
+				pixels.Length + 2);
 
-			var _3 = XLib.XFlush(display);
-			var _4 = XLib.XSync(display, false); // wait until the pixels are actually copied
+			var _4 = XLib.XFlush(display);
+			var _5 = XLib.XSync(display, false); // wait until the pixels are actually copied
 		}
 	}
 
