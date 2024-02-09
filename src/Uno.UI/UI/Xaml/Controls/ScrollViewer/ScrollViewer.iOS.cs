@@ -43,6 +43,8 @@ namespace Microsoft.UI.Xaml.Controls
 			SetScrollableContainer();
 		}
 
+		private partial void OnUnloadedPartial() { }
+
 		private void SetScrollableContainer()
 		{
 			_scrollableContainer = _presenter;

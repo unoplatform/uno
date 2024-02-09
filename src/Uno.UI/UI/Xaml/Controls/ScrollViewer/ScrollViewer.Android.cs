@@ -188,5 +188,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+
+		private partial void OnLoadedPartial() { }
+		private partial void OnUnloadedPartial() { }
 	}
 }
