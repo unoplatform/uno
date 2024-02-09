@@ -73,7 +73,7 @@ internal class DpiHelper
 		}
 
 		float dpi;
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			dpi = DpiUtilities.GetDpiForWindow(DpiUtilities.GetWin32Hwnd(GetWindow().Window));
 		}

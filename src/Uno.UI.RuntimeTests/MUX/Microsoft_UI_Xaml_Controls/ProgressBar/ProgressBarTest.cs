@@ -20,7 +20,7 @@ public class ProgressBarTest
 	[TestMethod]
 	public async Task ProgressBarLayoutUpdate()
 	{
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		if (OperatingSystem.IsMacOS())
 		{
 			Assert.Inconclusive("This test is not valid on macOS");
 			return;
