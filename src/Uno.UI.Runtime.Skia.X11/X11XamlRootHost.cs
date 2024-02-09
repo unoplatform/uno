@@ -119,14 +119,22 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			using var fileStream = File.OpenRead(iconPath);
 			using var codec = SKCodec.Create(fileStream);
+			if (codec is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Unable to create an SKCodec instance for icon file {iconPath}.");
+				}
+				return;
+			}
 			using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
 			var bitmapBuffer = bitmap.GetPixels();
 			var result = codec.GetPixels(bitmap.Info, bitmapBuffer);
 			if (result != SKCodecResult.Success)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Warn($"Unable to decode icon file [{iconPath}] specified in the Package.appxmanifest file.");
+					this.Log().Error($"Unable to decode icon file [{iconPath}] specified in the Package.appxmanifest file.");
 				}
 				return;
 			}
