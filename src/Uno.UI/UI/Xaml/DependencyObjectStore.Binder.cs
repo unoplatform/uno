@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml
 
 			// The property value may be an enumerable of providers
 			var isValidEnumerable = child is not string;
-			return isValidEnumerable && child is IList or IEnumerable;
+			return isValidEnumerable && child is IEnumerable;
 		}
 
 		private void ApplyChildrenBindable(object? inheritedValue, bool isTemplatedParent)
