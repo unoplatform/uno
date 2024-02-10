@@ -10,7 +10,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 	{
 		private void PreloadHarfBuzz()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			if (OperatingSystem.IsLinux())
 			{
 				// Here, we preload libHarfBuzzSharp.so using the RTLD_DEEPBIND flag, so that
 				// is loaded with its static dependencies, and not the ones from the system, particularly

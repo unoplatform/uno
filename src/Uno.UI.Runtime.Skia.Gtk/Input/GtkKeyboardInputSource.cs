@@ -100,7 +100,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 
 	private static char? KeyCodeToUnicode(uint keyCode, uint keyVal)
 	{
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			var result = InputHelper.WindowsKeyCodeToUnicode(keyCode);
 			return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
