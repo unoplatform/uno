@@ -38,10 +38,10 @@ namespace Microsoft.UI.Xaml
 		private readonly object _gate = new object();
 
 		private HashtableEx? _childrenBindableMap;
-		private List<object>? _childrenBindable;
+		private List<object?>? _childrenBindable;
 
 		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
-		private List<object> ChildrenBindable => _childrenBindable ??= new List<object>();
+		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
@@ -590,7 +590,13 @@ namespace Microsoft.UI.Xaml
 		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
 		{
 			if (IsCandidateChild(value))
+			{
 				ChildrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
+			}
+			else if (TryGetChildBindablePropertyIndex(propertyDetails.Property, out var index))
+			{
+				ChildrenBindable[index] = null;
+			}
 		}
 
 		/// <summary>
@@ -603,7 +609,7 @@ namespace Microsoft.UI.Xaml
 			if (!ChildrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
 				ChildrenBindableMap[property] = index = ChildrenBindableMap.Count;
-				ChildrenBindable.Add(null!); // The caller will replace null with a non-null value.
+				ChildrenBindable.Add(null); // The caller will replace null with a non-null value.
 			}
 			else
 			{
@@ -611,6 +617,19 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return index;
+		}
+
+		private bool TryGetChildBindablePropertyIndex(DependencyProperty property, out int index)
+		{
+			if (_childrenBindableMap?.TryGetValue(property, out var indexRaw) == true)
+			{
+				index = (int)indexRaw!;
+				return true;
+			}
+
+
+			index = -1;
+			return false;
 		}
 
 
