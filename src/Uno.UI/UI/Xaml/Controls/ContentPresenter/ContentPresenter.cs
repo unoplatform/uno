@@ -708,6 +708,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 					UnregisterContentTemplateRoot();
 
+					ContentTemplate?.ReleaseTemplateRoot(previousValue);
+
 					UpdateContentTransitions(this.ContentTransitions, null);
 				}
 
