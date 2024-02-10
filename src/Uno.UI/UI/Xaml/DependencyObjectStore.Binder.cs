@@ -127,6 +127,10 @@ namespace Microsoft.UI.Xaml
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
+				if (child is null)
+				{
+					continue;
+				}
 
 				Debug.Assert(IsCandidateChild(child));
 
