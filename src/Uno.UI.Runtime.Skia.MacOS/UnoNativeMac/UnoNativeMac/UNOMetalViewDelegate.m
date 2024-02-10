@@ -3,7 +3,20 @@
 //
 
 #import "UNOMetalViewDelegate.h"
+#import "UNOWindow.h"
 #import "UnoNativeMac.h"
+
+static draw_fn_ptr draw;
+
+inline draw_fn_ptr uno_get_draw_callback(void)
+{
+    return draw;
+}
+
+void uno_set_draw_callback(draw_fn_ptr p)
+{
+    draw = p;
+}
 
 @implementation UNOMetalViewDelegate
 {
@@ -22,7 +35,7 @@
         mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
         mtkView.sampleCount = 1;
 #if DEBUG
-        NSLog(@"paused %s enableSetNeedsDisplay %s", mtkView.paused ? "true" : "false", mtkView.enableSetNeedsDisplay ? "true" : "false");
+        NSLog(@"initWithMetalKitView: paused %s enableSetNeedsDisplay %s", mtkView.paused ? "true" : "false", mtkView.enableSetNeedsDisplay ? "true" : "false");
 #endif
     }
     

@@ -4,8 +4,7 @@
 
 #pragma once
 
-#import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
+#import "UnoNativeMac.h"
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.ui.core.corecursortype?view=winrt-22621
 typedef NS_ENUM(uint32, CoreCursorType) {

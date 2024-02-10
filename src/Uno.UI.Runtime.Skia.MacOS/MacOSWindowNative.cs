@@ -25,6 +25,15 @@ internal class MacOSWindowNative
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 
+		var defaultWidth = 1024.0;
+		var defaultHeight = 800.0;
+		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		if (preferredWindowSize != Size.Empty)
+		{
+			defaultWidth = preferredWindowSize.Width;
+			defaultHeight = preferredWindowSize.Height;
+		}
+
 		if (MacSkiaHost.Current is not null)
 		{
 			_mainWindow = true;
@@ -34,8 +43,7 @@ internal class MacOSWindowNative
 		else
 		{
 			_mainWindow = false;
-			// TODO multi-window support
-			// _handle = NativeUno.uno_window_new();
+			_handle = NativeUno.uno_window_create(defaultWidth, defaultHeight);
 		}
 
 		// host MUST be created after we get a native handle
@@ -45,15 +53,8 @@ internal class MacOSWindowNative
 		MacOSWindowHost.Register(_handle, Host);
 		MacOSWindowHost.XamlRootMap.Register(xamlRoot, Host);
 
-		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		if (preferredWindowSize != Size.Empty)
-		{
-			NativeUno.uno_window_resize(_handle, preferredWindowSize.Width, preferredWindowSize.Height);
-		}
-		else
-		{
-			NativeUno.uno_window_resize(_handle, 1024, 800);
-		}
+		// call resize as late as possible (after the host creation)
+		NativeUno.uno_window_resize(_handle, defaultWidth, defaultHeight);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;

@@ -49,7 +49,7 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 
 	internal MacOSWindowNative? InitialWindow { get; set; }
 
-	public RenderSurfaceType? RenderSurfaceType { get; set; }
+	public RenderSurfaceType RenderSurfaceType { get; set; }
 
 	public void Run()
 	{
@@ -95,8 +95,34 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 	{
 		try
 		{
+			// Initialize with Metal unless software rendering is requested
+			var metal = RenderSurfaceType != RenderSurfaceType.Software;
+
 			// Create the native NSApplication and a main window
-			return NativeUno.uno_app_initialize();
+			var result = NativeUno.uno_app_initialize(ref metal);
+
+			switch (RenderSurfaceType)
+			{
+				case RenderSurfaceType.Auto:
+					RenderSurfaceType = metal ? RenderSurfaceType.Metal : RenderSurfaceType.Software;
+					break;
+				case RenderSurfaceType.Metal:
+					if (!metal)
+					{
+						throw new NotSupportedException("Metal is not supported on this hardware or configuration. Try enabling the software-based renderer.");
+					}
+					break;
+				case RenderSurfaceType.Software:
+					if (metal)
+					{
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().Warn("Metal is supported on this hardware but software rendering was requested.");
+						}
+					}
+					break;
+			}
+			return result;
 		}
 		catch (Exception e)
 		{

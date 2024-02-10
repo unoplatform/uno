@@ -3,8 +3,8 @@
 //
 
 #import "UNOWindow.h"
-
-static id<MTLDevice> device;
+#import "UNOApplication.h"
+#import "UNOSoftView.h"
 
 static NSWindow *main_window;
 static id windowDidChangeScreen;
@@ -15,7 +15,17 @@ static window_did_change_screen_parameters_fn_ptr window_did_change_screen_param
 // libSkiaSharp
 extern void* gr_direct_context_make_metal(id device, id queue);
 
+static resize_fn_ptr resize;
 
+inline resize_fn_ptr uno_get_resize_callback(void)
+{
+    return resize;
+}
+
+void uno_set_resize_callback(resize_fn_ptr p)
+{
+    resize = p;
+}
 
 @interface windowDidChangeScreenNoteClass : NSObject
 {
@@ -61,31 +71,37 @@ extern void* gr_direct_context_make_metal(id device, id queue);
 
 NSWindow* uno_app_get_main_window(void)
 {
+#if DEBUG
     if (!main_window) {
-        device = MTLCreateSystemDefaultDevice();
-        main_window = (__bridge NSWindow*) uno_window_create();
+        main_window = (__bridge NSWindow*) uno_window_create(800, 600);
     }
+#endif
     return main_window;
 }
 
 // TODO
-// - add initial window size (GCSize)
 // - add initial background color
-void* uno_window_create(void)
+void* uno_window_create(double width, double height)
 {
-    CGRect size = NSMakeRect(0, 0, 800, 600);
+    CGRect size = NSMakeRect(0, 0, width, height);
     UNOWindow *window = [[UNOWindow alloc] initWithContentRect:size
                                                      styleMask:NSWindowStyleMaskTitled|NSWindowStyleMaskClosable|NSWindowStyleMaskMiniaturizable|NSWindowStyleMaskResizable
                                                        backing:NSBackingStoreBuffered defer:NO];
     
     NSViewController *vc = [[NSViewController alloc] init];
     
-    MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
-    v.enableSetNeedsDisplay = YES;
-    //    v.clearColor = MTLClearColorMake(0.0, 0.5, 1.0, 1.0); // FIXME: remove or set to default background color
-    window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
-    v.delegate = window.metalViewDelegate;
-    vc.view = v;
+    id device = uno_application_get_metal_device();
+    if (device) {
+        MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
+        v.enableSetNeedsDisplay = YES;
+        //    v.clearColor = MTLClearColorMake(0.0, 0.5, 1.0, 1.0); // FIXME: remove or set to default background color
+        window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
+        v.delegate = window.metalViewDelegate;
+        vc.view = v;
+    } else {
+        UNOSoftView *v = [[UNOSoftView alloc] initWithFrame:size];
+        vc.view = v;
+    }
     
     window.contentViewController = vc;
     
@@ -112,6 +128,9 @@ void uno_window_invalidate(NSWindow *window)
 
 bool uno_window_resize(NSWindow *window, double width, double height)
 {
+#if DEBUG
+    NSLog (@"uno_window_resize %@ %f %f", window, width, height);
+#endif
     bool result = false;
     if (window) {
         NSRect frame = window.frame;
@@ -119,9 +138,6 @@ bool uno_window_resize(NSWindow *window, double width, double height)
         [window setFrame:frame display:true animate:true];
         result = true;
     }
-#if DEBUG
-    NSLog (@"uno_window_resize %@ %f %f", window, width, height);
-#endif
     return result;
 }
 
@@ -364,8 +380,9 @@ void uno_set_window_should_close_callback(window_should_close_fn_ptr p)
     window_should_close = p;
 }
 
-void* uno_window_get_metal(UNOWindow* window)
+void* uno_window_get_metal_context(UNOWindow* window)
 {
+    id device = uno_application_get_metal_device();
     id queue = window.metalViewDelegate.queue;
 #if DEBUG
     NSLog(@"uno_window_get_metal device %p queue %p", device, queue);
@@ -489,7 +506,7 @@ void* uno_window_get_metal(UNOWindow* window)
             uint32 pid = (pdt == PointerDeviceTypePen) ? (uint32) event.pointingDeviceID : 1;
 
             handled = uno_get_window_mouse_event_callback()(mouse, px, py, get_modifiers(event.modifierFlags), pdt, frameId, timestamp, pid);
-#if DEBUG
+#if DEBUG_MOUSE // very noisy
             NSLog(@"NSEventTypeMouse*: %@ %g %g handled? %s", event, px, py, handled ? "true" : "false");
 #endif
         }

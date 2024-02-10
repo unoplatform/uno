@@ -4,8 +4,7 @@
 
 #pragma once
 
-#import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
+#import "UnoNativeMac.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
