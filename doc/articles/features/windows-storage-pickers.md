@@ -33,12 +33,13 @@ On some platforms, you can further customize the file-picking experience by util
 | Feature                 | UWP  | WebAssembly | Android | iOS   | macOS | WPF | GTK |
 |-------------------------|------|-------------|---------|-------|-------|-----|-----|
 | SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔    | ✔   | ✔  |
-| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬     | ✔ (3) | ✔    | ✔   | ✔  |
+| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔    | ✔   | ✔  |
 | SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✖    | ✖   | ✖  |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
 *(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\
-*(3) - PicturesLibrary opens the picture library with the image picker controller*
+*(3) - PicturesLibrary opens the picture library with the image picker controller*\
+*(4) - See Android section below*
 
 On platforms where the additional features are not supported yet, setting them will not have any effect.
 
@@ -342,7 +343,7 @@ This generally means that the Uno file picking APIs have been invoked without an
 
 ## Android
 
-Files picked from file pickers on Android are provided by the *Storage Access Framework API*. Due to its limitations, it is not possible to write to existing file in-place. Instead, Uno Platform creates a copy of the file in temporary storage and your changes are applied to this temporary file instead. When your file stream is then flushed, closed, or disposed of, the changes are written to the source file and the temporary file is discarded.
+The `SuggestedStartLocation` property has no effect on certain Android devices, and the file picker will always open in the root directory of the internal storage. When using VideosLibrary or PicturesLibrary locations, the file picker will open the picture library with the image picker controller. Still, for those devices that do not support it, it will open the root directory of the internal storage and suggest all the applications that can handle file types.
 
 The `FileSavePicker` API which uses `ACTION_CREATE_DOCUMENT` on Android has various limitations. To allow for the best possible compatibility across different Android versions, you should always add your file type extension to `FileTypeChoices`, and if possible provide only one such file type. In addition, if the `SuggestedFileName` or the user-typed file name matches an existing file, the resulting file will be renamed with `(1)` in the name, e.g. `test.txt` will become `test (1).txt` and the existing file will not be overwritten. However, if the user explicitly taps an existing file in the file browser, the system will show a dialog allowing the app to overwrite the existing file. This inconsistent behavior is caused by Android itself, so there is unfortunately no way to work around it from our side. See [this issue](https://issuetracker.google.com/issues/37136466) for more information.
 
