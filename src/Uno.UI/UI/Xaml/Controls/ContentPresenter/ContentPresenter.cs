@@ -678,8 +678,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (ContentTemplateRoot is { } currentTemplateRoot)
 			{
 				ContentTemplateRoot = null;
-
-				oldContentTemplate?.ReleaseTemplateRoot(currentTemplateRoot);
 			}
 
 			SetUpdateTemplate();
@@ -708,7 +706,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					UnregisterContentTemplateRoot();
 
-					ContentTemplate?.ReleaseTemplateRoot(previousValue);
+					_dataTemplateUsedLastUpdate?.ReleaseTemplateRoot(previousValue);
 
 					UpdateContentTransitions(this.ContentTransitions, null);
 				}
