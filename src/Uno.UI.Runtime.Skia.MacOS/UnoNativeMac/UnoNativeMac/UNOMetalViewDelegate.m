@@ -66,7 +66,11 @@ void uno_set_draw_callback(draw_fn_ptr p)
 
 - (void)mtkView:(nonnull MTKView *)view drawableSizeWillChange:(CGSize)size
 {
-    uno_get_resize_callback()((__bridge void*) view.window, size.width, size.height);
+    CGFloat scale = view.window.backingScaleFactor;
+#if DEBUG
+    NSLog (@"drawableSizeWillChange: %p %f x %f @ %gx", view.window, size.width, size.height, scale);
+#endif
+    uno_get_resize_callback()((__bridge void*) view.window, size.width / scale, size.height / scale);
 }
 
 @end

@@ -67,9 +67,7 @@ internal class MacOSWindowHost : IXamlRootHost
 
 	private void UpdateWindowSize(double nativeWidth, double nativeHeight)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
-		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
-		_initializationNotCompleted = SizeChanged is null;
+		SizeChanged?.Invoke(this, new Size(nativeWidth, nativeHeight));
 	}
 
 	private void Draw(SKSurface surface)
@@ -96,18 +94,24 @@ internal class MacOSWindowHost : IXamlRootHost
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
 		}
 
-		// FIXME: we get the first update for windows sizes before we have completed the initialization
+		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+
+		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
 		if (_initializationNotCompleted)
 		{
-			UpdateWindowSize(nativeWidth, nativeHeight);
+			UpdateWindowSize(nativeWidth / scale, nativeHeight / scale);
+			_initializationNotCompleted = SizeChanged is null;
 			if (_initializationNotCompleted)
 			{
 				return; // not yet...
 			}
 		}
 
+		// we can't cache anything since the texture will be different on next calls
 		using var target = MacOSMetalRenderer.CreateTarget(_context!, nativeWidth, nativeHeight, texture);
 		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+
+		surface.Canvas.Scale(scale, scale);
 
 		Draw(surface);
 
@@ -121,10 +125,11 @@ internal class MacOSWindowHost : IXamlRootHost
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} FullScreen: {NativeUno.uno_application_is_full_screen()}");
 		}
 
-		// FIXME: we get the first update for windows sizes before we have completed the initialization
+		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
 		if (_initializationNotCompleted)
 		{
 			UpdateWindowSize(nativeWidth, nativeHeight);
+			_initializationNotCompleted = SizeChanged is null;
 			if (_initializationNotCompleted)
 			{
 				return; // not yet...
