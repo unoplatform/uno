@@ -86,7 +86,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 						// _UnoEmbeddedResourcesInjection to run unnecessarily becase:
 						// Input file "obj\Uno.UI.Skia\Debug\net7.0\ILLink.Substitutions.xml" is newer than output file "obj\Uno.UI.Skia\Debug\net7.0\Uno.UI.dll".
 						// which will in turn cause many other things to be considered NOT up-to-date even when they should be up-to-date.
-						File.WriteAllText(TargetDefinitionFile, output);
+						File.WriteAllText(TargetDefinitionFile, output, writer.Encoding);
 					}
 				}
 			}
