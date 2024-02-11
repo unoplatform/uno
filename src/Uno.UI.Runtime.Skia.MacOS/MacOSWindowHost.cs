@@ -32,8 +32,10 @@ internal class MacOSWindowHost : IXamlRootHost
 	private readonly Window _winUIWindow;
 	private readonly DisplayInformation _displayInformation;
 	private readonly GRContext? _context;
-	private bool _initializationNotCompleted = true; // FIXME
 	private SKBitmap? _bitmap;
+	private SKSurface? _surface;
+	private int _rowBytes;
+	private bool _initializationNotCompleted = true; // FIXME
 
 	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
@@ -129,23 +131,24 @@ internal class MacOSWindowHost : IXamlRootHost
 			}
 		}
 
-		var info = new SKImageInfo((int)nativeWidth, (int)nativeHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+		int width = (int)nativeWidth;
+		int height = (int)nativeHeight;
+		if (_bitmap == null || width != _bitmap.Width || height != _bitmap.Height)
+		{
+			_bitmap?.Dispose();
+			_surface?.Dispose();
 
-		_bitmap = new SKBitmap(info);
-		var pixels = _bitmap.GetPixels(out _);
-		var surface = SKSurface.Create(info, pixels);
+			var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+			_bitmap = new SKBitmap(info);
+			_surface = SKSurface.Create(info, _bitmap.GetPixels());
+			_rowBytes = info.RowBytes;
+		}
 
-		Draw(surface);
+		Draw(_surface!);
 
-		*data = (nint)_bitmap.GetPixels();
-		*rowBytes = info.RowBytes;
-		*size = info.BytesSize;
-
-#if false
-		using Stream memStream = File.Open("/Users/poupou/skia.png", FileMode.Create, FileAccess.Write, FileShare.None);
-		using SKManagedWStream stream = new(memStream);
-		bitmap.Encode(stream, SKEncodedImageFormat.Png, 100);
-#endif
+		*data = (nint)_bitmap.GetPixels(out var bitmapSize);
+		*size = (int)bitmapSize;
+		*rowBytes = _rowBytes;
 	}
 
 	internal static Dictionary<nint, WeakReference<MacOSWindowHost>> windows = new();
