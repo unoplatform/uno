@@ -71,7 +71,14 @@ public class X11ApplicationHost : ISkiaApplicationHost
 	{
 		_eventLoop.Schedule(StartApp);
 
-		while (!X11XamlRootHost.AllWindowsDone()) { Thread.Sleep(100); }
+		while (!X11XamlRootHost.AllWindowsDone())
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"{nameof(X11ApplicationHost)} is testing for all windows closed.");
+			}
+			Thread.Sleep(100);
+		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
