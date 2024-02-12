@@ -215,7 +215,7 @@ internal class MacOSWindowHost : IXamlRootHost
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static unsafe void SoftDraw(nint handle, double width, double height, nint *data, int *rowBytes, int *size)
+	private static unsafe void SoftDraw(nint handle, double width, double height, nint* data, int* rowBytes, int* size)
 	{
 		var window = GetWindowHost(handle);
 		if (window is not null)
