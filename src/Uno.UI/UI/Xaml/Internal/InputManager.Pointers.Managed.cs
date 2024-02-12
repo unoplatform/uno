@@ -19,6 +19,12 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
 
+#if HAS_UNO_WINUI
+using PointerPoint = Microsoft.UI.Input.PointerPoint;
+#else
+using PointerPoint = Windows.UI.Input.PointerPoint;
+#endif
+
 namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
@@ -243,7 +249,7 @@ internal partial class InputManager
 		{
 			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
-				recognizer.ProcessDownEvent(new Microsoft.UI.Input.PointerPoint(args.CurrentPoint));
+				recognizer.ProcessDownEvent(new PointerPoint(args.CurrentPoint));
 				return;
 			}
 
@@ -281,7 +287,7 @@ internal partial class InputManager
 		{
 			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
-				recognizer.ProcessUpEvent(new Microsoft.UI.Input.PointerPoint(args.CurrentPoint));
+				recognizer.ProcessUpEvent(new PointerPoint(args.CurrentPoint));
 				return;
 			}
 
@@ -327,7 +333,7 @@ internal partial class InputManager
 		{
 			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
-				recognizer.ProcessMoveEvents([new Microsoft.UI.Input.PointerPoint(args.CurrentPoint)]);
+				recognizer.ProcessMoveEvents([new PointerPoint(args.CurrentPoint)]);
 				return;
 			}
 
