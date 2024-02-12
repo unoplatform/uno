@@ -1498,6 +1498,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 				// instances to release their references.
 				GC.Collect(2);
 				GC.WaitForPendingFinalizers();
+
+				FrameworkTemplatePool.Scavenge();
 			}
 
 			{
