@@ -41,7 +41,7 @@
 			Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);@(Page)"
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
-		<Compile Update="$([System.IO.Path]::Combine('**', '*.xaml.cs'))"
+		<Compile Update="**\*.xaml.cs"
 			DependentUpon="%(Filename)"
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
