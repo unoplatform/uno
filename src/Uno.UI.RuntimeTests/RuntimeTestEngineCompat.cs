@@ -48,7 +48,7 @@ namespace Uno.UI.RuntimeTests
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
 			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
 #if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
+				XamlRoot?.HostWindow is null;
 #else
 				false;
 #endif
