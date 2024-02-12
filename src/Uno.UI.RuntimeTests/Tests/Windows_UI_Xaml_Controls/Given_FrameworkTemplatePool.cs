@@ -231,6 +231,7 @@ internal partial class Given_FrameworkTemplatePool
 		}
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public void When_ContentControl_Template_Recycled()
 	{
@@ -250,10 +251,10 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			Template = dataTemplate
 		};
-		WindowHelper.WindowContent = SUT;
 
 		var root = new Grid();
 		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
 
 		Assert.AreEqual(1, TemplateCreated);
 
@@ -292,10 +293,10 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			Template = template1
 		};
-		WindowHelper.WindowContent = SUT;
 
 		var root = new Grid();
 		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
 
 		Assert.AreEqual(1, template1Created);
 
@@ -330,10 +331,10 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			ContentTemplate = dataTemplate
 		};
-		WindowHelper.WindowContent = SUT;
 
 		var root = new Grid();
 		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
 
 		Assert.AreEqual(1, TemplateCreated);
 
@@ -372,10 +373,10 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			ContentTemplate = dataTemplate1
 		};
-		WindowHelper.WindowContent = SUT;
 
 		var root = new Grid();
 		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
 
 		Assert.AreEqual(1, template1Created);
 
@@ -419,10 +420,10 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			ContentTemplate = dataTemplate1
 		};
-		WindowHelper.WindowContent = SUT;
 
 		var root = new Grid();
 		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
 
 		Assert.AreEqual(1, template1Created);
 
@@ -447,4 +448,5 @@ internal partial class Given_FrameworkTemplatePool
 			TemplateRecycled++;
 		}
 	}
+#endif
 }
