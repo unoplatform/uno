@@ -15,7 +15,6 @@ partial class ContentPresenter
 	{
 		_borderRenderer = new BorderLayerRenderer(this);
 		InitializeContentPresenter();
-		InitializePlatform();
 	}
 
 	private void SetUpdateTemplate() => UpdateContentTemplateRoot();

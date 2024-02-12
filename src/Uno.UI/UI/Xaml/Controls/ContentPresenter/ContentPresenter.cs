@@ -56,6 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InitializeContentPresenter()
 		{
 			SetDefaultForeground(ForegroundProperty);
+			InitializePlatform();
 		}
 
 		partial void InitializePlatform();
