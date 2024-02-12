@@ -78,7 +78,7 @@ Note that the expression above will produce negative value if initialVelocity < 
 
 ![image](https://github.com/unoplatform/uno/assets/31348972/958b0e92-d268-4229-810d-b38609eff4e0)
 
-The red curve corresponds to decay rate 0.3, and the green one corresponds to decay rate 0.1. The x-axis is the initial velocity, and the y-axis is `TimeToMinimumVelocity`.
+The red curve corresponds to decay rate 0.7, and the green one corresponds to decay rate 0.9. The x-axis is the initial velocity, and the y-axis is `TimeToMinimumVelocity`.
 
 Note that in both cases, the intersection with x-axis is the minimum velocity. The higher the decay rate, the more `TimeToMinimumVelocity`. Again, decay rate mentioned here is `1 - PositionInertiaDecayRate`.
 So, actually as `PositionInertiaDecayRate` gets larger, the time gets smaller.
