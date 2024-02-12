@@ -108,7 +108,7 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
+			if (_inputManager._pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
 			{
 				return;
 			}
@@ -163,7 +163,7 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
+			if (_inputManager._pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
 			{
 				return;
 			}
@@ -199,7 +199,7 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
+			if (_inputManager._pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
 			{
 				return;
 			}
@@ -247,7 +247,7 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
+			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
 				recognizer.ProcessDownEvent(new PointerPoint(args.CurrentPoint));
 				return;
@@ -285,7 +285,7 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
+			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
 				recognizer.ProcessUpEvent(new PointerPoint(args.CurrentPoint));
 				return;
@@ -331,7 +331,7 @@ internal partial class InputManager
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
+			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
 				recognizer.ProcessMoveEvents([new PointerPoint(args.CurrentPoint)]);
 				return;
@@ -386,7 +386,7 @@ internal partial class InputManager
 
 		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_pointerRedirections?.Remove(args.CurrentPoint.PointerId) == true)
+			if (_inputManager._pointerRedirections?.Remove(args.CurrentPoint.PointerId) == true)
 			{
 				return;
 			}

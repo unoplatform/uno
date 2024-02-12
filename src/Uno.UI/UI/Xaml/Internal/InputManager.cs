@@ -12,6 +12,7 @@ using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -23,24 +24,20 @@ using Windows.UI.Input;
 
 namespace Uno.UI.Xaml.Core;
 
-internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
+internal partial class InputManager : IInputInjectorTarget
 {
-	// TODO: This should not be static.
-	// It should be per-InputManager
+	private sealed class GestureRecognizerOwner(List<InteractionTracker> trackers, InputManager inputManager)
+	{
+		public List<InteractionTracker> Trackers => trackers;
+		public InputManager InputManager => inputManager;
+	}
+
 	// TODO: Consider using https://github.com/dotnet/roslyn/blob/d9272a3f01928b1c3614a942bdbbfeb0fb17a43b/src/Compilers/Core/Portable/Collections/SmallDictionary.cs
 	// This dictionary is not going to be large, so SmallDictionary might be more efficient.
-	private static Dictionary<uint, GestureRecognizer>? _pointerRedirections;
+	private Dictionary<uint, GestureRecognizer>? _pointerRedirections;
 
 	public InputManager(ContentRoot contentRoot)
 	{
-		// For now, we have a shared compositor, but we can have multiple `InputManager`s
-		// For that reason, IPointerRedirector deals with a static dictionary.
-		// And so, we don't really care which InputManager is used for the shared compositor.
-		// All `InputManager`s will do the same thing as they use the same dictionary (because it's static)
-		// In future, we may want to have multiple compositors, and each should have its own
-		// pointer redirector (and make the dictionary non-static)
-		Compositor.GetSharedCompositor().PointerRedirector ??= this;
-
 		ContentRoot = contentRoot;
 
 		ConstructKeyboardManager();
@@ -91,19 +88,23 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		return false;
 	}
 
-	void IPointerRedirector.RedirectPointer(Windows.UI.Input.PointerPoint pointer, List<InteractionTracker> trackers)
-		=> RedirectPointer(pointer, trackers);
-
-	private static void RedirectPointer(Windows.UI.Input.PointerPoint pointer, List<InteractionTracker> trackers)
+	internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, List<InteractionTracker> trackers)
 	{
+		var (originalSource, _) = VisualTreeHelper.HitTest(pointer.RawPosition, ContentRoot.XamlRoot);
+		if (originalSource is null)
+		{
+			return;
+		}
+
 		_pointerRedirections ??= new();
-		var recognizer = new GestureRecognizer(trackers);
+		var recognizer = new GestureRecognizer(new GestureRecognizerOwner(trackers, this));
 		recognizer.GestureSettings = GestureSettingsHelper.Manipulations;
 		recognizer.ManipulationStarting += OnRecognizerManipulationStarting;
 		recognizer.ManipulationStarted += OnRecognizerManipulationStarted;
 		recognizer.ManipulationUpdated += OnRecognizerManipulationUpdated;
 		recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
 		recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
+
 		recognizer.ProcessDownEvent(new PointerPoint(
 			pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
 
@@ -113,7 +114,7 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
 	{
 		// TODO: Make sure ManipulationStarting is fired on UIElement.
-		var trackers = (List<InteractionTracker>)sender.Owner;
+		var trackers = ((GestureRecognizerOwner)sender.Owner).Trackers;
 		foreach (var tracker in trackers)
 		{
 			tracker.StartUserManipulation();
@@ -122,17 +123,15 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
 	{
-#if UNO_HAS_MANAGED_POINTERS
-		if (PointerCapture.TryGet(new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)args.PointerDeviceType, args.Pointers[0].Id), out var capture))
-		{
-			PointerManager.ReleaseCaptures(capture);
-		}
-#endif
+		var owner = (GestureRecognizerOwner)sender.Owner;
+		var currentPoint = PointerRoutedEventArgs.LastPointerEvent.GetCurrentPoint(null);
+		var (originalSource, _) = VisualTreeHelper.HitTest(currentPoint.Position, owner.InputManager.ContentRoot.XamlRoot);
+		originalSource?.RaiseEvent(UIElement.PointerCaptureLostEvent, new PointerRoutedEventArgs(new(currentPoint, Windows.System.VirtualKeyModifiers.None), originalSource));
 	};
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
 	{
-		var trackers = (List<InteractionTracker>)sender.Owner;
+		var trackers = ((GestureRecognizerOwner)sender.Owner).Trackers;
 		foreach (var tracker in trackers)
 		{
 			tracker.ReceiveManipulationDelta(args.Delta.Translation);
@@ -141,7 +140,7 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
 	{
-		var trackers = (List<InteractionTracker>)sender.Owner;
+		var trackers = ((GestureRecognizerOwner)sender.Owner).Trackers;
 		foreach (var tracker in trackers)
 		{
 			tracker.ReceiveInertiaStarting(new Point(args.Velocities.Linear.X * 1000, args.Velocities.Linear.Y * 1000));
@@ -150,12 +149,12 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
 	{
-		var trackers = (List<InteractionTracker>)sender.Owner;
+		var owner = (GestureRecognizerOwner)sender.Owner;
+		var trackers = owner.Trackers;
 		foreach (var tracker in trackers)
 		{
-			_pointerRedirections!.Remove(args.Pointers[0].Id);
+			owner.InputManager._pointerRedirections!.Remove(args.Pointers[0].Id);
 			tracker.CompleteUserManipulation(new Vector3((float)(args.Velocities.Linear.X * 1000), (float)(args.Velocities.Linear.Y * 1000), 0));
 		}
 	};
-
 }

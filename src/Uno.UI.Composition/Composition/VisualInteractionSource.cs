@@ -90,8 +90,7 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	{
 		if (pointerPoint.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch)
 		{
-			var redirector = Compositor.PointerRedirector ?? Compositor.GetSharedCompositor().PointerRedirector;
-			redirector?.RedirectPointer(pointerPoint, Trackers);
+			Source.CompositionTarget?.TryRedirectForManipulation(pointerPoint, Trackers);
 		}
 	}
 }
