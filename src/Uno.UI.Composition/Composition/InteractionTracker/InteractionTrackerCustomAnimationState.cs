@@ -34,23 +34,23 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
-	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
+	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// TODO: Stop current animation. Currently, the TryUpdate[Position|Scale]WithAnimation methods are not implemented.
 
 		// State changes to inertia with inertia modifiers evaluated using requested velocity as initial velocity.
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, _interactionTracker.CurrentRequestId));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId));
 	}
 
-	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
+	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)
 	{
 		if (option == InteractionTrackerClampingOption.Auto)
 		{
 			value = Vector3.Clamp(value, _interactionTracker.MinPosition, _interactionTracker.MaxPosition);
 		}
 
-		_interactionTracker.SetPosition(value, isFromUserManipulation: true);
-		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _interactionTracker.CurrentRequestId));
+		_interactionTracker.SetPosition(value, requestId);
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
 	}
 }

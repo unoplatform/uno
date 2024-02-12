@@ -22,7 +22,7 @@ internal abstract class InteractionTrackerState : IDisposable
 	internal abstract void CompleteUserManipulation(Vector3 linearVelocity);
 	internal abstract void ReceiveManipulationDelta(Point translationDelta);
 	internal abstract void ReceiveInertiaStarting(Point linearVelocity);
-	internal abstract void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond);
-	internal abstract void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option);
+	internal abstract void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId);
+	internal abstract void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId);
 	public virtual void Dispose() { }
 }

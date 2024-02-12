@@ -64,21 +64,21 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	{
 	}
 
-	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
+	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// Inertia is restarted (state re-enters inertia) and inertia modifiers are evaluated with requested velocity added to current velocity
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, _handler.InitialVelocity + velocityInPixelsPerSecond, _interactionTracker.CurrentRequestId));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, _handler.InitialVelocity + velocityInPixelsPerSecond, requestId));
 	}
 
-	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
+	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)
 	{
 		if (option == InteractionTrackerClampingOption.Auto)
 		{
 			value = Vector3.Clamp(value, _interactionTracker.MinPosition, _interactionTracker.MaxPosition);
 		}
 
-		_interactionTracker.SetPosition(value, isFromUserManipulation: true);
-		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
+		_interactionTracker.SetPosition(value, requestId);
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
 	}
 
 	public override void Dispose() => _handler.Stop();

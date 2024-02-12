@@ -60,7 +60,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		if (_xHelper.HasCompleted && _yHelper.HasCompleted && _zHelper.HasCompleted)
 		{
-			_interactionTracker.SetPosition(FinalModifiedPosition, isFromUserManipulation: _requestId == 0);
+			_interactionTracker.SetPosition(FinalModifiedPosition, _requestId);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
 			_timer!.Dispose();
 			_stopwatch!.Stop();
@@ -72,6 +72,6 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			_yHelper.GetPosition(currentElapsedInSeconds),
 			_zHelper.GetPosition(currentElapsedInSeconds));
 
-		_interactionTracker.SetPosition(newPosition, isFromUserManipulation: _requestId == 0);
+		_interactionTracker.SetPosition(newPosition, _requestId);
 	}
 }

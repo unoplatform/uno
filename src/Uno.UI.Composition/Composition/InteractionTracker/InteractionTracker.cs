@@ -51,12 +51,11 @@ public partial class InteractionTracker : CompositionObject
 		_state = newState;
 	}
 
-	internal void SetPosition(Vector3 newPosition, bool isFromUserManipulation)
+	internal void SetPosition(Vector3 newPosition, int requestId)
 	{
 		if (_position != newPosition)
 		{
 			_position = newPosition;
-			int requestId = isFromUserManipulation ? 0 : _currentRequestId;
 			if (Owner is { } owner)
 			{
 				NativeDispatcher.Main.Enqueue(() =>
@@ -71,9 +70,9 @@ public partial class InteractionTracker : CompositionObject
 
 	public int TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
-		Interlocked.Increment(ref _currentRequestId);
-		_state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond);
-		return _currentRequestId;
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdatePositionWithAdditionalVelocity(velocityInPixelsPerSecond, id);
+		return id;
 	}
 
 	internal void StartUserManipulation()
@@ -104,9 +103,9 @@ public partial class InteractionTracker : CompositionObject
 
 	public int TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
 	{
-		Interlocked.Increment(ref _currentRequestId);
-		_state.TryUpdatePosition(value, option);
-		return _currentRequestId;
+		var id = Interlocked.Increment(ref _currentRequestId);
+		_state.TryUpdatePosition(value, option, id);
+		return id;
 	}
 
 	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
