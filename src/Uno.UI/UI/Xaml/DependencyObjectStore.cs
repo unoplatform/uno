@@ -1544,7 +1544,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Propagate the current inheritable properties to the registered children.
 		/// </summary>
-		internal void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
+		private void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
 		{
 			if (childStore is null && _childrenStores.Count == 0)
 			{
