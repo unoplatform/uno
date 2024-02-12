@@ -42,10 +42,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			get
 			{
 				// OpenGL support on macOS is currently broken
-				var isMacOS = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+				var isMacOS = OperatingSystem.IsMacOS();
 
 				// WSL2 is not supported because of a low version for GLSL (https://github.com/unoplatform/uno/issues/8643#issuecomment-1114392827)
-				var isWSL2 = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+				var isWSL2 = OperatingSystem.IsLinux()
 					// https://github.com/microsoft/WSL/issues/423#issuecomment-844418910
 					&& File.Exists("/proc/sys/kernel/osrelease")
 					&& File.ReadAllText("/proc/sys/kernel/osrelease").Trim().EndsWith("WSL2", StringComparison.Ordinal);

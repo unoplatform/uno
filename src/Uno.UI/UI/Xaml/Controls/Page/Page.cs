@@ -8,10 +8,12 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page : UserControl
 	{
+#if !__SKIA__
 		public Page()
 		{
 			InitializeBorder();
 		}
+#endif
 
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 

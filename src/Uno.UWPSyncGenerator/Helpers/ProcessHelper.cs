@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 	{
 		public static (int exitCode, string output, string error) RunProcess(string executable, string parameters, string? workingDirectory = null)
 		{
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+			if (!OperatingSystem.IsWindows()
 				&& executable.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
 			{
 				executable = Path.GetFileNameWithoutExtension(executable);

@@ -1,9 +1,12 @@
 ﻿#if !WINAPPSDK
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
@@ -119,6 +122,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CheckDateTimeTextBlockPartPosition(datePicker, "YearTextBlock", expectedColumn: 0);
 			CheckDateTimeTextBlockPartPosition(datePicker, "MonthTextBlock", expectedColumn: 2);
 			CheckDateTimeTextBlockPartPosition(datePicker, "DayTextBlock", expectedColumn: 4);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
+		public async Task When_Opened_From_Button_Flyout()
+		{
+			var button = new Button();
+			var datePickerFlyout = new DatePickerFlyout();
+			button.Flyout = datePickerFlyout;
+
+			var root = new Grid();
+			root.Children.Add(button);
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			await TestServices.WindowHelper.WaitForLoaded(root);
+
+			var buttonAutomationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+			var invokePattern = buttonAutomationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			invokePattern.Invoke();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
+
+			try
+			{
+				Assert.IsNotNull(datePickerFlyoutPresenter);
+				Assert.AreEqual(1, datePickerFlyoutPresenter.Opacity);
+			}
+			finally
+			{
+				if (popup is not null)
+				{
+					popup.IsOpen = false;
+				}
+			}
 		}
 
 		[TestMethod]

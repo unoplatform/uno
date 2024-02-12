@@ -164,7 +164,11 @@ namespace Microsoft.UI.Xaml
 				!(NativeVisualParent is DependencyObject),
 				DependencyPropertyValuePrecedences.DefaultValue
 			);
+
+			ReconfigureViewportPropagationPartial();
 		}
+
+		private partial void ReconfigureViewportPropagationPartial();
 
 		#region StretchAffectsMeasure DependencyProperty
 

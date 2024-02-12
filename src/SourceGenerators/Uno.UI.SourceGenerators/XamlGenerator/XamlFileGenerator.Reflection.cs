@@ -89,6 +89,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(type, typeSymbol);
 		}
 
+		private bool IsAssignableTo(XamlType xamlType, ISymbol? typeSymbol)
+			=> IsType(xamlType, typeSymbol) || (xamlType.Name is "NullExtension" && xamlType.PreferredXamlNamespace is XamlConstants.XamlXmlNamespace);
+
 		private static bool IsType([NotNullWhen(true)] INamedTypeSymbol? namedTypeSymbol, ISymbol? typeSymbol)
 		{
 			if (namedTypeSymbol != null)

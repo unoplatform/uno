@@ -80,7 +80,7 @@ namespace SamplesApp.UITests
 		private static void TryInitializeSkiaSharpLoader()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.Browser
-				&& !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				&& !OperatingSystem.IsWindows())
 			{
 #if DEBUG
 				Console.WriteLine("Initializing SkiaSharp loader");

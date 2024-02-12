@@ -16,6 +16,7 @@ using Uno.Disposables;
 using Uno.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {

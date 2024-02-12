@@ -1,17 +1,17 @@
 ﻿#nullable enable
 
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Cairo;
-using SkiaSharp;
-using Microsoft.UI.Xaml.Input;
-using WUX = Microsoft.UI.Xaml;
-using Uno.Foundation.Logging;
-using System.Diagnostics;
-using Windows.Graphics.Display;
 using Gtk;
-using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Input;
+using SkiaSharp;
+using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -40,7 +40,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 		_colorType = SKImageInfo.PlatformColorType;
 		// R and B channels are inverted on macOS running on arm64 CPU and this is not detected by Skia
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		if (OperatingSystem.IsMacOS())
 		{
 			if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
 			{
