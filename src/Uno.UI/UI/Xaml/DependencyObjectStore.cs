@@ -265,6 +265,38 @@ namespace Microsoft.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
+			// As a performance optimization, avoid creating the property details and try get the value in this fast path.
+			// We skip attached properties in this fast path as it causes Given_DependencyProperty_AttachedPropagation tests to fail.
+			if (!property.IsAttached && (propertyDetails ??= _properties.FindPropertyDetails(property)) is null)
+			{
+				// Since property details wasn't created, the only possibilities are returning UnsetValue or the default value.
+				// UnsetValue is returned when we are asked for a non-DefaultValue precedence specific value.
+				// Otherwise, we calculate the default value, first by calling `GetDefaultValue2`, then from property metadata.
+				if (isPrecedenceSpecific)
+				{
+					Debug.Assert(precedence is not null);
+					if (precedence != DependencyPropertyValuePrecedences.DefaultValue)
+					{
+						return UnsetValue.Instance;
+					}
+				}
+
+				if (ActualInstance is UIElement uiElement && uiElement.GetDefaultValue2(property, out var defaultValue))
+				{
+					return defaultValue;
+				}
+
+				defaultValue = property.GetMetadata(_originalObjectType).DefaultValue;
+
+				// Ensures that the default value of non-nullable properties is not null
+				if (defaultValue == null && !property.IsTypeNullable)
+				{
+					defaultValue = property.GetFallbackDefaultValue();
+				}
+
+				return defaultValue;
+			}
+
 			propertyDetails ??= _properties.GetPropertyDetails(property);
 
 			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
