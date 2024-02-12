@@ -17,6 +17,7 @@ using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
 using System.Collections.Generic;
 using System.Reflection;
+using Windows.Web.Syndication;
 
 
 #if WINAPPSDK
@@ -233,9 +234,10 @@ internal partial class Given_FrameworkTemplatePool
 
 #if HAS_UNO
 	[TestMethod]
-	public void When_ContentControl_Template_Recycled()
+	public async Task When_ContentControl_Template_Recycled()
 	{
-		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var TemplateCreated = 0;
 		List<WeakReference> created = new();
@@ -266,9 +268,10 @@ internal partial class Given_FrameworkTemplatePool
 	}
 
 	[TestMethod]
-	public void When_ContentControl_Template_Replaced_Recycled()
+	public async Task When_ContentControl_Template_Replaced_Recycled()
 	{
-		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var template1Created = 0;
 		List<WeakReference> _created = new();
@@ -313,9 +316,10 @@ internal partial class Given_FrameworkTemplatePool
 	}
 
 	[TestMethod]
-	public void When_ContentControl_ContentTemplate_Recycled()
+	public async Task When_ContentControl_ContentTemplate_Recycled()
 	{
-		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var TemplateCreated = 0;
 		List<WeakReference> _created = new();
@@ -346,9 +350,10 @@ internal partial class Given_FrameworkTemplatePool
 	}
 
 	[TestMethod]
-	public void When_ContentControl_ContentTemplate_Replaced_Recycled()
+	public async Task When_ContentControl_ContentTemplate_Replaced_Recycled()
 	{
-		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var template1Created = 0;
 		List<WeakReference> _created = new();
@@ -390,12 +395,16 @@ internal partial class Given_FrameworkTemplatePool
 
 		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
 		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target)?.TemplateRecycled);
+
+		await AssertCollectedReference(_created[0]);
+		await AssertCollectedReference(_created[1]);
 	}
 
 	[TestMethod]
-	public void When_ContentPresenter_ContentTemplate_Replaced_Recycled()
+	public async Task When_ContentPresenter_ContentTemplate_Replaced_Recycled()
 	{
-		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var template1Created = 0;
 		List<WeakReference> _created = new();
@@ -447,6 +456,58 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			TemplateRecycled++;
 		}
+	}
+
+	private IAsyncDisposable ValidateActiveInstanceTrackers()
+	{
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+		FrameworkTemplatePool.Scavenge();
+
+		var originalTrackers = FrameworkTemplatePool.ActiveInstanceTrackers;
+
+		return new AsyncDisposableAction(async () =>
+		{
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (originalTrackers == FrameworkTemplatePool.ActiveInstanceTrackers)
+				{
+					return;
+				}
+
+				FrameworkTemplatePool.Scavenge();
+
+				await Task.Delay(100);
+			}
+
+			Assert.AreEqual(originalTrackers, FrameworkTemplatePool.ActiveInstanceTrackers);
+		});
+	}
+
+	private async Task AssertCollectedReference(WeakReference reference, string message = "")
+	{
+		var sw = Stopwatch.StartNew();
+		while (sw.Elapsed < TimeSpan.FromSeconds(5))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+
+			if (!reference.IsAlive)
+			{
+				return;
+			}
+
+			FrameworkTemplatePool.Scavenge();
+
+			await Task.Delay(100);
+		}
+
+		Assert.IsFalse(reference.IsAlive, message);
 	}
 #endif
 }
