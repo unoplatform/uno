@@ -47,7 +47,7 @@ public sealed partial class MessageDialog
 	/// <summary>
 	/// This is used to associate the MessageDialog with a window in multi-window environment.
 	/// </summary>
-	internal object AssociatedWindow { get; set; }
+	internal object? AssociatedWindow { get; set; }
 
 	public IAsyncOperation<IUICommand?> ShowAsync()
 	{

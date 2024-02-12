@@ -20,7 +20,7 @@ public partial struct WindowId : IEquatable<WindowId>
 	public bool Equals(WindowId other)
 		=> Value == other.Value;
 
-	public override bool Equals(object obj)
+	public override bool Equals(object? obj)
 		=> (obj is WindowId y) && Equals(y);
 
 	public override int GetHashCode()
