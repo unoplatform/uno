@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Xaml.Controls;
 
 #if __IOS__
 using CoreGraphics;
@@ -17,6 +16,7 @@ using _View = AppKit.NSView;
 using Android.Views;
 #elif __WASM__
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 #endif
 
 

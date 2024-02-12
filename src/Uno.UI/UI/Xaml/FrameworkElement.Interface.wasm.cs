@@ -22,7 +22,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		private Action _backgroundChanged;
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
 
 		public T FindFirstParent<T>(bool includeCurrent) where T : class
