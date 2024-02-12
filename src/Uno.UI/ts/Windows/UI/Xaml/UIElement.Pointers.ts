@@ -108,17 +108,22 @@
 		private static onPointerOutReceived(evt: PointerEvent): void {
 			const element = evt.currentTarget as HTMLElement | SVGElement;
 
-			if (evt.relatedTarget && evt.isDirectlyOver(element)) {
-				// The 'pointerout' event is bubbling so we get the event when the pointer is going out of a nested element,
-				// but pointer is still over the current element.
-				// So here we check if the event is effectively because the pointer is leaving the bounds of the current element.
-				// If not, we stopPropagation so parent won't have to check it again and again.
-				// Note: We don't have to do that for the "enter" as we anyway maintain the IsOver state in managed.
-				// Note: If relatedTarget is null it means that pointer is no longer on the app at all
-				//		 (alt + tab for mouse, finger removed from screen, pen out of detection range)
-				//		 If so, we have to forward the exit in all cases.
-				evt.stopPropagation();
-				return;
+			const elementBounds = (evt.target as HTMLElement | SVGElement).getBoundingClientRect();
+			let elt = evt.target as HTMLElement | SVGElement;
+			while (elt && elt != element) {
+				const bounds = elt.getBoundingClientRect();
+				if (
+					(evt.clientY > bounds.top && (Math.abs(elementBounds.top - bounds.top) > 1))
+					&& (evt.clientY < bounds.bottom && (Math.abs(elementBounds.bottom - bounds.bottom) > 1))
+					&& (evt.clientX > bounds.left && (Math.abs(elementBounds.left - bounds.left) > 1))
+					&& (evt.clientX < bounds.right && (Math.abs(elementBounds.right - bounds.right) > 1))
+				) {
+					// There is child that is still under the pointer, so we should not propagate the event.
+					// Note: If the child is sharing the bounds with the target, we consider that the pointer is also leaving the intermediate child.
+					evt.stopPropagation();
+					return;
+				}
+				elt = elt.parentElement;
 			}
 
 			UIElement.onPointerEventReceived(evt);
