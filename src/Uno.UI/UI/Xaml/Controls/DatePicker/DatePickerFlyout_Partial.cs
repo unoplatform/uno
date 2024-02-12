@@ -79,19 +79,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_tpPresenter = spFlyoutPresenter;
 
 			// TODO: Uno specific: This is a workaround to avoid the popup to be shown at the wrong position briefly #15031
-			if (_tpPresenter is FrameworkElement presenter)
+			if (_tpPresenter is FrameworkElement presenter && _tpTarget is not null)
 			{
 				presenter.Opacity = 0.0;
 			}
 
 			return _tpPresenter as Control;
-		}
-
-		private protected override void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
-		{
-			_tpTarget = placementTarget;
-			base.ShowAtCore(placementTarget, showOptions);
-			//_asyncOperationManager.Start(placementTarget);
 		}
 
 		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
