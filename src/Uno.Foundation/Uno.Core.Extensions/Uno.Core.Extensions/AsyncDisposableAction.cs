@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 // ******************************************************************
+using System;
+
 namespace Uno
 {
 	internal record AsyncDisposableAction(Func<Task> Action) : IAsyncDisposable
