@@ -21,6 +21,11 @@ namespace Microsoft.UI.Xaml
 	public partial class FrameworkTemplatePool
 	{
 		/// <summary>
+		/// Provides a backdoor into active tracked instances for testing purposes.
+		/// </summary>
+		internal static int ActiveInstanceTrackers => InstanceTracker.ActiveInstanceTrackers;
+
+		/// <summary>
 		/// The InstanceTracker allows children to be returned to the <see cref="FrameworkTemplatePool"/>.
 		/// It does so by tying the lifetime of the parent to their children using <see cref="DependentHandle"/>
 		/// and <see cref="TrackerCookie">TrackerCookie</see> without creating strong references.
@@ -29,12 +34,27 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private static class InstanceTracker
 		{
+			/// <summary>
+			/// Tracks the list of parent-tracked views. This ensures that while a view produced by the <see cref="FrameworkTemplatePool"/>,
+			/// it cannot be collected by the GC.
+			/// </summary>
 			private static readonly Dictionary<View, DependentHandle> _activeInstances = new();
 
+			/// <summary>
+			/// A recycling pool of cookies, used to reduce allocations.
+			/// </summary>
 			private static readonly Stack<TrackerCookie> _cookiePool = new();
 
 			private const int MaxCookiePoolSize = 256;
 
+			/// <summary>
+			/// Number of active tracked instances
+			/// </summary>
+			internal static int ActiveInstanceTrackers => _activeInstances.Count;
+
+			/// <summary>
+			/// Adds a view for upcoming parent tracking
+			/// </summary>
 			public static void Add(View instance)
 				=> _activeInstances.Add(instance, default);
 
@@ -54,7 +74,12 @@ namespace Microsoft.UI.Xaml
 				GC.KeepAlive(target);
 			}
 
-			public static void TryCancelRecycling(View instance, object? oldParent)
+			/// <summary>
+			/// Cancels the parent tracking for a view
+			/// </summary>
+			/// <param name="instance">The view instance</param>
+			/// <param name="parent"></param>
+			public static void TryCancelTracking(View instance, object? parent)
 			{
 				ref var handle = ref CollectionsMarshal.GetValueRefOrNullRef(_activeInstances, instance);
 
@@ -64,11 +89,11 @@ namespace Microsoft.UI.Xaml
 
 					_activeInstances.Remove(instance);
 
-					GC.KeepAlive(oldParent);
+					GC.KeepAlive(parent);
 				}
 			}
 
-			public static void TryRegisterForRecycling(FrameworkTemplate template, View instance, object parent, object? oldParent)
+			public static void TryRegisterForTracking(FrameworkTemplate template, View instance, object parent, object? oldParent)
 			{
 				ref var handle = ref CollectionsMarshal.GetValueRefOrNullRef(_activeInstances, instance);
 

@@ -14,7 +14,9 @@
 // limitations under the License.
 //
 // ******************************************************************
-using System;
+#if NET6_0_OR_GREATER
+using global::System.Threading.Tasks;
+using global::System;
 
 namespace Uno
 {
@@ -26,3 +28,4 @@ namespace Uno
 			=> await Action();
 	}
 }
+#endif

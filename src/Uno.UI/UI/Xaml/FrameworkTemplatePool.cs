@@ -210,11 +210,11 @@ namespace Microsoft.UI.Xaml
 
 			if (newParent != null)
 			{
-				InstanceTracker.TryRegisterForRecycling(Unsafe.As<FrameworkTemplate>(template)!, Unsafe.As<View>(instance), newParent, oldParent);
+				InstanceTracker.TryRegisterForTracking(Unsafe.As<FrameworkTemplate>(template)!, Unsafe.As<View>(instance), newParent, oldParent);
 			}
 			else
 			{
-				InstanceTracker.TryCancelRecycling(Unsafe.As<View>(instance), oldParent);
+				InstanceTracker.TryCancelTracking(Unsafe.As<View>(instance), oldParent);
 			}
 		}
 
