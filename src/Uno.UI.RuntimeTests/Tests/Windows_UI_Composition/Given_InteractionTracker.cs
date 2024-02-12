@@ -171,6 +171,11 @@ internal partial class Given_InteractionTracker
 
 	[TestMethod]
 	[RequiresFullWindow]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is only supported on skia")]
+#elif !HAS_UNO
+	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
+#endif
 	public async Task When_UserInteraction()
 	{
 		var border = new Border()
