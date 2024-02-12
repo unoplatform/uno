@@ -125,6 +125,8 @@ internal class MacOSWindowHost : IXamlRootHost
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} FullScreen: {NativeUno.uno_application_is_full_screen()}");
 		}
 
+		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
 		if (_initializationNotCompleted)
 		{
@@ -136,8 +138,8 @@ internal class MacOSWindowHost : IXamlRootHost
 			}
 		}
 
-		int width = (int)nativeWidth;
-		int height = (int)nativeHeight;
+		int width = (int)(nativeWidth * scale);
+		int height = (int)(nativeHeight * scale);
 		if (_bitmap == null || width != _bitmap.Width || height != _bitmap.Height)
 		{
 			_bitmap?.Dispose();
@@ -146,6 +148,7 @@ internal class MacOSWindowHost : IXamlRootHost
 			var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
 			_bitmap = new SKBitmap(info);
 			_surface = SKSurface.Create(info, _bitmap.GetPixels());
+			_surface.Canvas.Scale(scale, scale);
 			_rowBytes = info.RowBytes;
 		}
 

@@ -27,6 +27,7 @@ void uno_set_soft_draw_callback(soft_draw_fn_ptr p)
 #if DEBUG
     NSLog (@"drawRect: window %p width %f height %f", self.window, width, height);
 #endif
+    CGFloat scale = self.window.backingScaleFactor;
 
     int size = 0;
     int rowBytes = 0;
@@ -39,7 +40,8 @@ void uno_set_soft_draw_callback(soft_draw_fn_ptr p)
 
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, data, size, NULL);
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-    CGImageRef image = CGImageCreate(width, height,
+    CGImageRef image = CGImageCreate(width * scale,
+                                     height * scale,
                                      /* bitsPerComponent */ 8,
                                      /* bitsPerPixel */ 32,
                                      /* bytesPerRow */ rowBytes,
@@ -52,9 +54,9 @@ void uno_set_soft_draw_callback(soft_draw_fn_ptr p)
 #if DEBUG_SCREENSHOT
     CFURLRef url = (__bridge CFURLRef)[NSURL fileURLWithPath:@"/Users/poupou/native.jpeg"];
     CGImageDestinationRef destination = CGImageDestinationCreateWithURL(url, kUTTypePNG, 1, NULL);
-    CGImageDestinationAddImage(destination, cgimage, nil);
+    CGImageDestinationAddImage(destination, image, nil);
     if (!CGImageDestinationFinalize(destination)) {
-        NSLog(@"Failed to write image %p to %@", cgimage, url);
+        NSLog(@"Failed to write image %p to %@", image, url);
     }
     CFRelease(destination);
 #endif
@@ -70,7 +72,7 @@ void uno_set_soft_draw_callback(soft_draw_fn_ptr p)
 - (void)setFrameSize:(NSSize)newSize
 {
 #if DEBUG
-    NSLog(@"setFrameSize: window %p width %f height %f", self.window, newSize.width, newSize.height);
+    NSLog(@"setFrameSize: %p %f x %f", self.window, newSize.width, newSize.height);
 #endif
     [super setFrameSize:newSize];
     uno_get_resize_callback()((__bridge void*) self.window, newSize.width, newSize.height);
