@@ -76,7 +76,7 @@ Currently, we fix the final velocity `v_f` to 30 px/sec, and call that `minimumV
 
 Note that the expression above will produce negative value if initialVelocity < minimumVelocity. So, in `GetTimeToMinimumVelocity`, if initialVelocity <= minimumVelocity, we return zero. The following graph visualizes the expression:
 
-![image](https://github.com/unoplatform/uno/assets/31348972/c6d88652-40eb-49dc-9b29-d240ac61e8e0)
+![image](https://github.com/unoplatform/uno/assets/31348972/958b0e92-d268-4229-810d-b38609eff4e0)
 
 The red curve corresponds to decay rate 0.3, and the green one corresponds to decay rate 0.1. The x-axis is the initial velocity, and the y-axis is `TimeToMinimumVelocity`.
 
