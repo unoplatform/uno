@@ -18,12 +18,12 @@ public partial class CompositionInteractionSourceCollection : CompositionObject,
 
 	public void RemoveAll()
 	{
-		_list.Clear();
-
 		foreach (var vis in _list.OfType<VisualInteractionSource>())
 		{
 			vis.Trackers.Remove(_tracker);
 		}
+
+		_list.Clear();
 	}
 
 	public void Add(ICompositionInteractionSource value)
