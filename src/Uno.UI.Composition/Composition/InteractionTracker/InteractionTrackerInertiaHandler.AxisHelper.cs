@@ -67,7 +67,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 		{
 			var epsilon = 0.0000011920929f;
 
-			var minimumVelocity = 50.0f;
+			var minimumVelocity = 30.0f;
 
 			return TimeToMinimumVelocityCore(MathF.Abs(InitialVelocity), DecayRate, InitialValue);
 

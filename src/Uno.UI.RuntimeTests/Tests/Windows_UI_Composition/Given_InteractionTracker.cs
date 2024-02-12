@@ -67,7 +67,7 @@ internal partial class Given_InteractionTracker
 
 		var finalPosition =
 #if HAS_UNO
-			50.07123f
+			56.7474f
 #else
 			56.747395f
 #endif

@@ -72,7 +72,7 @@ To get the time:
 1. `ln(v_f) - ln(v_i) = t ln(r)`
 1. `t = (ln(v_f) - ln(v_i)) / ln(r)`
 
-Currently, we fix the final velocity `v_f` to 50 px/sec, and call that `minimumVelocity`.
+Currently, we fix the final velocity `v_f` to 30 px/sec, and call that `minimumVelocity`.
 
 Note that the expression above will produce negative value if initialVelocity < minimumVelocity. So, in `GetTimeToMinimumVelocity`, if initialVelocity <= minimumVelocity, we return zero. The following graph visualizes the expression:
 
