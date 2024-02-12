@@ -237,12 +237,12 @@ internal partial class Given_FrameworkTemplatePool
 		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var TemplateCreated = 0;
-		List<TemplatePoolAwareControl> created = new();
+		List<WeakReference> created = new();
 		var dataTemplate = new ControlTemplate(() =>
 		{
 			TemplateCreated++;
 			var b = new TemplatePoolAwareControl();
-			created.Add(b);
+			created.Add(new(b));
 			return b;
 		});
 
@@ -261,7 +261,7 @@ internal partial class Given_FrameworkTemplatePool
 
 		Assert.AreEqual(1, TemplateCreated);
 		Assert.AreEqual(1, created.Count);
-		Assert.AreEqual(1, created[0].TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)created[0].Target)?.TemplateRecycled);
 	}
 
 	[TestMethod]
@@ -270,12 +270,12 @@ internal partial class Given_FrameworkTemplatePool
 		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var template1Created = 0;
-		List<TemplatePoolAwareControl> _created = new();
+		List<WeakReference> _created = new();
 		var template1 = new ControlTemplate(() =>
 		{
 			template1Created++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new WeakReference(b));
 			return b;
 		});
 
@@ -284,7 +284,7 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			template2Created++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new WeakReference(b));
 			return b;
 		});
 
@@ -307,8 +307,8 @@ internal partial class Given_FrameworkTemplatePool
 
 		SUT.Template = null;
 
-		Assert.AreEqual(1, _created[0].TemplateRecycled);
-		Assert.AreEqual(1, _created[1].TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target).TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target).TemplateRecycled);
 	}
 
 	[TestMethod]
@@ -317,12 +317,12 @@ internal partial class Given_FrameworkTemplatePool
 		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var TemplateCreated = 0;
-		List<TemplatePoolAwareControl> _created = new List<TemplatePoolAwareControl>();
+		List<WeakReference> _created = new();
 		var dataTemplate = new DataTemplate(() =>
 		{
 			TemplateCreated++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new WeakReference(b));
 			return b;
 		});
 
@@ -341,7 +341,7 @@ internal partial class Given_FrameworkTemplatePool
 
 		Assert.AreEqual(1, TemplateCreated);
 		Assert.AreEqual(1, _created.Count);
-		Assert.AreEqual(1, _created[0].TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
 	}
 
 	[TestMethod]
@@ -350,12 +350,12 @@ internal partial class Given_FrameworkTemplatePool
 		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var template1Created = 0;
-		List<TemplatePoolAwareControl> _created = new();
+		List<WeakReference> _created = new();
 		var dataTemplate1 = new DataTemplate(() =>
 		{
 			template1Created++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new(b));
 			return b;
 		});
 
@@ -364,7 +364,7 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			template2Created++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new(b));
 			return b;
 		});
 
@@ -387,8 +387,8 @@ internal partial class Given_FrameworkTemplatePool
 
 		SUT.ContentTemplate = null;
 
-		Assert.AreEqual(1, _created[0].TemplateRecycled);
-		Assert.AreEqual(1, _created[1].TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target)?.TemplateRecycled);
 	}
 
 	[TestMethod]
@@ -397,12 +397,12 @@ internal partial class Given_FrameworkTemplatePool
 		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
 		var template1Created = 0;
-		List<TemplatePoolAwareControl> _created = new();
+		List<WeakReference> _created = new();
 		var dataTemplate1 = new DataTemplate(() =>
 		{
 			template1Created++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new(b));
 			return b;
 		});
 
@@ -411,7 +411,7 @@ internal partial class Given_FrameworkTemplatePool
 		{
 			template2Created++;
 			var b = new TemplatePoolAwareControl();
-			_created.Add(b);
+			_created.Add(new(b));
 			return b;
 		});
 
@@ -434,8 +434,8 @@ internal partial class Given_FrameworkTemplatePool
 
 		SUT.ContentTemplate = null;
 
-		Assert.AreEqual(1, _created[0].TemplateRecycled);
-		Assert.AreEqual(1, _created[1].TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target)?.TemplateRecycled);
 	}
 
 	public partial class TemplatePoolAwareControl : Grid, IFrameworkTemplatePoolAware
