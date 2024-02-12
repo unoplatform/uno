@@ -62,6 +62,8 @@ namespace Microsoft.UI.Xaml
 				{
 					CancelRecycling(ref handle);
 
+					_activeInstances.Remove(instance);
+
 					GC.KeepAlive(oldParent);
 				}
 			}
