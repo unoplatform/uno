@@ -27,7 +27,7 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 		// Can this happen?
 		// Should we always get ReceiveInertiaStarting first?
 		// Anyway, it's likely still safe to go to inertia state here as interacting state can only transition to inertia.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, linearVelocity));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, linearVelocity, requestId: 0));
 	}
 
 	internal override void ReceiveManipulationDelta(Point translationDelta)
@@ -37,7 +37,7 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void ReceiveInertiaStarting(Point linearVelocity)
 	{
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0)));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0));
 	}
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)

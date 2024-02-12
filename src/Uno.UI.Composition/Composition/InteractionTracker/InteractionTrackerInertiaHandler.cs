@@ -13,6 +13,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 	private readonly AxisHelper _xHelper;
 	private readonly AxisHelper _yHelper;
 	private readonly AxisHelper _zHelper;
+	private readonly int _requestId;
 
 	private Timer? _timer;
 	private Stopwatch? _stopwatch;
@@ -27,12 +28,13 @@ internal sealed partial class InteractionTrackerInertiaHandler
 	public Vector3 FinalModifiedPosition => new Vector3(_xHelper.FinalModifiedValue, _yHelper.FinalModifiedValue, _zHelper.FinalModifiedValue);
 	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
 
-	public InteractionTrackerInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities)
+	public InteractionTrackerInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId)
 	{
 		_interactionTracker = interactionTracker;
 		_xHelper = new AxisHelper(this, translationVelocities, Axis.X);
 		_yHelper = new AxisHelper(this, translationVelocities, Axis.Y);
 		_zHelper = new AxisHelper(this, translationVelocities, Axis.Z);
+		_requestId = requestId;
 	}
 
 	public void Start()
@@ -58,8 +60,8 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		if (_xHelper.HasCompleted && _yHelper.HasCompleted && _zHelper.HasCompleted)
 		{
-			_interactionTracker.SetPosition(FinalModifiedPosition, isFromUserManipulation: false/*TODO*/);
-			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker));
+			_interactionTracker.SetPosition(FinalModifiedPosition, isFromUserManipulation: _requestId == 0);
+			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
 			_timer!.Dispose();
 			_stopwatch!.Stop();
 			return;
@@ -70,6 +72,6 @@ internal sealed partial class InteractionTrackerInertiaHandler
 			_yHelper.GetPosition(currentElapsedInSeconds),
 			_zHelper.GetPosition(currentElapsedInSeconds));
 
-		_interactionTracker.SetPosition(newPosition, isFromUserManipulation: false/*TODO*/);
+		_interactionTracker.SetPosition(newPosition, isFromUserManipulation: _requestId == 0);
 	}
 }

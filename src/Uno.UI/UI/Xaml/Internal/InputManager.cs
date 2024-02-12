@@ -104,7 +104,8 @@ internal partial class InputManager : IInputInjectorTarget, IPointerRedirector
 		recognizer.ManipulationUpdated += OnRecognizerManipulationUpdated;
 		recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
 		recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
-		recognizer.ProcessDownEvent(new PointerPoint(pointer));
+		recognizer.ProcessDownEvent(new PointerPoint(
+			pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
 
 		_pointerRedirections[pointer.PointerId] = recognizer;
 	}

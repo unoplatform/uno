@@ -7,13 +7,21 @@ namespace Microsoft.UI.Composition.Interactions;
 
 internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 {
-	public InteractionTrackerIdleState(InteractionTracker interactionTracker) : base(interactionTracker)
+	private readonly bool _isInitialIdleState;
+	private readonly int _requestId;
+
+	public InteractionTrackerIdleState(InteractionTracker interactionTracker, int requestId, bool isInitialIdleState = false) : base(interactionTracker)
 	{
+		_requestId = requestId;
+		_isInitialIdleState = isInitialIdleState;
 	}
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
-		owner?.IdleStateEntered(_interactionTracker, new InteractionTrackerIdleStateEnteredArgs(requestId: 0 /*TODO: Request id*/, isFromBinding: false));
+		if (!_isInitialIdleState)
+		{
+			owner?.IdleStateEntered(_interactionTracker, new InteractionTrackerIdleStateEnteredArgs(requestId: _requestId, isFromBinding: false));
+		}
 	}
 
 	internal override void StartUserManipulation()
@@ -37,7 +45,7 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, _interactionTracker.CurrentRequestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)

@@ -9,10 +9,12 @@ namespace Microsoft.UI.Composition.Interactions;
 internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 {
 	private readonly InteractionTrackerInertiaHandler _handler;
+	private readonly int _requestId;
 
-	public InteractionTrackerInertiaState(InteractionTracker interactionTracker, Vector3 translationVelocities) : base(interactionTracker)
+	public InteractionTrackerInertiaState(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId) : base(interactionTracker)
 	{
-		_handler = new InteractionTrackerInertiaHandler(interactionTracker, translationVelocities);
+		_requestId = requestId;
+		_handler = new InteractionTrackerInertiaHandler(interactionTracker, translationVelocities, _requestId);
 	}
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
@@ -26,7 +28,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 			NaturalRestingPosition = _handler.FinalPosition,
 			NaturalRestingScale = _handler.FinalScale,
 			PositionVelocityInPixelsPerSecond = _handler.InitialVelocity,
-			RequestId = 0,
+			RequestId = _requestId,
 			ScaleVelocityInPercentPerSecond = 0.0f, /* TODO: Scale not yet implemented */
 		});
 
@@ -65,7 +67,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond)
 	{
 		// Inertia is restarted (state re-enters inertia) and inertia modifiers are evaluated with requested velocity added to current velocity
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, _handler.InitialVelocity + velocityInPixelsPerSecond));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, _handler.InitialVelocity + velocityInPixelsPerSecond, _interactionTracker.CurrentRequestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option)
@@ -76,7 +78,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		}
 
 		_interactionTracker.SetPosition(value, isFromUserManipulation: true);
-		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker));
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, _requestId));
 	}
 
 	public override void Dispose() => _handler.Stop();
