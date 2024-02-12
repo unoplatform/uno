@@ -105,8 +105,12 @@ internal partial class InputManager : IInputInjectorTarget
 		recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
 		recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
 
+#if HAS_UNO_WINUI
+		recognizer.ProcessDownEvent(new PointerPoint(pointer));
+#else
 		recognizer.ProcessDownEvent(new PointerPoint(
 			pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
+#endif
 
 		_pointerRedirections[pointer.PointerId] = recognizer;
 	}
@@ -123,10 +127,12 @@ internal partial class InputManager : IInputInjectorTarget
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
 	{
+#if UNO_HAS_MANAGED_POINTERS
 		var owner = (GestureRecognizerOwner)sender.Owner;
 		var currentPoint = PointerRoutedEventArgs.LastPointerEvent.GetCurrentPoint(null);
 		var (originalSource, _) = VisualTreeHelper.HitTest(currentPoint.Position, owner.InputManager.ContentRoot.XamlRoot);
 		originalSource?.RaiseEvent(UIElement.PointerCaptureLostEvent, new PointerRoutedEventArgs(new(currentPoint, Windows.System.VirtualKeyModifiers.None), originalSource));
+#endif
 	};
 
 	private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
