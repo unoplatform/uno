@@ -27,6 +27,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;
 			FrameworkTemplatePool.IsPoolingEnabled = true;
 			FrameworkTemplatePool.Instance.SetPlatformProvider(new MockProvider());
+			FrameworkTemplatePool.Instance.Scavenge(force: true);
 			return Disposable.Create(() =>
 			{
 				FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled;
