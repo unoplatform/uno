@@ -185,6 +185,9 @@ internal partial class Given_InteractionTracker
 			Background = new SolidColorBrush(Colors.Red),
 		};
 
+		var captureLostRaised = false;
+		border.PointerCaptureLost += (_, _) => captureLostRaised = true;
+
 		var position = await UITestHelper.Load(border);
 
 		var visual = ElementCompositionPreview.GetElementVisual(border);
@@ -252,7 +255,7 @@ internal partial class Given_InteractionTracker
 			helper.Current);
 
 		helper.Advance();
-
+		Assert.IsTrue(captureLostRaised);
 		Assert.IsTrue(helper.IsDone);
 	}
 }
