@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Controls;
 
 using Uno.Buffers;
 using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
@@ -140,6 +142,11 @@ namespace Microsoft.UI.Xaml
 					instance = pool[index].View;
 
 					pool.RemoveAt(index);
+				}
+
+				if (pool.Count == 0)
+				{
+					_availableInstances.Remove(template);
 				}
 			}
 
@@ -286,6 +293,13 @@ namespace Microsoft.UI.Xaml
 					{
 						RecycleTemplate(template, instance, cleanup: true);
 					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Failed to remove instance tracked for {instance.GetHashCode():X8}");
+						}
+					}
 				}
 			}
 			finally
@@ -346,13 +360,25 @@ namespace Microsoft.UI.Xaml
 
 			var removeCount = 0;
 
+			List<FrameworkTemplate> cleanupList = new();
+
 			foreach (var kvp in _availableInstances)
 			{
 				removeCount += kvp.Value.RemoveAll(t => force || now - t.CreationTime > TimeToLive);
+
+				if (kvp.Value.Count == 0)
+				{
+					cleanupList.Add(kvp.Key);
+				}
 			}
 
 			if (removeCount > 0)
 			{
+				for (int i = 0; i < cleanupList.Count; i++)
+				{
+					_availableInstances.Remove(cleanupList[i]);
+				}
+
 				if (_trace.IsEnabled)
 				{
 					for (var i = 0; i < removeCount; i++)
