@@ -10,6 +10,7 @@ namespace Microsoft.UI.Composition.Interactions;
 internal abstract class InteractionTrackerState : IDisposable
 {
 	private protected InteractionTracker _interactionTracker;
+	private protected bool _disposed;
 
 	public InteractionTrackerState(InteractionTracker interactionTracker)
 	{
@@ -24,5 +25,5 @@ internal abstract class InteractionTrackerState : IDisposable
 	internal abstract void ReceiveInertiaStarting(Point linearVelocity);
 	internal abstract void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId);
 	internal abstract void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId);
-	public virtual void Dispose() { }
+	public virtual void Dispose() => _disposed = true;
 }

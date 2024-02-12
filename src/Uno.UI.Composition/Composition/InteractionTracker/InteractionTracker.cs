@@ -60,7 +60,7 @@ public partial class InteractionTracker : CompositionObject
 			{
 				NativeDispatcher.Main.Enqueue(() =>
 				{
-					owner.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(Position, Scale, requestId));
+					owner.ValuesChanged(this, new InteractionTrackerValuesChangedArgs(newPosition, Scale, requestId));
 				});
 			}
 

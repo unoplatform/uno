@@ -19,6 +19,11 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 
 	protected override void EnterState(IInteractionTrackerOwner? owner)
 	{
+		if (_disposed)
+		{
+			return;
+		}
+
 		owner?.InertiaStateEntered(_interactionTracker, new InteractionTrackerInertiaStateEnteredArgs()
 		{
 			IsFromBinding = false, /* TODO */
@@ -81,5 +86,9 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
 	}
 
-	public override void Dispose() => _handler.Stop();
+	public override void Dispose()
+	{
+		base.Dispose();
+		_handler.Stop();
+	}
 }
