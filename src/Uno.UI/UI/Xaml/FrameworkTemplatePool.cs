@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// We don't track empty templates.
-			if (instance != null)
+			if (IsPoolingEnabled && instance != null)
 			{
 				InstanceTracker.Add(instance);
 			}
