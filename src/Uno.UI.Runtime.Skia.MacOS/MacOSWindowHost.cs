@@ -60,9 +60,6 @@ internal class MacOSWindowHost : IXamlRootHost
 		}
 	}
 
-	// public MacOSWindowNative NativeWindow => _nativeWindow;
-	// public Window Window => _winUIWindow;
-
 	internal event EventHandler<Size>? SizeChanged;
 
 	private void UpdateWindowSize(double nativeWidth, double nativeHeight)
