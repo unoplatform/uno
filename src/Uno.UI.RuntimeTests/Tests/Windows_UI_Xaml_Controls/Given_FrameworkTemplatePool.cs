@@ -39,55 +39,56 @@ internal partial class Given_FrameworkTemplatePool
 	[RunsOnUIThread]
 	public async Task When_Recycle()
 	{
-		using (FeatureConfigurationHelper.UseTemplatePooling())
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		FrameworkTemplatePool.Instance.Scavenge(force: true);
+
+		async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
 		{
-			FrameworkTemplatePool.Instance.Scavenge(force: true);
+			var content = new Button();
+			WindowHelper.WindowContent = content;
+			await WindowHelper.WaitForLoaded(content);
+			var templatedRoot = content.TemplatedRoot;
 
-			async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
-			{
-				var content = new Button();
-				WindowHelper.WindowContent = content;
-				await WindowHelper.WaitForLoaded(content);
-				var templatedRoot = content.TemplatedRoot;
+			WindowHelper.WindowContent = null;
 
-				WindowHelper.WindowContent = null;
-
-				return (
-					new WeakReference(content),
-					new WeakReference(templatedRoot));
-			}
-
-			var (targetInstance, targetTemplateRoot) = await CreateAndRelease();
-
-			var timeout = Stopwatch.StartNew();
-			while (targetInstance.IsAlive && timeout.Elapsed < TimeSpan.FromSeconds(5))
-			{
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(50);
-			}
-
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
-			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
-
-			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
-
-			FrameworkTemplatePool.Instance.Scavenge(force: true);
-
-			var timeout2 = Stopwatch.StartNew();
-			while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
-			{
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(50);
-			}
-
-			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
+			return (
+				new WeakReference(content),
+				new WeakReference(templatedRoot));
 		}
+
+		var (targetInstance, targetTemplateRoot) = await CreateAndRelease();
+
+		var timeout = Stopwatch.StartNew();
+		while (targetInstance.IsAlive && timeout.Elapsed < TimeSpan.FromSeconds(5))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(50);
+		}
+
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
+		Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
+
+		Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
+
+		FrameworkTemplatePool.Instance.Scavenge(force: true);
+
+		var timeout2 = Stopwatch.StartNew();
+		while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(50);
+		}
+
+		Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
+
 	}
 #endif
 
