@@ -20,6 +20,10 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using System.Reflection;
+using Windows.Foundation.Metadata;
+
+
 
 
 
@@ -48,6 +52,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ComboBox
 	{
+#if HAS_UNO
+		private static readonly FieldInfo _editableTextField = typeof(ComboBox).GetField("_editableText", BindingFlags.Instance | BindingFlags.NonPublic);
+#endif
+
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
@@ -71,6 +79,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		const int BorderThicknessAdjustment = 2; // Deduct BorderThickness on PopupBorder
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_IsEditable_False()
+		{
+			// EditableText is only available in fluent style.
+			using var _ = StyleHelper.UseFluentStyles();
+			var SUT = new ComboBox();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsFalse(SUT.IsEditable);
+			Assert.IsNull(_editableTextField.GetValue(SUT));
+		}
+
+		[TestMethod]
+		public async Task When_IsEditable_True()
+		{
+			// EditableText is only available in fluent style.
+			using var _ = StyleHelper.UseFluentStyles();
+			var SUT = new ComboBox() { IsEditable = true };
+			await UITestHelper.Load(SUT);
+
+			Assert.IsTrue(SUT.IsEditable);
+			Assert.IsNotNull(_editableTextField.GetValue(SUT));
+		}
+
+		[TestMethod]
+		public async Task When_IsEditable_False_Changes_To_True()
+		{
+			if (!ApiInformation.IsPropertyPresent(typeof(ComboBox), "IsEditable"))
+			{
+				Assert.Inconclusive();
+			}
+
+			// EditableText is only available in fluent style.
+			using var _ = StyleHelper.UseFluentStyles();
+			var SUT = new ComboBox();
+			await UITestHelper.Load(SUT);
+
+			Assert.IsFalse(SUT.IsEditable);
+			Assert.IsNull(_editableTextField.GetValue(SUT));
+
+			SUT.IsEditable = true;
+
+			Assert.IsTrue(SUT.IsEditable);
+			Assert.IsNotNull(_editableTextField.GetValue(SUT));
+		}
+#endif
 
 		[TestMethod]
 #if __MACOS__

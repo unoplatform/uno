@@ -101,7 +101,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
-			_editableText = this.GetTemplateChild("EditableText") as TextBox;
+
+			if (IsEditable)
+			{
+				_editableText = this.GetTemplateChild("EditableText") as TextBox;
+			}
 
 			if (_popup is Popup popup)
 			{
