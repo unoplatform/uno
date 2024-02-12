@@ -157,10 +157,9 @@ namespace Microsoft.UI.Xaml
 		{
 			if (IsPoolingEnabled && CanUsePool() && view != null)
 			{
-				if (InstanceTracker.TryRemove(view))
-				{
-					RecycleTemplate(template, view, cleanup);
-				}
+				InstanceTracker.TryRemove(view);
+
+				RecycleTemplate(template, view, cleanup);
 			}
 			else
 			{
