@@ -6,5 +6,5 @@ public static class ApplicationViewHelper
 	/// Gets an instance to <see cref="IBaseActivityEvents"/> which provides a set of events
 	/// raised on key Activity method overrides.
 	/// </summary>
-	public static IBaseActivityEvents GetBaseActivityEvents() => ContextHelper.Current as IBaseActivityEvents;
+	public static IBaseActivityEvents GetBaseActivityEvents() => (IBaseActivityEvents)ContextHelper.Current;
 }
