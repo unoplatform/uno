@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+﻿#if IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __IOS__ || __MACOS__
 using System;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;

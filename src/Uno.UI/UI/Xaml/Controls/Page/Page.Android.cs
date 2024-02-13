@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 			LayoutUpdated += (s, e) => UpdateBorder();
 		}
 
-		private void UpdateBorder()
+		partial void UpdateBorder()
 		{
 			UpdateBorder(false);
 		}
