@@ -13,7 +13,9 @@ internal partial class BorderLayerRenderer
 	private readonly FrameworkElement _owner;
 	private readonly IBorderInfoProvider _borderInfoProvider;
 
+#pragma warning disable CS0414 // _currentState is not used on reference build
 	private BorderLayerState _currentState;
+#pragma warning restore CS0414
 
 	public BorderLayerRenderer(FrameworkElement owner)
 	{
