@@ -8,11 +8,11 @@ Thank you for considering Uno Platform for your next project. While we always re
 
 ## It's a platform, not just a UI framework.
 
-Uno Platform is a developer productivity **platform** and much **more than a UI framework**, for building single codebase, native, mobile, web, desktop and embedded apps with .NET.
+Uno Platform is a developer productivity **platform** and much **more than a UI framework**, for building single codebase, native, mobile, web, desktop, and embedded apps with .NET.
 
 At the core is a cross-platform .NET UI framework, that allows apps to run everywhere with a single codebase.
 
-**However, built on top of this foundation is also a rich platform which includes libraries, extensions and tools that accelerate the design, development, and testing of cross-platform applications.**
+However, built on top of this foundation is also a rich platform which includes libraries, extensions, and tools that accelerate the design, development, and testing of cross-platform applications.
 
 ## It's Free and Open-Source.
 
@@ -20,28 +20,28 @@ Uno Platform is free and open source under Apache 2.0.
 
 It is well funded and has a [sustainability model]() built in so that the project is sustainable in the long term. In addition, it is fueled by support from a thriving community of users who regularly send feedback and contribute.
 
-## Same code based that runs on iOS, Android, Web, MacOS, Linux and Windows.
+## Same code based that runs on iOS, Android, Web, MacOS, Linux, and Windows.
 
-Uno Platform apps run as single codebase native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with the latest .NET releases so you can always benefit from the latest and greatest advancements in the .NET world.
+Uno Platform apps run as a single codebase for native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with the latest .NET releases. So, you can always benefit from the latest and greatest advancements in the .NET world.
 
-## You can use your favorite IDE (Visual Studio, VS Code or Rider).
+## You can use your favorite IDE (Visual Studio, VS Code, or Rider).
 
 Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as CodeSpaces & GitPod. Wherever you are, Uno Platform is with you.
 
 ## You can work from your favorite OS (Windows, Mac, Linux).
 
-Remain on the operating system that you are on. A detailed list of target platforms for which you can develop from Windows, Mac or Linux is available. Our docs are also OS agnostic, so you can follow all tutorials regardless of the system you develop on.
+Remain on the operating system that you are on. A detailed list of target platforms for which you can develop from Windows, Mac, or Linux is available. Our docs are also OS agnostic, so you can follow all tutorials regardless of the system you develop on.
 
 ## Use either XAML or C# Markup for your app UI.
 
-With Uno Platform you have a choice of building polished cross-platform UI with concise declarative UI markup using a modern XAML-centric syntax or declarative-style C# Markup. Both approaches are supported right out of the box. Our C# Markup approach works with both 1st party and 3rd party controls and application-level libraries, mapping directly to the underlying object model. All thanks to real-time C# source generators doing the heavy lifting for you.
+With Uno Platform, you have a choice of building polished cross-platform UI with concise declarative UI markup using a modern XAML-centric syntax or declarative-style C# Markup. Both approaches are supported right out of the box. Our C# Markup approach works with both 1st party and 3rd party controls and application-level libraries, mapping directly to the underlying object model. All thanks to real-time C# source generators doing the heavy lifting for you.
 
 ## Hot Reload that just works.
 
 Our Hot Reload offers the most comprehensive solution for fast development loop – make a change and see it live everywhere is running in real-time without recompiling. Uno Platform Hot Reload works on:
 - Visual Studio and Visual Studio Code
 - All target platforms
-- XAML, C# Markup and C#
+- XAML, C# Markup, and C#
 - Bindings & x:Bind, Resources, Data Templates and Styles
 - 1st party or 3rd party controls
 - Devices and Emulators
