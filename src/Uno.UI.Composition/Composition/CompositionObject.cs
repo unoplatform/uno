@@ -33,9 +33,20 @@ namespace Microsoft.UI.Composition
 
 		public string? Comment { get; set; }
 
+		private protected T ValidateValue<T>(object? value)
+		{
+			if (value is not T t)
+			{
+				throw new ArgumentException($"Cannot convert value of type '{value?.GetType()}' to {typeof(T)}");
+			}
+
+			return t;
+		}
+
 		// Overrides are based on:
 		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
 		private protected virtual bool IsAnimatableProperty(string propertyName) => false;
+		private protected virtual void SetAnimatableProperty(string propertyName, object? propertyValue) { }
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
@@ -53,7 +64,7 @@ namespace Microsoft.UI.Composition
 			_animations[propertyName] = animation;
 			animation.PropertyChanged += ReEvaluateAnimation;
 			var animationValue = animation.Start();
-			this.GetType().GetProperty(propertyName)!.SetValue(this, animationValue);
+			this.SetAnimatableProperty(propertyName, animationValue);
 		}
 
 		private void ReEvaluateAnimation(CompositionAnimation animation)
@@ -67,7 +78,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (value == animation)
 				{
-					this.GetType().GetProperty(key)!.SetValue(this, animation.Evaluate());
+					this.SetAnimatableProperty(key, animation.Evaluate());
 				}
 			}
 		}

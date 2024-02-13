@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
 using Microsoft.UI.Composition.Interactions;
 using Uno.Extensions;
@@ -144,6 +145,50 @@ namespace Microsoft.UI.Composition
 				nameof(RotationAxis) or
 				nameof(Size) or
 				nameof(TransformMatrix);
+		}
+
+		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		{
+			if (propertyName is nameof(AnchorPoint))
+			{
+				AnchorPoint = ValidateValue<Vector2>(propertyValue);
+			}
+			else if (propertyName is nameof(CenterPoint))
+			{
+				CenterPoint = ValidateValue<Vector3>(propertyValue);
+			}
+			else if (propertyName is nameof(Offset))
+			{
+				Offset = ValidateValue<Vector3>(propertyValue);
+			}
+			else if (propertyName is nameof(Opacity))
+			{
+				Opacity = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName is nameof(Orientation))
+			{
+				Orientation = ValidateValue<Quaternion>(propertyValue);
+			}
+			else if (propertyName is nameof(RotationAngle))
+			{
+				RotationAngle = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName is nameof(RotationAxis))
+			{
+				RotationAxis = ValidateValue<Vector3>(propertyValue);
+			}
+			else if (propertyName is nameof(Size))
+			{
+				Size = ValidateValue<Vector2>(propertyValue);
+			}
+			else if (propertyName is nameof(TransformMatrix))
+			{
+				TransformMatrix = ValidateValue<Matrix4x4>(propertyValue);
+			}
+			else
+			{
+				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+			}
 		}
 	}
 }

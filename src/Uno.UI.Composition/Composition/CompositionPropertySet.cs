@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Windows.Storage.Streams;
 using Color = Windows.UI.Color;
 
 namespace Microsoft.UI.Composition
@@ -81,5 +82,10 @@ namespace Microsoft.UI.Composition
 		// TODO
 		private protected override bool IsAnimatableProperty(string propertyName)
 			=> false;
+
+		// TODO
+		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		{
+		}
 	}
 }

@@ -11,7 +11,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 	private AnimationExpressionSyntax _identifierOrMemberAccess;
 	private ImmutableArray<AnimationExpressionSyntax> _arguments;
 
-	private static ImmutableArray<IAnimationFunctionSpecification> _specifications = ImmutableArray.Create< IAnimationFunctionSpecification>(
+	private static ImmutableArray<IAnimationFunctionSpecification> _specifications = ImmutableArray.Create<IAnimationFunctionSpecification>(
 		AbsFloatFunctionSpecification.Instance,
 		MinFloatFloatFunctionSpecification.Instance,
 		MaxFloatFloatFunctionSpecification.Instance,

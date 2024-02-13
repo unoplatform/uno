@@ -24,5 +24,17 @@ namespace Microsoft.UI.Composition
 		{
 			return propertyName is nameof(Color);
 		}
+
+		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		{
+			if (propertyName is nameof(Color))
+			{
+				Color = ValidateValue<Color>(propertyValue);
+			}
+			else
+			{
+				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+			}
+		}
 	}
 }
