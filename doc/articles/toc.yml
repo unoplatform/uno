@@ -146,6 +146,8 @@
           href: how-uno-works.md
         - name: Best practices
           href: best-practices-uno.md
+        - name: Why use Uno?
+          href: xref:Uno.Overview.WhyUno
 
     - name: Debugging
       items:
