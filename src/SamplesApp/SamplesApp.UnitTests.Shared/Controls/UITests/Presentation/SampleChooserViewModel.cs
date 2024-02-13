@@ -473,7 +473,7 @@ namespace SampleControl.Presentation
 
 		internal void CreateNewWindow()
 		{
-#if HAS_UNO //TODO: Enable UWP-style new window #8978
+#if HAS_UNO || WINAPPSDK //TODO: Enable UWP-style new window #8978
 			var newWindow = new Window();
 			newWindow.Content = new MainPage();
 			newWindow.Activate();
