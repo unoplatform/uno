@@ -84,7 +84,9 @@ namespace SamplesApp
 			// Manual initialize connection to the dev-server is required within the Uno project
 			Uno.UI.RemoteControl.RemoteControlClient.Initialize(typeof(App));
 			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout = TimeSpan.FromSeconds(300);
+#if HAS_UNO_WINUI
 			Uno.UI.RuntimeTests.Internal.Helpers.DevServer.SetDefaultPath(@"..\..\..\..\..\Uno.UI.RemoteControl.Host\bin\Debug\net8.0\Uno.UI.RemoteControl.Host.dll");
+#endif
 #endif
 
 			ConfigureFeatureFlags();
