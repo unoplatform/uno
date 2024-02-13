@@ -26,6 +26,7 @@ using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml;
 
 #if __IOS__
 using UIKit;
@@ -515,20 +516,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public new TextAlignment TextAlignment
 		{
-			get => (TextAlignment)GetValue(TextAlignmentProperty);
-			set => SetValue(TextAlignmentProperty, value);
+			get => GetTextAlignmentValue();
+			set => SetTextAlignmentValue(value);
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register(
-				"TextAlignment",
-				typeof(TextAlignment),
-				typeof(TextBlock),
-				new FrameworkPropertyMetadata(
-					defaultValue: TextAlignment.Left,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextAlignmentChanged()
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = TextAlignment.Left, ChangedCallback = true, ChangedCallbackName = nameof(OnTextAlignmentChanged))]
+		public static DependencyProperty TextAlignmentProperty { get; } = CreateTextAlignmentProperty();
 
 		private void OnTextAlignmentChanged()
 		{

@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public Brush Foreground
 		{
-			get { return (Brush)this.GetValue(ForegroundProperty); }
+			get => GetForegroundValue();
 			set
 			{
 				if (value != null && !(value is SolidColorBrush))
@@ -149,21 +149,14 @@ namespace Microsoft.UI.Xaml.Documents
 					throw new InvalidOperationException("Specified brush is not a SolidColorBrush");
 				}
 
-				this.SetValue(ForegroundProperty, value);
+				SetForegroundValue(value);
 			}
 		}
 
-		public static DependencyProperty ForegroundProperty { get; } =
-			DependencyProperty.Register(
-				"Foreground",
-				typeof(Brush),
-				typeof(TextElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: SolidColorBrushHelper.Black,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnForegroundChanged()
-				)
-			);
+		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnForegroundChanged))]
+		public static DependencyProperty ForegroundProperty { get; } = CreateForegroundProperty();
+
+		private static Brush GetForegroundDefaultValue() => SolidColorBrushHelper.Black;
 
 		protected virtual void OnForegroundChanged()
 		{
@@ -237,21 +230,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public TextDecorations TextDecorations
 		{
-			get { return (TextDecorations)GetValue(TextDecorationsProperty); }
-			set { SetValue(TextDecorationsProperty, value); }
+			get => GetTextDecorationsValue();
+			set => SetTextDecorationsValue(value);
 		}
 
-		public static DependencyProperty TextDecorationsProperty { get; } =
-			DependencyProperty.Register(
-				nameof(TextDecorations),
-				typeof(TextDecorations),
-				typeof(TextElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: TextDecorations.None,
-					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnTextDecorationsChanged()
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = TextDecorations.None, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnTextDecorationsChanged))]
+		public static DependencyProperty TextDecorationsProperty { get; } = CreateTextDecorationsProperty();
 
 		protected virtual void OnTextDecorationsChanged()
 		{
