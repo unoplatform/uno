@@ -14,11 +14,15 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -530,6 +534,8 @@ internal partial class InputManager
 						routedArgs.Handled = false;
 						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
 					}
+
+					SetSourceCursor(originalSource);
 				}
 				else
 				{
@@ -557,6 +563,8 @@ internal partial class InputManager
 						routedArgs.Handled = false;
 						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
 					}
+
+					SetSourceCursor(explicitTarget.Element);
 				}
 			}
 			else
@@ -567,9 +575,28 @@ internal partial class InputManager
 				}
 
 				evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
+
+				SetSourceCursor(originalSource);
 			}
 
 			return UIElement.EndPointerEventDispatch();
+		}
+
+		private void SetSourceCursor(UIElement element)
+		{
+#if HAS_UNO_WINUI
+			if (_source is { })
+			{
+				if (element.CalculatedFinalCursor is { } shape)
+				{
+					_source.PointerCursor = InputCursor.CreateCoreCursorFromInputSystemCursorShape(shape);
+				}
+				else
+				{
+					_source.PointerCursor = null;
+				}
+			}
+#endif
 		}
 
 		private static void Trace(string text)

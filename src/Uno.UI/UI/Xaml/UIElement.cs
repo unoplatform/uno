@@ -32,6 +32,7 @@ using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml.Documents;
 using Windows.ApplicationModel.Core;
+using Microsoft.UI.Input;
 using Uno.UI.Xaml.Media;
 
 #if __IOS__
@@ -1270,18 +1271,41 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property ActualSize
 
 #if !__WASM__
+		private InputCursor _protectedCursor;
+
+		// This depends on the implementation of ICorePointerInputSource.PointerCursor.
 		/// <summary>
 		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
 		/// </summary>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #if HAS_UNO_WINUI
-		protected Microsoft.UI.Input.InputCursor ProtectedCursor
+		protected InputCursor ProtectedCursor
 #else
 		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
 #endif
 		{
-			get;
-			set;
+			get => _protectedCursor;
+			set
+			{
+				_protectedCursor = value;
+				// On WinUI, a disposed InputCursor causes the cursor to be hidden. The ProtectedCursor isn't cleared.
+				// The the InputCursor is disposed while the cursor is currently inside the UIElement, the cursor is only
+				// hidden when the cursor moves. Our implementation matches this.
+				if (value is { IsDisposed: true })
+				{
+					CalculatedFinalCursor = null;
+				}
+				else if (value is InputSystemCursor c)
+				{
+					CalculatedFinalCursor = c.CursorShape;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Setting UIElement.ProtectedCursor to value of type {value.GetType().FullName} which is unsupported. Only Values of type {nameof(InputSystemCursor)} are currently supported.");
+					}
+				}
+			}
 		}
 #endif
 
