@@ -4,19 +4,19 @@ namespace Microsoft.UI.Composition;
 
 internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 {
-	private readonly AnimationExpressionSyntax _expression;
-	private readonly ExpressionAnimationToken _identifier;
-
 	public AnimationMemberAccessExpressionSyntax(AnimationExpressionSyntax expression, ExpressionAnimationToken identifier)
 	{
-		_expression = expression;
-		_identifier = identifier;
+		Expression = expression;
+		Identifier = identifier;
 	}
+
+	public AnimationExpressionSyntax Expression { get; }
+	public ExpressionAnimationToken Identifier { get; }
 
 	public override object Evaluate(ExpressionAnimation expressionAnimation)
 	{
-		var leftValue = _expression.Evaluate(expressionAnimation);
-		var identifierName = (string)_identifier.Value;
+		var leftValue = Expression.Evaluate(expressionAnimation);
+		var identifierName = (string)Identifier.Value;
 		var leftType = leftValue.GetType();
 		if (leftType.GetProperty(identifierName) is { } property)
 		{

@@ -1,13 +1,23 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 
 namespace Microsoft.UI.Composition;
+
 internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 {
 	private AnimationExpressionSyntax _identifierOrMemberAccess;
 	private ImmutableArray<AnimationExpressionSyntax> _arguments;
+
+	private static ImmutableArray<IAnimationFunctionSpecification> _specifications = ImmutableArray.Create< IAnimationFunctionSpecification>(
+		AbsFloatFunctionSpecification.Instance,
+		MinFloatFloatFunctionSpecification.Instance,
+		MaxFloatFloatFunctionSpecification.Instance,
+		Vector2FloatFloatFunctionSpecification.Instance,
+		Vector3FloatFloatFloatFunctionSpecification.Instance
+		);
 
 	public AnimationFunctionCallSyntax(AnimationExpressionSyntax identifierOrMemberAccess, ImmutableArray<AnimationExpressionSyntax> arguments)
 	{
@@ -29,73 +39,31 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		throw new InvalidOperationException($"Unexpected type '{_identifierOrMemberAccess.GetType()}'");
 	}
 
+	private object EvaluateSpecification(IAnimationFunctionSpecification specification, ExpressionAnimation expressionAnimation)
+	{
+		if (_arguments.Length != specification.ParametersLength)
+		{
+			string call = specification.ClassName is null ? specification.MethodName : $"{specification.ClassName}.{specification.MethodName}";
+			throw new ArgumentException($"A call to '{call}' should have '{specification.ParametersLength}' argument(s). Found '{_arguments.Length}' argument(s).");
+		}
+
+		return specification.Evaluate(_arguments.Select(arg => arg.Evaluate(expressionAnimation)).ToArray());
+	}
+
 	private object EvaluateFromIdentifier(AnimationIdentifierNameSyntax identifier, ExpressionAnimation expressionAnimation)
 	{
 		var name = (string)identifier.Identifier.Value;
-		if (name == "Abs")
+		foreach (var specification in _specifications)
 		{
-			if (_arguments.Length != 1)
+			if (specification.ClassName is null &&
+				specification.MethodName.Equals(name, StringComparison.Ordinal) &&
+				specification.ParametersLength == _arguments.Length)
 			{
-				throw new ArgumentException($"A call to Abs should have one argument. Found '{_arguments.Length}' arguments.");
+				return EvaluateSpecification(specification, expressionAnimation);
 			}
-
-			return Math.Abs(Convert.ToSingle(_arguments[0].Evaluate(expressionAnimation), CultureInfo.InvariantCulture));
 		}
 
-		if (name == "Max")
-		{
-			if (_arguments.Length != 2)
-			{
-				throw new ArgumentException($"A call to Max should have two arguments. Found '{_arguments.Length}' argument(s).");
-			}
-
-			var arg1 = _arguments[0].Evaluate(expressionAnimation);
-			var arg2 = _arguments[1].Evaluate(expressionAnimation);
-
-			return Math.Max(Convert.ToSingle(arg1, CultureInfo.InvariantCulture), Convert.ToSingle(arg2, CultureInfo.InvariantCulture));
-		}
-
-		if (name == "Min")
-		{
-			if (_arguments.Length != 2)
-			{
-				throw new ArgumentException($"A call to Min should have two arguments. Found '{_arguments.Length}' argument(s).");
-			}
-
-			var arg1 = _arguments[0].Evaluate(expressionAnimation);
-			var arg2 = _arguments[1].Evaluate(expressionAnimation);
-
-			return Math.Min(Convert.ToSingle(arg1, CultureInfo.InvariantCulture), Convert.ToSingle(arg2, CultureInfo.InvariantCulture));
-		}
-
-		if (name == "Vector2")
-		{
-			if (_arguments.Length != 2)
-			{
-				throw new ArgumentException($"A call to Vector2 constructor should have two arguments. Found '{_arguments.Length}' argument(s).");
-			}
-
-			var arg1 = _arguments[0].Evaluate(expressionAnimation);
-			var arg2 = _arguments[1].Evaluate(expressionAnimation);
-
-			return new Vector2(Convert.ToSingle(arg1, CultureInfo.InvariantCulture), Convert.ToSingle(arg2, CultureInfo.InvariantCulture));
-		}
-
-		if (name == "Vector3")
-		{
-			if (_arguments.Length != 3)
-			{
-				throw new ArgumentException($"A call to Vector3 constructor should have three arguments. Found '{_arguments.Length}' argument(s).");
-			}
-
-			var arg1 = _arguments[0].Evaluate(expressionAnimation);
-			var arg2 = _arguments[1].Evaluate(expressionAnimation);
-			var arg3 = _arguments[2].Evaluate(expressionAnimation);
-
-			return new Vector3(Convert.ToSingle(arg1, CultureInfo.InvariantCulture), Convert.ToSingle(arg2, CultureInfo.InvariantCulture), Convert.ToSingle(arg3, CultureInfo.InvariantCulture));
-		}
-
-		throw new NotSupportedException($"Unsupported function call '{name}'.");
+		throw new NotSupportedException($"Unsupported function call '{name}' with argument length '{_arguments.Length}'.");
 	}
 
 	private object EvaluateFromMemberAccess(AnimationMemberAccessExpressionSyntax memberAccess, ExpressionAnimation expressionAnimation)
@@ -114,6 +82,24 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		// Matrix4x4.CreateScale(Vector3 scale)
 		// Matrix4x4.CreateFromAxisAngle(Vector3 axis, Float angle)
 		// Quaternion.CreateFromAxisAngle(Vector3 axis, Scalar angle)
-		throw new NotSupportedException($"Unsupported function call.");
+		if (memberAccess.Expression is not AnimationIdentifierNameSyntax identifier)
+		{
+			throw new ArgumentException("A function call throw member access should have the member access expression as an identifier.");
+		}
+
+		var className = (string)identifier.Identifier.Value;
+		var methodName = (string)memberAccess.Identifier.Value;
+
+		foreach (var specification in _specifications)
+		{
+			if (specification.ClassName?.Equals(className, StringComparison.Ordinal) == true &&
+				specification.MethodName.Equals(methodName, StringComparison.Ordinal) &&
+				specification.ParametersLength == _arguments.Length)
+			{
+				return EvaluateSpecification(specification, expressionAnimation);
+			}
+		}
+
+		throw new NotSupportedException($"Unsupported function call '{className}.{methodName}' with argument length '{_arguments.Length}'.");
 	}
 }
