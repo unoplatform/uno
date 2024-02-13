@@ -111,7 +111,7 @@ internal partial class InputManager : IInputInjectorTarget
 		recognizer.ProcessDownEvent(new PointerPoint(
 			pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
 #endif
-
+		// TODO: Currently this dictionary is only used for UNO_HAS_MANAGED_POINTERS.
 		_pointerRedirections[pointer.PointerId] = recognizer;
 	}
 

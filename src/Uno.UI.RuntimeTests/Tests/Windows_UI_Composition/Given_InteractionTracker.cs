@@ -11,6 +11,11 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
 
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
@@ -182,7 +187,7 @@ internal partial class Given_InteractionTracker
 		{
 			Width = 200,
 			Height = 200,
-			Background = new SolidColorBrush(Colors.Red),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
 		};
 
 		var captureLostRaised = false;
@@ -202,7 +207,7 @@ internal partial class Given_InteractionTracker
 
 		border.PointerPressed += async (_, e) =>
 		{
-			if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Touch)
+			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 				vis.TryRedirectForManipulation(e.GetCurrentPoint(null));
 			await TestServices.WindowHelper.WaitForIdle();
 		};

@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Composition;
 [Sample("Microsoft.UI.Composition")]
 public sealed partial class InteractionTrackerAndExpressionAnimationSample : Page
 {
-	private readonly Visual _border1Visual;
+	private Visual _border1Visual;
 	private readonly Visual _border2Visual;
 	private VisualInteractionSource _interactionSource;
 
@@ -51,6 +51,11 @@ public sealed partial class InteractionTrackerAndExpressionAnimationSample : Pag
 
 				tracker.MinPosition = new Vector3(0);
 				tracker.MaxPosition = new Vector3((float)XamlRoot.Size.Width - _border2Visual.Size.X, (float)XamlRoot.Size.Height, 0);
+
+				// On non-Skia (e.g, Android), the Visual CompositionTarget is set from XamlRoot.
+				// So, we need to call GetElementVisual on Loaded. Otherwise, it won't work.
+				// NOTE: The sample still doesn't work on platforms other than Skia
+				_border1Visual = ElementCompositionPreview.GetElementVisual(border1);
 
 				_interactionSource = VisualInteractionSource.Create(_border1Visual);
 

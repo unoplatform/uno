@@ -26,7 +26,11 @@ public partial class ElementCompositionPreview
 #if __SKIA__
 		return element.Visual;
 #else
-		return new Composition.Visual(_compositor) { NativeOwner = element };
+		return new Composition.Visual(_compositor)
+		{
+			NativeOwner = element,
+			CompositionTarget = element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget,
+		};
 #endif
 	}
 
