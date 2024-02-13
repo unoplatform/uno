@@ -276,7 +276,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UpdateInlines(newValue);
 
-			Selection = new Range(0, 0);
+#if __SKIA__
+			if (TemplatedParent is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
+#endif
+			{
+				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
+				Selection = new Range(0, 0);
+			}
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
