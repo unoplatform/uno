@@ -18,6 +18,12 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 
 namespace UITests.Windows_UI_Composition;
 
@@ -36,7 +42,7 @@ public sealed partial class InteractionTrackerAndExpressionAnimationSample : Pag
 
 		border1.PointerPressed += (_, e) =>
 		{
-			if (e.Pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Touch)
+			if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 			{
 				_interactionSource.TryRedirectForManipulation(e.GetCurrentPoint(null));
 			}
