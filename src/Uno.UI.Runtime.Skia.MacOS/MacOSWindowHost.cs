@@ -35,7 +35,7 @@ internal class MacOSWindowHost : IXamlRootHost
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
 	private int _rowBytes;
-	private bool _initializationNotCompleted = true; // FIXME
+	private static bool _initializationCompleted;
 
 	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
@@ -94,11 +94,12 @@ internal class MacOSWindowHost : IXamlRootHost
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
-		if (_initializationNotCompleted)
+		// https://github.com/unoplatform/uno-private/issues/319
+		if (!_initializationCompleted)
 		{
 			UpdateWindowSize(nativeWidth / scale, nativeHeight / scale);
-			_initializationNotCompleted = SizeChanged is null;
-			if (_initializationNotCompleted)
+			_initializationCompleted = SizeChanged is not null;
+			if (!_initializationCompleted)
 			{
 				return; // not yet...
 			}
@@ -125,11 +126,12 @@ internal class MacOSWindowHost : IXamlRootHost
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
-		if (_initializationNotCompleted)
+		// https://github.com/unoplatform/uno-private/issues/319
+		if (!_initializationCompleted)
 		{
 			UpdateWindowSize(nativeWidth, nativeHeight);
-			_initializationNotCompleted = SizeChanged is null;
-			if (_initializationNotCompleted)
+			_initializationCompleted = SizeChanged is not null;
+			if (!_initializationCompleted)
 			{
 				return; // not yet...
 			}
@@ -208,8 +210,9 @@ internal class MacOSWindowHost : IXamlRootHost
 		{
 			window.MetalDraw(width, height, texture);
 		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
+		else if (_initializationCompleted && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
 		{
+			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
 			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.MetalDraw could not map 0x{handle:X} with an NSWindow");
 		}
 	}
@@ -222,9 +225,9 @@ internal class MacOSWindowHost : IXamlRootHost
 		{
 			window.SoftDraw(width, height, data, rowBytes, size);
 		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
+		else if (_initializationCompleted && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
 		{
-			// there are some legit times that this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
+			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
 			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.SoftDraw could not map 0x{handle:X} with an NSWindow");
 		}
 	}
@@ -237,9 +240,9 @@ internal class MacOSWindowHost : IXamlRootHost
 		{
 			window.UpdateWindowSize(width, height);
 		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
+		else if (_initializationCompleted && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
 		{
-			// there are some legit times that this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
+			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
 			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.Resize could not map 0x{handle:X} with an NSWindow");
 		}
 	}
