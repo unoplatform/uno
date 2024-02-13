@@ -293,7 +293,13 @@ internal partial class InputManager
 		{
 			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
+#if HAS_UNO_WINUI
 				recognizer.ProcessUpEvent(new PointerPoint(args.CurrentPoint));
+#else
+				var pointer = args.CurrentPoint;
+				recognizer.ProcessUpEvent(new PointerPoint(
+					pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
+#endif
 				return;
 			}
 
@@ -339,7 +345,13 @@ internal partial class InputManager
 		{
 			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
 			{
+#if HAS_UNO_WINUI
 				recognizer.ProcessMoveEvents([new PointerPoint(args.CurrentPoint)]);
+#else
+				var pointer = args.CurrentPoint;
+				recognizer.ProcessMoveEvents([new PointerPoint(
+					pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties))]);
+#endif
 				return;
 			}
 
