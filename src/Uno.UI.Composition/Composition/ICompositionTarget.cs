@@ -5,5 +5,5 @@ namespace Uno.UI.Composition;
 
 internal interface ICompositionTarget
 {
-	void TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint, List<InteractionTracker> trackers);
+	void TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker);
 }

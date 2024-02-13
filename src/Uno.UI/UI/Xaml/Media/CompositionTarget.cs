@@ -27,6 +27,6 @@ public partial class CompositionTarget : ICompositionTarget
 		}
 	}
 
-	void ICompositionTarget.TryRedirectForManipulation(PointerPoint pointerPoint, List<InteractionTracker> trackers)
-		=> ContentRoot.InputManager.RedirectPointer(pointerPoint, trackers);
+	void ICompositionTarget.TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
+		=> ContentRoot.InputManager.RedirectPointer(pointerPoint, tracker);
 }

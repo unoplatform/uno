@@ -88,16 +88,16 @@ internal partial class InputManager : IInputInjectorTarget
 		return false;
 	}
 
-	internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, List<InteractionTracker> trackers)
+	internal void RedirectPointer(Windows.UI.Input.PointerPoint pointer, InteractionTracker tracker)
 	{
-		var (originalSource, _) = VisualTreeHelper.HitTest(pointer.RawPosition, ContentRoot.XamlRoot);
-		if (originalSource is null)
+		if (_pointerRedirections?.TryGetValue(pointer.PointerId, out var recognizer) == true)
 		{
+			((GestureRecognizerOwner)recognizer.Owner).Trackers.Add(tracker);
 			return;
 		}
 
 		_pointerRedirections ??= new();
-		var recognizer = new GestureRecognizer(new GestureRecognizerOwner(trackers, this));
+		recognizer = new GestureRecognizer(new GestureRecognizerOwner([tracker], this));
 		recognizer.GestureSettings = GestureSettingsHelper.Manipulations;
 		recognizer.ManipulationStarting += OnRecognizerManipulationStarting;
 		recognizer.ManipulationStarted += OnRecognizerManipulationStarted;
