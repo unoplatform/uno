@@ -116,7 +116,7 @@ namespace SampleControl.Presentation
 			InitializeCommands();
 			ObserveChanges();
 
-			_categories = GetSamples();
+			RefreshSamples();
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
@@ -747,6 +747,11 @@ namespace SampleControl.Presentation
 #endif
 		}
 
+		private void RefreshSamples()
+		{
+			Categories = GetSamples();
+		}
+
 		/// <summary>
 		/// This method retreives all the categories and sample contents associated with them throughout the app.
 		/// </summary>
@@ -756,7 +761,7 @@ namespace SampleControl.Presentation
 			var categories =
 				from type in _allSamples
 				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				where sampleAttribute != null
+				where sampleAttribute != null && (!_manualTestsOnly || sampleAttribute.IsManualTest)
 				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
