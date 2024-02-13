@@ -71,8 +71,14 @@ public class X11ApplicationHost : ISkiaApplicationHost
 	{
 		_eventLoop.Schedule(StartApp);
 
-		// This probably doesn't need a lock, since it doesn't modify anything and reading outdated values is fine
-		SpinWait.SpinUntil(X11XamlRootHost.AllWindowsDone);
+		while (!X11XamlRootHost.AllWindowsDone())
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"{nameof(X11ApplicationHost)} is testing for all windows closed.");
+			}
+			Thread.Sleep(100);
+		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{

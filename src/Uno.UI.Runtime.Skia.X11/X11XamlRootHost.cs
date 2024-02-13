@@ -118,13 +118,21 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			using var fileStream = File.OpenRead(iconPath);
 			using var codec = SKCodec.Create(fileStream);
+			if (codec is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Unable to create an SKCodec instance for icon file {iconPath}.");
+				}
+				return;
+			}
 			using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
 			var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
 			if (result != SKCodecResult.Success)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Warn($"Unable to decode icon file [{iconPath}] specified in the Package.appxmanifest file.");
+					this.Log().Error($"Unable to decode icon file [{iconPath}] specified in the Package.appxmanifest file.");
 				}
 				return;
 			}
@@ -184,6 +192,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public static bool AllWindowsDone()
 	{
+		// This probably doesn't need a lock, since it doesn't modify anything and reading outdated values is fine,
+		// but let's be cautious.
 		lock (_x11WindowToXamlRootHostMutex)
 		{
 			return _firstWindowCreated && _x11WindowToXamlRootHost.Count == 0;
