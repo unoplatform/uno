@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page : UserControl
 	{
-#if !__SKIA__
+#if !__CROSSRUNTIME__
 		public Page()
 		{
 			InitializeBorder();
@@ -90,12 +90,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateBorder();
-#if __WASM__
-			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
-#endif
-		}
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
 	}
 }

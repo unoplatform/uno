@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+﻿#if IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 using System;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
@@ -13,7 +13,9 @@ internal partial class BorderLayerRenderer
 	private readonly FrameworkElement _owner;
 	private readonly IBorderInfoProvider _borderInfoProvider;
 
+#pragma warning disable CS0414 // _currentState is not used on reference build
 	private BorderLayerState _currentState;
+#pragma warning restore CS0414
 
 	public BorderLayerRenderer(FrameworkElement owner)
 	{
@@ -44,7 +46,11 @@ internal partial class BorderLayerRenderer
 	/// <summary>
 	/// Removes added layers and subscriptions.
 	/// </summary>
-	internal void Clear() => ClearPlatform();
+	internal void Clear()
+	{
+		ClearPlatform();
+		_currentState = default;
+	}
 
 	partial void UpdatePlatform();
 
