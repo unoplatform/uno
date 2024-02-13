@@ -214,6 +214,6 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 		}
 
 		// We don't have a way to map a filter to a category (e.g. image/png -> Images), so we make every filter its own category
-		return list.Select(f => (f.pattern, new [] { f })).ToArray();
+		return list.Select(f => (f.pattern, new[] { f })).ToArray();
 	}
 }
