@@ -79,8 +79,6 @@ NSWindow* uno_app_get_main_window(void)
     return main_window;
 }
 
-// TODO
-// - add initial background color
 void* uno_window_create(double width, double height)
 {
     CGRect size = NSMakeRect(0, 0, width, height);
@@ -94,7 +92,6 @@ void* uno_window_create(double width, double height)
     if (device) {
         MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
         v.enableSetNeedsDisplay = YES;
-        //    v.clearColor = MTLClearColorMake(0.0, 0.5, 1.0, 1.0); // FIXME: remove or set to default background color
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
         vc.view = v;
