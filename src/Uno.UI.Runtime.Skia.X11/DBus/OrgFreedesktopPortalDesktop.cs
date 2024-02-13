@@ -1,5 +1,7 @@
 // Generated using `dotnet dbus codegen --bus session --service org.freedesktop.portal.Desktop`
+// tmds.dbus.tool      0.16.0
 #nullable disable
+#pragma warning disable CA1805
 
 using System;
 using System.Collections.Generic;

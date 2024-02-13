@@ -12,6 +12,7 @@ using Tmds.DBus;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.WinUI;
 using Uno.WinUI.Runtime.Skia.X11.Dbus;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -53,7 +54,7 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"Unable to connect to DBus", e);
+				this.Log().Error($"Unable to connect to DBus, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information.", e);
 			}
 
 			return await Task.FromResult((IReadOnlyList<string>)Array.Empty<string>());
@@ -129,16 +130,16 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 
 			var title = (multiple, directory) switch
 			{
-				(true, true) => "Choose one or more directories",
-				(true, false) => "Choose one or more files",
-				(false, true) => "Choose a directory",
-				(false, false) => "Choose a file",
+				(true, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_MULTIPLE"),
+				(true, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_MULTIPLE"),
+				(false, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_SINGLE"),
+				(false, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_SINGLE")
 			};
 			var window = "x11:" + host.X11Window.Window.ToString("X", CultureInfo.InvariantCulture);
 			var requestPath2 = await fileChooser.OpenFileAsync(window, title, new Dictionary<string, object>
 			{
 				{ "handle_token", handleToken },
-				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonText) ? "Submit" : picker.CommitButtonText },
+				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonText) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonText },
 				{ "multiple", multiple },
 				{ "directory", directory },
 				{ "filters", GetPortalFilters(picker.FileTypeFilter) },
@@ -195,6 +196,10 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 			}
 			catch (Exception)
 			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Failed to parse portal filer {filter} as a MIME type, falling back to glob.");
+				}
 				// The portal accepts any glob pattern, but to be similar to other platforms, we
 				// assume the filter is of the form `.extension`.
 				if (filter == "*")

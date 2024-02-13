@@ -13,6 +13,7 @@ using Tmds.DBus;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.WinUI;
 using Uno.WinUI.Runtime.Skia.X11.Dbus;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -42,7 +43,7 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"Unable to connect to DBus", e);
+				this.Log().Error($"Unable to connect to DBus, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information.", e);
 			}
 
 			return await Task.FromResult<StorageFile?>(null);
@@ -118,10 +119,10 @@ internal class LinuxFileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			});
 
 			var window = "x11:" + host.X11Window.Window.ToString("X", CultureInfo.InvariantCulture);
-			var requestPath2 = await fileChooser.SaveFileAsync(window, "Choose where to save the file", new Dictionary<string, object>
+			var requestPath2 = await fileChooser.SaveFileAsync(window, ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE"), new Dictionary<string, object>
 			{
 				{ "handle_token", handleToken },
-				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonText) ? "Submit" : picker.CommitButtonText },
+				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonText) ? ResourceAccessor.GetLocalizedStringResource("FILE_SAVER_ACCEPT_LABEL") : picker.CommitButtonText },
 				{ "filters", GetPortalFilters(picker.FileTypeChoices) },
 				{ "current_name", picker.SuggestedFileName },
 				{ "current_folder", Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation)).Append((byte)'\0') }

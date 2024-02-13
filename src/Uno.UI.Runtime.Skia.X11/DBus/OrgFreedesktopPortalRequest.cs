@@ -1,4 +1,5 @@
 // Generated using `dotnet dbus codegen /usr/share/dbus-1/interfaces/org.freedesktop.portal.Request.xml`
+// tmds.dbus.tool      0.16.0
 #nullable disable
 
 using System;
