@@ -290,13 +290,6 @@
 		<Compile Remove="MetadataUpdateTests\Given_HotReloadService.cs" />
 		<Compile Remove="Verifiers\CSGenerator.cs" />
 		<Compile Remove="Verifiers\CSHelper.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_Binding.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_Grid.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_HotReloadEnabledInBuild.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_MvvmGeneratedMembers.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_NoFuzzyMatching.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_Parser.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Given_ResourceDictionary.cs" />
-		<Compile Remove="XamlCodeGeneratorTests\Verifiers\CSGenerator.cs" />
+		<Compile Remove="XamlCodeGeneratorTests\**\*.cs" />
 	</ItemGroup>
 </Project>
