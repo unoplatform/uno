@@ -29,6 +29,9 @@ public partial class ElementCompositionPreview
 		return new Composition.Visual(_compositor)
 		{
 			NativeOwner = element,
+			// TODO: Switch to CompositionTargetGetter and assign a lambda instead.
+			// This will make the Visual usable even if GetElementVisual is called when
+			// the element is not loaded (note that XamlRoot is null when element isn't yet loaded)
 			CompositionTarget = element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget,
 		};
 #endif
