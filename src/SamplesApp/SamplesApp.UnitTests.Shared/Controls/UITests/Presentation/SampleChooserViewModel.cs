@@ -955,8 +955,8 @@ namespace SampleControl.Presentation
 				// Activator is used here in order to generate the view and bind it directly with the proper view model
 				var control = Activator.CreateInstance(newContent.ControlType);
 
-				if (control is ContentControl controlAsContentControl
-					&& controlAsContentControl.Content is not Uno.UI.Samples.Controls.SampleControl)
+				if (control is ContentControl controlAsContentControl &&
+					controlAsContentControl.Content is not Uno.UI.Samples.Controls.SampleControl)
 				{
 					control = new Uno.UI.Samples.Controls.SampleControl
 					{
