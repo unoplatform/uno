@@ -28,6 +28,8 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.32.0-dev.116" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.netcoremobile.csproj" />
 	</ItemGroup>
 
