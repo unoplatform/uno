@@ -109,7 +109,7 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 				case RenderSurfaceType.Metal:
 					if (!metal)
 					{
-						throw new NotSupportedException("Metal is not supported on this hardware or configuration. Try enabling the software-based renderer.");
+						throw new NotSupportedException("Metal is not supported on this hardware or configuration. Try enabling the software-based renderer. See https://aka.platform.uno/skia-macos");
 					}
 					break;
 				case RenderSurfaceType.Software:
