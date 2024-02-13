@@ -72,13 +72,14 @@ namespace Microsoft.UI.Composition
 		{
 			if (_properties.TryGetValue(propertyName, out var existingValue) && !(existingValue is T _))
 			{
-				throw new ArgumentException("Canot insert a different type for an existing property.");
+				throw new ArgumentException("Cannot insert a different type for an existing property.");
 			}
 
 			_properties[propertyName] = value;
 		}
 
+		// TODO
 		private protected override bool IsAnimatableProperty(string propertyName)
-			=> _properties.ContainsKey(propertyName);
+			=> false;
 	}
 }
