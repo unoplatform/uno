@@ -466,6 +466,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
+#endif
 		public async Task When_FocusChanged_PreventScroll()
 		{
 			var ts1 = new ToggleSwitch();
