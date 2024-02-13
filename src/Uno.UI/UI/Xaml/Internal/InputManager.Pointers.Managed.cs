@@ -155,10 +155,6 @@ internal partial class InputManager
 		{
 			var (originalSource, _) = HitTest(args);
 
-			if (originalSource is ImplicitTextBlock)
-			{
-				global::System.Diagnostics.Debug.WriteLine("Entered");
-			}
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
