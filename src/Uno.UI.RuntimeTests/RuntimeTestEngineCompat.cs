@@ -13,16 +13,21 @@ using Microsoft.UI.Xaml.Markup;
 using Uno.Foundation.Logging;
 using Uno.UI.RuntimeTests.Helpers;
 
+#if HAS_UNO
 namespace Uno.Extensions
 {
 	// Reroutes the LogExtensionPoint this is referenced and initialized by the application
 	internal static class LogExtensionPoint
 	{
-		public static ILogger Log(this Type type) => Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory?.CreateLogger(type.FullName ?? type.Name) as ILogger ?? NullLogger.Instance;
 
-		public static ILoggerFactory AmbientLoggerFactory => Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory as ILoggerFactory ?? NullLoggerFactory.Instance;
+		public static ILogger Log(this Type type)
+			=> Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory?.CreateLogger(type.FullName ?? type.Name) as ILogger ?? NullLogger.Instance;
+
+		public static ILoggerFactory AmbientLoggerFactory
+			=> Uno.Foundation.Logging.LoggerFactory.ExternalLoggerFactory as ILoggerFactory ?? NullLoggerFactory.Instance;
 	}
 }
+#endif
 
 namespace Uno.UI.RuntimeTests
 {
@@ -40,15 +45,19 @@ namespace Uno.UI.RuntimeTests
 
 	partial class UnitTestsControl
 	{
-		/// <inheritdoc />
-		private protected override void OnLoaded()
+		partial void ConstructPartial()
 		{
-			base.OnLoaded();
+			Loaded += Configure;
+		}
 
-			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+		private static void Configure(object sender, RoutedEventArgs e)
+		{
+			var xamlRoot = ((UnitTestsControl)sender).XamlRoot;
+
+			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = xamlRoot;
 			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
 #if HAS_UNO
-				XamlRoot?.HostWindow is null;
+				xamlRoot?.HostWindow is null;
 #else
 				false;
 #endif
