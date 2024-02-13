@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
-#if __SKIA__ || __WASM__
+#if !__ANDROID__
 			_borderRenderer ??= new BorderLayerRenderer(this);
 
 			// DrawBackground			=> General background for all items
@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var borderBrush = borderInfoProvider.BorderBrush;
 			var cornerRadius = borderInfoProvider.CornerRadius;
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__
 			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
 #endif
 #endif

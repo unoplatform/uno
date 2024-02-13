@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page : UserControl
 	{
-#if !__CROSSRUNTIME__
+#if __ANDROID__
 		public Page()
 		{
 			InitializeBorder();
@@ -91,5 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public NavigationCacheMode NavigationCacheMode { get; set; }
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
+
+		partial void UpdateBorder();
 	}
 }
