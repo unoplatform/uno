@@ -813,7 +813,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var ts = new ToggleSwitch();
 			var SUT = new ScrollViewer
 			{
-				new StackPanel
+				Content = new StackPanel
 				{
 					Spacing = 1200,
 					Children =
