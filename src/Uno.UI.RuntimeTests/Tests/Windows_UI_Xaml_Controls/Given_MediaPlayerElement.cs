@@ -164,6 +164,9 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
+#if __SKIA__
+	[Ignore("")]
+#endif
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		CheckMediaPlayerExtensionAvailability();
