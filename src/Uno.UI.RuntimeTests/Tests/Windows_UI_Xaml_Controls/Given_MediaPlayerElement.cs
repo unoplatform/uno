@@ -165,7 +165,7 @@ public partial class Given_MediaPlayerElement
 
 	[TestMethod]
 #if __SKIA__
-	[Ignore("")]
+	[Ignore("https://github.com/unoplatform/uno/issues/15471")]
 #endif
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
