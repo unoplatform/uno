@@ -480,8 +480,11 @@ void* uno_window_get_metal_context(UNOWindow* window)
     }
     
     if (mouse != MouseEventsNone) {
-        CGFloat px, py;
-        if ([self getPositionFrom:event x:&px y:&py]) {
+        struct MouseEventData data;
+        memset(&data, 0, sizeof(struct MouseEventData));
+        data.eventType = mouse;
+        data.inContact = inContact;
+        if ([self getPositionFrom:event x:&data.x y:&data.y]) {
 #if false
             // check subtype for most mouse events
             // FIXME: does not work, the mouse also issue the NSEventSubtypeTabletPoint subevent and this cause  assertions
@@ -493,18 +496,41 @@ void* uno_window_get_metal_context(UNOWindow* window)
                 }
             }
 #endif
+            // mouse
+            data.mouseButtons = (uint32)NSEvent.pressedMouseButtons;
+
+            // Pen
+            if (pdt == PointerDeviceTypePen) {
+                // do not call if event is not from a pen -> *** Assertion failure in -[NSEvent tilt], NSEvent.m:4625
+                NSPoint tilt = event.tilt;
+                data.tiltX = (float)tilt.x;
+                data.tiltY = (float)tilt.y;
+                data.pressure = event.pressure;
+                data.pid = (uint32)event.pointingDeviceID;
+            } else {
+                data.pid = 1;
+            }
+
+            // scrollwheel
+            if (mouse == MouseEventsScrollWheel) {
+                // do not call if not in the scrollwheel event -> *** Assertion failure in -[NSEvent scrollingDeltaX], NSEvent.m:2202
+                data.scrollingDeltaX = (int32_t)event.scrollingDeltaX;
+                data.scrollingDeltaY = (int32_t)event.scrollingDeltaY;
+            }
+
+            // other
             NSTimeInterval ts = event.timestamp;
             
             // The precision of the frameId is 10 frame per ms ... which should be enough
-            uint32 frameId = (uint)(ts * 1000.0 * 10.0);
-            uint64 bootTime = /* NSDate.now +*/ NSProcessInfo.processInfo.systemUptime * 10000000;
-            uint64 timestamp = ts * 10000000 + bootTime; // FIXME
- 
-            uint32 pid = (pdt == PointerDeviceTypePen) ? (uint32) event.pointingDeviceID : 1;
+            data.frameId = (uint)(ts * 1000.0 * 10.0);
 
-            handled = uno_get_window_mouse_event_callback()(mouse, px, py, get_modifiers(event.modifierFlags), pdt, frameId, timestamp, pid);
+            NSDate *now = [[NSDate alloc] init];
+            NSDate *boot = [[NSDate alloc] initWithTimeInterval:uno_get_system_uptime() sinceDate:now];
+            data.timestamp = (uint64)(boot.timeIntervalSinceNow * 1000000);
+
+            handled = uno_get_window_mouse_event_callback()(&data);
 #if DEBUG_MOUSE // very noisy
-            NSLog(@"NSEventTypeMouse*: %@ %g %g handled? %s", event, px, py, handled ? "true" : "false");
+            NSLog(@"NSEventTypeMouse*: %@ %g %g handled? %s", event, data.x, data.y, handled ? "true" : "false");
 #endif
         }
     }

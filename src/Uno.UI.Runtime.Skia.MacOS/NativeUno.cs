@@ -9,6 +9,46 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
+// keep in sync with UNOWindow.h
+internal enum NativeMouseEvents
+{
+	None,
+	Entered,
+	Exited,
+	Down,
+	Up,
+	Moved,
+	ScrollWheel,
+}
+
+// values are set in native code
+#pragma warning disable 0649
+[StructLayout(LayoutKind.Sequential)]
+internal struct NativeMouseEventData
+{
+	public NativeMouseEvents EventType;
+	public double /* CGFloat */ X;
+	public double /* CGFloat */ Y;
+	// mouse
+	[MarshalAs(UnmanagedType.I4)]
+	public bool InContact;
+	public uint MouseButtons;
+	// pen
+	public float TiltX;
+	public float TiltY;
+	public float Pressure;
+	// scrollwheel
+	public int ScrollingDeltaX;
+	public int ScrollingDeltaY;
+	// others
+	public VirtualKeyModifiers KeyModifiers;
+	public PointerDeviceType PointerDeviceType;
+	public uint FrameId;
+	public ulong Timestamp;
+	public uint Pid;
+};
+#pragma warning restore 0649
+
 internal static partial class NativeUno
 {
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -72,7 +112,7 @@ internal static partial class NativeUno
 	internal static partial nint uno_window_set_title(nint window, string title);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_mouse_event_callback(delegate* unmanaged[Cdecl]<int, double, double, VirtualKeyModifiers, PointerDeviceType, uint, ulong, uint, int> callback);
+	internal static unsafe partial void uno_set_window_mouse_event_callback(delegate* unmanaged[Cdecl]<NativeMouseEventData*, int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_should_close_callback(delegate* unmanaged[Cdecl]<int> callback);

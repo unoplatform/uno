@@ -223,6 +223,7 @@ typedef int32_t (*window_key_callback_fn_ptr)(VirtualKey key, VirtualKeyModifier
 void uno_set_window_key_down_callback(window_key_callback_fn_ptr p);
 void uno_set_window_key_up_callback(window_key_callback_fn_ptr p);
 
+// keep in sync with MacOSUnoCorePointerInputSource.cs
 typedef NS_ENUM(uint32, MouseEvents) {
     MouseEventsNone,
     MouseEventsEntered,
@@ -240,7 +241,29 @@ typedef NS_ENUM(uint32, PointerDeviceType) {
     PointerDeviceTypeMouse,
 };
 
-typedef int32_t (*window_mouse_callback_fn_ptr)(MouseEvents eventType, CGFloat x, CGFloat y, VirtualKeyModifiers mods, PointerDeviceType type, uint32 frameId, uint64 timestamp, uint32 pid);
+struct MouseEventData {
+    MouseEvents eventType;
+    CGFloat x;
+    CGFloat y;
+    // mouse
+    int32_t inContact;
+    uint32 mouseButtons;
+    // pen
+    float tiltX;
+    float tiltY;
+    float pressure;
+    // scrollwheel
+    int32_t scrollingDeltaX;
+    int32_t scrollingDeltaY;
+    // others
+    VirtualKeyModifiers mods;
+    PointerDeviceType pointerDeviceType;
+    uint32 frameId;
+    uint64 timestamp;
+    uint32 pid;
+};
+
+typedef int32_t (*window_mouse_callback_fn_ptr)(struct MouseEventData *data);
 void uno_set_window_mouse_event_callback(window_mouse_callback_fn_ptr p);
 
 typedef bool (*window_should_close_fn_ptr)(void);
