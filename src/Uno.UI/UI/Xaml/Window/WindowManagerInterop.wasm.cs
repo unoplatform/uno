@@ -28,6 +28,9 @@ namespace Uno.UI.Xaml
 		internal static Task InitAsync(bool isLoadEventsEnabled)
 			=> NativeMethods.InitAsync(isLoadEventsEnabled);
 
+		internal static void SetBodyCursor(string value)
+			=> NativeMethods.SetBodyCursor(value);
+
 		/// <summary>
 		/// This method has two purposes:
 		/// - Initializes the window size before launch
@@ -1109,6 +1112,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.setBodyCursor")]
+			internal static partial void SetBodyCursor(string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.beforeLaunch")]
 			internal static partial string BeforeLaunch();

@@ -38,6 +38,8 @@ public partial class UIElement : DependencyObject
 	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs> _pointerEventArgs;
 	private static TSInteropMarshaller.HandleRef<NativePointerEventResult> _pointerEventResult;
 
+	private static InputSystemCursorShape? _lastSetCursor;
+
 	// Ref:
 	// https://www.w3.org/TR/pointerevents/
 	// https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
@@ -159,6 +161,24 @@ public partial class UIElement : DependencyObject
 			}
 
 			_logTrace?.Trace($"Dispatching to {element.GetDebugName()} pointer arg: {args}.");
+
+			if ((NativePointerEvent)args.Event is not NativePointerEvent.pointerout)
+			{
+				// This corresponds to SetSourceCursor in InputManager.Pointers.managed.cs
+				if (element.CalculatedFinalCursor is { } cursorShape)
+				{
+					if (_lastSetCursor is not { } c || c != cursorShape)
+					{
+						Console.WriteLine($"{(NativePointerEvent)args.Event} Setting {element} {element.HtmlId} to ${cursorShape} {cursorShape.ToCssProtectedCursor()}");
+						WindowManagerInterop.SetBodyCursor(cursorShape.ToCssProtectedCursor());
+						_lastSetCursor = cursorShape;
+					}
+				}
+				else
+				{
+					WindowManagerInterop.SetBodyCursor("none"); // hides the cursor
+				}
+			}
 
 			switch ((NativePointerEvent)args.Event)
 			{

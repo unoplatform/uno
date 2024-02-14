@@ -53,6 +53,8 @@ namespace Microsoft.UI.Xaml
 
 		private Vector3 _translation = Vector3.Zero;
 
+		private InputCursor _protectedCursor;
+
 		//private protected virtual void PrepareState()
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
@@ -1268,11 +1270,6 @@ namespace Microsoft.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
 		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
 
-		// Skipping already declared property ActualSize
-
-#if !__WASM__
-		private InputCursor _protectedCursor;
-
 		// This depends on the implementation of ICorePointerInputSource.PointerCursor.
 		/// <summary>
 		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
@@ -1307,7 +1304,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
-#endif
 
 		/// <summary>
 		/// This event is not yet implemented in Uno Platform.
