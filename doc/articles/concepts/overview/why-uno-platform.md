@@ -61,12 +61,13 @@ For more information, see [Design and Build Uno Platform Applications with Figma
 
 Our [Uno Platform Template Wizard](https://platform.uno/blog/the-new-uno-platform-solution-template-wizard/) and its [live version](https://new.platform.uno/) allow you to get to a working project quickly. You can select your preferred version of .NET, choose the target platforms you want to develop for, pick a design system that suits your app the best, pick from the MVVM or MVUX architectural pattern, and throw in any mix of the rich set of Uno Extensions as starting building blocks. Additionally, you can include support for PWA, first-party API server, UI tests, and even generate initial build scripts for GitHub Actions or Azure DevOps, alleviating the hassle of figuring out the complex, cross-platform YAML specifics.
 
-## Your apps will be Pixel-Perfect across all platforms and look exactly the way you want them to look
+## Your apps will be pixel-perfect across all platforms
 
-Uno Platform allows you to control each pixel using the concept of lookless-controls, similar to the "[headless controls](https://martinfowler.com/articles/headless-component.html)" term used in React world. Each built-in and even third-party control defines its logic (e.g. how the control reacts to pointer or keyboard input, how it handles data, or how different properties affect its behavior) independently of its visual style and template. This means you can completely change the look of each control as you see fit for every specific use case or to match your brand. You can even change the style of the control at runtime. Thanks to this, we can also offer two different built-in design systems – Fluent Design System based on Microsoft's design language and Material Design based on Google's design language – and both in light and dark theme!
+Uno Platform allows you to control each pixel of your UI elements to match the experience you envision. This concept of lookless-controls is very similar to what is named "[headless controls](https://martinfowler.com/articles/headless-component.html)" in the React world. Each built-in and third-party control defines its fundamental logic (e.g. how it responds to interactions, handles data, or behaves once a property value is set) independently of a visual style and template. This approach means you can tailor the appearance of any control to fit a special use case, or to match your brand identity. Changes to control styling can even be performed at runtime. Uno Platform leverages this to offer multiple built-in design systems influenced by guidance from popular platforms.
 
-Under the hood, your app is still native – we are still using the built-in native UI primitives on each target which build up a native view hierarchy and draws the visuals using native OS capabilities. This way you still get all the benefits of the native world such as localization and accessibility, while
-you still have full control of every pixel of your app and only need to design your application once.
+Under the hood, your users benefit from a native app. That is, we are still using the built-in native UI primitives on each target. These build up a native view hierarchy and draws the visuals using native OS capabilities. That way, you still get all the benefits of the native world such as localization and accessibility, but without giving up the rich control of pixel-level details in your app experience.
+
+All of the above remains possible without needing to replicate the same design for each target platform.
 
 ## Out of the box support for Material/Fluent/Cupertino design systems with Dark/Light themes
 
@@ -136,7 +137,7 @@ How's _that_ for music to your ears?
 
 ## Hosting-based extensions for everything an app needs (HTTP, Serialization, Configuration, etc)
 
-Uno.Extensions is built on top of Microsoft.Extensions to setup and create a host for your application that can be used to access services for Logging, Configuration, Serialization, Http, and your own custom services.
+[Uno.Extensions](https://platform.uno/uno-extensions/) is built on top of Microsoft.Extensions to setup and create a host for your application that can be used to access services for Logging, Configuration, Serialization, HTTP, and your own custom services.
 
 ## Navigation
 
@@ -223,9 +224,9 @@ Uno Platform supports SQLite for all platforms, including WebAssembly, to allow 
 
 ## Proven migration path for Xamarin.Forms
 
-In addition to providing 3rd party control MAUI Embedding, Uno Platform is a proven modernization path for Xamarin.Forms apps. We've [collated numerous docs](https://platform.uno/xamarin.forms) to aid you in the migration. Big brands such as **TOYOTA** have already migrated some of their apps to Uno Platform.
+In addition to providing 3rd party control MAUI Embedding, Uno Platform is a proven modernization path for Xamarin.Forms apps. We've collated numerous [docs](https://platform.uno/xamarin.forms) to aid you in the migration. Big brands such as **TOYOTA** have already migrated some of their apps to Uno Platform.
 
-Watch [TOYOTA's video testimonial](https://youtu.be/TeA6zEq5MGk?t=1449).
+Watch TOYOTA's [video testimonial](https://youtu.be/TeA6zEq5MGk?t=1449).
 
 ## Standing on the shoulders of giants
 
@@ -237,7 +238,7 @@ We are first and foremost app builders who have built hundreds of applications f
 
 ## Used to build countless apps for over a decade
 
-Uno Platform started as an internal project at Nventive over 10 years ago, which we have used to develop [countless apps for top worldwide-recognized brands](https://nventive.com/en/our-work). In addition, many fortune-500 companies use Uno Platform for their internal, line of business applications, some of which you can find on the [Uno Platform case studies](https://platform.uno/case-studies/) page.
+Uno Platform started as an internal project at Nventive over 10 years ago, which we have used to develop [countless apps for top worldwide-recognized brands](https://nventive.com/en/our-work). In addition, many Fortune 500 companies use Uno Platform for their internal, line of business applications. Some of those can be found on the [Uno Platform case studies](https://platform.uno/case-studies/) page.
 
 ## Support: Community and Paid
 
@@ -255,15 +256,15 @@ XAML for UI is a mature & well documented technology – you'll always find an e
 
 ## Fast ship cadence
 
-Uno Platform ships official releases 6-8 times per year, and dozens of dev builds in between. This flexibility has traditionally allowed us to ship on day-0 as .NET and Windows UI / Windows App SDK.
+Uno Platform ships official releases 6-8 times per year, and dozens of dev builds in between. This flexibility has traditionally allowed us to ship on day-0 alongside .NET, WinUI, and Windows App SDK.
 
 ## Amazing team behind it
 
-As Uno Platform grows, the team behind it grows as well. It is a group of focused and highly motivated experts in many areas, which ensures the product is in good hands and thrives with new features and improvements being added (literally!) every day.
+As Uno Platform grows, the team behind it grows as well. The product is in good hands, with a group of focused and highly motivated experts in many areas. The project thrives because of this, as new features and improvements are added daily.
 
 ## Integrates with any .NET Library
 
-Be it UI components like mentioned above, Uno Platform also integrates perfectly with any .NET Standard 2.0, .NET 6 through 8 libraries such as SQLite, LiteDB, Json.NET and Skia.
+In addition to the UI components mentioned above, Uno Platform apps also integrate perfectly with your existing .NET libraries. This includes both .NET Standard 2.0 and libraries targeting .NET 6, up to the latest with .NET 8. Because of this, your Uno Platform app has compatibility with packages like Json.NET, LiteDB, SQLite, and SkiaSharp.
 
 ## The Community
 
