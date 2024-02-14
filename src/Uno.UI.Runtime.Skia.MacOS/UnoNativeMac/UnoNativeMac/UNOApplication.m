@@ -6,6 +6,7 @@
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
+static id<MTLDevice> device;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
 {
@@ -26,7 +27,7 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
 }
 
-bool uno_app_initialize(void)
+bool uno_app_initialize(bool *metal)
 {
     NSApplication *app = [NSApplication sharedApplication];
     if (app) {
@@ -36,7 +37,23 @@ bool uno_app_initialize(void)
         // KVO observation for dark/light theme
         [app addObserver:ad forKeyPath:NSStringFromSelector(@selector(effectiveAppearance)) options:NSKeyValueObservingOptionNew context:nil];
     }
+    device = MTLCreateSystemDefaultDevice();
+#if DEBUG
+    NSLog(@"uno_app_initialize Metal requested %s available %s", *metal ? "true" : "false", device != nil ? "true" : "false");
+#endif
+    if (*metal == NO) {
+        // even if Metal was not requested we still return if it was available
+        *metal = device != nil;
+        device = nil;
+    } else {
+        *metal = device != nil;
+    }
     return app != nil;
+}
+
+id<MTLDevice> uno_application_get_metal_device(void)
+{
+    return device;
 }
 
 void uno_application_set_icon(const char *path)

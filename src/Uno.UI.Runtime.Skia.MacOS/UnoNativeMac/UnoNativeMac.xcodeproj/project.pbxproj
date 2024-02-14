@@ -16,7 +16,7 @@
 		D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CC768A2AB9D464002A44F0 /* UNOClipboard.m */; };
 		D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CC768C2ABA1337002A44F0 /* UNOPickers.m */; };
 		D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F248A82A67288B008A609E /* UnoNativeMac.h */; };
-		D1F248AB2A67288B008A609E /* UnoNativeMac.m in Sources */ = {isa = PBXBuildFile; fileRef = D1F248AA2A67288B008A609E /* UnoNativeMac.m */; };
+		D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +36,8 @@
 		D1CC768E2ABA1368002A44F0 /* UNOPickers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOPickers.h; sourceTree = "<group>"; };
 		D1F248A52A67288B008A609E /* libUnoNativeMac.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libUnoNativeMac.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1F248A82A67288B008A609E /* UnoNativeMac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnoNativeMac.h; sourceTree = "<group>"; };
-		D1F248AA2A67288B008A609E /* UnoNativeMac.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnoNativeMac.m; sourceTree = "<group>"; };
+		D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOSoftView.m; sourceTree = "<group>"; };
+		D1FE7A2C2B75C8E100ACFC76 /* UNOSoftView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOSoftView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +82,6 @@
 			isa = PBXGroup;
 			children = (
 				D1F248A82A67288B008A609E /* UnoNativeMac.h */,
-				D1F248AA2A67288B008A609E /* UnoNativeMac.m */,
 				D1A0651F2A8467B200101BE6 /* UNOApplication.h */,
 				D1A065212A84688000101BE6 /* UNOApplication.m */,
 				D1CC76892AB9D408002A44F0 /* UNOClipboard.h */,
@@ -92,6 +92,8 @@
 				D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */,
 				D1CC768E2ABA1368002A44F0 /* UNOPickers.h */,
 				D1CC768C2ABA1337002A44F0 /* UNOPickers.m */,
+				D1FE7A2C2B75C8E100ACFC76 /* UNOSoftView.h */,
+				D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */,
 				D1A065232A8AC15C00101BE6 /* UNOWindow.h */,
 				D1A065242A8AC23800101BE6 /* UNOWindow.m */,
 			);
@@ -168,8 +170,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */,
+				D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */,
 				D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */,
-				D1F248AB2A67288B008A609E /* UnoNativeMac.m in Sources */,
 				D1A065222A84688000101BE6 /* UNOApplication.m in Sources */,
 				D1A065252A8AC23800101BE6 /* UNOWindow.m in Sources */,
 				D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */,

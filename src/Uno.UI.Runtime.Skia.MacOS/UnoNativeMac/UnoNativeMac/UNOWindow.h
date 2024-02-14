@@ -4,13 +4,14 @@
 
 #pragma once
 
-#import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
-#import <Metal/Metal.h>
-
+#import "UnoNativeMac.h"
 #import "UNOMetalViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef void (*resize_fn_ptr)(void* /* window */, double /* width */, double /* height */);
+resize_fn_ptr uno_get_resize_callback(void);
+void uno_set_resize_callback(resize_fn_ptr p);
 
 @interface UNOWindow : NSWindow
 
@@ -28,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 NSWindow* uno_app_get_main_window(void);
 
-void* uno_window_create(void);
+void* uno_window_create(double width, double height);
 void uno_window_invalidate(NSWindow *window);
 bool uno_window_resize(NSWindow *window, double width, double height);
 void uno_window_set_title(NSWindow *window, const char* title);

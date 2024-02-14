@@ -23,7 +23,7 @@ public class MainClass
 
 		var host = new MacSkiaHost(() => new SamplesApp.App());
 #if IS_CI
-		// TODO: To be confirmed but virtualization often mess up with Metal support
+		// macOS virtualization often mess up with Metal support, see https://github.com/actions/runner-images/issues/1779
 		host.RenderSurfaceType = RenderSurfaceType.Software;
 #endif
 		host.Run();

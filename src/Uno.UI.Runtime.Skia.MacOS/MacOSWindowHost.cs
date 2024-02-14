@@ -32,6 +32,10 @@ internal class MacOSWindowHost : IXamlRootHost
 	private readonly Window _winUIWindow;
 	private readonly DisplayInformation _displayInformation;
 	private readonly GRContext? _context;
+	private SKBitmap? _bitmap;
+	private SKSurface? _surface;
+	private int _rowBytes;
+	private static bool _initializationCompleted;
 
 	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
@@ -44,56 +48,31 @@ internal class MacOSWindowHost : IXamlRootHost
 
 		// RegisterForBackgroundColor();
 
-		var requestedSurfaceType = MacSkiaHost.Current?.RenderSurfaceType;
-		if (requestedSurfaceType != RenderSurfaceType.Software)
+		var host = MacSkiaHost.Current!;
+		switch (host.RenderSurfaceType)
 		{
-			// Automatic (Metal first) or Metal is requested
-			var ctx = NativeUno.uno_window_get_metal(_nativeWindow.Handle);
-			_context = MacOSMetalRenderer.CreateContext(ctx);
-		}
-		if ((requestedSurfaceType != RenderSurfaceType.Auto) && _context is null)
-		{
-			// Automatic (fallback) or software is requested
-			// TODO: 
+			case RenderSurfaceType.Metal:
+				var ctx = NativeUno.uno_window_get_metal_context(_nativeWindow.Handle);
+				_context = MacOSMetalRenderer.CreateContext(ctx);
+				break;
+			case RenderSurfaceType.Software:
+				break;
 		}
 	}
-
-	public MacOSWindowNative NativeWindow => _nativeWindow;
-	public Window Window => _winUIWindow;
 
 	internal event EventHandler<Size>? SizeChanged;
 
 	private void UpdateWindowSize(double nativeWidth, double nativeHeight)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
-		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
+		SizeChanged?.Invoke(this, new Size(nativeWidth, nativeHeight));
 	}
 
-	private static readonly ConstructorInfo? _rt = typeof(GRBackendRenderTarget).GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, [typeof(nint), typeof(bool)], null);
-
-	private bool hackFirstDraw = true;
-
-	private unsafe void Draw(double nativeWidth, double nativeHeight, nint texture)
+	private void Draw(SKSurface surface)
 	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
-		}
-
-		// FIXME: we get the first update for windows sizes before we have completed the initialization
-		if (hackFirstDraw)
-		{
-			UpdateWindowSize(nativeWidth, nativeHeight);
-		}
-
-		using var target = MacOSMetalRenderer.CreateTarget(_context!, nativeWidth, nativeHeight, texture);
-		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
 		using var canvas = surface.Canvas;
-
 		using (new SKAutoCanvasRestore(canvas, true))
 		{
 			canvas.Clear(SKColors.White);
-			// canvas.Clear(BackgroundColor);
 
 			if (RootElement?.Visual is { } rootVisual)
 			{
@@ -103,7 +82,80 @@ internal class MacOSWindowHost : IXamlRootHost
 
 		canvas.Flush();
 		surface.Flush();
+	}
+
+	private unsafe void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
+		}
+
+		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+
+		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
+		// https://github.com/unoplatform/uno-private/issues/319
+		if (!_initializationCompleted)
+		{
+			UpdateWindowSize(nativeWidth / scale, nativeHeight / scale);
+			_initializationCompleted = SizeChanged is not null;
+			if (!_initializationCompleted)
+			{
+				return; // not yet...
+			}
+		}
+
+		// we can't cache anything since the texture will be different on next calls
+		using var target = MacOSMetalRenderer.CreateTarget(_context!, nativeWidth, nativeHeight, texture);
+		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+
+		surface.Canvas.Scale(scale, scale);
+
+		Draw(surface);
+
 		_context?.Flush();
+	}
+
+	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} FullScreen: {NativeUno.uno_application_is_full_screen()}");
+		}
+
+		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+
+		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed) host initialization
+		// https://github.com/unoplatform/uno-private/issues/319
+		if (!_initializationCompleted)
+		{
+			UpdateWindowSize(nativeWidth, nativeHeight);
+			_initializationCompleted = SizeChanged is not null;
+			if (!_initializationCompleted)
+			{
+				return; // not yet...
+			}
+		}
+
+		int width = (int)(nativeWidth * scale);
+		int height = (int)(nativeHeight * scale);
+		if (_bitmap == null || width != _bitmap.Width || height != _bitmap.Height)
+		{
+			_bitmap?.Dispose();
+			_surface?.Dispose();
+
+			var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+			_bitmap = new SKBitmap(info);
+			_surface = SKSurface.Create(info, _bitmap.GetPixels());
+			_surface.Canvas.Scale(scale, scale);
+			_rowBytes = info.RowBytes;
+		}
+
+		Draw(_surface!);
+
+		*data = (nint)_bitmap.GetPixels(out var bitmapSize);
+		*size = (int)bitmapSize;
+		*rowBytes = _rowBytes;
 	}
 
 	internal static Dictionary<nint, WeakReference<MacOSWindowHost>> windows = new();
@@ -113,7 +165,8 @@ internal class MacOSWindowHost : IXamlRootHost
 		// FIXME: ugly but this loads libSkiaSharp into memory (because it looks for @rpath/libSkiaSharp.dylib)
 		NativeSkia.gr_direct_context_make_metal(0, 0);
 
-		NativeUno.uno_set_draw_callback(&Draw);
+		NativeUno.uno_set_draw_callback(&MetalDraw);
+		NativeUno.uno_set_soft_draw_callback(&SoftDraw);
 		NativeUno.uno_set_resize_callback(&Resize);
 	}
 
@@ -150,16 +203,32 @@ internal class MacOSWindowHost : IXamlRootHost
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static void Draw(nint handle, double width, double height, nint texture)
+	private static void MetalDraw(nint handle, double width, double height, nint texture)
 	{
 		var window = GetWindowHost(handle);
 		if (window is not null)
 		{
-			window.Draw(width, height, texture);
+			window.MetalDraw(width, height, texture);
 		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Error))
+		else if (_initializationCompleted && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
 		{
-			typeof(MacOSWindowHost).Log().Error($"MacOSWindowHost.Draw could not map {handle} with an NSWindow");
+			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
+			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.MetalDraw could not map 0x{handle:X} with an NSWindow");
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void SoftDraw(nint handle, double width, double height, nint* data, int* rowBytes, int* size)
+	{
+		var window = GetWindowHost(handle);
+		if (window is not null)
+		{
+			window.SoftDraw(width, height, data, rowBytes, size);
+		}
+		else if (_initializationCompleted && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
+		{
+			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
+			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.SoftDraw could not map 0x{handle:X} with an NSWindow");
 		}
 	}
 
@@ -171,9 +240,10 @@ internal class MacOSWindowHost : IXamlRootHost
 		{
 			window.UpdateWindowSize(width, height);
 		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Error))
+		else if (_initializationCompleted && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
 		{
-			typeof(MacOSWindowHost).Log().Error($"MacOSWindowHost.Resize could not map {handle} with an NSWindow");
+			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
+			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.Resize could not map 0x{handle:X} with an NSWindow");
 		}
 	}
 }
