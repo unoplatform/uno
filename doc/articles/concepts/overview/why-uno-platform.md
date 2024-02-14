@@ -73,9 +73,11 @@ All of the above remains possible without needing to replicate the same design f
 
 Uno Platform controls come pre-built with the Fluent design system, so your app looks the same across all platforms. The [Uno Themes](xref:Uno.Themes.Overview) library is available to provide alternative styles for your controls and help with adapting them to the other design systems Material Design or Cupertino. All three design implementations take advantage of [theme resources](https://learn.microsoft.com/windows/apps/design/style/xaml-theme-resources), enabling out-of-the-box support for light and dark color modes.
 
-## Gradually modernize with Uno Islands
+## Move forward gradually with Uno Islands
 
 We recognize that many developers have existing WPF applications they want to modernize, and offer such a path via [Uno Islands](xref:Uno.Tutorials.UnoIslands), which allows you to host modern Uno Platform content within WPF UI. This means you can start modernizing your application and bringing it cross-platform step by step, not just all at once!
+
+The _islands_ of hosted content enable any app to take advantage of modern WinUI controls, but preserve compatibility with its existing WPF experience. For example, an app using the list-details pattern can keep its robust, WPF-built details view while upgrading the list control to a WinUI `ListView`. Support for DataBinding between both contexts allows a seamless transition between the two.
 
 ## Native performance, never stuck
 
@@ -201,10 +203,6 @@ Uno Platform provides the `MediaPlayerElement` control which allows your app to 
 
 For all your in-app text and code editing needs, you can use our port of the Monaco Editor – the same that is used by Visual Studio Code. With full support for syntax highlighting, you could even build your
 own WebAssembly IDE!
-
-## Migration path with WPF Uno Islands
-
-Uno Platform's support for Skia powers integration with WPF. It allows an existing WPF application to include "islands" or portions of the app hosted using Uno Platform Islands and displaying WinUI controls. For instance, an app using a master-details pattern can show a WPF `ListView` as the master view and the details view as a WinUI control. In addition, DataBinding between both contexts is supported, allowing for a seamless transition between the two.
 
 ## Mix and match XAML controls with native components
 
