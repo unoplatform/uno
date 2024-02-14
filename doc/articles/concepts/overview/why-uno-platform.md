@@ -47,13 +47,13 @@ Our Hot Reload offers the most comprehensive solution for fast development loop 
 - 1st party or 3rd party controls
 - Devices and Emulators
 
-See official [docs](https://platform.uno/docs/articles/features/working-with-xaml-hot-reload.html).
+See official [docs](xref:Uno.Features.HotReload).
 
 ## Stop typing markup and use Figma code generation
 
 Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our plugin* this process is automatic, and the result is well structured, performant XAML or C#.
 
-[Design and Build Uno Platform Applications with Figma](https://platform.uno/docs/articles/external/figma-docs/overview/getting-started-uno-figma.html)
+[Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.Overview.GetStarted)
 
 *_Note this plugin is optional_
 
@@ -70,11 +70,11 @@ you still have full control of every pixel of your app and only need to design y
 
 ## Out of the box support for Material/Fluent/Cupertino design systems with Dark/Light themes
 
-Uno Platform controls come pre-built with the Fluent design system, so your app looks the same across all platforms. The [Uno Themes](https://platform.uno/docs/articles/external/uno.themes/doc/themes-overview.html) library is available to provide alternative styles for your controls and help with adapting them to the other design systems Material Design or Cupertino. All three design implementations take advantage of [theme resources](https://learn.microsoft.com/en-us/windows/apps/design/style/xaml-theme-resources), enabling out-of-the-box support for light and dark color modes.
+Uno Platform controls come pre-built with the Fluent design system, so your app looks the same across all platforms. The [Uno Themes](xref:Uno.Themes.Overview) library is available to provide alternative styles for your controls and help with adapting them to the other design systems Material Design or Cupertino. All three design implementations take advantage of [theme resources](https://learn.microsoft.com/windows/apps/design/style/xaml-theme-resources), enabling out-of-the-box support for light and dark color modes.
 
 ## Continuous modernization with Uno Islands
 
-We recognize that many developers have existing WPF applications they want to modernize, and offer such a path via [Uno Islands](https://platform.uno/docs/articles/guides/uno-islands.html), which allows you to host modern Uno Platform content within WPF UI. This means you can start modernizing your application and bringing it cross-platform step by step, not just all at once!
+We recognize that many developers have existing WPF applications they want to modernize, and offer such a path via [Uno Islands](xref:Uno.Tutorials.UnoIslands), which allows you to host modern Uno Platform content within WPF UI. This means you can start modernizing your application and bringing it cross-platform step by step, not just all at once!
 
 ## Native: Performance + Gestures + Never stuck
 
@@ -100,7 +100,7 @@ The Windows Community Toolkit (WCT) is a collection of helper functions, control
 
 ## More UI controls with MAUI Embedding
 
-Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, MacOS, and Windows. [We have 6 sample apps](https://platform.uno/docs/articles/external/uno.extensions/doc/Overview/Maui/MauiOverview.html) showing how to work with MAUI embedding by all leading 3rd party vendors.
+Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, MacOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
 
 ## Uno Toolkit
 
@@ -108,15 +108,15 @@ In addition to hundreds of UI controls available from 3rd party UI vendors as de
 
 ## Consistent shadow effect everywhere
 
-Displaying consistent shadows in cross-platform apps was always a problem. We are confident that we have solved it! Our [ShadowContainer control](https://platform.uno/docs/articles/external/uno.toolkit.ui/doc/controls/ShadowContainer.html) will allow you to easily display highly customizable inner and outer shadows in your apps. And if you fancy neumorphic design, we have control styles for that too!
+Displaying consistent shadows in cross-platform apps was always a problem. We are confident that we have solved it! Our [ShadowContainer control](xref:Toolkit.Controls.ShadowContainer) will allow you to easily display highly customizable inner and outer shadows in your apps. And if you fancy [neumorphism](xref:Toolkit.Controls.ShadowContainer#neumorphism) depth effects, we have control styles for that too!
 
 ## Maps
 
 Uno Platform offers charting components via integration with [Maps UI](https://github.com/Mapsui/Mapsui) (Open Source) on all targets.
 
-Also, for targeting just Mobile and MacCatalyst, you can use [Esri ArcGIS Maps SDK for .NET](https://platform.uno/docs/articles/external/uno.extensions/doc/Overview/Maui/ThirdParty-EsriMaps.html) via our .NET MAUI embedding feature.
+Also, for targeting just Mobile and MacCatalyst, you can use [Esri ArcGIS Maps SDK for .NET](xref:Uno.Extensions.Maui.ThirdParty.EsriMaps) via our .NET MAUI embedding feature.
 
-In addition, we are looking into integrating the WinUI [MapControl](https://learn.microsoft.com/uwp/api/windows.ui.xaml.controls.maps.mapcontrol) into our core offering.
+In addition, we are looking into integrating the new WinUI [MapControl](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mapcontrol?view=windows-app-sdk-1.5) into our core offering.
 
 ## Charts
 
@@ -130,7 +130,7 @@ We will support Windows Community Toolkit [DataTable](https://github.com/Communi
 
 ## Non-UI APIs
 
-It is a common misconception that Uno Platform is just a UI framework. Nothing could be further from the truth, however! Uno Platform comes with [many non-UI APIs built in](https://platform.uno/docs/articles/features/accelerometer.html) – ranging from various ways to retrieve device-related information, through access to user and application preferences, all the way to a range of sensors including GPS, compass, or even Accelerometer! All these APIs are fully cross-platform, so you just write once and run everywhere. For those who have a musical instrument, we even have MIDI!
+It is a common misconception that Uno Platform is just a UI framework. Nothing could be further from the truth, however! Uno Platform comes with [many non-UI APIs built in](xref:Uno.Features.Accelerometer) – ranging from various ways to retrieve device-related information, through access to user and application preferences, all the way to a range of sensors including GPS, compass, or even Accelerometer! All these APIs are fully cross-platform, so you just write once and run everywhere. For those who have a musical instrument, we even have MIDI!
 
 How's _that_ for music to your ears?
 
@@ -178,7 +178,7 @@ Overriding resources from Uno Material can be done at the app, page, or even con
 
 ## Resizetizer for easy app images management
 
-[Resizetizer](https://platform.uno/docs/articles/external/uno.resizetizer/doc/using-uno-resizetizer.html) is a set of MSBuild tasks designed to manage an application's assets. With this package, there is no need to worry about creating and maintaining various image sizes or setting up a splash screen. Simply provide an SVG file, and the tool will handle everything else.
+[Resizetizer](xref:Uno.Resizetizer.GettingStarted) is a set of MSBuild tasks designed to manage an application's assets. With this package, there is no need to worry about creating and maintaining various image sizes or setting up a splash screen. Simply provide an SVG file, and the tool will handle everything else.
 
 ## Support for SVG
 
