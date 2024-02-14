@@ -43,23 +43,23 @@ Our Hot Reload offers the most comprehensive solution for fast development loop 
 - Visual Studio and Visual Studio Code
 - All target platforms
 - XAML, C# Markup, and C#
-- Bindings & x:Bind, Resources, Data Templates and Styles
+- Bindings & x:Bind, Resources, Data Templates, and Styles
 - 1st party or 3rd party controls
 - Devices and Emulators
 
-See official [docs](xref:Uno.Features.HotReload).
+For more information, see [Hot Reload](xref:Uno.Features.HotReload).
 
 ## Stop typing markup and use Figma code generation
 
-Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our plugin* this process is automatic, and the result is well structured, performant XAML or C#.
+Design handoff is one of the biggest time traps, as design envisioned by the designer needs to be manually translated to markup. With our plugin\*, this process is automatic, and the result is well structured, performant XAML or C#.
 
-[Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.Overview.GetStarted)
+For more information, see [Design and Build Uno Platform Applications with Figma](xref:Uno.Figma.Overview.GetStarted).
 
-*_Note this plugin is optional_
+\*_Note this plugin is optional_
 
 ## Ease of Use: Quickly create and customize an app with the Templates Wizard
 
-Our [Uno Platform Template Wizard](https://platform.uno/blog/the-new-uno-platform-solution-template-wizard/) and its [live version](https://new.platform.uno/) allow you to get to a working project quickly. You can select your preferred version of .NET, choose the target platforms you want to develop for, pick a design system that suits your app the best, pick from the MVVM or MVUX design pattern, and throw in any mix of the rich set of Uno Extensions as starting building blocks. Additionally, you can include support for PWA, first-party API server, UI tests and even generate initial build scripts for GitHub Actions or Azure DevOps, alleviating the hassle of figuring out the complex, cross-platform YAML specifics.
+Our [Uno Platform Template Wizard](https://platform.uno/blog/the-new-uno-platform-solution-template-wizard/) and its [live version](https://new.platform.uno/) allow you to get to a working project quickly. You can select your preferred version of .NET, choose the target platforms you want to develop for, pick a design system that suits your app the best, pick from the MVVM or MVUX architectural pattern, and throw in any mix of the rich set of Uno Extensions as starting building blocks. Additionally, you can include support for PWA, first-party API server, UI tests, and even generate initial build scripts for GitHub Actions or Azure DevOps, alleviating the hassle of figuring out the complex, cross-platform YAML specifics.
 
 ## Your apps will be Pixel-Perfect across all platforms and look exactly the way you want them to look
 
@@ -82,7 +82,7 @@ Uno Platform-built apps are **native apps**. As a developer, you can take advant
 
 Uno Platform provides access to the **original APIs** provided by the target platform, both for UI and non-UI functionalities. You will be able to use the UI controls that come directly from the respective target platform's native SDK. This ensures that your app seamlessly incorporates the _familiar_ look and feel of the platform it's running on.
 
-You can tap into the richness of the ecosystems on the Web, iOS, and Android, Linux and Skia. This versatility allows for a broader reach and compatibility across different devices and platforms.
+You can tap into the richness of the ecosystems on the Web, iOS, and Android, Linux, and Skia. This versatility allows for a broader reach and compatibility across different devices and platforms.
 
 Uno Platform provides "escape hatches" when needed. This means that you have the flexibility to utilize platform-specific features or optimizations when required, should that functionality not be provided by Uno Platform itself.
 
@@ -92,11 +92,11 @@ The resulting app provides a consistent, native user experience your end-users e
 
 ## Rich/Breadth of UI Controls – over 500 controls available
 
-Uno Platform gives you automatic access to all controls coming from Microsoft and its 3rd party ecosystem. All controls from WinUI, Windows Community Toolkit or open-source projects supporting WinUI or UWP will work with Uno Platform.
+Uno Platform gives you automatic access to all controls coming from Microsoft and its 3rd party ecosystem. All controls from WinUI, Windows Community Toolkit, or open-source projects supporting WinUI or UWP will work with Uno Platform.
 
 ## Controls from Windows Community Toolkit (WCT)
 
-The Windows Community Toolkit (WCT) is a collection of helper functions, controls, and services designed to simplify and enhance Windows app development for developers. You can reuse the richness of controls offered in WCT such as Data Grid or Expanders and use them in cross-platform fashion on Web, mobile, desktop and Linux targets.
+The Windows Community Toolkit (WCT) is a collection of helper functions, controls, and services designed to simplify and enhance Windows app development for developers. You can reuse the richness of controls offered in WCT such as Data Grid or Expanders and use them in cross-platform fashion on Web, mobile, desktop, and Linux targets.
 
 ## More UI controls with MAUI Embedding
 
@@ -136,19 +136,19 @@ How's _that_ for music to your ears?
 
 ## Hosting-based extensions for everything an app needs (HTTP, Serialization, Configuration, etc)
 
-Uno.Extensions is built on top of Microsoft.Extensions to setup and create a host for your application that can be used to access services for Logging, Configuration, Serialization, Http and your own custom services.
+Uno.Extensions is built on top of Microsoft.Extensions to setup and create a host for your application that can be used to access services for Logging, Configuration, Serialization, Http, and your own custom services.
 
 ## Navigation
 
-As part of Uno.Extensions, Navigation provides a consistent abstraction for navigating within an application. Whether it is navigating to a new page, switching tabs or opening a dialog, navigation can be initiated from code-behind, XAML or from within a ViewModel.
+As part of Uno.Extensions, Navigation provides a consistent abstraction for navigating within an application. Whether it is navigating to a new page, switching tabs, or opening a dialog, navigation can be initiated from code-behind, XAML, or from within a ViewModel.
 
 ## Authentication
 
-Uno.Extensions Authentication is a provider-based authentication service that can be used to authenticate users of an application. It has built-in support for Microsoft Entra ID (formerly Azure AD), OpenIDConnect, Web and Custom.
+Uno.Extensions Authentication is a provider-based authentication service that can be used to authenticate users of an application. It has built-in support for Microsoft Entra ID (formerly Azure AD), OpenIDConnect, Web, and Custom.
 
 ## Skia drawing
 
-The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support to fine grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for Gtk/WPF/Framebuffer apps.
+The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support to fine grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for Gtk, WPF, and FrameBuffer apps.
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 
@@ -156,11 +156,11 @@ Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give t
 
 ## Performance and App Size with AOT/Jiterpreter
 
-Uno Platform allows to use .NET 8 features such as Profiled AOT (Ahead of Time compilation) and the Jiterpreter, to get better performance for your apps and balanced size. Profiled AOT is a powerful feature that allows to continue using the interpreter for code that is not often used, thus keeping your app's size down.
+Uno Platform allows to use .NET 8 features such as Profiled AOT (Ahead Of Time compilation) and the Jiterpreter, to get better performance for your apps and balanced size. Profiled AOT is a powerful feature that allows to continue using the interpreter for code that is not often used, thus keeping your app's size down.
 
 ## Accessibility included
 
-Uno Platform comes with built-in support for accessible apps such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, iOS and macOS VoiceOver and browser-specific narrators for Web / WebAssembly based apps. In addition, Uno Platform provides programmatic access to most UI elements, enabling enables assistive technology products.
+Uno Platform comes with built-in support for accessible apps such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, iOS and macOS VoiceOver, and browser-specific narrators for Web / WebAssembly based apps. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products.
 
 ## Localization included
 
@@ -186,7 +186,7 @@ Today's apps run on such a wide range of displays, it is sometimes hard to make 
 
 ## Progressive Web Apps (PWAs)
 
-Your Uno Platform WebAssembly app can run as a Progressive Web App. This means users can install it and run as a normal application on their device. In addition, this gives you even more customization options and additional PWA-specific APIs like badge notifications. You can install the [Nuget Package Explorer](https://nuget.info/) PWA like a local app!
+Your Uno Platform WebAssembly app can run as a Progressive Web App. This means users can install it and run as a normal application on their device. In addition, this gives you even more customization options and additional PWA-specific APIs like badge notifications. You can install the [NuGet Package Explorer](https://nuget.info/) PWA like a local app!
 
 ## WebView across platforms
 
@@ -198,7 +198,7 @@ Uno Platform provides the `MediaPlayerElement` control which allows your app to 
 
 ## Monaco Editor on Wasm
 
-For all your in-app text and code editing needs you can use our port of the Monaco Editor – the same that is used by Visual Studio Code. With full support for syntax highlighting, you could even build your
+For all your in-app text and code editing needs, you can use our port of the Monaco Editor – the same that is used by Visual Studio Code. With full support for syntax highlighting, you could even build your
 own WebAssembly IDE!
 
 ## Migration path with WPF Uno Islands
@@ -209,13 +209,13 @@ Uno Platform's support for Skia powers integration with WPF. It allows an existi
 
 Because Uno Platform apps are native mobile apps, you can embed any native control on a per platform basis into an Uno Platform app.
 
-Uno Platform views inherit from the base native view defined in .NET binding or the native framework itself, you can incorporate native views into your app's visual tree. You can watch this example [video](https://www.youtube.com/watch?v=4Cwzk8dDHs0).
+Uno Platform views inherit from the base native view defined in .NET binding or the native framework itself, you can incorporate native views into your app's visual tree. For more information, see [UnoConf 2021 - Using Native Controls in Uno Platform Apps](https://www.youtube.com/watch?v=4Cwzk8dDHs0).
 
 Your app's powerful visual tree can also render native components through embedding in Skia targets.
 
 ## Choice of presentation framework
 
-With Uno Platform you get a choice of your favorite presentation framework – MVVM, Prism or Uno Platform in-box MVUX/Reactive.
+With Uno Platform, you get a choice of your favorite presentation framework – MVVM, Prism, or Uno Platform in-box MVUX/Reactive.
 
 ## Support for SQLite
 
@@ -241,9 +241,9 @@ Uno Platform started as an internal project at Nventive over 10 years ago, which
 
 ## Support: Community and Paid
 
-We are well known for a friendly and welcoming community which is always willing to help. If you are needing support time directly from the core team, there are also paid plans available which is how we sustain Uno Platform, a process explained with this [blog post](https://platform.uno/blog/sustaining-the-open-source-uno-platform/).
+We are well known for a friendly and welcoming community which is always willing to help. If you need support time directly from the core team, there are also paid plans available which is how we sustain Uno Platform, a process explained in the [Sustaining the Open-Source Uno Platform blog post](https://platform.uno/blog/sustaining-the-open-source-uno-platform/).
 
-To see your free & paid support options see our official [support page](https://platform.uno/support/).
+To see your free & paid support options, see our official [support page](https://platform.uno/support/).
 
 ## Workshops
 
