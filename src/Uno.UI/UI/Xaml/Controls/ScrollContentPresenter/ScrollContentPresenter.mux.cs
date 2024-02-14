@@ -237,8 +237,8 @@ public partial class ScrollContentPresenter
 		scrollableHeight += _occludedRectPadding.Bottom;
 #endif
 
-		targetZoomedHorizontalOffsetTmp = targetZoomedHorizontalOffsetTmp.Clamp(0.0, scrollableWidth);
-		targetZoomedVerticalOffsetTmp = targetZoomedVerticalOffsetTmp.Clamp(0.0, scrollableHeight);
+		targetZoomedHorizontalOffsetTmp = Math.Clamp(targetZoomedHorizontalOffsetTmp, 0.0, scrollableWidth);
+		targetZoomedVerticalOffsetTmp = Math.Clamp(targetZoomedVerticalOffsetTmp, 0.0, scrollableHeight);
 
 		double offsetX = requestEventArgs.HorizontalOffset;
 		double offsetY = requestEventArgs.VerticalOffset;

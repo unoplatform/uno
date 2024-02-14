@@ -1213,7 +1213,7 @@ namespace Microsoft.UI.Xaml.Controls
 				maxPossibleDelta = Math.Min(0, GetContentStart() - 0);
 			}
 			maxPossibleDelta = Math.Abs(maxPossibleDelta);
-			var actualOffset = MathEx.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
+			var actualOffset = Math.Clamp(offset, -maxPossibleDelta, maxPossibleDelta);
 
 			//Remove all views that will be hidden after the actual scroll amount
 			UnfillLayout(fillDirection, actualOffset, Extent, recycler, state);
