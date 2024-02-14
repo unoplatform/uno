@@ -589,7 +589,7 @@ internal partial class InputManager
 			{
 				if (element.CalculatedFinalCursor is { } shape)
 				{
-					if (_source.PointerCursor is not { } c || c.Type != InputCursor.InputSystemCursorShapeToCoreCursorType(shape))
+					if (_source.PointerCursor is not { } c || c.Type != shape.ToCoreCursorType())
 					{
 						_source.PointerCursor = InputCursor.CreateCoreCursorFromInputSystemCursorShape(shape);
 					}
