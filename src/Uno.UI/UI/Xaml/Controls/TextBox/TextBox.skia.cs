@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -42,6 +43,8 @@ public partial class TextBox
 	private bool _isPressed; // can still be false if the pointer is still pressed but Escape is pressed.
 
 	private bool _clearHistoryOnTextChanged = true;
+
+	private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 
 	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
 	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
@@ -394,7 +397,7 @@ public partial class TextBox
 
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
-		var ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+		var ctrl = args.KeyboardModifiers.HasFlag(_platformCtrlKey);
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
