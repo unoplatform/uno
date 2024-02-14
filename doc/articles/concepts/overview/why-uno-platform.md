@@ -20,17 +20,17 @@ Uno Platform is free and open source under Apache 2.0.
 
 It is well funded and has a [sustainability model](https://platform.uno/blog/sustaining-the-open-source-uno-platform/) built in so that the project is sustainable in the long term. In addition, it is fueled by support from a thriving community of users who regularly send feedback and contribute.
 
-## Same code based that runs on iOS, Android, Web, MacOS, Linux, and Windows
+## A single codebase that runs everywhere natively
 
 Uno Platform apps run as a single codebase for native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with the latest .NET releases. So, you can always benefit from the latest and greatest advancements in the .NET world.
 
-## You can use your favorite IDE (Visual Studio, VS Code, or Rider)
+## Keep using your favorite IDE
 
-Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as CodeSpaces & GitPod. Wherever you are, Uno Platform is with you.
+Need we say more? Use the IDE that works for you – Visual Studio, VS Code, Rider as well as GitHub Codespaces & GitPod. Wherever you are, Uno Platform is with you.
 
-## You can work from your favorite OS (Windows, Mac, Linux)
+## Work from your favorite OS
 
-Remain on the operating system that you are on. A detailed list of target platforms for which you can develop from Windows, Mac, or Linux is available. Our docs are also OS agnostic, so you can follow all tutorials regardless of the system you develop on.
+Remain on the operating system that you are on. A detailed list of target platforms for which you can develop from Windows, macOS, or Linux is available. Our docs are designed to be OS agnostic, so every tutorial step works regardless of the system you develop on.
 
 ## Use either XAML or C# Markup for your app UI
 
@@ -57,7 +57,7 @@ For more information, see [Design and Build Uno Platform Applications with Figma
 
 \*_Note this plugin is optional_
 
-## Ease of Use: Quickly create and customize an app with the Templates Wizard
+## Quickly create a project using the Templates Wizard
 
 Our [Uno Platform Template Wizard](https://platform.uno/blog/the-new-uno-platform-solution-template-wizard/) and its [live version](https://new.platform.uno/) allow you to get to a working project quickly. You can select your preferred version of .NET, choose the target platforms you want to develop for, pick a design system that suits your app the best, pick from the MVVM or MVUX architectural pattern, and throw in any mix of the rich set of Uno Extensions as starting building blocks. Additionally, you can include support for PWA, first-party API server, UI tests, and even generate initial build scripts for GitHub Actions or Azure DevOps, alleviating the hassle of figuring out the complex, cross-platform YAML specifics.
 
@@ -69,21 +69,21 @@ Under the hood, your users benefit from a native app. That is, we are still usin
 
 All of the above remains possible without needing to replicate the same design for each target platform.
 
-## Out of the box support for Material/Fluent/Cupertino design systems with Dark/Light themes
+## Multiple design systems included with support for dark mode
 
 Uno Platform controls come pre-built with the Fluent design system, so your app looks the same across all platforms. The [Uno Themes](xref:Uno.Themes.Overview) library is available to provide alternative styles for your controls and help with adapting them to the other design systems Material Design or Cupertino. All three design implementations take advantage of [theme resources](https://learn.microsoft.com/windows/apps/design/style/xaml-theme-resources), enabling out-of-the-box support for light and dark color modes.
 
-## Continuous modernization with Uno Islands
+## Gradually modernize with Uno Islands
 
 We recognize that many developers have existing WPF applications they want to modernize, and offer such a path via [Uno Islands](xref:Uno.Tutorials.UnoIslands), which allows you to host modern Uno Platform content within WPF UI. This means you can start modernizing your application and bringing it cross-platform step by step, not just all at once!
 
-## Native: Performance + Gestures + Never stuck
+## Native performance, never stuck
 
 Uno Platform-built apps are **native apps**. As a developer, you can take advantage of each platform's capabilities and features while enjoying the flexibility to adapt and optimize as needed.
 
 Uno Platform provides access to the **original APIs** provided by the target platform, both for UI and non-UI functionalities. You will be able to use the UI controls that come directly from the respective target platform's native SDK. This ensures that your app seamlessly incorporates the _familiar_ look and feel of the platform it's running on.
 
-You can tap into the richness of the ecosystems on the Web, iOS, and Android, Linux, and Skia. This versatility allows for a broader reach and compatibility across different devices and platforms.
+This versatility allows for a broader reach with compatibility across all supported platforms and devices.
 
 Uno Platform provides "escape hatches" when needed. This means that you have the flexibility to utilize platform-specific features or optimizations when required, should that functionality not be provided by Uno Platform itself.
 
@@ -91,17 +91,17 @@ Uno Platform simply reuses default behaviors that come from the respective platf
 
 The resulting app provides a consistent, native user experience your end-users expect.
 
-## Rich/Breadth of UI Controls – over 500 controls available
+## Breadth of UI controls – over 500 controls available
 
-Uno Platform gives you automatic access to all controls coming from Microsoft and its 3rd party ecosystem. All controls from WinUI, Windows Community Toolkit, or open-source projects supporting WinUI or UWP will work with Uno Platform.
+Uno Platform gives you automatic access to all controls coming from Microsoft and its 3rd party ecosystem. All controls from WinUI, Windows Community Toolkit, or open-source projects developed for WinUI 2/3 or UWP will work with Uno Platform.
 
 ## Controls from Windows Community Toolkit (WCT)
 
-The Windows Community Toolkit (WCT) is a collection of helper functions, controls, and services designed to simplify and enhance Windows app development for developers. You can reuse the richness of controls offered in WCT such as Data Grid or Expanders and use them in cross-platform fashion on Web, mobile, desktop, and Linux targets.
+The Windows Community Toolkit (WCT) is a collection of helper functions, controls, and services designed to simplify and enhance Windows app development for developers. You can take those WCT features such as the `DataGrid` or `Expander` controls cross-platform when your project uses Uno Platform.
 
 ## More UI controls with MAUI Embedding
 
-Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, MacOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
+Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, macOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
 
 ## Uno Toolkit
 
@@ -115,7 +115,7 @@ Displaying consistent shadows in cross-platform apps was always a problem. We ar
 
 Uno Platform offers charting components via integration with [Maps UI](https://github.com/Mapsui/Mapsui) (Open Source) on all targets.
 
-Also, for targeting just Mobile and MacCatalyst, you can use [Esri ArcGIS Maps SDK for .NET](xref:Uno.Extensions.Maui.ThirdParty.EsriMaps) via our .NET MAUI embedding feature.
+Also, for targeting just mobile and MacCatalyst, you can use [Esri ArcGIS Maps SDK for .NET](xref:Uno.Extensions.Maui.ThirdParty.EsriMaps) via our .NET MAUI embedding feature.
 
 In addition, we are looking into integrating the new WinUI [MapControl](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mapcontrol?view=windows-app-sdk-1.5) into our core offering.
 
@@ -135,9 +135,9 @@ It is a common misconception that Uno Platform is just a UI framework. Nothing c
 
 How's _that_ for music to your ears?
 
-## Hosting-based extensions for everything an app needs (HTTP, Serialization, Configuration, etc)
+## Our set of extensions for common app needs
 
-[Uno.Extensions](https://platform.uno/uno-extensions/) is built on top of Microsoft.Extensions to setup and create a host for your application that can be used to access services for Logging, Configuration, Serialization, HTTP, and your own custom services.
+[Uno.Extensions](https://platform.uno/uno-extensions/) is built on top of **Microsoft.Extensions** to setup and create a host for your application. The host allows access to a multitude of services for many app features including Configuration, Logging, Serialization, and HTTP. You can even register your own custom services using the same pattern.
 
 ## Navigation
 
@@ -149,19 +149,19 @@ Uno.Extensions Authentication is a provider-based authentication service that ca
 
 ## Skia drawing
 
-The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support to fine grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for Gtk, WPF, and FrameBuffer apps.
+The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support to fine grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for GTK, WPF, and FrameBuffer apps.
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 
 Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give the ability to render rich Lottie files directly in your app, for all target platforms.
 
-## Performance and App Size with AOT/Jiterpreter
+## Performance and app size with AOT/Jiterpreter
 
 Uno Platform allows to use .NET 8 features such as Profiled AOT (Ahead Of Time compilation) and the Jiterpreter, to get better performance for your apps and balanced size. Profiled AOT is a powerful feature that allows to continue using the interpreter for code that is not often used, thus keeping your app's size down.
 
 ## Accessibility included
 
-Uno Platform comes with built-in support for accessible apps such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, iOS and macOS VoiceOver, and browser-specific narrators for Web / WebAssembly based apps. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products.
+Uno Platform comes with built-in support for accessible apps such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, Apple VoiceOver, and browser-specific narrators when targeting the web. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products.
 
 ## Localization included
 
@@ -177,7 +177,7 @@ Lightweight styling is a way to customize the appearance of XAML controls by ove
 
 Overriding resources from Uno Material can be done at the app, page, or even control level.
 
-## Resizetizer for easy app images management
+## Easily manage and scale image assets
 
 [Resizetizer](xref:Uno.Resizetizer.GettingStarted) is a set of MSBuild tasks designed to manage an application's assets. With this package, there is no need to worry about creating and maintaining various image sizes or setting up a splash screen. Simply provide an SVG file, and the tool will handle everything else.
 
@@ -206,7 +206,7 @@ own WebAssembly IDE!
 
 Uno Platform's support for Skia powers integration with WPF. It allows an existing WPF application to include "islands" or portions of the app hosted using Uno Platform Islands and displaying WinUI controls. For instance, an app using a master-details pattern can show a WPF `ListView` as the master view and the details view as a WinUI control. In addition, DataBinding between both contexts is supported, allowing for a seamless transition between the two.
 
-## Mix and Match XAML controls and Native components at will
+## Mix and match XAML controls with native components
 
 Because Uno Platform apps are native mobile apps, you can embed any native control on a per platform basis into an Uno Platform app.
 
