@@ -70,6 +70,8 @@
     - name: Tube Player
       topicHref: xref:Workshop.TubePlayer.Overview
       href: external/workshops/tube-player/toc.yml
+    - name: Chefs Recipe Book
+      href: external/uno.chefs/doc/toc.yml
     - name: Tutorials
       items:
       - name: Overview
