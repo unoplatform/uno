@@ -84,6 +84,12 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Dequeues a template instance using the cache, if any is available. Otherwise, returns a new instance.
+		/// 
+		/// Important: This method assumes that the returned instance will be assigned to a parent view. If not,
+		/// the instance will leak.
+		/// </summary>
 		internal View? DequeueTemplate(FrameworkTemplate template)
 		{
 			var instance = DequeueTemplateOrDefault(template);
@@ -101,11 +107,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				instance = Unsafe.As<IFrameworkTemplateInternal>(template).LoadContent();
-
-				if (IsPoolingEnabled && instance is IFrameworkElement)
-				{
-					DependencyObjectExtensions.RegisterParentChangedCallback((DependencyObject)instance, template, OnParentChanged);
-				}
 			}
 			else
 			{
@@ -120,9 +121,12 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// We don't track empty templates.
-			if (IsPoolingEnabled && instance != null)
+			if (IsPoolingEnabled && instance is not null)
 			{
+				// Register for parent changed, in order to track when an instance
+				// is eligible for recycling.
+				instance.RegisterParentChangedCallbackStrong(template, OnParentChanged);
+
 				InstanceTracker.Add(instance);
 			}
 
@@ -214,6 +218,11 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
+				// Unregister the parent changed callback so that the child can be properly
+				// collectible, otherwise, a strong reference to `instance` could be kept through the
+				// `OnParentChanged` delegate target.
+				DependencyObjectExtensions.UnregisterParentChangedCallbackStrong((DependencyObject)instance, OnParentChanged);
+
 				InstanceTracker.TryCancelTracking(Unsafe.As<View>(instance), oldParent);
 			}
 		}
@@ -282,29 +291,24 @@ namespace Microsoft.UI.Xaml
 				shouldRequeue = _instancesToRecycle.Count > 0;
 			}
 
-			try
+			for (var x = 0; x < count; x++)
 			{
-				for (var x = 0; x < count; x++)
-				{
-					var (template, instance) = array[x];
+				var (template, instance) = array[x];
 
-					if (InstanceTracker.TryRemove(instance, returnCookie: false))
+				if (InstanceTracker.TryRemove(instance, returnCookie: false))
+				{
+					RecycleTemplate(template, instance, cleanup: true);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						RecycleTemplate(template, instance, cleanup: true);
-					}
-					else
-					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug($"Failed to remove instance tracked for {instance.GetHashCode():X8}");
-						}
+						this.Log().Debug($"Failed to remove instance tracked for {instance.GetHashCode():X8}");
 					}
 				}
 			}
-			finally
-			{
-				ArrayPool<(FrameworkTemplate, View)>.Shared.Return(array, clearArray: true);
-			}
+
+			ArrayPool<(FrameworkTemplate, View)>.Shared.Return(array, clearArray: true);
 
 			if (shouldRequeue)
 			{
