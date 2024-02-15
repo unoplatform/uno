@@ -108,8 +108,34 @@
 		private static onPointerOutReceived(evt: PointerEvent): void {
 			const element = evt.currentTarget as HTMLElement | SVGElement;
 
+			// When we capture the pointer, browser will raise an "out" event on nested elements
+			// and then an "over" on the element that captured the pointer.
+			// But those events will be raise right BEFORE the NEXT pointer event (e.g. a move).
+			// Note: We don't filter out the "over" event because it's handled in managed by tracking the IsOver state.
+
+			// Here we filter the "out" event that is being raised after the capture
+			if (evt.relatedTarget == element && element.hasPointerCapture(evt.pointerId)) {
+				evt.stopPropagation();
+				return;
+			}
+
+			// Here we filter the "out" event that is being raised after a capture has been released
+			// We walk the tree to find if the relatedTarget is a child of the element
+			// If so it means that the pointer is still inside the element and we should not propagate the event.
+			let elt = evt.relatedTarget as HTMLElement | SVGElement;
+			if (elt && evt.target == element) {
+				while (elt) {
+					if (elt == element) {
+						evt.stopPropagation();
+						return;
+					}
+					elt = elt.parentElement;
+				}
+			}
+
+			// Finally, here we filter out the events that are being raised when the pointer is leaving a nested element (which is bubbling in browser)
 			const elementBounds = (evt.target as HTMLElement | SVGElement).getBoundingClientRect();
-			let elt = evt.target as HTMLElement | SVGElement;
+			elt = evt.target as HTMLElement | SVGElement;
 			while (elt && elt != element) {
 				const bounds = elt.getBoundingClientRect();
 				if (
