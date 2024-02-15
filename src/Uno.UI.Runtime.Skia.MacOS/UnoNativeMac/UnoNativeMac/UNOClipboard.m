@@ -11,71 +11,116 @@ void uno_clipboard_clear(void)
     [[NSPasteboard generalPasteboard] clearContents];
 }
 
-void uno_clipboard_get_content(const char** htmlContent, const char** rtfContent, const char** textContent, const char** uri, const char** fileUrl)
+void uno_clipboard_get_content(struct ClipboardData* data)
 {
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+
+    NSString *furl = [pasteboard stringForType:NSPasteboardTypeFileURL];
+
+    NSData *image = [pasteboard dataForType:@"public.jpeg"];
+    if (image) {
+        data->bitmapFormat = strdup("image/jpeg");
+    } else {
+        image = [pasteboard dataForType:@"public.png"];
+        if (image) {
+            data->bitmapFormat = strdup("image/png");
+        } else {
+            // TIFF is often present in addition to JPEG or PNG data, but we do not want to load it unless there's no alternative format
+            image = [pasteboard dataForType:@"public.tiff"];
+            if (image) {
+                data->bitmapFormat = strdup("image/tiff");
+            }
+        }
+    }
+
+    if (image) {
+#if DEBUG
+        NSLog(@"uno_clipboard_get_content bitmap %s", data->bitmapFormat);
+#endif
+        // if we have a `public.file-url` then we can return the path to the file, which avoids loading it into the app's memory (until/if needed)
+        if (furl) {
+            NSURL *url = [NSURL URLWithString:furl];
+            if (url.isFileURL) {
+                data->bitmapPath = strdup(url.fileSystemRepresentation);
+                furl = NULL;
+            }
+        } else {
+            // we only have the binary data of the image
+            data->bitmapSize = image.length;
+            data->bitmapData = malloc(image.length);
+            memcpy(data->bitmapData, image.bytes, data->bitmapSize);
+        }
+    }
+
     NSString *html = [pasteboard stringForType:NSPasteboardTypeHTML];
     if (html) {
-        *htmlContent = strdup([html UTF8String]);
+        data->htmlContent = strdup([html UTF8String]);
     }
     NSString *rtf = [pasteboard stringForType:NSPasteboardTypeRTF];
     if (rtf) {
-        *rtfContent = strdup([rtf UTF8String]);
+        data->rtfContent = strdup([rtf UTF8String]);
     }
     NSString *text = [pasteboard stringForType:NSPasteboardTypeString];
     if (text) {
-        *textContent = strdup([text UTF8String]);
+        data->textContent = strdup([text UTF8String]);
     }
     NSString *url = [pasteboard stringForType:NSPasteboardTypeURL];
     if (url) {
-        *uri = strdup([url UTF8String]);
+        data->uri = strdup([url UTF8String]);
     }
-    NSString *furl = [pasteboard stringForType:NSPasteboardTypeFileURL];
+
     if (furl) {
-        *fileUrl = strdup([[[[NSURL fileURLWithPath:furl] filePathURL] absoluteString] UTF8String]);
+        NSURL *url = [NSURL fileURLWithPath:furl];
+        if (url.isFileURL) {
+            data->fileUrl = strdup(furl.UTF8String);
+        }
+#if DEBUG
+    NSLog(@"NSPasteboardTypeFileURL %@", furl);
+#endif
     }
 }
 
-bool uno_clipboard_set_content(char* htmlContent, char* rtfContent, char* textContent, char* uri)
+//bool uno_clipboard_set_content(char* htmlContent, char* rtfContent, char* textContent, char* uri)
+bool uno_clipboard_set_content(struct ClipboardData* data)
 {
     int arraySize = 0;
-    if (htmlContent)
+    if (data->htmlContent)
         arraySize++;
-    if (rtfContent)
+    if (data->rtfContent)
         arraySize++;
-    if (textContent)
+    if (data->textContent)
         arraySize++;
-    if (uri)
+    if (data->uri)
         arraySize++;
 
     int pos = 0;
     NSMutableArray *types = [NSMutableArray arrayWithCapacity:arraySize];
-    if (htmlContent)
+    if (data->htmlContent)
         types[pos++] = NSPasteboardTypeHTML;
-    if (rtfContent)
+    if (data->rtfContent)
         types[pos++] = NSPasteboardTypeRTF;
-    if (textContent)
+    if (data->textContent)
         types[pos++] = NSPasteboardTypeString;
-    if (uri)
+    if (data->uri)
         types[pos++] = NSPasteboardTypeURL;
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     [pasteboard declareTypes:types owner:nil];
 
     bool result = TRUE;
-    if (htmlContent) {
-        NSString *content = [NSString stringWithUTF8String:htmlContent];
+    if (data->htmlContent) {
+        NSString *content = [NSString stringWithUTF8String:data->htmlContent];
         result &= [pasteboard setString:content forType:NSPasteboardTypeHTML];
     }
-    if (rtfContent) {
-        NSString *content = [NSString stringWithUTF8String:rtfContent];
+    if (data->rtfContent) {
+        NSString *content = [NSString stringWithUTF8String:data->rtfContent];
         result &= [pasteboard setString:content forType:NSPasteboardTypeRTF];
     }
-    if (textContent) {
-        NSString *content = [NSString stringWithUTF8String:textContent];
+    if (data->textContent) {
+        NSString *content = [NSString stringWithUTF8String:data->textContent];
         result &= [pasteboard setString:content forType:NSPasteboardTypeString];
     }
-    if (uri) {
-        NSString *content = [NSString stringWithUTF8String:uri];
+    if (data->uri) {
+        NSString *content = [NSString stringWithUTF8String:data->uri];
         result &= [pasteboard setString:content forType:NSPasteboardTypeURL];
     }
 #if DEBUG

@@ -8,10 +8,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+struct ClipboardData {
+    char* htmlContent;
+    char* rtfContent;
+    char* textContent;
+    char* uri;
+    char* fileUrl;
+
+    char* bitmapFormat;
+    char* bitmapPath;
+    void* bitmapData;
+    uint64 bitmapSize;
+};
+
 void uno_clipboard_clear(void);
 
-void uno_clipboard_get_content(const char* _Nonnull * _Nullable htmlContent, const char* _Nonnull * _Nullable rtfContent, const char* _Nonnull * _Nullable  textContent, const char* _Nonnull * _Nullable uri, const char* _Nonnull * _Nullable fileUrl);
-bool uno_clipboard_set_content(char* htmlContent, char* rtfContent, char* textContent, char* uri);
+void uno_clipboard_get_content(struct ClipboardData* data);
+bool uno_clipboard_set_content(struct ClipboardData* data);
 
 void uno_clipboard_start_content_changed(void);
 void uno_clipboard_stop_content_changed(void);
