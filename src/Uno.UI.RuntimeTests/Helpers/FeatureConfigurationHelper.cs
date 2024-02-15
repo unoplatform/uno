@@ -32,6 +32,11 @@ namespace Uno.UI.RuntimeTests.Helpers
 			{
 				FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled;
 				FrameworkTemplatePool.Instance.SetPlatformProvider(null);
+
+				if (!originallyEnabled)
+				{
+					FrameworkTemplatePool.Instance.Scavenge(force: true);
+				}
 			});
 #endif
 		}
