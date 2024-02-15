@@ -154,7 +154,7 @@ internal partial class InputManager
 			// Note: This won't do anything if already over.
 			Raise(Enter, originalSource!, routedArgs);
 
-			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture) && capture.IsImplicitOnly)
+			if (!PointerCapture.TryGet(routedArgs.Pointer, out var capture) || capture.IsImplicitOnly)
 			{
 				// If pointer is explicitly captured, then we set it in the RaiseUsingCaptures call above.
 				// If not, we make sure to update the cursor based on the new originalSource.
