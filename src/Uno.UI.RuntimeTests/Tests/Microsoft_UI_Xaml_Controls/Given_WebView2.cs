@@ -39,10 +39,13 @@ public class Given_WebView2
 		await TestServices.WindowHelper.WaitForLoaded(border);
 		var uri = new Uri("https://example.com/");
 		await webView.EnsureCoreWebView2Async();
+		bool navigationStarting = false;
 		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.CoreWebView2.Navigate(uri.ToString());
 		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
 		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
@@ -60,10 +63,13 @@ public class Given_WebView2
 		await TestServices.WindowHelper.WaitForLoaded(border);
 		var uri = new Uri("https://example.com/");
 		await webView.EnsureCoreWebView2Async();
+		bool navigationStarting = false;
 		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
 		navigationDone = false;
