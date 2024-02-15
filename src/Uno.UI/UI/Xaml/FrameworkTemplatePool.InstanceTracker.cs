@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Uno.UI.DataBinding;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -30,7 +31,7 @@ namespace Microsoft.UI.Xaml
 		/// It does so by tying the lifetime of the parent to their children using <see cref="DependentHandle"/>
 		/// and <see cref="TrackerCookie">TrackerCookie</see> without creating strong references.
 		/// Once a parent is collected, the cookie becomes eligible for gc, its finalizer will run,
-		/// the child will set its parent to null and make itself available to the pool.
+		/// the child will set its parent to null and make itself available to the template pool to be reused.
 		/// </summary>
 		private static class InstanceTracker
 		{
@@ -58,22 +59,6 @@ namespace Microsoft.UI.Xaml
 			public static void Add(View instance)
 				=> _activeInstances.Add(instance, default);
 
-			private static void CancelRecycling(ref DependentHandle handle, bool returnCookie = true)
-			{
-				var (target, dependent) = handle.TargetAndDependent;
-
-				if (target != null && returnCookie)
-				{
-					var cookie = Unsafe.As<TrackerCookie>(dependent)!;
-
-					TryReturnCookie(cookie);
-				}
-
-				handle.Dispose();
-
-				GC.KeepAlive(target);
-			}
-
 			/// <summary>
 			/// Cancels the parent tracking for a view
 			/// </summary>
@@ -93,6 +78,26 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			private static void CancelRecycling(ref DependentHandle handle, bool returnCookie = true)
+			{
+				var (target, dependent) = handle.TargetAndDependent;
+
+				if (target != null && returnCookie)
+				{
+					var cookie = Unsafe.As<TrackerCookie>(dependent)!;
+
+					TryReturnCookie(cookie);
+				}
+
+				handle.Dispose();
+
+				GC.KeepAlive(target);
+			}
+
+			/// <summary>
+			/// Registers the tracking of the specified parent for a view instance, in order for the
+			/// instance to be recycled when the parent is garbage collected.
+			/// </summary>
 			public static void TryRegisterForTracking(FrameworkTemplate template, View instance, object parent, object? oldParent)
 			{
 				ref var handle = ref CollectionsMarshal.GetValueRefOrNullRef(_activeInstances, instance);
@@ -121,8 +126,8 @@ namespace Microsoft.UI.Xaml
 						{
 							if (_cookiePool.TryPop(out cookie))
 							{
-								cookie.TargetInstance = instance;
-								cookie.TargetTemplate = template;
+								cookie.SetTargetInstance(instance);
+								cookie.SetTargetTemplate(template);
 							}
 							else
 							{
@@ -135,6 +140,10 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			/// <summary>
+			/// Explicitly remove the specified instance from the parent tracking. This method is meant to 
+			/// be called through an explicit release of a template instance, (e.g. when Control.Template changes).
+			/// </summary>
 			public static bool TryRemove(View instance, bool returnCookie = true)
 			{
 				ref var handle = ref CollectionsMarshal.GetValueRefOrNullRef(_activeInstances, instance);
@@ -160,8 +169,8 @@ namespace Microsoft.UI.Xaml
 				{
 					if (_cookiePool.Count < MaxCookiePoolSize)
 					{
-						cookie.TargetInstance = null;
-						cookie.TargetTemplate = null;
+						cookie.SetTargetInstance(null);
+						cookie.SetTargetTemplate(null);
 
 						if (finalizing)
 						{
@@ -179,26 +188,37 @@ namespace Microsoft.UI.Xaml
 
 			public class TrackerCookie
 			{
-				private View? _instance;
+				private ManagedWeakReference? _instance;
 				private FrameworkTemplate? _template;
 
 				public TrackerCookie(View instance, FrameworkTemplate template)
 				{
-					_instance = instance;
+					_instance = WeakReferencePool.RentWeakReference(null, instance);
 					_template = template;
 				}
 
 				~TrackerCookie()
 				{
-					Instance.RaiseOnParentCollected(_template!, _instance!);
+					if (_template is not null && _instance?.Target is View view)
+					{
+						Instance.RaiseOnParentCollected(_template, view);
+					}
 
 					// If the pool wasn't full, resurrect the cookie so its finalizer will run again
 					TryReturnCookie(this, finalizing: true);
 				}
 
-				public View? TargetInstance { get => _instance; set => _instance = value; }
+				public void SetTargetInstance(View? view)
+				{
+					_instance = view is not null
+							? WeakReferencePool.RentWeakReference(null, view)
+							: null;
+				}
 
-				public FrameworkTemplate? TargetTemplate { get => _template; set => _template = value; }
+				public void SetTargetTemplate(FrameworkTemplate? template)
+				{
+					_template = template;
+				}
 			}
 		}
 	}
