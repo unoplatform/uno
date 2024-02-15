@@ -807,6 +807,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
+#endif
 		public async Task When_GotFocus_BringIntoView()
 		{
 			var tb = new TextBox();
