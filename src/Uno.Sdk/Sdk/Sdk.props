@@ -24,6 +24,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<UsingUnoSdk>true</UsingUnoSdk>
 		<UnoVersion>DefaultUnoVersion</UnoVersion>
 
+		<AssetsFolder Condition=" '$(AssetsFolder)' == '' ">Assets\</AssetsFolder>
+		<AssetsFolder>$([MSBuild]::EnsureTrailingSlash('$(AssetsFolder)'))</AssetsFolder>
+
 		<_UnoSdkTargetsDirectory>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\targets'))))</_UnoSdkTargetsDirectory>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
