@@ -153,6 +153,14 @@ namespace SamplesApp
 
 			HandleLaunchArguments(e);
 
+<<<<<<< HEAD
+=======
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
+			{
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+			}
+
+>>>>>>> 74272dd3d8 (chore: Ensure we don't crash when MainPage does not use SampleChooser)
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
