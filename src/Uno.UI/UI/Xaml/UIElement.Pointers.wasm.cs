@@ -162,24 +162,7 @@ public partial class UIElement : DependencyObject
 
 			_logTrace?.Trace($"Dispatching to {element.GetDebugName()} pointer arg: {args}.");
 
-			if ((NativePointerEvent)args.Event is not NativePointerEvent.pointerout)
-			{
-				// This corresponds to SetSourceCursor in InputManager.Pointers.managed.cs
-				if (element.CalculatedFinalCursor is { } cursorShape)
-				{
-					if (_lastSetCursor is not { } c || c != cursorShape)
-					{
-						Console.WriteLine($"{(NativePointerEvent)args.Event} Setting {element} {element.HtmlId} to ${cursorShape} {cursorShape.ToCssProtectedCursor()}");
-						WindowManagerInterop.SetBodyCursor(cursorShape.ToCssProtectedCursor());
-						_lastSetCursor = cursorShape;
-					}
-				}
-				else
-				{
-					WindowManagerInterop.SetBodyCursor("none"); // hides the cursor
-				}
-			}
-
+			PointerRoutedEventArgs? routedArgs = null;
 			switch ((NativePointerEvent)args.Event)
 			{
 				case NativePointerEvent.pointerover:
@@ -187,7 +170,7 @@ public partial class UIElement : DependencyObject
 						// On WASM we do get 'pointerover' event for sub elements,
 						// so we can avoid useless work by validating if the pointer is already flagged as over element.
 						// If so, we stop bubbling since our parent will do the same!
-						var routedArgs = ToPointerArgs(element, args);
+						routedArgs = ToPointerArgs(element, args);
 						if (element.IsOver(routedArgs.Pointer))
 						{
 							result.Add(HtmlEventDispatchResult.StopPropagation);
@@ -202,7 +185,7 @@ public partial class UIElement : DependencyObject
 
 				case NativePointerEvent.pointerout: // No needs to check IsOver (leaving vs. bubbling), it's already done in native code
 					{
-						var routedArgs = ToPointerArgs(element, args);
+						routedArgs = ToPointerArgs(element, args);
 						var handled = element.OnNativePointerExited(routedArgs);
 						result.Add(routedArgs, handled);
 
@@ -211,7 +194,7 @@ public partial class UIElement : DependencyObject
 
 				case NativePointerEvent.pointerdown:
 					{
-						var routedArgs = ToPointerArgs(element, args);
+						routedArgs = ToPointerArgs(element, args);
 						var handled = element.OnNativePointerDown(routedArgs);
 						result.Add(routedArgs, handled);
 
@@ -220,7 +203,7 @@ public partial class UIElement : DependencyObject
 
 				case NativePointerEvent.pointerup:
 					{
-						var routedArgs = ToPointerArgs(element, args);
+						routedArgs = ToPointerArgs(element, args);
 						var handled = element.OnNativePointerUp(routedArgs);
 						result.Add(routedArgs, handled);
 
@@ -239,7 +222,7 @@ public partial class UIElement : DependencyObject
 
 				case NativePointerEvent.pointermove:
 					{
-						var routedArgs = ToPointerArgs(element, args);
+						routedArgs = ToPointerArgs(element, args);
 
 						// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
 						// this means that we need to validate the isOver to raise enter and exit like on UWP.
@@ -260,7 +243,7 @@ public partial class UIElement : DependencyObject
 
 				case NativePointerEvent.pointercancel:
 					{
-						var routedArgs = ToPointerArgs(element, args);
+						routedArgs = ToPointerArgs(element, args);
 						var handled = element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: true);
 						result.Add(routedArgs, handled);
 
@@ -270,7 +253,7 @@ public partial class UIElement : DependencyObject
 				case NativePointerEvent.wheel:
 					if (args.wheelDeltaX is not 0)
 					{
-						var routedArgs = ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX));
+						routedArgs = ToPointerArgs(element, args, wheel: (true, args.wheelDeltaX));
 						var handled = element.OnNativePointerWheel(routedArgs);
 						result.Add(routedArgs, handled);
 					}
@@ -278,12 +261,29 @@ public partial class UIElement : DependencyObject
 					if (args.wheelDeltaY is not 0)
 					{
 						// Note: Web browser vertical scrolling is the opposite compared to WinUI!
-						var routedArgs = ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY));
+						routedArgs = ToPointerArgs(element, args, wheel: (false, -args.wheelDeltaY));
 						var handled = element.OnNativePointerWheel(routedArgs);
 						result.Add(routedArgs, handled);
 					}
 
 					break;
+			}
+
+			if (routedArgs is { } && (NativePointerEvent)args.Event is not NativePointerEvent.pointerout)
+			{
+				// This corresponds to SetSourceCursor in InputManager.Pointers.managed.cs
+				if ((routedArgs.OriginalSource as UIElement)?.CalculatedFinalCursor is { } cursorShape)
+				{
+					if (_lastSetCursor is not { } c || c != cursorShape)
+					{
+						WindowManagerInterop.SetBodyCursor(cursorShape.ToCssProtectedCursor());
+						_lastSetCursor = cursorShape;
+					}
+				}
+				else
+				{
+					WindowManagerInterop.SetBodyCursor("none"); // hides the cursor
+				}
 			}
 		}
 		catch (Exception error)
