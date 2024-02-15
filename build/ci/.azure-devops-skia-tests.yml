@@ -270,8 +270,9 @@ jobs:
       UnoEnableHRuntimeTests: $(UnoEnableHRuntimeTests)
       SamplesAppArtifactPath: $(SamplesAppArtifactPath)
       SamplesAppArtifactName: $(SamplesAppArtifactName)
-      UNO_RUNTIME_TESTS_RUN_TESTS: '{ Filter: { Value: "Uno.UI.RuntimeTests.Tests.HotReload" }}'
+      UNO_RUNTIME_TESTS_RUN_TESTS: '{"Filter": {"Value": "Uno.UI.RuntimeTests.Tests.HotReload"}, "Attempts": 1}'
       UNO_RUNTIME_TESTS_OUTPUT_PATH: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-hot-reload-results.xml'
+      UNO_RUNTIME_TESTS_DEV_SERVER_PATH: '$(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host/bin/Debug/net7.0/Uno.UI.RemoteControl.Host.dll'
 
   - task: PublishTestResults@2
     condition: always()
@@ -280,6 +281,7 @@ jobs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-hot-reload-results.xml'
       failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
 
 ##
 ## WPF

@@ -85,7 +85,10 @@ namespace SamplesApp
 			Uno.UI.RemoteControl.RemoteControlClient.Initialize(typeof(App));
 			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout = TimeSpan.FromSeconds(300);
 #if HAS_UNO_WINUI
-			Uno.UI.RuntimeTests.Internal.Helpers.DevServer.SetDefaultPath(@"..\..\..\..\..\Uno.UI.RemoteControl.Host\bin\Debug\net8.0\Uno.UI.RemoteControl.Host.dll");
+			if (Environment.GetEnvironmentVariable("UNO_RUNTIME_TESTS_DEV_SERVER_PATH") is null or { Length: 0 })
+			{
+				Uno.UI.RuntimeTests.Internal.Helpers.DevServer.SetDefaultPath($@"..\..\..\..\..\Uno.UI.RemoteControl.Host\bin\Debug\net{Environment.Version.Major}.{Environment.Version.Minor}\Uno.UI.RemoteControl.Host.dll");
+			}
 #endif
 #endif
 
