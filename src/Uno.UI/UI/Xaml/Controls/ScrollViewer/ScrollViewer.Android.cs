@@ -16,8 +16,6 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI;
 
-using static Uno.Extensions.MathEx;
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollViewer : ContentControl, ICustomClippingElement
