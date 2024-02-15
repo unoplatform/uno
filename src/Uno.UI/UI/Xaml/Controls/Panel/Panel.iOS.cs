@@ -20,15 +20,12 @@ public partial class Panel
 		}
 	}
 
-	partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-	{
-		UpdateBackground();
-	}
+	partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue) => UpdateBorder();
 
 	partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
 	{
 		SetNeedsLayout();
-		UpdateBackground();
+		UpdateBorder();
 	}
 
 	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
@@ -36,67 +33,11 @@ public partial class Panel
 		SetNeedsLayout();
 	}
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
-	{
-		// Ignore the background changes provided from base, we're rendering it using the CALayer.
-		// base.OnBackgroundChanged(e);
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args) => UpdateBorder();
 
-		var old = args.OldValue as ImageBrush;
-		if (old != null)
-		{
-			old.ImageChanged -= OnBackgroundImageBrushChanged;
-		}
-		var imgBrush = args.NewValue as ImageBrush;
-		if (imgBrush != null)
-		{
-			imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
-		}
+	partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-		UpdateBackground();
-	}
-
-	private void OnBackgroundImageBrushChanged(UIImage backgroundImage)
-	{
-		UpdateBackground(backgroundImage);
-	}
-
-	partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
-	{
-		UpdateBackground();
-	}
-
-	private void UpdateBackground(UIImage backgroundImage = null)
-	{
-		// Checking for Window avoids re-creating the layer until it is actually used.
-		if (IsLoaded)
-		{
-			if (backgroundImage == null)
-			{
-				ImageData backgroundImageData = default;
-				(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData);
-
-				if (backgroundImageData.Kind == ImageDataKind.NativeImage)
-				{
-					backgroundImage = backgroundImageData.NativeImage;
-				}
-			}
-
-			_borderRenderer.UpdateLayer(
-				this,
-				Background,
-				InternalBackgroundSizing,
-				BorderThicknessInternal,
-				BorderBrushInternal,
-				CornerRadiusInternal,
-				backgroundImage
-			);
-		}
-	}
-
-	partial void UpdateBorder()
-	{
-		UpdateBackground();
-	}
+	partial void UpdateBorder() => _borderRenderer.Update(); //TODO: Do we need to pass the image data?
 
 	protected virtual void OnChildrenChanged()
 	{
@@ -118,7 +59,7 @@ public partial class Panel
 		//We set childrens position for the animations before the arrange
 		_transitionHelper?.SetInitialChildrenPositions();
 
-		UpdateBackground();
+		UpdateBorder();
 	}
 
 	/// <summary>        
