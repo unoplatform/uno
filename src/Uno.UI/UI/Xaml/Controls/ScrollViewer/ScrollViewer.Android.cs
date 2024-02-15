@@ -50,8 +50,8 @@ namespace Microsoft.UI.Xaml.Controls
 			const int minScroll = -maxScroll;
 
 			// Clamp values (again) to avoid overflow in UnoTwoDScrollView.java
-			var adjustedPhysicalHorizontalOffset = Clamp(physicalHorizontalOffset, minScroll, maxScroll);
-			var adjustedPhysicalVerticalOffset = Clamp(physicalVerticalOffset, minScroll, maxScroll);
+			var adjustedPhysicalHorizontalOffset = Math.Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			var adjustedPhysicalVerticalOffset = Math.Clamp(physicalVerticalOffset, minScroll, maxScroll);
 
 			if (disableAnimation)
 			{
