@@ -1295,11 +1295,15 @@ namespace Microsoft.UI.Xaml
 				{
 					CalculatedFinalCursor = c.CursorShape;
 				}
+				else if (value is null)
+				{
+					this.ClearValue(CalculatedFinalCursorProperty, DependencyPropertyValuePrecedences.Local);
+				}
 				else
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Setting UIElement.ProtectedCursor to value of type {value.GetType().FullName} which is unsupported. Only Values of type {nameof(InputSystemCursor)} are currently supported.");
+						this.Log().Error($"Setting UIElement.ProtectedCursor to value of type {value.GetType().FullName} is not supported. Only Values of type {nameof(InputSystemCursor)} are currently supported.");
 					}
 				}
 			}
