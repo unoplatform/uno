@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
@@ -505,7 +506,11 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnIsTextSelectionEnabledChanged() => OnIsTextSelectionEnabledChangedPartial();
+		private void OnIsTextSelectionEnabledChanged()
+		{
+			ProtectedCursor = IsTextSelectionEnabled ? InputSystemCursor.Create(InputSystemCursorShape.IBeam) : null;
+			OnIsTextSelectionEnabledChangedPartial();
+		}
 
 		partial void OnIsTextSelectionEnabledChangedPartial();
 
