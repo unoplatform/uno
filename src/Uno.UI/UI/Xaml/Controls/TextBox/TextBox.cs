@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 
-			ProtectedCursor = InputSystemCursor.Create(InputSystemCursorShape.IBeam);
+			ProtectedCursor = Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam);
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
 
