@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
-#if __SKIA__
+#if __SKIA__ || __WASM__
 			_borderRenderer ??= new BorderLayerRenderer(this);
 
 			// DrawBackground			=> General background for all items
@@ -75,6 +75,20 @@ namespace Microsoft.UI.Xaml.Controls
 			// DrawFocusBorder			=> Not supported yet
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
+
+#if __WASM__
+			var borderInfoProvider = (IBorderInfoProvider)this;
+			var borderThickness = borderInfoProvider.BorderThickness;
+			var borderBrush = borderInfoProvider.BorderBrush;
+			if (borderBrush is not null)
+			{
+				EffectiveBorderThickness = borderThickness;
+			}
+			else
+			{
+				EffectiveBorderThickness = default;
+			}
+#endif
 
 			_borderRenderer.Update();
 #else
@@ -91,18 +105,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var borderBrush = borderInfoProvider.BorderBrush;
 			var cornerRadius = borderInfoProvider.CornerRadius;
 
-#if __WASM__
-			if (borderBrush is not null)
-			{
-				EffectiveBorderThickness = borderThickness;
-			}
-			else
-			{
-				EffectiveBorderThickness = default;
-			}
-#endif
-
-#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
 #endif
 #endif

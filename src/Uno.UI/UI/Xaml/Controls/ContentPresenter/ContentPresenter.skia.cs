@@ -24,35 +24,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() => ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter)));
 
-		private readonly BorderLayerRenderer _borderRenderer;
-
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
 		private bool _nativeHostRegistered;
 
-		public ContentPresenter()
+		partial void InitializePlatform()
 		{
-			_borderRenderer = new BorderLayerRenderer(this);
-
-			InitializeContentPresenter();
-
 			Loaded += (s, e) => RegisterNativeHostSupport();
 			Unloaded += (s, e) => UnregisterNativeHostSupport();
-		}
-
-		private void SetUpdateTemplate()
-		{
-			UpdateContentTemplateRoot();
-		}
-
-		partial void RegisterContentTemplateRoot()
-		{
-			AddChild(ContentTemplateRoot);
-		}
-
-		partial void UnregisterContentTemplateRoot()
-		{
-			RemoveChild(ContentTemplateRoot);
 		}
 
 		partial void TryRegisterNativeElement(object newValue)
@@ -95,26 +74,6 @@ namespace Microsoft.UI.Xaml.Controls
 				_nativeHostRegistered = false;
 				XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
 			}
-		}
-
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-
-		private void UpdateBorder()
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.Update();
-			}
-		}
-
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
 		}
 
 		partial void ArrangeNativeElement(Rect arrangeRect)

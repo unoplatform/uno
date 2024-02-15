@@ -86,7 +86,7 @@ namespace Microsoft.UI.Composition
 
 		private protected void SetProperty(ref float field, float value, [CallerMemberName] string? propertyName = null)
 		{
-			if (field == value)
+			if (field.Equals(value))
 			{
 				return;
 			}
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Composition
 
 		private protected void SetProperty(ref Matrix3x2 field, Matrix3x2 value, [CallerMemberName] string? propertyName = null)
 		{
-			if (field == value)
+			if (field.Equals(value))
 			{
 				return;
 			}
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Composition
 
 		private protected void SetProperty(ref Matrix4x4 field, Matrix4x4 value, [CallerMemberName] string? propertyName = null)
 		{
-			if (field == value)
+			if (field.Equals(value))
 			{
 				return;
 			}
@@ -122,7 +122,7 @@ namespace Microsoft.UI.Composition
 
 		private protected void SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)
 		{
-			if (field == value)
+			if (field.Equals(value))
 			{
 				return;
 			}
@@ -134,7 +134,7 @@ namespace Microsoft.UI.Composition
 
 		private protected void SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
 		{
-			if (field == value)
+			if (field.Equals(value))
 			{
 				return;
 			}
@@ -146,7 +146,7 @@ namespace Microsoft.UI.Composition
 
 		private protected void SetProperty(ref Quaternion field, Quaternion value, [CallerMemberName] string? propertyName = null)
 		{
-			if (field == value)
+			if (field.Equals(value))
 			{
 				return;
 			}

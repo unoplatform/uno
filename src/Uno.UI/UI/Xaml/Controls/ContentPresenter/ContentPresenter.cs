@@ -56,7 +56,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InitializeContentPresenter()
 		{
 			SetDefaultForeground(ForegroundProperty);
+			InitializePlatform();
 		}
+
+		partial void InitializePlatform();
 
 		/// <summary>
 		/// Indicates if the content should inherit templated parent from the presenter, or its templated parent.
@@ -827,6 +830,8 @@ namespace Microsoft.UI.Xaml.Controls
 			TryDetachNativeElement();
 		}
 
+		partial void ClearBorder();
+
 		private bool ResetDataContextOnFirstLoad()
 		{
 			if (!_firstLoadResetDone)
@@ -999,16 +1004,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void RegisterContentTemplateRoot();
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Don't call base, the UpdateBorder() method handles drawing the background.
-			// base.OnBackgroundChanged(e);
-
-			UpdateBorder();
-#if __WASM__
-			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
-#endif
-		}
+		/// <remarks>
+		/// Don't call base, the UpdateBorder() method handles drawing the background.
+		/// </remarks>
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{

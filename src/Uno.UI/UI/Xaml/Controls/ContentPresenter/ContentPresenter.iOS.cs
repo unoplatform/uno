@@ -77,10 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
+		partial void ClearBorder() => _borderRenderer.Clear();
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
