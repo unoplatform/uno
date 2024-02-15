@@ -113,24 +113,20 @@
 			// But those events will be raise right BEFORE the NEXT pointer event (e.g. a move).
 			// Note: We don't filter out the "over" event because it's handled in managed by tracking the IsOver state.
 
-			// Here we filter the "out" event that is being raised after the capture
-			if (evt.relatedTarget == element && element.hasPointerCapture(evt.pointerId)) {
+			// Here we filter the "out" event that is being raised after capture or release
+			// If the relatedTarget (the element that capture or release the pointer) is a child of (or is) the current element,
+			// it means pointer might not leaving the current element!
+			let elt = evt.relatedTarget as HTMLElement | SVGElement;
+			if (elt && element.contains(elt)
+				&& (
+					// on capture, we just check if it has the the capture
+					elt.hasPointerCapture(evt.pointerId)
+					// on release, the target is the element itself
+					|| evt.target == element)
+			)
+			{
 				evt.stopPropagation();
 				return;
-			}
-
-			// Here we filter the "out" event that is being raised after a capture has been released
-			// We walk the tree to find if the relatedTarget is a child of the element
-			// If so it means that the pointer is still inside the element and we should not propagate the event.
-			let elt = evt.relatedTarget as HTMLElement | SVGElement;
-			if (elt && evt.target == element) {
-				while (elt) {
-					if (elt == element) {
-						evt.stopPropagation();
-						return;
-					}
-					elt = elt.parentElement;
-				}
 			}
 
 			// Finally, here we filter out the events that are being raised when the pointer is leaving a nested element (which is bubbling in browser)
