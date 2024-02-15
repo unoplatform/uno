@@ -427,6 +427,13 @@ namespace Microsoft.UI.Xaml
 			=> GetStore(instance).RegisterParentChangedCallbackStrong(key, handler);
 
 		/// <summary>
+		/// Unregisters a strong parent changed callback
+		/// </summary>
+		/// <param name="handler">The handler that was registered using <see cref="RegisterParentChangedCallbackStrong(DependencyObject, object, ParentChangedCallback)"/></param>
+		internal static void UnregisterParentChangedCallbackStrong(this DependencyObject instance, ParentChangedCallback handler)
+			=> GetStore(instance).UnregisterParentChangedCallbackStrong(handler);
+
+		/// <summary>
 		/// Determines if the specified dependency property is set.
 		/// A property is set whenever a value (including null) is assigned to it.
 		/// </summary>
