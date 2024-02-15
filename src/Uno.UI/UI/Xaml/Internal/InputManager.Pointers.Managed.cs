@@ -69,6 +69,9 @@ internal partial class InputManager
 			_inputManager = inputManager;
 		}
 
+		// ONLY USE THIS FOR TESTING PURPOSES
+		internal IUnoCorePointerInputSource? PointerInputSourceForTestingOnly => _source;
+
 		/// <summary>
 		/// Initialize the InputManager.
 		/// This has to be invoked only once the host of the owning ContentRoot has been set.

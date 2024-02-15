@@ -1,18 +1,21 @@
 ﻿#if __SKIA__
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
+using Microsoft.UI.Input;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -183,6 +186,344 @@ public class Given_InputManager
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual("Normal", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
 		Assert.AreEqual("PointerOver", VisualStateManager.GetCurrentState(button2, "CommonStates").Name);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
+	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
+#endif
+	public async Task When_ProtectedCursor_Basic()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = (Button)stackPanel.Children[0];
+		var button2 = (Button)stackPanel.Children[1];
+
+		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		mouse.MoveTo(button1.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.MoveTo(button2.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
+	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
+#endif
+	public async Task When_ProtectedCursor_PointerCaptured()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = (Button)stackPanel.Children[0];
+		var button2 = (Button)stackPanel.Children[1];
+
+		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		mouse.MoveTo(button1.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.Press();
+
+		mouse.MoveTo(button2.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.Release();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
+	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
+#endif
+	public async Task When_ProtectedCursor_Scrolled()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = (Button)stackPanel.Children[0];
+
+		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		mouse.MoveTo(button1.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		// We need to use an actual pointer event. Note that on WinUI, this works normally without a pointer event,
+		// meaning that WinUI most likely reapplies hit testing when programatically scrolling. We don't do this
+		// in Uno. The fix is most likely not in ProtectedCursor-specific logic, but in ScrollViewer logic. We should
+		// be hit testing again to see if we need to raise enter/leave events.
+		// scrollViewer.ScrollToVerticalOffset(button1.ActualHeight);
+		mouse.Wheel(-100);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
+	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
+#endif
+	public async Task When_ProtectedCursor_Scrolled_PointerCaptured()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = (Button)stackPanel.Children[0];
+
+		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		mouse.MoveTo(button1.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.Press();
+
+		// We need to use an actual pointer event. Note that on WinUI, this works normally without a pointer event,
+		// meaning that WinUI most likely reapplies hit testing when programatically scrolling. We don't do this
+		// in Uno. The fix is most likely not in ProtectedCursor-specific logic, but in ScrollViewer logic. We should
+		// be hit testing again to see if we need to raise enter/leave events.
+		// scrollViewer.ScrollToVerticalOffset(button1.ActualHeight);
+		mouse.Wheel(-100);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.Release();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
+	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
+#endif
+	public async Task When_ProtectedCursor_Disposed()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = (Button)stackPanel.Children[0];
+
+		var cursor = InputSystemCursor.Create(InputSystemCursorShape.IBeam);
+		SetProtectedCursor(button1, cursor);
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		mouse.MoveTo(button1.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		cursor.Dispose();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// This is the behaviour on WinUI. The cursor won't change until you move the pointer.
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.MoveBy(1, 0);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var finalShape = GetCursorShape();
+
+		// Each platform has its own way of dealing with null. We don't care about the specific
+		// value, we are just testing that PointerInputSource.PointerCursor was indeed set to null,
+		// the resulting cursor shape is irrelevant.
+		SetCursorShape(null);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(GetCursorShape(), finalShape);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
+	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
+#endif
+	public async Task When_ProtectedCursor_Set_Reset()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = (Button)stackPanel.Children[0];
+
+		SetProtectedCursor(button1, InputSystemCursor.Create(InputSystemCursorShape.IBeam));
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		mouse.MoveTo(button1.GetAbsoluteBounds().GetCenter());
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		SetProtectedCursor(button1, null);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// This is NOT the behaviour on WinUI. The cursor should change immediately. To align this behaviour,
+		// we would need to keep track of which element is currently the one the cursor is based on.
+		// To keep it simple, we skip this in Uno. You will need to nudge the pointer a bit to take effect.
+		Assert.AreEqual(CoreCursorType.IBeam, GetCursorShape());
+
+		mouse.MoveBy(1, 0);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(CoreCursorType.Arrow, GetCursorShape());
+	}
+
+	private CoreCursorType? GetCursorShape()
+	{
+		var cursor = TestServices.WindowHelper
+			.XamlRoot
+			.VisualTree
+			.ContentRoot
+			.InputManager
+			.Pointers
+			.PointerInputSourceForTestingOnly
+			?.PointerCursor;
+
+		return cursor?.Type;
+	}
+
+	private static void SetCursorShape(CoreCursor cursor)
+	{
+		if (TestServices.WindowHelper
+			.XamlRoot
+			.VisualTree
+			.ContentRoot
+			.InputManager
+			.Pointers
+			.PointerInputSourceForTestingOnly is { } source)
+		{
+			source.PointerCursor = cursor;
+		}
+	}
+
+	// This is to deal with WinUI's silly design choice to make ProtectedCursor protected.
+	// The alternative would be to create subclasses that set ProtectedCursor from within.
+	private static void SetProtectedCursor(UIElement element, InputCursor cursor)
+	{
+		var propInfo = typeof(UIElement).GetProperty("ProtectedCursor", BindingFlags.Instance | BindingFlags.NonPublic);
+		propInfo!.SetValue(element, cursor, null);
+
 	}
 }
 #endif
