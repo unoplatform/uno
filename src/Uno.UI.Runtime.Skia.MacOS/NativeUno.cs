@@ -153,17 +153,21 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_clear();
 
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial IntPtr uno_clipboard_get_content();
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_clipboard_get_content(out string? htmlContent, out string? rftContent, out string? textContent, out string? uri, out string? fileUrlc);
 
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_clipboard_set_content(IntPtr content);
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_clipboard_set_content(string? htmlContent, string? rtfContent, string? textContent, string? uri);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_start_content_changed();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_stop_content_changed();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_clipboard_set_content_changed_callback(delegate* unmanaged[Cdecl]<void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_cursor_hide();
