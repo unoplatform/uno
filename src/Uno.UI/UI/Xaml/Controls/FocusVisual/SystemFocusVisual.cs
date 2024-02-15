@@ -132,7 +132,9 @@ internal partial class SystemFocusVisual : Control
 			Visibility = Visibility.Collapsed;
 			return;
 		}
-
+		
+		RenderTransform = FocusedElement.RenderTransform;
+		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 		Visibility = Visibility.Visible;
 
 		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
