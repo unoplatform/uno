@@ -44,7 +44,9 @@ internal class InternalClient : Android.Webkit.WebViewClient
 			return true;
 		}
 
-		return false;
+		_coreWebView.RaiseNavigationStarting(url, out var cancel);
+
+		return cancel;
 	}
 
 	public override void OnPageStarted(Android.Webkit.WebView view, string url, Bitmap favicon)
