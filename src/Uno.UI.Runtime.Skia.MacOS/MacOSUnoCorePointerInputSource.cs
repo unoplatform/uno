@@ -8,6 +8,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Input;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -16,9 +17,17 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 {
+	// https://developer.apple.com/documentation/appkit/nseventtype
+	const int NSEventTypeLeftMouseDown = 1;
+	const int NSEventTypeRightMouseDown = 2;
+	const int NSEventTypeOtherMouseDown = 25;
+
 	public static MacOSUnoCorePointerInputSource Instance = new();
 
 	private CoreCursor? _pointerCursor = new(CoreCursorType.Arrow, 0);
+
+	private static Point _previousPosition;
+	private static PointerPointProperties? _previousProperties;
 
 	private MacOSUnoCorePointerInputSource()
 	{
@@ -63,7 +72,7 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 		}
 	}
 
-	public Point PointerPosition { get; private set; }
+	public Point PointerPosition => _previousPosition;
 
 #pragma warning disable CS0067
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
@@ -77,41 +86,38 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 #pragma warning restore CS0067
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	internal static int MouseEvent(int type, double x, double y, VirtualKeyModifiers mods, PointerDeviceType pdt, uint frameId, ulong timestamp, uint pid)
+	internal static unsafe int MouseEvent(NativeMouseEventData* data)
 	{
-		var position = new Point(x, y);
 		try
 		{
-			TypedEventHandler<object, PointerEventArgs>? evnt = null;
-			switch (type)
+			TypedEventHandler<object, PointerEventArgs>? mouseEvent = null;
+			switch (data->EventType)
 			{
-				case 1:
-					evnt = Instance.PointerEntered;
+				case NativeMouseEvents.Entered:
+					mouseEvent = Instance.PointerEntered;
 					break;
-				case 2:
-					evnt = Instance.PointerExited;
+				case NativeMouseEvents.Exited:
+					mouseEvent = Instance.PointerExited;
 					break;
-				case 3:
-					evnt = Instance.PointerPressed;
+				case NativeMouseEvents.Down:
+					mouseEvent = Instance.PointerPressed;
 					break;
-				case 4:
-					evnt = Instance.PointerReleased;
+				case NativeMouseEvents.Up:
+					mouseEvent = Instance.PointerReleased;
 					break;
-				case 5:
-					evnt = Instance.PointerMoved;
+				case NativeMouseEvents.Moved:
+					mouseEvent = Instance.PointerMoved;
 					break;
-				case 6:
-					evnt = Instance.PointerWheelChanged;
+				case NativeMouseEvents.ScrollWheel:
+					mouseEvent = Instance.PointerWheelChanged;
 					break;
 			}
-			if (evnt is null)
+			if (mouseEvent is null)
 			{
 				return 0; // unhandled
 			}
-			// TODO: collect/marshal more data from native
-			var ppp = new Windows.UI.Input.PointerPointProperties();
-			var pp = new Windows.UI.Input.PointerPoint(frameId, timestamp, PointerDevice.For(pdt), pid, position, position, false, ppp);
-			evnt(Instance, new PointerEventArgs(pp, mods));
+
+			mouseEvent(Instance, BuildPointerArgs(*data));
 			return 1; // handled
 		}
 		catch (Exception e)
@@ -119,11 +125,59 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 			Microsoft.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
 		}
-		finally
-		{
-			Instance.PointerPosition = position;
-		}
 	}
+
+	private static PointerEventArgs BuildPointerArgs(NativeMouseEventData data)
+	{
+		var position = new Point(data.X, data.Y);
+		var pointerDevice = PointerDevice.For(data.PointerDeviceType);
+		var properties = GetPointerProperties(data).SetUpdateKindFromPrevious(_previousProperties);
+
+		var point = new PointerPoint(data.FrameId, data.Timestamp, pointerDevice, data.Pid, position, position, data.InContact, properties);
+		var args = new PointerEventArgs(point, data.KeyModifiers);
+
+		_previousPosition = position;
+		_previousProperties = properties;
+
+		return args;
+	}
+
+	private static PointerPointProperties GetPointerProperties(NativeMouseEventData data)
+	{
+		var properties = new PointerPointProperties()
+		{
+			IsInRange = true,
+			IsPrimary = true,
+			IsLeftButtonPressed = (data.MouseButtons & NSEventTypeLeftMouseDown) == NSEventTypeLeftMouseDown,
+			IsRightButtonPressed = (data.MouseButtons & NSEventTypeRightMouseDown) == NSEventTypeRightMouseDown,
+			IsMiddleButtonPressed = (data.MouseButtons & NSEventTypeOtherMouseDown) == NSEventTypeOtherMouseDown,
+		};
+
+		if (data.PointerDeviceType == PointerDeviceType.Pen)
+		{
+			properties.XTilt = data.TiltX;
+			properties.YTilt = data.TiltY;
+			properties.Pressure = data.Pressure;
+		}
+
+		if (data.EventType == NativeMouseEvents.ScrollWheel)
+		{
+			var y = data.ScrollingDeltaY;
+			if (y == 0)
+			{
+				// Note: if X and Y are != 0, we should raise 2 events!
+				properties.IsHorizontalMouseWheel = true;
+				properties.MouseWheelDelta = data.ScrollingDeltaX;
+			}
+			else
+			{
+				properties.MouseWheelDelta = -y;
+			}
+		}
+
+		return properties;
+	}
+
 
 	public void ReleasePointerCapture() => LogNotSupported();
 	public void ReleasePointerCapture(PointerIdentifier p) => LogNotSupported();
