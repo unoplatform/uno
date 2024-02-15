@@ -36,9 +36,9 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				// There are situations where between measurements scaledDimension and naturalDimension
-				// have a small difference in value (a few pixels) causing the measure to go into an infinite loop.
+				// have a small difference in value (a few pixels) causing the measurement to go into an infinite loop.
 				// Related to: https://github.com/unoplatform/uno/issues/15254
-				var ratio = (float)Math.Round(scaledOneDimension / naturalOneDimension, 0);
+				var ratio = (float)Math.Round(scaledOneDimension / naturalOneDimension, 1);
 				return naturalOtherDimension * ratio;
 			}
 		}
