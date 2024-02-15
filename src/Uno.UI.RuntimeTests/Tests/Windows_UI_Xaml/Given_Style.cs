@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.RuntimeTests.Helpers;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -45,6 +47,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// This shouldn't throw.
 			_ = new ContentControl() { Style = style };
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15460")]
+		public async Task When_ImplicitStyle()
+		{
+			var implicitStyle = new Style()
+			{
+				Setters =
+				{
+					new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch)
+				},
+				TargetType = typeof(ContentControl),
+			};
+
+			var explicitStyle = new Style()
+			{
+				TargetType = typeof(ContentControl),
+			};
+
+			var cc = new ContentControl() { Width = 100, Height = 100 };
+			Assert.AreEqual(HorizontalAlignment.Center, cc.HorizontalContentAlignment);
+
+			cc.Resources.Add(typeof(ContentControl), implicitStyle);
+			await UITestHelper.Load(cc);
+
+			Assert.AreEqual(HorizontalAlignment.Stretch, cc.HorizontalContentAlignment);
+
+			cc.Style = explicitStyle;
+
+			Assert.AreEqual(HorizontalAlignment.Left, cc.HorizontalContentAlignment);
 		}
 	}
 }
