@@ -14,6 +14,10 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
 
+#if !HAS_UNO_WINUI
+using Windows.UI.Input;
+#endif
+
 namespace Uno.UI.Xaml.Core;
 
 partial class InputManager
