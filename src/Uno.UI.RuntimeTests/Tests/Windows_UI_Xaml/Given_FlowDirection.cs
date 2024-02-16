@@ -63,16 +63,14 @@ public class Given_FlowDirection
 	{
 		Assert.AreEqual(rect1.X, rect2.X);
 		Assert.AreEqual(rect1.Y, rect2.Y);
-		Assert.AreEqual(rect1.Width, rect2.Width, delta: 1);
-		Assert.AreEqual(rect1.Height, rect2.Height, delta: 1);
+		// Width and Height can have difference of 1 or 2, depending on whether the window width/height is even or odd.
+		// This is the same as what happens on WinUI
+		Assert.AreEqual(rect1.Width, rect2.Width, delta: 2);
+		Assert.AreEqual(rect1.Height, rect2.Height, delta: 2);
 	}
 
 	private static Rect GetWindowBounds() =>
-#if WINAPPSDK
-		Window.Current.Bounds;
-#else
-		TestServices.WindowHelper.XamlRoot.Bounds;
-#endif
+		TestServices.WindowHelper.CurrentTestWindow.Bounds;
 
 	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));
 	private static Rect Get50x50RectAt(double x, double y) => new Rect(new Point(x, y), new Size(50, 50));
