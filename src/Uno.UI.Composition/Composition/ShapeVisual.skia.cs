@@ -6,7 +6,6 @@ using SkiaSharp;
 using Uno.Extensions;
 using System.Xml.Xsl;
 using Uno.UI.Composition;
-using System;
 
 namespace Microsoft.UI.Composition;
 

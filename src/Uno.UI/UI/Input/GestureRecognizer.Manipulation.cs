@@ -162,51 +162,6 @@ namespace Windows.UI.Input
 				StartDragTimer();
 			}
 
-			private bool _isTranslateDirectionDecided;
-
-			private void DecideTranslateDirection(Point oldPosition, Point newPosition, ref ManipulationDelta cumulative, ref ManipulationDelta delta, ref ManipulationVelocities velocities)
-			{
-				if (_isTranslateDirectionDecided)
-				{
-					return;
-				}
-
-				_isTranslateDirectionDecided = true;
-				double slope;
-				if (newPosition.X == oldPosition.X)
-				{
-					slope = double.PositiveInfinity;
-				}
-				else
-				{
-					slope = (newPosition.Y - oldPosition.Y) / (newPosition.X - oldPosition.X);
-				}
-
-				if ((_settings & GestureSettings.ManipulationTranslateRailsX) != 0 && isAngleNearXAxis(slope))
-				{
-					_isTranslateYEnabled = false;
-					cumulative.Translation.Y = 0;
-					delta = GetDelta(cumulative);
-					velocities = GetVelocities(delta);
-
-				}
-				else if ((_settings & GestureSettings.ManipulationTranslateRailsY) != 0 && isAngleNearYAxis(slope))
-				{
-					_isTranslateXEnabled = false;
-					cumulative.Translation.X = 0;
-					delta = GetDelta(cumulative);
-					velocities = GetVelocities(delta);
-				}
-
-				// The horizontal rail is 22.5 degrees around the X-axis
-				static bool isAngleNearXAxis(double slope)
-					=> Math.Abs(slope) <= Math.Tan(22.5 * Math.PI / 180);
-
-				// The vertical rail is 22.5 degrees around the Y-axis
-				static bool isAngleNearYAxis(double slope)
-					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
-			}
-
 			public bool IsActive(PointerIdentifier pointer)
 				=> _state != ManipulationState.Completed
 					&& _deviceType == (PointerDeviceType)pointer.Type
@@ -660,6 +615,45 @@ namespace Windows.UI.Input
 					&& !IsDragManipulation
 					&& (_settings & GestureSettingsHelper.Inertia) != 0
 					&& velocities.IsAnyAbove(_inertiaThresholds);
+
+			private void DecideTranslateDirection(Point oldPosition, Point newPosition, ref ManipulationDelta cumulative, ref ManipulationDelta delta, ref ManipulationVelocities velocities)
+			{
+				Debug.Assert(_state == ManipulationState.Started);
+
+				double slope;
+				if (newPosition.X == oldPosition.X)
+				{
+					slope = double.PositiveInfinity;
+				}
+				else
+				{
+					slope = (newPosition.Y - oldPosition.Y) / (newPosition.X - oldPosition.X);
+				}
+
+				if ((_settings & GestureSettings.ManipulationTranslateRailsX) != 0 && isAngleNearXAxis(slope))
+				{
+					_isTranslateYEnabled = false;
+					cumulative.Translation.Y = 0;
+					delta = GetDelta(cumulative);
+					velocities = GetVelocities(delta);
+
+				}
+				else if ((_settings & GestureSettings.ManipulationTranslateRailsY) != 0 && isAngleNearYAxis(slope))
+				{
+					_isTranslateXEnabled = false;
+					cumulative.Translation.X = 0;
+					delta = GetDelta(cumulative);
+					velocities = GetVelocities(delta);
+				}
+
+				// The horizontal rail is 22.5 degrees around the X-axis
+				static bool isAngleNearXAxis(double slope)
+					=> Math.Abs(slope) <= Math.Tan(22.5 * Math.PI / 180);
+
+				// The vertical rail is 22.5 degrees around the Y-axis
+				static bool isAngleNearYAxis(double slope)
+					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
+			}
 
 			internal struct Thresholds
 			{

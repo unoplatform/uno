@@ -88,7 +88,7 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 
 	public override void Dispose()
 	{
-		base.Dispose();
 		_handler.Stop();
+		base.Dispose();
 	}
 }

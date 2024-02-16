@@ -2,15 +2,12 @@
 //#define TRACE_COMPOSITION
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Microsoft.UI.Composition.Interactions;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Composition;
-using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 

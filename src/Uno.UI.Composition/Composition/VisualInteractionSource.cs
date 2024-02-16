@@ -88,6 +88,8 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	// In Uno 6, we will make a breaking change to match WinUI.
 	public void TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint)
 	{
+		// https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.interactions.visualinteractionsource.tryredirectformanipulation
+		// > This method should only be called with a PointerDeviceType of Touch.
 		if (pointerPoint.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Touch &&
 			Source.CompositionTarget is { } compositionTarget)
 		{
