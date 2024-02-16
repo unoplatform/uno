@@ -38,7 +38,7 @@ public partial class UIElement : DependencyObject
 	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs> _pointerEventArgs;
 	private static TSInteropMarshaller.HandleRef<NativePointerEventResult> _pointerEventResult;
 
-	private static InputSystemCursorShape? _lastSetCursor;
+	private static Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape? _lastSetCursor;
 
 	// Ref:
 	// https://www.w3.org/TR/pointerevents/
@@ -276,7 +276,7 @@ public partial class UIElement : DependencyObject
 				{
 					if (_lastSetCursor is not { } c || c != cursorShape)
 					{
-						WindowManagerInterop.SetBodyCursor(cursorShape.ToCssProtectedCursor());
+						WindowManagerInterop.SetBodyCursor(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShapeExtensions.ToCssProtectedCursor(cursorShape));
 						_lastSetCursor = cursorShape;
 					}
 				}
