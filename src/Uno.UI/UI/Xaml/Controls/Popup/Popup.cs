@@ -311,4 +311,7 @@ public partial class Popup
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 		DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+
+	// On WinUi, a popup is not IsTabStop but is somehow focusable. This is a workaround to match that behaviour.
+	internal override bool IsFocusableForFocusEngagement() => true;
 }
