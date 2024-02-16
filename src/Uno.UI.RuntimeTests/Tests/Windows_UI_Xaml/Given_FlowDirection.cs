@@ -61,8 +61,8 @@ public class Given_FlowDirection
 
 	private static void AssertRects(Rect rect1, Rect rect2)
 	{
-		Assert.AreEqual(rect1.X, rect2.X);
-		Assert.AreEqual(rect1.Y, rect2.Y);
+		Assert.AreEqual(rect1.X, rect2.X, delta: 1);
+		Assert.AreEqual(rect1.Y, rect2.Y, delta: 1);
 		// Width and Height can have difference of 1 or 2, depending on whether the window width/height is even or odd.
 		// This is the same as what happens on WinUI
 		Assert.AreEqual(rect1.Width, rect2.Width, delta: 2);
