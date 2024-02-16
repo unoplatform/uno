@@ -1,12 +1,4 @@
-#nullable enable
-
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-using Windows.Foundation;
 
 using Uno.Foundation.Logging;
 using SkiaSharp;
@@ -22,7 +14,7 @@ internal static class MacOSMetalRenderer
 		// This force us to initialize things manually... so we reflect to create a metal-based GRContext
 		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
 		// net8+ alternative -> https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
-		var get = typeof(GRContext).GetMethod("GetObject", BindingFlags.Static | BindingFlags.NonPublic)!;
+		var get = typeof(GRContext).GetMethod("GetObject", BindingFlags.Static | BindingFlags.NonPublic);
 		var context = (GRContext?)get?.Invoke(null, new object[] { ctx, true });
 		if (context is null)
 		{

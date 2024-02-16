@@ -1,6 +1,3 @@
-#nullable enable
-
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,7 +9,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 {
-	public static MacOSSystemThemeHelperExtension Instance = new();
+	private static readonly MacOSSystemThemeHelperExtension _instance = new();
 
 	private MacOSSystemThemeHelperExtension()
 	{
@@ -20,7 +17,7 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 
 	public static unsafe void Register()
 	{
-		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => Instance);
+		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => _instance);
 		NativeUno.uno_set_system_theme_change_callback(&Update);
 	}
 
@@ -33,9 +30,9 @@ internal class MacOSSystemThemeHelperExtension : ISystemThemeHelperExtension
 	{
 		if (typeof(MacOSSystemThemeHelperExtension).Log().IsEnabled(LogLevel.Trace))
 		{
-			typeof(MacOSSystemThemeHelperExtension).Log().Trace($"MacOSSystemThemeHelperExtension.SystemThemeChanged {((ISystemThemeHelperExtension)Instance).GetSystemTheme()}");
+			typeof(MacOSSystemThemeHelperExtension).Log().Trace($"MacOSSystemThemeHelperExtension.SystemThemeChanged {((ISystemThemeHelperExtension)_instance).GetSystemTheme()}");
 		}
 
-		Instance.SystemThemeChanged?.Invoke(Instance, EventArgs.Empty);
+		_instance.SystemThemeChanged?.Invoke(_instance, EventArgs.Empty);
 	}
 }

@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,11 +11,11 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSSystemNavigationManagerPreviewExtension : ISystemNavigationManagerPreviewExtension
 {
-	public static MacOSSystemNavigationManagerPreviewExtension Instance = new();
+	private static readonly MacOSSystemNavigationManagerPreviewExtension _instance = new();
 
 	public static unsafe void Register()
 	{
-		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => Instance);
+		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), _ => _instance);
 		NativeUno.uno_set_window_should_close_callback(&WindowShouldClose);
 	}
 

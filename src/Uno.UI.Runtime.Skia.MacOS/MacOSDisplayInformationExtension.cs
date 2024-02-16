@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,18 +10,18 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSDisplayInformationExtension : IDisplayInformationExtension
 {
-	public static MacOSDisplayInformationExtension Instance = new();
+	private static readonly MacOSDisplayInformationExtension _instance = new();
 
 	private MacOSDisplayInformationExtension()
 	{
 	}
 
-	internal unsafe static void Register()
+	internal static unsafe void Register()
 	{
 		// FIXME: use a single callback method ?
 		NativeUno.uno_set_window_did_change_screen_callback(ref SharedScreenData, &Update);
 		NativeUno.uno_set_window_did_change_screen_parameters_callback(&UpdateParameters);
-		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => Instance);
+		ApiExtensibility.Register(typeof(IDisplayInformationExtension), _ => _instance);
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -53,7 +51,7 @@ internal class MacOSDisplayInformationExtension : IDisplayInformationExtension
 
 	public double? DiagonalSizeInInches => null;
 
-	internal static ref ScreenData SharedScreenData => ref _data;
+	private static ref ScreenData SharedScreenData => ref _data;
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static void Update()

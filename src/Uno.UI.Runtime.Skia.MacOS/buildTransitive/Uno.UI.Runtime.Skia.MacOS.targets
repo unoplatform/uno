@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Target Name="_UnoSkiaGtkFeatureDefines" AfterTargets="PrepareForBuild">
+	<Target Name="_UnoSkiaMacOSFeatureDefines" AfterTargets="PrepareForBuild">
 
 		<PropertyGroup>
-			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_GTK</DefineConstants>
+			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_MACOS</DefineConstants>
 		</PropertyGroup>
 
 	</Target>

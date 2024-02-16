@@ -1,10 +1,3 @@
-#nullable enable
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Windows.System;
 
 using Uno.Foundation.Extensibility;
@@ -16,13 +9,13 @@ internal class MacOSLauncherExtension : ILauncherExtension
 {
 	private const string MicrosoftSettingsUri = "ms-settings";
 
-	public static MacOSLauncherExtension Instance = new();
+	private static readonly MacOSLauncherExtension _instance = new();
 
 	private MacOSLauncherExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register(typeof(ILauncherExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register(typeof(ILauncherExtension), _ => _instance);
 
 	public Task<bool> LaunchUriAsync(Uri uri)
 	{
@@ -38,22 +31,14 @@ internal class MacOSLauncherExtension : ILauncherExtension
 
 	public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
 	{
-		bool canOpenUri;
-		if (!Launcher.IsSpecialUri(uri))
-		{
-			canOpenUri = NativeUno.uno_application_query_url_support(uri.AbsoluteUri);
-		}
-		else
-		{
-			canOpenUri = CanHandleSpecialUri(uri);
-		}
+		var canOpenUri = !Launcher.IsSpecialUri(uri) ? NativeUno.uno_application_query_url_support(uri.AbsoluteUri) : CanHandleSpecialUri(uri);
 
 		var supportStatus = canOpenUri ? LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
 		return Task.FromResult(supportStatus);
 	}
 
 	// copied and adapted from src/Uno.UWP/System/Launcher.macOS.SpecialUris.cs
-	private static readonly Lazy<Dictionary<string, string>> _settingsHandlers = new Lazy<Dictionary<string, string>>(() =>
+	private static readonly Lazy<Dictionary<string, string>> _settingsHandlers = new(() =>
 	{
 		var settings = new Dictionary<string, string>()
 		{
@@ -116,7 +101,7 @@ internal class MacOSLauncherExtension : ILauncherExtension
 	private static bool HandleSettingsUri(Uri uri)
 	{
 		var settingsString = uri.AbsolutePath.ToLowerInvariant();
-		//get exact match first
+		// get exact match first
 		_settingsHandlers.Value.TryGetValue(settingsString, out var launchAction);
 		if (string.IsNullOrEmpty(launchAction))
 		{
@@ -127,15 +112,8 @@ internal class MacOSLauncherExtension : ILauncherExtension
 				.FirstOrDefault();
 			launchAction = secondaryMatch;
 		}
-		string url;
-		if (string.IsNullOrEmpty(launchAction))
-		{
-			url = "/System/Applications/System Preferences.app";
-		}
-		else
-		{
-			url = $"/System/Library/PreferencePanes/{launchAction}.prefPane";
-		}
+
+		var url = string.IsNullOrEmpty(launchAction) ? "/System/Applications/System Preferences.app" : $"/System/Library/PreferencePanes/{launchAction}.prefPane";
 		return NativeUno.uno_application_open_url(url);
 	}
 }

@@ -1,9 +1,3 @@
-#nullable enable
-
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 using Windows.Storage;
 using Windows.Storage.Pickers;
 
@@ -14,13 +8,13 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFolderPickerExtension : IFolderPickerExtension
 {
-	public static MacOSFolderPickerExtension Instance = new();
+	private static readonly MacOSFolderPickerExtension _instance = new();
 
 	private MacOSFolderPickerExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), _ => _instance);
 
 	public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
 	{

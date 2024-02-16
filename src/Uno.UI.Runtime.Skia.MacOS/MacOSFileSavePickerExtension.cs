@@ -1,9 +1,3 @@
-#nullable enable
-
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 using Windows.Storage;
 using Windows.Storage.Pickers;
 
@@ -14,13 +8,13 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFileSavePickerExtension : IFileSavePickerExtension
 {
-	public static MacOSFileSavePickerExtension Instance = new();
+	private static readonly MacOSFileSavePickerExtension _instance = new();
 
 	private MacOSFileSavePickerExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), _ => _instance);
 
 	public async Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
 	{

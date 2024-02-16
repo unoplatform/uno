@@ -1,5 +1,3 @@
-#nullable enable
-
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -9,13 +7,13 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSNativeElementHostingExtension : INativeElementHostingExtension
 {
-	public static MacOSNativeElementHostingExtension Instance = new();
+	private static readonly MacOSNativeElementHostingExtension _instance = new();
 
 	private MacOSNativeElementHostingExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register(typeof(INativeElementHostingExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register(typeof(INativeElementHostingExtension), _ => _instance);
 
 	public void ArrangeNativeElement(object owner, object content, Rect arrangeRect)
 	{

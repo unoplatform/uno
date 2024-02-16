@@ -1,6 +1,3 @@
-#nullable enable
-
-using System;
 using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
