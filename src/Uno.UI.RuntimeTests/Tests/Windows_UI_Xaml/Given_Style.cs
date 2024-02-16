@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Helpers;
 using SamplesApp.UITests;
+using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -69,6 +70,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			var cc = new ContentControl() { Width = 100, Height = 100 };
+
+			// On Android and iOS, ContentControl fails to load if it doesn't have content.
+			cc.Content = new Border() { Width = 100, Height = 100 };
+
 			Assert.AreEqual(HorizontalAlignment.Center, cc.HorizontalContentAlignment);
 
 			cc.Resources.Add(typeof(ContentControl), implicitStyle);
