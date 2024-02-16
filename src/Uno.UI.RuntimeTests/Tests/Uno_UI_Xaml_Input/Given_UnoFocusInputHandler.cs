@@ -1,18 +1,18 @@
 ﻿#if HAS_UNO // Testing internal UnoFocusInputHandler, not available on Windows
 using System.Threading.Tasks;
-using Private.Infrastructure;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Input;
 
 [TestClass]
 [RunsOnUIThread]
-[RequiresFullWindow]
 public class Given_UnoFocusInputHandler
 {
 	private const int CenterButtonIndex = 4;
@@ -26,6 +26,7 @@ public class Given_UnoFocusInputHandler
 	[DataRow(XYFocusKeyboardNavigationMode.Enabled, VirtualKey.Up, true, TopButtonIndex)]
 	[DataRow(XYFocusKeyboardNavigationMode.Enabled, VirtualKey.Down, true, BottomButtonIndex)]
 	[DataRow(XYFocusKeyboardNavigationMode.Disabled, VirtualKey.Down, false, -1)]
+	[RequiresFullWindow]
 	[TestMethod]
 	public async Task When_VerifyEnabledXYKeyboardNavigation(XYFocusKeyboardNavigationMode mode, VirtualKey key, bool shouldSucceed, int targetIndex)
 	{
@@ -36,12 +37,43 @@ public class Given_UnoFocusInputHandler
 			targetIndex);
 	}
 
+	[TestMethod]
+	public async Task When_Tab_BringIntoView()
+	{
+		var ts1 = new ToggleSwitch();
+		var ts2 = new ToggleSwitch();
+		var SUT = new ScrollViewer
+		{
+			new StackPanel
+			{
+				Spacing = 1200,
+				Children =
+				{
+					ts1,
+					ts2
+				}
+			}
+		};
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(0, SUT.VerticalOffset);
+
+		ts1.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(0, SUT.VerticalOffset);
+
+		KeyboardHelper.Tab();
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
+	}
+
 	private async Task VerifyXYNavigationAsync(XYFocusKeyboardNavigationMode mode, VirtualKey key, bool shouldSucceed, int targetIndex)
 	{
 		var grid = CreateButtonGrid(mode);
 
-		TestServices.WindowHelper.WindowContent = grid;
-		await TestServices.WindowHelper.WaitForIdle();
+		WindowHelper.WindowContent = grid;
+		await WindowHelper.WaitForIdle();
 
 		var centerButton = (Button)grid.Children[CenterButtonIndex];
 
