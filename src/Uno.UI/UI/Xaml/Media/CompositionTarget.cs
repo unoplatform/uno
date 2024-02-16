@@ -28,5 +28,9 @@ public partial class CompositionTarget : ICompositionTarget
 	}
 
 	void ICompositionTarget.TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
-		=> ContentRoot.InputManager.RedirectPointer(pointerPoint, tracker);
+	{
+#if UNO_HAS_MANAGED_POINTERS
+		ContentRoot.InputManager.Pointers.RedirectPointer(pointerPoint, tracker);
+#endif
+	}
 }

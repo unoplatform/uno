@@ -52,7 +52,7 @@ internal partial class InputManager
 	partial void InjectPointerRemoved(PointerEventArgs args)
 		=> Pointers.InjectPointerRemoved(args);
 
-	internal class PointerManager
+	internal partial class PointerManager
 	{
 		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
 		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
@@ -108,7 +108,7 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
 			{
 				return;
 			}
@@ -163,7 +163,7 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
 			{
 				return;
 			}
@@ -199,7 +199,7 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.ContainsKey(args.CurrentPoint.PointerId) == true)
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
 			{
 				return;
 			}
@@ -247,13 +247,8 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
+			if (TryRedirectPointerPress(args))
 			{
-#if HAS_UNO_WINUI
-				recognizer.ProcessDownEvent(new PointerPoint(args.CurrentPoint));
-#else
-				recognizer.ProcessDownEvent(args.CurrentPoint);
-#endif
 				return;
 			}
 
@@ -289,13 +284,8 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
+			if (TryRedirectPointerRelease(args))
 			{
-#if HAS_UNO_WINUI
-				recognizer.ProcessUpEvent(new PointerPoint(args.CurrentPoint));
-#else
-				recognizer.ProcessUpEvent(args.CurrentPoint);
-#endif
 				return;
 			}
 
@@ -339,13 +329,8 @@ internal partial class InputManager
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.TryGetValue(args.CurrentPoint.PointerId, out var recognizer) == true)
+			if (TryRedirectPointerMove(args))
 			{
-#if HAS_UNO_WINUI
-				recognizer.ProcessMoveEvents([new PointerPoint(args.CurrentPoint)]);
-#else
-				recognizer.ProcessMoveEvents([args.CurrentPoint]);
-#endif
 				return;
 			}
 
@@ -398,7 +383,7 @@ internal partial class InputManager
 
 		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
 		{
-			if (_inputManager._pointerRedirections?.Remove(args.CurrentPoint.PointerId) == true)
+			if (TryClearPointerRedirection(args.CurrentPoint.PointerId))
 			{
 				return;
 			}
@@ -448,15 +433,10 @@ internal partial class InputManager
 		{
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
-				ReleaseCaptures(capture);
-			}
-		}
-
-		internal static void ReleaseCaptures(PointerCapture capture)
-		{
-			foreach (var target in capture.Targets.ToList())
-			{
-				target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+				foreach (var target in capture.Targets.ToList())
+				{
+					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
+				}
 			}
 		}
 		#endregion
