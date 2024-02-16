@@ -7,11 +7,14 @@
 		<PackageType>MSBuildSdk</PackageType>
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
+		<PackageIcon>uno.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
 		<TargetFile Include="targets\**\*.props;targets\**\*.targets" />
+
+		<None Include="..\Common\uno.png" Pack="true" PackagePath=""/>
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
