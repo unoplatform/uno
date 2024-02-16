@@ -4,12 +4,17 @@
 		<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
 		<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
 
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' AND ('$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe') ">true</EnableMsixTooling>
 
 		<EnableWindowsTargeting Condition=" $(EnableWindowsTargeting) == '' ">true</EnableWindowsTargeting>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+		<!-- Workaround Uno Issue 15492 - This must be set to true for the Library so that the generated files use the Library name in the path -->
+		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND $(OutputType) != 'WinExe' AND $(OutputType) != 'Exe' ">true</EnableCoreMrtTooling>
+		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
