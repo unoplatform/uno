@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Dispatching;
@@ -37,6 +38,11 @@ namespace Microsoft.UI.Composition
 		{
 			if (value is not T t)
 			{
+				if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
+				{
+					return changed;
+				}
+
 				throw new ArgumentException($"Cannot convert value of type '{value?.GetType()}' to {typeof(T)}");
 			}
 
