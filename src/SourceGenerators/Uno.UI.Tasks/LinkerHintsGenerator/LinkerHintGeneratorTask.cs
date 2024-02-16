@@ -151,7 +151,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				// $"--used-attrs-only true", // not used to keep additional linker hints
 				$"--skip-unresolved true",
 				$"-b true",
-				$"-a {AssemblyPath}",
+				$"-a {AssemblyPath} entrypoint",
 				$"-out {outputPath}",
 				referencedAssemblies,
 				features,
