@@ -252,9 +252,7 @@ internal partial class InputManager
 #if HAS_UNO_WINUI
 				recognizer.ProcessDownEvent(new PointerPoint(args.CurrentPoint));
 #else
-				var pointer = args.CurrentPoint;
-				recognizer.ProcessDownEvent(new PointerPoint(
-					pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
+				recognizer.ProcessDownEvent(args.CurrentPoint);
 #endif
 				return;
 			}
@@ -296,9 +294,7 @@ internal partial class InputManager
 #if HAS_UNO_WINUI
 				recognizer.ProcessUpEvent(new PointerPoint(args.CurrentPoint));
 #else
-				var pointer = args.CurrentPoint;
-				recognizer.ProcessUpEvent(new PointerPoint(
-					pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties)));
+				recognizer.ProcessUpEvent(args.CurrentPoint);
 #endif
 				return;
 			}
@@ -348,9 +344,7 @@ internal partial class InputManager
 #if HAS_UNO_WINUI
 				recognizer.ProcessMoveEvents([new PointerPoint(args.CurrentPoint)]);
 #else
-				var pointer = args.CurrentPoint;
-				recognizer.ProcessMoveEvents([new PointerPoint(
-					pointer.FrameId, pointer.Timestamp, pointer.PointerDevice, pointer.PointerId, pointer.RawPosition, pointer.Position, pointer.IsInContact, new PointerPointProperties(pointer.Properties))]);
+				recognizer.ProcessMoveEvents([args.CurrentPoint]);
 #endif
 				return;
 			}
