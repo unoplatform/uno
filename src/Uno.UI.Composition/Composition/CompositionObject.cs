@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Dispatching;
+using Uno.Foundation.Logging;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
@@ -70,7 +71,20 @@ namespace Microsoft.UI.Composition
 			_animations[propertyName] = animation;
 			animation.PropertyChanged += ReEvaluateAnimation;
 			var animationValue = animation.Start();
-			this.SetAnimatableProperty(propertyName, animationValue);
+
+			try
+			{
+				this.SetAnimatableProperty(propertyName, animationValue);
+			}
+			catch (Exception ex)
+			{
+				// Important to catch the exception.
+				// It can currently happen for non-implemented animations which will evaluate to null and the target animation property is value type.
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"An exception occurred while setting animation value '{animationValue}' to property '{propertyName}' for animation '{animation}'. {ex.Message}");
+				}
+			}
 		}
 
 		private void ReEvaluateAnimation(CompositionAnimation animation)
