@@ -189,9 +189,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
-	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
-#endif
+	[Ignore("https://github.com/unoplatform/uno/issues/15509")]
 	public async Task When_ProtectedCursor_Basic()
 	{
 		var stackPanel = new StackPanel();
@@ -232,9 +230,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
-	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
-#endif
+	[Ignore("https://github.com/unoplatform/uno/issues/15509")]
 	public async Task When_ProtectedCursor_PointerCaptured()
 	{
 		var stackPanel = new StackPanel();
@@ -282,9 +278,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
-	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
-#endif
+	[Ignore("https://github.com/unoplatform/uno/issues/15509")]
 	public async Task When_ProtectedCursor_Scrolled()
 	{
 		var stackPanel = new StackPanel();
@@ -329,9 +323,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
-	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
-#endif
+	[Ignore("https://github.com/unoplatform/uno/issues/15509")]
 	public async Task When_ProtectedCursor_Scrolled_PointerCaptured()
 	{
 		var stackPanel = new StackPanel();
@@ -383,9 +375,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
-	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
-#endif
+	[Ignore("https://github.com/unoplatform/uno/issues/15509")]
 	public async Task When_ProtectedCursor_Disposed()
 	{
 		var stackPanel = new StackPanel();
@@ -440,9 +430,7 @@ public class Given_InputManager
 	}
 
 	[TestMethod]
-#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_POINTERS
-	[Ignore("Pointer injection supported only on skia for now. We are testing using the managed CorePointerInputSource.")]
-#endif
+	[Ignore("https://github.com/unoplatform/uno/issues/15509")]
 	public async Task When_ProtectedCursor_Set_Reset()
 	{
 		var stackPanel = new StackPanel();
