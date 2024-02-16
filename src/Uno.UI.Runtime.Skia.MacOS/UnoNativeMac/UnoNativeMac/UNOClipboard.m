@@ -80,7 +80,6 @@ void uno_clipboard_get_content(struct ClipboardData* data)
     }
 }
 
-//bool uno_clipboard_set_content(char* htmlContent, char* rtfContent, char* textContent, char* uri)
 bool uno_clipboard_set_content(struct ClipboardData* data)
 {
     int arraySize = 0;

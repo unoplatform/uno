@@ -1,6 +1,3 @@
-#nullable enable
-
-using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 
@@ -61,7 +58,7 @@ internal struct NativeClipboardData
 
 	public string? BitmapFormat;
 	public string? BitmapPath;
-	public byte[] BitmapData;
+	public byte[]? BitmapData;
 };
 #pragma warning restore 0649
 
@@ -70,7 +67,7 @@ internal static unsafe class ClipboardDataMarshaller
 {
 	public static ClipboardDataUnmanaged ConvertToUnmanaged(NativeClipboardData managed)
 	{
-		nuint size = (nuint)(managed.BitmapData is null ? 0 : managed.BitmapData.Length);
+		var size = (nuint)(managed.BitmapData?.Length ?? 0);
 		void* data = null;
 		if (size > 0)
 		{

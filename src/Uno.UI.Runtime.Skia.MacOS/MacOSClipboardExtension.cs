@@ -26,9 +26,7 @@ internal class MacOSClipboardExtension : IClipboardExtension
 		NativeUno.uno_clipboard_set_content_changed_callback(&ContentChangedCallback);
 	}
 
-#pragma warning disable CS0067
 	public event EventHandler<object>? ContentChanged;
-#pragma warning restore CS0067
 
 	public void Clear() => NativeUno.uno_clipboard_clear();
 
@@ -86,7 +84,7 @@ internal class MacOSClipboardExtension : IClipboardExtension
 						=> Task.FromResult(image.AsRandomAccessStream().TrySetContentType(clipboard.BitmapFormat!))));
 				});
 		}
-		else if (clipboard.BitmapData.Length > 0)
+		else if (clipboard.BitmapData?.Length > 0)
 		{
 			dataPackage.SetDataProvider(
 				StandardDataFormats.Bitmap,
