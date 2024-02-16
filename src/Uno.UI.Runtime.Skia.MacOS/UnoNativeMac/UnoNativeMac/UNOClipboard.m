@@ -92,6 +92,8 @@ bool uno_clipboard_set_content(struct ClipboardData* data)
         arraySize++;
     if (data->uri)
         arraySize++;
+    if (data->bitmapData)
+        arraySize++;
 
     int pos = 0;
     NSMutableArray *types = [NSMutableArray arrayWithCapacity:arraySize];
@@ -103,6 +105,8 @@ bool uno_clipboard_set_content(struct ClipboardData* data)
         types[pos++] = NSPasteboardTypeString;
     if (data->uri)
         types[pos++] = NSPasteboardTypeURL;
+    if (data->bitmapData)
+        types[pos++] = NSPasteboardTypePNG;
     NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     [pasteboard declareTypes:types owner:nil];
 
@@ -122,6 +126,13 @@ bool uno_clipboard_set_content(struct ClipboardData* data)
     if (data->uri) {
         NSString *content = [NSString stringWithUTF8String:data->uri];
         result &= [pasteboard setString:content forType:NSPasteboardTypeURL];
+    }
+    if (data->bitmapData) {
+        NSData *blob = [NSData dataWithBytes:data->bitmapData length:data->bitmapSize];
+        // we can't be sure of the original format so we create a representation of it and export it to PNG
+        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:blob];
+        NSData *content = [rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+        result &= [pasteboard setData:content forType:NSPasteboardTypePNG];
     }
 #if DEBUG
     NSLog(@"uno_clipboard_set_content %d -> %s", arraySize, result ? "TRUE" : "FALSE");
