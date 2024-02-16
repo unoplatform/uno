@@ -101,9 +101,9 @@ partial class InputManager
 #if HAS_UNO_WINUI
 			recognizer.ProcessDownEvent(new PointerPoint(pointer));
 #else
-		recognizer.ProcessDownEvent(pointer);
+			recognizer.ProcessDownEvent(pointer);
 #endif
-			// TODO: Currently this dictionary is only used for UNO_HAS_MANAGED_POINTERS.
+
 			_pointerRedirections[pointer.PointerId] = recognizer;
 		}
 
