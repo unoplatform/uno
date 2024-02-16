@@ -19,12 +19,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
 
-#if HAS_UNO_WINUI
-using PointerPoint = Microsoft.UI.Input.PointerPoint;
-#else
-using PointerPoint = Windows.UI.Input.PointerPoint;
-#endif
-
 namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
