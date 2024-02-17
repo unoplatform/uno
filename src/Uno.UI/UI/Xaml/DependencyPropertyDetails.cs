@@ -132,6 +132,18 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
+			if (precedence == DependencyPropertyValuePrecedences.Local && value is not UnsetValue)
+			{
+				_flags |= Flags.LocalValueNewerThanAnimationsValue;
+			}
+			else
+			{
+				// This might not make much sense, but this is what we are seeing in WinUI code.
+				// See https://github.com/unoplatform/uno/issues/5168#issuecomment-1948115761
+				// If it turned out there is more complexity going on in WinUI, we can adjust as needed.
+				_flags &= ~Flags.LocalValueNewerThanAnimationsValue;
+			}
+
 			if (!SetValueFast(value, precedence))
 			{
 				SetValueFull(value, precedence);
@@ -265,7 +277,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>The value at the current highest precedence level</returns>
 		internal object? GetValue()
-			=> GetValue(_highestPrecedence);
+			=> GetValue(_highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
+				? DependencyPropertyValuePrecedences.Local
+				: _highestPrecedence);
 
 		/// <summary>
 		/// Gets the value at a given precedence level
@@ -468,6 +482,13 @@ namespace Microsoft.UI.Xaml
 			/// Determines if the property inherits Value from its parent
 			/// </summary>
 			Inherits = 1 << 4,
+
+			/// <summary>
+			/// Normally, Animations has higher precedence than Local. However,
+			/// we want local to take higher precedence if it's newer.
+			/// This flag records this information.
+			/// </summary>
+			LocalValueNewerThanAnimationsValue = 1 << 5,
 		}
 	}
 }
