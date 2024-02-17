@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -55,10 +57,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			set => SetValue(TemplateSettingsProperty, value);
 		}
 
-		private Grid m_layoutRoot;
-		private Rectangle m_determinateProgressBarIndicator;
-		private Rectangle m_indeterminateProgressBarIndicator;
-		private Rectangle m_indeterminateProgressBarIndicator2;
+		private Grid? m_layoutRoot;
+		private Rectangle? m_determinateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator;
+		private Rectangle? m_indeterminateProgressBarIndicator2;
 		private Size? m_previousMeasuredWidths;
 
 		public ProgressBar()
@@ -96,8 +98,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private void OnSizeChange()
 		{
 #if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
-			var measures = new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth);
-			if (m_previousMeasuredWidths != measures)
+			if (m_layoutRoot is not null &&
+				m_determinateProgressBarIndicator is not null &&
+				m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
 #endif
 			{
 				SetProgressBarIndicatorWidth();
