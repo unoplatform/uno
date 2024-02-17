@@ -149,12 +149,33 @@ namespace Microsoft.UI.Xaml
 			if (this.GetParent() is IFrameworkElement fe)
 			{
 				OnOwnerElementChanged();
-				fe.Loaded += OnOwnerElementLoaded;
-				fe.Unloaded += OnOwnerElementUnloaded;
+
+				var thatRef = WeakReferencePool.RentWeakReference(null, this);
+
+				void RaiseOnOwnerElementLoaded(object sender, RoutedEventArgs args)
+				{
+					// capture only thatRef to avoid a strong reference 
+					if (thatRef.Target is VisualStateGroup that)
+					{
+						that.OnOwnerElementLoaded(sender, args);
+					}
+				}
+
+				void RaiseOnOwnerElementUnloaded(object sender, RoutedEventArgs args)
+				{
+					// capture only thatRef to avoid a strong reference 
+					if (thatRef.Target is VisualStateGroup that)
+					{
+						that.OnOwnerElementUnloaded(sender, args);
+					}
+				}
+
+				fe.Loaded += RaiseOnOwnerElementLoaded;
+				fe.Unloaded += RaiseOnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
-					fe.Loaded -= OnOwnerElementLoaded;
-					fe.Unloaded -= OnOwnerElementUnloaded;
+					fe.Loaded -= RaiseOnOwnerElementLoaded;
+					fe.Unloaded -= RaiseOnOwnerElementUnloaded;
 				});
 			}
 		}
