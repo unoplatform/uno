@@ -115,6 +115,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public bool IsCallbackWithDPChangedArgs { get; }
 			public bool IsCallbackWithDPChangedArgsOnly { get; }
 			public bool CallBackWithOldAndNew { get; }
+			public bool IsParameterlessCallback { get; }
 			public bool IsInvalidChangedCallbackName { get; }
 
 			public string? MemberSymbolNodeContent { get; }
@@ -162,6 +163,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					else if (propertyChangedMethods.Any(m => m.Parameters.Length == 2))
 					{
 						CallBackWithOldAndNew = true;
+					}
+					else if (propertyChangedMethods.Any(m => m.Parameters.Length == 0))
+					{
+						IsParameterlessCallback = true;
 					}
 					else
 					{
@@ -387,6 +392,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			{
 				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
 			}
+			else if (data.IsParameterlessCallback)
+			{
+				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => {changedCallbackName}()");
+			}
 			else if (data.IsInvalidChangedCallbackName)
 			{
 				builder.AppendLineIndented($"#error Valid {changedCallbackName} not found.  Must be {changedCallbackName}(DependencyPropertyChangedEventArgs), {changedCallbackName}(Instance, DependencyPropertyChangedEventArgs) or {changedCallbackName}(oldValue, newValue)");
@@ -485,6 +494,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			else if (data.CallBackWithOldAndNew)
 			{
 				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}(({propertyTypeName})args.OldValue, ({propertyTypeName})args.NewValue)");
+			}
+			else if (data.IsParameterlessCallback)
+			{
+				builder.AppendLineIndented($"\t\t, propertyChangedCallback: (instance, args) => (({containingTypeName})instance).{changedCallbackName}()");
 			}
 			else if (data.IsInvalidChangedCallbackName)
 			{
