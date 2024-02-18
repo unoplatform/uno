@@ -22,6 +22,7 @@ public partial class MacSkiaHost : ISkiaApplicationHost
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
+		MacOSBadgeUpdaterExtension.Register();
 		MacOSClipboardExtension.Register();         // work in progress
 		MacOSCoreApplicationExtension.Register();
 		MacOSDisplayInformationExtension.Register();
