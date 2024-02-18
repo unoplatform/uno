@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml
 
 			lock (_instancesToRecycle)
 			{
-				while (_instancesToRecycle.TryPop(out var instance) && count < RecycleBatchSize)
+				while (count < RecycleBatchSize && _instancesToRecycle.TryPop(out var instance))
 				{
 					array[count++] = instance;
 				}
