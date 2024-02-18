@@ -334,7 +334,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var expectedIndexerParameterType = index is LiteralExpressionSyntax indexLiteral && indexLiteral.IsKind(SyntaxKind.StringLiteralExpression)
 					? SpecialType.System_String
 					: SpecialType.System_Int32;
-				var indexer = lastType.GetMemberInlcudingBaseTypes(expectedIndexerParameterType, (m, arg) => m is IPropertySymbol { IsIndexer: true } p && p.Parameters[0].Type.SpecialType == arg);
+				var indexer = lastType.GetMemberIncludingBaseTypes(expectedIndexerParameterType, (m, arg) => m is IPropertySymbol { IsIndexer: true } p && p.Parameters[0].Type.SpecialType == arg);
 				if (indexer is not null)
 				{
 					_lastAccessed = (indexer, IsTopLevelContext: false);
@@ -424,7 +424,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					_ => throw new Exception($"Unexpected _lastAccessed symbol '{_lastAccessed.Symbol?.Kind}'."),
 				};
 
-				var member = previousType.GetMemberInlcudingBaseTypes(node.Identifier.ValueText);
+				var member = previousType.GetMemberIncludingBaseTypes(node.Identifier.ValueText);
 				if (member is null)
 				{
 					Failed = true;

@@ -63,7 +63,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private int _resourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
-		private readonly NamespaceDeclaration _defaultXmlNamespace;
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
 		private readonly string _fileUniqueId;
@@ -79,7 +78,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
-		private readonly bool _isDebug;
 		private readonly bool _isHotReloadEnabled;
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
@@ -199,7 +197,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string defaultLanguage,
 			bool shouldWriteErrorOnInvalidXaml,
 			bool isWasm,
-			bool isDebug,
 			bool isHotReloadEnabled,
 			bool isDesignTimeBuild,
 			bool isInsideMainAssembly,
@@ -225,7 +222,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.IsNullOrEmpty() ? "en-US" : defaultLanguage;
-			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
 			_isDesignTimeBuild = isDesignTimeBuild;
@@ -247,8 +243,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isUnoAssembly = isUnoAssembly;
 			_isUnoFluentAssembly = isUnoFluentAssembly;
-
-			_defaultXmlNamespace = _fileDefinition.Namespaces.First(n => n.Prefix == "");
 		}
 
 		/// <summary>
@@ -2181,8 +2175,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			INamedTypeSymbol? findType;
 			if (ns != xamlType.PreferredXamlNamespace)
 			{
-				// If GetTrimmedNamespace returned a different string, it's either a "using:"-prefixed
-				// or "clr-namespace:"-prefixed namespace. In those cases, we'll have `baseTypeString` as
+				// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
+				// In this case, we'll have `baseTypeString` as
 				// the fully qualified type name.
 				// In this case, we go through this code path as it's much more efficient than FindType.
 				var baseTypeString = $"{ns}.{xamlType.Name}";
