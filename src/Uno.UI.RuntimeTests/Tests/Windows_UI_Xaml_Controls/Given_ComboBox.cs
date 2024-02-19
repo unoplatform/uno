@@ -1232,7 +1232,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __SKIA__
+#if __SKIA__ // Requires input injection
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
