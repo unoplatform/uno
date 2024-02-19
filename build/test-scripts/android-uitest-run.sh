@@ -158,7 +158,8 @@ dotnet test \
 	-l:"console;verbosity=normal" \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout 120m \
+	--blame-hang-timeout 85m \
+ 	--results-directory "$BUILD_ARTIFACTSTAGINGDIRECTORY/hang-dump/"
 	-v m \
 	|| true
 
