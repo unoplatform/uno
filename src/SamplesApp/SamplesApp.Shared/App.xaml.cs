@@ -561,8 +561,5 @@ namespace SamplesApp
 			}
 #endif
 		}
-
-		public static string GetDisplayScreenScaling(string displayId)
-			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
 	}
 }
