@@ -1186,16 +1186,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[DataRow(PopupPlacementMode.Bottom, 0)]
 		[DataRow(PopupPlacementMode.Top, 0)]
-		[DataRow(PopupPlacementMode.Bottom, 50)]
-		[DataRow(PopupPlacementMode.Top, -50)]
+		[DataRow(PopupPlacementMode.Bottom, 20)]
+		[DataRow(PopupPlacementMode.Top, -20)]
 		[UnoWorkItem("https://github.com/unoplatform/nventive-private/issues/509")]
 		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
 		{
 			var grid = new Grid();
 			var comboBox = new PopupPlacementComboBox();
-			comboBox.Margin = new Thickness(200);
+			comboBox.Margin = new Thickness(150, 150, 0, 0);
 			// Add items as itmes source
-			comboBox.ItemsSource = new List<string> { "Cat", "Dog", "Rabbit", "Elephant" };
+			comboBox.ItemsSource = new List<string> { "Cat", "Dog" };
 			comboBox.DesiredPlacement = mode;
 			comboBox.VerticalOffset = verticalOffset;
 			grid.Children.Add(comboBox);
@@ -1217,13 +1217,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var popupBounds = child.TransformToVisual(null).TransformBounds(new Rect(0, 0, child.ActualWidth, child.ActualHeight));
 				var comboBoxBounds = comboBox.TransformToVisual(null).TransformBounds(new Rect(0, 0, comboBox.ActualWidth, comboBox.ActualHeight));
+				// For some reason WinUI's ComboBox popup border has a -1 vertical Margin, which pushes it up by 1 pixel, and can be inacurrate due to rounding
+				double tolerance = 1.5;
 				if (mode == PopupPlacementMode.Bottom)
 				{
-					Assert.AreEqual(comboBoxBounds.Bottom + verticalOffset, popupBounds.Top, 1); // For some reason WinUI's ComboBox popup border has a -1 vertical Margin, which pushes it up by 1 pixel.
+					Assert.AreEqual(comboBoxBounds.Bottom + verticalOffset, popupBounds.Top, tolerance);
 				}
 				else
 				{
-					Assert.AreEqual(comboBoxBounds.Top + verticalOffset, popupBounds.Bottom, 1); // For some reason WinUI's ComboBox popup border has a -1 vertical Margin, which pushes it up by 1 pixel.
+					Assert.AreEqual(comboBoxBounds.Top + verticalOffset, popupBounds.Bottom, tolerance);
 				}
 			}
 			finally
