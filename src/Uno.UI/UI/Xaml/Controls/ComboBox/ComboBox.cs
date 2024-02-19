@@ -1418,13 +1418,26 @@ namespace Microsoft.UI.Xaml.Controls
 					selectedIndex = itemsCount / 2;
 				}
 
-				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
+				var unoPlacement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
+				var winUIPlacement = popup.DesiredPlacement;
+				if (unoPlacement == DropDownPlacement.Auto)
+				{
+					// If the Uno placement is Auto, we use the WinUI placement
+					unoPlacement = winUIPlacement switch
+					{
+						PopupPlacementMode.Auto => DropDownPlacement.Auto,
+						PopupPlacementMode.Bottom => DropDownPlacement.Below,
+						PopupPlacementMode.Top => DropDownPlacement.Above,
+						_ => DropDownPlacement.Centered
+					};
+				}
+
 				var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
-				switch (placement)
+				switch (unoPlacement)
 				{
 					case DropDownPlacement.Below:
 					case DropDownPlacement.Auto when selectedIndex >= 0 && selectedIndex < stickyThreshold:
-						frame.Y = comboRect.Top;
+						frame.Y = comboRect.Bottom;
 						break;
 
 					case DropDownPlacement.Above:
@@ -1435,7 +1448,7 @@ namespace Microsoft.UI.Xaml.Controls
 							// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
 							&& (itemsCount <= _itemsToShow && frame.Height < (combo.ActualHeight * _itemsToShow) - 3):
 
-						frame.Y = comboRect.Bottom - frame.Height;
+						frame.Y = comboRect.Top - frame.Height;
 						break;
 
 					case DropDownPlacement.Centered:
@@ -1445,6 +1458,9 @@ namespace Microsoft.UI.Xaml.Controls
 						frame.Y = comboRect.Top - (frame.Height / 2.0) + (comboRect.Height / 2.0);
 						break;
 				}
+
+				frame.X += popup.HorizontalOffset;
+				frame.Y += popup.VerticalOffset;
 
 				// Make sure that the popup does not appears out of the viewport
 				if (frame.Left < visibleBounds.Left)
