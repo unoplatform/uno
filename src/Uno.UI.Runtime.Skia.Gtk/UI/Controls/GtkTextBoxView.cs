@@ -16,6 +16,7 @@ using static Uno.UI.Xaml.Controls.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -26,14 +27,11 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	private static bool _warnedAboutSelectionColorChanges;
 
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
-	private readonly DisplayInformation _displayInformation;
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
 
 	protected GtkTextBoxView()
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
-
 		// Applies themes from Theming/UnoGtk.css
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
@@ -99,7 +97,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void SetSize(double width, double height)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = GetDisplayInformation().FractionalScaleAdjustment;
 		RootWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 		InputWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 	}
@@ -108,7 +106,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	{
 		if (RootWidget.Parent is Fixed layer)
 		{
-			var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+			var sizeAdjustment = GetDisplayInformation().FractionalScaleAdjustment;
 			layer.Move(RootWidget, (int)(x * sizeAdjustment), (int)(y * sizeAdjustment));
 		}
 	}
@@ -117,7 +115,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	private void SetFont(TextBox textBox)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = GetDisplayInformation().FractionalScaleAdjustment;
 		var fontDescription = new FontDescription
 		{
 			Weight = textBox.FontWeight.ToPangoWeight(),
@@ -181,4 +179,21 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	}
 
 	public virtual void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
+
+	private DisplayInformation GetDisplayInformation()
+	{
+		if (RootWidget
+				.Parent // fixed
+				.Parent // overlay
+				.Parent // UnoEventBox
+				.Parent is UnoGtkWindow window &&
+			window.Host is { } host)
+		{
+			return XamlRoot.GetDisplayInformation(GtkManager.XamlRootMap.GetRootForHost(host));
+		}
+		else
+		{
+			return DisplayInformation.GetForCurrentViewSafe();
+		}
+	}
 }

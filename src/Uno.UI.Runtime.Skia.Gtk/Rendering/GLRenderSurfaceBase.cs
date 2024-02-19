@@ -12,6 +12,7 @@ using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -32,7 +33,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private const int GuardBand = 1;
 
 		private readonly DisplayInformation _displayInformation;
-		private readonly IXamlRootHost _host;
+		private readonly IGtkXamlRootHost _host;
 
 		private float? _scale = 1;
 		private GRContext? _grContext;
@@ -49,9 +50,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		public SKColor BackgroundColor { get; set; }
 
-		public GLRenderSurfaceBase(IXamlRootHost host)
+		public GLRenderSurfaceBase(IGtkXamlRootHost host)
 		{
-			_displayInformation = DisplayInformation.GetForCurrentView();
+			var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host);
+			_displayInformation = WUX.XamlRoot.GetDisplayInformation(xamlRoot);
 			_displayInformation.DpiChanged += OnDpiChanged;
 			UpdateDpi();
 

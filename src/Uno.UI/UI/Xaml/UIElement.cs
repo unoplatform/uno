@@ -1209,7 +1209,7 @@ namespace Microsoft.UI.Xaml
 		internal double GetScaleFactorForLayoutRounding()
 		{
 			// TODO use actual scaling based on current transforms.
-			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / DisplayInformation.BaseDpi; // 100%
+			return XamlRoot.GetDisplayInformation(XamlRoot).LogicalDpi / DisplayInformation.BaseDpi; // 100%
 		}
 
 		private static double XcpRound(double x)

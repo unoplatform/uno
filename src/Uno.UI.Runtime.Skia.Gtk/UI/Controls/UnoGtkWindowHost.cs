@@ -23,8 +23,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private readonly UnoEventBox _eventBox = new();
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
-	private readonly DisplayInformation _displayInformation;
 
+	private DisplayInformation? _displayInformation;
 	private Widget? _area;
 	private IGtkRenderer? _renderer;
 	private bool _firstSizeAllocated;
@@ -33,7 +33,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
-		_displayInformation = DisplayInformation.GetForCurrentView();
 
 		RegisterForBackgroundColor();
 	}
@@ -60,6 +59,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_area = (Widget)_renderer;
 
+		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
+		_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
 		_displayInformation.DpiChanged += OnDpiChanged;
 
 		_area.Realized += (s, e) =>
@@ -89,7 +90,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
 	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		var sizeAdjustment = _displayInformation!.FractionalScaleAdjustment;
 		SizeChanged?.Invoke(this, new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
 	}
 
