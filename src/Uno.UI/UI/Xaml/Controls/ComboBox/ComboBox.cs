@@ -378,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnPointerExited(PointerRoutedEventArgs e)
 		{
-			base.OnPointerEntered(e);
+			base.OnPointerExited(e);
 			_wasPointerPressed = false;
 
 			UpdateVisualState();
