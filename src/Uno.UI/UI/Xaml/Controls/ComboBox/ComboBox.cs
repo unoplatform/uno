@@ -569,6 +569,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			_wasPointerPressed = false;
+
 			Focus(FocusState.Programmatic);
 			IsDropDownOpen = true;
 
