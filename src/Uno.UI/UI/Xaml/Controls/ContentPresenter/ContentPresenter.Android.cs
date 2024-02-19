@@ -15,6 +15,7 @@ using Android.Graphics.Drawables;
 using System.Drawing;
 using System.Linq;
 using Uno.UI;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -93,10 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
+		partial void ClearBorder() => _borderRenderer.Clear();
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{

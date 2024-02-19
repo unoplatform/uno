@@ -6,6 +6,7 @@ using Uno.UI.Views.Controls;
 using Uno.UI.DataBinding;
 using UIKit;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -76,10 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
+		partial void ClearBorder() => _borderRenderer.Clear();
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{

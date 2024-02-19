@@ -804,5 +804,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(pasteCount, 1);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("https://github.com/unoplatform/uno/issues/15457")]
+#endif
+		public async Task When_GotFocus_BringIntoView()
+		{
+			var tb = new TextBox();
+			var ts = new ToggleSwitch();
+			var SUT = new ScrollViewer
+			{
+				Content = new StackPanel
+				{
+					Spacing = 1200,
+					Children =
+					{
+						tb,
+						ts
+					}
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+
+			ts.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+			SUT.ScrollToVerticalOffset(99999);
+
+			await WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			tb.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+#if __WASM__ // wasm needs an additional delay for some reason, probably because of smooth scrolling?
+			await Task.Delay(2000);
+#endif
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+		}
 	}
 }

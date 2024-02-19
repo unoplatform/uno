@@ -190,6 +190,10 @@ namespace Uno.UI {
 			}
 		}
 
+		static setBodyCursor(value: string): void {
+			document.body.style.cursor = value;
+		}
+
 		/**
 			* Reads the window's search parameters
 			* 
@@ -1135,18 +1139,6 @@ namespace Uno.UI {
 			}
 		}
 
-		/**
-			* Destroy a html element.
-			*
-			* The element won't be available anymore. Usually indicate the managed
-			* version has been scavenged by the GC.
-			*/
-		public destroyViewNative(pParams: number): boolean {
-			const params = WindowManagerDestroyViewParams.unmarshal(pParams);
-			this.destroyViewInternal(params.HtmlId);
-			return true;
-		}
-
 		public destroyViewNativeFast(htmlId: number) {
 
 			this.destroyViewInternal(htmlId);
@@ -1524,7 +1516,7 @@ namespace Uno.UI {
 				throw `Element id ${elementId} is not focusable.`;
 			}
 
-			element.focus();
+			element.focus({ preventScroll: true });
 		}
 
 		/**
@@ -1789,6 +1781,12 @@ namespace Uno.UI {
 			const element = this.getView(elementId) as HTMLElement;
 			
 			return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
+		}
+
+		public setIsFocusable(elementId: number, isFocusable: boolean) {
+			const element = this.getView(elementId) as HTMLElement;
+
+			element.setAttribute("tabindex", isFocusable ? "0" : "-1");
 		}
 	}
 

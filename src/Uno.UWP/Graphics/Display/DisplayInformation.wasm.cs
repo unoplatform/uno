@@ -12,16 +12,16 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
+		private static DisplayInformation _instance;
 
-		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
+		private static DisplayInformation InternalGetForCurrentView() => _instance ??= new DisplayInformation();
 
 		[JSExport]
 		internal static int DispatchDpiChanged()
 		{
-			if (_lazyInstance.IsValueCreated)
+			if (_instance is not null)
 			{
-				_lazyInstance.Value.OnDisplayMetricsChanged();
+				_instance.OnDisplayMetricsChanged();
 			}
 			return 0;
 		}
@@ -29,9 +29,9 @@ namespace Windows.Graphics.Display
 		[JSExport]
 		internal static int DispatchOrientationChanged()
 		{
-			if (_lazyInstance.IsValueCreated)
+			if (_instance is not null)
 			{
-				_lazyInstance.Value.OnDisplayMetricsChanged();
+				_instance.OnDisplayMetricsChanged();
 			}
 			return 0;
 		}

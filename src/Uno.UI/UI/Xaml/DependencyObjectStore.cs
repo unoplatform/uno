@@ -1544,8 +1544,14 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Propagate the current inheritable properties to the registered children.
 		/// </summary>
-		internal void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
+		private void PropagateInheritedProperties(DependencyObjectStore? childStore = null)
 		{
+			if (childStore is null && _childrenStores.Count == 0)
+			{
+				// Avoid doing any unnecessary work.
+				return;
+			}
+
 			// Raise the property change for the current values
 			var props = DependencyProperty.GetFrameworkPropertiesForType(_originalObjectType, FrameworkPropertyMetadataOptions.Inherits);
 
@@ -1581,6 +1587,12 @@ namespace Microsoft.UI.Xaml
 
 		private void PropagateInheritedNonLocalProperties(DependencyObjectStore? childStore)
 		{
+			if (_inheritedForwardedProperties.Count == 0)
+			{
+				// Avoid unnecessary AncestorsDictionary allocation and ActualInstance resolution.
+				return;
+			}
+
 			// Propagate the properties that have been inherited from an other
 			// parent, but that are not defined in the current instance.
 			// This is used when a child is being added after the parent has already set its inheritable

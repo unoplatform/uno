@@ -114,6 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 
+			ProtectedCursor = Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam);
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
 
@@ -208,6 +209,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			InitializePropertiesPartial();
 		}
+
+		protected override void OnGotFocus(RoutedEventArgs e) => StartBringIntoView(new BringIntoViewOptions
+		{
+			AnimationDesired = false
+		});
 
 		protected override void OnApplyTemplate()
 		{

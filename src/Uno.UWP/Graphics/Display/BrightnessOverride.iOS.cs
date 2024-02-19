@@ -20,7 +20,7 @@ namespace Windows.Graphics.Display
 		/// <param name="options"></param>
 		public void SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)
 		{
-			_targetBrightnessLevel = brightnessLevel.Clamp(0, 1);
+			_targetBrightnessLevel = Math.Clamp(brightnessLevel, 0, 1);
 		}
 
 		/// <summary>

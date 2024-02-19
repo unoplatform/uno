@@ -1,6 +1,6 @@
 ﻿<Project>
 
-	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
+	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />
 
 	<PropertyGroup>
 		<DebugType>portable</DebugType>

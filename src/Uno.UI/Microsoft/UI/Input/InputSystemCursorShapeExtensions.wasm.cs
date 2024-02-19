@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.UI.Input;
 
-internal static class InputSystemCursorShapeExtensions
+internal static partial class InputSystemCursorShapeExtensions
 {
 	internal static string ToCssProtectedCursor(this InputSystemCursorShape inputSystemCursorShape)
 	{

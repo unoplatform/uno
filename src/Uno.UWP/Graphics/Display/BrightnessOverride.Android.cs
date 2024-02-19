@@ -25,7 +25,7 @@ namespace Windows.Graphics.Display
 			{
 				_defaultBrightnessLevel = LayoutParameters.ScreenBrightness;
 
-				_targetBrightnessLevel = brightnessLevel.Clamp(0, 1);
+				_targetBrightnessLevel = Math.Clamp(brightnessLevel, 0, 1);
 			}
 		}
 
