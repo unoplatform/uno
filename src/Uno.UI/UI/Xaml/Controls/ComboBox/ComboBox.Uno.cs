@@ -46,9 +46,9 @@ namespace Uno.UI.Xaml.Controls
 		/// (When content cannot be rendered out of the current window ...)
 		/// </remarks>
 		public static DependencyProperty DropDownPreferredPlacementProperty { get; } = DependencyProperty.RegisterAttached(
-			"DropDownPreferredLocation",
+			"DropDownPreferredPlacement",
 			typeof(DropDownPlacement),
-			typeof(ComboBox),
+			typeof(Microsoft.UI.Xaml.Controls.ComboBox),
 			new FrameworkPropertyMetadata(FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement));
 
 		/// <summary>
