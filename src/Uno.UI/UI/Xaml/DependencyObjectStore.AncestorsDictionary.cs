@@ -11,6 +11,12 @@ public partial class DependencyObjectStore : IDisposable
 	{
 		private readonly HashtableEx _entries = new HashtableEx();
 
+		// Constructor to avoid:
+		// error CS8983: A 'struct' with field initializers must include an explicitly declared constructor.
+		public AncestorsDictionary()
+		{
+		}
+
 		internal bool TryGetValue(object key, out bool isAncestor)
 		{
 			if (_entries.TryGetValue(key, out var value))
