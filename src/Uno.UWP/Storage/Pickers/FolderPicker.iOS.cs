@@ -9,6 +9,7 @@ using UIKit;
 using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
 using Uno.UI.Dispatching;
+using Uno.Foundation.Logging;
 
 namespace Windows.Storage.Pickers
 {
@@ -16,12 +17,17 @@ namespace Windows.Storage.Pickers
 	{
 		private Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
-			static async Task<StorageFolder?> PickFolderAsync()
+			async Task<StorageFolder?> PickFolderAsync()
 			{
 				var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
-				if (rootController == null)
+				if (rootController is null)
 				{
 					throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("Picking Folder.");
 				}
 
 				var documentTypes = new string[] { UTType.Folder };
@@ -44,10 +50,20 @@ namespace Windows.Storage.Pickers
 				var nsUrl = await completionSource.Task;
 				if (nsUrl is null)
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug("User cancelled folder picking.");
+					}
 					return null;
 				}
 
-				return StorageFolder.GetFromSecurityScopedUrl(nsUrl, null);
+				var folder = StorageFolder.GetFromSecurityScopedUrl(nsUrl, null);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Picked folder: {folder.Path} from Url: {nsUrl}.");
+				}
+
+				return folder;
 			}
 
 			var tcs = new TaskCompletionSource<StorageFolder?>();
