@@ -280,13 +280,27 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			throw new ArgumentNullException(nameof(args));
 		}
 
-		return args.Device switch
+		if (args.StylusDevice is null)
 		{
-			System.Windows.Input.MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
-			StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
-			TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
-			_ => PointerDevice.For(PointerDeviceType.Mouse),
-		};
+			return args.Device switch
+			{
+				System.Windows.Input.MouseDevice _ => PointerDevice.For(PointerDeviceType.Mouse),
+				StylusDevice _ => PointerDevice.For(PointerDeviceType.Pen),
+				TouchDevice _ => PointerDevice.For(PointerDeviceType.Touch),
+				_ => PointerDevice.For(PointerDeviceType.Mouse),
+			};
+		}
+		else
+		{
+			if (args.StylusDevice.TabletDevice?.Type == TabletDeviceType.Touch)
+			{
+				return PointerDevice.For(PointerDeviceType.Touch);
+			}
+			else
+			{
+				return PointerDevice.For(PointerDeviceType.Pen);
+			}
+		}
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers()
