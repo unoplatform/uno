@@ -37,7 +37,7 @@
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
-	<Target Name="BuildUnoNativeMac" BeforeTargets="CoreCompile" Condition="'$(OS)'=='Darwin'">
+	<Target Name="BuildUnoNativeMac" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<Exec Command="$(MSBuildThisFileDirectory)UnoNativeMac/build.sh" WorkingDirectory="$(MSBuildThisFileDirectory)UnoNativeMac/" />
 	</Target>
 

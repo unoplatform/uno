@@ -115,6 +115,23 @@ namespace Windows.UI.ViewManagement
 			return appView;
 		}
 
+		internal MUXWindowId WindowId
+		{
+			get
+			{
+				// TODO: If this proves costly, let's add another dictionary in the opposite direction.
+				foreach (var kvp in _windowIdMap)
+				{
+					if (kvp.Value == this)
+					{
+						return kvp.Key;
+					}
+				}
+
+				throw new UnreachableException($"Failed to find a WindowId for ApplicationView {this}");
+			}
+		}
+
 		internal static ApplicationView GetOrCreateForWindowId(MUXWindowId windowId)
 		{
 			if (!_windowIdMap.TryGetValue(windowId, out var appView))
