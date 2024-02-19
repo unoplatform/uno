@@ -1,4 +1,9 @@
-﻿using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference SplitButtonAutomationPeer.cpp, tag winui3/release/1.4.2
+
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -7,11 +12,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 {
 	public partial class SplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IInvokeProvider
 	{
-		private readonly SplitButton _owner;
-
 		public SplitButtonAutomationPeer(SplitButton owner) : base(owner)
 		{
-			_owner = owner;
 		}
 
 		// IAutomationPeerOverrides
@@ -26,11 +28,27 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			return base.GetPatternCore(patternInterface);
 		}
 
-		protected override string GetClassNameCore() => nameof(SplitButton);
+		protected override string GetClassNameCore()
+		{
+			return nameof(SplitButton);
+		}
 
-		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.SplitButton;
+		protected override AutomationControlType GetAutomationControlTypeCore()
+		{
+			return AutomationControlType.SplitButton;
+		}
 
-		private SplitButton GetImpl() => _owner;
+		private SplitButton GetImpl()
+		{
+			SplitButton impl = null;
+
+			if (Owner is SplitButton splitButton)
+			{
+				impl = splitButton;
+			}
+
+			return impl;
+		}
 
 		// IExpandCollapseProvider 
 		public ExpandCollapseState ExpandCollapseState
@@ -38,8 +56,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			get
 			{
 				ExpandCollapseState currentState = ExpandCollapseState.Collapsed;
-				var splitButton = GetImpl();
-				if (splitButton != null)
+				if (GetImpl() is { } splitButton)
 				{
 					if (splitButton.IsFlyoutOpen)
 					{
@@ -50,11 +67,29 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers
 			}
 		}
 
-		public void Expand() => GetImpl()?.OpenFlyout();
+		public void Expand()
+		{
+			if (GetImpl() is { } splitButton)
+			{
+				splitButton.OpenFlyout();
+			}
+		}
 
-		public void Collapse() => GetImpl()?.CloseFlyout();
+		public void Collapse()
+		{
+			if (GetImpl() is { } splitButton)
+			{
+				splitButton.CloseFlyout();
+			}
+		}
 
 		// IInvokeProvider
-		public void Invoke() => GetImpl()?.OnClickPrimary(null, null);
+		public void Invoke()
+		{
+			if (GetImpl() is { } splitButton)
+			{
+				splitButton.Invoke();
+			}
+		}
 	}
 }

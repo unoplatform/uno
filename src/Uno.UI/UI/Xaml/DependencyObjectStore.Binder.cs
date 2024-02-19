@@ -1,21 +1,23 @@
 ﻿#nullable enable
 
 using System;
-using System.Linq;
-using Uno.Disposables;
-using System.Runtime.CompilerServices;
-using Uno.Foundation.Logging;
-using Uno.Extensions;
-using Uno.UI.DataBinding;
-using Uno.UI;
-using Microsoft.UI.Xaml.Data;
-using System.Collections.Generic;
-using Microsoft.UI.Xaml;
-using System.Globalization;
-using System.Threading;
-using Uno.Diagnostics.Eventing;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using Uno.Collections;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
 #if !IS_UNIT_TESTS
 using Uno.UI.Controls;
@@ -35,8 +37,11 @@ namespace Microsoft.UI.Xaml
 
 		private readonly object _gate = new object();
 
-		private readonly HashtableEx _childrenBindableMap = new HashtableEx(DependencyPropertyComparer.Default);
-		private readonly List<object?> _childrenBindable = new List<object?>();
+		private HashtableEx? _childrenBindableMap;
+		private List<object?>? _childrenBindable;
+
+		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
+		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
@@ -88,6 +93,18 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private bool IsCandidateChild([NotNullWhen(true)] object? child)
+		{
+			if (child is IDependencyObjectStoreProvider)
+			{
+				return true;
+			}
+
+			// The property value may be an enumerable of providers
+			var isValidEnumerable = child is not string;
+			return isValidEnumerable && child is IEnumerable;
+		}
+
 		private void ApplyChildrenBindable(object? inheritedValue, bool isTemplatedParent)
 		{
 			static void SetInherited(IDependencyObjectStoreProvider provider, object? inheritedValue, bool isTemplatedParent)
@@ -102,9 +119,20 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			if (_childrenBindable is null)
+			{
+				return;
+			}
+
 			for (int i = 0; i < _childrenBindable.Count; i++)
 			{
 				var child = _childrenBindable[i];
+				if (child is null)
+				{
+					continue;
+				}
+
+				Debug.Assert(IsCandidateChild(child));
 
 				var childAsStoreProvider = child as IDependencyObjectStoreProvider;
 
@@ -127,36 +155,31 @@ namespace Microsoft.UI.Xaml
 				{
 					SetInherited(childAsStoreProvider, inheritedValue, isTemplatedParent);
 				}
-				else
+				else if (child is IList list)
 				{
-					// The property value may be an enumerable of providers
-					var isValidEnumerable = !(child is string);
+					// Special case for IList where the child may not be enumerable
 
-					if (isValidEnumerable)
+					for (int childIndex = 0; childIndex < list.Count; childIndex++)
 					{
-						if (child is IList list)
+						if (list[childIndex] is IDependencyObjectStoreProvider provider2)
 						{
-							// Special case for IList where the child may not be enumerable
-
-							for (int childIndex = 0; childIndex < list.Count; childIndex++)
-							{
-								if (list[childIndex] is IDependencyObjectStoreProvider provider2)
-								{
-									SetInherited(provider2, inheritedValue, isTemplatedParent);
-								}
-							}
-						}
-						else if (child is IEnumerable enumerable)
-						{
-							foreach (var item in enumerable)
-							{
-								if (item is IDependencyObjectStoreProvider provider2)
-								{
-									SetInherited(provider2, inheritedValue, isTemplatedParent);
-								}
-							}
+							SetInherited(provider2, inheritedValue, isTemplatedParent);
 						}
 					}
+				}
+				else if (child is IEnumerable enumerable)
+				{
+					foreach (var item in enumerable)
+					{
+						if (item is IDependencyObjectStoreProvider provider2)
+						{
+							SetInherited(provider2, inheritedValue, isTemplatedParent);
+						}
+					}
+				}
+				else
+				{
+					throw new Exception("This cannot be reached. IsCandidateChild would have returned false if none of the conditions were true.");
 				}
 			}
 		}
@@ -248,7 +271,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_properties.Dispose();
-			_childrenBindableMap.Dispose();
+			_childrenBindableMap?.Dispose();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
@@ -569,7 +592,16 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
-			=> _childrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
+		{
+			if (IsCandidateChild(value))
+			{
+				ChildrenBindable[GetOrCreateChildBindablePropertyIndex(propertyDetails.Property)] = value;
+			}
+			else if (TryGetChildBindablePropertyIndex(propertyDetails.Property, out var index))
+			{
+				ChildrenBindable[index] = null;
+			}
+		}
 
 		/// <summary>
 		/// Gets or create an index in the <see cref="_childrenBindable"/> list, to avoid enumerating <see cref="_childrenBindableMap"/>.
@@ -578,10 +610,10 @@ namespace Microsoft.UI.Xaml
 		{
 			int index;
 
-			if (!_childrenBindableMap.TryGetValue(property, out var indexRaw))
+			if (!ChildrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
-				_childrenBindableMap[property] = index = _childrenBindableMap.Count;
-				_childrenBindable.Add(null);
+				ChildrenBindableMap[property] = index = ChildrenBindableMap.Count;
+				ChildrenBindable.Add(null); // The caller will replace null with a non-null value.
 			}
 			else
 			{
@@ -589,6 +621,19 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return index;
+		}
+
+		private bool TryGetChildBindablePropertyIndex(DependencyProperty property, out int index)
+		{
+			if (_childrenBindableMap?.TryGetValue(property, out var indexRaw) == true)
+			{
+				index = (int)indexRaw!;
+				return true;
+			}
+
+
+			index = -1;
+			return false;
 		}
 
 

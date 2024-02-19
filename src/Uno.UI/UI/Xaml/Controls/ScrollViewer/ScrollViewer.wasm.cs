@@ -75,9 +75,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnLoaded()
+		private partial void OnLoadedPartial()
 		{
-			base.OnLoaded();
 			AddHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
 			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged), true);
 		}
@@ -90,9 +89,8 @@ namespace Microsoft.UI.Xaml.Controls
 			CancelNextNativeScroll = false;
 		}
 
-		private protected override void OnUnloaded()
+		private partial void OnUnloadedPartial()
 		{
-			base.OnUnloaded();
 			RemoveHandler(KeyDownEvent, new KeyEventHandler(OnKeyDown));
 			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged));
 		}

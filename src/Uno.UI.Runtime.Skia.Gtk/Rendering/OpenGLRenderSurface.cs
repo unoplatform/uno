@@ -30,7 +30,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			get
 			{
 				// OpenGL support on macOS is currently broken
-				var isMacOs = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+				var isMacOs = OperatingSystem.IsMacOS();
 
 				try
 				{

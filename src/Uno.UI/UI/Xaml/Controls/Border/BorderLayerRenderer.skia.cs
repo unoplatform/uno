@@ -13,15 +13,15 @@ using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Uno.UI.Xaml.Controls
 {
 	partial class BorderLayerRenderer
 	{
 		private static SKPoint[] _outerRadiiStore = new SKPoint[4];
 		private static SKPoint[] _innerRadiiStore = new SKPoint[4];
-
-		private LayoutState _currentState;
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
@@ -34,37 +34,27 @@ namespace Microsoft.UI.Xaml.Shapes
 		/// <param name="borderBrush">The border brush</param>
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
-		public void UpdateLayer(
-			FrameworkElement owner,
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
-			object backgroundImage
-		)
+		partial void UpdatePlatform()
 		{
-			// Bounds is captured to avoid calling twice calls below.
-			var area = new Rect(0, 0, owner.ActualWidth, owner.ActualHeight);
-
-			var newState = new LayoutState(area, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, backgroundImage);
+			var newState = new BorderLayerState(
+				new Size(_owner.ActualWidth, _owner.ActualHeight),
+				_borderInfoProvider.Background,
+				_borderInfoProvider.BackgroundSizing,
+				_borderInfoProvider.BorderBrush,
+				_borderInfoProvider.BorderThickness,
+				_borderInfoProvider.CornerRadius);
 			var previousLayoutState = _currentState;
 
 			if (!newState.Equals(previousLayoutState))
 			{
-				if (
-					background != null ||
-					cornerRadius != CornerRadius.None ||
-					(borderThickness != Thickness.Empty && borderBrush != null)
-				)
+				_layerDisposable.Disposable = null;
+
+				if (newState.Background != null ||
+					newState.CornerRadius != CornerRadius.None ||
+					(newState.BorderThickness != Thickness.Empty && newState.BorderBrush != null))
 				{
 
-					_layerDisposable.Disposable = null;
-					_layerDisposable.Disposable = InnerCreateLayer(owner, newState);
-				}
-				else
-				{
-					_layerDisposable.Disposable = null;
+					_layerDisposable.Disposable = InnerCreateLayer(_owner, newState);
 				}
 
 				_currentState = newState;
@@ -74,15 +64,14 @@ namespace Microsoft.UI.Xaml.Shapes
 		/// <summary>
 		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
-		internal void Clear()
+		partial void ClearPlatform()
 		{
 			_layerDisposable.Disposable = null;
-			_currentState = null;
 		}
 
-		private static IDisposable InnerCreateLayer(UIElement owner, LayoutState state)
+		private static IDisposable InnerCreateLayer(UIElement owner, BorderLayerState state)
 		{
-			var area = owner.LayoutRound(state.Area);
+			var area = new Rect(default, state.ElementSize);
 
 			// In case the element has no size, skip everything!
 			if (area.Width == 0 && area.Height == 0)
@@ -93,7 +82,12 @@ namespace Microsoft.UI.Xaml.Shapes
 			var visual = owner.Visual;
 			var compositor = visual.Compositor;
 			var background = state.Background;
-			var borderThickness = owner.LayoutRound(state.BorderThickness);
+			var borderThickness = state.BorderThickness;
+			if (owner.GetUseLayoutRounding())
+			{
+				borderThickness = owner.LayoutRound(borderThickness);
+			}
+
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
 
@@ -117,10 +111,9 @@ namespace Microsoft.UI.Xaml.Shapes
 				{
 					var backgroundShape = compositor.CreateSpriteShape();
 
-					// First we set the brush as it might alter the adjustedArea
 					if (background is ImageBrush imgBackground)
 					{
-						adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
+						CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
 					}
 					else
 					{
@@ -288,7 +281,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return disposables;
 		}
 
-		private static Rect CreateImageLayer(Compositor compositor, CompositeDisposable disposables, Thickness borderThickness, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
+		private static void CreateImageLayer(Compositor compositor, CompositeDisposable disposables, Thickness borderThickness, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
 		{
 			Action onInvalidateRender = () =>
 			{
@@ -330,7 +323,6 @@ namespace Microsoft.UI.Xaml.Shapes
 			onInvalidateRender();
 			imgBackground.InvalidateRender += onInvalidateRender;
 			new DisposableAction(() => imgBackground.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
-			return backgroundArea;
 		}
 
 		private static CompositionPath GetBackgroundPath(SKPoint[] radii, Rect area)
@@ -357,41 +349,6 @@ namespace Microsoft.UI.Xaml.Shapes
 			roundRect.SetRectRadii(area, radii);
 			geometry.AddRoundRect(roundRect);
 			geometry.Close();
-		}
-
-		private class LayoutState : IEquatable<LayoutState>
-		{
-			public readonly Rect Area;
-			public readonly Brush Background;
-			public readonly BackgroundSizing BackgroundSizing;
-			public readonly Brush BorderBrush;
-			public readonly Thickness BorderThickness;
-			public readonly CornerRadius CornerRadius;
-			public readonly object BackgroundImage;
-
-			public LayoutState(Rect area, Brush background, BackgroundSizing backgroundSizing,
-				Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, object backgroundImage)
-			{
-				Area = area;
-				Background = background;
-				BackgroundSizing = backgroundSizing;
-				BorderBrush = borderBrush;
-				CornerRadius = cornerRadius;
-				BorderThickness = borderThickness;
-				BackgroundImage = backgroundImage;
-			}
-
-			public bool Equals(LayoutState other)
-			{
-				return other != null
-					&& other.Area == Area
-					&& other.Background == Background
-					&& other.BackgroundSizing == BackgroundSizing
-					&& other.BorderBrush == BorderBrush
-					&& other.BorderThickness == BorderThickness
-					&& other.CornerRadius == CornerRadius
-					&& other.BackgroundImage == BackgroundImage;
-			}
 		}
 	}
 }

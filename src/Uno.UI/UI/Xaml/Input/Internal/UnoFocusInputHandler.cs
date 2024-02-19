@@ -78,6 +78,7 @@ internal class UnoFocusInputHandler
 		var focusMovement = new FocusMovement(XYFocusOptions.Default, direction, null);
 		focusMovement.IsShiftPressed = _isShiftDown;
 		focusMovement.IsProcessingTab = true;
+		focusMovement.ForceBringIntoView = true;
 		var result = focusManager?.FindAndSetNextFocus(focusMovement);
 		return result?.WasMoved == true;
 	}

@@ -16,6 +16,7 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {

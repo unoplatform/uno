@@ -18,6 +18,7 @@ using Uno.UI.Xaml;
 using Windows.UI;
 using System.Dynamic;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {
@@ -206,17 +207,6 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
-
-		private protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
-			=> BorderLayerRenderer.SetBorder(this, thickness, brush, cornerRadius);
-
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-		{
-			if (dependencyPropertyChangedEventArgs.NewValue is BackgroundSizing sizing)
-			{
-				SetStyle("background-clip", sizing == BackgroundSizing.InnerBorderEdge ? "padding-box" : "border-box");
-			}
-		}
 
 		#region Name Dependency Property
 

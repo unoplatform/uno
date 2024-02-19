@@ -100,6 +100,8 @@ namespace Microsoft.UI.Xaml
 			if (baseValueSource == DependencyPropertyValuePrecedences.ImplicitStyle &&
 				dependencyObject is FrameworkElement fe &&
 				fe.GetActiveStyle() is { } activeStyle &&
+				// Make sure to only consider active style if it was explicit.
+				fe.Style == activeStyle &&
 				activeStyle != this &&
 				activeStyle.EnsureSetterMap().TryGetValue(property, out var setter))
 			{

@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty)
+			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{
 				return;
 			}

@@ -110,7 +110,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		partial void OnLoadedPartial();
-		private protected virtual void OnLoaded() { }
+		private protected virtual void OnLoaded()
+		{
+			ReconfigureViewportPropagationPartial();
+		}
+
+		private partial void ReconfigureViewportPropagationPartial();
 
 		private protected sealed override void OnFwEltUnloaded()
 		{
@@ -152,7 +157,10 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnUnloadedPartial();
 
-		private protected virtual void OnUnloaded() { }
+		private protected virtual void OnUnloaded()
+		{
+			ReconfigureViewportPropagationPartial();
+		}
 
 		public override string ToString()
 		{

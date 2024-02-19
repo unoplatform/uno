@@ -5,6 +5,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -75,10 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
+		partial void ClearBorder() => _borderRenderer.Clear();
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
 

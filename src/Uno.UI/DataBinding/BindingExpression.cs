@@ -668,32 +668,39 @@ namespace Microsoft.UI.Xaml.Data
 
 			if (FeatureConfiguration.BindingExpression.HandleSetTargetValueExceptions)
 			{
-				SetTargetValueSafeWithTry(v, useTargetNullValue);
-
-				/// <remarks>
-				/// This method contains or is called by a try/catch containing method and
-				/// can be significantly slower than other methods as a result on WebAssembly.
-				/// See https://github.com/dotnet/runtime/issues/56309
-				/// </remarks>
-				void SetTargetValueSafeWithTry(object v, bool useTargetNullValue)
+				try
 				{
+					InnerSetTargetValueSafe(v, useTargetNullValue);
+
+					// Avoid using the finally clause, which on wasm
+					// causes a transition to the interpreter. Exceptions here
+					// are caught entirely, and not forwarded to the caller, which
+					// allows for resetting the value in both the normal and exceptional flow.
+					_IsCurrentlyPushing = false;
+				}
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+					}
+
 					try
 					{
-						InnerSetTargetValueSafe(v, useTargetNullValue);
-					}
-					catch (Exception e)
-					{
-						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-						{
-							this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
-						}
-
 						ApplyFallbackValue();
 					}
-					finally
+					catch (Exception e2)
 					{
-						_IsCurrentlyPushing = false;
+						// We ensure that _IsCurrentlyPushing can properly be reset, even
+						// if `ApplyFallbackValue` fails to execute.
+
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							this.Log().Error("Failed to apply fallback value to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e2.Message), e2);
+						}
 					}
+
+					_IsCurrentlyPushing = false;
 				}
 			}
 			else

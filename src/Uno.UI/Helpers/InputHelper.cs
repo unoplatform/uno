@@ -45,7 +45,7 @@ internal static class InputHelper
 
 	public static bool TryConvertKeyCodeToScanCode(uint keyCode, out uint scanCode)
 	{
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			scanCode = MapVirtualKey(keyCode, 0);
 			return true;

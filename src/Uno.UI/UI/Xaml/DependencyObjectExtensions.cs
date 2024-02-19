@@ -241,12 +241,6 @@ namespace Microsoft.UI.Xaml
 			return GetStore(instance).GetValue(property, precedence, true);
 		}
 
-
-		internal static void PropagateInheritedProperties(this DependencyObject instance)
-		{
-			GetStore(instance).PropagateInheritedProperties();
-		}
-
 		/// <summary>
 		/// Get the value for the specified dependency property on the specific instance at 
 		/// the highest precedence level under the specified one.

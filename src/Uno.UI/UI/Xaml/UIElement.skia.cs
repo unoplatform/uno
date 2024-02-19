@@ -312,11 +312,10 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
-			var roundedRect = LayoutRound(rect);
-
+			// Note: rect has already been rounded, if needed, during arrange.
 			var visual = Visual;
-			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
-			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			visual.Offset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
+			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
 			{
@@ -354,7 +353,11 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				var roundedRectClip = LayoutRound(rect);
+				var roundedRectClip = rect;
+				if (GetUseLayoutRounding())
+				{
+					roundedRectClip = LayoutRound(roundedRectClip);
+				}
 
 				Visual.Clip = Visual.Compositor.CreateInsetClip(
 					topInset: (float)roundedRectClip.Top,

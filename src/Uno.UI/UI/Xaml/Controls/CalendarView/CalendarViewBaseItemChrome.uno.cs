@@ -4,6 +4,7 @@ using System.Text;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -65,6 +66,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
+#if __SKIA__ || __WASM__
+			_borderRenderer ??= new BorderLayerRenderer(this);
+
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
 			// DrawDensityBar			=> Not supported yet
@@ -72,36 +76,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
 
-			var background = Background;
-			var borderThickness = GetItemBorderThickness();
-			var borderBrush = GetItemBorderBrush(forFocus: false);
-			var cornerRadius = GetItemCornerRadius();
-
-			if (IsClear(background))
-			{
-				if (FindTodaySelectedBackgroundBrush() is { } todaySelectedBackground
-					&& !IsClear(todaySelectedBackground))
-				{
-					background = todaySelectedBackground;
-				}
-				else if (FindSelectedBackgroundBrush() is { } selectedBackground
-					&& !IsClear(selectedBackground))
-				{
-					background = selectedBackground;
-				}
-				else
-				{
-					background = GetItemBackgroundBrush();
-				}
-			}
-
-			if (m_isToday && m_isSelected && GetItemInnerBorderBrush() is { } selectedBrush)
-			{
-				// We don't support inner border yet, so even if not optimal we just use it as border.
-				borderBrush = selectedBrush;
-			}
-
 #if __WASM__
+			var borderInfoProvider = (IBorderInfoProvider)this;
+			var borderThickness = borderInfoProvider.BorderThickness;
+			var borderBrush = borderInfoProvider.BorderBrush;
 			if (borderBrush is not null)
 			{
 				EffectiveBorderThickness = borderThickness;
@@ -112,8 +90,24 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
+			_borderRenderer.Update();
+#else
+			// DrawBackground			=> General background for all items
+			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
+			// DrawDensityBar			=> Not supported yet
+			// DrawFocusBorder			=> Not supported yet
+			// OR DrawBorder			=> Draws the border ...
+			// DrawInnerBorder			=> The today / selected state
+
+			var borderInfoProvider = (IBorderInfoProvider)this;
+			var background = borderInfoProvider.Background;
+			var borderThickness = borderInfoProvider.BorderThickness;
+			var borderBrush = borderInfoProvider.BorderBrush;
+			var cornerRadius = borderInfoProvider.CornerRadius;
+
+#if __ANDROID__ || __IOS__ || __MACOS__
 			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
+#endif
 #endif
 		}
 

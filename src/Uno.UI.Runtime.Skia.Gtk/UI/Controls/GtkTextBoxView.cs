@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
-using static Microsoft.UI.Xaml.Shapes.BorderLayerRenderer;
+using static Uno.UI.Xaml.Controls.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;

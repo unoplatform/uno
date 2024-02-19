@@ -160,9 +160,9 @@ namespace SamplesApp
 
 			HandleLaunchArguments(e);
 
-			if (SampleControl.Presentation.SampleChooserViewModel.Instance.CurrentSelectedSample is null)
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
-				SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 			}
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
@@ -525,7 +525,10 @@ namespace SamplesApp
 				}
 			}
 
+#pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
+#pragma warning restore SYSLIB1045
+
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);

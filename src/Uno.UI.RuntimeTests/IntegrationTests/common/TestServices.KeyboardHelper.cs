@@ -95,6 +95,7 @@ namespace Private.Infrastructure
 				{"rshift",                      VirtualKey.RightShift},
 				{"lctrl",                       VirtualKey.LeftControl},
 				{"rctrl",                       VirtualKey.RightControl},
+				{"alt",                         VirtualKey.Menu},
 				{"lalt",                        VirtualKey.LeftMenu},
 				{"ralt",                        VirtualKey.RightMenu},
 				{"space",                       VirtualKey.Space},

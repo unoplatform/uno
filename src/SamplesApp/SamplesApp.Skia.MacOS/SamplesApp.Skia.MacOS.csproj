@@ -54,7 +54,7 @@
 		<_XcodeBuildArgs Condition="'$(Configuration)'=='Debug'">build-for-testing -scheme UnoNativeMac</_XcodeBuildArgs>
 	</PropertyGroup>
 
-	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile">
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<Exec Command="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build.sh $(_XcodeBuildArgs)" WorkingDirectory="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/" />
 		<Copy
 			SourceFiles="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
