@@ -262,6 +262,13 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews { get; set; }
 #endif
+
+			/// <summary>
+			/// When true, prevents an exception to be thrown if a style is assigned to a <see cref="Microsoft.UI.Xaml.FrameworkElement" /> where
+			/// <see cref="Microsoft.UI.Xaml.Style.TargetType"/> isn't compatible with the <see cref="Microsoft.UI.Xaml.FrameworkElement" />.
+			/// The default is false.
+			/// </summary>
+			public static bool AllowIncompatibleStyleTargetTypes { get; set; }
 		}
 
 		public static class FrameworkTemplate

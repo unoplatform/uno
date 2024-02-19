@@ -410,10 +410,28 @@ namespace Microsoft.UI.Xaml
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
+			if (newStyle is not null && !FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes)
+			{
+				ValidateTargetType(newStyle.TargetType);
+			}
+
 			if (!IsParsing) // Style will be applied once element has completed parsing
 			{
 				ApplyStyle();
 			}
+		}
+
+		private void ValidateTargetType(Type targetType)
+		{
+			if (targetType is not null)
+			{
+				if (this.GetType().IsAssignableTo(targetType))
+				{
+					return;
+				}
+			}
+
+			throw new InvalidOperationException($"Cannot apply a Style with TargetType '{targetType?.ToString() ?? "null"}' to an object of type '{GetType()}'.");
 		}
 
 		/// <summary>
