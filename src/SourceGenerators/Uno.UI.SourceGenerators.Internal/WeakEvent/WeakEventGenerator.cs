@@ -125,11 +125,16 @@ public class WeakEventGenerator : IIncrementalGenerator
 		{
 			builder.AppendLineIndented("var handlerRef = global::Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, handler);");
 
-			using (builder.BlockInvariant($"{dpCandidateData.EventType} weakHandler = ({dpCandidateData.LambdaParameters}) => "))
+			builder.AppendLineIndented($"{dpCandidateData.EventType} weakHandler = null;");
+			using (builder.BlockInvariant($"weakHandler = ({dpCandidateData.LambdaParameters}) => "))
 			{
 				using (builder.BlockInvariant($"if (handlerRef.Target is {dpCandidateData.EventType} handler2)"))
 				{
 					builder.AppendLineIndented($"handler2.Invoke({dpCandidateData.LambdaParameters});");
+				}
+				using (builder.BlockInvariant("else"))
+				{
+					builder.AppendLineIndented("Cleanup();");
 				}
 			}
 
@@ -137,13 +142,13 @@ public class WeakEventGenerator : IIncrementalGenerator
 
 			builder.AppendLineIndented($"{dpCandidateData.EventName} += weakHandler;");
 
-			using (builder.BlockInvariant($"return global::Uno.Disposables.Disposable.Create(() =>"))
+			builder.AppendLineIndented($"return global::Uno.Disposables.Disposable.Create(Cleanup);");
+
+			using (builder.BlockInvariant($"void Cleanup()"))
 			{
 				builder.AppendLineIndented($"{dpCandidateData.EventName} -= weakHandler;");
 				builder.AppendLineIndented("global::Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, handlerRef);");
 			}
-
-			builder.AppendLineIndented($");");
 		}
 	}
 }
