@@ -178,33 +178,8 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			// On Windows, explicitly calling SetValue(dp, DP.UnsetValue) or ClearValue(dp) doesnt clear the animation value.
-			// (note: Both the methods target local value)
-			// This means that we should not be handling those special case in here. Instead,
-			// when Timeline clears the animation value, it should also clears the filling animation value at the same time.
-			// ---
-			// Clear the animated value, when we are setting a local value to a property
-			// with an animated value from the filling part of an HoldEnd animation.
-			// note: There is no equivalent block in SetValueFast, as its condition would never be satisfied:
-			// _stack would've been materialized if the property had been animated.
-			bool forceUpdatePrecedence = false;
-			if (!valueIsUnsetValue &&
-				_highestPrecedence == DependencyPropertyValuePrecedences.FillingAnimations &&
-				(precedence is DependencyPropertyValuePrecedences.Local or DependencyPropertyValuePrecedences.Animations))
-			{
-				stackAlias[(int)DependencyPropertyValuePrecedences.FillingAnimations] = UnsetValue.Instance;
-				if (precedence is DependencyPropertyValuePrecedences.Local)
-				{
-					stackAlias[(int)DependencyPropertyValuePrecedences.Animations] = UnsetValue.Instance;
-				}
-
-				forceUpdatePrecedence = true;
-			}
-
-			// Update highest precedence, when the current highest value was unset or
-			// when animation value was overridden by local value.
-			if ((valueIsUnsetValue && precedence == _highestPrecedence) ||
-				forceUpdatePrecedence)
+			// If we were unsetting the current highest precedence value, we need to find the next highest
+			if (valueIsUnsetValue && precedence == _highestPrecedence)
 			{
 				// Start from current precedence and find next highest
 				for (int i = (int)precedence; i < (int)DependencyPropertyValuePrecedences.DefaultValue; i++)
