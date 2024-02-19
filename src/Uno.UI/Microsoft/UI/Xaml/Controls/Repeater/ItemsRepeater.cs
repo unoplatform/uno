@@ -67,8 +67,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		// A convention we use in the ItemsRepeater codebase for an invalid Rect value.
 		internal static Rect InvalidRect = new Rect(-1, -1, -1, -1);
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> ElementPrepared;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> ElementIndexChanged;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementClearingEventArgs> ElementClearing;
 
 		// Cached Event args to avoid creation cost every time

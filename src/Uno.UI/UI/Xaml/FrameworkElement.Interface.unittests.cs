@@ -53,8 +53,11 @@ namespace Microsoft.UI.Xaml
 			OnUnloadedPartial();
 		}
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Loaded;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Unloaded;
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 
 		public TransitionCollection Transitions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
