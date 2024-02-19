@@ -60,6 +60,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private int m_indexForcedToUnselectedVisual = -1;
 		private int m_indexForcedToSelectedVisual = -1;
 
+		private bool _wasPointerPressed;
+
 		/// <summary>
 		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
 		/// </summary>
@@ -377,6 +379,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerExited(PointerRoutedEventArgs e)
 		{
 			base.OnPointerEntered(e);
+			_wasPointerPressed = false;
 
 			UpdateVisualState();
 		}
@@ -384,6 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCanceled(e);
+			_wasPointerPressed = false;
 
 			UpdateVisualState();
 		}
@@ -391,6 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCaptureLost(e);
+			_wasPointerPressed = false;
 
 			UpdateVisualState();
 		}
@@ -557,6 +562,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
+			_wasPointerPressed = true;
+
 			UpdateVisualState(true);
 			// On UWP ComboBox does handle the pressed event ... but does not capture it!
 			args.Handled = true;
@@ -565,6 +572,12 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
+
+			if (!_wasPointerPressed)
+			{
+				// The dropdown should open only if the pointer was pressed and released on the ComboBox.
+				return;
+			}
 
 			Focus(FocusState.Programmatic);
 			IsDropDownOpen = true;
