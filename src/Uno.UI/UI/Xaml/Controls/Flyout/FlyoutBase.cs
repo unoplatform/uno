@@ -400,8 +400,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
 					Rect visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 					positionValue = new Point(
-						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
-						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
+						Math.Clamp(positionValue.X, visibleBounds.Left, visibleBounds.Right),
+						Math.Clamp(positionValue.Y, visibleBounds.Top, visibleBounds.Bottom));
 
 					SetTargetPosition(positionValue);
 				}

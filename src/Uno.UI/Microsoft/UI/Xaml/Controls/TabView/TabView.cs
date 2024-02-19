@@ -1085,7 +1085,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 							{
 								// Calculate the proportional width of each tab given the width of the ScrollViewer.
 								var tabWidthForScroller = (availableWidth - (padding.Left + padding.Right)) / (double)(TabItems.Count);
-								tabWidth = MathEx.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
+								tabWidth = Math.Clamp(tabWidthForScroller, minTabWidth, maxTabWidth);
 							}
 							else
 							{
@@ -1110,7 +1110,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 								// Use current size to update items to fill the currently occupied space
 								var tabWidthUnclamped = availableTabViewSpace / (double)(TabItems.Count);
-								tabWidth = MathEx.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
+								tabWidth = Math.Clamp(tabWidthUnclamped, minTabWidth, maxTabWidth);
 							}
 
 
