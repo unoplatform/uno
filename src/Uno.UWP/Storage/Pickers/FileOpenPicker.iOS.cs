@@ -12,6 +12,7 @@ using Windows.ApplicationModel.Core;
 using Uno.Helpers.Theming;
 using Windows.UI.Core;
 using Uno.UI.Dispatching;
+using Uno.Foundation.Logging;
 
 namespace Windows.Storage.Pickers
 {
@@ -75,9 +76,14 @@ namespace Windows.Storage.Pickers
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
-			if (rootController == null)
+			if (rootController is null)
 			{
 				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Picking files. Multiple: {multiple}");
 			}
 
 			var completionSource = new TaskCompletionSource<NSUrl?[]>();
@@ -98,14 +104,25 @@ namespace Windows.Storage.Pickers
 
 			rootController.DismissViewController(true, null);
 
-			if (nsUrls == null || nsUrls.Length == 0)
+			if (nsUrls is null || nsUrls.Length == 0)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("User cancelled file picking.");
+				}
+
 				return FilePickerSelectedFilesArray.Empty;
 			}
 
 			var files = nsUrls
-				.Where(url => url != null)
+				.Where(url => url is not null)
 				.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl!, null)).ToArray();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Picked {files.Length} files from {nsUrls.Length} URLs.");
+			}
+
 			return new FilePickerSelectedFilesArray(files);
 		}
 
