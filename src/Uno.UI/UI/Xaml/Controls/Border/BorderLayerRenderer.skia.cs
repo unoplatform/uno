@@ -71,7 +71,7 @@ namespace Uno.UI.Xaml.Controls
 
 		private static IDisposable InnerCreateLayer(UIElement owner, BorderLayerState state)
 		{
-			var area = owner.LayoutRound(new Rect(default, state.ElementSize));
+			var area = new Rect(default, state.ElementSize);
 
 			// In case the element has no size, skip everything!
 			if (area.Width == 0 && area.Height == 0)
@@ -82,7 +82,12 @@ namespace Uno.UI.Xaml.Controls
 			var visual = owner.Visual;
 			var compositor = visual.Compositor;
 			var background = state.Background;
-			var borderThickness = owner.LayoutRound(state.BorderThickness);
+			var borderThickness = state.BorderThickness;
+			if (owner.GetUseLayoutRounding())
+			{
+				borderThickness = owner.LayoutRound(borderThickness);
+			}
+
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
 
