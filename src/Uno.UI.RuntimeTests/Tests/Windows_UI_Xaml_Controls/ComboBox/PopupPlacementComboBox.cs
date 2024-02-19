@@ -20,8 +20,6 @@ public partial class PopupPlacementComboBox : ComboBox
 
 	public double VerticalOffset { get; set; }
 
-	public double HorizontalOffset { get; set; }
-
 	public PopupPlacementMode DesiredPlacement { get; set; }
 
 	public void ApplyPlacement()
@@ -29,8 +27,8 @@ public partial class PopupPlacementComboBox : ComboBox
 		if (FindChildrenOfType<Popup>(this).FirstOrDefault() is Popup popup)
 		{
 			popup.PlacementTarget = this;
-			popup.DesiredPlacement = PopupPlacementMode.Bottom;
-			popup.VerticalOffset = 5;
+			popup.DesiredPlacement = DesiredPlacement;
+			popup.VerticalOffset = VerticalOffset;
 		}
 	}
 
