@@ -4,16 +4,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using DirectUI;
-using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Input;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Collections;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+using Windows.Foundation;
+using Windows.System;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml
@@ -140,7 +143,7 @@ namespace Microsoft.UI.Xaml
 				//	}
 				//	else if (!spAP)
 				//	{
-				//		RRETURN(S_FALSE);
+				//		RRETURN(S_false);
 				//	}
 
 				//	// This FX peer gains state when the AutomationPeer is stored in m_tpAP, so mark as
@@ -158,7 +161,7 @@ namespace Microsoft.UI.Xaml
 				//{
 				//	m_tpAP.Clear();
 				//}
-				//RRETURN(S_FALSE);
+				//RRETURN(S_false);
 			}
 		}
 
@@ -420,7 +423,7 @@ namespace Microsoft.UI.Xaml
 			////	// Content in a XamlIsland shouldn't interact with elements outside of that XamlIsland.
 			////	// Example: TransformToRoot on an element within a XamlIsland shouldn't include the transform
 			////	// of the RootVisual, which is the DPI scale.
-			////	return nullptr;
+			////	return null;
 			////}
 
 			//UIElement pParent = GetUIElementParentInternal(publicParentsOnly);
@@ -431,7 +434,7 @@ namespace Microsoft.UI.Xaml
 			//{
 			//	bool parentIsPopupRoot = false;
 
-			//	if (SUCCEEDED(GetContext()->IsObjectAnActivePopupRoot(pParent, &parentIsPopupRoot)))
+			//	if (SUCCEEDED(GetContext().IsObjectAnActivePopupRoot(pParent, &parentIsPopupRoot)))
 			//	{
 			//		// The only elements visually parented to the PopupRoot are Popup.Child and TransitionRoots.
 			//		// In the former case, the adjusted parent we'll return is the Popup itself.
@@ -439,7 +442,7 @@ namespace Microsoft.UI.Xaml
 			//		if (parentIsPopupRoot && !OfTypeByIndex<KnownTypeIndex::TransitionRoot>())
 			//		{
 			//			pParent = static_cast<CUIElement*>(GetLogicalParentNoRef());
-			//			ASSERT(pParent->OfTypeByIndex<KnownTypeIndex::Popup>());
+			//			ASSERT(pParent.OfTypeByIndex<KnownTypeIndex::Popup>());
 			//		}
 			//	}
 			//}
@@ -466,7 +469,7 @@ namespace Microsoft.UI.Xaml
 			//	&& (pParent == null || !useRealParentForClosedParentedPopups))
 			//{
 			//	PopupRoot? pPopupRoot = null;
-			//	IGNOREHR(GetContext()->GetAdjustedPopupRootForElement(this, pPopupRoot));
+			//	IGNOREHR(GetContext().GetAdjustedPopupRootForElement(this, pPopupRoot));
 			//	pParent = pPopupRoot;
 			//}
 
@@ -474,7 +477,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Default to FALSE and expose as needed.  Elements that don't support having children will never
+		/// Default to false and expose as needed.  Elements that don't support having children will never
 		/// allocate children collections.  Elements that do support children may do so as an implementation
 		/// detail (e.g. selection grippers for TextBlock), or to support public API exposure (e.g. Panel.Children).
 		/// </summary>
@@ -566,7 +569,7 @@ namespace Microsoft.UI.Xaml
 		protected virtual IEnumerable<DependencyObject>? GetChildrenInTabFocusOrder()
 		{
 			var children = FocusProperties.GetFocusChildren(this);
-			if (children != null && /*!children->IsLeaving() && */children.Length > 0)
+			if (children != null && /*!children.IsLeaving() && */children.Length > 0)
 			{
 				return children;
 			}
@@ -590,5 +593,149 @@ namespace Microsoft.UI.Xaml
 		/// <param name="uiElement">UIElement.</param>
 		/// <returns>True if the element is a ScrollViewer.</returns>
 		internal bool IsScroller() => this is ScrollViewer;
+
+		// Implements a depth-first search of the element's sub-tree,
+		// looking for an accelerator that can be invoked
+		private static void TryInvokeKeyboardAccelerator(
+			DependencyObject? pFocusedElement,
+			UIElement pElement,
+			VirtualKey key,
+			VirtualKeyModifiers keyModifiers,
+			ref bool handled,
+			ref bool handledShouldNotImpedeTextInput)
+		{
+			//Try to process accelerators on current CUIElement.
+			KeyboardAcceleratorUtility.ProcessKeyboardAccelerators(
+				key,
+				keyModifiers,
+				VisualTree.GetContentRootForElement(pElement)?.GetAllLiveKeyboardAccelerators(),
+				pElement,
+				ref handled,
+				ref handledShouldNotImpedeTextInput,
+				pFocusedElement,
+				true /*isCallFromTryInvoke*/ );
+			if (handled)
+			{
+				return;
+			}
+
+			MaterializableList<UIElement>? pCollection = null;
+			if (pElement.CanHaveChildren())
+			{
+				pCollection = pElement.GetChildren();
+			}
+			if (pCollection is null)
+			{
+				return;
+			}
+			//For each child make recursive call
+			foreach (var pDOChild in pCollection)
+			{
+				var pChild = pDOChild as UIElement;
+				if (pChild is not null && pChild.IsEnabled())
+				{
+					TryInvokeKeyboardAccelerator(pFocusedElement, pChild, key, keyModifiers, ref handled, ref handledShouldNotImpedeTextInput);
+					if (handled)
+					{
+						return;
+					}
+				}
+			}
+		}
+
+		/* static */
+		internal static bool RaiseKeyboardAcceleratorInvokedStatic(
+			DependencyObject pElement,
+			KeyboardAcceleratorInvokedEventArgs pKAIEventArgs)
+		{
+			var peer = pElement;
+			if (peer is null)
+			{
+				return false;
+			}
+
+			var element = peer as UIElement;
+			if (element is null)
+			{
+				return false;
+			}
+
+			element.OnKeyboardAcceleratorInvoked(pKAIEventArgs);
+			return pKAIEventArgs.Handled;
+		}
+
+		internal static void RaiseProcessKeyboardAcceleratorsStatic(
+			UIElement pUIElement,
+			VirtualKey key,
+			VirtualKeyModifiers keyModifiers,
+			ref bool pHandled,
+			ref bool pHandledShouldNotImpedeTextInput)
+		{
+			DependencyObject peer = pUIElement;
+			if (peer is null)
+			{
+				return;
+			}
+			UIElement element = pUIElement;
+
+			ProcessKeyboardAcceleratorEventArgs spProcessKeyboardAcceleratorEventArgs = new(key, keyModifiers);
+
+			element.OnProcessKeyboardAccelerators(spProcessKeyboardAcceleratorEventArgs);
+
+			pHandled = spProcessKeyboardAcceleratorEventArgs.Handled;
+			pHandledShouldNotImpedeTextInput = spProcessKeyboardAcceleratorEventArgs.HandledShouldNotImpedeTextInput;
+
+			if (!pHandled)
+			{
+				element.ProcessKeyboardAccelerators?.Invoke(element, spProcessKeyboardAcceleratorEventArgs);
+
+				pHandled = spProcessKeyboardAcceleratorEventArgs.Handled;
+				pHandledShouldNotImpedeTextInput = spProcessKeyboardAcceleratorEventArgs.HandledShouldNotImpedeTextInput;
+			}
+		}
+
+		protected virtual void OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)
+		{
+			FlyoutBase spFlyout = ContextFlyout;
+			if (spFlyout is not null)
+			{
+				spFlyout.TryInvokeKeyboardAccelerator(args);
+
+				bool bHandled = args.Handled;
+				if (bHandled)
+				{
+					return;
+				}
+			}
+
+			// If event is not yet handled and current element is Button then TryInvoke on Flyout if it exists.
+			if (this is Button button)
+			{
+				button.OnProcessKeyboardAcceleratorsImplLocal(args);
+			}
+		}
+
+		/// <summary>
+		/// Attempts to invoke a keyboard shortcut (or accelerator) by searching the entire visual tree of the UIElement for the shortcut.
+		/// </summary>
+		/// <param name="args">The ProcessKeyboardAcceleratorEventArgs.</param>
+		public void TryInvokeKeyboardAccelerator(ProcessKeyboardAcceleratorEventArgs args)
+		{
+			// Search for an accelerator that can be invoked
+			bool handled = false;
+			bool handledShouldNotImpedeTextInput = false;
+			VirtualKey key = args.Key;
+			VirtualKeyModifiers keyModifiers = args.Modifiers;
+			if (KeyboardAcceleratorUtility.IsKeyValidForAccelerators(key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(keyModifiers)))
+			{
+				// Get the focused element
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				var pFocusedElement = focusManager?.FocusedElement;
+
+				UIElement.TryInvokeKeyboardAccelerator(pFocusedElement, this, key, keyModifiers, ref handled, ref handledShouldNotImpedeTextInput);
+				args.Handled = handled;
+				args.HandledShouldNotImpedeTextInput = handledShouldNotImpedeTextInput;
+			}
+		}
 	}
 }
