@@ -53,7 +53,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 					ScanCode = scanCode,
 					RepeatCount = 1,
 				},
-				KeyCodeToUnicode(scanCode)));
+				KeyCodeToUnicode(scanCode, virtualKey)));
 		}
 		catch (Exception e)
 		{
@@ -83,7 +83,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 					ScanCode = scanCode,
 					RepeatCount = 1,
 				},
-				KeyCodeToUnicode(scanCode)));
+				KeyCodeToUnicode(scanCode, virtualKey)));
 		}
 		catch (Exception e)
 		{
@@ -116,10 +116,26 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		}
 	}
 
-	private static char? KeyCodeToUnicode(uint keyCode)
+	private static char? KeyCodeToUnicode(uint keyCode, VirtualKey virtualKey)
 	{
 		var result = InputHelper.WindowsScancodeToUnicode(keyCode);
-		return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
+
+		// WindowsScancodeToUnicode doesn't pick up Numpad keys
+		return virtualKey switch
+		{
+			VirtualKey.NumberPad0 => '0',
+			VirtualKey.NumberPad1 => '1',
+			VirtualKey.NumberPad2 => '2',
+			VirtualKey.NumberPad3 => '3',
+			VirtualKey.NumberPad4 => '4',
+			VirtualKey.NumberPad5 => '5',
+			VirtualKey.NumberPad6 => '6',
+			VirtualKey.NumberPad7 => '7',
+			VirtualKey.NumberPad8 => '8',
+			VirtualKey.NumberPad9 => '9',
+			VirtualKey.Decimal => '.',
+			_ => result.Length > 0 ? result[0] : null // TODO: supplementary code points
+		};
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)
