@@ -85,8 +85,7 @@ public partial class Expander : ContentControl
 			// so UIElement.Clip a layout slot for the Expander content when the
 			// SizeChanged event is fired.
 #if HAS_UNO
-			expanderContentClip.SizeChanged += OnContentClipSizeChanged;
-			registrations.Add(() => expanderContentClip.SizeChanged -= OnContentClipSizeChanged);
+			registrations.Add(expanderContentClip.RegisterWeakSizeChanged(OnContentClipSizeChanged));
 #else
 			var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
 			visual.Clip = visual.Compositor.CreateInsetClip();
@@ -95,8 +94,7 @@ public partial class Expander : ContentControl
 
 		if (GetTemplateChild<Border>(c_expanderContent) is Border expanderContent)
 		{
-			expanderContent.SizeChanged += OnContentSizeChanged;
-			registrations.Add(() => expanderContent.SizeChanged -= OnContentSizeChanged);
+			registrations.Add(expanderContent.RegisterWeakSizeChanged(OnContentSizeChanged));
 		}
 
 		UpdateExpandState(false);
