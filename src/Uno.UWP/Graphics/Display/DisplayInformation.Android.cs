@@ -11,27 +11,8 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static DisplayInformation? _instance;
-
 		private DisplayMetricsCache _cachedDisplayMetrics;
 		private SurfaceOrientation _cachedRotation;
-
-		private static DisplayInformation InternalGetForCurrentView()
-		{
-			if (_instance == null)
-			{
-				if (ContextHelper.TryGetCurrent(out _))
-				{
-					_instance = new DisplayInformation();
-				}
-				else
-				{
-					throw new Exception($"Failed to get current activity, DisplayInformation is not available. On Android, DisplayInformation is available as early as Application.OnLaunched.");
-				}
-			}
-
-			return _instance;
-		}
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
