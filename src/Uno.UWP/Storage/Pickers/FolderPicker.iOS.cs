@@ -8,43 +8,56 @@ using MobileCoreServices;
 using UIKit;
 using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
+using Uno.UI.Dispatching;
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker
 	{
-		private async Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
+		private Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
-			var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
-			if (rootController == null)
+			static async Task<StorageFolder?> PickFolderAsync()
 			{
-				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
+				var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
+				if (rootController == null)
+				{
+					throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
+				}
+
+				var documentTypes = new string[] { UTType.Folder };
+				using var documentPicker = new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open);
+
+				var completionSource = new TaskCompletionSource<NSUrl?>();
+
+				documentPicker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
+					UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
+
+				documentPicker.Delegate = new FolderPickerDelegate(completionSource);
+
+				if (documentPicker.PresentationController is not null)
+				{
+					documentPicker.PresentationController.Delegate = new FolderPickerPresentationControllerDelegate(completionSource);
+				}
+
+				await rootController.PresentViewControllerAsync(documentPicker, true);
+
+				var nsUrl = await completionSource.Task;
+				if (nsUrl is null)
+				{
+					return null;
+				}
+
+				return StorageFolder.GetFromSecurityScopedUrl(nsUrl, null);
 			}
 
-			var documentTypes = new string[] { UTType.Folder };
-			using var documentPicker = new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open);
-
-			var completionSource = new TaskCompletionSource<NSUrl?>();
-
-			documentPicker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
-				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
-
-			documentPicker.Delegate = new FolderPickerDelegate(completionSource);
-
-			if (documentPicker.PresentationController != null)
+			var tcs = new TaskCompletionSource<StorageFolder?>();
+			NativeDispatcher.Main.Enqueue(async () =>
 			{
-				documentPicker.PresentationController.Delegate = new FolderPickerPresentationControllerDelegate(completionSource);
-			}
+				var folder = await PickFolderAsync();
+				tcs.SetResult(folder);
+			});
 
-			await rootController.PresentViewControllerAsync(documentPicker, true);
-
-			var nsUrl = await completionSource.Task;
-			if (nsUrl == null)
-			{
-				return null;
-			}
-
-			return StorageFolder.GetFromSecurityScopedUrl(nsUrl, null);
+			return tcs.Task;
 		}
 
 		private class FolderPickerDelegate : UIDocumentPickerDelegate
