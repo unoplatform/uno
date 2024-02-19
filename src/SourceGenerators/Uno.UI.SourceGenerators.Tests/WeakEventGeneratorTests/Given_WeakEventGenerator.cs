@@ -80,7 +80,8 @@ public class Given_WeakEventGenerator
 							partial class C
 							{
 								/// <summary> Registers an event handler on the <see ref="MyEvent" /> event</summary>
-								/// <remarks>Make sure to register an actual method, not a lambda to ensure that the reference stays alive</remarks>								internal global::System.IDisposable RegisterWeakMyEvent(global::System.EventHandler handler)
+								/// <remarks>Make sure to register an actual method, not a lambda to ensure that the reference stays alive</remarks>
+								internal global::System.IDisposable RegisterWeakMyEvent(global::System.EventHandler handler)
 								{
 									var handlerRef = global::Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, handler);
 									global::System.EventHandler weakHandler = (sender, e) => 

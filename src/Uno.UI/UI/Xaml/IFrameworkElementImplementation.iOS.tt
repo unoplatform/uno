@@ -151,14 +151,17 @@ namespace <#= mixin.NamespaceName #>
 
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Loaded;
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 #endif
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Unloaded;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 
 #if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #> // DefineLayoutSubviews || DefineSetNeedsLayout
