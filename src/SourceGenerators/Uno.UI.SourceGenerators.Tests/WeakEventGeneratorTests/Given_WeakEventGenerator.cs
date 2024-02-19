@@ -84,21 +84,26 @@ public class Given_WeakEventGenerator
 								internal global::System.IDisposable RegisterWeakMyEvent(global::System.EventHandler handler)
 								{
 									var handlerRef = global::Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, handler);
-									global::System.EventHandler weakHandler = (sender, e) => 
+									global::System.EventHandler weakHandler = null;
+									weakHandler = (sender, e) => 
 									{
 										if (handlerRef.Target is global::System.EventHandler handler2)
 										{
 											handler2.Invoke(sender, e);
 										}
+										else
+										{
+											Cleanup();
+										}
 									}
 									;
 									MyEvent += weakHandler;
-									return global::Uno.Disposables.Disposable.Create(() =>
+									return global::Uno.Disposables.Disposable.Create(Cleanup);
+									void Cleanup()
 									{
 										MyEvent -= weakHandler;
 										global::Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, handlerRef);
 									}
-									);
 								}
 							}
 						}
@@ -176,21 +181,26 @@ public class Given_WeakEventGenerator
 								internal global::System.IDisposable RegisterWeakMyEvent(global::System.EventHandler handler)
 								{
 									var handlerRef = global::Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, handler);
-									global::System.EventHandler weakHandler = (sender, e) => 
+									global::System.EventHandler weakHandler = null;
+									weakHandler = (sender, e) => 
 									{
 										if (handlerRef.Target is global::System.EventHandler handler2)
 										{
 											handler2.Invoke(sender, e);
 										}
+										else
+										{
+											Cleanup();
+										}
 									}
 									;
 									MyEvent += weakHandler;
-									return global::Uno.Disposables.Disposable.Create(() =>
+									return global::Uno.Disposables.Disposable.Create(Cleanup);
+									void Cleanup()
 									{
 										MyEvent -= weakHandler;
 										global::Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, handlerRef);
 									}
-									);
 								}
 							}
 						}

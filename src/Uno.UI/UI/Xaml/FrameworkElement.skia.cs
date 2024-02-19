@@ -46,6 +46,7 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
+		[GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 
 		#region Name Dependency Property

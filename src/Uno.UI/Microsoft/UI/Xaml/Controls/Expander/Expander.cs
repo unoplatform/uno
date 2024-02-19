@@ -86,6 +86,7 @@ public partial class Expander : ContentControl
 			// SizeChanged event is fired.
 #if HAS_UNO
 			registrations.Add(expanderContentClip.RegisterWeakSizeChanged(OnContentClipSizeChanged));
+			expanderContentClip.SizeChanged
 #else
 			var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
 			visual.Clip = visual.Compositor.CreateInsetClip();
