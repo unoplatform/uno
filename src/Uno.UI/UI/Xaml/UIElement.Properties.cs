@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Markup;
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
+using Microsoft.UI.Input;
 using Uno.UI.Xaml;
 
 #if __IOS__
@@ -66,6 +67,24 @@ namespace Microsoft.UI.Xaml
 		{
 			get => GetVisibilityValue();
 			set => SetVisibilityValue(value);
+		}
+
+		/// <summary>
+		/// Represents the final cursor shape of the element that is set using ProtectedCursor.
+		/// </summary>
+		/// <remarks>
+		/// This property should never be directly set except from ProtectedCursor's ChangedCallback, and its value should always be calculated through the dependency property system.
+		/// </remarks>
+		/// <remarks>
+		/// The type is nullable because we need a state that indicates that the cursor should be hidden. We choose that state to be null.
+		/// </remarks>
+		[GeneratedDependencyProperty(DefaultValue = InputSystemCursorShape.Arrow, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = false)]
+		internal static DependencyProperty CalculatedFinalCursorProperty { get; } = CreateCalculatedFinalCursorProperty();
+
+		internal InputSystemCursorShape? CalculatedFinalCursor
+		{
+			get => GetCalculatedFinalCursorValue();
+			private set => SetCalculatedFinalCursorValue(value);
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.LogicalChild)]

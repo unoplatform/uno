@@ -190,6 +190,10 @@ namespace Uno.UI {
 			}
 		}
 
+		static setBodyCursor(value: string): void {
+			document.body.style.cursor = value;
+		}
+
 		/**
 			* Reads the window's search parameters
 			* 

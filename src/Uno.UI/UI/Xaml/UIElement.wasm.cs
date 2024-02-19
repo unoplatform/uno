@@ -669,39 +669,5 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
-
-
-		private Microsoft.UI.Input.InputCursor _protectedCursor;
-
-#if HAS_UNO_WINUI
-		protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#else
-		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
-#endif
-		{
-			get => _protectedCursor;
-			set
-			{
-				if (_protectedCursor != value)
-				{
-					_protectedCursor = value;
-					SetProtectedCursorNative();
-				}
-			}
-
-		}
-
-		private void SetProtectedCursorNative()
-		{
-			if (_protectedCursor is Microsoft.UI.Input.InputSystemCursor inputSystemCursor)
-			{
-				var cursorShape = inputSystemCursor.CursorShape.ToCssProtectedCursor();
-				this.SetStyle("cursor", cursorShape);
-			}
-			else
-			{
-				this.ResetStyle("cursor");
-			}
-		}
 	}
 }
