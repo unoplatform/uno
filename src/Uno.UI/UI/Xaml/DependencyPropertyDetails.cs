@@ -252,6 +252,13 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>The value at the current highest precedence level</returns>
 		internal object? GetValue()
+			// Comment originates from WinUI source code (CModifiedValue::GetEffectiveValue)
+			// If a local value has been set after an animated value, the local
+			// value has precedence. This is different from WPF and is done because
+			// some legacy SL apps depend on this and because SL Animation thinks that
+			// it is better design for an animation in filling period to be trumped by a
+			// local value. In the active period of an animation, the next animated
+			// value will take precedence over the old local value.
 			=> GetValue(_highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
 				? DependencyPropertyValuePrecedences.Local
 				: _highestPrecedence);
