@@ -604,7 +604,10 @@
 								VerticalContentAlignment="Stretch"
 								Grid.Row="1"/>
 
-				<StackPanel Grid.Row="2" 
+				<StackPanel Grid.Row="2"
+							Padding="8"
+							BorderThickness="0,1,0,0"
+							BorderBrush="{ThemeResource Color05Brush}"
 							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 							Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
 					<TextBlock Text="Description"
