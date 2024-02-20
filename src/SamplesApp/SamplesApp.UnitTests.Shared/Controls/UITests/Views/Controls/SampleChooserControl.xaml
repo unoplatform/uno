@@ -45,11 +45,11 @@
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
 				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
+						Value="{ThemeResource Color05Brush}" />
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Background"
-						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
+						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 				<Setter Property="Height"
 								Value="50" />
 			</Style>
@@ -603,6 +603,17 @@
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="1"/>
+
+				<StackPanel Grid.Row="2" 
+							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+							Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
+					<TextBlock Text="Description"
+							Style="{StaticResource Typo03}"
+							Margin="0,0,0,4" />
+					<TextBlock Text="{Binding CurrentSelectedSample.Description}"
+							Style="{StaticResource Typo05}"
+							MaxHeight="80" />
+				</StackPanel>
 			</Grid>
 		</SplitView.Content>
 	</SplitView>
