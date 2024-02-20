@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.UI.Xaml.Controls;
 
 #if __IOS__
@@ -13,13 +9,6 @@ using AppKit;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-/// <summary>
-/// Declares a Content presenter
-/// </summary>
-/// <remarks>
-/// The content presenter is used for compatibility with WPF concepts,
-/// but the ContentSource property is not available, because there are ControlTemplates for now.
-/// </remarks>
 partial class ContentPresenter
 {
 	private readonly BorderLayerRenderer _borderRenderer;
@@ -78,9 +67,9 @@ partial class ContentPresenter
 			ContentTemplateRoot?.RemoveFromSuperview();
 		}
 	}
-	
+
 	private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-	
+
 	private void UpdateBorder() => _borderRenderer.Update();
 
 	partial void ClearBorder() => _borderRenderer.Clear();
