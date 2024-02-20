@@ -24,10 +24,11 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private Action _backgroundBrushChanged;
 		private Action _borderBrushChanged;
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer;
 
 		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
 			Initialize();
 		}
 
@@ -43,16 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		partial void OnLoadedPartial()
-		{
-			UpdateBorder();
-		}
-
-		partial void OnUnloadedPartial()
-		{
-			_borderRenderer.Clear();
-		}
-
 		partial void UpdateBorder()
 		{
 			UpdateBorder(false);
@@ -60,26 +51,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateBorder(bool willUpdateMeasures)
 		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					PaddingInternal,
-					willUpdateMeasures
-				);
-			}
+			_borderRenderer.Update();
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
-			UpdateBorder(changed);
+			UpdateBorder(changed); // TODO: ??
 		}
 
 		protected override void OnDraw(Android.Graphics.Canvas canvas)

@@ -835,12 +835,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			ClearBorder();
-
 			TryDetachNativeElement();
 		}
-
-		partial void ClearBorder();
 
 		private bool ResetDataContextOnFirstLoad()
 		{

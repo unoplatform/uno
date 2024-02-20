@@ -21,10 +21,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentPresenter
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private BorderLayerRenderer _borderRenderer;
 
 		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
 			InitializeContentPresenter();
 
 			IFrameworkElementHelper.Initialize(this);
@@ -33,8 +34,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
-
-			UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()
@@ -79,22 +78,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateBorder(bool willUpdateMeasures)
 		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					Padding,
-					willUpdateMeasures
-				);
-			}
+			_borderRenderer.Update();
 		}
-
-		partial void ClearBorder() => _borderRenderer.Clear();
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{

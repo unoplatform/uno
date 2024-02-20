@@ -21,13 +21,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Page
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private BorderLayerRenderer _borderRenderer;
 
 		private void InitializeBorder()
 		{
-			Loaded += (s, e) => UpdateBorder();
-			Unloaded += (s, e) => _borderRenderer.Clear();
-			LayoutUpdated += (s, e) => UpdateBorder();
+			_borderRenderer = new BorderLayerRenderer(this);
 		}
 
 		partial void UpdateBorder()
@@ -37,19 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateBorder(bool willUpdateMeasures)
 		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BackgroundSizing.InnerBorderEdge,
-					Thickness.Empty,
-					null,
-					CornerRadius.None,
-					Thickness.Empty,
-					willUpdateMeasures
-				);
-			}
+			_borderRenderer.Update();
 		}
 	}
 }
