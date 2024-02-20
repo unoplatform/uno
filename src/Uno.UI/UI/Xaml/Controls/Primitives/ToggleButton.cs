@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using Uno.UI.Xaml;
+
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	/// <summary>
@@ -26,16 +28,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Fires when a ToggleButton is checked.
 		/// </summary>
+		[GeneratedWeakEvent]
 		public event RoutedEventHandler? Checked;
 
 		/// <summary>
 		/// Fires when a ToggleButton is unchecked.
 		/// </summary>
+		[GeneratedWeakEvent]
 		public event RoutedEventHandler? Unchecked;
 
 		/// <summary>
 		/// Fires when the state of a ToggleButton is switched to the indeterminate state.
 		/// </summary>
+		[GeneratedWeakEvent]
 		public event RoutedEventHandler? Indeterminate;
 
 		/// <summary>
