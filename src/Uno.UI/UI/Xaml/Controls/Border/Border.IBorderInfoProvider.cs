@@ -14,4 +14,10 @@ partial class Border : IBorderInfoProvider
 	Thickness IBorderInfoProvider.BorderThickness => BorderThickness;
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius;
+
+#if __ANDROID__
+	private bool _shouldBorderLayerUpdateMeasures;
+
+	bool IBorderInfoProvider.ShouldUpdateMeasures => _shouldBorderLayerUpdateMeasures;
+#endif
 }

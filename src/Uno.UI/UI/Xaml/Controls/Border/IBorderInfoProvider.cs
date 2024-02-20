@@ -35,4 +35,8 @@ internal partial interface IBorderInfoProvider
 	/// Gets the corner radius.
 	/// </summary>
 	CornerRadius CornerRadius { get; }
+
+#if __ANDROID__
+	bool ShouldUpdateMeasures { get; set; }
+#endif
 }
