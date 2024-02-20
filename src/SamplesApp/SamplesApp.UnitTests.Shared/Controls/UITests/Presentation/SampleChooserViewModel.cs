@@ -643,7 +643,7 @@ namespace SampleControl.Presentation
 						return;
 					}
 
-					var results = await SearchAsync(search, Categories, currentSearch.Token);
+					var results = await SearchAsync(search, _unfilteredCategories, currentSearch.Token);
 
 					if (results is null || currentSearch.IsCancellationRequested)
 					{
