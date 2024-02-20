@@ -10,19 +10,45 @@ using UIKit;
 using Foundation;
 using Windows.ApplicationModel.Core;
 using Uno.Helpers.Theming;
+using Windows.UI.Core;
+using Uno.UI.Dispatching;
+using Uno.Foundation.Logging;
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
-		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
+		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
-			var files = await PickFilesAsync(false, token);
-			return files.Count == 0 ? null : files[0];
+			var tcs = new TaskCompletionSource<StorageFile?>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				var files = await PickFilesAsync(false, token);
+
+				if (files.Count > 0)
+				{
+					tcs.SetResult(files[0]);
+				}
+				else
+				{
+					tcs.SetResult(null);
+				}
+			});
+
+			return tcs.Task;
 		}
 
-		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token) =>
-			await PickFilesAsync(true, token);
+		private Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
+		{
+			var tcs = new TaskCompletionSource<IReadOnlyList<StorageFile>>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				var files = await PickFilesAsync(true, token);
+				tcs.SetResult(files);
+			});
+
+			return tcs.Task;
+		}
 
 		private UIViewController GetViewController(bool multiple, TaskCompletionSource<NSUrl?[]> completionSource)
 		{
@@ -50,9 +76,14 @@ namespace Windows.Storage.Pickers
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
-			if (rootController == null)
+			if (rootController is null)
 			{
 				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Picking files. Multiple: {multiple}");
 			}
 
 			var completionSource = new TaskCompletionSource<NSUrl?[]>();
@@ -73,14 +104,25 @@ namespace Windows.Storage.Pickers
 
 			rootController.DismissViewController(true, null);
 
-			if (nsUrls == null || nsUrls.Length == 0)
+			if (nsUrls is null || nsUrls.Length == 0)
 			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("User cancelled file picking.");
+				}
+
 				return FilePickerSelectedFilesArray.Empty;
 			}
 
 			var files = nsUrls
-				.Where(url => url != null)
+				.Where(url => url is not null)
 				.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl!, null)).ToArray();
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Picked {files.Length} files from {nsUrls.Length} URLs.");
+			}
+
 			return new FilePickerSelectedFilesArray(files);
 		}
 
