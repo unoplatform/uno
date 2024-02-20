@@ -26,11 +26,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Fires when a ToggleButton is checked.
 		/// </summary>
+		[global::Uno.UI.Xaml.GeneratedWeakEventAttribute]
 		public event RoutedEventHandler? Checked;
 
 		/// <summary>
 		/// Fires when a ToggleButton is unchecked.
 		/// </summary>
+		[global::Uno.UI.Xaml.GeneratedWeakEventAttribute]
 		public event RoutedEventHandler? Unchecked;
 
 		/// <summary>
