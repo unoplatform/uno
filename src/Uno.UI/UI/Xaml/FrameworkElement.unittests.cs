@@ -129,5 +129,8 @@ namespace Microsoft.UI.Xaml
 
 		private protected override double GetActualWidth() => ActualWidth;
 		private protected override double GetActualHeight() => ActualHeight;
+
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
+		public event global::Microsoft.UI.Xaml.SizeChangedEventHandler SizeChanged;
 	}
 }
