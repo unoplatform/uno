@@ -37,10 +37,14 @@ namespace Windows.Graphics.Display
 
 		public static DisplayInformation GetForCurrentView()
 		{
+#if ANDROID
+			return GetForCurrentViewAndroid();
+#else
 			// This is needed to ensure for "current view" there is always a corresponding DisplayView instance.
 			// This means that Uno Islands and WinUI apps can keep using this API for now until we make the breaking change
 			// on Uno.WinUI codebase.
 			return GetOrCreateForWindowId(AppWindow.MainWindowId);
+#endif
 		}
 
 		internal static DisplayInformation GetForCurrentViewSafe() => GetForCurrentView();
