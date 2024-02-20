@@ -1,6 +1,3 @@
-#nullable enable
-
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -16,9 +13,9 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 {
-	public static MacOSUnoKeyboardInputSource Instance = new();
+	private static readonly MacOSUnoKeyboardInputSource _instance = new();
 
-	private unsafe MacOSUnoKeyboardInputSource()
+	private MacOSUnoKeyboardInputSource()
 	{
 	}
 
@@ -27,7 +24,7 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 		// FIXME: use a single `uno_set_window_key_callbacks` call ?
 		NativeUno.uno_set_window_key_down_callback(&OnRawKeyDown);
 		NativeUno.uno_set_window_key_up_callback(&OnRawKeyUp);
-		ApiExtensibility.Register(typeof(IUnoKeyboardInputSource), o => Instance);
+		ApiExtensibility.Register(typeof(IUnoKeyboardInputSource), _ => _instance);
 	}
 
 #pragma warning disable CS0067
@@ -56,13 +53,13 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 				typeof(MacOSUnoKeyboardInputSource).Log().Trace($"OnRawKeyDown '${key}', mods: '{mods}', scanCode: {scanCode}");
 			}
 
-			var keyDown = Instance.KeyDown;
+			var keyDown = _instance.KeyDown;
 			if (keyDown is null)
 			{
 				return 0;
 			}
 			var args = CreateArgs(key, mods, scanCode);
-			keyDown.Invoke(Instance, args);
+			keyDown.Invoke(_instance, args);
 			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)
@@ -82,13 +79,13 @@ internal class MacOSUnoKeyboardInputSource : IUnoKeyboardInputSource
 				typeof(MacOSUnoKeyboardInputSource).Log().Trace($"OnRawKeyUp '${key}', mods: '{mods}', scanCode: {scanCode}");
 			}
 
-			var keyUp = Instance.KeyUp;
+			var keyUp = _instance.KeyUp;
 			if (keyUp is null)
 			{
 				return 0;
 			}
 			var args = CreateArgs(key, mods, scanCode);
-			keyUp.Invoke(Instance, args);
+			keyUp.Invoke(_instance, args);
 			return args.Handled ? 1 : 0;
 		}
 		catch (Exception e)

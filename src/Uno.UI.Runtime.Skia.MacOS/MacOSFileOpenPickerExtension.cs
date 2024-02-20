@@ -1,10 +1,4 @@
-#nullable enable
-
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -16,16 +10,15 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSFileOpenPickerExtension : IFileOpenPickerExtension
 {
-	public static MacOSFileOpenPickerExtension Instance = new();
+	private static readonly MacOSFileOpenPickerExtension _instance = new();
 
 	private MacOSFileOpenPickerExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), _ => _instance);
 
 	// TODO: we need something more in IFileOpenPickerExtension so we can customize the native picker from the user-created FileOpenPicker
-	// maybe adding something like below to the interface (with a default implementation that does nothing) ?
 	public void Customize(FileOpenPicker picker)
 	{
 		// TODO: call native code

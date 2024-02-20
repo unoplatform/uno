@@ -1,7 +1,3 @@
-#nullable enable
-
-using System;
-
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 
@@ -9,14 +5,14 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-public partial class MacSkiaHost : ISkiaApplicationHost
+public class MacSkiaHost : ISkiaApplicationHost
 {
 	private readonly Func<Application> _appBuilder;
 
 	[ThreadStatic] private static bool _isDispatcherThread;
 	[ThreadStatic] private static MacSkiaHost? _current;
 
-	static unsafe MacSkiaHost()
+	static MacSkiaHost()
 	{
 		MacOSWindowHost.Register(); // must be initialized first to load libSkiaSharp
 

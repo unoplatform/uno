@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,7 +8,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSCoreApplicationExtension : ICoreApplicationExtension
 {
-	public static MacOSCoreApplicationExtension Instance = new();
+	private static readonly MacOSCoreApplicationExtension _instance = new();
 
 	private MacOSCoreApplicationExtension()
 	{
@@ -19,7 +17,7 @@ internal class MacOSCoreApplicationExtension : ICoreApplicationExtension
 	public static unsafe void Register()
 	{
 		NativeUno.uno_set_application_can_exit_callback(&AppCanExit);
-		ApiExtensibility.Register(typeof(ICoreApplicationExtension), o => Instance);
+		ApiExtensibility.Register(typeof(ICoreApplicationExtension), _ => _instance);
 	}
 
 	public bool CanExit => true;
@@ -28,5 +26,5 @@ internal class MacOSCoreApplicationExtension : ICoreApplicationExtension
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	// System.Boolean is not blittable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
-	internal static int AppCanExit() => Instance.CanExit ? 1 : 0;
+	internal static int AppCanExit() => _instance.CanExit ? 1 : 0;
 }

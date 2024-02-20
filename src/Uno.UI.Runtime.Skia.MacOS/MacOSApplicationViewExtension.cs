@@ -1,5 +1,3 @@
-#nullable enable
-
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
@@ -9,13 +7,13 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSApplicationViewExtension : IApplicationViewExtension
 {
-	public static MacOSApplicationViewExtension Instance = new();
+	private static readonly MacOSApplicationViewExtension _instance = new();
 
 	private MacOSApplicationViewExtension()
 	{
 	}
 
-	public static void Register() => ApiExtensibility.Register(typeof(IApplicationViewExtension), o => Instance);
+	public static void Register() => ApiExtensibility.Register(typeof(IApplicationViewExtension), _ => _instance);
 
 	public void ExitFullScreenMode() => NativeUno.uno_application_exit_full_screen();
 

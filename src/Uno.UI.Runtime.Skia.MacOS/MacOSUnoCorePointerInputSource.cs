@@ -1,12 +1,8 @@
-#nullable enable
-
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 
@@ -22,7 +18,7 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 	const int NSEventTypeRightMouseDown = 2;
 	const int NSEventTypeOtherMouseDown = 25;
 
-	public static MacOSUnoCorePointerInputSource Instance = new();
+	private static readonly MacOSUnoCorePointerInputSource _instance = new();
 
 	private CoreCursor? _pointerCursor = new(CoreCursorType.Arrow, 0);
 
@@ -35,7 +31,7 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 
 	public static unsafe void Register()
 	{
-		ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), o => Instance);
+		ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), _ => _instance);
 		NativeUno.uno_set_window_mouse_event_callback(&MouseEvent);
 	}
 
@@ -94,22 +90,22 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 			switch (data->EventType)
 			{
 				case NativeMouseEvents.Entered:
-					mouseEvent = Instance.PointerEntered;
+					mouseEvent = _instance.PointerEntered;
 					break;
 				case NativeMouseEvents.Exited:
-					mouseEvent = Instance.PointerExited;
+					mouseEvent = _instance.PointerExited;
 					break;
 				case NativeMouseEvents.Down:
-					mouseEvent = Instance.PointerPressed;
+					mouseEvent = _instance.PointerPressed;
 					break;
 				case NativeMouseEvents.Up:
-					mouseEvent = Instance.PointerReleased;
+					mouseEvent = _instance.PointerReleased;
 					break;
 				case NativeMouseEvents.Moved:
-					mouseEvent = Instance.PointerMoved;
+					mouseEvent = _instance.PointerMoved;
 					break;
 				case NativeMouseEvents.ScrollWheel:
-					mouseEvent = Instance.PointerWheelChanged;
+					mouseEvent = _instance.PointerWheelChanged;
 					break;
 			}
 			if (mouseEvent is null)
@@ -117,7 +113,7 @@ internal class MacOSUnoCorePointerInputSource : IUnoCorePointerInputSource
 				return 0; // unhandled
 			}
 
-			mouseEvent(Instance, BuildPointerArgs(*data));
+			mouseEvent(_instance, BuildPointerArgs(*data));
 			return 1; // handled
 		}
 		catch (Exception e)

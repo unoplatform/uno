@@ -1,15 +1,10 @@
-#nullable enable
-
-using System;
 using System.ComponentModel;
-using System.IO;
 
 using Uno.Foundation.Logging;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using IOPath = System.IO.Path;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
+// using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -17,8 +12,6 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal class MacOSWindowNative
 {
 	private readonly WinUIWindow _winUIWindow;
-	private readonly bool _mainWindow;
-	private readonly nint _handle;
 	private readonly ApplicationView _applicationView;
 
 	public MacOSWindowNative(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot)
@@ -27,7 +20,7 @@ internal class MacOSWindowNative
 
 		var defaultWidth = 1024.0;
 		var defaultHeight = 800.0;
-		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
 		{
 			defaultWidth = preferredWindowSize.Width;
@@ -36,25 +29,25 @@ internal class MacOSWindowNative
 
 		if (MacSkiaHost.Current is not null)
 		{
-			_mainWindow = true;
-			_handle = NativeUno.uno_app_get_main_window();
+			MainWindow = true;
+			Handle = NativeUno.uno_app_get_main_window();
 			MacSkiaHost.Current.InitialWindow ??= this;
 		}
 		else
 		{
-			_mainWindow = false;
-			_handle = NativeUno.uno_window_create(defaultWidth, defaultHeight);
+			MainWindow = false;
+			Handle = NativeUno.uno_window_create(defaultWidth, defaultHeight);
 		}
 
 		// host MUST be created after we get a native handle
 		Host = new MacOSWindowHost(this, winUIWindow);
 
 		// TODO: combine calls
-		MacOSWindowHost.Register(_handle, Host);
+		MacOSWindowHost.Register(Handle, Host);
 		MacOSWindowHost.XamlRootMap.Register(xamlRoot, Host);
 
 		// call resize as late as possible (after the host creation)
-		NativeUno.uno_window_resize(_handle, defaultWidth, defaultHeight);
+		NativeUno.uno_window_resize(Handle, defaultWidth, defaultHeight);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
@@ -64,14 +57,14 @@ internal class MacOSWindowNative
 	}
 
 	internal MacOSWindowHost Host { get; }
-	internal nint Handle => _handle;
+	internal nint Handle { get; }
 
-	internal bool MainWindow => _mainWindow;
+	internal bool MainWindow { get; }
 
 	// FIXME: should be shared with GTK and X11 hosts with a delegate to set the icon from a filename
-	internal void UpdateWindowPropertiesFromPackage()
+	private void UpdateWindowPropertiesFromPackage()
 	{
-		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
+		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', IOPath.DirectorySeparatorChar);
 			var iconPath = IOPath.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
@@ -111,10 +104,10 @@ internal class MacOSWindowNative
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	internal void UpdateWindowPropertiesFromApplicationView()
+	private void UpdateWindowPropertiesFromApplicationView()
 	{
-		NativeUno.uno_window_set_title(_handle, _applicationView.Title);
+		NativeUno.uno_window_set_title(Handle, _applicationView.Title);
 		var minSize = _applicationView.PreferredMinSize;
-		NativeUno.uno_window_set_min_size(_handle, minSize.Width, minSize.Height);
+		NativeUno.uno_window_set_min_size(Handle, minSize.Width, minSize.Height);
 	}
 }

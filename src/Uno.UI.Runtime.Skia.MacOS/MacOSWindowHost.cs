@@ -1,28 +1,16 @@
-#nullable enable
-
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using SkiaSharp;
 
-using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 using Window = Microsoft.UI.Xaml.Window;
 
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -158,7 +146,7 @@ internal class MacOSWindowHost : IXamlRootHost
 		*rowBytes = _rowBytes;
 	}
 
-	internal static Dictionary<nint, WeakReference<MacOSWindowHost>> windows = new();
+	private static readonly Dictionary<nint, WeakReference<MacOSWindowHost>> _windows = [];
 
 	public static unsafe void Register()
 	{
@@ -182,19 +170,13 @@ internal class MacOSWindowHost : IXamlRootHost
 		NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 	}
 
-	public static void Register(nint handle, MacOSWindowHost host)
-	{
-		windows.Add(handle, new WeakReference<MacOSWindowHost>(host));
-	}
+	public static void Register(nint handle, MacOSWindowHost host) => _windows.Add(handle, new WeakReference<MacOSWindowHost>(host));
 
-	public static void Unregister(nint handle)
-	{
-		windows.Remove(handle);
-	}
+	public static void Unregister(nint handle) => _windows.Remove(handle);
 
 	private static MacOSWindowHost? GetWindowHost(nint handle)
 	{
-		if (windows.TryGetValue(handle, out var weak))
+		if (_windows.TryGetValue(handle, out var weak))
 		{
 			weak.TryGetTarget(out var window);
 			return window;
