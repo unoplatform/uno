@@ -22,7 +22,7 @@ internal sealed class AvoidStrongEventSubscription : DiagnosticAnalyzer
 		"Use weak event",
 		"Use weak event",
 		"Correctness",
-		DiagnosticSeverity.Error,
+		DiagnosticSeverity.Info,
 		isEnabledByDefault: true);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(_descriptor);
