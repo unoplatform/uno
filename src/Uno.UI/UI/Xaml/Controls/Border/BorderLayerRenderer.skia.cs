@@ -87,7 +87,7 @@ partial class BorderLayerRenderer
 		{
 			borderThickness = owner.LayoutRound(borderThickness);
 		}
-		
+
 		var borderBrush = state.BorderBrush;
 		var cornerRadius = state.CornerRadius;
 

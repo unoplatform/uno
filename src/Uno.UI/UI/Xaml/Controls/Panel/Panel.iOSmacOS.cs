@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Media;
 #if __IOS__
 using UIKit;
 using __View = UIKit.UIView;
-#elif __ANDROID__
+#elif __MACOS__
 using __View = AppKit.NSView;
 #endif
 
@@ -94,12 +94,12 @@ partial class Panel
 	}
 #else
 	// All touches that are on this view (and not its subviews) are ignored
-	public override NSView HitTest(CGPoint point) =>
+	public override __View HitTest(CGPoint point) =>
 		HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
 #endif
 
 #if __IOS__
-	public override void SubviewAdded(UIView uiview)
+	public override void SubviewAdded(__View uiview)
 	{
 		base.SubviewAdded(uiview);
 
@@ -110,7 +110,7 @@ partial class Panel
 		}
 	}
 #else
-	public override void DidAddSubview(NSView nsView)
+	public override void DidAddSubview(__View nsView)
 	{
 		base.DidAddSubview(nsView);
 
