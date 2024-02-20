@@ -3,7 +3,7 @@ namespace Windows.Storage.Pickers;
 
 internal interface IFilePicker
 {
-	string CommitButtonText { get; }
-	IList<string> FileTypeFilter { get; }
-	PickerLocationId SuggestedStartLocation { get; }
+	string CommitButtonTextInternal { get; }
+	IList<string> FileTypeFilterInternal { get; }
+	PickerLocationId SuggestedStartLocationInternal { get; }
 }

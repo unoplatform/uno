@@ -47,6 +47,10 @@ namespace Windows.Storage.Pickers
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
 
+		string IFilePicker.CommitButtonTextInternal => CommitButtonText;
+		PickerLocationId IFilePicker.SuggestedStartLocationInternal => PickerLocationId.DocumentsLibrary;
+		IList<string> IFilePicker.FileTypeFilterInternal => new FileExtensionVector();
+
 #if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		public FileOpenPicker()
 		{

@@ -139,11 +139,11 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 			var requestPath2 = await fileChooser.OpenFileAsync(window, title, new Dictionary<string, object>
 			{
 				{ "handle_token", handleToken },
-				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonText) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonText },
+				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal },
 				{ "multiple", multiple },
 				{ "directory", directory },
-				{ "filters", GetPortalFilters(picker.FileTypeFilter) },
-				{ "current_folder", Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation)).Append((byte)'\0') }
+				{ "filters", GetPortalFilters(picker.FileTypeFilterInternal) },
+				{ "current_folder", Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal)).Append((byte)'\0') }
 			});
 
 			if (requestPath != requestPath2)
