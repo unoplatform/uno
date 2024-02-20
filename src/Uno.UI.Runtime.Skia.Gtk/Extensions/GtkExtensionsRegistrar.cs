@@ -41,12 +41,25 @@ internal static class GtkExtensionsRegistrar
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new GtkDisplayInformationExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
-		ApiExtensibility.Register(typeof(ILauncherExtension), o => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? new WindowsLauncherExtension(o) : new LinuxLauncherExtension(o));
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
+
+		ApiExtensibility.Register(typeof(ILauncherExtension), o =>
+		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				return new WindowsLauncherExtension(o);
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				return new LinuxLauncherExtension(o);
+			}
+
+			return null;
+		});
 	}
 }
