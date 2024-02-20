@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 using Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
-<<<<<<< HEAD:src/Uno.UI.RuntimeTests/MUX/Microsoft_UI_Xaml_Controls/ProgressBar/ProgressBarTest.cs
-using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
-=======
 using Uno.UI.RuntimeTests.Helpers;
-using ProgressBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar;
->>>>>>> fe561607ee (fix(android): Fix NullReferenceException in ProgressBar for custom templates):src/Uno.UI.RuntimeTests/Tests/Microsoft_UI_Xaml_Controls/Given_ProgressBar.cs
+using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
