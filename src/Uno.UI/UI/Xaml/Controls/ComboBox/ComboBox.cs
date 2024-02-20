@@ -1451,21 +1451,22 @@ namespace Microsoft.UI.Xaml.Controls
 				switch (unoPlacement)
 				{
 					case DropDownPlacement.Below:
-					case DropDownPlacement.Auto when selectedIndex >= 0 && selectedIndex < stickyThreshold:
 						frame.Y = comboRect.Bottom;
 						break;
-
+					case DropDownPlacement.Auto when selectedIndex >= 0 && selectedIndex < stickyThreshold:
+						frame.Y = comboRect.Top;
+						break;
 					case DropDownPlacement.Above:
+						frame.Y = comboRect.Top - frame.Height;
+						break;
 					case DropDownPlacement.Auto when
 							selectedIndex >= 0 && selectedIndex >= itemsCount - stickyThreshold
 							// As we don't scroll into view to the selected item, this case seems awkward if the selected item
 							// is not directly visible (i.e. without scrolling) when the drop-down appears.
 							// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
 							&& (itemsCount <= _itemsToShow && frame.Height < (combo.ActualHeight * _itemsToShow) - 3):
-
-						frame.Y = comboRect.Top - frame.Height;
+						frame.Y = comboRect.Bottom - frame.Height;
 						break;
-
 					case DropDownPlacement.Centered:
 					case DropDownPlacement.Auto: // For now we don't support other alignments than top/bottom/center, but on UWP auto can also be 2/3 - 1/3
 					default:
