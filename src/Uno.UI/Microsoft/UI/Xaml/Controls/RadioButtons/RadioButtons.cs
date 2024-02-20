@@ -24,6 +24,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 	{
 		/* Begin Uno specific */
 		private SerialDisposable _toggleButtonSubscriptions = new();
+		private SerialDisposable _repeaterSubscriptions = new();
 		/* End Uno Specific */
 
 		public RadioButtons()
@@ -77,6 +78,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 					repeater.ItemTemplate = m_radioButtonsElementFactory;
 
+					CompositeDisposable disposables = new();
+					_repeaterSubscriptions.Disposable = disposables;
+
+					disposables.Add(repeater.RegisterWeakElementPrepared(OnRepeaterElementPrepared));
+					disposables.Add(repeater.RegisterWeakElementClearing(OnRepeaterElementClearing));
+					disposables.Add(repeater.RegisterWeakElementIndexChanged(OnRepeaterElementIndexChanged));
+					disposables.Add(repeater.RegisterWeakLoaded(OnRepeaterLoaded));
+					disposables.Add(repeater.RegisterWeakUnloaded(OnRepeaterUnloaded));
 					return repeater;
 				}
 				return null;
