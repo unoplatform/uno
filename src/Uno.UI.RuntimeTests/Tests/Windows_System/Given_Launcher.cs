@@ -1,5 +1,6 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#if __ANDROID__ || __IOS__ || __SKIA__
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Core;
@@ -59,7 +60,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				new Uri("ms-settings:network-wifi"),
 				LaunchQuerySupportType.Uri);
 
-			Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
+			}
+			else
+			{
+				Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
+			}
 		}
 
 		[TestMethod]
@@ -69,7 +77,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				new Uri("ms-windows-store://home"),
 				LaunchQuerySupportType.Uri);
 
-			Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
+			}
+			else
+			{
+				Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
+			}
 		}
 
 		private async Task DispatchAsync(Func<Task> asyncAction)
