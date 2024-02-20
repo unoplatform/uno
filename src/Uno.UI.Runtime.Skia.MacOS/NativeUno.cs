@@ -1,7 +1,5 @@
-#nullable enable
-
-using System;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 
 using Windows.Devices.Input;
 using Windows.System;
@@ -47,7 +45,103 @@ internal struct NativeMouseEventData
 	public ulong Timestamp;
 	public uint Pid;
 };
+
+// keep in sync with UNOClipboard.h
+[NativeMarshalling(typeof(ClipboardDataMarshaller))]
+internal struct NativeClipboardData
+{
+	public string? HtmlContent;
+	public string? RtfContent;
+	public string? TextContent;
+	public string? Uri;
+	public string? FileUrl;
+
+	public string? BitmapFormat;
+	public string? BitmapPath;
+	public byte[]? BitmapData;
+};
 #pragma warning restore 0649
+
+[CustomMarshaller(typeof(NativeClipboardData), MarshalMode.Default, typeof(ClipboardDataMarshaller))]
+internal static unsafe class ClipboardDataMarshaller
+{
+	public static ClipboardDataUnmanaged ConvertToUnmanaged(NativeClipboardData managed)
+	{
+		var size = (nuint)(managed.BitmapData?.Length ?? 0);
+		void* data = null;
+		if (size > 0)
+		{
+			data = NativeMemory.Alloc(size);
+			fixed (void* ptr = managed.BitmapData)
+			{
+				NativeMemory.Copy(ptr, data, size);
+			}
+		}
+
+		return new ClipboardDataUnmanaged()
+		{
+			HtmlContent = Utf8StringMarshaller.ConvertToUnmanaged(managed.HtmlContent),
+			RtfContent = Utf8StringMarshaller.ConvertToUnmanaged(managed.RtfContent),
+			TextContent = Utf8StringMarshaller.ConvertToUnmanaged(managed.TextContent),
+			Uri = Utf8StringMarshaller.ConvertToUnmanaged(managed.Uri),
+			FileUrl = Utf8StringMarshaller.ConvertToUnmanaged(managed.FileUrl),
+			BitmapFormat = Utf8StringMarshaller.ConvertToUnmanaged(managed.BitmapFormat),
+			BitmapPath = Utf8StringMarshaller.ConvertToUnmanaged(managed.BitmapPath),
+			BitmapData = data,
+			BitmapSize = size,
+		};
+	}
+
+	public static NativeClipboardData ConvertToManaged(ClipboardDataUnmanaged unmanaged)
+	{
+		byte[] data = Array.Empty<byte>();
+		if (unmanaged.BitmapData is not null)
+		{
+			data = new byte[unmanaged.BitmapSize];
+			fixed (void* ptr = data)
+			{
+				NativeMemory.Copy(unmanaged.BitmapData, ptr, (nuint)unmanaged.BitmapSize);
+			}
+		}
+
+		return new NativeClipboardData()
+		{
+			HtmlContent = Utf8StringMarshaller.ConvertToManaged(unmanaged.HtmlContent),
+			RtfContent = Utf8StringMarshaller.ConvertToManaged(unmanaged.RtfContent),
+			TextContent = Utf8StringMarshaller.ConvertToManaged(unmanaged.TextContent),
+			Uri = Utf8StringMarshaller.ConvertToManaged(unmanaged.Uri),
+			FileUrl = Utf8StringMarshaller.ConvertToManaged(unmanaged.FileUrl),
+			BitmapFormat = Utf8StringMarshaller.ConvertToManaged(unmanaged.BitmapFormat),
+			BitmapPath = Utf8StringMarshaller.ConvertToManaged(unmanaged.BitmapPath),
+			BitmapData = data,
+		};
+	}
+
+	public static void Free(ClipboardDataUnmanaged unmanaged)
+	{
+		Utf8StringMarshaller.Free(unmanaged.HtmlContent);
+		Utf8StringMarshaller.Free(unmanaged.RtfContent);
+		Utf8StringMarshaller.Free(unmanaged.TextContent);
+		Utf8StringMarshaller.Free(unmanaged.Uri);
+		Utf8StringMarshaller.Free(unmanaged.FileUrl);
+		Utf8StringMarshaller.Free(unmanaged.BitmapFormat);
+		Utf8StringMarshaller.Free(unmanaged.BitmapPath);
+		NativeMemory.Free(unmanaged.BitmapData);
+	}
+
+	internal struct ClipboardDataUnmanaged
+	{
+		public byte* HtmlContent;
+		public byte* RtfContent;
+		public byte* TextContent;
+		public byte* Uri;
+		public byte* FileUrl;
+		public byte* BitmapFormat;
+		public byte* BitmapPath;
+		public void* BitmapData;
+		public ulong BitmapSize;
+	}
+}
 
 internal static partial class NativeUno
 {
@@ -153,17 +247,21 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_clear();
 
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial IntPtr uno_clipboard_get_content();
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_clipboard_get_content(ref NativeClipboardData data);
 
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_clipboard_set_content(IntPtr content);
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_clipboard_set_content(ref NativeClipboardData data);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_start_content_changed();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_stop_content_changed();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_clipboard_set_content_changed_callback(delegate* unmanaged[Cdecl]<void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_cursor_hide();
