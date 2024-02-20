@@ -1,5 +1,7 @@
 #nullable enable
 
+// Mostly inspired from Minsk (https://github.com/terrajobst/minsk/)
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
