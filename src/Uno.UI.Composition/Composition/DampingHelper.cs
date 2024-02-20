@@ -2,6 +2,8 @@
 
 namespace Microsoft.UI.Composition.Interactions;
 
+// Equations from https://docs.google.com/presentation/d/152lQqvO6ImEGW2k98w-E5Dh8stBeRxBd/edit#slide=id.p51
+
 internal static class DampingHelper
 {
 	// Settling time is 4 / (zeta * wd)
