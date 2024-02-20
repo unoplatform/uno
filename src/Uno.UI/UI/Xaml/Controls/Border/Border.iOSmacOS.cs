@@ -47,34 +47,18 @@ public partial class Border
 		UpdateBorder();
 	}
 
-	private void UpdateBorder(_Image backgroundImage = null)
+	private void UpdateBorder()
 	{
-		if (IsLoaded)
+		_borderRenderer.Update();
+		if (_borderRenderer.BoundsPath is CGPath updated) // UpdateLayer may return null if there is no update
 		{
-			if (backgroundImage == null)
-			{
-				ImageData backgroundImageData = default;
-				if ((Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData) == true &&
-					backgroundImageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
-				{
-					backgroundImage = backgroundImageData.NativeImage;
-				}
-			}
-
-			_borderRenderer.Update();
-			if (_borderRenderer.BoundsPath is CGPath updated) // UpdateLayer may return null if there is no update
-			{
-				BoundsPath = updated;
-				BoundsPathUpdated?.Invoke(this, default);
-			}
+			BoundsPath = updated;
+			BoundsPathUpdated?.Invoke(this, default);
 		}
 
-		this.SetNeedsDisplay();
-	}
+		_borderRenderer.BoundsPath = null;
 
-	private void OnBackgroundImageBrushChanged(_Image backgroundImage)
-	{
-		UpdateBorder(backgroundImage);
+		this.SetNeedsDisplay();
 	}
 
 	partial void OnBorderBrushChangedPartial() => UpdateBorder();
@@ -85,26 +69,7 @@ public partial class Border
 
 	partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
-	{
-		// Don't call base, we need to keep UIView.BackgroundColor set to transparent
-		// because we're overriding draw.
-
-		var old = args.OldValue as ImageBrush;
-		if (old != null)
-		{
-			old.ImageChanged -= OnBackgroundImageBrushChanged;
-		}
-		var imgBrush = args.NewValue as ImageBrush;
-		if (imgBrush != null)
-		{
-			imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
-		}
-		else
-		{
-			UpdateBorder();
-		}
-	}
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args) => UpdateBorder();
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;

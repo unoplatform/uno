@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
-using CoreImage;
-using Foundation;
-using Uno;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.UI;
-using Uno.UI.Extensions;
 using Uno.UI.Xaml.Media;
-using ObjCRuntime;
 using Microsoft.UI.Xaml;
 
 #if __IOS__
-using UIKit;
-using _View = UIKit.UIView;
 using _Color = UIKit.UIColor;
 using _Image = UIKit.UIImage;
 #elif __MACOS__
@@ -53,7 +44,6 @@ partial class BorderLayerRenderer
 	/// <param name="borderThickness">The border thickness</param>
 	/// <param name="borderBrush">The border brush</param>
 	/// <param name="cornerRadius">The corner radius</param>
-	/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
 	/// <returns>An updated BoundsPath if the layer has been created or updated; null if there is no change.</returns>
 	partial void UpdatePlatform()
 	{
@@ -186,22 +176,28 @@ partial class BorderLayerRenderer
 			}
 			else if (background is ImageBrush imgBackground)
 			{
-				var imgSrc = imgBackground.ImageSource;
-				if (imgSrc != null &&
-					imgSrc.TryOpenSync(out var imageData) &&
-					imageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage &&
-					imageData.NativeImage.Size != CGSize.Empty)
+				void OnImageChanged(_Image _)
 				{
-					var fillMask = new CAShapeLayer()
+					var imgSrc = imgBackground.ImageSource;
+					if (imgSrc != null &&
+						imgSrc.TryOpenSync(out var imageData) &&
+						imageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage &&
+						imageData.NativeImage.Size != CGSize.Empty)
 					{
-						Path = backgroundPath,
-						Frame = area,
-						// We only use the fill color to create the mask area
-						FillColor = _Color.White.CGColor,
-					};
+						var fillMask = new CAShapeLayer()
+						{
+							Path = backgroundPath,
+							Frame = area,
+							// We only use the fill color to create the mask area
+							FillColor = _Color.White.CGColor,
+						};
 
-					CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
+						CreateImageBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
+					}
 				}
+				imgBackground.ImageChanged += OnImageChanged;
+				disposables.Add(() => imgBackground.ImageChanged -= OnImageChanged);
+				OnImageChanged(null);
 			}
 			else if (background is AcrylicBrush acrylicBrush)
 			{
