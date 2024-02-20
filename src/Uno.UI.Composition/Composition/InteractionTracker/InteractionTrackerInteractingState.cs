@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Numerics;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition.Interactions;
@@ -20,6 +21,10 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	{
 		// This probably shouldn't happen.
 		// We ignore.
+		if (this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error("Unexpected StartUserManipulation while in interacting state");
+		}
 	}
 
 	internal override void CompleteUserManipulation(Vector3 linearVelocity)
@@ -27,6 +32,11 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 		// Can this happen?
 		// Should we always get ReceiveInertiaStarting first?
 		// Anyway, it's likely still safe to go to inertia state here as interacting state can only transition to inertia.
+		if (this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error("Unexpected CompleteUserManipulation while in interacting state");
+		}
+
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, linearVelocity, requestId: 0));
 	}
 

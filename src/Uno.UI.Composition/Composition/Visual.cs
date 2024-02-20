@@ -21,7 +21,7 @@ namespace Microsoft.UI.Composition
 		private bool _isVisible = true;
 		private float _opacity = 1.0f;
 		private CompositionCompositeMode _compositeMode;
-		private ICompositionTarget? _compositionTarget; // this should be a Microsoft.UI.Xaml.Media.CompositionTarget
+		private ICompositionTarget? _compositionTarget;
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
