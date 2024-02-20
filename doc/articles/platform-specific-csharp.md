@@ -6,6 +6,8 @@ uid: Uno.Development.PlatformSpecificCSharp
 
 Uno allows you to reuse views and business logic across platforms. Sometimes though, you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform.
 
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/WgKNG8Yjbc4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 This guide covers multiple approaches to managing per-platform code in C#. See [this guide for managing per-platform XAML](platform-specific-xaml.md).
 
 ## Project structure
