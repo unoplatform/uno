@@ -1,4 +1,5 @@
-﻿using Uno.ApplicationModel.DataTransfer;
+﻿using System.Runtime.InteropServices;
+using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
@@ -40,7 +41,7 @@ internal static class GtkExtensionsRegistrar
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new GtkDisplayInformationExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
-		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LinuxLauncherExtension(o));
+		ApiExtensibility.Register(typeof(ILauncherExtension), o => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? new WindowsLauncherExtension(o) : new LinuxLauncherExtension(o));
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
