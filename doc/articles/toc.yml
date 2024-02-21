@@ -398,6 +398,8 @@
               href: controls/MediaPlayerElement.md
             - name: MenuFlyout
               href: controls/MenuFlyout.md
+            - name: NavigationView
+              href: controls/NavigationView.md
             - name: Pivot
               href: controls/Pivot.md
             - name: Popup
@@ -535,6 +537,8 @@
         href: features/gyrometer.md
       - name: Haptics
         href: features/windows-devices-haptics.md
+      - name: Hardware back button
+        href: features/hardware-back-button.md
       - name: Keeping Screen On
         href: features/windows-system-display.md
       - name: Light Sensor
