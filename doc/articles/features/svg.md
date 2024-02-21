@@ -33,8 +33,6 @@ To use SVG, install the following packages into the iOS, macOS, Mac Catalyst, An
 
 > [!NOTE]
 > If the `Uno.[UI|WinUI].Svg` package is not installed, you will get a warning when an `.svg` image is loaded.
-
-
 > [!IMPORTANT]
 > The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly, and must only be installed on the Mobile and Skia heads. It must not in any other class libraries of your solution.
 
