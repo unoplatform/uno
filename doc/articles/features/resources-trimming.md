@@ -21,6 +21,7 @@ In order for an application to enable resources trimming, the following needs to
 ```
 
 Make sure to update your dependencies:
+
 - If you're using the .NET SDK 8.0.200 or later, you'll need to use the [Uno.Wasm.Bootstrap](https://www.nuget.org/packages/Uno.Wasm.Bootstrap) package 8.0.9 or later.
 - With .NET SDK 8.0.10x or earlier, you will also need to add the following package to your `.Wasm.csproj`:
 
