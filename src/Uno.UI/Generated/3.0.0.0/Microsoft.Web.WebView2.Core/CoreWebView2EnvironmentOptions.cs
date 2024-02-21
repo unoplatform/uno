@@ -80,6 +80,34 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool IsCustomCrashReportingEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool EnableTrackingPrevention
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "bool CoreWebView2EnvironmentOptions.EnableTrackingPrevention");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public CoreWebView2EnvironmentOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2EnvironmentOptions.CoreWebView2EnvironmentOptions()");
@@ -88,6 +116,10 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.CoreWebView2EnvironmentOptions()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ExclusiveUserDataFolderAccess.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.IsCustomCrashReportingEnabled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.EnableTrackingPrevention.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.EnableTrackingPrevention.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.AdditionalBrowserArguments.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.AdditionalBrowserArguments.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.Language.get

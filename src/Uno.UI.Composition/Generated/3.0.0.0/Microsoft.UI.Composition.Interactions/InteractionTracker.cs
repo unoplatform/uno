@@ -91,27 +91,10 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdateScaleWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation, global::System.Numerics.Vector3 centerPoint)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAnimation%28CompositionAnimation%20animation%2C%20Vector3%20centerPoint%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.InteractionSources.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.IsPositionRoundingSuggested.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxPosition.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxPosition.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxScale.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxScale.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinPosition.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinPosition.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinScale.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinScale.set
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.NaturalRestingPosition.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.NaturalRestingScale.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.Owner.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.Position.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.NaturalRestingPosition.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.Owner.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.InteractionSources.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.PositionInertiaDecayRate.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.PositionInertiaDecayRate.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.PositionVelocityInPixelsPerSecond.get
@@ -173,6 +156,13 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public int TryUpdateScaleWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation, global::System.Numerics.Vector3 centerPoint)
+		{
+			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAnimation%28CompositionAnimation%20animation%2C%20Vector3%20centerPoint%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public int TryUpdateScaleWithAdditionalVelocity(float velocityInPercentPerSecond, global::System.Numerics.Vector3 centerPoint)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAdditionalVelocity(float velocityInPercentPerSecond, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAdditionalVelocity%28float%20velocityInPercentPerSecond%2C%20Vector3%20centerPoint%29");
@@ -209,6 +199,22 @@ namespace Microsoft.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, InteractionTrackerPositionUpdateOption posUpdateOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%2C%20InteractionTrackerPositionUpdateOption%20posUpdateOption%29");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public int TryUpdatePositionBy(global::System.Numerics.Vector3 amount)
+		{
+			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.NaturalRestingScale.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.IsPositionRoundingSuggested.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxPosition.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxPosition.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxScale.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxScale.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinPosition.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinPosition.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinScale.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetBindingMode(global::Microsoft.UI.Composition.Interactions.InteractionTracker boundTracker1, global::Microsoft.UI.Composition.Interactions.InteractionTracker boundTracker2, global::Microsoft.UI.Composition.Interactions.InteractionBindingAxisModes axisMode)

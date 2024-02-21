@@ -20,12 +20,12 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Geometry
 		// Skipping already declared property FillBrush
 		// Skipping already declared property StrokeDashArray
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashArray.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashCap.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashCap.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeEndCap.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeEndCap.set
@@ -37,11 +37,11 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeStartCap.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeThickness.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeThickness.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.FillBrush.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Geometry.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.Geometry.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeDashCap.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.IsStrokeNonScaling.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionSpriteShape.StrokeBrush.get
 	}
 }

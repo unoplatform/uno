@@ -11,8 +11,8 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property HoldingState
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
-		// Forced skipping of method Microsoft.UI.Input.HoldingEventArgs.Position.get
-		// Forced skipping of method Microsoft.UI.Input.HoldingEventArgs.HoldingState.get
 		// Forced skipping of method Microsoft.UI.Input.HoldingEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.HoldingEventArgs.HoldingState.get
+		// Forced skipping of method Microsoft.UI.Input.HoldingEventArgs.Position.get
 	}
 }

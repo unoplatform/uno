@@ -19,6 +19,8 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidSizeChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPresenterChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPositionChange.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPresenterChange.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidSizeChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidVisibilityChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidZOrderChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.IsZOrderAtBottom.get

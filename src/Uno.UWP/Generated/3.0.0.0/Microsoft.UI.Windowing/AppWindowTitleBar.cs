@@ -38,7 +38,7 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonHoverForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveBackgroundColor.set
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveForegroundColor.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.BackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.set
@@ -57,8 +57,13 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.InactiveForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.RightInset.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.get
-		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.SetDragRectangles(Windows.Graphics.RectInt32[])
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void SetDragRectangles(global::Windows.Graphics.RectInt32[] value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "void AppWindowTitleBar.SetDragRectangles(RectInt32[] value)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.set
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()

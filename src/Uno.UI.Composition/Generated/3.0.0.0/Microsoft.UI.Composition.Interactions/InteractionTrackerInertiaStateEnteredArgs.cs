@@ -19,12 +19,13 @@ namespace Microsoft.UI.Composition.Interactions
 		// Skipping already declared property IsFromBinding
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.RequestId.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsFromBinding.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.NaturalRestingScale.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.PositionVelocityInPixelsPerSecond.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.RequestId.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition.get
 	}
 }

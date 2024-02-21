@@ -14,13 +14,13 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Offset
 		// Skipping already declared property HorizontalAlignmentRatio
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Size.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.Stretch.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.HorizontalAlignmentRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionViewBox.VerticalAlignmentRatio.set
 	}

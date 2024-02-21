@@ -43,6 +43,21 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property DispatcherQueue
 		// Skipping already declared property Visible
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member SystemBackdrop Window.SystemBackdrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemBackdrop%20Window.SystemBackdrop");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Window", "SystemBackdrop Window.SystemBackdrop");
+			}
+		}
+#endif
+		// Skipping already declared property AppWindow
 		// Skipping already declared property Current
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Window()
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Window()
@@ -69,6 +84,9 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Activate()
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Close()
 		// Skipping already declared method Microsoft.UI.Xaml.Window.SetTitleBar(Microsoft.UI.Xaml.UIElement)
+		// Forced skipping of method Microsoft.UI.Xaml.Window.SystemBackdrop.get
+		// Forced skipping of method Microsoft.UI.Xaml.Window.SystemBackdrop.set
+		// Forced skipping of method Microsoft.UI.Xaml.Window.AppWindow.get
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Current.get
 		// Skipping already declared event Microsoft.UI.Xaml.Window.Activated
 		// Skipping already declared event Microsoft.UI.Xaml.Window.Closed

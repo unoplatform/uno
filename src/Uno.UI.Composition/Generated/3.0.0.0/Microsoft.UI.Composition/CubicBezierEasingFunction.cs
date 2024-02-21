@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint2.get
 		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint1.get
+		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint2.get
 	}
 }

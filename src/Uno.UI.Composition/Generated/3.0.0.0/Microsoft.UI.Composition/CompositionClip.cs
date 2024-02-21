@@ -15,19 +15,19 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Offset
 		// Skipping already declared property CenterPoint
 		// Skipping already declared property AnchorPoint
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Offset.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngleInDegrees.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.AnchorPoint.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.AnchorPoint.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngle.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.CenterPoint.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngle.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngleInDegrees.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngle.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.RotationAngleInDegrees.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.Scale.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.TransformMatrix.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionClip.AnchorPoint.get
 	}
 }
