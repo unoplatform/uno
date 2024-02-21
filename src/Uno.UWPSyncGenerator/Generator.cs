@@ -1775,6 +1775,9 @@ namespace Uno.UWPSyncGenerator
 				{
 					// If you hit this, ensure projectFile was restored. If it wasn't and `obj/project.assets.json` is missing,
 					// the target IncludeTransitiveProjectReferences will not be run, and we can end up with missing assemblies.
+					// Another reason for hitting this is if you define UnoTargetFrameworkOverride, say to net7.0.
+					// This will cause project.assets.json to have `net7.0` instead of `net7.0-platform` which
+					// breaks ResolvePackageAssets target and cause it to not produce TransitiveProjectReferences
 					throw new Exception($"{expectedRef} not found when loading '{projectFile} ({targetFramework})'");
 				}
 			}
@@ -1799,7 +1802,10 @@ namespace Uno.UWPSyncGenerator
 			var properties = new Dictionary<string, string>
 			{
 				// { "VisualStudioVersion", "15.0" },
-				// { "Configuration", "Debug" },
+				// Important to load with Release.
+				// The projects should be restored for the generator to function properly.
+				// The BuildSyncGenerator target in Uno.UI.Build.csproj will restore for Release.
+				{ "Configuration", "Release" },
 				//{ "BuildingInsideVisualStudio", "true" },
 				{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 				{ "DocsGeneration", "true" }, // Detect that source generation is running
@@ -1827,13 +1833,6 @@ namespace Uno.UWPSyncGenerator
 			// https://github.com/dotnet/roslyn/issues/72202
 			// https://github.com/dotnet/roslyn/discussions/71950
 			var project = await ws.OpenProjectAsync(projectFile, msbuildLogger: new BinaryLogger() { Parameters = Path.Combine(Directory.GetCurrentDirectory(), $"{projectFileName}_{targetFramework}.binlog") });
-
-			var generatedDocs = project.Documents
-				.Where(d => d.FilePath.Contains("\\Generated\\"))
-				.Select(d => d.Id)
-				.ToImmutableArray();
-
-			project = project.RemoveDocuments(generatedDocs);
 
 			var metadataLessProjects = ws
 				.CurrentSolution
