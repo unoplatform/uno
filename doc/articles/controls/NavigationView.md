@@ -8,4 +8,4 @@ The `NavigationView` control provides top-level navigation for your app. It adap
 
 ## Back button visibility
 
-The `IsBackButtonVisible` property is by default set to `Auto`. This means the system chooses whether or not to display the back button. As per the design guidelines on Android, this means it is not shown by default and the [**hardware back button** should be used instead](xref:Uno.Features.HardwareBackButton). If you prefer to always display the back button, set the `IsBackButtonVisible` property to `Visible`.
+The `IsBackButtonVisible` property is by default set to `Auto`. This means the system chooses whether or not to display the back button. As per the design guidelines on Android, this means it is not shown by default and the [**hardware back button**](xref:Uno.Features.HardwareBackButton) should be used instead. If you prefer to always display the back button, set the `IsBackButtonVisible` property to `Visible`.
