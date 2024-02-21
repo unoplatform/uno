@@ -156,7 +156,7 @@ else
 
 > [!NOTE]
 > `SuggestedStartLocation` should be set to prevent crashes on UWP. `FileTypes` must include at least one item. You can add extensions in the format `.extension`, with the exception of `*` (asterisk) which allows picking any type of file.
-
+>
 > [!NOTE]
 > On iOS, the built-in image picker does not support selection of multiple files. Therefore we fall back to the document picker instead. However, this requires you to specify not only the `SuggestedStartLocation` set to `PicturesLibrary`, but also specifying file type extensions in `FileTypeFilter` (e.g. `.jpg` and `.png`), otherwise OS will not display the Photos app as a file provider in the picker.
 
