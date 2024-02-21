@@ -58,7 +58,7 @@ variables:
   macOSVMImage_UITests: 'macOS-13'
   xCodeRoot: '/Applications/Xcode_15.2.app'
   XamarinSDKVersion: 6_12_24
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.2.app'
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_14.1.app'
   XamarinSDKVersion_iOS_UITests: 6_12_24
 
   # Offline validation to improve build performance
