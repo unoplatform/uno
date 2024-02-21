@@ -76,7 +76,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled = true;
 
-		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
+		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.CodeBase).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 
@@ -551,7 +551,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var diagnostic = Diagnostic.Create(
 					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
-					exception.Message);
+					"Inner exception" + exception.ToString().Replace("\n", " $$ "));
 
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
