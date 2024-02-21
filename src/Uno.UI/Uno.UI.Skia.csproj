@@ -97,6 +97,12 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageReference Include="Silk.NET.OpenGLES" Version="2.16.0" />
+		<PackageReference Include="Silk.NET.Maths" Version="2.16.0" />
+	</ItemGroup>
+
 	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes

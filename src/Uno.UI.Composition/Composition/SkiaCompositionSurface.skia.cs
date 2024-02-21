@@ -113,6 +113,13 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		internal void CopyPixels(int pixelWidth, int pixelHeight, IntPtr data)
+		{
+			var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+
+			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(SKImage.FromPixelCopy(info, data, pixelWidth * 4)), null);
+		}
+
 		~SkiaCompositionSurface()
 		{
 			SetFrameProviderAndOnFrameChanged(null, null);
