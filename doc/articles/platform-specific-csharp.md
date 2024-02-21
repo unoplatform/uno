@@ -10,8 +10,6 @@ Uno allows you to reuse views and business logic across platforms. Sometimes tho
 
 This guide covers multiple approaches to managing per-platform code in C#. See [this guide for managing per-platform XAML](platform-specific-xaml.md).
 
-![Uno Tech Bites](https://www.youtube-nocookie.com/embed/WgKNG8Yjbc4)
-
 ## Project structure
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
