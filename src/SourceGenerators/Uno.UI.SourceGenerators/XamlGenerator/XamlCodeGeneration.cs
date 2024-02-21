@@ -551,7 +551,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var diagnostic = Diagnostic.Create(
 					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
-					"Inner exception" + exception.ToString().Replace("\n", " $$ "));
+					exception.Message);
 
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
