@@ -7,7 +7,7 @@
 	"private": true,
 	"devDependencies": {
 		"autoprefixer": "^10.3.2",
-		"browser-sync": "^2.26.5",
+		"browser-sync": "^3.0.2",
 		"browserlist": "^1.0.1",
 		"del": "^6.0.0",
 		"gulp": "^4.0.2",
