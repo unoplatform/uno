@@ -7,10 +7,10 @@ uid: Uno.Development.PlatformSpecificCSharp
 Uno allows you to reuse views and business logic across platforms. Sometimes though, you may want to write different code per platform. You may need to access platform-specific native APIs and 3rd-party libraries, or want your app to look and behave differently depending on the platform.
 
 <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
-    <iframe 
-        src="https://www.youtube-nocookie.com/embed/WgKNG8Yjbc4" 
-        title="YouTube video player" 
-        frameborder="0" 
+    <iframe
+        src="https://www.youtube-nocookie.com/embed/WgKNG8Yjbc4"
+        title="YouTube video player"
+        frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
