@@ -14,7 +14,13 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Shared.Windows_Storage.Pickers
 {
 	[Sample("Windows.Storage", ViewModelType = typeof(FileOpenPickerTestsViewModel), IsManualTest = true,
-		Description = "Allows testing all features of FileOpenPicker. Currently not supported on Android, iOS, and macOS. Not selecting a file should not cause an exception. Selecting a file should show information below the file picker buttons")]
+		Description =
+"""
+- Not selecting a file should not cause an exception.
+- Selecting a file should show information below the file picker buttons.
+- It should be possible to pick multiple files, even if PicturesLibrary is selected and .jpg is used as file type.
+"""
+	)]
 	public sealed partial class FileOpenPickerTests : Page
 	{
 		public FileOpenPickerTests()
