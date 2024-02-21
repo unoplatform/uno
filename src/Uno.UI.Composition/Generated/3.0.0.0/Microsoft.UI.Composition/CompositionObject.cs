@@ -9,6 +9,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionObject : global::System.IDisposable, global::Microsoft.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Compositor
+		// Skipping already declared property Properties
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.ImplicitAnimationCollection ImplicitAnimations

@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum DisplayAreaFallback
 	{
-#if false
-		None = 0,
-#endif
-#if false
-		Primary = 1,
-#endif
-#if false
-		Nearest = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaFallback.None
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaFallback.Primary
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaFallback.Nearest
 	}
 #endif
 }

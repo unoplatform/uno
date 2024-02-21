@@ -3,11 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionEffectSourceParameter
 	{
+		// Skipping already declared property Name
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.Name.get
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectSourceParameter.CompositionEffectSourceParameter(string)
 	}
 }

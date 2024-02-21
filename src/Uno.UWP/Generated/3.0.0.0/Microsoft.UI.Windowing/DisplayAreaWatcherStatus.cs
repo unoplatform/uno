@@ -3,27 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum DisplayAreaWatcherStatus
 	{
-#if false
-		Created = 0,
-#endif
-#if false
-		Started = 1,
-#endif
-#if false
-		EnumerationCompleted = 2,
-#endif
-#if false
-		Stopping = 3,
-#endif
-#if false
-		Stopped = 4,
-#endif
-#if false
-		Aborted = 5,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Created
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Started
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.EnumerationCompleted
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Stopping
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Stopped
+		// Skipping already declared field Microsoft.UI.Windowing.DisplayAreaWatcherStatus.Aborted
 	}
 #endif
 }

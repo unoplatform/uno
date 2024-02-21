@@ -6,15 +6,9 @@ namespace Microsoft.UI.Composition.Interactions
 #if false || false || false || false || false || false || false
 	public enum InteractionChainingMode
 	{
-#if false || false || false || false || false || false || false
-		Auto = 0,
-#endif
-#if false || false || false || false || false || false || false
-		Always = 1,
-#endif
-#if false || false || false || false || false || false || false
-		Never = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionChainingMode.Auto
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionChainingMode.Always
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionChainingMode.Never
 	}
 #endif
 }

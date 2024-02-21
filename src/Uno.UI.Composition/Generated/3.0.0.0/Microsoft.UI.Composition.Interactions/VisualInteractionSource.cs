@@ -3,11 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Interactions
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class VisualInteractionSource : global::Microsoft.UI.Composition.CompositionObject, global::Microsoft.UI.Composition.Interactions.ICompositionInteractionSource
 	{
+		// Skipping already declared property ScaleSourceMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.Interactions.InteractionChainingMode ScaleChainingMode
@@ -22,6 +23,11 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
+		// Skipping already declared property PositionYSourceMode
+		// Skipping already declared property PositionYChainingMode
+		// Skipping already declared property PositionXSourceMode
+		// Skipping already declared property PositionXChainingMode
+		// Skipping already declared property ManipulationRedirectionMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsPositionYRailsEnabled
@@ -50,6 +56,7 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
+		// Skipping already declared property Source
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Numerics.Vector3 DeltaPosition
@@ -189,6 +196,7 @@ namespace Microsoft.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member VisualInteractionSource VisualInteractionSource.CreateFromIVisualElement(IVisualElement source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualInteractionSource%20VisualInteractionSource.CreateFromIVisualElement%28IVisualElement%20source%29");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Create(Microsoft.UI.Composition.Visual)
 		// Processing: Microsoft.UI.Composition.Interactions.ICompositionInteractionSource
 	}
 }

@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum TitleBarHeightOption
 	{
-#if false
-		Standard = 0,
-#endif
-#if false
-		Tall = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.TitleBarHeightOption.Standard
+		// Skipping already declared field Microsoft.UI.Windowing.TitleBarHeightOption.Tall
 	}
 #endif
 }

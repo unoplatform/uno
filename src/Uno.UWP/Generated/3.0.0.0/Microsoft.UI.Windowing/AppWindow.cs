@@ -3,30 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AppWindow
 	{
-#if false
-		internal AppWindow()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string Title
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string AppWindow.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AppWindow.Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "string AppWindow.Title");
-			}
-		}
-#endif
+		// Skipping already declared property Title
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsShownInSwitchers
@@ -41,16 +23,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.WindowId Id
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member WindowId AppWindow.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowId%20AppWindow.Id");
-			}
-		}
-#endif
+		// Skipping already declared property Id
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsVisible
@@ -81,16 +54,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Windowing.AppWindowPresenter Presenter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppWindowPresenter AppWindow.Presenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowPresenter%20AppWindow.Presenter");
-			}
-		}
-#endif
+		// Skipping already declared property Presenter
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.SizeInt32 Size
@@ -188,20 +152,8 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetIcon(IconId iconId)");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPresenter(global::Microsoft.UI.Windowing.AppWindowPresenter appWindowPresenter)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetPresenter(AppWindowPresenter appWindowPresenter)");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPresenter(global::Microsoft.UI.Windowing.AppWindowPresenterKind appWindowPresenterKind)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.SetPresenter(AppWindowPresenterKind appWindowPresenterKind)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenter)
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Show()
@@ -279,45 +231,9 @@ namespace Microsoft.UI.Windowing
 			throw new global::System.NotImplementedException("The member AppWindow AppWindow.Create(AppWindowPresenter appWindowPresenter, WindowId ownerWindowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.Create%28AppWindowPresenter%20appWindowPresenter%2C%20WindowId%20ownerWindowId%29");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Windowing.AppWindow GetFromWindowId(global::Microsoft.UI.WindowId windowId)
-		{
-			throw new global::System.NotImplementedException("The member AppWindow AppWindow.GetFromWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindow%20AppWindow.GetFromWindowId%28WindowId%20windowId%29");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Windowing.AppWindow, global::Microsoft.UI.Windowing.AppWindowChangedEventArgs> Changed
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "event TypedEventHandler<AppWindow, AppWindowChangedEventArgs> AppWindow.Changed");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "event TypedEventHandler<AppWindow, AppWindowChangedEventArgs> AppWindow.Changed");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Windowing.AppWindow, global::Microsoft.UI.Windowing.AppWindowClosingEventArgs> Closing
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> AppWindow.Closing");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> AppWindow.Closing");
-			}
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.GetFromWindowId(Microsoft.UI.WindowId)
+		// Skipping already declared event Microsoft.UI.Windowing.AppWindow.Changed
+		// Skipping already declared event Microsoft.UI.Windowing.AppWindow.Closing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Windowing.AppWindow, object> Destroying

@@ -63,6 +63,7 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.ClearAllParameters()");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetReferenceParameter(string, Microsoft.UI.Composition.CompositionObject)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ClearParameter(string key)
@@ -70,6 +71,7 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.ClearParameter(string key)");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetScalarParameter(string, float)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetColorParameter(string key, global::Windows.UI.Color value)

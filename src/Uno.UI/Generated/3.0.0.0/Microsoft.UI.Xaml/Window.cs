@@ -38,16 +38,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property Content
 		// Skipping already declared property Bounds
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Compositor Compositor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Compositor Window.Compositor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compositor%20Window.Compositor");
-			}
-		}
-#endif
+		// Skipping already declared property Compositor
 		// Skipping already declared property CoreWindow
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property DispatcherQueue

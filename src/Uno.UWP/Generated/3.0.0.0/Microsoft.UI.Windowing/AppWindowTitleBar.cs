@@ -3,263 +3,30 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AppWindowTitleBar
 	{
-#if false
-		internal AppWindowTitleBar()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? InactiveForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.InactiveForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveForegroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? InactiveBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.InactiveBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.InactiveBackgroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Windowing.IconShowOptions IconShowOptions
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IconShowOptions AppWindowTitleBar.IconShowOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IconShowOptions%20AppWindowTitleBar.IconShowOptions");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "IconShowOptions AppWindowTitleBar.IconShowOptions");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ForegroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ExtendsContentIntoTitleBar
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.ExtendsContentIntoTitleBar is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowTitleBar.ExtendsContentIntoTitleBar");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "bool AppWindowTitleBar.ExtendsContentIntoTitleBar");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonPressedForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonPressedForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedForegroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonPressedBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonPressedBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonPressedBackgroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonInactiveForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonInactiveForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveForegroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonInactiveBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonInactiveBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonInactiveBackgroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonHoverForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonHoverForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverForegroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonHoverBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonHoverBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonHoverBackgroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonForegroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonForegroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonForegroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? ButtonBackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.ButtonBackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.ButtonBackgroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Color? BackgroundColor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%3F%20AppWindowTitleBar.BackgroundColor");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "Color? AppWindowTitleBar.BackgroundColor");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int Height
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int AppWindowTitleBar.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AppWindowTitleBar.Height");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int LeftInset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int AppWindowTitleBar.LeftInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AppWindowTitleBar.LeftInset");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int RightInset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int AppWindowTitleBar.RightInset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AppWindowTitleBar.RightInset");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Windowing.TitleBarHeightOption PreferredHeightOption
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TitleBarHeightOption AppWindowTitleBar.PreferredHeightOption is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TitleBarHeightOption%20AppWindowTitleBar.PreferredHeightOption");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "TitleBarHeightOption AppWindowTitleBar.PreferredHeightOption");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ResetToDefault()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "void AppWindowTitleBar.ResetToDefault()");
-		}
-#endif
+		// Skipping already declared property InactiveForegroundColor
+		// Skipping already declared property InactiveBackgroundColor
+		// Skipping already declared property IconShowOptions
+		// Skipping already declared property ForegroundColor
+		// Skipping already declared property ExtendsContentIntoTitleBar
+		// Skipping already declared property ButtonPressedForegroundColor
+		// Skipping already declared property ButtonPressedBackgroundColor
+		// Skipping already declared property ButtonInactiveForegroundColor
+		// Skipping already declared property ButtonInactiveBackgroundColor
+		// Skipping already declared property ButtonHoverForegroundColor
+		// Skipping already declared property ButtonHoverBackgroundColor
+		// Skipping already declared property ButtonForegroundColor
+		// Skipping already declared property ButtonBackgroundColor
+		// Skipping already declared property BackgroundColor
+		// Skipping already declared property Height
+		// Skipping already declared property LeftInset
+		// Skipping already declared property RightInset
+		// Skipping already declared property PreferredHeightOption
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.ResetToDefault()
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.BackgroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonBackgroundColor.set
@@ -291,21 +58,9 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.RightInset.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonPressedBackgroundColor.get
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDragRectangles(global::Windows.Graphics.RectInt32[] value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "void AppWindowTitleBar.SetDragRectangles(RectInt32[] value)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.SetDragRectangles(Windows.Graphics.RectInt32[])
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.set
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsCustomizationSupported()
-		{
-			throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.IsCustomizationSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindowTitleBar.IsCustomizationSupported%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()
 	}
 }

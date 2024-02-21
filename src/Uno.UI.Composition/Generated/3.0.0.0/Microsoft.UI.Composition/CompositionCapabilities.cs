@@ -24,13 +24,7 @@ namespace Microsoft.UI.Composition
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Changed.add
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Changed.remove
-#if __ANDROID__ || __IOS__ || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__")]
-		public CompositionCapabilities()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCapabilities", "CompositionCapabilities.CompositionCapabilities()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
