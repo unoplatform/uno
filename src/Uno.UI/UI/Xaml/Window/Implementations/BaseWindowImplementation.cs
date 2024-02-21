@@ -102,6 +102,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		nativeWindow.VisibleBoundsChanged += OnNativeVisibleBoundsChanged;
 
 		NativeWindowWrapper = nativeWindow;
+		SetVisibleBoundsFromNative();
 	}
 
 	private void OnNativeClosing(object? sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs e) => Window.AppWindow.RaiseClosing(e);
