@@ -134,11 +134,6 @@ internal class NativeWebViewWrapper : INativeWebView
 			return;
 		}
 
-<<<<<<< HEAD
-		//The replace is present because the uri cuts off any slashes that are more than two when it creates the uri.
-		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashles.
-		_webView.LoadUrl(uri.AbsoluteUri.Replace("file://", "file:///"));
-=======
 		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
 		{
 			// Load Url with folder
@@ -160,7 +155,6 @@ internal class NativeWebViewWrapper : INativeWebView
 		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashes.
 		var actualUri = uri.AbsoluteUri.Replace("file://", "file:///");
 		ScheduleNavigationStarting(actualUri, () => _webView.LoadUrl(actualUri));
->>>>>>> 72f03e211c (fix: Ensure NavigationStarting is executed reliably on Android)
 	}
 
 	public void ProcessNavigation(HttpRequestMessage requestMessage)
