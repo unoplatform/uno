@@ -27,18 +27,21 @@ namespace Windows.System
 			}
 
 #if !__WASM__
-			if (!CoreDispatcher.Main.HasThreadAccess)
+			if (CoreDispatcher.Main.HasThreadAccess)
 			{
-				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(Launcher).Log().Error($"{nameof(LaunchUriAsync)} must be called on the UI thread");
-				}
-				// LaunchUriAsync throws the following exception if used on UI thread on UWP
-				throw new InvalidOperationException($"{nameof(LaunchUriAsync)} must be called on the UI thread");
+				return LaunchUriPlatformAsync(uri).AsAsyncOperation();
 			}
+			else
+			{
+				return CoreDispatcher.Main.RunWithResultAsync(
+					priority: CoreDispatcherPriority.Normal,
+					task: async () => await LaunchUriPlatformAsync(uri)
+				).AsAsyncOperation();
+			}
+#else
+			return LaunchUriPlatformAsync(uri).AsAsyncOperation();
 #endif
 
-			return LaunchUriPlatformAsync(uri).AsAsyncOperation();
 #else
 			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 			{
