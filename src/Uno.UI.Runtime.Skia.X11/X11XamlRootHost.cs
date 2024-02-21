@@ -13,6 +13,7 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
+using Silk.NET.OpenGL;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
@@ -55,6 +56,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly XamlRoot _xamlRoot;
 
 	private int _synchronizedShutDownTopWindowIdleCounter;
+
+	private readonly object _glLock = new object();
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
@@ -606,5 +609,23 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
 			}
 		}
+	}
+
+	object? IXamlRootHost.GetGL() => GL.GetApi(GlxInterface.glXGetProcAddress);
+
+	// To prevent concurrent GL operations breaking the state, you should obtain the lock while
+	// using GL commands. Make sure to restore all the state to default before unlocking (i.e. unbind
+	// all used buffers, textures, etc.)
+	IDisposable IXamlRootHost.LockGL()
+	{
+		// we don't use a SemaphoreSlim as it's not reentrant.
+		Monitor.Enter(_glLock);
+		return new GLLockDisposable(_glLock);
+	}
+
+	private readonly struct GLLockDisposable(object @lock) : IDisposable
+	{
+
+		public void Dispose() => Monitor.Exit(@lock);
 	}
 }
