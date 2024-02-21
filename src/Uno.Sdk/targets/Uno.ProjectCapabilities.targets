@@ -6,7 +6,7 @@
 
 		<!-- Forces the VS Intellisense to detect uno projects as WinUI XAML -->
 		<!-- https://github.com/unoplatform/uno/issues/15517 -->
-    	<DefaultXamlRuntime>WinUI</DefaultXamlRuntime>
+    	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
 	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
