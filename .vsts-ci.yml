@@ -54,11 +54,11 @@ variables:
   windowsScaledPool: 'Windows2022-20230918'
   linuxVMImage: 'ubuntu-latest'
   linuxScaledPool: 'Ubuntu2204-20230918'
-  macOSVMImage: 'macOS-12'
-  macOSVMImage_UITests: 'macOS-12'
-  xCodeRoot: '/Applications/Xcode_14.3.app'
+  macOSVMImage: 'macOS-13'
+  macOSVMImage_UITests: 'macOS-13'
+  xCodeRoot: '/Applications/Xcode_15.2.app'
   XamarinSDKVersion: 6_12_24
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_14.3.app'
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.2.app'
   XamarinSDKVersion_iOS_UITests: 6_12_24
 
   # Offline validation to improve build performance
