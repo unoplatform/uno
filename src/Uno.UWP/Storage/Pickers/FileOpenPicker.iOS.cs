@@ -54,7 +54,7 @@ namespace Windows.Storage.Pickers
 		{
 			switch (SuggestedStartLocation)
 			{
-				case PickerLocationId.PicturesLibrary:
+				case PickerLocationId.PicturesLibrary when !multiple: // As UIImagePickerController does not support multiple selection, we fall back to UIDocumentPickerViewController for multiple selection
 					return new UIImagePickerController()
 					{
 						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
