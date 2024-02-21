@@ -30,7 +30,7 @@
 				<_UnoImplicitPackageReference Include="Microsoft.Windows.Compatibility" IsImplicitlyDefined="true" />
 			</ItemGroup>
 
-			<ItemGroup Condition="$(SingleProject) == 'true' or '$(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))'">
+			<ItemGroup Condition="$(SingleProject) == 'true' or $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))">
 				<_UnoImplicitPackageReference Include="Uno.Wasm.Bootstrap" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Wasm.Bootstrap.DevServer" IsImplicitlyDefined="true" />
 			</ItemGroup>
