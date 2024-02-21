@@ -18,6 +18,7 @@ bool uno_app_initialize(bool *supportsMetal);
 NSWindow* uno_app_get_main_window(void);
 
 id<MTLDevice> uno_application_get_metal_device(void);
+void uno_application_set_badge(const char *badge);
 void uno_application_set_icon(const char *path);
 bool uno_application_open_url(const char *url);
 bool uno_application_query_url_support(const char *url);

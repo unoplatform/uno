@@ -65,6 +65,13 @@ id<MTLDevice> uno_application_get_metal_device(void)
     return device;
 }
 
+void uno_application_set_badge(const char *badge)
+{
+    NSApplication *app = [NSApplication sharedApplication];
+    NSDockTile *dockTile = [app dockTile];
+    [dockTile setBadgeLabel:[NSString stringWithUTF8String:badge]];
+}
+
 void uno_application_set_icon(const char *path)
 {
     NSApplication *app = [NSApplication sharedApplication];
