@@ -406,7 +406,7 @@ namespace Uno.UWPSyncGenerator
 					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "false",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "false",
-					MacOSSymbol == null ? MacDefine : "false",
+					IsNotDefinedByUno(MacOSSymbol) ? MacDefine : "false",
 				};
 
 				using (b.Indent(-b.CurrentLevel))
@@ -424,7 +424,7 @@ namespace Uno.UWPSyncGenerator
 					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
 					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
-					MacOSSymbol == null ? $"\"{MacDefine}\"" : "",
+					IsNotDefinedByUno(MacOSSymbol) ? $"\"{MacDefine}\"" : "",
 				};
 
 				return defines.Where(d => d.Length > 0).JoinBy(", ");
@@ -437,7 +437,7 @@ namespace Uno.UWPSyncGenerator
 					IsNotDefinedByUno(WasmSymbol) &&
 					IsNotDefinedByUno(SkiaSymbol) &&
 					IsNotDefinedByUno(NetStdReferenceSymbol) &&
-					MacOSSymbol == null;
+					IsNotDefinedByUno(MacOSSymbol);
 
 
 			private static bool IsNotDefinedByUno(ISymbol symbol)
