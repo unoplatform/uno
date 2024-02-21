@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Uno.UWPSyncGenerator
@@ -11,6 +13,15 @@ namespace Uno.UWPSyncGenerator
 
 		static async Task Main(string[] args)
 		{
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UWP\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.Foundation\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Composition\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Dispatching\Generated\");
+			Environment.SetEnvironmentVariable("UnoDisableNetCurrent", "true");
+			Environment.SetEnvironmentVariable("UnoDisableNetCurrentMobile", "true");
 			if (args.Length == 0)
 			{
 				Console.WriteLine("No mode selected. Supported modes: doc, sync & all.");
@@ -83,6 +94,12 @@ namespace Uno.UWPSyncGenerator
 				await new DocGenerator().Build("Uno.UI", "Windows.Foundation.UniversalApiContract");
 #endif
 			}
+		}
+
+		private static void DeleteDirectoryIfExists(string path)
+		{
+			if (Directory.Exists(path))
+				Directory.Delete(path, recursive: true);
 		}
 	}
 }

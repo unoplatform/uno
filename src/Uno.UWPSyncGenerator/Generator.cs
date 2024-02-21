@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.Extensions;
@@ -983,16 +984,6 @@ namespace Uno.UWPSyncGenerator
 				var virtualQualifier = method.IsVirtual ? "virtual " : "";
 				var visiblity = method.DeclaredAccessibility.ToString().ToLowerInvariant();
 
-				if (IsObjectCtor(methods.AndroidSymbol))
-				{
-					methods.AndroidSymbol = null;
-				}
-
-				if (IsObjectCtor(methods.IOSSymbol))
-				{
-					methods.IOSSymbol = null;
-				}
-
 				if (
 					method.MethodKind == MethodKind.Constructor
 					&& type.TypeKind != TypeKind.Interface
@@ -1277,9 +1268,6 @@ namespace Uno.UWPSyncGenerator
 			}
 			return false;
 		}
-
-		private bool IsObjectCtor(IMethodSymbol androidMember)
-			=> androidMember?.Name == ".ctor" && androidMember.OriginalDefinition.ContainingType.SpecialType == SpecialType.System_Object;
 
 		private static string GetParameterRefKind(IParameterSymbol p)
 			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
@@ -1767,7 +1755,7 @@ namespace Uno.UWPSyncGenerator
 		static Dictionary<(string projectFile, string targetFramework), Compilation> _projects
 			= new();
 
-		private static async Task<Compilation> LoadProject(string projectFile, string targetFramework = null)
+		private static async Task<Compilation> LoadProject(string projectFile, string targetFramework)
 		{
 			var key = (projectFile, targetFramework);
 
@@ -1777,7 +1765,21 @@ namespace Uno.UWPSyncGenerator
 				return compilation;
 			}
 
-			return _projects[key] = await InnerLoadProject(projectFile, targetFramework);
+			compilation = await InnerLoadProject(projectFile, targetFramework);
+			_projects[key] = compilation;
+			var externalCompilationReferences = compilation.ExternalReferences.OfType<CompilationReference>().Select(r => r.Display).ToArray();
+			string[] expectedRefs = ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"];
+			foreach (var expectedRef in expectedRefs)
+			{
+				if (!externalCompilationReferences.Contains(expectedRef))
+				{
+					// If you hit this, ensure projectFile was restored. If it wasn't and `obj/project.assets.json` is missing,
+					// the target IncludeTransitiveProjectReferences will not be run, and we can end up with missing assemblies.
+					throw new Exception($"{expectedRef} not found when loading '{projectFile} ({targetFramework})'");
+				}
+			}
+
+			return compilation;
 		}
 
 		private static async Task<Compilation> LoadUWPReferenceProject(string referencesFile)
@@ -1789,9 +1791,10 @@ namespace Uno.UWPSyncGenerator
 			return await p.GetCompilationAsync();
 		}
 
-		private static async Task<Compilation> InnerLoadProject(string projectFile, string targetFramework = null)
+		private static async Task<Compilation> InnerLoadProject(string projectFile, string targetFramework)
 		{
-			Console.WriteLine($"Loading for {targetFramework}: {Path.GetFileName(projectFile)}");
+			var projectFileName = Path.GetFileName(projectFile);
+			Console.WriteLine($"Loading for {targetFramework}: {projectFileName}");
 
 			var properties = new Dictionary<string, string>
 			{
@@ -1820,7 +1823,10 @@ namespace Uno.UWPSyncGenerator
 			ws.WorkspaceFailed +=
 				(s, e) => Console.WriteLine(e.Diagnostic.ToString());
 
-			var project = await ws.OpenProjectAsync(projectFile);
+			// NOTE: msbuildLogger doesn't work in 4.9
+			// https://github.com/dotnet/roslyn/issues/72202
+			// https://github.com/dotnet/roslyn/discussions/71950
+			var project = await ws.OpenProjectAsync(projectFile, msbuildLogger: new BinaryLogger() { Parameters = Path.Combine(Directory.GetCurrentDirectory(), $"{projectFileName}_{targetFramework}.binlog") });
 
 			var generatedDocs = project.Documents
 				.Where(d => d.FilePath.Contains("\\Generated\\"))
