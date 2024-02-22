@@ -43,7 +43,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<!-- Default Versions of packages that may be implicitly defined -->
 	<PropertyGroup>
-		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.3.0</UnoResizetizerVersion>
+		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.4.0-dev.3</UnoResizetizerVersion>
 		<UnoLoggingVersion Condition="$(UnoLoggingVersion) == ''">1.7.0</UnoLoggingVersion>
 		<UnoUniversalImageLoader Condition="$(UnoUniversalImageLoader) == ''">1.9.36</UnoUniversalImageLoader>
 		<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">8.0.8</UnoWasmBootstrapVersion>
