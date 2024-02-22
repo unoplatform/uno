@@ -192,6 +192,11 @@ if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	return 1
 fi
 
+if ! grep -q "<test-case" "$UNO_ORIGINAL_TEST_RESULTS"; then
+    echo "No test results found in the file, this can indicate a filter error."
+    exit 1
+fi
+
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
