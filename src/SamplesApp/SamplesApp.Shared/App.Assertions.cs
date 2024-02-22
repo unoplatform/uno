@@ -5,6 +5,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
+<<<<<<< HEAD
+=======
+using Windows.ApplicationModel.Core;
+using Windows.UI.ViewManagement;
+>>>>>>> 9fb7b0d185 (chore: add test and assertion to sample app)
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
@@ -204,5 +209,12 @@ partial class App
 		{
 			Assert.Fail("Resuming should never be triggered unless the app is suspended.");
 		}
+	}
+
+	private void AssertIssue15521()
+	{
+#if __ANDROID__
+		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+#endif
 	}
 }
