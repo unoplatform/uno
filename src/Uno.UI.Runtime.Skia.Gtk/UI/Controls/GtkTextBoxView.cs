@@ -16,6 +16,7 @@ using static Uno.UI.Xaml.Controls.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -26,14 +27,13 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	private static bool _warnedAboutSelectionColorChanges;
 
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
-	private readonly DisplayInformation _displayInformation;
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
+	private DisplayInformation _displayInformation;
 
-	protected GtkTextBoxView()
+	protected GtkTextBoxView(XamlRoot? xamlRoot)
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
-
+		_displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
 		// Applies themes from Theming/UnoGtk.css
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
@@ -56,8 +56,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public static IOverlayTextBoxView Create(TextBox textBox) =>
 		textBox is PasswordBox || !textBox.AcceptsReturn ?
-			new SinglelineTextBoxView(textBox is PasswordBox) :
-			new MultilineTextBoxView();
+			new SinglelineTextBoxView(textBox is PasswordBox, textBox.XamlRoot) :
+			new MultilineTextBoxView(textBox.XamlRoot);
 
 	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{

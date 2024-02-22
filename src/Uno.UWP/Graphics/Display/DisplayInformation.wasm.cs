@@ -12,27 +12,17 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private static DisplayInformation _instance;
-
-		private static DisplayInformation InternalGetForCurrentView() => _instance ??= new DisplayInformation();
-
 		[JSExport]
 		internal static int DispatchDpiChanged()
 		{
-			if (_instance is not null)
-			{
-				_instance.OnDisplayMetricsChanged();
-			}
+			GetForCurrentViewSafe().OnDisplayMetricsChanged();
 			return 0;
 		}
 
 		[JSExport]
 		internal static int DispatchOrientationChanged()
 		{
-			if (_instance is not null)
-			{
-				_instance.OnDisplayMetricsChanged();
-			}
+			GetForCurrentViewSafe().OnDisplayMetricsChanged();
 			return 0;
 		}
 

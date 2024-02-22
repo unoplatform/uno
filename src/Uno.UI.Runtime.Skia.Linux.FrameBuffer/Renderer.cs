@@ -42,7 +42,7 @@ namespace Uno.UI.Runtime.Skia
 				this.Log().Trace($"Render {renderCount++}");
 			}
 
-			_displayInformation ??= DisplayInformation.GetForCurrentView();
+			_displayInformation ??= DisplayInformation.GetForCurrentViewSafe();
 
 			var scale = _displayInformation.RawPixelsPerViewPixel;
 
