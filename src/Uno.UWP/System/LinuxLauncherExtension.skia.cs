@@ -50,7 +50,7 @@ namespace Uno.UI.Runtime.Skia.Extensions.System
 					}
 				}
 
-				// Guaranteed to work on all Linux Gtk platforms.
+				// Should work with most Linux environments
 				canOpenUri ??= CheckMimeTypeAssociations(uri);
 
 				return canOpenUri.Value ?

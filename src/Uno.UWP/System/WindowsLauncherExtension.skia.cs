@@ -1,16 +1,17 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using Windows.System;
+using Uno.Extensions.System;
 
-namespace Uno.Extensions.System
+namespace Uno.UI.Runtime.Skia.Extensions.System
 {
-	internal class LauncherExtension : ILauncherExtension
+	internal class WindowsLauncherExtension : ILauncherExtension
 	{
-		public LauncherExtension(object owner)
+		public WindowsLauncherExtension(object owner)
 		{
 		}
 
