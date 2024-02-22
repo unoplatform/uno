@@ -18,6 +18,10 @@
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
+		<ItemGroup>
+			<_ExistingSdkFile Include="$(IntermediateOutputPath)targets\**;$(IntermediateOutputPath)Sdk\**" />
+		</ItemGroup>
+		<Delete Files="@(_ExistingSdkFile)" />
 		<Copy SourceFiles="@(SdkFile)" DestinationFolder="$(IntermediateOutputPath)Sdk" SkipUnchangedFiles="true" />
 		<Copy SourceFiles="@(TargetFile)" DestinationFolder="$(IntermediateOutputPath)targets" SkipUnchangedFiles="true" />
 	</Target>
