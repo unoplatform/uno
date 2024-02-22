@@ -53,7 +53,8 @@ namespace Uno.UWPSyncGenerator
 				await new SyncGenerator().Build("Uno.UI.Composition", "Microsoft.UI");
 
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Text");
-				await new SyncGenerator().Build("Uno.UI", "Microsoft.ApplicationModel.Resources");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Content");
+				await new SyncGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 
 				await new SyncGenerator().Build("Uno.UI", "Microsoft.UI.Input");
@@ -75,7 +76,8 @@ namespace Uno.UWPSyncGenerator
 			if (mode == DocMode || mode == AllMode)
 			{
 #if HAS_UNO_WINUI
-				await new DocGenerator().Build("Uno.UI", "Microsoft.ApplicationModel.Resources");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.UI.Content");
+				await new DocGenerator().Build("Uno.UI", "Microsoft.Windows.ApplicationModel.Resources");
 				await new DocGenerator().Build("Uno.UI", "Microsoft.Web.WebView2.Core");
 
 				await new DocGenerator().Build("Uno.UI.Dispatching", "Microsoft.UI.Dispatching");

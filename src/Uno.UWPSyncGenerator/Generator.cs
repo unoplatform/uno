@@ -120,11 +120,12 @@ namespace Uno.UWPSyncGenerator
 			"Microsoft.UI.Composition",
 			"Microsoft.UI.Dispatching",
 			"Microsoft.UI.Text",
+			"Microsoft.UI.Content",
 			"Microsoft.UI.Windowing",
 			"Microsoft.UI.Input",
 			"Microsoft.System",
 			"Microsoft.Graphics",
-			"Microsoft.ApplicationModel.Resources",
+			"Microsoft.Windows.ApplicationModel.Resources",
 			"Microsoft.Web",
 #endif
 			};
@@ -308,9 +309,10 @@ namespace Uno.UWPSyncGenerator
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
 #endif
 			)
