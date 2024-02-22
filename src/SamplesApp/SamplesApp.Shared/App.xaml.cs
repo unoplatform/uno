@@ -439,6 +439,10 @@ namespace SamplesApp
 				builder.AddConsole();
 #endif
 
+#if __IOS__
+				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
+#endif
+
 #if !DEBUG
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Information);
