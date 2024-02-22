@@ -11,7 +11,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11XamlRootHost
 {
-	private static int ThreadCount;
+	private static int _threadCount;
 
 	private readonly Action<Size> _resizeCallback;
 	private readonly Action _closingCallback;
@@ -27,7 +27,7 @@ internal partial class X11XamlRootHost
 	{
 		_eventsThread = new Thread(Run)
 		{
-			Name = $"Uno XEvents {Interlocked.Increment(ref ThreadCount) - 1}",
+			Name = $"Uno XEvents {Interlocked.Increment(ref _threadCount) - 1}",
 			IsBackground = true
 		};
 
@@ -94,25 +94,27 @@ internal partial class X11XamlRootHost
 							// which, according to the source code, just calls XKillClient
 							// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
 							// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
-							QueueEvent(this, _closingCallback);
+							QueueAction(this, _closingCallback);
 						}
 						break;
 					case XEventName.ConfigureNotify:
-						var configureEvent = event_.ConfigureEvent;
-						_displayInformationExtension?.UpdateDetails();
-						QueueEvent(this, () => _resizeCallback.Invoke(new Size(configureEvent.width, configureEvent.height)));
-						break;
+						{
+							var configureEvent = event_.ConfigureEvent;
+							_displayInformationExtension?.UpdateDetails();
+							QueueAction(this, () => _resizeCallback(new Size(configureEvent.width, configureEvent.height)));
+							break;
+						}
 					case XEventName.FocusIn:
-						QueueEvent(this, () => _focusCallback.Invoke(true));
+						QueueAction(this, () => _focusCallback(true));
 						break;
 					case XEventName.FocusOut:
-						QueueEvent(this, () => _focusCallback.Invoke(false));
+						QueueAction(this, () => _focusCallback(false));
 						break;
 					case XEventName.VisibilityNotify:
-						QueueEvent(this, () => _visibilityCallback.Invoke(event_.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
+						QueueAction(this, () => _visibilityCallback(event_.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 						break;
 					case XEventName.Expose:
-						QueueEvent(this, () => ((IXamlRootHost)this).InvalidateRender());
+						QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
 						break;
 					case XEventName.MotionNotify:
 						_pointerSource?.ProcessMotionNotifyEvent(event_.MotionEvent);
@@ -150,8 +152,8 @@ internal partial class X11XamlRootHost
 		// ReSharper disable once FunctionNeverReturns
 	}
 
-	public static void QueueEvent(IXamlRootHost host, Action raisePointerEvent)
-		=> host.RootElement?.Dispatcher.RunAsync(CoreDispatcherPriority.High, new DispatchedHandler(raisePointerEvent));
+	public static void QueueAction(IXamlRootHost host, Action action)
+		=> host.RootElement?.Dispatcher.RunAsync(CoreDispatcherPriority.High, new DispatchedHandler(action));
 
 	public static VirtualKeyModifiers XModifierMaskToVirtualKeyModifiers(XModifierMask state)
 	{
