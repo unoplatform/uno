@@ -49,7 +49,8 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		if (_displayInformation == null)
 		{
-			_displayInformation = DisplayInformation.GetForCurrentView();
+			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost(_host);
+			_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
 		}
 
 		var dpi = _displayInformation.RawPixelsPerViewPixel;

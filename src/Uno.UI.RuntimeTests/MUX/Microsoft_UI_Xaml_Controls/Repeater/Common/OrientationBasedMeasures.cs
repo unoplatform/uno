@@ -28,7 +28,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 			var hasThreadAccess = TestServices.HasDispatcherAccess;
 			if (useLayoutRounding && hasThreadAccess)
 			{
+#if HAS_UNO
+				m_rawPixelsPerViewPixel = DisplayInformation.GetForCurrentViewSafe().RawPixelsPerViewPixel;
+#else
 				m_rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+#endif
 			}
 		}
 

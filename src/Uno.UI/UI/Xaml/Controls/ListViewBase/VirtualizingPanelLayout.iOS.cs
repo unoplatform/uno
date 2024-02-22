@@ -1929,6 +1929,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if DEBUG
+#pragma warning disable IDE0051 // Remove unused private members
 		_LayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
 
 		private void DumpFrames(string header, [CallerMemberName] string caller = "", [CallerLineNumber] int line = -1)
@@ -1952,7 +1953,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return $"{layoutAttributes.GetHashCode():X8} {index.Section}-{index.Row} {((int)layoutAttributes.Frame.Width)}x{((int)layoutAttributes.Frame.Height)}@{((int)layoutAttributes.Frame.X)},{((int)layoutAttributes.Frame.Y)} {data}";
 		}
 
-#pragma warning disable IDE0051 // Remove unused private members
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
 #pragma warning restore IDE0051 // Remove unused private members
 #endif

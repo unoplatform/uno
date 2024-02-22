@@ -7,12 +7,16 @@ using System.Linq;
 using System.Text;
 using Uno;
 using Windows.Foundation;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 
 namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
 		internal const float BaseDpi = 96.0f;
+
+		private static readonly Dictionary<WindowId, DisplayInformation> _windowIdMap = new();
 
 #if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private float _lastKnownDpi;
@@ -31,6 +35,43 @@ namespace Windows.Graphics.Display
 			Initialize();
 		}
 
+		public static DisplayInformation GetForCurrentView()
+		{
+#if ANDROID
+			return GetForCurrentViewAndroid();
+#else
+			// This is needed to ensure for "current view" there is always a corresponding DisplayView instance.
+			// This means that Uno Islands and WinUI apps can keep using this API for now until we make the breaking change
+			// on Uno.WinUI codebase.
+			return GetOrCreateForWindowId(AppWindow.MainWindowId);
+#endif
+		}
+
+		internal static DisplayInformation GetForCurrentViewSafe() => GetForCurrentView();
+
+		internal static DisplayInformation GetForWindowId(WindowId windowId)
+		{
+			if (!_windowIdMap.TryGetValue(windowId, out var appView))
+			{
+				throw new InvalidOperationException(
+					$"ApplicationView corresponding with this window does not exist yet, which usually means " +
+					$"the API was called too early in the windowing lifecycle. Try to use ApplicationView later.");
+			}
+
+			return appView;
+		}
+
+		internal static DisplayInformation GetOrCreateForWindowId(WindowId windowId)
+		{
+			if (!_windowIdMap.TryGetValue(windowId, out var appView))
+			{
+				appView = new();
+				_windowIdMap[windowId] = appView;
+			}
+
+			return appView;
+		}
+
 		public static DisplayOrientations AutoRotationPreferences
 		{
 			get => _autoRotationPreferences;
@@ -42,8 +83,6 @@ namespace Windows.Graphics.Display
 		}
 
 		public bool StereoEnabled { get; private set; }
-
-		public static DisplayInformation GetForCurrentView() => InternalGetForCurrentView();
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations);
 

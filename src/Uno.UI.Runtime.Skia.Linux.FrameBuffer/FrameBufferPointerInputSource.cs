@@ -30,7 +30,7 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 
 	private FrameBufferPointerInputSource()
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe();
 	}
 
 	internal static FrameBufferPointerInputSource Instance { get; } = new FrameBufferPointerInputSource();
