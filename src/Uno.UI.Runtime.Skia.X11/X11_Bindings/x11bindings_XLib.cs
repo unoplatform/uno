@@ -90,6 +90,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static extern int XStoreName(IntPtr display, IntPtr window, string window_name);
 
 		[DllImport(libX11)]
+		public static extern void XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
+
+		[DllImport(libX11)]
 		public static extern int XSendEvent(IntPtr display, IntPtr window, bool propagate, IntPtr event_mask,
 			ref XEvent send_event);
 

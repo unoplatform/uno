@@ -46,6 +46,7 @@ internal static class X11Helper
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
 	public const string _NET_WM_ICON = "_NET_WM_ICON";
+	public const string _MOTIF_WM_HINTS = "_MOTIF_WM_HINTS";
 	public const string TIMESTAMP = "TIMESTAMP";
 	public const string MULTIPLE = "MULTIPLE";
 	public const string TARGETS = "TARGETS";

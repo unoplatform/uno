@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
@@ -57,22 +58,63 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
-		Closed.ContinueWith(_ => _applicationView.PropertyChanged -= OnApplicationViewPropertyChanged);
+		Closed.ContinueWith(_ =>
+		{
+			_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+			coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		});
 
 		Initialize();
 		UpdateWindowPropertiesFromPackage();
+		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
 	}
 
 	public Task Closed { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		// We could use _NET_WM_NAME instead
+		// We could use _NET_WM_NAME instead, which takes priority over the name set by XStoreName if both are set.
 		using var _ = X11Helper.XLock(X11Window.Display);
 		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
+
+		var minSize = _applicationView.PreferredMinSize;
+
+		if (minSize != Size.Empty) {
+			var hints = new XSizeHints
+			{
+				flags = (int)XSizeHintsFlags.PMinSize,
+				min_width = (int)minSize.Width,
+				min_height = (int)minSize.Height
+			};
+
+			XLib.XSetWMNormalHints(X11Window.Display, X11Window.Window, ref hints);
+		}
+	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+
+		// Sadly, there is no de jure standard for this. It's basically a set of hints used
+		// in the old Motif WM. Other WMs started using it and it became a thing.
+		var hintsAtom = X11Helper.GetAtom(X11Window.Display, X11Helper._MOTIF_WM_HINTS);
+		if (hintsAtom != IntPtr.Zero)
+		{
+			XLib.XChangeProperty(
+				X11Window.Display,
+				X11Window.Window,
+				hintsAtom,
+				hintsAtom,
+				32,
+				PropertyMode.Replace,
+				new[] { (IntPtr)(MotifFlags.Decorations), 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0, 0 },
+				5);
+		}
 	}
 
 	private void UpdateWindowPropertiesFromPackage()
