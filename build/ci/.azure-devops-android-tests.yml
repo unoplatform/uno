@@ -80,6 +80,8 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
+    UNO_UITEST_BUCKET_COUNT: 5
+
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
