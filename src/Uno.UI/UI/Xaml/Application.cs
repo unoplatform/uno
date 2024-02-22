@@ -1,24 +1,26 @@
 ﻿using System;
-using Uno;
-using Uno.UI;
-using Uno.Diagnostics.Eventing;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation.Metadata;
-using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel;
-using Windows.Globalization;
-using Uno.Helpers.Theming;
-using Windows.UI.ViewManagement;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Data;
+using Uno;
+using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Windows.UI.Popups.Internal;
-using Windows.UI.Popups;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI;
 using Uno.UI.WinRT.Extensions.UI.Popups;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.Globalization;
+using Windows.Storage;
+using Windows.UI.Popups;
+using Windows.UI.Popups.Internal;
+using Windows.UI.ViewManagement;
+
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
@@ -63,7 +65,7 @@ namespace Microsoft.UI.Xaml
 		static Application()
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(ApplicationData).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());

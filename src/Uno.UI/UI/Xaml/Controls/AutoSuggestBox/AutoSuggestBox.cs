@@ -8,6 +8,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -376,7 +377,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
 		{
-			if (e.Key == Windows.System.VirtualKey.Enter)
+			if (e.Key == VirtualKey.Enter)
 			{
 				e.Handled = true;
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -386,12 +387,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				SubmitSearch(IsSuggestionListOpen ? _suggestionsList.SelectedItem : null);
 			}
-			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
+			else if ((e.Key == VirtualKey.Up || e.Key == VirtualKey.Down) && IsSuggestionListOpen)
 			{
 				e.Handled = true;
 				HandleUpDownKeys(e);
 			}
-			else if (e.Key == Windows.System.VirtualKey.Escape && IsSuggestionListOpen)
+			else if (e.Key == VirtualKey.Escape && IsSuggestionListOpen)
 			{
 				e.Handled = true;
 				RevertTextToUserInput();
@@ -409,12 +410,12 @@ namespace Microsoft.UI.Xaml.Controls
 			int numSuggestions = _suggestionsList.NumberOfItems;
 			int nextIndex = -1;
 
-			if (e.Key == Windows.System.VirtualKey.Up)
+			if (e.Key == VirtualKey.Up)
 			{
 				// C# modulo isn't actually a modulo it's a remainder, so need to account for negative index
 				nextIndex = ((currentIndex % numSuggestions) + numSuggestions) % numSuggestions - ((currentIndex == -1) ? 0 : 1);
 			}
-			else if (e.Key == Windows.System.VirtualKey.Down)
+			else if (e.Key == VirtualKey.Down)
 			{
 				int indexPlusOne = currentIndex + 1;
 				// The next step after the last index should be -1, not 0.

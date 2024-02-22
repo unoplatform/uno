@@ -17,6 +17,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Haptics;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Input;
@@ -33,7 +34,6 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
-using Windows.Devices.Input;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -1444,7 +1444,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="pointer">The pointer to release.</param>
 		/// <param name="muteEvent">Determines if the event should be raised or not.</param>
 		/// <param name="kinds">The kind of captures to release.</param>
-		internal void ReleasePointerCapture(Windows.Devices.Input.PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
+		internal void ReleasePointerCapture(PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
 		{
 			if (!Release(pointer, kinds, muteEvent: muteEvent)
 				&& this.Log().IsEnabled(LogLevel.Information))
@@ -1537,7 +1537,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private bool Release(Windows.Devices.Input.PointerIdentifier pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedArgs = null, bool muteEvent = false)
+		private bool Release(PointerIdentifier pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedArgs = null, bool muteEvent = false)
 		{
 			return PointerCapture.TryGet(pointer, out var capture)
 				&& Release(capture, kinds, relatedArgs, muteEvent);

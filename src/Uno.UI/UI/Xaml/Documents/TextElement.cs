@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(FontStyle),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: Windows.UI.Text.FontStyle.Normal,
+					defaultValue: FontStyle.Normal,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontStyleChanged()
 				)

@@ -1044,7 +1044,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var padding = Padding;
 				var borderThickness = BorderThickness;
 
-				var innerRect = new Windows.Foundation.Rect(
+				var innerRect = new Rect(
 					padding.Left + borderThickness.Left,
 					padding.Top + borderThickness.Top,
 					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
@@ -1064,7 +1064,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var offset = CalculateContentOffset(availableSize, contentSize);
 
-				var arrangeRect = new Windows.Foundation.Rect(
+				var arrangeRect = new Rect(
 					innerRect.X + offset.X,
 					innerRect.Y + offset.Y,
 					contentSize.Width,
@@ -1078,7 +1078,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		private Windows.Foundation.Point CalculateContentOffset(Size availableSize, Size contentSize)
+		private Point CalculateContentOffset(Size availableSize, Size contentSize)
 		{
 			var horizontalAlignment = HorizontalContentAlignment;
 			var verticalAlignment = VerticalContentAlignment;
@@ -1125,7 +1125,7 @@ namespace Microsoft.UI.Xaml.Controls
 				offsetY = 0;
 			}
 
-			return new Windows.Foundation.Point(offsetX, offsetY);
+			return new Point(offsetX, offsetY);
 		}
 
 		protected override Size MeasureOverride(Size size)
@@ -1174,6 +1174,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Arranges the native element in the native shell
 		/// </summary>
-		partial void ArrangeNativeElement(Windows.Foundation.Rect arrangeRect);
+		partial void ArrangeNativeElement(Rect arrangeRect);
 	}
 }

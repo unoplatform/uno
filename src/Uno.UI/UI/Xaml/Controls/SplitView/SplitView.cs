@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uno.Disposables;
 using System.Text;
-using Uno.Extensions;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
-using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI.DataBinding;
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -420,7 +421,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_needsVisualStateUpdate = true;
 
 			_ = Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				CoreDispatcherPriority.Normal,
 				() =>
 				{
 					UpdateVisualStates(true);

@@ -901,7 +901,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Pointer spPointer;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			//CalendarDatePickerGenerated.OnPointerCaptureLost(pArgs);

@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//IFC(wf::GetActivationFactory(wrl_wrappers::HStringReference(RuntimeClass_Windows_System_DispatcherQueue).Get(), &spDispatcherQueueStatics));
 			//IFC(spDispatcherQueueStatics->GetForCurrentThread(&m_spDispatcherQueue));
 
-			m_spDispatcherQueue = Windows.System.DispatcherQueue.GetForCurrentThread();
+			m_spDispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
 			m_isInitialized = true;
 
 			//Cleanup:
