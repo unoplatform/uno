@@ -1,5 +1,12 @@
 <Project>
 
+	<PropertyGroup>
+		<UnoExtensionsFeatures Condition="$(UnoExtensionsFeatures) == ''">All</UnoExtensionsFeatures>
+		<UseUnoMauiEmbedding Condition="$(UseUnoMauiEmbedding) == ''">false</UseUnoMauiEmbedding>
+		<UnoPresentation Condition="$(UnoPresentation) == ''">None</UnoPresentation>
+		<UnoTheme Condition="$(UnoTheme) == ''">None</UnoTheme>
+	</PropertyGroup>
+
 	<!-- Import Implicit NuGet pacakges without Central Package Management -->
 	<Import Project="Uno.Implicit.Packages.Explicit.targets"
 		Condition="$(ManagePackageVersionsCentrally) != 'true'" />
@@ -12,7 +19,7 @@
 
 	<!-- Add Implicit Package References for Packages that have not already been added -->
 	<ItemGroup>
-		<PackageReference Include="$(_UnoImplicitPackageReference)" Exclude="@(PackageReference)" />
+		<PackageReference Include="@(_UnoImplicitPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
 
 </Project>
