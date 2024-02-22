@@ -12,4 +12,6 @@ internal interface IIdeChannelServer
 	Task SendToDevServerAsync(IdeMessageEnvelope message);
 
 	event EventHandler<IdeMessageEnvelope>? MessageFromDevServer;
+
+	event EventHandler<IdeMessage>? MessageFromIde;
 }

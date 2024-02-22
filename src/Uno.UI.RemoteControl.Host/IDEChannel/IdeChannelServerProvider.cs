@@ -11,82 +11,90 @@ namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
 internal class IdeChannelServerProvider : IIdeChannelServerProvider
 {
-	private readonly ILogger _logger;
-	private readonly IConfiguration _configuration;
-	private readonly Task<IdeChannelServer?> _initializeTask;
-	private NamedPipeServerStream? _pipeServer;
-	private IdeChannelServer? _ideChannelServer;
-	private JsonRpc? _rpcServer;
+    private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
+    private readonly Task<IdeChannelServer?> _initializeTask;
+    private NamedPipeServerStream? _pipeServer;
+    private IdeChannelServer? _ideChannelServer;
+    private JsonRpc? _rpcServer;
 
-	public IdeChannelServerProvider(ILogger<IdeChannelServerProvider> logger, IConfiguration configuration)
-	{
-		_logger = logger;
-		_configuration = configuration;
+    public IdeChannelServerProvider(ILogger<IdeChannelServerProvider> logger, IConfiguration configuration)
+    {
+        _logger = logger;
+        _configuration = configuration;
 
-		_initializeTask = Task.Run(Initialize);
-	}
+        _initializeTask = Task.Run(Initialize);
+    }
 
-	private async Task<IdeChannelServer?> Initialize()
-	{
-		if (!Guid.TryParse(_configuration["ideChannel"], out var ideChannel))
-		{
-			_logger.LogDebug("No IDE Channel ID specified, skipping");
-			return null;
-		}
+    private async Task<IdeChannelServer?> Initialize()
+    {
+        if (!Guid.TryParse(_configuration["ideChannel"], out var ideChannel))
+        {
+            _logger.LogDebug("No IDE Channel ID specified, skipping");
+            return null;
+        }
 
-		_pipeServer = new NamedPipeServerStream(
-			pipeName: ideChannel.ToString(),
-			direction: PipeDirection.InOut,
-			maxNumberOfServerInstances: 1,
-			transmissionMode: PipeTransmissionMode.Byte,
-			options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+        _pipeServer = new NamedPipeServerStream(
+            pipeName: ideChannel.ToString(),
+            direction: PipeDirection.InOut,
+            maxNumberOfServerInstances: 1,
+            transmissionMode: PipeTransmissionMode.Byte,
+            options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
 
-		await _pipeServer.WaitForConnectionAsync();
+        await _pipeServer.WaitForConnectionAsync();
 
-		if (_logger.IsEnabled(LogLevel.Debug))
-		{
-			_logger.LogDebug("IDE Connected");
-		}
+        if (_logger.IsEnabled(LogLevel.Debug))
+        {
+            _logger.LogDebug("IDE Connected");
+        }
 
-		_ideChannelServer = new IdeChannelServer();
-		_ideChannelServer.MessageFromIDE += OnMessageFromIDE;
-		_rpcServer = JsonRpc.Attach(_pipeServer, _ideChannelServer);
+        _ideChannelServer = new IdeChannelServer();
+        _ideChannelServer.MessageFromIDE += OnMessageFromIDE;
+        _rpcServer = JsonRpc.Attach(_pipeServer, _ideChannelServer);
 
-		_ = StartKeepaliveAsync();
+        _ = StartKeepaliveAsync();
 
-		return _ideChannelServer;
-	}
+        return _ideChannelServer;
+    }
 
-	private async Task StartKeepaliveAsync()
-	{
-		while (_pipeServer?.IsConnected ?? false)
-		{
-			_ideChannelServer?.SendToIdeAsync(new KeepAliveIdeMessage());
+    private async Task StartKeepaliveAsync()
+    {
+        while (_pipeServer?.IsConnected ?? false)
+        {
+            _ideChannelServer?.SendToIdeAsync(new KeepAliveIdeMessage());
 
-			await Task.Delay(5000);
-		}
-	}
+            await Task.Delay(5000);
+        }
+    }
 
-	private void OnMessageFromIDE(object? sender, IdeMessage ideMessage)
-	{
-		if (ideMessage is KeepAliveIdeMessage)
-		{
+    private void OnMessageFromIDE(object? sender, IdeMessage ideMessage)
+    {
+        if (ideMessage is KeepAliveIdeMessage)
+        {
 #if DEBUG
 			_logger.LogDebug("Keepalive from IDE");
 #endif
-		}
-		else
-		{
-			_logger.LogDebug($"Unknown message type {ideMessage?.GetType()} from IDE");
-		}
-	}
+        }
+        else
+        {
+            // TODO: Determine if should forward everything. If not everything, then what?
+            if (_ideChannelServer?.MessageFromIDE is not null)
+            {
+                _ideChannelServer?.MessageFromIDE?.Invoke(sender, ideMessage);
+            }
+            else
+            {
+                _logger.LogDebug($"Unknown message type {ideMessage?.GetType()} from IDE");
+            }
+        }
+    }
 
-	public async Task<IdeChannelServer?> GetIdeChannelServerAsync()
-	{
+    public async Task<IdeChannelServer?> GetIdeChannelServerAsync()
+    {
 #pragma warning disable IDE0022 // Use expression body for method
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
-		return await _initializeTask;
+        return await _initializeTask;
 #pragma warning restore VSTHRD003 // Avoid awaiting foreign Tasks
 #pragma warning restore IDE0022 // Use expression body for method
-	}
+    }
 }
