@@ -9,7 +9,6 @@ namespace Microsoft.UI.Composition
 	public partial class ExpressionAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 	{
 		// Skipping already declared property Expression
-		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.get
 		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.set
 		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.get
 	}

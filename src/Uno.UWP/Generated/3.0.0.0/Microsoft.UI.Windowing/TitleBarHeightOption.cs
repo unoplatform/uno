@@ -8,6 +8,9 @@ namespace Microsoft.UI.Windowing
 	{
 		// Skipping already declared field Microsoft.UI.Windowing.TitleBarHeightOption.Standard
 		// Skipping already declared field Microsoft.UI.Windowing.TitleBarHeightOption.Tall
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		Collapsed = 2,
+#endif
 	}
 #endif
 }

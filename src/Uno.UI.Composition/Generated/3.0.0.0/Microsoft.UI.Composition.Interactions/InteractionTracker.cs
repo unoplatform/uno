@@ -138,7 +138,7 @@ namespace Microsoft.UI.Composition.Interactions
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdatePosition(System.Numerics.Vector3)
-		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdatePositionBy(System.Numerics.Vector3)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MinScale.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public int TryUpdatePositionWithAnimation(global::Microsoft.UI.Composition.CompositionAnimation animation)
@@ -199,13 +199,7 @@ namespace Microsoft.UI.Composition.Interactions
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, InteractionTrackerPositionUpdateOption posUpdateOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%2C%20InteractionTrackerPositionUpdateOption%20posUpdateOption%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int TryUpdatePositionBy(global::System.Numerics.Vector3 amount)
-		{
-			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Interactions.InteractionTracker.TryUpdatePositionBy(System.Numerics.Vector3)
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.NaturalRestingScale.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.IsPositionRoundingSuggested.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTracker.MaxPosition.get

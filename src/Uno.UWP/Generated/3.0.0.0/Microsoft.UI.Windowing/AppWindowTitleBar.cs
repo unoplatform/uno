@@ -26,7 +26,7 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property LeftInset
 		// Skipping already declared property RightInset
 		// Skipping already declared property PreferredHeightOption
-		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.ResetToDefault()
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonInactiveForegroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.BackgroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonBackgroundColor.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.ButtonBackgroundColor.set
@@ -57,13 +57,8 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.InactiveForegroundColor.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.RightInset.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDragRectangles(global::Windows.Graphics.RectInt32[] value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindowTitleBar", "void AppWindowTitleBar.SetDragRectangles(RectInt32[] value)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.ResetToDefault()
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.SetDragRectangles(Windows.Graphics.RectInt32[])
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowTitleBar.PreferredHeightOption.set
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindowTitleBar.IsCustomizationSupported()

@@ -16,8 +16,6 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property IsZOrderAtBottom
 		// Skipping already declared property IsZOrderAtTop
 		// Skipping already declared property ZOrderBelowWindowId
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidSizeChange.get
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPresenterChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPositionChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidPresenterChange.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindowChangedEventArgs.DidSizeChange.get
