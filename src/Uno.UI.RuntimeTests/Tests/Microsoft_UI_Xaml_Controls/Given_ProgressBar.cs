@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 using Common;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 
-namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressBar;
+namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 
 [TestClass]
-public class ProgressBarTest
+[RunsOnUIThread]
+public class Given_ProgressBar
 {
-
-	[RunsOnUIThread]
 	[TestMethod]
 	public async Task ProgressBarLayoutUpdate()
 	{
@@ -44,5 +44,19 @@ public class ProgressBarTest
 		await Task.Delay(1000);
 
 		Verify.IsLessThanOrEqual(layoutCount, 4);
+	}
+
+	[TestMethod]
+	public async Task When_CustomTemplate()
+	{
+		var sut = new ProgressBar();
+		var sizeChangedRaised = false;
+		sut.SizeChanged += (_, _) => sizeChangedRaised = true;
+		sut.Template = new Windows.UI.Xaml.Controls.ControlTemplate();
+		sut.Width = 50;
+		sut.Height = 50;
+		TestServices.WindowHelper.WindowContent = sut;
+
+		await TestServices.WindowHelper.WaitFor(() => sizeChangedRaised);
 	}
 }
