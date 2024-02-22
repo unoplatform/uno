@@ -16,26 +16,15 @@
 		<_UnoImplicitPackageReference Include="SkiaSharp.Views.Uno.WinUI" IsImplicitlyDefined="true" />
 	</ItemGroup>
 
-	<Choose>
-		<When Condition="$(UnoFeatures.Split(';').Contains('All')) != '-1'">
-			<ItemGroup>
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" IsImplicitlyDefined="true" />
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Maps')) != '-1'">
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" IsImplicitlyDefined="true" />
-			</ItemGroup>
-			<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Foldable')) != '-1'">
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" IsImplicitlyDefined="true" />
-			</ItemGroup>
-			<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Msal')) != '-1'">
-				<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" IsImplicitlyDefined="true" />
-			</ItemGroup>
-		</ItemGroup>
-	</Choose>
+	<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Maps')) != '-1'">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" IsImplicitlyDefined="true" />
+	</ItemGroup>
+	<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Foldable')) != '-1'">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" IsImplicitlyDefined="true" />
+	</ItemGroup>
+	<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Msal')) != '-1'">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" IsImplicitlyDefined="true" />
+	</ItemGroup>
 
 	<Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
@@ -90,7 +79,7 @@
 		<_UnoImplicitPackageReference Include="Uno.Extensions.Markup.Generators" IsImplicitlyDefined="true" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
 	</ItemGroup>
 
-	<Choose Condition="$(UnoExtensionsVersion)">
+	<Choose Condition="$(UnoExtensionsVersion) != ''">
 		<When Condition="$(UnoExtensionsFeatures.Split(';').Contains('All')) != '-1'">
 			<ItemGroup>
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.WinUI" IsImplicitlyDefined="true" />
@@ -149,16 +138,16 @@
 			</ItemGroup>
 			<ItemGroup Condition="$(UnoExtensionsFeatures.Split(';').Contains('Maui')) != '-1'">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != ''" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != '' OR $(UnoExtensionsFeatures.Split(';').Contains('Markup')) != '-1'" />
 			</ItemGroup>
 			<ItemGroup Condition="$(UnoExtensionsFeatures.Split(';').Contains('Navigation')) != '-1'">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.WinUI" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != ''" />
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.Toolkit.WinUI" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != '' OR $(UnoExtensionsFeatures.Split(';').Contains('Markup')) != '-1'" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.Toolkit.WinUI" IsImplicitlyDefined="true" Condition="$(UnoExtensionsFeatures.Split(';').Contains('Toolkit')) != '-1'" />
 			</ItemGroup>
 			<ItemGroup Condition="$(UnoExtensionsFeatures.Split(';').Contains('Reactive')) != '-1'">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != ''" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != '' OR $(UnoExtensionsFeatures.Split(';').Contains('Markup')) != '-1'" />
 			</ItemGroup>
 			<ItemGroup Condition="$(UnoExtensionsFeatures.Split(';').Contains('Storage')) != '-1'">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Storage.WinUI" IsImplicitlyDefined="true" />
@@ -177,8 +166,8 @@
 		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI" IsImplicitlyDefined="true" />
 		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Cupertino" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Cupertino'" />
 		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Material" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Material'" />
-		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Material'" />
-		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Markup" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Material.Markup" IsImplicitlyDefined="true" Condition="$(UnoTheme) == 'Material' AND $(UnoCSharpMarkupVersion) != ''" />
+		<_UnoImplicitPackageReference Include="Uno.Toolkit.WinUI.Markup" IsImplicitlyDefined="true" Condition="$(UnoCSharpMarkupVersion) != ''" />
 		<_UnoImplicitPackageReference Include="Uno.Toolkit.Skia.WinUI" IsImplicitlyDefined="true" />
 	</ItemGroup>
 
