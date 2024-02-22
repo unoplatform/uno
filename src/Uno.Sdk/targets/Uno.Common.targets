@@ -19,7 +19,7 @@
 		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
 		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
 		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
-		<IsUnoHead Condition="$(SingleProject) == 'true'">true</IsUnoHead>
+		<IsUnoHead Condition="$(SingleProject) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
 	</PropertyGroup>
 
 	<PropertyGroup>
