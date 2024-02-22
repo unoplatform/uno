@@ -20,8 +20,7 @@ namespace Uno.UWPSyncGenerator
 			DeleteDirectoryIfExists(@"..\..\..\Uno.Foundation\Generated\");
 			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Composition\Generated\");
 			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Dispatching\Generated\");
-			Environment.SetEnvironmentVariable("UnoDisableNetCurrent", "true");
-			Environment.SetEnvironmentVariable("UnoDisableNetCurrentMobile", "true");
+
 			if (args.Length == 0)
 			{
 				Console.WriteLine("No mode selected. Supported modes: doc, sync & all.");

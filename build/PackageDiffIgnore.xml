@@ -1793,6 +1793,12 @@
 
 	<IgnoreSet baseVersion="5.1">
 		<Types>
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueue" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueController" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueTimer" reason="Only in UWP build. It shouldn't have existed." />
+
+			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
 		</Types>
 
 		<Events>

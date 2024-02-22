@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var device = Windows.Devices.Input.PointerDevice.For(PointerDeviceType.Mouse);
+			var device = global::Windows.Devices.Input.PointerDevice.For(PointerDeviceType.Mouse);
 			var translation = relativeTo.TransformToVisual(null) as TranslateTransform;
 			var offset = new Point(_point.X - translation.X, _point.Y - translation.Y);
 			var properties = new PointerPointProperties() { IsInRange = true, IsPrimary = true };

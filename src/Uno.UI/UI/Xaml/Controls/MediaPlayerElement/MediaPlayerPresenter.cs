@@ -50,18 +50,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MediaPlayer Property
 
-		public MediaPlayer MediaPlayer
+		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(MediaPlayer),
+				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(default(MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -71,14 +71,14 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					presenter.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
 				}
-				if (args.OldValue is MediaPlayer oldPlayer)
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldPlayer)
 				{
 					oldPlayer.NaturalVideoDimensionChanged -= presenter.OnNaturalVideoDimensionChanged;
 					oldPlayer.MediaFailed -= presenter.OnMediaFailed;
 					oldPlayer.SourceChanged -= presenter.OnSourceChanged;
 				}
 
-				if (args.NewValue is MediaPlayer newPlayer)
+				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newPlayer)
 				{
 					newPlayer.NaturalVideoDimensionChanged += presenter.OnNaturalVideoDimensionChanged;
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		partial void OnMediaPlayerChangedPartial(MediaPlayer mediaPlayer);
+		partial void OnMediaPlayerChangedPartial(global::Windows.Media.Playback.MediaPlayer mediaPlayer);
 
 		#region Stretch Property
 
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnUnloaded();
 		}
 
-		private void OnNaturalVideoDimensionChanged(MediaPlayer sender, object args)
+		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
@@ -165,14 +165,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
-		private void OnMediaFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args)
+		private void OnMediaFailed(global::Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				Visibility = Visibility.Collapsed;
 			});
 		}
-		private void OnSourceChanged(MediaPlayer sender, object args)
+		private void OnSourceChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{

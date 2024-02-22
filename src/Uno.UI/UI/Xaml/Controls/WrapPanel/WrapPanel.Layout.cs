@@ -8,6 +8,8 @@ using Uno;
 using Uno.UI;
 using Windows.Foundation;
 
+using Rect = Windows.Foundation.Rect;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;

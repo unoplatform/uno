@@ -5,6 +5,8 @@ using System.ComponentModel;
 using Uno.Media;
 using Windows.Foundation;
 
+using Rect = Windows.Foundation.Rect;
+
 #if __IOS__
 using Foundation;
 using UIKit;

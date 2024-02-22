@@ -15,6 +15,9 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI.Xaml;
 
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;

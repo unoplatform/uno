@@ -5,6 +5,8 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI;
 
+using Color = Windows.UI.Color;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;

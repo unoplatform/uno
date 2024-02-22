@@ -7,6 +7,8 @@ using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI;
 
+using Rect = Windows.Foundation.Rect;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;

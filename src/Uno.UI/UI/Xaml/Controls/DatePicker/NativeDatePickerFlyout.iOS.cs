@@ -148,8 +148,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// of where to place the user's position in the looping selectors.
 			if (date.Ticks == DatePicker.DEFAULT_DATE_TICKS)
 			{
-				var temp = new Windows.Globalization.Calendar();
-				var calendar = new Windows.Globalization.Calendar(
+				var temp = new global::Windows.Globalization.Calendar();
+				var calendar = new global::Windows.Globalization.Calendar(
 					temp.Languages,
 					CalendarIdentifier,
 					temp.GetClock());

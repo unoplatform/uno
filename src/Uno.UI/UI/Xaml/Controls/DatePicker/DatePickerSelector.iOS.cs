@@ -125,10 +125,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// TODO: support non-gregorian calendars
 
-			var winCalendar = new Windows.Globalization.Calendar(
+			var winCalendar = new global::Windows.Globalization.Calendar(
 				Array.Empty<string>(),
-				Windows.Globalization.CalendarIdentifiers.Gregorian,
-				Windows.Globalization.ClockIdentifiers.TwentyFourHour);
+				global::Windows.Globalization.CalendarIdentifiers.Gregorian,
+				global::Windows.Globalization.ClockIdentifiers.TwentyFourHour);
 
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
 

@@ -211,24 +211,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MediaPlayer Property
 
-		public MediaPlayer MediaPlayer
+		public global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
-			get { return (MediaPlayer)GetValue(MediaPlayerProperty); }
+			get { return (global::Windows.Media.Playback.MediaPlayer)GetValue(MediaPlayerProperty); }
 			set { SetValue(MediaPlayerProperty, value); }
 		}
 
 		public static DependencyProperty MediaPlayerProperty { get; } =
 			DependencyProperty.Register(
 				nameof(MediaPlayer),
-				typeof(MediaPlayer),
+				typeof(global::Windows.Media.Playback.MediaPlayer),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(default(MediaPlayer), OnMediaPlayerChanged));
+				new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer), OnMediaPlayerChanged));
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			if (sender is MediaPlayerElement mpe)
 			{
-				if (args.OldValue is MediaPlayer oldMediaPlayer)
+				if (args.OldValue is global::Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 					oldMediaPlayer.Dispose();
 				}
 
-				if (args.NewValue is MediaPlayer newMediaPlayer)
+				if (args.NewValue is global::Windows.Media.Playback.MediaPlayer newMediaPlayer)
 				{
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
@@ -248,21 +248,21 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 		}
 
-		private void OnNaturalVideoDimensionChanged(MediaPlayer sender, object args)
+		private void OnNaturalVideoDimensionChanged(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => ShowPosterImage(!sender.IsVideo));
 		}
 
-		private void OnMediaFailed(MediaPlayer sender, object args)
+		private void OnMediaFailed(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() => ShowPosterImage(true));
 		}
 
-		private void OnMediaOpened(MediaPlayer sender, object args)
+		private void OnMediaOpened(global::Windows.Media.Playback.MediaPlayer sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
@@ -382,7 +382,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-				MediaPlayer = new MediaPlayer();
+				MediaPlayer = new global::Windows.Media.Playback.MediaPlayer();
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
@@ -396,7 +396,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SetMediaPlayer(MediaPlayer mediaPlayer)
+		public void SetMediaPlayer(global::Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
 			MediaPlayer = mediaPlayer;
 		}
