@@ -101,7 +101,7 @@ namespace Uno.UI.RemoteControl.HotReload
 							new Version(34, 0, 1, 52); //8.0.102
 #elif __ANDROID__
 							new Version(17, 2, 8022); // 8.0.200
-#else 
+#endif
 
 						if (!_isIssue93860Fixed && this.Log().IsEnabled(LogLevel.Warning))
 						{
