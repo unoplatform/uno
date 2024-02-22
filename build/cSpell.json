@@ -105,7 +105,8 @@
 	"WEBASSEMBLY",
 	"webservices",
 	"webapps",
-	"Haptics"
+	"Haptics",
+	"autoplay"
   ],
   "ignoreWords": [
 	"ADAL",
