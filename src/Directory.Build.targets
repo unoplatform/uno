@@ -86,7 +86,7 @@
 		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
 		<PackageReference Update="Uno.Resizetizer" Version="1.2.0-dev.72" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-		<PackageReference Update="Xamarin.UITest" Version="4.3.3" />
+		<PackageReference Update="Xamarin.UITest" Version="4.3.4" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
