@@ -16,26 +16,15 @@
 		<_UnoImplicitPackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
 	</ItemGroup>
 
-	<Choose>
-		<When Condition="$(UnoFeatures.Split(';').Contains('All')) != '-1'">
-			<ItemGroup>
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Maps')) != '-1'">
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-			</ItemGroup>
-			<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Foldable')) != '-1'">
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-			</ItemGroup>
-			<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Msal')) != '-1'">
-				<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-			</ItemGroup>
-		</ItemGroup>
-	</Choose>
+	<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Maps')) != '-1'">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Maps" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+	<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Foldable')) != '-1'">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+	<ItemGroup Condition="$(UnoFeatures.Split(';').Contains('Msal')) != '-1'">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
 
 	<Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
