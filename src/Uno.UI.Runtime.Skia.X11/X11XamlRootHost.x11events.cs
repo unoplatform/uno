@@ -13,14 +13,15 @@ internal partial class X11XamlRootHost
 {
 	private static int ThreadCount;
 
+	private readonly Action<Size> _resizeCallback;
+	private readonly Action _closingCallback;
+	private readonly Action<bool> _focusCallback;
+	private readonly Action<bool> _visibilityCallback;
+
 	private Thread? _eventsThread;
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
 	private X11DisplayInformationExtension? _displayInformationExtension;
-	private Action<Size> _resizeCallback;
-	private Action _closeCallback;
-	private Action<bool> _focusCallback;
-	private Action<bool> _visibilityCallback;
 
 	private void InitializeX11EventsThread()
 	{
@@ -86,12 +87,14 @@ internal partial class X11XamlRootHost
 				switch (event_.type)
 				{
 					case XEventName.ClientMessage:
-						// TODO: where does INativeWindowWrapper.Closing fit in all of this?
 						IntPtr deleteWindow = X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW);
 						if (event_.ClientMessageEvent.ptr1 == deleteWindow)
 						{
-							// TODO: how to detect if the window is force-killed? (e.g. xkill)
-							_closeCallback();
+							// This happens when we click the titlebar X, not like xkill,
+							// which, according to the source code, just calls XKillClient
+							// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
+							// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
+							QueueEvent(this, _closingCallback);
 						}
 						break;
 					case XEventName.ConfigureNotify:
@@ -131,6 +134,9 @@ internal partial class X11XamlRootHost
 						break;
 					case XEventName.KeyRelease:
 						_keyboardSource?.ProcessKeyboardEvent(event_.KeyEvent, false);
+						break;
+					case XEventName.DestroyNotify:
+						// We handle the WM_DELETE_WINDOW message above, so ignore this.
 						break;
 					default:
 						if (this.Log().IsEnabled(LogLevel.Error))

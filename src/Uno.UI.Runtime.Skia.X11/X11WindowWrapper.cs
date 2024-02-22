@@ -3,6 +3,7 @@ using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.Core.Preview;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
@@ -18,7 +19,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		_xamlRoot = xamlRoot;
 
-		_host = new X11XamlRootHost(window, RaiseNativeSizeChanged, Close, OnNativeActivated, OnNativeVisibilityChanged);
+		_host = new X11XamlRootHost(window, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
 		X11Manager.XamlRootMap.Register(xamlRoot, _host);
 
 		_windowToHost[window] = _host;
@@ -63,6 +64,31 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		}
 
 		RaiseClosed();
+	}
+
+	private void OnWindowClosing()
+	{
+		var closingArgs = RaiseClosing();
+		if (closingArgs.Cancel)
+		{
+			return;
+		}
+
+		var manager = SystemNavigationManagerPreview.GetForCurrentView();
+		if (!manager.HasConfirmedClose)
+		{
+			if (!manager.RequestAppClose())
+			{
+				// App closing was prevented
+				return;
+			}
+		}
+
+		// Closing should continue, perform suspension.
+		Application.Current.RaiseSuspending();
+
+		// All prerequisites passed, can safely close.
+		Close();
 	}
 
 	private void OnNativeActivated(bool focused) => ActivationState = focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;

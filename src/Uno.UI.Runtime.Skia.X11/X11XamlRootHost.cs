@@ -46,12 +46,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public X11Window X11Window => _x11Window!.Value;
 
-	public X11XamlRootHost(Window winUIWindow, Action<Size> resizeCallback, Action closeCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(Window winUIWindow, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_window = winUIWindow;
 
 		_resizeCallback = resizeCallback;
-		_closeCallback = closeCallback;
+		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
 
