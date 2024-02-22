@@ -506,6 +506,35 @@ namespace Uno.UI.Helpers.WinUI
 #endif
 		}
 
+		public static bool IsGamepadNavigationDirection(VirtualKey key)
+		{
+			return
+				IsGamepadNavigationRight(key) ||
+				IsGamepadNavigationLeft(key) ||
+				IsGamepadNavigationUp(key) ||
+				IsGamepadNavigationDown(key);
+		}
+
+		public static bool IsGamepadNavigationRight(VirtualKey key)
+		{
+			return key == VirtualKey.GamepadLeftThumbstickRight || key == VirtualKey.GamepadDPadRight;
+		}
+
+		public static bool IsGamepadNavigationLeft(VirtualKey key)
+		{
+			return key == VirtualKey.GamepadLeftThumbstickLeft || key == VirtualKey.GamepadDPadLeft;
+		}
+
+		public static bool IsGamepadNavigationUp(VirtualKey key)
+		{
+			return key == VirtualKey.GamepadLeftThumbstickUp || key == VirtualKey.GamepadDPadUp;
+		}
+
+		public static bool IsGamepadNavigationDown(VirtualKey key)
+		{
+			return key == VirtualKey.GamepadLeftThumbstickDown || key == VirtualKey.GamepadDPadDown;
+		}
+
 		// Be careful to use this API.
 		// If IsTH2OrLower(), it return false;
 		public static bool IsMouseModeEnabled()
