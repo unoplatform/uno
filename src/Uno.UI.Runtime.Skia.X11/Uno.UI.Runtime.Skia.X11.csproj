@@ -30,6 +30,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Tmds.DBus" Version="0.16.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="SkiaSharp" />
@@ -47,6 +51,10 @@
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="DBus\DBusHelper.cs" />
 	</ItemGroup>
 
 </Project>
