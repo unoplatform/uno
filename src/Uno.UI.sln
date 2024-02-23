@@ -189,8 +189,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RemoteControl.Refere
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia.Linux.FrameBuffer", "Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj", "{AA89E8AC-40EF-4911-99B5-55228188446A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.Linux.FrameBuffer", "SamplesApp\SamplesApp.Skia.Linux.FrameBuffer\SamplesApp.Skia.Linux.FrameBuffer.csproj", "{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme.v1.netcoremobile", "Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.netcoremobile.csproj", "{34833538-6378-4592-B8DD-929C9F4B0E5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.FluentTheme.v1.Reference", "Uno.UI.FluentTheme.v1\Uno.UI.FluentTheme.v1.Reference.csproj", "{04833538-6378-4592-B8DD-929C9F4B0E5C}"
@@ -317,7 +315,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia", "Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj", "{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.MacOS", "SamplesApp\SamplesApp.Skia.MacOS\SamplesApp.Skia.MacOS.csproj", "{C60CE444-4959-4D84-B63F-D89599A8CCCA}"
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.X11", "SamplesApp\SamplesApp.Skia.X11\SamplesApp.Skia.X11.csproj", "{93E6D033-52E2-4C2B-A715-A9FC1F609E3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.Generic", "SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj", "{93E6D033-52E2-4C2B-A715-A9FC1F609E3D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Runtime.Skia.X11", "Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj", "{37441DE3-088B-4B63-A1E2-E70E39BF4222}"
 EndProject

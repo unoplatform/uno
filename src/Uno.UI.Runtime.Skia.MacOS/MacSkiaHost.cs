@@ -5,7 +5,7 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-public class MacSkiaHost : ISkiaApplicationHost
+public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 {
 	private readonly Func<Application> _appBuilder;
 
@@ -48,7 +48,7 @@ public class MacSkiaHost : ISkiaApplicationHost
 
 	public RenderSurfaceType RenderSurfaceType { get; set; }
 
-	public void Run()
+	protected override void Initialize()
 	{
 		if (!InitializeMac())
 		{
@@ -60,7 +60,10 @@ public class MacSkiaHost : ISkiaApplicationHost
 		}
 
 		InitializeDispatcher();
+	}
 
+	protected override void RunLoop()
+	{
 		StartApp();
 
 		// `argc` and `argv` parameters are ignored by macOS

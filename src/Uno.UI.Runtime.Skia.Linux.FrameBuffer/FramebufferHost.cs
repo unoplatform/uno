@@ -17,7 +17,7 @@ using WUX = Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
-	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
+	public class FrameBufferHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisposable
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
@@ -52,12 +52,15 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		/// <remarks>This value can be overriden by the UNO_DISPLAY_SCALE_OVERRIDE environment variable</remarks>
 		public float? DisplayScale { get; set; }
 
-		public void Run()
+		protected override void Initialize()
 		{
 			StartConsoleInterception();
 
-			_eventLoop.Schedule(Initialize);
+			_eventLoop.Schedule(InnerInitialize);
+		}
 
+		protected override void RunLoop()
+		{
 			_terminationGate.WaitOne();
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -89,7 +92,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			_consoleInterceptionThread.Start();
 		}
 
-		private void Initialize()
+		private void InnerInitialize()
 		{
 			_isDispatcherThread = true;
 
@@ -146,5 +149,9 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
 		WUX.UIElement? IXamlRootHost.RootElement => FrameBufferWindowWrapper.Instance.Window?.RootElement;
+
+		public void Dispose()
+		{
+		}
 	}
 }

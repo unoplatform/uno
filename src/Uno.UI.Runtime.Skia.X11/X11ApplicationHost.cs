@@ -13,10 +13,11 @@ using Uno.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-public class X11ApplicationHost : ISkiaApplicationHost
+public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private readonly EventLoop _eventLoop;
@@ -73,7 +74,7 @@ public class X11ApplicationHost : ISkiaApplicationHost
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
-	public void Run()
+	protected override void RunLoop()
 	{
 		_eventLoop.Schedule(StartApp);
 
@@ -101,5 +102,13 @@ public class X11ApplicationHost : ISkiaApplicationHost
 		}
 
 		Application.StartWithArguments(CreateApp);
+	}
+
+	protected override void Initialize()
+	{
+	}
+
+	public void Dispose()
+	{
 	}
 }
