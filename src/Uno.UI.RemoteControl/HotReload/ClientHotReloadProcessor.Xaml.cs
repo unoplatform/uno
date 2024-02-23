@@ -95,15 +95,20 @@ namespace Uno.UI.RemoteControl.HotReload
 
 					if (parts.Length > 0 && Version.TryParse(parts[0], out var version))
 					{
-						if (this.Log().IsEnabled(LogLevel.Trace))
+						_isIssue93860Fixed = version >=
+#if __IOS__ || __CATALYST__
+							new Version(34, 0, 1, 52); //8.0.102
+#elif __ANDROID__
+							new Version(17, 2, 8022); // 8.0.200
+#endif
+
+						if (!_isIssue93860Fixed.Value && this.Log().IsEnabled(LogLevel.Warning))
 						{
-							this.Log().Trace(
+							this.Log().Warn(
 								$"The .NET Platform Bindings version {version} is too old " +
 								$"and contains this issue: https://github.com/dotnet/runtime/issues/93860. " +
 								$"Make sure to upgrade to .NET 8.0.102 or later");
 						}
-
-						_isIssue93860Fixed = version >= new Version(34, 0, 1, 52);
 					}
 				}
 			}
