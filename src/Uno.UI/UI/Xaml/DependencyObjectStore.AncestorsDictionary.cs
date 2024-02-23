@@ -1,55 +1,41 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.DataBinding;
-using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.Diagnostics.Eventing;
-using Uno.Disposables;
-using System.Linq;
-using System.Threading;
 using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Data;
-using Uno.UI;
-using System.Collections;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __IOS__
-using View = UIKit.UIView;
-#endif
+namespace Microsoft.UI.Xaml;
 
-namespace Microsoft.UI.Xaml
+public partial class DependencyObjectStore : IDisposable
 {
-	public partial class DependencyObjectStore : IDisposable
+	private readonly struct AncestorsDictionary
 	{
-		private class AncestorsDictionary
+		private readonly HashtableEx _entries = new HashtableEx();
+
+		// Constructor to avoid:
+		// error CS8983: A 'struct' with field initializers must include an explicitly declared constructor.
+		public AncestorsDictionary()
 		{
-			private readonly HashtableEx _entries = new HashtableEx();
+		}
 
-			internal bool TryGetValue(object key, out bool isAncestor)
+		internal bool TryGetValue(object key, out bool isAncestor)
+		{
+			if (_entries.TryGetValue(key, out var value))
 			{
-				if (_entries.TryGetValue(key, out var value))
-				{
-					isAncestor = (bool)value!;
-					return true;
-				}
-
-				isAncestor = false;
-				return false;
+				isAncestor = (bool)value!;
+				return true;
 			}
 
-			internal void Set(object key, bool isAncestor)
-				=> _entries[key] = isAncestor;
-
-			internal void Clear()
-				=> _entries.Clear();
-
-			internal void Dispose()
-				=> _entries.Dispose();
+			isAncestor = false;
+			return false;
 		}
+
+		internal void Set(object key, bool isAncestor)
+			=> _entries[key] = isAncestor;
+
+		internal void Clear()
+			=> _entries.Clear();
+
+		internal void Dispose()
+			=> _entries.Dispose();
 	}
 }
