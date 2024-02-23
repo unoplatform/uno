@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls;
 internal static class WebViewExtensions
 {
 	public static WebViewNavigationStartingEventArgs ToWebViewArgs(this CoreWebView2NavigationStartingEventArgs args) =>
-		new WebViewNavigationStartingEventArgs(args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
+		new WebViewNavigationStartingEventArgs(args.Uri is null || args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
 		{
 			Cancel = args.Cancel
 		};
