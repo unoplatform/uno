@@ -10,7 +10,6 @@ Some devices provide a hardware back button to handle navigation within applicat
 
 The `BackRequested` event of the `SystemNavigationManager` is triggered whenever the user presses the hardware back button. To subscribe to it, first get an instance of `SystemNavigationManager` via the `GetForCurrentView` method:
 
-
 ```csharp
 var manager = SystemNavigationManager.GetForCurrentView();
 manager.BackRequested += OnBackRequested;
