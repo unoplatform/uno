@@ -18,84 +18,33 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	}
 
-	public ExpandCollapseState ExpandCollapseState
-		=> (Owner as ComboBox).IsDropDownOpen ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed;
-
-	public bool IsReadOnly => (Owner as ComboBox).IsEnabled || (Owner as ComboBox).IsEditable;
-
-	public string Value => (Owner as ComboBox).SelectionBoxItem?.ToString();
-
-	public WindowInteractionState InteractionState => WindowInteractionState.Running;
-
-	public bool IsModal => true;
-
-	public bool IsTopmost => true;
-
-	public bool Maximizable => false;
-
-	public bool Minimizable => false;
-
-	public WindowVisualState VisualState => WindowVisualState.Normal;
-
-	public void Collapse()
+	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
-		if (!IsEnabled())
-		{
-			// UIA_E_ELEMENTNOTENABLED
-			throw new ElementNotEnabledException();
-		}
-
 		var pOwner = Owner as ComboBox;
-		pOwner.IsDropDownOpen = false;
-	}
 
-	public void Expand()
-	{
-		if (!IsEnabled())
+		switch (patternInterface)
 		{
-			// UIA_E_ELEMENTNOTENABLED;
-			throw new ElementNotEnabledException();
+			case PatternInterface.Value:
+				if (pOwner.IsEditable)
+				{
+					return this;
+				}
+				break;
+
+			case PatternInterface.ExpandCollapse:
+				return this;
+
+			case PatternInterface.Window:
+				if (pOwner.IsDropDownOpen)
+				{
+					return this;
+				}
+				break;
+			default:
+				return base.GetPatternCore(patternInterface);
 		}
-
-		var pOwner = Owner as ComboBox;
-		pOwner.IsDropDownOpen = true;
+		return null;
 	}
-
-	public void SetValue(string value)
-	{
-		// UIA_E_INVALIDOPERATION
-		throw new InvalidOperationException();
-	}
-
-	public void Close()
-	{
-
-	}
-
-	public void SetVisualState(WindowVisualState state)
-	{
-
-	}
-	public bool WaitForInputIdle(int milliseconds) => false;
-
-	protected override string GetClassNameCore() => nameof(ComboBox);
-
-	protected override string GetNameCore()
-	{
-		var returnValue = base.GetNameCore();
-
-		// If the Name property wasn't explicitly set on this AP, then we will
-		// return the combo header.
-		if (string.IsNullOrEmpty(returnValue))
-		{
-			return (Owner as ComboBox).Header.ToString();
-		}
-
-		return returnValue;
-	}
-
-	protected override AutomationControlType GetAutomationControlTypeCore()
-		=> AutomationControlType.ComboBox;
 
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
@@ -134,6 +83,25 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		return apChildren;
 	}
 
+	protected override string GetClassNameCore() => nameof(ComboBox);
+
+	protected override string GetNameCore()
+	{
+		var returnValue = base.GetNameCore();
+
+		// If the Name property wasn't explicitly set on this AP, then we will
+		// return the combo header.
+		if (string.IsNullOrEmpty(returnValue))
+		{
+			return (Owner as ComboBox).Header.ToString();
+		}
+
+		return returnValue;
+	}
+
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.ComboBox;
+
 	protected override string GetHelpTextCore()
 	{
 		var returnValue = base.GetHelpTextCore();
@@ -152,35 +120,42 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 		return returnValue;
 	}
 
-	protected override object GetPatternCore(PatternInterface patternInterface)
+	public bool IsReadOnly => (Owner as ComboBox).IsEnabled || (Owner as ComboBox).IsEditable;
+
+	public string Value => (Owner as ComboBox).SelectionBoxItem?.ToString();
+
+	public void SetValue(string value)
 	{
-		var pOwner = Owner as ComboBox;
-
-		switch (patternInterface)
-		{
-			case PatternInterface.Value:
-				if (pOwner.IsEditable)
-				{
-					return this;
-				}
-				break;
-
-			case PatternInterface.ExpandCollapse:
-				return this;
-
-			case PatternInterface.Window:
-				if (pOwner.IsDropDownOpen)
-				{
-					return this;
-				}
-				break;
-			default:
-				return base.GetPatternCore(patternInterface);
-		}
-		return null;
+		// UIA_E_INVALIDOPERATION
+		throw new InvalidOperationException();
 	}
 
-	public new bool IsSelectionRequired => true;
+	public void Expand()
+	{
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED;
+			throw new ElementNotEnabledException();
+		}
+
+		var pOwner = Owner as ComboBox;
+		pOwner.IsDropDownOpen = true;
+	}
+
+	public void Collapse()
+	{
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
+		}
+
+		var pOwner = Owner as ComboBox;
+		pOwner.IsDropDownOpen = false;
+	}
+
+	public ExpandCollapseState ExpandCollapseState
+		=> (Owner as ComboBox).IsDropDownOpen ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed;
 
 	// Raise events for ExpandCollapseState changes to UIAutomation Clients.
 	public void RaiseExpandCollapseAutomationEvent(bool isOpen)
@@ -202,4 +177,30 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 		RaisePropertyChangedEvent(ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty, oldValue, newValue);
 	}
+
+	public new bool IsSelectionRequired => true;
+
+	public bool IsModal => true;
+
+	public bool IsTopmost => true;
+
+	public bool Maximizable => false;
+
+	public bool Minimizable => false;
+
+	public WindowInteractionState InteractionState => WindowInteractionState.Running;
+
+	public WindowVisualState VisualState => WindowVisualState.Normal;
+
+	public void SetVisualState(WindowVisualState state)
+	{
+
+	}
+
+	public void Close()
+	{
+
+	}
+
+	public bool WaitForInputIdle(int milliseconds) => false;
 }
