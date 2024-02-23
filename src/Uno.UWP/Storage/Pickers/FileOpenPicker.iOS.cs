@@ -10,6 +10,10 @@ using UIKit;
 using Foundation;
 using Windows.ApplicationModel.Core;
 using Uno.Helpers.Theming;
+<<<<<<< HEAD
+=======
+using PhotosUI;
+>>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 
 namespace Windows.Storage.Pickers
 {
@@ -24,16 +28,33 @@ namespace Windows.Storage.Pickers
 		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token) =>
 			await PickFilesAsync(true, token);
 
+<<<<<<< HEAD
 		private UIViewController GetViewController(bool multiple, TaskCompletionSource<NSUrl?[]> completionSource)
+=======
+		private UIViewController GetViewController(bool multiple, TaskCompletionSource<StorageFile?[]> completionSource)
+>>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 		{
 			switch (SuggestedStartLocation)
 			{
-				case PickerLocationId.PicturesLibrary when !multiple: // As UIImagePickerController does not support multiple selection, we fall back to UIDocumentPickerViewController for multiple selection
+				case PickerLocationId.PicturesLibrary when multiple is false:
+				case PickerLocationId.VideosLibrary when multiple is false:
 					return new UIImagePickerController()
 					{
 						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
 						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary),
 						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
+					};
+
+				case PickerLocationId.PicturesLibrary when multiple is true:
+				case PickerLocationId.VideosLibrary when multiple is true:
+					var configuration = new PHPickerConfiguration
+					{
+						Filter = PHPickerFilter.ImagesFilter,
+						SelectionLimit = multiple ? 0 : 1
+					};
+					return new PHPickerViewController(configuration)
+					{
+						Delegate = new PhotoPickerDelegate(completionSource)
 					};
 
 				default:
@@ -55,7 +76,11 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
 			}
 
+<<<<<<< HEAD
 			var completionSource = new TaskCompletionSource<NSUrl?[]>();
+=======
+			var completionSource = new TaskCompletionSource<StorageFile?[]>();
+>>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 
 			using var viewController = this.GetViewController(multiple, completionSource);
 
@@ -69,70 +94,105 @@ namespace Windows.Storage.Pickers
 
 			await rootController.PresentViewControllerAsync(viewController, true);
 
-			var nsUrls = await completionSource.Task;
+			var files = await completionSource.Task;
 
 			rootController.DismissViewController(true, null);
 
+<<<<<<< HEAD
 			if (nsUrls == null || nsUrls.Length == 0)
+=======
+			if (files is null || files.Length == 0)
+>>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 			{
 				return FilePickerSelectedFilesArray.Empty;
 			}
 
+<<<<<<< HEAD
 			var files = nsUrls
 				.Where(url => url != null)
 				.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl!, null)).ToArray();
 			return new FilePickerSelectedFilesArray(files);
+=======
+			return new FilePickerSelectedFilesArray(files!);
+>>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 		}
 
 		private class ImageOpenPickerDelegate : UIImagePickerControllerDelegate
 		{
-			private readonly TaskCompletionSource<NSUrl?[]> _taskCompletionSource;
+			private readonly TaskCompletionSource<StorageFile?[]> _taskCompletionSource;
 
-			public ImageOpenPickerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
+			public ImageOpenPickerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource) =>
 				_taskCompletionSource = taskCompletionSource;
 
 			public override void Canceled(UIImagePickerController picker) =>
-				_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+				_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
 
 			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
 			{
 				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
 				{
-					_taskCompletionSource.SetResult(new[] { nSUrl });
+					var file = StorageFile.GetFromSecurityScopedUrl(nSUrl, null);
+					_taskCompletionSource.SetResult([file]);
 				}
 				else
 				{
-					_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+					_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
 				}
 			}
 		}
 
+		private class PhotoPickerDelegate : PHPickerViewControllerDelegate
+		{
+			private readonly TaskCompletionSource<StorageFile?[]> _taskCompletionSource;
+
+			public PhotoPickerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource) =>
+				_taskCompletionSource = taskCompletionSource;
+
+			public override void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
+			{
+				var storageFiles = ConvertPickerResults(results);
+				_taskCompletionSource.SetResult(storageFiles.ToArray());
+			}
+			static IEnumerable<StorageFile> ConvertPickerResults(PHPickerResult[] results)
+				=> results
+					.Select(res => res.ItemProvider)
+					.Where(provider => provider != null && provider.RegisteredTypeIdentifiers?.Length > 0)
+					.Select(p => StorageFile.GetFromItemProvider(p, null))
+					.ToArray();
+		}
+
 		private class FileOpenPickerDelegate : UIDocumentPickerDelegate
 		{
-			private readonly TaskCompletionSource<NSUrl?[]> _taskCompletionSource;
+			private readonly TaskCompletionSource<StorageFile?[]> _taskCompletionSource;
 
-			public FileOpenPickerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
+			public FileOpenPickerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource) =>
 				_taskCompletionSource = taskCompletionSource;
 
 			public override void WasCancelled(UIDocumentPickerViewController controller) =>
-				_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+				_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
 
 			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl url) =>
-				_taskCompletionSource.SetResult(new[] { url });
+				_taskCompletionSource.SetResult(new[] { StorageFile.GetFromSecurityScopedUrl(url, null) });
 
-			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl[] urls) =>
-				_taskCompletionSource.SetResult(urls);
+			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl[] urls)
+			{
+				var files = urls
+					.Where(url => url != null)
+					.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl!, null))
+					.ToArray();
+				_taskCompletionSource.SetResult(files);
+			}
 		}
 
 		private class FileOpenPickerPresentationControllerDelegate : UIAdaptivePresentationControllerDelegate
 		{
-			private readonly TaskCompletionSource<NSUrl?[]> _taskCompletionSource;
+			private readonly TaskCompletionSource<StorageFile?[]> _taskCompletionSource;
 
-			public FileOpenPickerPresentationControllerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
+			public FileOpenPickerPresentationControllerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource) =>
 				_taskCompletionSource = taskCompletionSource;
 
 			public override void DidDismiss(UIPresentationController controller) =>
-				_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+				_taskCompletionSource.SetResult(Array.Empty<StorageFile?>());
 		}
 	}
 }
