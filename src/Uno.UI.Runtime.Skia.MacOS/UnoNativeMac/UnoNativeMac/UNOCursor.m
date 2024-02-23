@@ -9,7 +9,7 @@ void uno_cursor_hide(void)
     [NSCursor hide];
 }
 
-void uno_cursor_unhide(void)
+void uno_cursor_show(void)
 {
     [NSCursor unhide];
 }

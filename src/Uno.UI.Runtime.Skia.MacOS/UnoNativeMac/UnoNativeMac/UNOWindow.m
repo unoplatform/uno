@@ -7,6 +7,7 @@
 #import "UNOSoftView.h"
 
 static NSWindow *main_window;
+static NSMutableSet<NSWindow*> *windows;
 static id windowDidChangeScreen;
 
 static window_did_change_screen_fn_ptr window_did_change_screen;
@@ -71,15 +72,16 @@ void uno_set_resize_callback(resize_fn_ptr p)
 
 NSWindow* uno_app_get_main_window(void)
 {
-#if DEBUG
     if (!main_window) {
-        main_window = (__bridge NSWindow*) uno_window_create(800, 600);
+        main_window = uno_window_create(800, 600);
     }
+#if DEBUG
+    NSLog(@"uno_app_get_main_window %p", main_window);
 #endif
     return main_window;
 }
 
-void* uno_window_create(double width, double height)
+NSWindow* uno_window_create(double width, double height)
 {
     CGRect size = NSMakeRect(0, 0, width, height);
     UNOWindow *window = [[UNOWindow alloc] initWithContentRect:size
@@ -115,12 +117,24 @@ void* uno_window_create(double width, double height)
     // we need values for the current screen (before it change, because it might never)
     [windowDidChangeScreen applicationDidChangeScreenParametersNotification:nw];
     
-    return (__bridge void*) window;
+    if (!windows) {
+        windows = [[NSMutableSet alloc] initWithCapacity:10];
+    }
+    [windows addObject:window];
+
+    [window makeKeyWindow];
+    [window orderFrontRegardless];
+
+    return window;
 }
 
 void uno_window_invalidate(NSWindow *window)
 {
-    window.contentViewController.view.needsDisplay = true;
+#if DEBUG
+    NSLog(@"uno_window_invalidate %@ view: %p", window, window.contentViewController.view);
+#endif
+    if (window.contentViewController)
+        window.contentViewController.view.needsDisplay = true;
 }
 
 bool uno_window_resize(NSWindow *window, double width, double height)
@@ -180,19 +194,9 @@ inline static window_key_callback_fn_ptr uno_get_window_key_down_callback(void)
     return window_key_down;
 }
 
-void uno_set_window_key_down_callback(window_key_callback_fn_ptr p)
-{
-    window_key_down = p;
-}
-
 inline static window_key_callback_fn_ptr uno_get_window_key_up_callback(void)
 {
     return window_key_up;
-}
-
-void uno_set_window_key_up_callback(window_key_callback_fn_ptr p)
-{
-    window_key_up = p;
 }
 
 VirtualKey get_virtual_key(unsigned short keyCode)
@@ -360,9 +364,11 @@ inline static window_mouse_callback_fn_ptr uno_get_window_mouse_event_callback(v
     return window_mouse_event;
 }
 
-void uno_set_window_mouse_event_callback(window_mouse_callback_fn_ptr p)
+void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer)
 {
-    window_mouse_event = p;
+    window_key_down = keyDown;
+    window_key_up = keyUp;
+    window_mouse_event = pointer;
 }
 
 static window_should_close_fn_ptr window_should_close;
@@ -389,6 +395,14 @@ void* uno_window_get_metal_context(UNOWindow* window)
 
 @implementation UNOWindow : NSWindow
 
+- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
+    self = [super initWithContentRect:contentRect styleMask:style backing:backingStoreType defer:flag];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
+
 - (BOOL) getPositionFrom:(NSEvent*)event x:(CGFloat*)px y:(CGFloat *)py
 {
     *py = self.contentView.frame.size.height - event.locationInWindow.y;
@@ -410,6 +424,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
         case NSEventTypeLeftMouseDown:
         case NSEventTypeOtherMouseDown:
         case NSEventTypeRightMouseDown: {
+//            [self makeKeyWindow];
             mouse = MouseEventsDown;
             inContact = YES;
             break;
@@ -453,17 +468,17 @@ void* uno_window_get_metal_context(UNOWindow* window)
         }
         case NSEventTypeKeyDown: {
             unsigned short scanCode = event.keyCode;
-            handled = uno_get_window_key_down_callback()(get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode);
+            handled = uno_get_window_key_down_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyDown: %@ handled? %s", event, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyDown: %@ window %p handled? %s", event, self, handled ? "true" : "false");
 #endif
             break;
         }
         case NSEventTypeKeyUp: {
             unsigned short scanCode = event.keyCode;
-            handled = uno_get_window_key_up_callback()(get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode);
+            handled = uno_get_window_key_up_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyUp: %@ handled? %s", event, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyUp: %@ window %p handled? %s", event, self, handled ? "true" : "false");
 #endif
             break;
         }
@@ -528,7 +543,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
             NSDate *boot = [[NSDate alloc] initWithTimeInterval:uno_get_system_uptime() sinceDate:now];
             data.timestamp = (uint64)(boot.timeIntervalSinceNow * 1000000);
 
-            handled = uno_get_window_mouse_event_callback()(&data);
+            handled = uno_get_window_mouse_event_callback()(self, &data);
 #if DEBUG_MOUSE // very noisy
             NSLog(@"NSEventTypeMouse*: %@ %g %g handled? %s", event, data.x, data.y, handled ? "true" : "false");
 #endif
@@ -542,12 +557,21 @@ void* uno_window_get_metal_context(UNOWindow* window)
 
 - (bool)windowShouldClose:(NSWindow *)sender
 {
-#if DEBUG
-    NSLog(@"UNOWindowDelegate.windowShouldClose %@", sender);
-#endif
     // see `ISystemNavigationManagerPreviewExtension`
-    return uno_get_window_should_close_callback()() ? YES : NO;
+    bool result = uno_get_window_should_close_callback()() ? YES : NO;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowShouldClose %@ -> %s", self, sender, result ? "true" : "false");
+#endif
+    return result;
 }
 
+- (void)windowWillClose:(NSNotification *)notification
+{
+#if DEBUG
+    NSLog(@"UNOWindow %p windowWillClose %@", self, notification);
+#endif
+    self.contentViewController = nil;
+    [windows removeObject:self];
+}
 
 @end

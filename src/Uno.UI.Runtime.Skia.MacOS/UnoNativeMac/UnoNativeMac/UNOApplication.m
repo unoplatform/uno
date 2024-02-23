@@ -158,8 +158,7 @@ void uno_application_quit(void)
 #if DEBUG
     NSLog(@"UNOApplicationDelegate.applicationDidFinishLaunching notification %@ win %@", notification, win);
 #endif
-    [win makeKeyWindow];
-    [win orderFrontRegardless];
+    // creating the window will call `makeKeyWindow` and `orderFrontRegardless`
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication

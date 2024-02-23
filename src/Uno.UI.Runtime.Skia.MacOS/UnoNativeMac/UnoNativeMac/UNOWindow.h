@@ -13,7 +13,7 @@ typedef void (*resize_fn_ptr)(void* /* window */, double /* width */, double /* 
 resize_fn_ptr uno_get_resize_callback(void);
 void uno_set_resize_callback(resize_fn_ptr p);
 
-@interface UNOWindow : NSWindow
+@interface UNOWindow : NSWindow <NSWindowDelegate>
 
 @property (strong) UNOMetalViewDelegate* metalViewDelegate;
 
@@ -21,15 +21,16 @@ void uno_set_resize_callback(resize_fn_ptr p);
 
 @end
 
-@interface UNOWindowDelegate : NSObject <NSWindowDelegate>
-
-- (bool)windowShouldClose:(NSWindow *)sender;
-
-@end
+//@interface UNOWindowDelegate : NSObject <NSWindowDelegate>
+//
+//- (bool)windowShouldClose:(NSWindow *)sender;
+//- (void)windowWillClose:(NSNotification *)notification;
+//
+//@end
 
 NSWindow* uno_app_get_main_window(void);
 
-void* uno_window_create(double width, double height);
+NSWindow* uno_window_create(double width, double height);
 void uno_window_invalidate(NSWindow *window);
 bool uno_window_resize(NSWindow *window, double width, double height);
 void uno_window_set_title(NSWindow *window, const char* title);
@@ -219,10 +220,6 @@ typedef NS_OPTIONS(uint32, VirtualKeyModifiers) {
     VirtualKeyModifiersWindows = 1 << 3,
 };
 
-typedef int32_t (*window_key_callback_fn_ptr)(VirtualKey key, VirtualKeyModifiers mods, uint32 scanCode);
-void uno_set_window_key_down_callback(window_key_callback_fn_ptr p);
-void uno_set_window_key_up_callback(window_key_callback_fn_ptr p);
-
 // keep in sync with MacOSUnoCorePointerInputSource.cs
 typedef NS_ENUM(uint32, MouseEvents) {
     MouseEventsNone,
@@ -263,8 +260,9 @@ struct MouseEventData {
     uint32 pid;
 };
 
-typedef int32_t (*window_mouse_callback_fn_ptr)(struct MouseEventData *data);
-void uno_set_window_mouse_event_callback(window_mouse_callback_fn_ptr p);
+typedef int32_t (*window_key_callback_fn_ptr)(UNOWindow* window, VirtualKey key, VirtualKeyModifiers mods, uint32 scanCode);
+typedef int32_t (*window_mouse_callback_fn_ptr)(UNOWindow* window, struct MouseEventData *data);
+void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer);
 
 typedef bool (*window_should_close_fn_ptr)(void);
 window_should_close_fn_ptr uno_get_window_should_close_callback(void);
