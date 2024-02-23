@@ -396,3 +396,7 @@ public App()
 ```
 
 As this is quite complex, you can find a working implementation of a folder-based save file picker in [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS). You can modify and adjust this implementation as you see fit for your specific use case.
+
+## Catalyst
+
+For a Catalyst app, when using `FileOpenPicker` or `FileSavePicker`, you'll need to add the [com.apple.security.files.user-selected.read-write](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_files_user-selected_read-write) entitlement.
