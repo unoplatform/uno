@@ -152,6 +152,8 @@ namespace SamplesApp
 
 #if !WINAPPSDK
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#else
+			MainWindow!.Title = "Uno Samples";
 #endif
 
 #if __SKIA__ && DEBUG

@@ -5,7 +5,8 @@
 
 	<ScrollViewer>
 		<StackPanel Padding="16,8,16,16">
-
+			<Button x:Name="UnfocusButton">Unfocus</Button>			
+			
 			<!-- Normal Label -->
 			<TextBlock Text="Normal"
 								 FontSize="16" />

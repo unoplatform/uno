@@ -266,6 +266,7 @@
 
 				<!-- LIBRARY (Categories)-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+					  Height="80"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
 					<Grid.ColumnDefinitions>
@@ -276,6 +277,11 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
 					<!-- Runtime tests button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
@@ -284,6 +290,8 @@
 						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
 									   Margin="5,0" />
 					</Button>
+					
+					<!-- Playground button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							Foreground="{StaticResource Color06Brush}"
 							Grid.Column="1"
@@ -320,6 +328,9 @@
 						<u:PathControl Style="{StaticResource Icon_RunAll}"
 									   Margin="5,0" />
 					</Button>
+
+					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
+							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
 				</Grid>
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="1"

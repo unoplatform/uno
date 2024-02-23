@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<StackPanel Padding="16,0">
+		<Button x:Name="UnfocusButton">Unfocus</Button>
 
 		<!-- Normal Label -->
 		<TextBlock Text="Normal"
