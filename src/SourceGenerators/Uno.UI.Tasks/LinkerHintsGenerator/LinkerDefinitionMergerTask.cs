@@ -75,7 +75,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					existingContent = null;
 				}
 
-				using (var writer = new StringWriter())
+				using (var writer = new Utf8StringWriter())
 				{
 					doc.Save(writer);
 					var output = writer.ToString();
@@ -92,6 +92,11 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			}
 
 			return true;
+		}
+
+		private class Utf8StringWriter : StringWriter
+		{
+			public override Encoding Encoding => Encoding.UTF8;
 		}
 	}
 }
