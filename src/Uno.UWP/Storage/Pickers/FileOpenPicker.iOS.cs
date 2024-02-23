@@ -1,18 +1,18 @@
 ﻿#nullable enable
 
+using Foundation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Storage.Pickers.Internal;
 using UIKit;
-using Foundation;
-using Windows.ApplicationModel.Core;
-using Uno.Helpers.Theming;
-using Windows.UI.Core;
-using Uno.UI.Dispatching;
 using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.Storage.Pickers.Internal;
+using Uno.UI.Dispatching;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Windows.Storage.Pickers
 {
@@ -54,12 +54,16 @@ namespace Windows.Storage.Pickers
 		{
 			switch (SuggestedStartLocation)
 			{
-				case PickerLocationId.PicturesLibrary when !multiple: // As UIImagePickerController does not support multiple selection, we fall back to UIDocumentPickerViewController for multiple selection
-					return new UIImagePickerController()
+				case PickerLocationId.PicturesLibrary:
+
+					var configuration = new PHPickerConfiguration
 					{
-						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
-						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary),
-						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
+						Filter = PHPickerFilter.ImagesFilter,
+						SelectionLimit = multiple ? 0 : 1
+					};
+					return new PHPickerViewController(configuration)
+					{
+						Delegate = new PhotoPickerDelegate(completionSource)
 					};
 
 				default:
@@ -126,26 +130,17 @@ namespace Windows.Storage.Pickers
 			return new FilePickerSelectedFilesArray(files);
 		}
 
-		private class ImageOpenPickerDelegate : UIImagePickerControllerDelegate
+		private class PhotoPickerDelegate : PHPickerViewControllerDelegate
 		{
 			private readonly TaskCompletionSource<NSUrl?[]> _taskCompletionSource;
 
-			public ImageOpenPickerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
+			public PhotoPickerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
 				_taskCompletionSource = taskCompletionSource;
 
-			public override void Canceled(UIImagePickerController picker) =>
-				_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
-
-			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
+			public override void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
 			{
-				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
-				{
-					_taskCompletionSource.SetResult(new[] { nSUrl });
-				}
-				else
-				{
-					_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
-				}
+				var urls = results.Select(result => result.ItemProvider?.LoadObject(NSUrl.FromUrl, null)).OfType<NSUrl>().ToArray();
+				_taskCompletionSource.SetResult(urls);
 			}
 		}
 
