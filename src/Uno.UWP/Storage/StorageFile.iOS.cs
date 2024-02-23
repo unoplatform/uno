@@ -12,6 +12,7 @@ using Uno.Storage.Streams.Internal;
 using System.IO;
 using System.Linq;
 using MobileCoreServices;
+using SystemPath = System.IO.Path;
 
 namespace Windows.Storage
 {
@@ -28,7 +29,8 @@ namespace Windows.Storage
 			private readonly NSItemProvider? _provider;
 			private readonly StorageFolder? _parent;
 			readonly string? _identifier;
-			public MediaScopedFile(NSItemProvider provider, StorageFolder? parent) : base(string.Empty)
+			public MediaScopedFile(NSItemProvider provider, StorageFolder? parent) :
+				base(SystemPath.Combine(parent?.Path ?? string.Empty, provider?.SuggestedName ?? string.Empty))
 			{
 				_provider = provider;
 				_parent = parent;
@@ -50,11 +52,15 @@ namespace Windows.Storage
 
 			public override DateTimeOffset DateCreated => throw new NotImplementedException();
 
-			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) => throw new NotImplementedException();
-			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw new NotImplementedException();
+			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) =>
+				throw new InvalidOperationException("Created date is not available from this source");
+
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) =>
+				throw new InvalidOperationException("File properties are not available from this source");
+
 			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
-			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> throw new NotImplementedException();
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) =>
+				throw new InvalidOperationException("File properties are not available from this source");
 
 			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 			{
