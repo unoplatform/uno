@@ -34,6 +34,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 			_app.WaitForDependencyPropertyValue(selectedItemText, "Text", "Save");
 		}
 
+#if !HAS_UNO_WINUI
 		[Test]
 		[AutoRetry()]
 		public void NavigateBackAndForthBetweenMenuItemsAndSettings()
@@ -63,6 +64,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 			_app.WaitForElement("Page1NavViewContent");
 		}
+#endif
 
 		[Test]
 		[AutoRetry()]
