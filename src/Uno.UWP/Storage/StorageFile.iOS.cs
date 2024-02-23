@@ -10,6 +10,8 @@ using Windows.Storage.Streams;
 using Uno.Storage.Internal;
 using Uno.Storage.Streams.Internal;
 using System.IO;
+using System.Linq;
+using MobileCoreServices;
 
 namespace Windows.Storage
 {
@@ -18,6 +20,62 @@ namespace Windows.Storage
 		internal static StorageFile GetFromSecurityScopedUrl(NSUrl nsUrl, StorageFolder? parent) =>
 			new StorageFile(new SecurityScopedFile(nsUrl, parent));
 
+		internal static StorageFile GetFromItemProvider(NSItemProvider provider, StorageFolder? parent) =>
+			new StorageFile(new MediaScopedFile(provider, parent));
+
+		internal class MediaScopedFile : ImplementationBase
+		{
+			private readonly NSItemProvider? _provider;
+			private readonly StorageFolder? _parent;
+			readonly string? _identifier;
+			public MediaScopedFile(NSItemProvider provider, StorageFolder? parent) : base(string.Empty)
+			{
+				_provider = provider;
+				_parent = parent;
+				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? []);
+			}
+
+			private string? GetIdentifier(string[] identifiers)
+			{
+				if (!(identifiers?.Length > 0))
+					return null;
+				if (identifiers.Any(i => i.StartsWith(UTType.LivePhoto, StringComparison.InvariantCultureIgnoreCase)) && identifiers.Contains(UTType.JPEG))
+					return identifiers.FirstOrDefault(i => i == UTType.JPEG);
+				if (identifiers.Contains(UTType.QuickTimeMovie))
+					return identifiers.FirstOrDefault(i => i == UTType.QuickTimeMovie);
+				return identifiers.FirstOrDefault();
+			}
+
+			public override StorageProvider Provider => StorageProviders.IosItemProvider;
+
+			public override DateTimeOffset DateCreated => throw new NotImplementedException();
+
+			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) => throw new NotImplementedException();
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw new NotImplementedException();
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+				=> throw new NotImplementedException();
+
+			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			{
+				if (_provider is null || _identifier is null)
+				{
+					throw new InvalidOperationException("Can't load data representation from item provider.");
+				}
+
+				var data = await _provider.LoadDataRepresentationAsync(_identifier);
+
+				if (data is null)
+				{
+					throw new InvalidOperationException("Can't load data representation from item provider.");
+				}
+
+				return data.AsStream();
+			}
+
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
+			protected override bool IsEqual(ImplementationBase implementation) => throw new NotImplementedException();
+		}
 		internal class SecurityScopedFile : ImplementationBase
 		{
 			private readonly NSUrl _nsUrl;
