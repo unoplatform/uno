@@ -64,7 +64,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 			_app.WaitForElement("Page1NavViewContent");
 		}
-#endif
 
 		[Test]
 		[AutoRetry()]
@@ -97,5 +96,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 			togglePaneRect.Width.Should().BeLessThan(paneRootRect.Width, "when NavigationView is closed, TogglePaneButton should not take the width of PaneRoot");
 		}
+#endif
 	}
 }
