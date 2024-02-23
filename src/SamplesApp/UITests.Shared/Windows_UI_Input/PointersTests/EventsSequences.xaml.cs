@@ -349,6 +349,12 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.Click()
 						&& args.End();
+#elif __ANDROID__
+					// KNOWN ISSUE: https://github.com/unoplatform/uno/issues/9080
+					// On Android the pointer clicked event is not raised properly
+					result =
+						args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerExitedEvent);
 #else
 					result =
 						args.One(PointerEnteredEvent)
@@ -360,6 +366,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Click()
 #else
 						&& args.Click()
+						&& args.One(PointerExitedEvent)
 						&& args.One(PointerReleasedEvent)
 #endif
 						&& args.One(PointerExitedEvent)
