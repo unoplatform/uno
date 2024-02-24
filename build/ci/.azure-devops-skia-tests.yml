@@ -351,7 +351,7 @@ jobs:
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
-    SamplesAppArtifactName: skia-linux-samples-app-WinUI
+    SamplesAppArtifactName: skia-generic-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -389,7 +389,7 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-linux-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
