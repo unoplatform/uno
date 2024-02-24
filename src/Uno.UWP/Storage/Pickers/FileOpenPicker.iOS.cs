@@ -13,20 +13,46 @@ using Uno.Helpers.Theming;
 <<<<<<< HEAD
 =======
 using PhotosUI;
+<<<<<<< HEAD
 >>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
+=======
+using Uno.UI.Dispatching;
+>>>>>>> a8f5724a91 (chore: make non-ui thread ready)
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
-		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
+		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
-			var files = await PickFilesAsync(false, token);
-			return files.Count == 0 ? null : files[0];
+			var tcs = new TaskCompletionSource<StorageFile?>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				var files = await PickFilesAsync(false, token);
+				if (files.Count > 0)
+				{
+					tcs.SetResult(files[0]);
+				}
+				else
+				{
+					tcs.SetResult(null);
+				}
+			});
+
+			return tcs.Task;
 		}
 
-		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token) =>
-			await PickFilesAsync(true, token);
+		private Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token)
+		{
+			var tcs = new TaskCompletionSource<IReadOnlyList<StorageFile>>();
+			NativeDispatcher.Main.Enqueue(async () =>
+			{
+				var files = await PickFilesAsync(true, token);
+				tcs.SetResult(files);
+			});
+
+			return tcs.Task;
+		}
 
 <<<<<<< HEAD
 		private UIViewController GetViewController(bool multiple, TaskCompletionSource<NSUrl?[]> completionSource)
