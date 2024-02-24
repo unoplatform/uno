@@ -300,6 +300,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		..\global.json = ..\global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.MediaPlayer.Skia.Gtk", "AddIns\Uno.UI.MediaPlayer.Skia.Gtk\Uno.UI.MediaPlayer.Skia.Gtk.csproj", "{BEF7DC51-622E-4400-8FAF-267EB398830C}"
@@ -315,9 +316,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia", "Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj", "{A8C22BED-2589-48F1-B1D4-0B436A90FC3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.MacOS", "SamplesApp\SamplesApp.Skia.MacOS\SamplesApp.Skia.MacOS.csproj", "{C60CE444-4959-4D84-B63F-D89599A8CCCA}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.Generic", "SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj", "{93E6D033-52E2-4C2B-A715-A9FC1F609E3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Runtime.Skia.X11", "Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj", "{37441DE3-088B-4B63-A1E2-E70E39BF4222}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia.X11", "Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj", "{37441DE3-088B-4B63-A1E2-E70E39BF4222}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -3439,48 +3441,6 @@ Global
 		{AA89E8AC-40EF-4911-99B5-55228188446A}.Release|x64.Build.0 = Release|Any CPU
 		{AA89E8AC-40EF-4911-99B5-55228188446A}.Release|x86.ActiveCfg = Release|Any CPU
 		{AA89E8AC-40EF-4911-99B5-55228188446A}.Release|x86.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|ARM.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|x64.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Debug|x86.Build.0 = Debug|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|Any CPU.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|Any CPU.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|ARM.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|ARM.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|ARM64.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|ARM64.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|iPhone.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|iPhone.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|iPhoneSimulator.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|x64.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|x64.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|x86.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release_NoSamples|x86.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|ARM.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|ARM.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|ARM64.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|iPhone.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|x64.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|x64.Build.0 = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|x86.ActiveCfg = Release|Any CPU
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49}.Release|x86.Build.0 = Release|Any CPU
 		{34833538-6378-4592-B8DD-929C9F4B0E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34833538-6378-4592-B8DD-929C9F4B0E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34833538-6378-4592-B8DD-929C9F4B0E5C}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -5982,7 +5942,6 @@ Global
 		{717B3451-3CE4-4FF3-9D7E-3E90348214EA} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{017B3451-3CE4-4FF3-9D7E-3E90348214EA} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{AA89E8AC-40EF-4911-99B5-55228188446A} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
-		{76EBBF09-F39F-48C2-BEE9-9DF5F8EC6A49} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{34833538-6378-4592-B8DD-929C9F4B0E5C} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{04833538-6378-4592-B8DD-929C9F4B0E5C} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
 		{8F85881F-05D5-46C8-BBA8-C1CA740C74E6} = {416684CF-A4E3-4079-B380-3FF0B00E433C}
