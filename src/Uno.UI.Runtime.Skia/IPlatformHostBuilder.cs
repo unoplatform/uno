@@ -1,6 +1,6 @@
 ﻿namespace Uno.UI.Runtime.Skia
 {
-    internal interface IPlatformHostBuilder
+	internal interface IPlatformHostBuilder
 	{
 		bool IsSupported { get; }
 
