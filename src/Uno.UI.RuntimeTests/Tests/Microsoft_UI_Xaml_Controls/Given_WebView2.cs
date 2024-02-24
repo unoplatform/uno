@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_WebView2
 {
-	[TestMethod]		
+	[TestMethod]
 #if __IOS__
 	[Ignore("iOS is disabled, to be restored for https://github.com/unoplatform/uno/pull/15555")]
 #endif
