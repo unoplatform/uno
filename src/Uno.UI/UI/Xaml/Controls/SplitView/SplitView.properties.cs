@@ -70,7 +70,7 @@ public partial class SplitView
 			new FrameworkPropertyMetadata(
 				defaultValue: SplitViewDisplayMode.Overlay,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-				propertyChangedCallback: (s, e) => ((SplitView)s)?.OnDisplayModeChanged()
+				propertyChangedCallback: (s, e) => ((SplitView)s)?.OnPropertyChanged(e)
 			)
 		);
 
@@ -88,7 +88,7 @@ public partial class SplitView
 			typeof(SplitView),
 			new FrameworkPropertyMetadata(
 				false,
-				(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged((bool)e.NewValue)
+				(s, e) => ((SplitView)s)?.OnPropertyChanged(e)
 			)
 		);
 

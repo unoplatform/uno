@@ -51,6 +51,9 @@ public partial class SplitView
 
 		if (args.Property == DisplayModeProperty)
 		{
+			// Uno Specific: Originally in OnPropertyChanged2
+			OnDisplayModeChanged();
+
 			RestoreSavedFocusElement();
 			UpdateVisualState(true);
 		}
@@ -65,6 +68,11 @@ public partial class SplitView
 			// Force the bindings in our VisualState animations to refresh by intentionally
 			// passing in false for 'useTransitions.'
 			UpdateVisualState(false);
+		}
+		else if (args.Property == IsPaneOpenProperty)
+		{
+			// Uno Specific: Originally in OnPropertyChanged2
+			OnIsPaneOpenChanged((bool)args.NewValue);
 		}
 	}
 
