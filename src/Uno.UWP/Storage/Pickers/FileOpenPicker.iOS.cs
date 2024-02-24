@@ -12,6 +12,7 @@ using Windows.ApplicationModel.Core;
 using Uno.Helpers.Theming;
 using PhotosUI;
 using Uno.UI.Dispatching;
+using Windows.Foundation.Metadata;
 
 namespace Windows.Storage.Pickers
 {
@@ -50,10 +51,11 @@ namespace Windows.Storage.Pickers
 
 		private UIViewController GetViewController(bool multiple, TaskCompletionSource<StorageFile?[]> completionSource)
 		{
+			var iOS14AndAbove = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
 			switch (SuggestedStartLocation)
 			{
-				case PickerLocationId.PicturesLibrary when multiple is false:
-				case PickerLocationId.VideosLibrary when multiple is false:
+				case PickerLocationId.PicturesLibrary when multiple is false || iOS14AndAbove is false:
+				case PickerLocationId.VideosLibrary when multiple is false || iOS14AndAbove is false:
 					return new UIImagePickerController()
 					{
 						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
@@ -61,8 +63,8 @@ namespace Windows.Storage.Pickers
 						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
 					};
 
-				case PickerLocationId.PicturesLibrary when multiple is true:
-				case PickerLocationId.VideosLibrary when multiple is true:
+				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
+				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
 					var configuration = new PHPickerConfiguration
 					{
 						Filter = PHPickerFilter.ImagesFilter,
