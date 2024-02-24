@@ -2692,6 +2692,15 @@
 							<ColumnDefinition x:Name="ColumnDefinition1" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneGridLength, FallbackValue=0}" />
 							<ColumnDefinition x:Name="ColumnDefinition2" Width="*" />
 						</Grid.ColumnDefinitions>
+						<!-- Uno Specific: PaneRoot should come before ContentRoot, but we swap them because Canvas.ZIndex is not implemented for non-canvas panels anywhere but skia -->
+						<!-- Content Area -->
+						<Grid x:Name="ContentRoot" Grid.ColumnSpan="2">
+							<Grid.RenderTransform>
+								<CompositeTransform x:Name="ContentTransform" />
+							</Grid.RenderTransform>
+							<Border Child="{TemplateBinding Content}" />
+							<Rectangle x:Name="LightDismissLayer" Fill="Transparent" Visibility="Collapsed" />
+						</Grid>
 						<!-- Pane Content Area -->
 						<Grid x:Name="PaneRoot" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="2" HorizontalAlignment="Left" Visibility="Collapsed" Background="{TemplateBinding PaneBackground}" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" Canvas.ZIndex="1" CornerRadius="{TemplateBinding CornerRadius}">
 							<Grid.BackgroundTransition>
@@ -2709,14 +2718,6 @@
 							</Grid.RenderTransform>
 							<Border Child="{TemplateBinding Pane}" />
 							<Rectangle x:Name="HCPaneBorder" x:DeferLoadStrategy="Lazy" Visibility="Collapsed" Fill="{ThemeResource SystemControlForegroundTransparentBrush}" Width="1" HorizontalAlignment="Right" />
-						</Grid>
-						<!-- Content Area -->
-						<Grid x:Name="ContentRoot" Grid.ColumnSpan="2">
-							<Grid.RenderTransform>
-								<CompositeTransform x:Name="ContentTransform" />
-							</Grid.RenderTransform>
-							<Border Child="{TemplateBinding Content}" />
-							<Rectangle x:Name="LightDismissLayer" Fill="Transparent" Visibility="Collapsed" />
 						</Grid>
 					</Grid>
 				</ControlTemplate>
