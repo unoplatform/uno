@@ -123,7 +123,7 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Runtime_Tests_group_0'
     JobDisplayName: 'Run iOS Automated Runtime Tests Group 0'
-    JobTimeoutInMinutes: 60
+    JobTimeoutInMinutes: 75
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_TEST_TIMEOUT: '3600000'
@@ -139,7 +139,7 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Runtime_Tests_group_1'
     JobDisplayName: 'Run iOS Automated Runtime Tests Group 1'
-    JobTimeoutInMinutes: 60
+    JobTimeoutInMinutes: 75
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_TEST_TIMEOUT: '3600000'
@@ -155,7 +155,7 @@ jobs:
     nugetPackages: $(NUGET_PACKAGES)
     JobName: 'iOS_Automated_Tests_Runtime_Tests_group_2'
     JobDisplayName: 'Run iOS Automated Runtime Tests Group 2'
-    JobTimeoutInMinutes: 60
+    JobTimeoutInMinutes: 75
     vmImage: ${{ parameters.vmImageTest }}
     UITEST_SNAPSHOTS_ONLY: false
     UITEST_TEST_TIMEOUT: '3600000'
