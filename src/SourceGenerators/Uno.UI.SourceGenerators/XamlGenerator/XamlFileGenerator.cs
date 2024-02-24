@@ -3330,7 +3330,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var ownerType = GetType(member.Member.DeclaringType!);
 
-								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name);
+								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name, member.LineNumber, member.LinePosition);
 
 								if (member.Objects.Count == 1 && member.Objects[0] is var child && IsAssignableTo(child.Type, propertyType))
 								{
@@ -4293,7 +4293,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var customResourceResourceId = GetCustomResourceResourceId(member);
 				if (customResourceResourceId != null)
 				{
-					var type = GetPropertyTypeByOwnerSymbol(declaringType!, member.Member.Name);
+					var type = GetPropertyTypeByOwnerSymbol(declaringType!, member.Member.Name, member.LineNumber, member.LinePosition);
 					var rightSide = GetCustomResourceRetrieval(customResourceResourceId, type.GetFullyQualifiedTypeIncludingGlobal());
 					writer.AppendLineInvariantIndented("{0}{1} = {2};", prefix, member.Member.Name, rightSide);
 				}
@@ -5271,7 +5271,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
+						throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown. Line number: {member.LineNumber}, Line position: {member.LinePosition}, File: {_fileDefinition.FilePath}");
 					}
 				}
 				else
@@ -5465,7 +5465,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (memberName == "Path")
 			{
-				var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName), isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty);
+				var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName, m.LineNumber, m.LinePosition), isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty);
 				value = RewriteAttachedPropertyPath(value);
 				return value;
 			}
@@ -5496,7 +5496,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						m.Owner.Members.None(otherMember => otherMember.Member.Name == "Converter"));
 				propertyType = shouldMatchPropertyType
 					? propertyType
-					: GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName);
+					: GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName, m.LineNumber, m.LinePosition);
 				var targetValueType = propertyType;
 
 				// If value is typed and the property is not, the value type should be preserved.
