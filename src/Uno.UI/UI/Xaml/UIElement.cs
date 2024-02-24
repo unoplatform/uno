@@ -840,6 +840,7 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
+			InvalidateArrange();
 		}
 
 		partial void ApplyNativeClip(Rect rect);
