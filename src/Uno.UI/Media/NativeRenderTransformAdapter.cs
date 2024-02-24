@@ -38,7 +38,7 @@ namespace Uno.UI.Media
 			// This is used only by animations
 			if (transform is not null)
 			{
-				transform.View = owner;
+				transform.Owner = owner;
 			}
 
 			// Partial constructor

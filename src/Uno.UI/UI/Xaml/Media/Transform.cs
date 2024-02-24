@@ -6,18 +6,6 @@ using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __IOS__
-using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
-#elif __WASM__
-using _View = Microsoft.UI.Xaml.UIElement;
-#else
-using _View = System.Object;
-#endif
-
 namespace Microsoft.UI.Xaml.Media
 {
 	/// <summary>
@@ -88,7 +76,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal virtual _View View { get; set; }
+		internal virtual object Owner { get; set; }
 
 		#region GeneralTransform overrides
 		/// <inheritdoc />

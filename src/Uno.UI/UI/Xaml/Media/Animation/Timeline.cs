@@ -400,17 +400,30 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				if (boundProperty != null)
 				{
 					//https://msdn.microsoft.com/en-uS/office/office365/jj819807.aspx#dependent
-					//TODO Projection, Clip
+					//TODO Projection
 
 					if (boundProperty.PropertyName.EndsWith("Opacity", StringComparison.Ordinal)
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
 						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
 						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
-						|| (boundProperty.DataContext is Transform transform && transform.View != null)
 					)
 					{
-						//is not dependent if the target is opacity, the color property of a brush, or a Transform property targeting a view as RenderTransform
+						//is not dependent if the target is opacity, the color property of a brush
 						return false;
+					}
+
+					if (boundProperty.DataContext is Transform transform)
+					{
+						if (transform.Owner is UIElement)
+						{
+							// Transform property targeting a view as RenderTransform
+							return false;
+						}
+						else if (transform.Owner is RectangleGeometry { ClipOwner: not null })
+						{
+							// The animation targets a sub-property value of Clip, so it's independent.
+							return false;
+						}
 					}
 				}
 			}

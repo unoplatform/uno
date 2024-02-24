@@ -8,17 +8,6 @@ using System.Text;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __IOS__
-using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
-#elif __WASM__
-using _View = Microsoft.UI.Xaml.UIElement;
-#else
-using _View = System.Object;
-#endif
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -104,13 +93,13 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildAdded(Transform transform)
 		{
-			transform.View = View; // Animation support
+			transform.Owner = Owner; // Animation support
 			transform.Changed += OnChildTransformChanged;
 		}
 
 		private void OnChildRemoved(Transform transform)
 		{
-			transform.View = null; // Animation support
+			transform.Owner = null; // Animation support
 			transform.Changed -= OnChildTransformChanged;
 		}
 
@@ -150,15 +139,15 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 
-		internal override _View View
+		internal override object Owner
 		{
-			get => base.View;
+			get => base.Owner;
 			set
 			{
-				base.View = value;
+				base.Owner = value;
 				foreach (var child in Children)
 				{
-					child.View = value;
+					child.Owner = value;
 				}
 			}
 		}
