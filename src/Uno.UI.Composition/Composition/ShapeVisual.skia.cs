@@ -79,7 +79,7 @@ public partial class ShapeVisual
 
 		// Note: We don't apply the clip here, as it is already applied on the shapes (i.e. CornerRadius)
 		//		 The Clip property is only used to apply the clip on the children (i.e. the UIElement's content)
-		// Clip?.Apply(parentSession.Surface);
+		Clip?.Apply(parentSession.Surface);
 
 		var session = parentSession; // Creates a new session (clone the struct)
 
