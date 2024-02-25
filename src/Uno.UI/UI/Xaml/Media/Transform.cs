@@ -78,6 +78,8 @@ namespace Microsoft.UI.Xaml.Media
 		// Note: This is now used only for animations
 		internal virtual object Owner { get; set; }
 
+		internal UIElement View => Owner as UIElement;
+
 		#region GeneralTransform overrides
 		/// <inheritdoc />
 		protected override GeneralTransform InverseCore
