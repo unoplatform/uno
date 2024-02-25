@@ -142,7 +142,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					(dpSymbol.ContainingType.IsStatic || isDependencyObject);
 
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
+				ContainingTypeHintName = dpSymbol.ContainingType.GetFullMetadataNameForFileName();
 				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
 				CoerceCallbackMethodParameterLength = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName)?.Parameters.Length;
 
