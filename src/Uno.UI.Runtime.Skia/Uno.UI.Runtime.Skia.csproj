@@ -14,9 +14,9 @@
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia</PackageId>
 
-		<RootNamespace>Uno.UI.Runtime.Skia.Gtk</RootNamespace>
+		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
