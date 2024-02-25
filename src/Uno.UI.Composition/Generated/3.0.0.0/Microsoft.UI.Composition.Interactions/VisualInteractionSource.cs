@@ -9,25 +9,6 @@ namespace Microsoft.UI.Composition.Interactions
 	public partial class VisualInteractionSource : global::Microsoft.UI.Composition.CompositionObject, global::Microsoft.UI.Composition.Interactions.ICompositionInteractionSource
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal VisualInteractionSource()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Interactions.InteractionSourceMode ScaleSourceMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InteractionSourceMode VisualInteractionSource.ScaleSourceMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionSourceMode%20VisualInteractionSource.ScaleSourceMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.ScaleSourceMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.Interactions.InteractionChainingMode ScaleChainingMode
 		{
@@ -38,76 +19,6 @@ namespace Microsoft.UI.Composition.Interactions
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.ScaleChainingMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Interactions.InteractionSourceMode PositionYSourceMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InteractionSourceMode VisualInteractionSource.PositionYSourceMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionSourceMode%20VisualInteractionSource.PositionYSourceMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.PositionYSourceMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Interactions.InteractionChainingMode PositionYChainingMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InteractionChainingMode VisualInteractionSource.PositionYChainingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionChainingMode%20VisualInteractionSource.PositionYChainingMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.PositionYChainingMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Interactions.InteractionSourceMode PositionXSourceMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InteractionSourceMode VisualInteractionSource.PositionXSourceMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionSourceMode%20VisualInteractionSource.PositionXSourceMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "InteractionSourceMode VisualInteractionSource.PositionXSourceMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Interactions.InteractionChainingMode PositionXChainingMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member InteractionChainingMode VisualInteractionSource.PositionXChainingMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionChainingMode%20VisualInteractionSource.PositionXChainingMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "InteractionChainingMode VisualInteractionSource.PositionXChainingMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode ManipulationRedirectionMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VisualInteractionSourceRedirectionMode VisualInteractionSource.ManipulationRedirectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualInteractionSourceRedirectionMode%20VisualInteractionSource.ManipulationRedirectionMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "VisualInteractionSourceRedirectionMode VisualInteractionSource.ManipulationRedirectionMode");
 			}
 		}
 #endif
@@ -136,16 +47,6 @@ namespace Microsoft.UI.Composition.Interactions
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "bool VisualInteractionSource.IsPositionXRailsEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Visual Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Visual VisualInteractionSource.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Visual%20VisualInteractionSource.Source");
 			}
 		}
 #endif
@@ -286,13 +187,6 @@ namespace Microsoft.UI.Composition.Interactions
 		public static global::Microsoft.UI.Composition.Interactions.VisualInteractionSource CreateFromIVisualElement(global::Microsoft.UI.Composition.IVisualElement source)
 		{
 			throw new global::System.NotImplementedException("The member VisualInteractionSource VisualInteractionSource.CreateFromIVisualElement(IVisualElement source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualInteractionSource%20VisualInteractionSource.CreateFromIVisualElement%28IVisualElement%20source%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Composition.Interactions.VisualInteractionSource Create(global::Microsoft.UI.Composition.Visual source)
-		{
-			throw new global::System.NotImplementedException("The member VisualInteractionSource VisualInteractionSource.Create(Visual source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VisualInteractionSource%20VisualInteractionSource.Create%28Visual%20source%29");
 		}
 #endif
 		// Processing: Microsoft.UI.Composition.Interactions.ICompositionInteractionSource
