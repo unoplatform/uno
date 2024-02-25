@@ -41,5 +41,7 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 
 			sv.ChangeView((double?)hOffset, (double?)vOffset, sv.ZoomFactor, true);
 		}
+
+		return Task.CompletedTask;
 	}
 }
