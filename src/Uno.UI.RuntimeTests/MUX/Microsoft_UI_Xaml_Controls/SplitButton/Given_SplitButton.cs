@@ -1,7 +1,8 @@
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using System.Threading.Tasks;
 using Common;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
@@ -18,7 +19,7 @@ public class Given_SplitButton
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-	public void VerifyFontFamilyForChevron()
+	public async Task VerifyFontFamilyForChevron()
 	{
 		using (StyleHelper.UseFluentStyles())
 		{
