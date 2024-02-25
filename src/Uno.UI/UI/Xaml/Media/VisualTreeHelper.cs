@@ -543,14 +543,15 @@ namespace Microsoft.UI.Xaml.Media
 
 			var isChildStale = isStale;
 
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
 			using var child = children
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
-				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
-				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
-				.GetReverseEnumerator();
+#if __SKIA__
+				.OrderBy(e => e.Visual.ZIndex) // Equivalent to GetValue(Canvas.ZIndexProperty) on skia
 #endif
+				.Reverse()
+				.GetEnumerator();
 
 			while (child.MoveNext())
 			{
