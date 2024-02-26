@@ -185,7 +185,7 @@ then
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is available, the test run is complete."
 
 		# Copy the results to the build directory
-		iconv -f utf-16 -t utf-8 "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > "$UNO_ORIGINAL_TEST_RESULTS"
+		iconv -f utf-16 -t utf-8 "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" | awk 'BEGIN{print "\xEF\xBB\xBF"}{print}' > "$UNO_ORIGINAL_TEST_RESULTS"
 
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
