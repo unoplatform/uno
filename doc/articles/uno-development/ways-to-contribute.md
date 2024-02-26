@@ -52,7 +52,7 @@ If you have a question, be sure first to check out our [documentation](https://p
 
 If you've already done some Uno development, maybe there's a GitHub discussion question you can answer, giving another user the benefit of your experience.
 
-For a more direct conversation, [visit our Discord Channel #uno-platform](https://discord.gg/eBHZSKG).
+For a more direct conversation, [visit our Discord Server](https://platform.uno/discord).
 
 ### Spreading the word
 
@@ -96,4 +96,4 @@ Once you're ready to create a PR, check out the [Guidelines for pull requests](.
 
 ### Need help?
 
-If there's anything you need, [give us a shout in the #uno-platform Discord Channel](https://discord.gg/eBHZSKG).
+If there's anything you need, [ping us on our Discord Server](https://platform.uno/discord).

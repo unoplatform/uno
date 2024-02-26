@@ -62,7 +62,7 @@ Uno Platform is supported by several 3rd-party packages and libraries, including
 
 ### Where can I get support?
 
-Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.  
+Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord Server](https://www.platform.uno/discord) - where our engineering team and community will be able to help you.  
 Paid support is also available and allows you to collaborate with our engineering team to ensure the success of your projects and address your GitHub issues faster. [Contact us for more details.](https://platform.uno/contact/)
 
 ### How can I get involved?
