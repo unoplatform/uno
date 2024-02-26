@@ -183,12 +183,14 @@ then
 	# if the file exists, show a message
 	if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is available, the test run is complete."
+
+		# Copy the results to the build directory
+		iconv -f utf-16 -t utf-8 "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > "$UNO_ORIGINAL_TEST_RESULTS"
+
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
 	fi
 
-	# Copy the results to the build directory
-	cp "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" $UNO_ORIGINAL_TEST_RESULTS || true
 else
 	echo "Test Parameters:"
 	echo "  Timeout=$UITEST_TEST_TIMEOUT"
