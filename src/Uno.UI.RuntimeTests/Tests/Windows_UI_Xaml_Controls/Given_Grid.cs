@@ -14,12 +14,14 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.Extensions;
 
 #if HAS_UNO
 using DirectUI;
@@ -180,6 +182,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				TestServices.WindowHelper.WindowContent = null;
 			});
 		}
+
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Grid_Child_Canvas_ZIndex()
+		{
+			var btn = new Button();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				Width = 200,
+				Height = 200
+			};
+			var SUT = new Grid
+			{
+				Children =
+				{
+					btn,
+					border
+				}
+			};
+
+			btn.SetValue(Canvas.ZIndexProperty, 1);
+
+			var buttonClickCount = 0;
+			btn.Click += (_, _) => buttonClickCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(btn.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, buttonClickCount);
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
