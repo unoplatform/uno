@@ -37,6 +37,11 @@
 		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<!-- Make the package installable on net7.0 targets as a noop -->
+		<None Include="..\..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
+	</ItemGroup>
+
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 	<Target Name="_UnoDualScreenOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

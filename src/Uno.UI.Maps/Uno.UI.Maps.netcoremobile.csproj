@@ -36,6 +36,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- Make the package installable on net7.0 targets as a noop -->
+		<None Include="..\..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
