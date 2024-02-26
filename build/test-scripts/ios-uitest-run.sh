@@ -161,14 +161,14 @@ then
 	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "uno.platform.samplesdev" | awk '{print $1}'`
 	echo "App PID: $APP_PID"
 
-	# Set the timeout in seconds (5 minutes * 60 seconds = 300 seconds)
-	TIMEOUT=300
-	INTERVAL=5
+	# Set the timeout in seconds 
+	TIMEOUT=$((30 * 60))
+	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
 	# Loop until the file exists or the timeout is reached
 	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
-		echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
 
 		# exit loop if the APP_PID is not running anymore
