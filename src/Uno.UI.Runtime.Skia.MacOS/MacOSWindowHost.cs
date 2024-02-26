@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -30,7 +31,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private int _rowBytes;
 	private bool _initializationCompleted;
 
-	internal static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
+	private static XamlRootMap<IXamlRootHost> XamlRootMap { get; } = new();
 
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow)
 	{
@@ -132,8 +133,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		int width = (int)(nativeWidth * scale);
-		int height = (int)(nativeHeight * scale);
+		var width = (int)(nativeWidth * scale);
+		var height = (int)(nativeHeight * scale);
 		if (_bitmap == null || width != _bitmap.Width || height != _bitmap.Height)
 		{
 			_bitmap?.Dispose();
@@ -159,17 +160,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public static unsafe void Register()
 	{
-		// FIXME: ugly but this loads libSkiaSharp into memory (because it looks for @rpath/libSkiaSharp.dylib)
+		// From managed code this will load `libSkiaSharp` from `netX0/runtimes/osx/native/libSkiaSharp.dylib` so
+		// `libUnoNativeMac.dylib` will find it already available and won't try to load it from `@rpath/libSkiaSharp.dylib`
 		NativeSkia.gr_direct_context_make_metal(0, 0);
 
-		// TODO uno_set_display_callbacks
-		NativeUno.uno_set_draw_callback(&MetalDraw);
-		NativeUno.uno_set_soft_draw_callback(&SoftDraw);
-		NativeUno.uno_set_resize_callback(&Resize);
+		NativeUno.uno_set_drawing_callbacks(&MetalDraw, &SoftDraw, &Resize);
 
-		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &MouseEvent);
+		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => (o as IUnoKeyboardInputSource)!);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => (o as IUnoCorePointerInputSource)!);
+
+		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
 	}
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
@@ -184,7 +185,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 	}
 
-	public static void Register(nint handle, MacOSWindowHost host) => _windows.Add(handle, new WeakReference<MacOSWindowHost>(host));
+	public static void Register(nint handle, XamlRoot xamlRoot, MacOSWindowHost host)
+	{
+		XamlRootMap.Register(xamlRoot, host);
+		_windows.Add(handle, new WeakReference<MacOSWindowHost>(host));
+	}
 
 	public static void Unregister(nint handle) => _windows.Remove(handle);
 
@@ -202,30 +207,14 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private static void MetalDraw(nint handle, double width, double height, nint texture)
 	{
 		var window = GetWindowHost(handle);
-		if (window is not null)
-		{
-			window.MetalDraw(width, height, texture);
-		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
-		{
-			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
-			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.MetalDraw could not map 0x{handle:X} with an NSWindow");
-		}
+		window?.MetalDraw(width, height, texture);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static unsafe void SoftDraw(nint handle, double width, double height, nint* data, int* rowBytes, int* size)
 	{
 		var window = GetWindowHost(handle);
-		if (window is not null)
-		{
-			window.SoftDraw(width, height, data, rowBytes, size);
-		}
-		else if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Warning))
-		{
-			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
-			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.SoftDraw could not map 0x{handle:X} with an NSWindow");
-		}
+		window?.SoftDraw(width, height, data, rowBytes, size);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -372,7 +361,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 #pragma warning restore CS0067
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	internal static unsafe int MouseEvent(nint handle, NativeMouseEventData* data)
+	internal static unsafe int OnMouseEvent(nint handle, NativeMouseEventData* data)
 	{
 		try
 		{
@@ -481,6 +470,49 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"{member} not supported on macOS.");
+		}
+	}
+
+	// Window
+
+	internal event EventHandler<CancelEventArgs>? Closing;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	// System.Boolean is not blittable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
+	internal static int WindowShouldClose(nint handle)
+	{
+		try
+		{
+			var window = GetWindowHost(handle);
+			var cancel = new CancelEventArgs();
+			window?.Closing?.Invoke(window, cancel);
+			return cancel.Cancel ? 0 : 1;
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+			return 0;
+		}
+	}
+
+	internal event EventHandler<EventArgs>? Closed;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void WindowClose(nint handle)
+	{
+		try
+		{
+			var window = GetWindowHost(handle);
+			if (window is not null)
+			{
+				Unregister(handle);
+				window._nativeWindow.Destroyed();
+				window.Closed?.Invoke(window, EventArgs.Empty);
+			}
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 }

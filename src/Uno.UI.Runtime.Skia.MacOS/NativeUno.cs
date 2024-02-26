@@ -35,7 +35,7 @@ internal struct NativeMouseEventData
 	public float TiltX;
 	public float TiltY;
 	public float Pressure;
-	// scrollwheel
+	// scroll wheel
 	public int ScrollingDeltaX;
 	public int ScrollingDeltaY;
 	// others
@@ -167,13 +167,10 @@ internal static partial class NativeUno
 	internal static partial bool uno_application_query_url_support(string url);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_draw_callback(delegate* unmanaged[Cdecl]<nint, double, double, nint, void> callback);
-
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_soft_draw_callback(delegate* unmanaged[Cdecl]<nint, double, double, nint*, int*, int*, void> callback);
-
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_resize_callback(delegate* unmanaged[Cdecl]<nint, double, double, void> callback);
+	internal static unsafe partial void uno_set_drawing_callbacks(
+		delegate* unmanaged[Cdecl]<nint, double, double, nint, void> metalCallback,
+		delegate* unmanaged[Cdecl]<nint, double, double, nint*, int*, int*, void> softCallback,
+		delegate* unmanaged[Cdecl]<nint, double, double, void> resizeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_did_change_screen_callback(ref MacOSDisplayInformationExtension.ScreenData screenData, delegate* unmanaged[Cdecl]<void> callback);
@@ -209,7 +206,9 @@ internal static partial class NativeUno
 	internal static partial nint uno_window_set_title(nint window, string title);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_should_close_callback(delegate* unmanaged[Cdecl]<int> callback);
+	internal static unsafe partial void uno_set_window_close_callbacks(
+		delegate* unmanaged[Cdecl]<nint, int> shouldCloseCallback,
+		delegate* unmanaged[Cdecl]<nint, void> closeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]

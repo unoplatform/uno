@@ -6,18 +6,6 @@
 #import "UNOWindow.h"
 #import "UnoNativeMac.h"
 
-static draw_fn_ptr draw;
-
-inline draw_fn_ptr uno_get_draw_callback(void)
-{
-    return draw;
-}
-
-void uno_set_draw_callback(draw_fn_ptr p)
-{
-    draw = p;
-}
-
 @implementation UNOMetalViewDelegate
 {
     id<MTLDevice> _device;
@@ -57,7 +45,7 @@ void uno_set_draw_callback(draw_fn_ptr p)
 
     CGSize size = view.drawableSize;
     // call managed code
-    uno_get_draw_callback()((__bridge void*) view.window, size.width, size.height, (__bridge void*) drawable.texture);
+    uno_get_metal_draw_callback()((__bridge void*) view.window, size.width, size.height, (__bridge void*) drawable.texture);
 
     id<MTLCommandBuffer> commandBuffer = [self.queue commandBuffer];
     [commandBuffer presentDrawable:drawable];
