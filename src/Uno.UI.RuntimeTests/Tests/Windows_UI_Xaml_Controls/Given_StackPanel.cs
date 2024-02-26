@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Windows.Foundation;
-using Windows.UI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
-using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Private.Infrastructure;
 using SamplesApp.UITests;
+using Windows.Foundation;
+using Windows.UI;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -405,6 +402,157 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Spacing_All_Visible(Orientation orientation)
+		{
+			var stackPanel = new StackPanel()
+			{
+				Orientation = orientation,
+				Spacing = 10,
+				Children =
+				{
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green) },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue) }
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			Assert.AreEqual(20 * 3 + 10 * 2, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Spacing_All_Collapsed(Orientation orientation)
+		{
+			var stackPanel = new StackPanel()
+			{
+				Orientation = orientation,
+				Spacing = 10,
+				Children =
+				{
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+				}
+			};
+
+			bool isLoaded = false;
+			stackPanel.Loaded += (s, e) => isLoaded = true;
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitFor(() => isLoaded);
+			Assert.AreEqual(0, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Spacing_Middle_Collapsed(Orientation orientation)
+		{
+			var stackPanel = new StackPanel()
+			{
+				Orientation = orientation,
+				Spacing = 10,
+				Children =
+				{
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue) }
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			Assert.AreEqual(20 * 2 + 10, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Spacing_Last_Two_Collapsed(Orientation orientation)
+		{
+			var stackPanel = new StackPanel()
+			{
+				Orientation = orientation,
+				Spacing = 10,
+				Children =
+				{
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Spacing_Outer_Collapsed(Orientation orientation)
+		{
+			var stackPanel = new StackPanel()
+			{
+				Orientation = orientation,
+				Spacing = 10,
+				Children =
+				{
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green) },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Spacing_Multiple_Collapsed(Orientation orientation)
+		{
+			var stackPanel = new StackPanel()
+			{
+				Orientation = orientation,
+				Spacing = 10,
+				Children =
+				{
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed },
+					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Pink) },
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			Assert.AreEqual(2 * 20 + 10, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
 		}
 	}
 }
