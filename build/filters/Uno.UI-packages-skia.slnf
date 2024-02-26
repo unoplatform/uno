@@ -24,6 +24,7 @@
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
+      "Uno.UI.Runtime.Skia\\Uno.UI.Runtime.Skia.csproj",
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
       "Uno.UI.Runtime.Skia.MacOS\\Uno.UI.Runtime.Skia.MacOS.csproj",
