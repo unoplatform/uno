@@ -166,6 +166,8 @@ then
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
+	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
+
 	# Loop until the file exists or the timeout is reached
 	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
 		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
@@ -173,13 +175,20 @@ then
 
 		# exit loop if the APP_PID is not running anymore
 		if ! ps -p $APP_PID > /dev/null; then
-			echo "The app is not running anymore, stopping the test run."
+			echo "The app is not running anymore"
 			break
 		fi
-	done	
+	done
+
+	# if the file exists, show a message
+	if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is available, the test run is complete."
+	else
+		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+	fi
 
 	# Copy the results to the build directory
-	cp "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" $UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH || true
+	cp "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" $UNO_ORIGINAL_TEST_RESULTS || true
 else
 	echo "Test Parameters:"
 	echo "  Timeout=$UITEST_TEST_TIMEOUT"
