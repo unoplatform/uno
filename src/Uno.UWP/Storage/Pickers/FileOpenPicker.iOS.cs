@@ -10,18 +10,9 @@ using UIKit;
 using Foundation;
 using Windows.ApplicationModel.Core;
 using Uno.Helpers.Theming;
-<<<<<<< HEAD
-=======
 using PhotosUI;
-<<<<<<< HEAD
->>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
-=======
 using Uno.UI.Dispatching;
-<<<<<<< HEAD
->>>>>>> a8f5724a91 (chore: make non-ui thread ready)
-=======
 using Windows.Foundation.Metadata;
->>>>>>> ce5369f979 (chore: validate iOS version for feature)
 
 namespace Windows.Storage.Pickers
 {
@@ -58,11 +49,7 @@ namespace Windows.Storage.Pickers
 			return tcs.Task;
 		}
 
-<<<<<<< HEAD
-		private UIViewController GetViewController(bool multiple, TaskCompletionSource<NSUrl?[]> completionSource)
-=======
 		private UIViewController GetViewController(bool multiple, TaskCompletionSource<StorageFile?[]> completionSource)
->>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 		{
 			var iOS14AndAbove = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
 			switch (SuggestedStartLocation)
@@ -107,11 +94,7 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
 			}
 
-<<<<<<< HEAD
-			var completionSource = new TaskCompletionSource<NSUrl?[]>();
-=======
 			var completionSource = new TaskCompletionSource<StorageFile?[]>();
->>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 
 			using var viewController = this.GetViewController(multiple, completionSource);
 
@@ -129,23 +112,12 @@ namespace Windows.Storage.Pickers
 
 			rootController.DismissViewController(true, null);
 
-<<<<<<< HEAD
-			if (nsUrls == null || nsUrls.Length == 0)
-=======
 			if (files is null || files.Length == 0)
->>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 			{
 				return FilePickerSelectedFilesArray.Empty;
 			}
 
-<<<<<<< HEAD
-			var files = nsUrls
-				.Where(url => url != null)
-				.Select(nsUrl => StorageFile.GetFromSecurityScopedUrl(nsUrl!, null)).ToArray();
-			return new FilePickerSelectedFilesArray(files);
-=======
 			return new FilePickerSelectedFilesArray(files!);
->>>>>>> f0e364b1c6 (feat: Add support for PHPicker on iOS)
 		}
 
 		private class ImageOpenPickerDelegate : UIImagePickerControllerDelegate
