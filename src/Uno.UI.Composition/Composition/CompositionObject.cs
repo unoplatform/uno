@@ -65,14 +65,28 @@ namespace Microsoft.UI.Composition
 
 		// Overrides are based on:
 		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
-		private protected virtual bool IsAnimatableProperty(string propertyName) => false;
-		private protected virtual void SetAnimatableProperty(string propertyName, object? propertyValue) { }
+		private protected virtual bool IsAnimatableProperty(ReadOnlySpan<char> propertyName) => false;
+		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue) { }
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
-			if (!IsAnimatableProperty(propertyName))
+			ReadOnlySpan<char> firstPropertyName;
+			ReadOnlySpan<char> subPropertyName;
+			var firstDotIndex = propertyName.IndexOf('.');
+			if (firstDotIndex > -1)
 			{
-				throw new ArgumentException($"Property '{propertyName}' is not animatable.");
+				firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
+				subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
+			}
+			else
+			{
+				firstPropertyName = propertyName;
+				subPropertyName = default;
+			}
+
+			if (!IsAnimatableProperty(firstPropertyName))
+			{
+				throw new ArgumentException($"Property '{firstPropertyName}' is not animatable.");
 			}
 
 			if (_animations?.ContainsKey(propertyName) == true)
@@ -87,7 +101,7 @@ namespace Microsoft.UI.Composition
 
 			try
 			{
-				this.SetAnimatableProperty(propertyName, animationValue);
+				this.SetAnimatableProperty(firstPropertyName, subPropertyName, animationValue);
 			}
 			catch (Exception ex)
 			{
@@ -111,7 +125,22 @@ namespace Microsoft.UI.Composition
 			{
 				if (value == animation)
 				{
-					this.SetAnimatableProperty(key, animation.Evaluate());
+					var propertyName = key;
+					ReadOnlySpan<char> firstPropertyName;
+					ReadOnlySpan<char> subPropertyName;
+					var firstDotIndex = propertyName.IndexOf('.');
+					if (firstDotIndex > -1)
+					{
+						firstPropertyName = propertyName.AsSpan().Slice(0, firstDotIndex);
+						subPropertyName = propertyName.AsSpan().Slice(firstDotIndex + 1);
+					}
+					else
+					{
+						firstPropertyName = propertyName;
+						subPropertyName = default;
+					}
+
+					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
 				}
 			}
 		}

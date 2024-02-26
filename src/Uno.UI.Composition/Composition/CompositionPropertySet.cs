@@ -80,11 +80,11 @@ namespace Microsoft.UI.Composition
 		}
 
 		// TODO
-		private protected override bool IsAnimatableProperty(string propertyName)
+		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 			=> false;
 
 		// TODO
-		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
 		}
 	}
