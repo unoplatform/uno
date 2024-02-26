@@ -2188,19 +2188,25 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2219,19 +2225,25 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2253,15 +2265,19 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2289,15 +2305,19 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.35" KeySpline="0.1,0.9 0.2,1.0" Value="1.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2315,13 +2335,15 @@
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
 												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" />
 											</DoubleAnimationUsingKeyFrames>
-											<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
+												<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Collapsed" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2345,13 +2367,15 @@
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
 												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
 											</DoubleAnimationUsingKeyFrames>
-											<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
+												<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Collapsed" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2373,16 +2397,20 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
 											</DoubleAnimationUsingKeyFrames>
-											<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
+												<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Collapsed" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2410,16 +2438,20 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" />
 											</DoubleAnimationUsingKeyFrames>
-											<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Visibility">
+												<!-- Uno Specific: WinUI keeps the LightDismissLayer visible here, but is somehow Collapsed at some point. -->
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Collapsed" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="LightDismissLayer" Storyboard.TargetProperty="Opacity">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" />
-												<SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="1.0" /> -->
+												<!-- <SplineDoubleKeyFrame KeyTime="0:0:0.12" KeySpline="0.1,0.9 0.2,1.0" Value="0.0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0.0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2447,8 +2479,10 @@
 												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationCloseDuration}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationCloseDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationCloseDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2470,16 +2504,22 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="1" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames FillBehavior="Stop" Storyboard.TargetName="ContentTransform" Storyboard.TargetProperty="TranslateX">
-												<LinearDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <LinearDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2501,12 +2541,16 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="1" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames FillBehavior="Stop" Storyboard.TargetName="ContentTransform" Storyboard.TargetProperty="TranslateX">
-												<LinearDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <LinearDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2525,12 +2569,16 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0" Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames FillBehavior="Stop" Storyboard.TargetName="ContentTransform" Storyboard.TargetProperty="TranslateX">
-												<LinearDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}" Value="0" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <LinearDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}" Value="0" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform" Storyboard.TargetProperty="TranslateX">
-												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" />
-												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
+												<!-- Uno Specific: The original key frames cause a jittery effect where the value is set, unset, then set again. This may be because of a race in animations  -->
+												<!-- <DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="0" /> -->
+												<!-- <SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0" KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" /> -->
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
@@ -2538,20 +2586,22 @@
 								<VisualState x:Name="Closed" />
 								<VisualState x:Name="ClosedCompactLeft">
 									<VisualState.Setters>
+										<!-- Uno Specific: Originally, no parentheses around Grid.XXX -->
 										<Setter Target="ColumnDefinition1.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CompactPaneGridLength, FallbackValue=0}" />
-										<Setter Target="ContentRoot.Grid.Column" Value="1" />
-										<Setter Target="ContentRoot.Grid.ColumnSpan" Value="1" />
+										<Setter Target="ContentRoot.(Grid.Column)" Value="1" />
+										<Setter Target="ContentRoot.(Grid.ColumnSpan)" Value="1" />
 										<Setter Target="PaneRoot.Visibility" Value="Visible" />
 										<Setter Target="PaneClipRectangleTransform.TranslateX" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.NegativeOpenPaneLengthMinusCompactLength}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="ClosedCompactRight">
 									<VisualState.Setters>
+										<!-- Uno Specific: Originally, no parentheses around Grid.XXX -->
 										<Setter Target="ColumnDefinition1.Width" Value="*" />
 										<Setter Target="ColumnDefinition2.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CompactPaneGridLength, FallbackValue=0}" />
-										<Setter Target="ContentRoot.Grid.ColumnSpan" Value="1" />
+										<Setter Target="ContentRoot.(Grid.ColumnSpan)" Value="1" />
 										<Setter Target="PaneRoot.Visibility" Value="Visible" />
-										<Setter Target="PaneRoot.Grid.ColumnSpan" Value="2" />
+										<Setter Target="PaneRoot.(Grid.ColumnSpan)" Value="2" />
 										<Setter Target="PaneRoot.HorizontalAlignment" Value="Right" />
 										<Setter Target="PaneClipRectangleTransform.TranslateX" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLengthMinusCompactLength}" />
 									</VisualState.Setters>
@@ -2590,11 +2640,12 @@
 								</VisualState>
 								<VisualState x:Name="OpenInlineLeft">
 									<VisualState.Setters>
+										<!-- Uno Specific: Originally, no parentheses around Grid.XXX -->
 										<Setter Target="PaneRoot.Visibility" Value="Visible" />
 										<Setter Target="HCPaneBorder.Visibility" Value="Visible" />
-										<Setter Target="ContentRoot.Grid.ColumnSpan" Value="1" />
-										<Setter Target="ContentRoot.Grid.Column" Value="1" />
-										<Setter Target="PaneRoot.Grid.ColumnSpan" Value="1" />
+										<Setter Target="ContentRoot.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="ContentRoot.(Grid.Column)" Value="1" />
+										<Setter Target="PaneRoot.(Grid.ColumnSpan)" Value="1" />
 										<Setter Target="PaneTransform.TranslateX" Value="0" />
 										<Setter Target="ContentTransform.TranslateX" Value="0" />
 										<Setter Target="PaneClipRectangleTransform.TranslateX" Value="0" />
@@ -2630,8 +2681,9 @@
 								</VisualState>
 								<VisualState x:Name="OpenCompactOverlayLeft">
 									<VisualState.Setters>
-										<Setter Target="ContentRoot.Grid.ColumnSpan" Value="1" />
-										<Setter Target="ContentRoot.Grid.Column" Value="1" />
+										<!-- Uno Specific: Originally, no parentheses around Grid.XXX -->
+										<Setter Target="ContentRoot.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="ContentRoot.(Grid.Column)" Value="1" />
 									</VisualState.Setters>
 									<Storyboard>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1" Storyboard.TargetProperty="Width">
