@@ -31,6 +31,9 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
+		<!-- Required for the empty net7.0 target -->
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
