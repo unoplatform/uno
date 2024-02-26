@@ -67,4 +67,11 @@ public partial class ElementCompositionPreview
 		element.Visual.Children.InsertAtTop(container);
 #endif
 	}
+
+#if __SKIA__
+	public static void SetIsTranslationEnabled(UIElement element, bool value)
+	{
+		element.Visual.IsTranslationEnabled = value;
+	}
+#endif
 }

@@ -16,6 +16,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionObject : IDisposable
 	{
 		private readonly ContextStore _contextStore = new ContextStore();
+		private CompositionPropertySet? _properties;
 		private Dictionary<string, CompositionAnimation>? _animations;
 
 		internal CompositionObject()
@@ -29,11 +30,23 @@ namespace Microsoft.UI.Composition
 			Compositor = compositor;
 		}
 
+		public CompositionPropertySet Properties => _properties ??= GetProperties();
+
 		public Compositor Compositor { get; }
 
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 		public string? Comment { get; set; }
+
+		private CompositionPropertySet GetProperties()
+		{
+			if (this is CompositionPropertySet @this)
+			{
+				return @this;
+			}
+
+			return new CompositionPropertySet(Compositor);
+		}
 
 		private protected T ValidateValue<T>(object? value)
 		{

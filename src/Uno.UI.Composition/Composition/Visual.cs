@@ -32,6 +32,8 @@ namespace Microsoft.UI.Composition
 
 		internal VisualInteractionSource? VisualInteractionSource { get; set; }
 
+		internal bool IsTranslationEnabled { get; set; }
+
 		public Matrix4x4 TransformMatrix
 		{
 			get => _transformMatrix;

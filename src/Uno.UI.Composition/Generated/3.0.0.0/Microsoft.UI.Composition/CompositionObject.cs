@@ -11,16 +11,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Compositor
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionPropertySet Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionPropertySet CompositionObject.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20CompositionObject.Properties");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.ImplicitAnimationCollection ImplicitAnimations
 		{
 			get
