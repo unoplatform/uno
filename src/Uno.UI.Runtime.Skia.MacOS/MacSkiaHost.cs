@@ -18,8 +18,7 @@ public class MacSkiaHost : ISkiaApplicationHost
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
-		MacOSBadgeUpdaterExtension.Register();
-		MacOSClipboardExtension.Register();         // work in progress
+		MacOSClipboardExtension.Register();
 		MacOSCoreApplicationExtension.Register();
 		MacOSDisplayInformationExtension.Register();
 		MacOSFileOpenPickerExtension.Register();
@@ -30,10 +29,6 @@ public class MacSkiaHost : ISkiaApplicationHost
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemNavigationManagerPreviewExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
-		MacOSUnoCorePointerInputSource.Register();  // work in progress
-		MacOSUnoKeyboardInputSource.Register();
-
-		// Uno.UI.Xaml.Controls.Extensions.IOverlayTextBoxViewExtension is not required
 	}
 
 	public MacSkiaHost(Func<Application> appBuilder)
@@ -42,7 +37,7 @@ public class MacSkiaHost : ISkiaApplicationHost
 		_appBuilder = appBuilder;
 	}
 
-	internal static MacSkiaHost? Current => _current;
+	internal static MacSkiaHost Current => _current!;
 
 	internal MacOSWindowNative? InitialWindow { get; set; }
 
@@ -65,9 +60,7 @@ public class MacSkiaHost : ISkiaApplicationHost
 
 		// `argc` and `argv` parameters are ignored by macOS
 		// see https://developer.apple.com/documentation/appkit/1428499-nsapplicationmain?language=objc
-#pragma warning disable CA1806
-		NativeMac.NSApplicationMain(argc: 0, argv: nint.Zero);
-#pragma warning restore CA1806
+		_ = NativeMac.NSApplicationMain(argc: 0, argv: nint.Zero);
 	}
 
 	private void InitializeDispatcher()
