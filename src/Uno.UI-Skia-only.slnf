@@ -9,7 +9,6 @@
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
-      "SamplesApp\\SamplesApp.Skia.MacOS\\SamplesApp.Skia.MacOS.csproj",
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",

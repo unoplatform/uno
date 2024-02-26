@@ -15,6 +15,4 @@ public abstract class SkiaHost
 	protected abstract void Initialize();
 
 	protected abstract void RunLoop();
-
-	// public void TakeScreenshot(string filePath)
 }

@@ -6,70 +6,69 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia;
+
+public class SkiaHostBuilder : ISkiaHostBuilder
 {
-	public class SkiaHostBuilder : ISkiaHostBuilder
+	private List<Func<IPlatformHostBuilder>> _hostBuilders = new();
+	private Func<Application>? _appBuilder;
+	private Action? _afterInit;
+
+	private SkiaHostBuilder() { }
+
+	Func<Application>? ISkiaHostBuilder.AppBuilder
 	{
-		private List<Func<IPlatformHostBuilder>> _hostBuilders = new();
-		private Func<Application>? _appBuilder;
-		private Action? _afterInit;
+		get => _appBuilder;
+		set => _appBuilder = value;
+	}
 
-		private SkiaHostBuilder() { }
+	Action? ISkiaHostBuilder.AfterInit
+	{
+		get => _afterInit;
+		set => _afterInit = value;
+	}
 
-		Func<Application>? ISkiaHostBuilder.AppBuilder
+	public static SkiaHostBuilder Create()
+		=> new();
+
+	public SkiaHost Build()
+	{
+		if (_appBuilder is null)
 		{
-			get => _appBuilder;
-			set => _appBuilder = value;
+			throw new InvalidOperationException($"No app builder delegate was provided");
 		}
 
-		Action? ISkiaHostBuilder.AfterInit
+		foreach (var hostBuilderFunc in _hostBuilders)
 		{
-			get => _afterInit;
-			set => _afterInit = value;
-		}
+			var hostBuilder = hostBuilderFunc();
 
-		public static SkiaHostBuilder Create()
-			=> new SkiaHostBuilder();
-
-		public SkiaHost Build()
-		{
-			if (_appBuilder is null)
+			if (hostBuilder.IsSupported)
 			{
-				throw new InvalidOperationException($"No app builder delegate was provided");
-			}
-
-			foreach (var hostBuilderFunc in _hostBuilders)
-			{
-				var hostBuilder = hostBuilderFunc();
-
-				if (hostBuilder.IsSupported)
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"Using host builder {hostBuilder.GetType()}");
-					}
-
-					var host = hostBuilder.Create(_appBuilder);
-
-					host.AfterInit = _afterInit;
-
-					return host;
+					this.Log().Debug($"Using host builder {hostBuilder.GetType()}");
 				}
-				else
+
+				var host = hostBuilder.Create(_appBuilder);
+
+				host.AfterInit = _afterInit;
+
+				return host;
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"Host builder {hostBuilder.GetType()} is not supported");
-					}
+					this.Log().Debug($"Host builder {hostBuilder.GetType()} is not supported");
 				}
 			}
-
-			throw new InvalidOperationException($"No platform host could be selected");
 		}
 
-		void ISkiaHostBuilder.AddHostBuilder(Func<IPlatformHostBuilder> platformHostBuilder)
-		{
-			_hostBuilders.Add(platformHostBuilder);
-		}
+		throw new InvalidOperationException($"No platform host could be selected");
+	}
+
+	void ISkiaHostBuilder.AddHostBuilder(Func<IPlatformHostBuilder> platformHostBuilder)
+	{
+		_hostBuilders.Add(platformHostBuilder);
 	}
 }

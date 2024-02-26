@@ -62,6 +62,7 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 			}
 		}
 	}
+
 	protected override void Initialize()
 	{
 		InitializeDispatcher();

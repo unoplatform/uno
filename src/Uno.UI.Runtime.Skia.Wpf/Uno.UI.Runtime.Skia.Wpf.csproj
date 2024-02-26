@@ -19,13 +19,16 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-		<!--<UseWPF>true</UseWPF>-->
 
 		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
-	</PropertyGroup>
+	</PropertyGroup>	
 
 	<ItemGroup>
+		<!--
+		This allows for building the library with a dependency to WPF while not
+		building with net8-windows.
+		-->
 		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF"/>
 	</ItemGroup>
 

@@ -83,14 +83,22 @@
 		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')" Text="Failed to find published filed: %(_validationPath.Identity)" />
 	</Target>
 
-	<Target Name="TestBefore" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
+	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
 		<ItemGroup>
+			<!--
+			This removes the transitive dependency to WPF which has a requirement to 
+			have net8.0-windows and not net8.0.
+			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
 		</ItemGroup>
 	</Target>
 
-	<Target Name="TestBefore2" BeforeTargets="GenerateBuildRuntimeConfigurationFiles">
+	<Target Name="_UnoRemoveRuntimeFrameworkInRuntimeConfigurationFiles" BeforeTargets="GenerateBuildRuntimeConfigurationFiles">
 		<ItemGroup>
+			<!--
+			This removes the Microsoft.WindowsDesktop.App from the runtime configuration file in the output layout.
+			Uno relies on loading WPF dynamically by searching for the WPF assemblies in the .NET SDK install folder.
+			-->
 			<_RuntimeFrameworkToRemove Include="@(RuntimeFramework)" Condition="'%(Identity)'=='Microsoft.WindowsDesktop.App'" />
 			<RuntimeFramework Remove="@(_RuntimeFrameworkToRemove)" />
 		</ItemGroup>
