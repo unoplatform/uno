@@ -165,10 +165,16 @@ dotnet test \
 
 # export the simulator logs
 export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
-export TMP_LOG_FILEPATH=/tmp/DeviceLog-`date +"%Y%m%d%H%M%S"`.logarchive
+export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
+export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
 export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
 
 mkdir -p $LOG_FILEPATH
+
+## Take a screenshot
+xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png
+
+## Capture the device logs
 xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
 
 echo "Dumping device logs"
