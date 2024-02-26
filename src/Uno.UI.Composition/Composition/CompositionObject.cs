@@ -22,18 +22,32 @@ namespace Microsoft.UI.Composition
 		{
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName!, "The compositor constructor is not available, as the type is not implemented");
 			Compositor = new Compositor();
+			Properties = GetProperties();
 		}
 
 		internal CompositionObject(Compositor compositor)
 		{
 			Compositor = compositor;
+			Properties = GetProperties();
 		}
+
+		public CompositionPropertySet Properties { get; }
 
 		public Compositor Compositor { get; }
 
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 		public string? Comment { get; set; }
+
+		private CompositionPropertySet GetProperties()
+		{
+			if (this is CompositionPropertySet @this)
+			{
+				return @this;
+			}
+
+			return new CompositionPropertySet(Compositor);
+		}
 
 		private protected T ValidateValue<T>(object? value)
 		{

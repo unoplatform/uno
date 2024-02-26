@@ -563,8 +563,9 @@ namespace Microsoft.UI.Xaml
 			// While arranging, it's equivalent to LayoutSlotWithMarginsAndAlignments PLUS UIElement.Translation.
 			// But also, if the user does ElementCompositionPreview.GetElementVisual(uiElement) and modifies
 			// the offset, we want to consider the user-modified value.
-			matrix.M31 += (float)Visual.Offset.X;
-			matrix.M32 += (float)Visual.Offset.Y;
+			var totalOffset = Visual.GetTotalOffset();
+			matrix.M31 += (float)totalOffset.X;
+			matrix.M32 += (float)totalOffset.Y;
 #else
 			var layoutSlot = LayoutSlotWithMarginsAndAlignments;
 			matrix.M31 += (float)layoutSlot.X;
