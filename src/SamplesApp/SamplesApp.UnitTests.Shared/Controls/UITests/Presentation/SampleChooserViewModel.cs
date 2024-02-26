@@ -1271,8 +1271,13 @@ namespace SampleControl.Presentation
 						BitmapAlphaMode.Ignore,
 						(uint)targetBitmap.PixelWidth,
 						(uint)targetBitmap.PixelHeight,
+#if HAS_UNO
+						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
+						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
+#else
 						DisplayInformation.GetForCurrentView().RawDpiX,
 						DisplayInformation.GetForCurrentView().RawDpiY,
+#endif
 						pixels.ToArray()
 					);
 

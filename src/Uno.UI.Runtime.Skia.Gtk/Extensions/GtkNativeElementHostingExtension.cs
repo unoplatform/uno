@@ -11,11 +11,8 @@ namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
 {
-	private DisplayInformation _displayInformation;
-
 	public GtkNativeElementHostingExtension()
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
 	}
 
 	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
@@ -76,7 +73,8 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 				this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
 			}
 
-			var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
+			var displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
+			var scaleAdjustment = displayInformation.FractionalScaleAdjustment;
 			widget.SizeAllocate(
 				new(
 					(int)(arrangeRect.X * scaleAdjustment),
@@ -106,7 +104,8 @@ internal partial class GtkNativeElementHostingExtension : INativeElementHostingE
 				this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
 			}
 
-			var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
+			var displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
+			var scaleAdjustment = displayInformation.FractionalScaleAdjustment;
 			return new(naturalSize.Width / scaleAdjustment, naturalSize.Height / scaleAdjustment);
 		}
 		else

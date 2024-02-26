@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using Gtk;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
@@ -14,7 +15,7 @@ internal class SinglelineTextBoxView : GtkTextBoxView
 	private readonly UnoGtkEntry _entry = new();
 	private readonly bool _isPassword;
 
-	public SinglelineTextBoxView(bool isPassword)
+	public SinglelineTextBoxView(bool isPassword, XamlRoot? xamlRoot) : base(xamlRoot)
 	{
 		_isPassword = isPassword;
 		_entry.Paste += OnPaste;

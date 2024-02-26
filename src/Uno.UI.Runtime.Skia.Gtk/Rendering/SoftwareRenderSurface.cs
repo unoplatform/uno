@@ -12,6 +12,8 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -27,14 +29,15 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	private float _dpi = 1;
 
 	private readonly SKColorType _colorType;
-	private readonly IXamlRootHost _host;
+	private readonly IGtkXamlRootHost _host;
 
 	public SKColor BackgroundColor { get; set; }
 		= SKColors.White;
 
-	public SoftwareRenderSurface(IXamlRootHost host)
+	public SoftwareRenderSurface(IGtkXamlRootHost host)
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
+		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host);
+		_displayInformation ??= XamlRoot.GetDisplayInformation(xamlRoot);
 		_displayInformation.DpiChanged += OnDpiChanged;
 		UpdateDpi();
 

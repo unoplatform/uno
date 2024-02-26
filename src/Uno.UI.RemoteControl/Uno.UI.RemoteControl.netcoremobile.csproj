@@ -51,7 +51,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(DocsGeneration)'==''">
+	<ItemGroup Condition="'$(DocsGeneration)'=='' and $([MSBuild]::IsOsPlatform('Windows'))">
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>

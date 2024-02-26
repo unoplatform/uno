@@ -557,10 +557,19 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ApplyLayoutTransform(ref Matrix3x2 matrix)
 		{
-			// This is equivalent to matrix * Matrix3x2.CreateTranslation(layout.X, layout.Y);
+			// This is equivalent to matrix * Matrix3x2.CreateTranslation(X, Y);
+#if __SKIA__
+			// On Skia, we want to consider Visual.Offset
+			// While arranging, it's equivalent to LayoutSlotWithMarginsAndAlignments PLUS UIElement.Translation.
+			// But also, if the user does ElementCompositionPreview.GetElementVisual(uiElement) and modifies
+			// the offset, we want to consider the user-modified value.
+			matrix.M31 += (float)Visual.Offset.X;
+			matrix.M32 += (float)Visual.Offset.Y;
+#else
 			var layoutSlot = LayoutSlotWithMarginsAndAlignments;
 			matrix.M31 += (float)layoutSlot.X;
 			matrix.M32 += (float)layoutSlot.Y;
+#endif
 		}
 
 		/// <summary>
@@ -1209,7 +1218,7 @@ namespace Microsoft.UI.Xaml
 		internal double GetScaleFactorForLayoutRounding()
 		{
 			// TODO use actual scaling based on current transforms.
-			return global::Windows.Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / DisplayInformation.BaseDpi; // 100%
+			return XamlRoot.GetDisplayInformation(XamlRoot).LogicalDpi / DisplayInformation.BaseDpi; // 100%
 		}
 
 		private static double XcpRound(double x)

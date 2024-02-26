@@ -27,6 +27,11 @@ using AppKit;
 using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
+using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.Extensions;
+using Windows.UI.Input.Preview.Injection;
+using Uno.UI.Toolkit.Extensions;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -692,6 +697,241 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sut.ArrangeVisual(rect, null);
 			Assert.IsNull(sut.Visual.ViewBox);
 		}
+#endif
+
+#if __SKIA__ || WINAPPSDK
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Visual_Offset_Changes_HitTest()
+		{
+			var sut = new Button()
+			{
+				Content = "Click",
+			};
+
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var rect = await UITestHelper.Load(sut);
+
+#if __SKIA__
+			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			Assert.IsTrue(sut.IsAncestorOf(element));
+#endif
+
+			var matrix1 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			Assert.IsTrue(matrix1.OffsetY > 0);
+
+			visual.Offset = new Vector3(visual.Offset.X, visual.Offset.Y + (float)rect.Height * 2, visual.Offset.Z);
+
+			var matrix2 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var matrix3 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			await Task.Delay(100);
+
+			var matrix4 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+#if WINAPPSDK
+			// On WinUI, The value of Offset doesn't immediately affect TransformToVisual.
+			// Even a call to WaitForIdle isn't enough.
+			// So, only the TransformToVisual call after Task.Delay(100) takes the new offset in consideration.
+			Assert.AreEqual(matrix1, matrix2);
+			Assert.AreEqual(matrix1, matrix3);
+			Assert.AreEqual(rect.Height * 2, matrix4.OffsetY - matrix1.OffsetY);
+#else
+			// On Uno, the value of Offset is taking effect immediately.
+			// Part of this could be a lifecycle issue.
+			Assert.AreEqual(rect.Height * 2, matrix2.OffsetY - matrix1.OffsetY);
+			Assert.AreEqual(rect.Height * 2, matrix3.OffsetY - matrix1.OffsetY);
+			Assert.AreEqual(rect.Height * 2, matrix4.OffsetY - matrix1.OffsetY);
+#endif
+
+#if __SKIA__
+			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			Assert.IsFalse(sut.IsAncestorOf(element2));
+
+			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot);
+			Assert.IsTrue(sut.IsAncestorOf(element3));
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Visual_Offset_Changes_InjectedPointer()
+		{
+			var sut = new Button()
+			{
+				Content = "Click",
+			};
+
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var clickCount = 0;
+
+			sut.Click += (_, _) =>
+			{
+				clickCount++;
+			};
+
+			var rect = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(rect.GetCenter());
+			finger.Release();
+
+			Assert.AreEqual(1, clickCount);
+
+			visual.Offset = new Vector3(visual.Offset.X, visual.Offset.Y + (float)rect.Height * 2, visual.Offset.Z);
+
+			await Task.Delay(100);
+
+			finger.Press(rect.GetCenter());
+			finger.Release();
+			Assert.AreEqual(1, clickCount);
+
+			finger.Press(rect.GetCenter().Offset(0, rect.Height * 2));
+			finger.Release();
+			Assert.AreEqual(2, clickCount);
+		}
+
+#if WINAPPSDK // Translation in Uno not matching WinUI.
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Element_Has_Translation_HitTest()
+		{
+			var sut = new Button()
+			{
+				Content = "Click",
+			};
+
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var rect = await UITestHelper.Load(sut);
+
+			var originalVisualOffset = visual.Offset;
+
+#if __SKIA__
+			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			Assert.IsTrue(sut.IsAncestorOf(element));
+#endif
+
+			var matrix1 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			sut.Translation = new Vector3(0, (float)rect.Height * 2, 0);
+
+			var matrix2 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			Assert.AreEqual(rect.Height * 2, matrix2.OffsetY - matrix1.OffsetY);
+
+#if __SKIA__
+			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			Assert.IsFalse(sut.IsAncestorOf(element2));
+
+			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot);
+			Assert.IsTrue(sut.IsAncestorOf(element3));
+#endif
+
+			await Task.Delay(100);
+			var newVisualOffset = visual.Offset;
+			Assert.AreEqual(newVisualOffset, originalVisualOffset);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Element_Has_Translation_InjectedPointer()
+		{
+			var sut = new Button()
+			{
+				Content = "Click",
+			};
+
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var clickCount = 0;
+
+			sut.Click += (_, _) =>
+			{
+				clickCount++;
+			};
+
+			var rect = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+			finger.Press(rect.GetCenter());
+			finger.Release();
+
+			Assert.AreEqual(1, clickCount);
+
+			await Task.Delay(100);
+
+			sut.Translation = new Vector3(0, (float)rect.Height * 2, 0);
+			sut.InvalidateArrange();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await Task.Delay(100);
+
+			finger.Press(rect.GetCenter());
+			finger.Release();
+			Assert.AreEqual(1, clickCount);
+
+			finger.Press(rect.GetCenter().Offset(0, rect.Height * 2));
+			finger.Release();
+			Assert.AreEqual(2, clickCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Element_Has_Translation_And_Visual_Has_Offset()
+		{
+			var sut = new Button()
+			{
+				Content = "Click",
+			};
+
+			var visual = ElementCompositionPreview.GetElementVisual(sut);
+
+			var rect = await UITestHelper.Load(sut);
+
+			var matrix1 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			visual.Offset = new Vector3(visual.Offset.X, 50, visual.Offset.Z);
+			sut.Translation = new Vector3(0, (float)rect.Height * 2, 0);
+
+			var matrix2 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			Assert.AreEqual(rect.Height * 2, matrix2.OffsetY - matrix1.OffsetY);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var matrix3 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			Assert.AreEqual(rect.Height * 2, matrix3.OffsetY - matrix1.OffsetY);
+
+			await Task.Delay(100);
+
+			var matrix4 = ((MatrixTransform)sut.TransformToVisual(null)).Matrix;
+
+			Assert.AreEqual(rect.Height * 2 + 50, matrix4.OffsetY);
+
+#if __SKIA__
+			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
+			Assert.IsFalse(sut.IsAncestorOf(element2));
+
+			var (element3, _) = VisualTreeHelper.HitTest(rect.GetCenter().Offset(0, rect.Height * 2), sut.XamlRoot);
+			Assert.IsTrue(sut.IsAncestorOf(element3));
+#endif
+		}
+#endif
 #endif
 	}
 

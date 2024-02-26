@@ -6,12 +6,6 @@ namespace Windows.Graphics.Display;
 
 public sealed partial class DisplayInformation
 {
-	private static readonly Lazy<DisplayInformation> _lazyInstance = new Lazy<DisplayInformation>(() => new DisplayInformation());
-
-	// TODO: make this return a specific instance based on the window corresponding to
-	// the ApplicationView whose thread is the same as the thread this method is called from
-	private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
-
 	private IDisplayInformationExtension _displayInformationExtension;
 
 	partial void Initialize()
