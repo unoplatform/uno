@@ -132,6 +132,18 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
+			if (precedence == DependencyPropertyValuePrecedences.Local && value is not UnsetValue)
+			{
+				_flags |= Flags.LocalValueNewerThanAnimationsValue;
+			}
+			else
+			{
+				// This might not make much sense, but this is what we are seeing in WinUI code.
+				// See https://github.com/unoplatform/uno/issues/5168#issuecomment-1948115761
+				// If it turned out there is more complexity going on in WinUI, we can adjust as needed.
+				_flags &= ~Flags.LocalValueNewerThanAnimationsValue;
+			}
+
 			if (!SetValueFast(value, precedence))
 			{
 				SetValueFull(value, precedence);
@@ -166,33 +178,8 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			// On Windows, explicitly calling SetValue(dp, DP.UnsetValue) or ClearValue(dp) doesnt clear the animation value.
-			// (note: Both the methods target local value)
-			// This means that we should not be handling those special case in here. Instead,
-			// when Timeline clears the animation value, it should also clears the filling animation value at the same time.
-			// ---
-			// Clear the animated value, when we are setting a local value to a property
-			// with an animated value from the filling part of an HoldEnd animation.
-			// note: There is no equivalent block in SetValueFast, as its condition would never be satisfied:
-			// _stack would've been materialized if the property had been animated.
-			bool forceUpdatePrecedence = false;
-			if (!valueIsUnsetValue &&
-				_highestPrecedence == DependencyPropertyValuePrecedences.FillingAnimations &&
-				(precedence is DependencyPropertyValuePrecedences.Local or DependencyPropertyValuePrecedences.Animations))
-			{
-				stackAlias[(int)DependencyPropertyValuePrecedences.FillingAnimations] = UnsetValue.Instance;
-				if (precedence is DependencyPropertyValuePrecedences.Local)
-				{
-					stackAlias[(int)DependencyPropertyValuePrecedences.Animations] = UnsetValue.Instance;
-				}
-
-				forceUpdatePrecedence = true;
-			}
-
-			// Update highest precedence, when the current highest value was unset or
-			// when animation value was overridden by local value.
-			if ((valueIsUnsetValue && precedence == _highestPrecedence) ||
-				forceUpdatePrecedence)
+			// If we were unsetting the current highest precedence value, we need to find the next highest
+			if (valueIsUnsetValue && precedence == _highestPrecedence)
 			{
 				// Start from current precedence and find next highest
 				for (int i = (int)precedence; i < (int)DependencyPropertyValuePrecedences.DefaultValue; i++)
@@ -265,7 +252,16 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>The value at the current highest precedence level</returns>
 		internal object? GetValue()
-			=> GetValue(_highestPrecedence);
+			// Comment originates from WinUI source code (CModifiedValue::GetEffectiveValue)
+			// If a local value has been set after an animated value, the local
+			// value has precedence. This is different from WPF and is done because
+			// some legacy SL apps depend on this and because SL Animation thinks that
+			// it is better design for an animation in filling period to be trumped by a
+			// local value. In the active period of an animation, the next animated
+			// value will take precedence over the old local value.
+			=> GetValue(_highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
+				? DependencyPropertyValuePrecedences.Local
+				: _highestPrecedence);
 
 		/// <summary>
 		/// Gets the value at a given precedence level
@@ -468,6 +464,13 @@ namespace Microsoft.UI.Xaml
 			/// Determines if the property inherits Value from its parent
 			/// </summary>
 			Inherits = 1 << 4,
+
+			/// <summary>
+			/// Normally, Animations has higher precedence than Local. However,
+			/// we want local to take higher precedence if it's newer.
+			/// This flag records this information.
+			/// </summary>
+			LocalValueNewerThanAnimationsValue = 1 << 5,
 		}
 	}
 }

@@ -1799,6 +1799,8 @@
 		</Events>
 
 		<Fields>
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
 		</Fields>
 
 		<Properties>

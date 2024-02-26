@@ -26,9 +26,7 @@ namespace Uno.UI.DataBinding
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueSetterHandler? _localValueSetter;
-			private ValueSetterHandler? _animationFillingValueSetter;
 			private ValueUnsetterHandler? _valueUnsetter;
-			private ValueUnsetterHandler? _animationFillingValueUnsetter;
 
 			private Type? _dataContextType;
 
@@ -126,12 +124,6 @@ namespace Uno.UI.DataBinding
 			{
 				BuildLocalValueSetter();
 				SetSourceValue(_localValueSetter!, value);
-			}
-
-			public void SetAnimationFillingValue(object value)
-			{
-				BuildAnimationFillingValueSetter();
-				SetSourceValue(_animationFillingValueSetter!, value);
 			}
 
 			public Type? PropertyType
@@ -247,15 +239,14 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueSetter == null && _dataContextType != null)
 				{
-					_valueSetter = BindingPropertyHelper.GetValueSetter(
-						_dataContextType,
-						PropertyName,
-						convert: true,
-						precedence: _precedence ?? DependencyPropertyValuePrecedences.Local
-					);
 					if (_precedence == null)
 					{
-						_localValueSetter = _valueSetter;
+						BuildLocalValueSetter();
+						_valueSetter = _localValueSetter;
+					}
+					else
+					{
+						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: _precedence.Value);
 					}
 				}
 			}
@@ -264,25 +255,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_localValueSetter == null && _dataContextType != null)
 				{
-					_localValueSetter = BindingPropertyHelper.GetValueSetter(
-						_dataContextType,
-						PropertyName,
-						convert: true,
-						precedence: DependencyPropertyValuePrecedences.Local
-					);
-				}
-			}
-
-			private void BuildAnimationFillingValueSetter()
-			{
-				if (_animationFillingValueSetter == null && _dataContextType != null)
-				{
-					_animationFillingValueSetter = BindingPropertyHelper.GetValueSetter(
-						_dataContextType,
-						PropertyName,
-						convert: true,
-						precedence: DependencyPropertyValuePrecedences.FillingAnimations
-					);
+					_localValueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true);
 				}
 			}
 
@@ -405,30 +378,6 @@ namespace Uno.UI.DataBinding
 					{
 						this.Log().DebugFormat("Unsetting [{0}] failed because the DataContext is null for. It may have already been collected, or explicitly set to null.", PropertyName);
 					}
-				}
-			}
-
-			private void BuildAnimationFillingValueUnsetter()
-			{
-				if (_animationFillingValueUnsetter == null && _dataContextType != null)
-				{
-					_animationFillingValueUnsetter = BindingPropertyHelper.GetValueUnsetter(
-						_dataContextType,
-						PropertyName,
-						precedence: DependencyPropertyValuePrecedences.FillingAnimations
-					);
-				}
-			}
-
-			internal void ClearAnimationFillingValue()
-			{
-				BuildAnimationFillingValueUnsetter();
-
-				// Capture the datacontext before the call to avoid a race condition with the GC.
-				var dataContext = DataContext;
-				if (dataContext != null)
-				{
-					_animationFillingValueUnsetter!(dataContext);
 				}
 			}
 
