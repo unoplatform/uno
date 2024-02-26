@@ -21,13 +21,6 @@ void uno_set_resize_callback(resize_fn_ptr p);
 
 @end
 
-//@interface UNOWindowDelegate : NSObject <NSWindowDelegate>
-//
-//- (bool)windowShouldClose:(NSWindow *)sender;
-//- (void)windowWillClose:(NSNotification *)notification;
-//
-//@end
-
 NSWindow* uno_app_get_main_window(void);
 
 NSWindow* uno_window_create(double width, double height);
