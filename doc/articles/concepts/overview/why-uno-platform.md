@@ -103,7 +103,10 @@ The Windows Community Toolkit (WCT) is a collection of helper functions, control
 
 ## More UI controls with MAUI Embedding
 
-Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, macOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors. Note: Uno Platform is not built on top of on .NET MAUI.
+Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, macOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
+
+> [!NOTE]
+> Uno Platform is not built on top of .NET MAUI.
 
 ## Uno Toolkit
 
