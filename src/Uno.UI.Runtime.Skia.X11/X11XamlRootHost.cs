@@ -105,14 +105,14 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var hintsAtom = X11Helper.GetAtom(X11Window.Display, X11Helper._MOTIF_WM_HINTS);
 		if (hintsAtom != IntPtr.Zero)
 		{
-			XLib.XChangeProperty(
+			var _ = XLib.XChangeProperty(
 				X11Window.Display,
 				X11Window.Window,
 				hintsAtom,
 				hintsAtom,
 				32,
 				PropertyMode.Replace,
-				new[] { (IntPtr)(MotifFlags.Decorations), 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0, 0 },
+				new[] { (IntPtr)MotifFlags.Decorations, 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0, 0 },
 				5);
 		}
 	}
