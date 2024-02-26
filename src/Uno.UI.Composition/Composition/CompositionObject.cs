@@ -16,22 +16,21 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionObject : IDisposable
 	{
 		private readonly ContextStore _contextStore = new ContextStore();
+		private CompositionPropertySet? _properties;
 		private Dictionary<string, CompositionAnimation>? _animations;
 
 		internal CompositionObject()
 		{
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName!, "The compositor constructor is not available, as the type is not implemented");
 			Compositor = new Compositor();
-			Properties = GetProperties();
 		}
 
 		internal CompositionObject(Compositor compositor)
 		{
 			Compositor = compositor;
-			Properties = GetProperties();
 		}
 
-		public CompositionPropertySet Properties { get; }
+		public CompositionPropertySet Properties => _properties ??= GetProperties();
 
 		public Compositor Compositor { get; }
 
