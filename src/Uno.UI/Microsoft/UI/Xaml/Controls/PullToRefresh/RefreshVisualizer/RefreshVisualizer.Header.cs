@@ -34,9 +34,7 @@ public partial class RefreshVisualizer
 	private double m_executionRatio = 0.8;
 	private double m_interactionRatio = 0.0;
 
-#if !HAS_UNO
 	private Compositor? m_compositor = null;
-#endif
 
 	//private Panel? m_containerPanel = null;
 	private Panel? m_root = null;

@@ -11,16 +11,16 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Private.Controls;
 
-internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
+internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider, IInteractionTrackerOwner
 {
 	// There is not a lot of value in antly firing the interaction ratio changed event as the
 	// animations which are based off of it use the published composition property set which is
 	// updated regularly. Instead we fire the event every 5th change to reduce overhead.
-	//private const int RAISE_INTERACTION_RATIO_CHANGED_FREQUENCY = 5;
+	private const int RAISE_INTERACTION_RATIO_CHANGED_FREQUENCY = 5;
 
 	// When the user is close to a threshold point we want to make sure that we always raise
 	// InteractionRatioChanged events so that we don't miss something important.
-	//private const double ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE = 0.05;
+	private const double ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE = 0.05;
 
 	// This is our private implementation of the IRefreshInfoProvider interface. It is contructed by
 	// the ScrollViewerAdapter's Adapt method and returned as an instance of an IRefreshInfoProvider.
@@ -55,11 +55,10 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 		}
 	}
 
-#if false
 	/////////////////////////////////////////////////////
 	///////   IInteractionTrackerOwnerOverrides  ////////
 	/////////////////////////////////////////////////////
-	private void ValuesChanged(InteractionTracker sender, InteractionTrackerValuesChangedArgs args)
+	public void ValuesChanged(InteractionTracker sender, InteractionTrackerValuesChangedArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_FLT_FLT_FLT, METH_NAME, this, args.Position.X, args.Position.Y, args.Position.Z);
 		switch (m_refreshPullDirection)
@@ -82,33 +81,32 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 		}
 	}
 
-	private void RequestIgnored(InteractionTracker sender, InteractionTrackerRequestIgnoredArgs args)
+	public void RequestIgnored(InteractionTracker sender, InteractionTrackerRequestIgnoredArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId);
 	}
 
-	private void InteractingStateEntered(InteractionTracker sender, InteractionTrackerInteractingStateEnteredArgs args)
+	public void InteractingStateEntered(InteractionTracker sender, InteractionTrackerInteractingStateEnteredArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId);
 		UpdateIsInteractingForRefresh(true);
 	}
 
-	private void InertiaStateEntered(InteractionTracker sender, InteractionTrackerInertiaStateEnteredArgs args)
+	public void InertiaStateEntered(InteractionTracker sender, InteractionTrackerInertiaStateEnteredArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId());
 		UpdateIsInteractingForRefresh(false);
 	}
 
-	private void IdleStateEntered(InteractionTracker sender, InteractionTrackerIdleStateEnteredArgs args)
+	public void IdleStateEntered(InteractionTracker sender, InteractionTrackerIdleStateEnteredArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId());
 	}
 
-	private void CustomAnimationStateEntered(InteractionTracker sender, InteractionTrackerCustomAnimationStateEnteredArgs args)
+	public void CustomAnimationStateEntered(InteractionTracker sender, InteractionTrackerCustomAnimationStateEnteredArgs args)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, args.RequestId());
 	}
-#endif
 
 	/////////////////////////////////////////////////////
 	////////////   IRefreshInfoProvider  ////////////////
@@ -133,7 +131,6 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 
 	public bool IsInteractingForRefresh => m_isInteractingForRefresh;
 
-#if false
 	/////////////////////////////////////////////////////
 	///////////       Private Helpers       /////////////
 	/////////////////////////////////////////////////////
@@ -166,7 +163,6 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 	{
 		return Math.Abs(interactionRatio - target) < ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE;
 	}
-#endif
 
 	private void RaiseIsInteractingForRefreshChanged()
 	{
