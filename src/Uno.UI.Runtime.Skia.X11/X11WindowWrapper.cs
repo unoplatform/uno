@@ -84,9 +84,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			}
 		}
 
-		// Closing should continue, perform suspension.
-		Application.Current.RaiseSuspending();
-
 		// All prerequisites passed, can safely close.
 		Close();
 	}
