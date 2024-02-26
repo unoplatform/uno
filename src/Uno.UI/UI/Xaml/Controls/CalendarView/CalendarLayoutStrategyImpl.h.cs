@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int m_cols;
 
-		// When this is null, we use the default regular snap point behaivor.
+		// When this is null, we use the default regular snap point behavior.
 		// When this is not null, we use the function to filter out unwanted snap point (and also we'll use irregular snap point behavior).
 		private Func<int, bool> m_snapPointFilterFunction;
 

@@ -22,7 +22,7 @@ namespace Uno.Extensions
 	internal enum InvocationLockingMode
 	{
 		/// <summary>
-		/// Invocations are queued and sequencially
+		/// Invocations are queued and sequentially
 		/// </summary>
 		Serial,
 

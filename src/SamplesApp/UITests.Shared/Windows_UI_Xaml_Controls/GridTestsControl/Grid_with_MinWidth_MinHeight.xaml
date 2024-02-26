@@ -481,7 +481,7 @@
 										 VerticalAlignment="Center" />
 						</Grid>
 
-						<!-- Two Cloumns With Auto and Star sizes -->
+						<!-- Two Columns With Auto and Star sizes -->
 						<Grid Margin="0,5"
 								MinWidth="198"
 								MinHeight="100"

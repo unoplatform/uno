@@ -817,7 +817,7 @@ public partial class TreeViewItem : ListViewItem
 		RecycleEvents(/* useSafeGet */);
 	}
 
-	// Uno specifc: Ensure the indentation and selection visual are set properly
+	// Uno specific: Ensure the indentation and selection visual are set properly
 	// when the tree view item returns from recycling queue.
 	// Removing this would break the TreeViewPartialSelectionTest-based UI tests.
 

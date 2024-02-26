@@ -100,7 +100,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			var value = GetFlowAlgorithm(context).Arrange(
 				finalSize,
 				context,
-				false, /* isWraping */
+				false, /* isWrapping */
 				FlowLayoutLineAlignment.Start,
 				LayoutId);
 

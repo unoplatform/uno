@@ -23,7 +23,7 @@ using Uno.Disposables;
 namespace Uno.Threading
 {
 	/// <summary>
-	/// An asynchronous lock, that can be used in conjuction with C# async/await
+	/// An asynchronous lock, that can be used in conjunction with C# async/await
 	/// </summary>
 	internal sealed class AsyncLock
 	{

@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 		int m_rowsInYearDecadeView;     // default value is 4
 
 		// if we decide to have a different startIndex in YearView or DecadeView, we should make a corresponding change at CalendarViewItemAutomationPeer::get_ColumnImpl
-		// in MonthView, because we can set the DayOfWeek property, the first item is not always start from the first positon inside the Panel
+		// in MonthView, because we can set the DayOfWeek property, the first item is not always start from the first position inside the Panel
 		int m_monthViewStartIndex;
 
 		// dayOfWeekNames stores abbreviated names of each day of the week. dayOfWeekNamesFull stores the full name to be read aloud by accessibility.

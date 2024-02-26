@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.Appointments;
 public partial class FindAppointmentsOptions
 {
 	/// <summary>
-	/// reates a new instance of the FindAppointmentsOptions class.
+	/// Creates a new instance of the FindAppointmentsOptions class.
 	/// </summary>
 	public FindAppointmentsOptions()
 	{

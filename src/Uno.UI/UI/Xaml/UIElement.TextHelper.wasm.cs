@@ -302,7 +302,7 @@ namespace Microsoft.UI.Xaml
 							("white-space", "pre"),
 							("word-break", ""));
 
-						// Triming and wrapping are not yet supported by browsers. This spec would enable it:
+						// Trimming and wrapping are not yet supported by browsers. This spec would enable it:
 						// https://drafts.csswg.org/css-overflow-3/#propdef-block-ellipsis
 						//
 						// For now, trimming isonly supported when wrapping is disabled.

@@ -544,7 +544,7 @@ namespace Microsoft.UI.Xaml.Controls
 							spArgsConcrete.ResetLifetime();
 
 							// we do not have to update the next lowest. We are still processing this phase and will
-							// continue to do so (procesingPhase is still valid).
+							// continue to do so (processingPhase is still valid).
 						}
 					}
 					else //if (phase == processingPhase)

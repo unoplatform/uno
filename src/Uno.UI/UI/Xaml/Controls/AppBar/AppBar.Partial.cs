@@ -1010,12 +1010,12 @@ namespace Microsoft.UI.Xaml.Controls
 			//
 			// AppBar/CommandBar TemplateSettings and how they're used.
 			//
-			// The template settings are core to acheiving the desired experience
+			// The template settings are core to achieving the desired experience
 			// for AppBar/CommandBar at least to how it relates to the various
 			// ClosedDisplayModes.
 			//
 			// This comment block will describe how the code uses TemplateSettings
-			// to achieve the desired bar interation experience which is controlled
+			// to achieve the desired bar interaction experience which is controlled
 			// via the ClosedDisplayMode property.
 			//
 			// Anatomy of the bar component of an AppBar/CommandBar:

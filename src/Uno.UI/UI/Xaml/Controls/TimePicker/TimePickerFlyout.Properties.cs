@@ -63,7 +63,7 @@ partial class TimePickerFlyout
 	/// </summary>
 	public event TypedEventHandler<TimePickerFlyout, TimePickedEventArgs>? TimePicked;
 
-#if HAS_UNO // Custom propery allowing overriding of presenter
+#if HAS_UNO // Custom disabled allowing overriding of presenter
 	public Style TimePickerFlyoutPresenterStyle
 	{
 		get => (Style)this.GetValue(TimePickerFlyoutPresenterStyleProperty);

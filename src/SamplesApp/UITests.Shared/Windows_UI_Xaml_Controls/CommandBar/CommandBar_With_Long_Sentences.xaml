@@ -68,7 +68,7 @@
 			</CommandBar.PrimaryCommands>
 		</CommandBar>
 		
-		<!-- Exampl with toolkit	-->
+		<!-- Example with toolkit	-->
 		<CommandBar Foreground="Red"
 						Background="Pink">
 			<CommandBar.Content>

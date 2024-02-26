@@ -16,7 +16,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<!--Permormance slider-->
+		<!--Performance slider-->
 		<Grid Margin="15,5">
 			<ListView ItemsSource="{Binding [SampleItems]}"
 					  Header="{Binding Parent}">

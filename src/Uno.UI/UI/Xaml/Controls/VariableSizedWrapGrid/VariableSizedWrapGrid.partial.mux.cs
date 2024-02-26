@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls;
 //      Since the size of OccupancyMap can be Infinite, OccupancyBlock is used to
 //      allocate block of Memory
 //
-//      OccupncyMap always arrange items vertically(row), whether user sets
+//      OccupancyMap always arrange items vertically(row), whether user sets
 //      Orientation=Vertical or Horizontal. OccupancyMap's public APIs take care of
 //      providing correct Orientation. Similarly OccupancyBlock has fixed rows while
 //      it is growing on Column direction
@@ -174,7 +174,7 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 		return pReturnValue;
 	}
 
-	// This method creare Occupancy Map, layout children and find Occupied size
+	// This method create Occupancy Map, layout children and find Occupied size
 	private void CalculateOccupancyMap(
 		int itemCount,
 	 	UIElementCollection spChildren,
@@ -286,7 +286,7 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 			justificationSize = orientedJustificationSize.AsUnorientedSize();
 			startingSize = orientedStartingSize.AsUnorientedSize();
 
-			// gothrough each Children and Arrange Them
+			// go through each Children and Arrange Them
 			for (int i = 0; i < itemCount; i++)
 			{
 				bool isHandled = false;
@@ -295,7 +295,7 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 				spItem = spChildren[i];
 
 				// If Map was full before laying down all items, then there is possibility that
-				// perticular element is not in the map, in that case we won't arrange remaining items
+				// particular element is not in the map, in that case we won't arrange remaining items
 				m_pMap.SetCurrentItem(i, out isHandled);
 				if (!isHandled)
 				{

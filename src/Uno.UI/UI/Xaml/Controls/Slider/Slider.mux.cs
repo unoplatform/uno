@@ -753,7 +753,7 @@ public partial class Slider
 		ChangeVisualState(false);
 		UpdateHeaderPresenterVisibility();
 
-		// The base Control class has special handling for focus visuals that are renderered as alternate black and white
+		// The base Control class has special handling for focus visuals that are rendered as alternate black and white
 		// rectangles with stroke dash arrays, to produce the effect of alternating black and white stroke dashes.
 		// However, this handling uses the default focus visual names for all controls. Slider has different names since
 		// it requires unique elements for its horizontal and vertical templates. So it needs a separate version of the
@@ -1128,7 +1128,7 @@ public partial class Slider
 							elementNewLength = LayoutRoundedDimension(elementNewLength);
 
 							elementOldLength = _tpElementHorizontalDecreaseRect.Width;
-							// If length has not changed by atleast a rounding step, no reason to redo everything.
+							// If length has not changed by at least a rounding step, no reason to redo everything.
 							if (double.IsNaN(elementOldLength) || DoubleUtil.GreaterThanOrClose(Math.Abs(elementOldLength - elementNewLength), RoundingStep()))
 							{
 								_tpElementHorizontalDecreaseRect.Width = elementNewLength;
@@ -1214,7 +1214,7 @@ public partial class Slider
 							elementNewLength = LayoutRoundedDimension(elementNewLength);
 
 							elementOldLength = _tpElementVerticalDecreaseRect.Height;
-							// If length has not changed by atleast a rounding step, no reason to redo everything.
+							// If length has not changed by at least a rounding step, no reason to redo everything.
 							if (double.IsNaN(elementOldLength) || DoubleUtil.GreaterThanOrClose(Math.Abs(elementOldLength - elementNewLength), RoundingStep()))
 							{
 								_tpElementVerticalDecreaseRect.Height = elementNewLength;

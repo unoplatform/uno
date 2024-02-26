@@ -30,7 +30,7 @@ namespace Windows.Devices.Sensors
 
 		/// <summary>
 		/// The device is face-up and the display is visible to the user.
-		/// Because of a limitation of Android OnrientationListener we always return faceup when being faceup or facedown.
+		/// Because of a limitation of Android OrientationListener we always return faceup when being faceup or facedown.
 		/// </summary>
 		Faceup = 4,
 

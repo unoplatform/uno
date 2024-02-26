@@ -3,10 +3,10 @@
 	public partial class RadioButtons
 	{
 		// This is an object that RadioButtons intends to attach to its child RadioButton elements.
-		// It contains the revokers for the events on RadioButton that RadioButttons listens to
+		// It contains the revokers for the events on RadioButton that RadioButtons listens to
 		// in order to manage selection.  Attaching the revokers to the object allows the parent
 		// RadioButtons the ability to "Set it and forget it" since the lifetime of the RadioButton
-		// and these event registrations are now intrically linked.
+		// and these event registrations are now intrinsically linked.
 		// This is not needed in Uno, as we can directly unsubscribe the events
 		//private class ChildHandlers
 		//{
@@ -16,7 +16,7 @@
 
 		private int m_selectedIndex = -1;
 
-		// This is used to guard against reentrency when calling select, since select changes
+		// This is used to guard against reentrancy when calling select, since select changes
 		// the Selected Index/Item which in turn calls select.
 		private bool m_currentlySelecting = false;
 

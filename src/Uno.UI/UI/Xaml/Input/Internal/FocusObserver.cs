@@ -90,7 +90,7 @@ namespace Uno.UI.Xaml.Input
 
 			FocusMovement movement = new FocusMovement(xyFocusOptions, direction, pComponent);
 
-			// We dont handle cancellation of a focus request from a host:
+			// We don't handle cancellation of a focus request from a host:
 			//   We could support this by calling DepartFocus from the component
 			//   if the component returns result.WasCanceled()
 			//   We choose to not support it.
@@ -200,7 +200,7 @@ namespace Uno.UI.Xaml.Input
 						bReverse ? FocusNavigationDirection.Previous : FocusNavigationDirection.Next,
 						FocusState.Keyboard);
 
-					// We dont handle cancellation of a focus request from a host:
+					// We don't handle cancellation of a focus request from a host:
 					//   We could support this by calling DepartFocus from the component
 					//   if the component returns result.WasCanceled()
 					//   We choose to not support it.
@@ -244,7 +244,7 @@ namespace Uno.UI.Xaml.Input
 					{
 						FocusMovement movement = new FocusMovement(pCandidateElement, FocusNavigationDirection.None, FocusState.Programmatic);
 
-						// We dont handle cancellation of a focus request from a host:
+						// We don't handle cancellation of a focus request from a host:
 						//   We could support this by calling DepartFocus from the component
 						//   if the component returns result.WasCanceled()
 						//   We choose to not support it.
@@ -283,7 +283,7 @@ namespace Uno.UI.Xaml.Input
 				{
 					//
 					// If we could not find a target via XY then we need to depart focus again
-					// But this time from an orgin inside of the component
+					// But this time from an origin inside of the component
 					//
 					//                             ┌────────────────────────────────┐
 					//                             │        CoreWindow              │
@@ -291,7 +291,7 @@ namespace Uno.UI.Xaml.Input
 					//                             │                                │
 					//   ┌──────────┐ Direction    ├────────────────────────────────┤
 					//   │  origin  │ ─────────>   │      New Origin:               │ Depart Focus from new origin
-					//   │          │              │ Calculated as the intersertion │  ─────────>
+					//   │          │              │ Calculated as the intersection │  ─────────>
 					//   │          │              │ from the direction             │
 					//   └──────────┘              ├────────────────────────────────┤
 					//                             │                                │

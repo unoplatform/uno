@@ -233,7 +233,7 @@ namespace System.Json
 		//   JavaScript does require this:
 		//   http://stackoverflow.com/questions/2965293/javascript-parse-error-on-u2028-unicode-character/9168133#9168133
 		// - '/' also does not have to be escaped, but escaping it when
-		//   preceeded by a '<' avoids problems with JSON in HTML <script> tags
+		//   preceded by a '<' avoids problems with JSON in HTML <script> tags
 		private static bool NeedEscape(string src, int i)
 		{
 			char c = src[i];

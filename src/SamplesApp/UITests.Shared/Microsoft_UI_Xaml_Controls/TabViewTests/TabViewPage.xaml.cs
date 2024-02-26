@@ -304,7 +304,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 			object objOriginTabView;
 			if (e.DataView.Properties.TryGetValue(DataIdentifier, out obj) && e.DataView.Properties.TryGetValue(DataTabView, out objOriginTabView))
 			{
-				// TODO - BUG: obj should never be null, but occassionally is. Why?
+				// TODO - BUG: obj should never be null, but occasionally is. Why?
 				if (obj == null || objOriginTabView == null)
 				{
 					return;
@@ -320,7 +320,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests
 					// First we need to get the position in the List to drop to
 					var index = -1;
 
-					// Determine which items in the list our pointer is inbetween.
+					// Determine which items in the list our pointer is in between.
 					for (int i = 0; i < destinationTabView.TabItems.Count; i++)
 					{
 						var item = destinationTabView.ContainerFromIndex(i) as TabViewItem;

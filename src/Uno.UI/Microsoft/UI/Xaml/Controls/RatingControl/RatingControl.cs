@@ -73,7 +73,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		//~RatingControl()
 		//{
-		// We only need to use safe_get in the deruction loop
+		// We only need to use safe_get in the destruction loop
 		// We don't need to unload events
 		// RecycleEvents(true /* useSafeGet */);
 		//}

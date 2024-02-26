@@ -22,7 +22,7 @@ internal partial class RefreshInfoProviderImpl : IRefreshInfoProvider
 	// InteractionRatioChanged events so that we don't miss something important.
 	//private const double ALWAYS_RAISE_INTERACTION_RATIO_TOLERANCE = 0.05;
 
-	// This is our private implementation of the IRefreshInfoProvider interface. It is contructed by
+	// This is our private implementation of the IRefreshInfoProvider interface. It is constructed by
 	// the ScrollViewerAdapter's Adapt method and returned as an instance of an IRefreshInfoProvider.
 	// It is an InteractionTrackerOwner, the corresponding InteractionTracker is maintained in the Adapter.
 

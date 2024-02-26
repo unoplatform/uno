@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <remarks>
 		/// This is used to avoid propagating the DataContext and TemplatedParent properties
-		/// for types that commonly do not expose inherited propertyes, such as visual states.
+		/// for types that commonly do not expose inherited properties, such as visual states.
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
@@ -512,7 +512,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// The store has lost its current instance, renove it from its parent.
+				// The store has lost its current instance, remove it from its parent.
 				Parent = null;
 			}
 		}

@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 				uint nCount = 0;
 				Grid spWeekDayNames;
 
-				// Gets the 'WeekDayNames' part of the container template and find weekindex position as elment
+				// Gets the 'WeekDayNames' part of the container template and find weekindex position as element
 				spWeekDayNames = pParent.GetTemplateChild("WeekDayNames") as Grid;
 				if (spWeekDayNames is { })
 				{
@@ -259,7 +259,7 @@ namespace Microsoft.UI.Xaml.Controls
 						int firstVisibleIndex = 0;
 						firstVisibleIndex = pCalendarPanel.FirstVisibleIndex;
 
-						// Calculate the relative positon w.r.to the visible elements from item index
+						// Calculate the relative position w.r.to the visible elements from item index
 						int relativePos = (itemIndex - firstVisibleIndex);
 						if (firstVisibleIndex < cols)
 						{

@@ -380,7 +380,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			var totalTime = duration.Elapsed;
 
-			//3 types of repeat behavors,             
+			//3 types of repeat behaviors,
 			return ((RepeatBehavior.Type == RepeatBehaviorType.Forever) // Forever: Will always repeat the Timeline
 				|| (RepeatBehavior.HasCount && RepeatBehavior.Count > replayCount) // Count: Will repeat the Timeline x times
 				|| (RepeatBehavior.HasDuration && RepeatBehavior.Duration - totalTime > TimeSpan.Zero)) // Duration: Will repeat the Timeline for a given duration

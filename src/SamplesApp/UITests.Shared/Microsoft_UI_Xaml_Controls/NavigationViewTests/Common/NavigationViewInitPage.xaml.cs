@@ -149,7 +149,7 @@ namespace MUXControlsTestApp
 
 		private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
 		{
-			// Reset argument type indicatiors
+			// Reset argument type indicators
 			ItemInvokedItemType.Text = "null";
 			ItemInvokedItemContainerType.Text = "null";
 
@@ -166,7 +166,7 @@ namespace MUXControlsTestApp
 
 		private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
 		{
-			// Reset argument type indicatiors
+			// Reset argument type indicators
 			SelectionChangedItemType.Text = "null";
 			SelectionChangedItemContainerType.Text = "null";
 

@@ -524,7 +524,7 @@ namespace Microsoft.UI.Xaml.Input
 				if (animateIfBringIntoView)
 				{
 					// Set the flag that indicates that the Focus change operation
-					// needs to use an animation if the element is brouhgt into view.
+					// needs to use an animation if the element is brought into view.
 					(spControlToFocus as Control).SetAnimateIfBringIntoView();
 				}
 

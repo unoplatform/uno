@@ -48,7 +48,7 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 				_oidcClient = new OidcClient(options);
 
 				// Invoke Discovery and prepare a request state, containing the nonce.
-				// This is done here to ensure the discovery mecanism is done before
+				// This is done here to ensure the discovery mechanism is done before
 				// the user clicks on the SignIn button. Since the opening of a web window
 				// should be done during the handling of a user interaction (here it's the button click),
 				// it will be too late to reach the discovery endpoint.
@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Windows_Security_Authentication_Web
 			var startUri = new Uri(_loginState.StartUrl);
 
 			// Important: there should be NO await before calling .AuthenticateAsync() - at least
-			// on WebAssembly, in order to prevent trigering the popup blocker mechanisms.
+			// on WebAssembly, in order to prevent triggering the popup blocker mechanisms.
 			var userResult = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None, startUri);
 
 			if (userResult.ResponseStatus != WebAuthenticationStatus.Success)

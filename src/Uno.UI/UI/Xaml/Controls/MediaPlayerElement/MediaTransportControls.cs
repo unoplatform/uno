@@ -1111,8 +1111,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// all visual states are listed below: // unused/not-implemented ones are commented out
 			UpdateControlPanelVisibilityStates(useTransitions);
 			UpdateMediaStates(useTransitions);
-			//UpdateAudioSelectionAvailablityStates(useTransitions);
-			//UpdateCCSelectionAvailablityStates(useTransitions);
+			//UpdateAudioSelectionAvailabilityStates(useTransitions);
+			//UpdateCCSelectionAvailabilityStates(useTransitions);
 			//UpdateFocusStates(useTransitions);
 			UpdateMediaTransportControlModeStates(useTransitions);
 			UpdatePlayPauseStates(useTransitions);

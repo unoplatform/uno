@@ -39,13 +39,13 @@
 								</VisualStateGroup>
 								--><!-- Media state visual states -->
 								<!-- Audio Selection Button visibility states --><!--
-								<VisualStateGroup x:Name="AudioSelectionAvailablityStates">
+								<VisualStateGroup x:Name="AudioSelectionAvailabilityStates">
 									<VisualState x:Name="AudioSelectionAvailable" />
 									<VisualState x:Name="AudioSelectionUnavailable" />
 								</VisualStateGroup>
 								--><!-- Video volume visibility states -->
 								<!-- Closed Captioning Selection Button visibility states --><!--
-								<VisualStateGroup x:Name="CCSelectionAvailablityStates">
+								<VisualStateGroup x:Name="CCSelectionAvailabilityStates">
 									<VisualState x:Name="CCSelectionAvailable" />
 									<VisualState x:Name="CCSelectionUnavailable" />
 								</VisualStateGroup>

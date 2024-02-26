@@ -2387,7 +2387,7 @@ public partial class NavigationView : ContentControl
 		Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
 		Compositor comp = visual.Compositor;
 
-		// Determine scaling of indicator (whether it is appearing or dissapearing)
+		// Determine scaling of indicator (whether it is appearing or disappearing)
 		float beginScale = isOutgoing ? 1.0f : 0.0f;
 		float endScale = isOutgoing ? 0.0f : 1.0f;
 		ScalarKeyFrameAnimation scaleAnim = comp.CreateScalarKeyFrameAnimation();
@@ -2411,7 +2411,7 @@ public partial class NavigationView : ContentControl
 		Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
 		Compositor comp = visual.Compositor;
 
-		// Determine scaling of indicator (whether it is appearing or dissapearing)
+		// Determine scaling of indicator (whether it is appearing or disappearing)
 		float beginScale = isOutgoing ? 1.0f : 0.0f;
 		float endScale = isOutgoing ? 0.0f : 1.0f;
 		ScalarKeyFrameAnimation scaleAnim = comp.CreateScalarKeyFrameAnimation();
@@ -3077,7 +3077,7 @@ public partial class NavigationView : ContentControl
 		}
 	}
 
-	// If item has focusable children, move focus to first focusable child, otherise just defer to default XYKeyboardFocus behavior
+	// If item has focusable children, move focus to first focusable child, otherwise just defer to default XYKeyboardFocus behavior
 	private void FocusNextDownItem(NavigationViewItem nvi, KeyRoutedEventArgs args)
 	{
 		if (args.OriginalSource != nvi)
@@ -3133,7 +3133,7 @@ public partial class NavigationView : ContentControl
 	private void OnRepeaterGettingFocus(object sender, GettingFocusEventArgs args)
 	{
 		// if focus change was invoked by tab key
-		// and there is selected item in ItemsRepeater that gatting focus
+		// and there is selected item in ItemsRepeater that getting focus
 		// we should put focus on selected item
 		if (m_TabKeyPrecedesFocusChange && args.InputDevice == FocusInputDeviceKind.Keyboard && m_selectionModel.SelectedIndex != null)
 		{
@@ -3358,7 +3358,7 @@ public partial class NavigationView : ContentControl
 						return true;
 					}
 
-					// No sutable item found in main list so try to select item in footer
+					// No suitable item found in main list so try to select item in footer
 					if (offset > 0)
 					{
 						return SelectSelectableItemWithOffset(-1, offset, footerRepeater, footerItemsSize);
@@ -3375,7 +3375,7 @@ public partial class NavigationView : ContentControl
 						return true;
 					}
 
-					// No sutable item found in footer so try to select item in main list
+					// No suitable item found in footer so try to select item in main list
 					if (offset < 0)
 					{
 						return SelectSelectableItemWithOffset(topPrimaryListSize, offset, topNavRepeater, topPrimaryListSize);
@@ -4391,7 +4391,7 @@ public partial class NavigationView : ContentControl
 			UpdatePaneVisibility();
 			UpdateVisualStateForDisplayModeGroup(DisplayMode);
 
-			// When NavView is in expaneded mode with fixed window size, setting IsPaneVisible to false doesn't closes the pane
+			// When NavView is in expanded mode with fixed window size, setting IsPaneVisible to false doesn't closes the pane
 			// We manually close/open it for this case
 			if (!IsPaneVisible && IsPaneOpen)
 			{
@@ -5039,7 +5039,7 @@ public partial class NavigationView : ContentControl
 				foundFirstSelected = UpdateSelectedItemFromMenuItems(menuItems);
 			}
 
-			// then do same for footer items and tell wenever selected item alreadyfound in MenuItems
+			// then do same for footer items and tell whenever selected item already found in MenuItems
 			if (FooterMenuItems is IList<object> footerItems)
 			{
 				UpdateSelectedItemFromMenuItems(footerItems, foundFirstSelected);
@@ -5551,7 +5551,7 @@ public partial class NavigationView : ContentControl
 			var childrenData = GetChildren(parentContainer);
 			if (childrenData != null)
 			{
-				// Get children data in an enumarable form
+				// Get children data in an enumerable form
 				var newDataSource = childrenData as ItemsSourceView;
 				if (childrenData != null && newDataSource == null)
 				{
@@ -6033,7 +6033,7 @@ public partial class NavigationView : ContentControl
 								shouldRecycleContainer = false;
 							}
 
-							// Get children data in an enumarable form
+							// Get children data in an enumerable form
 							var newDataSource = childrenData as ItemsSourceView;
 							if (childrenData != null && newDataSource == null)
 							{

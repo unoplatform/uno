@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml
 	/// content template of a ContentControl, as well as the template of a Control. This forces recycled controls to re-create their
 	/// templates even if it was previously the same. This can make lists particularly jittery.
 	/// This class allows for templates to be reused, based on the fact that controls created via a FrameworkTemplate that lose their
-	/// DependencyObject.Parent value are considered orhpans. Those instances can then later on be reused.
+	/// DependencyObject.Parent value are considered orphans. Those instances can then later on be reused.
 	///
 	///	This behavior is not following windows' implementation, as this requires a control to be stateless. This is pretty easy to do when controls
 	///	are strictly databound, but not if the control is using stateful code-behind. This is why this behavior can be disabled via <see cref="IsPoolingEnabled"/>
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml
 		/// List of instances managed by the pool
 		/// </summary>
 		/// <remarks>
-		/// This list is required to avoid the GC to collect the instances. Othewise, the pooled instance
+		/// This list is required to avoid the GC to collect the instances. Otherwise, the pooled instance
 		/// may never get its Parent property set to null, and the pool will never get notified that an instance
 		/// can be reused.
 		///

@@ -189,7 +189,7 @@ namespace UITests.Windows_Devices.Midi
 					var systemExclusiveMessage = (MidiSystemExclusiveMessage)receivedMidiMessage;
 					outputMessage.Append(", ");
 
-					// Read the SysEx bufffer
+					// Read the SysEx buffer
 					var sysExDataReader = DataReader.FromBuffer(systemExclusiveMessage.RawData);
 					while (sysExDataReader.UnconsumedBufferLength > 0)
 					{
@@ -214,7 +214,7 @@ namespace UITests.Windows_Devices.Midi
 					throw new InvalidOperationException();
 			}
 
-			// Skip TimingClock and ActiveSensing messages to avoid overcrowding the list. Commment this check out to see all messages
+			// Skip TimingClock and ActiveSensing messages to avoid overcrowding the list. Comment this check out to see all messages
 			if ((receivedMidiMessage.Type != MidiMessageType.TimingClock) && (receivedMidiMessage.Type != MidiMessageType.ActiveSensing))
 			{
 				// Use the Dispatcher to update the messages on the UI thread

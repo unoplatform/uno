@@ -30,7 +30,7 @@ namespace Uno.Threading
 	/// </summary>
 	/// <remarks>
 	/// In most situation, the TaskCompletionSource could be replaced directly by this one.
-	/// It is sligthly more efficient to use the .Task insead of directly awaiting this object.
+	/// It is slightly more efficient to use the .Task instead of directly awaiting this object.
 	/// </remarks>
 	internal class FastTaskCompletionSource<T> : INotifyCompletion
 	{
@@ -333,7 +333,7 @@ namespace Uno.Threading
 
 				if (_terminationType == 1) // Completed with a result ?
 				{
-					// Creat an already-completed task (will result in sync behavior for await code)
+					// Create an already-completed task (will result in sync behavior for await code)
 					Interlocked.CompareExchange(ref _task, CreateSyncTask(), null);
 				}
 				else
@@ -341,7 +341,7 @@ namespace Uno.Threading
 					// There's no way to create a "sync" Task for non-result terminations,
 					// so we fallback to async mode in this case.
 
-					// Create a waiting task for completition
+					// Create a waiting task for completion
 					Interlocked.CompareExchange(ref _task, CreateAsyncTask(), null);
 				}
 

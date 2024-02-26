@@ -136,8 +136,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// In Windows.Globalization.Calendar, if the result crosses an era when we add a year or a month,
 					// the result will be adjust to the first day of the new era (last day if it is a substraction).
-					// Now we introduce a virtual scope "Decade" which doesn't exist in Windows.Globalization.Calendar, 
-					// so when we add/substract a decade, we should follow the same rule as year/month.
+					// Now we introduce a virtual scope "Decade" which doesn't exist in Windows.Globalization.Calendar,
+					// so when we add/subtract a decade, we should follow the same rule as year/month.
 
 					bool goForward = value > 0;
 
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 								}
 							}
 							// Adjust to the last day of this era if the new range starts in a different era.
-							// Similiar as the example above. If we go back a decade from Heisei 1-10, the result should be Showa 60-64.
+							// Similar as the example above. If we go back a decade from Heisei 1-10, the result should be Showa 60-64.
 							// Go back another decade from Showa 60-64, the result should be Showa 50-59.
 							else if (oldYear < 10)
 							{

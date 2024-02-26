@@ -245,8 +245,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// fTriedRight isnt needed since if we know the other three are true then it must be that
-				// we didnt try the right side
+				// fTriedRight isn't needed since if we know the other three are true then it must be that
+				// we didn't try the right side
 				bool fTriedLeft = false;
 				bool fTriedAbove = false;
 				bool fTriedBelow = false;

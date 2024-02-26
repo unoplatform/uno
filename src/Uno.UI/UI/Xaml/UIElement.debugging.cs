@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml
 		/// inefficient and only useful for providing extra information while debugging.
 		/// </summary>
 		/// <remarks>
-		/// Currently won't work with value-typed resources (eg double, Thickness) since it uses ReferencEquals() and they will be boxed.
+		/// Currently won't work with value-typed resources (eg double, Thickness) since it uses ReferenceEquals() and they will be boxed.
 		/// </remarks>
 		internal object[] GetKeysForResource(object resource)
 		{

@@ -84,7 +84,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		// For a genuine tree view, we dont know which node is leaf until we
+		// For a genuine tree view, we don't know which node is leaf until we
 		// actually walk to it, so currently the tree builds up to the leaf. I don't
 		// create a bunch of leaf node instances - instead i use the same instance m_leafNode to avoid
 		// an explosion of node objects. However, I'm still creating the m_childrenNodes

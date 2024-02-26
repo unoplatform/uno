@@ -403,7 +403,7 @@ public partial class BreadcrumbBar : Control
 				firstItemToIndex = (int)m_itemsRepeaterLayout.FirstRenderedItemIndexAfterEllipsis();
 			}
 
-			// In order to make the ellipsis inaccessible to accessbility tools when it's hidden,
+			// In order to make the ellipsis inaccessible to accessibility tools when it's hidden,
 			// we set the accessibilityView to raw and restore it to content when it becomes visible.
 			if (m_ellipsisBreadcrumbBarItem is { } ellipsisItem)
 			{

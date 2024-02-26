@@ -217,7 +217,7 @@ partial class Window
 
 	/// <summary>
 	/// This is run when Application.Current is set and the UI framework is ready to construct
-	/// visual elements (this is important for eample for Andorid where trying to construct
+	/// visual elements (this is important for example for Android where trying to construct
 	/// UI during Application ctor will fail).
 	/// </summary>
 	internal void Initialize()

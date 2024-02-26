@@ -149,7 +149,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					}
 					else if (currentIndex > -1 && currentIndex < pendingCount - 1)
 					{
-						// If the next element is oustide the visible window and there are elements in the visible window
+						// If the next element is outside the visible window and there are elements in the visible window
 						// go back to the visible window.
 						bool nextItemIsVisible = SharedHelpers.DoRectsIntersect(visibleWindow, m_pendingElements[currentIndex].VirtInfo.ArrangeBounds);
 						if (!nextItemIsVisible)

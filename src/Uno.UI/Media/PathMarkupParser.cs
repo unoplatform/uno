@@ -57,7 +57,7 @@ namespace Uno.Media
 					{ 'Z', Command.Close },
 			   };
 
-		// Uno specific: Use StreamGeomoetryContext instead of IGeometryContext.
+		// Uno specific: Use StreamGeometryContext instead of IGeometryContext.
 		private StreamGeometryContext _geometryContext;
 		private Point _currentPoint;
 		private Point? _beginFigurePoint;
@@ -70,7 +70,7 @@ namespace Uno.Media
 		/// </summary>
 		/// <param name="geometryContext">The geometry context.</param>
 		/// <exception cref="ArgumentNullException">geometryContext</exception>
-		public PathMarkupParser(StreamGeometryContext context) // Uno specific: Use StreamGeomoetryContext instead of IGeometryContext.
+		public PathMarkupParser(StreamGeometryContext context) // Uno specific: Use StreamGeometryContext instead of IGeometryContext.
 		{
 			if (context == null)
 			{

@@ -2255,7 +2255,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//	int cchBuffer = 0;
 			//	cchBuffer = FormatMsg(szBuffer, pszMsgFormat, pszParent, pszSelectedValue);
 
-			//	// no charater wrote, szBuffer is blank don't update NameProperty
+			//	// no character wrote, szBuffer is blank don't update NameProperty
 			//	if (cchBuffer > 0)
 			//	{
 			//		(DirectUI.AutomationProperties.SetNameStatic(m_tpFlyoutButton as Button, stringReference(szBuffer)));

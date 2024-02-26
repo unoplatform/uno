@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (IsLoading || IsLoaded)
 			{
-				// Note: If child is added while in parent's Laoding handler, we might get a double Loading!
+				// Note: If child is added while in parent's Loading handler, we might get a double Loading!
 				return;
 			}
 

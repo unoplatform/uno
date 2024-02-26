@@ -682,7 +682,7 @@ namespace Uno.UI.Tests.Collections
 			}
 			else
 			{
-				// Make sure that construtor imports all keys and values
+				// Make sure that constructor imports all keys and values
 				Assert.AreEqual(hash2.Count, hash1.Count);
 				for (int i = 0; i < 100; i++)
 				{

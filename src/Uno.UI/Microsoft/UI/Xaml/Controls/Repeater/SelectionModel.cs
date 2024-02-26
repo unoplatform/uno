@@ -180,7 +180,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					}
 
 					// Instead of creating a dumb vector that takes up the space for all the selected items,
-					// we create a custom VectorView implimentation that calls back using a delegate to find 
+					// we create a custom VectorView implementation that calls back using a delegate to find 
 					// the selected item at a particular index. This avoid having to create the storage and copying
 					// needed in a dumb vector. This also allows us to expose a tree of selected nodes into an 
 					// easier to consume flat vector view of objects.
@@ -239,7 +239,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 						});
 
 					// Instead of creating a dumb vector that takes up the space for all the selected indices,
-					// we create a custom VectorView implimentation that calls back using a delegate to find 
+					// we create a custom VectorView implementation that calls back using a delegate to find 
 					// the IndexPath at a particular index. This avoid having to create the storage and copying
 					// needed in a dumb vector. This also allows us to expose a tree of selected nodes into an 
 					// easier to consume flat vector view of IndexPaths.

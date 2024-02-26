@@ -185,7 +185,7 @@ internal partial class PopupPanel : Panel
 
 			if (updatedFinalFrame != finalFrame)
 			{
-				// Workraround:
+				// Workaround:
 				// The HorizontalOffset is updated to the correct value in CascadingMenuHelper.OnPresenterSizeChanged
 				// This update appears to be happening *during* ArrangeElement which was already passed wrong finalFrame.
 				// We re-arrange with the new updated finalFrame.

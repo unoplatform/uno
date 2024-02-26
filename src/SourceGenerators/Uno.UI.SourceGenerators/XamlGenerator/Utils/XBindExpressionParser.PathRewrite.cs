@@ -22,7 +22,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		/// <returns>The adjusted markup</returns>
 		/// <remarks>
 		/// The System.Xaml parser does not support having extended expressions, with
-		/// quotes or commads inside an unquoted property value. The point of this method is
+		/// quotes or commands inside an unquoted property value. The point of this method is
 		/// to encode the whole Path property as Base64 to that its content does not interfere
 		/// with the default rules of the parser. The expression is then restored using <see cref="RestoreSinglePath"/>.
 		/// </remarks>

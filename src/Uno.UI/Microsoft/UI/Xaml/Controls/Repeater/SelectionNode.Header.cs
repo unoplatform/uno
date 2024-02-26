@@ -14,7 +14,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private SelectionModel m_manager;
 
 		// Note that a node can contain children who are leaf as well as 
-		// chlidren containing leaf entries.
+		// children containing leaf entries.
 
 		// For inner nodes (any node whose children are data sources)
 		private List<SelectionNode> m_childrenNodes = new List<SelectionNode>();

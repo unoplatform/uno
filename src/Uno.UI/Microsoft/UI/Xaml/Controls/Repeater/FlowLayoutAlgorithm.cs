@@ -454,7 +454,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 				// If we did not reach the top or bottom of the extent, we realized one
 				// extra item before we knew we were outside the realization window. Do not
-				// account for that element in the indicies inside the realization window.
+				// account for that element in the indices inside the realization window.
 				if (direction == GenerateDirection.Forward)
 				{
 					int dataCount = m_context.ItemCount;

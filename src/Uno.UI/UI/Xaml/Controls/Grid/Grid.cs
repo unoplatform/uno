@@ -1025,7 +1025,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//  Method:   CGrid.MeasureOverride
 		//
 		//  Synopsis:
-		//      Overriding CFrameworkElement virtual to add grid sepecific logic to measure pass
+		//      Overriding CFrameworkElement virtual to add grid specific logic to measure pass
 		//
 		//------------------------------------------------------------------------
 		protected override XSIZEF MeasureOverride(XSIZEF availableSize)
@@ -1150,7 +1150,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// and calculated value of the var column), "cell 2 1" needs to be calculated
 				// first, as it contributes to the calculated value of the var column.
 				// At the same time in order to accurately calculate the raining
-				// height for "cell 2 1", "cell 1 2" needs to be calcualted first,
+				// height for "cell 2 1", "cell 1 2" needs to be calculated first,
 				// as it contributes to the calculated height of the var row, which is used
 				// in the computation of the resolved height of the star row.
 				//
@@ -1230,7 +1230,7 @@ namespace Microsoft.UI.Xaml.Controls
 				//     and each cell's desired size is accumulated on the
 				//     corresponding column / row.
 				// *   [Measure Group2'] - is when each cell is measured with
-				//     infinit height as a raint and a cell's desired
+				//     infinite height as a raint and a cell's desired
 				//     height is ignored.
 				// *   [Measure Groups''] - is when each cell is measured (second
 				//     time during single Grid.MeasureOverride) regularly but its

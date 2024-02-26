@@ -77,7 +77,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					}
 				}
 
-				// if both match upto min(lhsCount, rhsCount), compare based on size
+				// if both match up to min(lhsCount, rhsCount), compare based on size
 				compareResult = compareResult == 0 ? (lhsCount - rhsCount) : compareResult;
 			}
 

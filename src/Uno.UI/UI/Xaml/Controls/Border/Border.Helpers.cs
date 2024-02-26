@@ -40,9 +40,9 @@ namespace Microsoft.UI.Xaml.Controls
 		internal static Thickness GetLayoutRoundedThickness(FrameworkElement element)
 		{
 			// Layout rounding will correctly round element sizes and offsets at the current plateau,
-			// but does not round BorderThicnkess. Since plateau scale is applied as a scale transform at the
+			// but does not round BorderThickness. Since plateau scale is applied as a scale transform at the
 			// root element, all values will be scaled by it including BorderThickness so if a user sets
-			// BorderThickness = 1 at PLateau=1.4 this will be scaled to 1.4, producing blurry edges at the
+			// BorderThickness = 1 at Plateau=1.4 this will be scaled to 1.4, producing blurry edges at the
 			// inner edges and other rendering artifacts. This method rounds the BorderThickness at the current plateau
 			// using plateau-aware LayoutRound utility.
 			var roundedThickness = new Thickness();

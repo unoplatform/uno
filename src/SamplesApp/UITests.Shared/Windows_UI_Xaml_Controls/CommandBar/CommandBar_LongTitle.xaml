@@ -60,7 +60,7 @@
 			</CommandBar.PrimaryCommands>
 		</CommandBar>
 
-		<!-- Exampl with toolkit	-->
+		<!-- Example with toolkit	-->
 		<CommandBar Content="This is a long sentence to test the command bar on ios and android - Ceci est une longue phrase pour tester la commandBar sur Android et iOS"
 					Foreground="Red"
 					Background="Pink">

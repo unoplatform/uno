@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class ListViewBase
 	{
 
-		//// Phone contstants for reorder mode.
+		//// Phone constants for reorder mode.
 		//// If user moves pointer less than s_reorderConfirmationThresholdInDips device-independent pixels
 		//// during time s_reorderConfirmationDelayInMsec from touch-down then gesture is confirm reorderable item.
 		//// Otherwise it is a pan (flick).
@@ -281,7 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Stop and releas the edge scroll timer.
+		// Stop and release the edge scroll timer.
 		void DestroyStartEdgeScrollTimer()
 		{
 			if (m_tpStartEdgeScrollTimer != null)

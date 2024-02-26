@@ -1020,7 +1020,7 @@ namespace Microsoft.UI.Xaml.Controls
 						spParentDO = VisualTreeHelper.GetParent(spCurrentDO);
 
 						// refcounting note: Attach releases the previously stored ptr, and does not
-						// addthe new one.
+						// add the new one.
 						spCurrentDO = spParentDO;
 					}
 				}

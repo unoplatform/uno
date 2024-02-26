@@ -120,13 +120,13 @@ namespace Microsoft.UI.Xaml.Input
 		private bool _currentFocusOperationCancellable = true;
 
 		/// <summary>
-		/// Represents a valud indicating whether we are still to provide the initial focus.
+		/// Represents a value indicating whether we are still to provide the initial focus.
 		/// </summary>
 		private bool _initialFocus;
 
 		/// <summary>
 		/// This represents the async operation that can initiated through a public async FocusManager method, such as TryFocusAsync.
-		/// We store it as a memeber because the operation can continue to run even after the api has finished executing.
+		/// We store it as a member because the operation can continue to run even after the api has finished executing.
 		/// </summary>
 		private FocusAsyncOperation? _asyncOperation;
 
@@ -368,7 +368,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// Returns the last focusable element from the specified visual tree.
 		/// </summary>
 		/// <param name="searchStartLocation">Search start location.</param>
-		/// <param name="focusCandidate">Last foucsed element candidate.</param>
+		/// <param name="focusCandidate">Last focussed element candidate.</param>
 		/// <returns></returns>
 		internal DependencyObject? GetLastFocusableElement(DependencyObject searchStartLocation, DependencyObject? focusCandidate = null)
 		{
@@ -390,7 +390,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// Returns the last focusable element from the specified visual tree.
 		/// </summary>
 		/// <param name="searchStartLocation">Search start location.</param>
-		/// <param name="lastFocusedElement">Last focused elment.</param>
+		/// <param name="lastFocusedElement">Last focused element.</param>
 		/// <returns>Last focusable element.</returns>
 		private DependencyObject? GetLastFocusableElementInternal(DependencyObject searchStartLocation, DependencyObject? lastFocusedElement)
 		{
@@ -2537,7 +2537,7 @@ namespace Microsoft.UI.Xaml.Input
 
 					if (currentFocusStateIsKeyboard || lastInputDeviceWasKeyboardWithProgrammaticFocusState)
 					{
-						// TODO: don't assume this will alays be a TextElement going forward
+						// TODO: don't assume this will always be a TextElement going forward
 						return focusedElement as TextElement;
 					}
 				}
@@ -3107,7 +3107,7 @@ namespace Microsoft.UI.Xaml.Input
 					// Set the Source value on the routed event args
 					args.OriginalSource = focusedElement;
 
-					//Be wary of the fact that a got focus event also updates the visual. In this scenario, we preceed a lost focus event, so
+					//Be wary of the fact that a got focus event also updates the visual. In this scenario, we precede a lost focus event, so
 					//we don't have to worry about visuals being updated.
 
 					//Manually go and update the visuals. Raising a got focus here instead of calling to UpdateVisualState is risky since it is async
