@@ -47,7 +47,6 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// <param name="activateWindow"></param>
 	public void Minimize(bool activateWindow)
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.OverlappedPresenter", "void OverlappedPresenter.Minimize(bool activateWindow)");
 	}
 
 	/// <summary>
@@ -63,7 +62,6 @@ public partial class OverlappedPresenter : AppWindowPresenter
 
 	public void Restore(bool activateWindow)
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.OverlappedPresenter", "void OverlappedPresenter.Restore(bool activateWindow)");
 	}
 
 	/// <summary>

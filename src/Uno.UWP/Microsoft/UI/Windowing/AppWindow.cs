@@ -63,8 +63,7 @@ partial class AppWindow
 		switch (appWindowPresenterKind)
 		{
 			case AppWindowPresenterKind.CompactOverlay:
-				SetPresenter(CompactOverlayPresenter.Create());
-				break;
+				throw new NotSupportedException("CompactOverlay presenter is not yet supported for non-Windows targets.");
 			case AppWindowPresenterKind.FullScreen:
 				SetPresenter(FullScreenPresenter.Create());
 				break;

@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.UI;
 using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 
@@ -9,12 +10,12 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		private readonly Lazy<IApplicationViewExtension> _applicationViewExtension;
+		private Lazy<IApplicationViewExtension> _applicationViewExtension;
 
 		private Size _preferredMinSize;
 		private string _title = "";
 
-		public ApplicationView()
+		partial void InitializePlatform()
 		{
 			_applicationViewExtension = new Lazy<IApplicationViewExtension>(() => ApiExtensibility.CreateInstance<IApplicationViewExtension>(this));
 		}
