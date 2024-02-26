@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.ListViewPages;
 #if WINAPPSDK
@@ -47,7 +48,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 #if HAS_UNO && !HAS_UNO_WINUI
 		[TestMethod]
-		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -83,7 +83,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[Ignore("Failing on CI due to animations")]
 #if false && __MACOS__
@@ -159,6 +158,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_NavigationViewItem_MenuSource_VectorChanged()
+		{
+			var nvi1 = new NavigationViewItem
+			{
+				Content = "Level 1",
+				Icon = new SymbolIcon(Symbol.Home)
+			};
+			var source = new ObservableCollection<NavigationViewItem>
+			{
+				nvi1
+			};
+
+			var nv = new NavigationView
+			{
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				MenuItemsSource = source
+			};
+
+			await UITestHelper.Load(nv);
+
+			var nvi2 = new NavigationViewItem { Content = "Level 1 item 1", Name = "RuntimeTestNVI" };
+			source[0].MenuItems.Add(nvi2);
+			await WindowHelper.WaitForIdle();
+
+			nvi1.IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(nvi2, nv.FindVisualChildByName("RuntimeTestNVI"));
+		}
 	}
 
 #if HAS_UNO && !HAS_UNO_WINUI
