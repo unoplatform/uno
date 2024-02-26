@@ -30,6 +30,18 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+
+			Loaded += OnLoaded;
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			XamlRoot.Changed += OnXamlRootChanged;
+		}
+
+		private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+		{
+			Assert.Fail("The XamlRoot should not have changed after Loaded.");
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
