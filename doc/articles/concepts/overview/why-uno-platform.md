@@ -225,7 +225,10 @@ Uno Platform supports SQLite for all platforms, including WebAssembly, to allow 
 
 ## Proven migration path for Xamarin.Forms
 
-In addition to providing 3rd party control MAUI Embedding, Uno Platform is a proven modernization path for Xamarin.Forms apps. We've collated numerous [docs](https://platform.uno/xamarin.forms) to aid you in the migration. Big brands such as **TOYOTA** have already migrated some of their apps to Uno Platform. Note: Uno Platform is not built on top of on .NET MAUI.
+In addition to providing 3rd party control MAUI Embedding, Uno Platform is a proven modernization path for Xamarin.Forms apps. We've collated numerous [docs](https://platform.uno/xamarin.forms) to aid you in the migration. Big brands such as **TOYOTA** have already migrated some of their apps to Uno Platform.
+
+> [!NOTE]
+> Uno Platform is not built on top of .NET MAUI.
 
 Watch TOYOTA's [video testimonial](https://youtu.be/TeA6zEq5MGk?t=1449).
 
