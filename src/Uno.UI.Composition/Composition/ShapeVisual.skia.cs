@@ -50,7 +50,7 @@ public partial class ShapeVisual
 	{
 		parentSession.Surface.Canvas.Save();
 
-		var totalOffset = GetTotalOffset();
+		var totalOffset = this.GetTotalOffset();
 		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 		parentSession.Surface.Canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
 

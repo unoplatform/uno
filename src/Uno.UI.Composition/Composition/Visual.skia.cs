@@ -66,7 +66,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (ignoreLocation)
 		{
 			surface.Canvas.Save();
-			var totalOffset = GetTotalOffset();
+			var totalOffset = this.GetTotalOffset();
 			surface.Canvas.Translate(-(totalOffset.X + AnchorPoint.X), -(totalOffset.Y + AnchorPoint.Y));
 		}
 
@@ -124,7 +124,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		var totalOffset = GetTotalOffset();
+		var totalOffset = this.GetTotalOffset();
 		surface.Canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
 
 		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)

@@ -34,16 +34,6 @@ namespace Microsoft.UI.Composition
 
 		internal bool IsTranslationEnabled { get; set; }
 
-		internal Vector3 GetTotalOffset()
-		{
-			if (IsTranslationEnabled && Properties.TryGetVector3("Translation", out var translation) == CompositionGetValueStatus.Succeeded)
-			{
-				return Offset + translation;
-			}
-
-			return Offset;
-		}
-
 		public Matrix4x4 TransformMatrix
 		{
 			get => _transformMatrix;
