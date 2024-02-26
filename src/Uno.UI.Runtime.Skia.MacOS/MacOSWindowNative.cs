@@ -1,8 +1,10 @@
 using System.ComponentModel;
 
 using Uno.Foundation.Logging;
+
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
+
 using IOPath = System.IO.Path;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 
@@ -28,7 +30,7 @@ internal class MacOSWindowNative
 
 		if (MacSkiaHost.Current.InitialWindow is null)
 		{
-			// it was already created much earlier
+			// the first window was already created much earlier in native code
 			Handle = NativeUno.uno_app_get_main_window();
 			MacSkiaHost.Current.InitialWindow = this;
 		}
@@ -40,9 +42,7 @@ internal class MacOSWindowNative
 		// host MUST be created after we get a native handle
 		Host = new MacOSWindowHost(this, winUIWindow);
 
-		// TODO: combine calls
-		MacOSWindowHost.Register(Handle, Host);
-		MacOSWindowHost.XamlRootMap.Register(xamlRoot, Host);
+		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 
 		// call resize as late as possible (after the host creation)
 		NativeUno.uno_window_resize(Handle, defaultWidth, defaultHeight);
@@ -56,6 +56,12 @@ internal class MacOSWindowNative
 
 	internal MacOSWindowHost Host { get; }
 	internal nint Handle { get; private set; }
+
+	internal void Destroyed()
+	{
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		Handle = nint.Zero;
+	}
 
 	// FIXME: should be shared with GTK and X11 hosts with a delegate to set the icon from a filename
 	private void UpdateWindowPropertiesFromPackage()

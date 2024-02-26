@@ -1,7 +1,3 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-using Windows.UI.Core.Preview;
 using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Extensibility;
@@ -13,10 +9,9 @@ internal class MacOSSystemNavigationManagerPreviewExtension : ISystemNavigationM
 {
 	private static readonly MacOSSystemNavigationManagerPreviewExtension _instance = new();
 
-	public static unsafe void Register()
+	public static void Register()
 	{
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), _ => _instance);
-		NativeUno.uno_set_window_should_close_callback(&WindowShouldClose);
 	}
 
 	private MacOSSystemNavigationManagerPreviewExtension()
@@ -24,28 +19,4 @@ internal class MacOSSystemNavigationManagerPreviewExtension : ISystemNavigationM
 	}
 
 	public void RequestNativeAppClose() => Window.Current?.Close();
-
-	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	// System.Boolean is not blittable / https://learn.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types
-	internal static int WindowShouldClose()
-	{
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				return 0;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		if (!Application.Current.IsSuspended)
-		{
-			Application.Current.RaiseSuspending();
-			return Application.Current.IsSuspended ? 1 : 0;
-		}
-
-		// All prerequisites passed, can safely close.
-		return 1;
-	}
 }

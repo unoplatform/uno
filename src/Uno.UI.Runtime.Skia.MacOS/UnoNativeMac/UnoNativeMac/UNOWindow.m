@@ -16,26 +16,31 @@ static window_did_change_screen_parameters_fn_ptr window_did_change_screen_param
 // libSkiaSharp
 extern void* gr_direct_context_make_metal(id device, id queue);
 
-static resize_fn_ptr resize;
+static resize_fn_ptr window_resize;
+static metal_draw_fn_ptr metal_draw;
+static soft_draw_fn_ptr soft_draw;
 
 inline resize_fn_ptr uno_get_resize_callback(void)
 {
-    return resize;
+    return window_resize;
 }
 
-void uno_set_resize_callback(resize_fn_ptr p)
+inline metal_draw_fn_ptr uno_get_metal_draw_callback(void)
 {
-    resize = p;
+    return metal_draw;
 }
 
-@interface windowDidChangeScreenNoteClass : NSObject
+inline soft_draw_fn_ptr uno_get_soft_draw_callback(void)
 {
-    struct SharedScreenData *sharedScreenData;
+    return soft_draw;
 }
-+ (windowDidChangeScreenNoteClass*) initWith:(void*) screenData;
-- (void) windowDidChangeScreenNotification:(NSNotification*) note;
-- (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
-@end
+
+void uno_set_drawing_callbacks(metal_draw_fn_ptr metal, soft_draw_fn_ptr soft, resize_fn_ptr resize)
+{
+    metal_draw = metal;
+    soft_draw = soft;
+    window_resize = resize;
+}
 
 @implementation windowDidChangeScreenNoteClass
 
@@ -48,6 +53,9 @@ void uno_set_resize_callback(resize_fn_ptr p)
 
 - (void) windowDidChangeScreenNotification:(NSNotification*) note
 {
+#if DEBUG
+    NSLog(@"windowDidChangeScreenNotification %@", note);
+#endif
     NSScreen *screen = [note.object screen];
     CGSize s = [screen convertRectToBacking:screen.frame].size;
     // store basic, non-calculated values inside shared memory
@@ -113,13 +121,10 @@ NSWindow* uno_window_create(double width, double height)
     // we need values for the current screen (before it change, because it might never)
     [windowDidChangeScreen windowDidChangeScreenNotification:nw];
 
-    [center addObserver:windowDidChangeScreen selector:@selector(applicationDidChangeScreenParametersNotification:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
+    [center addObserver:windowDidChangeScreen selector:@selector(applicationDidChangeScreenParametersNotification:) name:NSApplicationDidChangeScreenParametersNotification object:window];
     // we need values for the current screen (before it change, because it might never)
     [windowDidChangeScreen applicationDidChangeScreenParametersNotification:nw];
     
-    if (!windows) {
-        windows = [[NSMutableSet alloc] initWithCapacity:10];
-    }
     [windows addObject:window];
 
     [window makeKeyWindow];
@@ -133,8 +138,7 @@ void uno_window_invalidate(NSWindow *window)
 #if DEBUG
     NSLog(@"uno_window_invalidate %@ view: %p", window, window.contentViewController.view);
 #endif
-    if (window.contentViewController)
-        window.contentViewController.view.needsDisplay = true;
+    window.contentViewController.view.needsDisplay = true;
 }
 
 bool uno_window_resize(NSWindow *window, double width, double height)
@@ -378,9 +382,17 @@ inline window_should_close_fn_ptr uno_get_window_should_close_callback(void)
     return window_should_close;
 }
 
-void uno_set_window_should_close_callback(window_should_close_fn_ptr p)
+static window_close_fn_ptr window_close;
+
+inline window_close_fn_ptr uno_get_window_close_callback(void)
 {
-    window_should_close = p;
+    return window_close;
+}
+
+void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close)
+{
+    window_should_close = shouldClose;
+    window_close = close;
 }
 
 void* uno_window_get_metal_context(UNOWindow* window)
@@ -395,12 +407,20 @@ void* uno_window_get_metal_context(UNOWindow* window)
 
 @implementation UNOWindow : NSWindow
 
++ (void)initialize {
+    windows = [[NSMutableSet alloc] initWithCapacity:10];
+}
+
 - (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag {
     self = [super initWithContentRect:contentRect styleMask:style backing:backingStoreType defer:flag];
     if (self) {
         self.delegate = self;
     }
     return self;
+}
+
+- (void)dealloc {
+    [windows removeObject:self];
 }
 
 - (BOOL) getPositionFrom:(NSEvent*)event x:(CGFloat*)px y:(CGFloat *)py
@@ -424,7 +444,6 @@ void* uno_window_get_metal_context(UNOWindow* window)
         case NSEventTypeLeftMouseDown:
         case NSEventTypeOtherMouseDown:
         case NSEventTypeRightMouseDown: {
-//            [self makeKeyWindow];
             mouse = MouseEventsDown;
             inContact = YES;
             break;
@@ -558,7 +577,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
 - (bool)windowShouldClose:(NSWindow *)sender
 {
     // see `ISystemNavigationManagerPreviewExtension`
-    bool result = uno_get_window_should_close_callback()() ? YES : NO;
+    bool result = uno_get_window_should_close_callback()(self) ? YES : NO;
 #if DEBUG
     NSLog(@"UNOWindow %p windowShouldClose %@ -> %s", self, sender, result ? "true" : "false");
 #endif
@@ -570,8 +589,11 @@ void* uno_window_get_metal_context(UNOWindow* window)
 #if DEBUG
     NSLog(@"UNOWindow %p windowWillClose %@", self, notification);
 #endif
-    self.contentViewController = nil;
-    [windows removeObject:self];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:windowDidChangeScreen name:NSWindowDidChangeScreenNotification object:self];
+    [center removeObserver:windowDidChangeScreen name:NSApplicationDidChangeScreenParametersNotification object:self];
+
+    uno_get_window_close_callback()(self);
 }
 
 @end
