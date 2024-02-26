@@ -36,15 +36,20 @@ partial class App
 
 	public static async Task<bool> HandleRuntimeTests(string args)
 	{
-#if __SKIA__ || __MACOS__
 		var runRuntimeTestsResultsParam =
 			args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
 		var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 
+		// Used to autostart the runtime tests for iOS Runtime tests
+		runtimeTestResultFilePath ??= Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
+
+		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");
+
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{
-			Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
+			Console.WriteLine($"Writing canary file {runtimeTestResultFilePath}.canary");
+			System.IO.File.WriteAllText(runtimeTestResultFilePath + ".canary", DateTime.Now.ToString(), System.Text.Encoding.Unicode);
 
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));
@@ -52,15 +57,15 @@ partial class App
 			await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
 				CancellationToken.None,
 				runtimeTestResultFilePath,
-				() => System.Environment.Exit(0));
+				() =>
+				{
+					// System.Environment.Exit(0);
+				});
 
 			return true;
 		}
 
 		return false;
-#else
-		return await Task.FromResult(false);
-#endif
 	}
 
 	public static string RunTest(string metadataName)

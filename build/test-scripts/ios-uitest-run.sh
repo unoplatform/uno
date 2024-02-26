@@ -108,15 +108,13 @@ xcrun simctl list devices --json
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
+export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
 
-echo "Starting simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
 echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
 xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
-
-echo "Shutdown simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
-xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
 echo "Installing idb"
 # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
@@ -134,7 +132,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 # Imported app bundle from artifacts is not executable
-chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
+sudo chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
@@ -149,19 +147,54 @@ fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
-echo "Test Parameters:"
-echo "  Timeout=$UITEST_TEST_TIMEOUT"
-echo "  Test filters: $UNO_TESTS_FILTER"
+echo "Starting tests in mode $UITEST_AUTOMATED_GROUP"
 
-## Run tests
-dotnet test \
-	-c Release \
-	-l:"console;verbosity=normal" \
-	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
-	-v m \
-	|| true
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+then
+	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP
+	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT
+	export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-`date +"%Y%m%d%H%M%S"`.xml
+
+	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "uno.platform.samplesdev"
+
+	# get the process id for the app
+	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "uno.platform.samplesdev" | awk '{print $1}'`
+	echo "App PID: $APP_PID"
+
+	# Set the timeout in seconds (5 minutes * 60 seconds = 300 seconds)
+	TIMEOUT=300
+	INTERVAL=5
+	END_TIME=$((SECONDS+TIMEOUT))
+
+	# Loop until the file exists or the timeout is reached
+	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
+		echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+		sleep $INTERVAL
+
+		# exit loop if the APP_PID is not running anymore
+		if ! ps -p $APP_PID > /dev/null; then
+			echo "The app is not running anymore, stopping the test run."
+			break
+		fi
+	done	
+
+	# Copy the results to the build directory
+	cp "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" $UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH
+else
+	echo "Test Parameters:"
+	echo "  Timeout=$UITEST_TEST_TIMEOUT"
+	echo "  Test filters: $UNO_TESTS_FILTER"
+
+	## Run tests
+	dotnet test \
+		-c Release \
+		-l:"console;verbosity=normal" \
+		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+		--filter "$UNO_TESTS_FILTER" \
+		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+		-v m \
+		|| true
+fi
 
 # export the simulator logs
 export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
