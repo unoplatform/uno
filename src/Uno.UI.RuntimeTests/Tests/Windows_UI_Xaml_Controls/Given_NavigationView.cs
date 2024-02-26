@@ -158,6 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO_WINUI || WINAPPSDK
 		[TestMethod]
 		public async Task When_NavigationViewItem_MenuSource_VectorChanged()
 		{
@@ -188,6 +189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(nvi2, nv.FindVisualChildByName("RuntimeTestNVI"));
 		}
+#endif
 	}
 
 #if HAS_UNO && !HAS_UNO_WINUI
