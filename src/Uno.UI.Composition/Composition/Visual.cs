@@ -137,7 +137,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 		{
-			return propertyName is
+			if (propertyName is
 				nameof(AnchorPoint) or
 				nameof(CenterPoint) or
 				nameof(Offset) or
@@ -146,62 +146,27 @@ namespace Microsoft.UI.Composition
 				nameof(RotationAngle) or
 				nameof(RotationAxis) or
 				nameof(Size) or
-				nameof(TransformMatrix);
+				nameof(TransformMatrix))
+			{
+				return true;
+			}
+
+			return base.IsAnimatableProperty(propertyName);
 		}
 
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
-			if (propertyName is nameof(AnchorPoint) && subPropertyName.Length == 0)
+			if (propertyName is nameof(AnchorPoint))
 			{
-				AnchorPoint = ValidateValue<Vector2>(propertyValue);
+				AnchorPoint = GetVector2(subPropertyName, AnchorPoint, propertyValue);
 			}
-			else if (propertyName is nameof(AnchorPoint) && subPropertyName.Equals("X", StringComparison.Ordinal))
+			else if (propertyName is nameof(CenterPoint))
 			{
-				var x = ValidateValue<float>(propertyValue);
-				AnchorPoint = new Vector2(x, AnchorPoint.Y);
+				CenterPoint = GetVector3(subPropertyName, CenterPoint, propertyValue);
 			}
-			else if (propertyName is nameof(AnchorPoint) && subPropertyName.Equals("Y", StringComparison.Ordinal))
+			else if (propertyName is nameof(Offset))
 			{
-				var y = ValidateValue<float>(propertyValue);
-				AnchorPoint = new Vector2(AnchorPoint.X, y);
-			}
-			else if (propertyName is nameof(CenterPoint) && subPropertyName.Length == 0)
-			{
-				CenterPoint = ValidateValue<Vector3>(propertyValue);
-			}
-			else if (propertyName is nameof(CenterPoint) && subPropertyName.Equals("X", StringComparison.Ordinal))
-			{
-				var x = ValidateValue<float>(propertyValue);
-				CenterPoint = new Vector3(x, CenterPoint.Y, CenterPoint.Z);
-			}
-			else if (propertyName is nameof(CenterPoint) && subPropertyName.Equals("Y", StringComparison.Ordinal))
-			{
-				var y = ValidateValue<float>(propertyValue);
-				CenterPoint = new Vector3(CenterPoint.X, y, CenterPoint.Z);
-			}
-			else if (propertyName is nameof(CenterPoint) && subPropertyName.Equals("Z", StringComparison.Ordinal))
-			{
-				var z = ValidateValue<float>(propertyValue);
-				CenterPoint = new Vector3(CenterPoint.X, CenterPoint.Y, z);
-			}
-			else if (propertyName is nameof(Offset) && subPropertyName.Length == 0)
-			{
-				Offset = ValidateValue<Vector3>(propertyValue);
-			}
-			else if (propertyName is nameof(Offset) && subPropertyName.Equals("X", StringComparison.Ordinal))
-			{
-				var x = ValidateValue<float>(propertyValue);
-				Offset = new Vector3(x, Offset.Y, Offset.Z);
-			}
-			else if (propertyName is nameof(Offset) && subPropertyName.Equals("Y", StringComparison.Ordinal))
-			{
-				var y = ValidateValue<float>(propertyValue);
-				Offset = new Vector3(Offset.X, y, Offset.Z);
-			}
-			else if (propertyName is nameof(Offset) && subPropertyName.Equals("Z", StringComparison.Ordinal))
-			{
-				var z = ValidateValue<float>(propertyValue);
-				Offset = new Vector3(Offset.X, Offset.Y, z);
+				Offset = GetVector3(subPropertyName, Offset, propertyValue);
 			}
 			else if (propertyName is nameof(Opacity))
 			{
@@ -209,8 +174,7 @@ namespace Microsoft.UI.Composition
 			}
 			else if (propertyName is nameof(Orientation))
 			{
-				// TODO: Support X, Y, Z, and W
-				Orientation = ValidateValue<Quaternion>(propertyValue);
+				Orientation = GetQuaternion(subPropertyName, Orientation, propertyValue);
 			}
 			else if (propertyName is nameof(RotationAngle))
 			{
@@ -218,31 +182,19 @@ namespace Microsoft.UI.Composition
 			}
 			else if (propertyName is nameof(RotationAxis))
 			{
-				// TODO: Support X, Y, and Z
-				RotationAxis = ValidateValue<Vector3>(propertyValue);
+				RotationAxis = GetVector3(subPropertyName, RotationAxis, propertyValue);
 			}
-			else if (propertyName is nameof(Size) && subPropertyName.Length == 0)
+			else if (propertyName is nameof(Size))
 			{
-				Size = ValidateValue<Vector2>(propertyValue);
-			}
-			else if (propertyName is nameof(Size) && subPropertyName.Equals("X", StringComparison.Ordinal))
-			{
-				var x = ValidateValue<float>(propertyValue);
-				Size = new Vector2(x, Size.Y);
-			}
-			else if (propertyName is nameof(Size) && subPropertyName.Equals("Y", StringComparison.Ordinal))
-			{
-				var y = ValidateValue<float>(propertyValue);
-				Size = new Vector2(Size.X, y);
+				Size = GetVector2(subPropertyName, Size, propertyValue);
 			}
 			else if (propertyName is nameof(TransformMatrix))
 			{
-				// TODO: Support sub properties.
-				TransformMatrix = ValidateValue<Matrix4x4>(propertyValue);
+				TransformMatrix = GetMatrix4x4(subPropertyName, TransformMatrix, propertyValue);
 			}
 			else
 			{
-				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 			}
 		}
 	}

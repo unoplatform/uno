@@ -52,7 +52,7 @@ namespace Microsoft.UI.Composition
 
 		public CompositionGetValueStatus TryGetBoolean(string propertyName, out bool value) => TryGetValue(propertyName, out value);
 
-		private CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
+		internal CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
 			where T : struct
 		{
 			value = default;
@@ -81,11 +81,12 @@ namespace Microsoft.UI.Composition
 
 		// TODO
 		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
-			=> false;
+			=> base.IsAnimatableProperty(propertyName);
 
 		// TODO
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
+			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 		}
 	}
 }
