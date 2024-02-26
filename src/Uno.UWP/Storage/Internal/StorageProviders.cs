@@ -18,6 +18,8 @@ namespace Uno.Storage.Internal
 
 #if __IOS__
 		public static StorageProvider IosSecurityScoped { get; } = new StorageProvider("iossecurityscoped", "StorageProviderIosSecurityScopedDisplayName");
+
+		public static StorageProvider IosItemProvider { get; } = new StorageProvider("iositemprovider", "StorageProviderIosItemProviderDisplayName");
 #endif
 	}
 }
