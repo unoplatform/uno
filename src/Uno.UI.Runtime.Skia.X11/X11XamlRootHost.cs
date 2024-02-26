@@ -84,7 +84,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		var minSize = _applicationView.PreferredMinSize;
 
-		if (minSize != Size.Empty) {
+		if (minSize != Size.Empty)
+		{
 			var hints = new XSizeHints
 			{
 				flags = (int)XSizeHintsFlags.PMinSize,
