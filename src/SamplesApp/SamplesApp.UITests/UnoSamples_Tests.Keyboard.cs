@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -32,6 +31,7 @@ namespace SamplesApp.UITests
 			var disabledTextBox = _app.Marked("DisabledTextBox");
 			var multilineTextBox = _app.Marked("MultilineTextBox");
 			var numberTextBox = _app.Marked("NumberTextBox");
+			var unfocusButton = _app.Marked("UnfocusButton");
 
 			// Assert initial state 
 			Assert.AreEqual(string.Empty, normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
@@ -48,7 +48,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("0 - Focus on normalTextBox ", ignoreInSnapshotCompare: true);
 
 				// Removing focus on normalTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
@@ -60,7 +60,8 @@ namespace SamplesApp.UITests
 				TakeScreenshot("1 - Focus on filledTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on normalTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
@@ -72,7 +73,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("2 - Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on placeholderTextTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
 			}
@@ -84,7 +85,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("3 - Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on disabledTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("3 - Remove Focus on disabledTextBox");
 			}
@@ -96,7 +97,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("4 - Focus on multilineTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on multilineTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("4 - Remove Focus on multilineTextBox");
 			}
@@ -108,7 +109,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("5 - Focus on numberTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on numberTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("5 - Remove Focus on numberTextBox");
 			}
@@ -128,6 +129,7 @@ namespace SamplesApp.UITests
 			var disabledTextBox = _app.Marked("DisabledTextBox");
 			var multilineTextBox = _app.Marked("MultilineTextBox");
 			var numberTextBox = _app.Marked("NumberTextBox");
+			var unfocusButton = _app.Marked("UnfocusButton");
 
 			// Assert initial state 
 			Assert.AreEqual(string.Empty, normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
@@ -144,7 +146,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("0 - Focus on normalTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on normalTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
@@ -156,7 +158,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("1 - Focus on filledTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on normalTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
@@ -168,7 +170,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("2 - Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on placeholderTextTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
 			}
@@ -180,7 +182,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("3 - Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on disabledTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("3 - Remove Focus on disabledTextBox");
 			}
@@ -192,7 +194,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("4 - Focus on multilineTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on multilineTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("4 - Remove Focus on multilineTextBox");
 			}
@@ -204,7 +206,7 @@ namespace SamplesApp.UITests
 				TakeScreenshot("5 - Focus on numberTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on numberTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 				TakeScreenshot("5 - Remove Focus on numberTextBox");
 			}
@@ -221,6 +223,7 @@ namespace SamplesApp.UITests
 
 			var normalTextBox = _app.Marked("NormalTextBox");
 			var disabledTextBox = _app.Marked("DisabledTextBox");
+			var unfocusButton = _app.Marked("UnfocusButton");
 
 			// Assert initial state 
 			Assert.AreEqual(string.Empty, normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
@@ -236,7 +239,7 @@ namespace SamplesApp.UITests
 				Assert.AreEqual("Test 1", normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
 
 				// Removing focus on normalTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 				_app.Wait(1);
 			}
 
@@ -250,7 +253,7 @@ namespace SamplesApp.UITests
 				Assert.AreEqual(string.Empty, disabledTextBox.GetDependencyPropertyValue("Text")?.ToString());
 
 				// Removing focus on disabledTextBox
-				_app.TapCoordinates(0f, 0f);
+				_app.FastTap(unfocusButton);
 			}
 		}
 

@@ -289,7 +289,8 @@ namespace Microsoft.UI.Xaml.Media
 		private static CompositionRadialGradientBrush CreateCompositionRadialGradientBrush(RadialGradientBrush radialGradientBrush, Compositor compositor)
 		{
 			var compositionBrush = compositor.CreateRadialGradientBrush();
-			compositionBrush.CenterPoint = radialGradientBrush.Center.ToVector2();
+			compositionBrush.EllipseCenter = radialGradientBrush.Center.ToVector2();
+			compositionBrush.EllipseRadius = new Vector2((float)radialGradientBrush.RadiusX, (float)radialGradientBrush.RadiusY);
 			ConvertGradientColorStops(compositor, compositionBrush, radialGradientBrush.GradientStops, radialGradientBrush.Opacity);
 			compositionBrush.GradientOriginOffset = radialGradientBrush.GradientOrigin.ToVector2();
 			compositionBrush.InterpolationSpace = radialGradientBrush.InterpolationSpace;

@@ -46,6 +46,7 @@ namespace SampleControl.Presentation
 		private bool _contentAttachedToWindow;
 		private bool _useFluentStyles;
 		private bool _useDarkTheme;
+		private bool _manualTestsOnly;
 		private object _contentPhone = null;
 		private string _searchTerm = "";
 
@@ -131,6 +132,17 @@ namespace SampleControl.Presentation
 			{
 				_categoryVisibility = value;
 				RaisePropertyChanged();
+			}
+		}
+
+		public bool ManualTestsOnly
+		{
+			get => _manualTestsOnly;
+			set
+			{
+				_manualTestsOnly = value;
+				RaisePropertyChanged();
+				RefreshSamples();
 			}
 		}
 

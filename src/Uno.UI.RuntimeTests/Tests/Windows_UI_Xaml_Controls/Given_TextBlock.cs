@@ -14,6 +14,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
@@ -841,6 +842,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !__SKIA__
+		[Ignore("The context menu is only implemented on skia.")]
+#endif
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_TextBlock_RightTapped(bool isTextSelectionEnabled)
+		{
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+			var SUT = new TextBlock
+			{
+				Text = "Hello world",
+				IsTextSelectionEnabled = isTextSelectionEnabled,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+		}
+
+		[TestMethod]
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
 			var SUT = new TextBlock
@@ -955,9 +987,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-
-
 		#endregion
+
+#if __SKIA__
+		[TestMethod]
+		public async Task When_Inside_TextBox_FireDrawingEventsOnEveryRedraw()
+		{
+			var textBox = new TextBox
+			{
+				Text = "test"
+			};
+
+			await UITestHelper.Load(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.DisplayBlock.Inlines.FireDrawingEventsOnEveryRedraw);
+		}
+#endif
 #endif
 	}
 }

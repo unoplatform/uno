@@ -14,11 +14,14 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -47,7 +50,7 @@ internal partial class InputManager
 	partial void InjectPointerRemoved(PointerEventArgs args)
 		=> Pointers.InjectPointerRemoved(args);
 
-	internal class PointerManager
+	internal partial class PointerManager
 	{
 		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
 		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
@@ -64,6 +67,9 @@ internal partial class InputManager
 		{
 			_inputManager = inputManager;
 		}
+
+		// ONLY USE THIS FOR TESTING PURPOSES
+		internal IUnoCorePointerInputSource? PointerInputSourceForTestingOnly => _source;
 
 		/// <summary>
 		/// Initialize the InputManager.
@@ -103,6 +109,11 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
@@ -130,7 +141,7 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
+			RaiseUsingCaptures(Wheel, originalSource, routedArgs, true);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
 			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
@@ -149,16 +160,24 @@ internal partial class InputManager
 			// Third (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
 			Raise(Enter, originalSource!, routedArgs);
+
+			if (!PointerCapture.TryGet(routedArgs.Pointer, out var capture) || capture.IsImplicitOnly)
+			{
+				// If pointer is explicitly captured, then we set it in the RaiseUsingCaptures call above.
+				// If not, we make sure to update the cursor based on the new originalSource.
+				SetSourceCursor(originalSource);
+			}
 		}
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
-			if (originalSource is ImplicitTextBlock)
-			{
-				global::System.Diagnostics.Debug.WriteLine("Entered");
-			}
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
@@ -188,6 +207,11 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is used.
 			var originalSource = _inputManager.ContentRoot.VisualTree.RootElement;
 			if (originalSource is null)
@@ -231,6 +255,11 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryRedirectPointerPress(args))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
@@ -263,6 +292,11 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryRedirectPointerRelease(args))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			var isOutOfWindow = originalSource is null;
@@ -291,18 +325,27 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			RaiseUsingCaptures(Released, originalSource, routedArgs);
+			RaiseUsingCaptures(Released, originalSource, routedArgs, false);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
 				// We release the captures on up but only after the released event and processed the gesture
 				// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
 				ReleaseCaptures(routedArgs);
+
+				// We only set the cursor after releasing the capture, or else the cursor will be set according to
+				// the element that just lost the capture
+				SetSourceCursor(originalSource);
 			}
 			ClearPressedState(routedArgs);
 		}
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryRedirectPointerMove(args))
+			{
+				return;
+			}
+
 			var (originalSource, staleBranch) = HitTest(args, _isOver);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -347,11 +390,16 @@ internal partial class InputManager
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Move, originalSource, routedArgs);
+			RaiseUsingCaptures(Move, originalSource, routedArgs, true);
 		}
 
 		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryClearPointerRedirection(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -377,8 +425,9 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			RaiseUsingCaptures(Cancelled, originalSource, routedArgs);
+			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, false);
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
+			SetSourceCursor(originalSource);
 			ClearPressedState(routedArgs);
 		}
 
@@ -507,7 +556,7 @@ internal partial class InputManager
 			return UIElement.EndPointerEventDispatch();
 		}
 
-		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
+		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs, bool setCursor)
 		{
 			routedArgs.Handled = false;
 			UIElement.BeginPointerEventDispatch();
@@ -533,6 +582,11 @@ internal partial class InputManager
 
 						routedArgs.Handled = false;
 						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
+					}
+
+					if (setCursor)
+					{
+						SetSourceCursor(originalSource);
 					}
 				}
 				else
@@ -561,6 +615,11 @@ internal partial class InputManager
 						routedArgs.Handled = false;
 						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
 					}
+
+					if (setCursor)
+					{
+						SetSourceCursor(explicitTarget.Element);
+					}
 				}
 			}
 			else
@@ -571,9 +630,34 @@ internal partial class InputManager
 				}
 
 				evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
+
+				if (setCursor)
+				{
+					SetSourceCursor(originalSource);
+				}
 			}
 
 			return UIElement.EndPointerEventDispatch();
+		}
+
+		private void SetSourceCursor(UIElement element)
+		{
+#if HAS_UNO_WINUI
+			if (_source is { })
+			{
+				if (element.CalculatedFinalCursor is { } shape)
+				{
+					if (_source.PointerCursor is not { } c || c.Type != shape.ToCoreCursorType())
+					{
+						_source.PointerCursor = InputCursor.CreateCoreCursorFromInputSystemCursorShape(shape);
+					}
+				}
+				else
+				{
+					_source.PointerCursor = null;
+				}
+			}
+#endif
 		}
 
 		private static void Trace(string text)

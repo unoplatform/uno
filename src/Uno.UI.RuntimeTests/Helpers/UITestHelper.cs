@@ -17,11 +17,14 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
-using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
 
+#if !HAS_UNO
+using System.Runtime.InteropServices;
+#endif
 namespace Uno.UI.RuntimeTests.Helpers;
 
 // Note: This file contains a bunch of helpers that are expected to be moved to the test engine among the pointer injection work
@@ -55,7 +58,7 @@ public static class UITestHelper
 		{
 			case ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling:
 				await renderer.RenderAsync(element);
-				bitmap = await RawBitmap.From(renderer, element, DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1);
+				bitmap = await RawBitmap.From(renderer, element, element.XamlRoot?.RasterizationScale ?? 1);
 				break;
 			case ScreenShotScalingMode.UseLogicalPixels:
 				await renderer.RenderAsync(element, (int)element.RenderSize.Width, (int)element.RenderSize.Height);
@@ -336,7 +339,7 @@ public static class InjectedPointerExtensions
 	}
 }
 
-public class Finger : IInjectedPointer, IDisposable
+public partial class Finger : IInjectedPointer, IDisposable
 {
 	private const uint _defaultMoveSteps = 10;
 
@@ -453,18 +456,34 @@ public class Finger : IInjectedPointer, IDisposable
 	private static InjectedInputPoint At(Point position)
 		=> At(position.X, position.Y);
 
+#if !HAS_UNO
+	[LibraryImport("user32.dll", SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	private static partial bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+	[StructLayout(LayoutKind.Sequential)]
+	private struct RECT
+	{
+		public int Left;
+		public int Top;
+		public int Right;
+		public int Bottom;
+	}
+
+#endif
+
 	private static InjectedInputPoint At(double x, double y)
 #if HAS_UNO
 		=> new() { PositionX = (int)x, PositionY = (int)y };
 #else
 	{
-		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
-		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+		RECT rect = new();
+		GetWindowRect(WinRT.Interop.WindowNative.GetWindowHandle(TestServices.WindowHelper.CurrentTestWindow), ref rect);
+		var scale = TestServices.WindowHelper.CurrentTestWindow.Content.XamlRoot.RasterizationScale;
 
 		return new()
 		{
-			PositionX = (int)((bounds.X + x) * scale),
-			PositionY = (int)((bounds.Y + y) * scale),
+			PositionX = (int)((rect.Left + x) * scale),
+			PositionY = (int)((rect.Top + y) * scale),
 		};
 	}
 #endif

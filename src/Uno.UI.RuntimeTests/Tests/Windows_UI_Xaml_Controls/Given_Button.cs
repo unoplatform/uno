@@ -12,6 +12,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using Windows.Foundation;
+using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -19,6 +21,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_Button
 	{
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_NavigationViewButtonStyles(bool useFluent)
+		{
+			using var _ = useFluent ? StyleHelper.UseFluentStyles() : null;
+
+			var normalBtn = (Button)XamlReader.Load("""
+				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonNormalStyle}" />
+				""");
+			var normalBtnRect = await UITestHelper.Load(normalBtn);
+
+			var smallBtn = (Button)XamlReader.Load("""
+				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonSmallStyle}" />
+				""");
+			var smallBtnRect = await UITestHelper.Load(smallBtn);
+
+			Assert.AreEqual(new Size(40, 40), new Size(normalBtnRect.Width, normalBtnRect.Height));
+			Assert.AreEqual(new Size(32, 32), new Size(smallBtnRect.Width, smallBtnRect.Height));
+			Assert.AreEqual(0, normalBtnRect.Left - smallBtnRect.Left);
+			Assert.AreEqual(8, normalBtnRect.Right - smallBtnRect.Right);
+		}
+
 		[TestMethod]
 		public async Task When_Enabled_Inside_Disabled_Control()
 		{
@@ -30,9 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = SUT
 			};
 
-			WindowHelper.WindowContent = cc;
-
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.Load(cc);
 
 			// The button should be disabled because the outer control is disabled
 			Assert.AreEqual(cc.IsEnabled, false);

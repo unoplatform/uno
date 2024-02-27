@@ -39,7 +39,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net7-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net7-$(GitVersion.FullSemVer).binlog
 
     displayName: 'Build sample app (net7.0)'
 

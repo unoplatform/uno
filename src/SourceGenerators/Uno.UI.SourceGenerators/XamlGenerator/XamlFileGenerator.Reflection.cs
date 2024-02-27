@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
@@ -89,6 +90,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(type, typeSymbol);
 		}
 
+		private bool IsAssignableTo(XamlType xamlType, ISymbol? typeSymbol)
+			=> IsType(xamlType, typeSymbol) || (xamlType.Name is "NullExtension" && xamlType.PreferredXamlNamespace is XamlConstants.XamlXmlNamespace);
+
 		private static bool IsType([NotNullWhen(true)] INamedTypeSymbol? namedTypeSymbol, ISymbol? typeSymbol)
 		{
 			if (namedTypeSymbol != null)
@@ -97,6 +101,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					// Everything is an object.
 					return true;
+				}
+
+				if (typeSymbol is INamedTypeSymbol { TypeKind: TypeKind.Interface })
+				{
+					return namedTypeSymbol.AllInterfaces.Contains(typeSymbol);
 				}
 
 				do
@@ -246,13 +255,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName)
+		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName, int lineNumber, int linePosition, [CallerMemberName] string caller = "")
 		{
 			var definition = _metadataHelper.FindPropertyTypeByOwnerSymbol(ownerType, propertyName);
 
 			if (definition == null)
 			{
-				throw new Exception("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
+				throw new Exception($"The property {ownerType}.{propertyName} is unknown. Line number: {lineNumber}, Line position: {linePosition}, Caller: {caller}, File: {_fileDefinition.FilePath}");
 			}
 
 			return definition;

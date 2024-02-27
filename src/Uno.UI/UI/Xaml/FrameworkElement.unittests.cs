@@ -24,6 +24,8 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnLoadingPartial();
 
+		private partial void ReconfigureViewportPropagationPartial();
+
 		public T AddChild<T>(T child) where T : View
 		{
 			_children.Add(child);

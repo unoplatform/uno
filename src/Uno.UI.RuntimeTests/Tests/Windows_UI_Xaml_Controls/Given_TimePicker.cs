@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.UI.Xaml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -60,6 +62,144 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedTime, timePicker.SelectedTime);
 			Assert.AreEqual(expectedTime, timePicker.Time);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
+		public async Task When_Opened_From_Button_Flyout()
+		{
+			var button = new Button();
+			var timePickerFlyout = new TimePickerFlyout();
+			button.Flyout = timePickerFlyout;
+
+			var root = new Grid();
+			root.Children.Add(button);
+
+			TestServices.WindowHelper.WindowContent = root;
+
+			await TestServices.WindowHelper.WaitForLoaded(root);
+
+			var buttonAutomationPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
+			var invokePattern = buttonAutomationPeer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+			invokePattern.Invoke();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var timePickerFlyoutPresenter = popup?.Child as TimePickerFlyoutPresenter;
+
+			try
+			{
+				Assert.IsNotNull(timePickerFlyoutPresenter);
+				Assert.AreEqual(1, timePickerFlyoutPresenter.Opacity);
+			}
+			finally
+			{
+				if (popup is not null)
+				{
+					popup.IsOpen = false;
+				}
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		public async Task When_Opened_And_Unloaded_Unloaded_Native() => await When_Opened_And_Unloaded(true);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
+
+		private async Task When_Opened_And_Unloaded(bool useNative)
+		{
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+#if HAS_UNO
+			timePicker.UseNativeStyle = useNative;
+#endif
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+#if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeTimePickerFlyout
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
+#endif
+
+			bool unloaded = false;
+			timePicker.Unloaded += (s, e) => unloaded = true;
+
+			TestServices.WindowHelper.WindowContent = null;
+
+			await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
+
+			var openFlyoutsCount = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count;
+			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
+
+#if HAS_UNO // FlyoutBase.OpenFlyouts also includes native popups like NativeTimePickerFlyout
+			openFlyoutsCount = FlyoutBase.OpenFlyouts.Count;
+			openFlyoutsCount.Should().Be(0, "There should be no open flyouts");
+#endif
+
+#if __ANDROID__ || __IOS__
+			if (useNative)
+			{
+				var nativeTimePickerFlyout = (NativeTimePickerFlyout)associatedFlyout;
+				Assert.IsFalse(nativeTimePickerFlyout.IsNativeDialogOpen);
+			}
+#endif
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		public async Task When_Flyout_Closed_FlyoutBase_Closed_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
+		public async Task When_Flyout_Closed_FlyoutBase_Closed_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
+
+		private async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked(bool useNative)
+		{
+			// Open flyout, close it via method or via native dismiss, check if event on flyoutbase was invoked
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+			timePicker.UseNativeStyle = useNative;
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.TimePickerFlyout));
+			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;
+			bool flyoutClosed = false;
+			timePickerFlyout.Closed += (s, e) => flyoutClosed = true;
+			timePickerFlyout.Close();
+
+			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
+
+#if __ANDROID__ || __IOS__
+			if (useNative)
+			{
+				var nativeTimePickerFlyout = (NativeTimePickerFlyout)timePickerFlyout;
+				Assert.IsFalse(nativeTimePickerFlyout.IsNativeDialogOpen);
+			}
+#endif
+		}
+#endif
 	}
 
 	class MyContext

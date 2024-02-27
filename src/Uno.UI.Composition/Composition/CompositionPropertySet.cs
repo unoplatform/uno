@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Windows.Storage.Streams;
 using Color = Windows.UI.Color;
 
 namespace Microsoft.UI.Composition
@@ -72,10 +73,19 @@ namespace Microsoft.UI.Composition
 		{
 			if (_properties.TryGetValue(propertyName, out var existingValue) && !(existingValue is T _))
 			{
-				throw new ArgumentException("Canot insert a different type for an existing property.");
+				throw new ArgumentException("Cannot insert a different type for an existing property.");
 			}
 
 			_properties[propertyName] = value;
+		}
+
+		// TODO
+		private protected override bool IsAnimatableProperty(string propertyName)
+			=> false;
+
+		// TODO
+		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		{
 		}
 	}
 }

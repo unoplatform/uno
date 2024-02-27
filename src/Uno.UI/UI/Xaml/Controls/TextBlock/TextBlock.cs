@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.Foundation;
 using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
@@ -26,6 +27,7 @@ using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml;
 
 #if __IOS__
 using UIKit;
@@ -276,7 +278,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UpdateInlines(newValue);
 
-			Selection = new Range(0, 0);
+#if __SKIA__
+			if (TemplatedParent is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
+#endif
+			{
+				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
+				Selection = new Range(0, 0);
+			}
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
@@ -505,7 +513,11 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnIsTextSelectionEnabledChanged() => OnIsTextSelectionEnabledChangedPartial();
+		private void OnIsTextSelectionEnabledChanged()
+		{
+			ProtectedCursor = IsTextSelectionEnabled ? InputSystemCursor.Create(InputSystemCursorShape.IBeam) : null;
+			OnIsTextSelectionEnabledChangedPartial();
+		}
 
 		partial void OnIsTextSelectionEnabledChangedPartial();
 
@@ -515,20 +527,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public new TextAlignment TextAlignment
 		{
-			get => (TextAlignment)GetValue(TextAlignmentProperty);
-			set => SetValue(TextAlignmentProperty, value);
+			get => GetTextAlignmentValue();
+			set => SetTextAlignmentValue(value);
 		}
 
-		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register(
-				"TextAlignment",
-				typeof(TextAlignment),
-				typeof(TextBlock),
-				new FrameworkPropertyMetadata(
-					defaultValue: TextAlignment.Left,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextAlignmentChanged()
-				)
-			);
+		[GeneratedDependencyProperty(DefaultValue = TextAlignment.Left, ChangedCallback = true, ChangedCallbackName = nameof(OnTextAlignmentChanged))]
+		public static DependencyProperty TextAlignmentProperty { get; } = CreateTextAlignmentProperty();
 
 		private void OnTextAlignmentChanged()
 		{

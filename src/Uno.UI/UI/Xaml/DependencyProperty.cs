@@ -79,9 +79,6 @@ namespace Microsoft.UI.Xaml
 
 			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
 			_metadata.Add(_ownerType, _ownerTypeMetadata);
-
-			// Improve the performance of the hash code by
-			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
 		}
 
 		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
@@ -216,7 +213,7 @@ namespace Microsoft.UI.Xaml
 		internal int CachedHashCode
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get;
+			get => _uniqueId;
 		}
 
 		/// <summary>
@@ -515,11 +512,7 @@ namespace Microsoft.UI.Xaml
 			return output.ToArray();
 		}
 
-		internal static DependencyProperty Register(string v, Type type1, Type type2, PropertyMetadata propertyMetadata, object updateSourceOnChanged)
-		{
-			throw new NotImplementedException();
-		}
-
+		public override int GetHashCode() => CachedHashCode;
 
 		[Flags]
 		private enum Flags

@@ -44,16 +44,16 @@
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
 		<None Include="Mixins\Android\FrameworkElementMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</None>
 		<None Include="Mixins\iOS\FrameworkElementMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</None>
 		<None Include="Mixins\macOS\FrameworkElementMixins.g.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
 		</None>
 		<None Include="Resources\AboutResources.txt" />
 		<None Include="Resources\Values\Attrs.xml" />
@@ -94,7 +94,7 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
-		  <LogicalName>$(AssemblyName).xml</LogicalName>
+			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
 		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
@@ -135,26 +135,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Mixins\Android\BaseActivity.Callbacks.tt">
-	    <LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\iOS\FrameworkElementMixins.tt">
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
+		<None Update="Mixins\Android\BaseActivity.Callbacks.tt">
+			<LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\Android\FrameworkElementMixins.tt">
+			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\iOS\FrameworkElementMixins.tt">
+			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
+			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
 	</ItemGroup>
 
 	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<!--
-				VS4Mac seems to process System.Memory differently, and removes
-				the System.Memory local reference if the package is transitively referenced.
-				We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
-				is properly adding the local System.Memory to the Reference item group.
+		VS4Mac seems to process System.Memory differently, and removes
+		the System.Memory local reference if the package is transitively referenced.
+		We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
+		is properly adding the local System.Memory to the Reference item group.
 		-->
 		<ItemGroup>
 			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />

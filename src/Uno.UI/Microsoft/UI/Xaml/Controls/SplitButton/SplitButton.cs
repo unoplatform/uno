@@ -1,4 +1,7 @@
-﻿// MUX commit reference 36f8f8f6d5f11f414fdaa0462d0c4cb845cf4254
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference SplitButton.cpp, tag winui3/release/1.4.2
 
 using Microsoft.UI.Private.Controls;
 using Uno.UI.Helpers.WinUI;
@@ -7,9 +10,12 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Uno;
+using Uno.Disposables;
 using Uno.UI.Core;
 
 
@@ -26,19 +32,44 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class SplitButton : ContentControl
 	{
-		private bool m_isKeyDown = false;
-		private bool m_isFlyoutOpen = false;
-		private PointerDeviceType m_lastPointerDeviceType = PointerDeviceType.Mouse;
 		private Button m_primaryButton = null;
 		private Button m_secondaryButton = null;
 
-		private long m_flyoutPlacementChangedRevoker;
-		private long m_pressedPrimaryRevoker;
-		private long m_pointerOverPrimaryRevoker;
-		private long m_pressedSecondaryRevoker;
-		private long m_pointerOverSecondaryRevoker;
+		private bool m_isFlyoutOpen = false;
+		private PointerDeviceType m_lastPointerDeviceType = PointerDeviceType.Mouse;
+		private bool m_isKeyDown = false;
 
-		internal bool m_hasLoaded = false;
+		// Uno Doc: no need for revokers when we're subscribing to events on the element itself in the constructor once
+		// winrt::UIElement::KeyDown_revoker m_keyDownRevoker{};
+		// winrt::UIElement::KeyUp_revoker m_keyUpRevoker{};
+
+		private SerialDisposable m_clickPrimaryRevoker = new();
+		private SerialDisposable m_pressedPrimaryRevoker = new();
+		private SerialDisposable m_pointerOverPrimaryRevoker = new();
+
+		private SerialDisposable m_pointerEnteredPrimaryRevoker = new();
+		private SerialDisposable m_pointerExitedPrimaryRevoker = new();
+		private SerialDisposable m_pointerPressedPrimaryRevoker = new();
+		private SerialDisposable m_pointerReleasedPrimaryRevoker = new();
+		private SerialDisposable m_pointerCanceledPrimaryRevoker = new();
+		private SerialDisposable m_pointerCaptureLostPrimaryRevoker = new();
+
+		private SerialDisposable m_clickSecondaryRevoker = new();
+		private SerialDisposable m_pressedSecondaryRevoker = new();
+		private SerialDisposable m_pointerOverSecondaryRevoker = new();
+
+		private SerialDisposable m_pointerEnteredSecondaryRevoker = new();
+		private SerialDisposable m_pointerExitedSecondaryRevoker = new();
+		private SerialDisposable m_pointerPressedSecondaryRevoker = new();
+		private SerialDisposable m_pointerReleasedSecondaryRevoker = new();
+		private SerialDisposable m_pointerCanceledSecondaryRevoker = new();
+		private SerialDisposable m_pointerCaptureLostSecondaryRevoker = new();
+
+		private SerialDisposable m_flyoutOpenedRevoker = new();
+		private SerialDisposable m_flyoutClosedRevoker = new();
+		private SerialDisposable m_flyoutPlacementChangedRevoker = new();
+
+		protected bool m_hasLoaded = false;
 
 		public SplitButton()
 		{
@@ -46,6 +77,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			KeyDown += OnSplitButtonKeyDown;
 			KeyUp += OnSplitButtonKeyUp;
+
+			// Uno Specific: prevent leaks
+			Loaded += (_, _) => OnApplyTemplate();
+			Unloaded += (_, _) => UnregisterEvents();
 		}
 
 		public
@@ -58,44 +93,60 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		{
 			UnregisterEvents();
 
-			m_primaryButton = this.GetTemplateChild("PrimaryButton") as Button;
-			m_secondaryButton = this.GetTemplateChild("SecondaryButton") as Button;
+			m_primaryButton = GetTemplateChild("PrimaryButton") as Button;
+			m_secondaryButton = GetTemplateChild("SecondaryButton") as Button;
 
-			var primaryButton = m_primaryButton;
-			if (primaryButton != null)
+			if (m_primaryButton is { } primaryButton)
 			{
+				m_clickPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.Click -= OnClickPrimary);
 				primaryButton.Click += OnClickPrimary;
 
-				m_pressedPrimaryRevoker = primaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
-				m_pointerOverPrimaryRevoker = primaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
+				var pressedPrimaryToken = primaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
+				m_pressedPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, pressedPrimaryToken));
+				var pointerOverPrimaryToken = primaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
+				m_pointerOverPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, pointerOverPrimaryToken));
 
 				// Register for pointer events so we can keep track of the last used pointer type
+				m_pointerEnteredPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.PointerEntered -= OnPointerEvent);
 				primaryButton.PointerEntered += OnPointerEvent;
+				m_pointerExitedPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.PointerExited -= OnPointerEvent);
 				primaryButton.PointerExited += OnPointerEvent;
+				m_pointerPressedPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.PointerPressed -= OnPointerEvent);
 				primaryButton.PointerPressed += OnPointerEvent;
+				m_pointerReleasedPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.PointerReleased -= OnPointerEvent);
 				primaryButton.PointerReleased += OnPointerEvent;
+				m_pointerCanceledPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.PointerCanceled -= OnPointerEvent);
 				primaryButton.PointerCanceled += OnPointerEvent;
+				m_pointerCaptureLostPrimaryRevoker.Disposable = new DisposableAction(() => primaryButton.PointerCaptureLost -= OnPointerEvent);
 				primaryButton.PointerCaptureLost += OnPointerEvent;
 			}
 
-			var secondaryButton = m_secondaryButton;
-			if (secondaryButton != null)
+			if (m_secondaryButton is { } secondaryButton)
 			{
 				// Do localization for the secondary button
 				var secondaryName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SplitButtonSecondaryButtonName);
 				AutomationProperties.SetName(secondaryButton, secondaryName);
 
+				m_clickSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.Click -= OnClickSecondary);
 				secondaryButton.Click += OnClickSecondary;
 
-				m_pressedSecondaryRevoker = secondaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
-				m_pointerOverSecondaryRevoker = secondaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
+				var pressedSecondaryToken = secondaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
+				m_pressedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, pressedSecondaryToken));
+				var pointerOverSecondaryToken = secondaryButton.RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
+				m_pointerOverSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, pointerOverSecondaryToken));
 
 				// Register for pointer events so we can keep track of the last used pointer type
+				m_pointerEnteredSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerEntered -= OnPointerEvent);
 				secondaryButton.PointerEntered += OnPointerEvent;
+				m_pointerExitedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerExited -= OnPointerEvent);
 				secondaryButton.PointerExited += OnPointerEvent;
+				m_pointerPressedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerPressed -= OnPointerEvent);
 				secondaryButton.PointerPressed += OnPointerEvent;
+				m_pointerReleasedSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerReleased -= OnPointerEvent);
 				secondaryButton.PointerReleased += OnPointerEvent;
+				m_pointerCanceledSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerCanceled -= OnPointerEvent);
 				secondaryButton.PointerCanceled += OnPointerEvent;
+				m_pointerCaptureLostSecondaryRevoker.Disposable = new DisposableAction(() => secondaryButton.PointerCaptureLost -= OnPointerEvent);
 				secondaryButton.PointerCaptureLost += OnPointerEvent;
 			}
 
@@ -114,12 +165,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (property == FlyoutProperty)
 			{
-				if (args.OldValue is Flyout oldFlyout)
-				{
-					oldFlyout.Opened -= OnFlyoutOpened;
-					oldFlyout.Closed -= OnFlyoutClosed;
-					oldFlyout.UnregisterPropertyChangedCallback(FlyoutBase.PlacementProperty, m_flyoutPlacementChangedRevoker);
-				}
 				OnFlyoutChanged();
 			}
 		}
@@ -129,20 +174,28 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			return new SplitButtonAutomationPeer(this);
 		}
 
-		void OnFlyoutChanged()
+		private void OnFlyoutChanged()
 		{
 			RegisterFlyoutEvents();
 
 			UpdateVisualStates();
 		}
 
-		void RegisterFlyoutEvents()
+		private void RegisterFlyoutEvents()
 		{
-			if (Flyout != null)
+			m_flyoutOpenedRevoker.Dispose();
+			m_flyoutClosedRevoker.Dispose();
+			m_flyoutPlacementChangedRevoker.Dispose();
+
+			// Uno Specific: use a local variable instead of the property to capture the flyout reference even if Flyout changes
+			if (Flyout is { } flyout)
 			{
-				Flyout.Opened += OnFlyoutOpened;
-				Flyout.Closed += OnFlyoutClosed;
-				m_flyoutPlacementChangedRevoker = Flyout.RegisterPropertyChangedCallback(FlyoutBase.PlacementProperty, OnFlyoutPlacementChanged);
+				m_flyoutOpenedRevoker.Disposable = new DisposableAction(() => flyout.Opened -= OnFlyoutOpened);
+				flyout.Opened += OnFlyoutOpened;
+				m_flyoutClosedRevoker.Disposable = new DisposableAction(() => flyout.Closed -= OnFlyoutClosed);
+				flyout.Closed += OnFlyoutClosed;
+				var flyoutPlacementChangedToken = flyout.RegisterPropertyChangedCallback(FlyoutBase.PlacementProperty, OnFlyoutPlacementChanged);
+				m_flyoutPlacementChangedRevoker.Disposable = new DisposableAction(() => flyout.UnregisterPropertyChangedCallback(FlyoutBase.PlacementProperty, flyoutPlacementChangedToken));
 			}
 		}
 
@@ -168,11 +221,22 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// change visual state
 			var primaryButton = m_primaryButton;
 			var secondaryButton = m_secondaryButton;
-			if (primaryButton != null && secondaryButton != null)
+			if (!IsEnabled)
+			{
+				VisualStateManager.GoToState(this, "Disabled", useTransitions);
+			}
+			else if (primaryButton != null && secondaryButton != null)
 			{
 				if (m_isFlyoutOpen)
 				{
-					VisualStateManager.GoToState(this, "FlyoutOpen", useTransitions);
+					if (InternalIsChecked())
+					{
+						VisualStateManager.GoToState(this, "CheckedFlyoutOpen", useTransitions);
+					}
+					else
+					{
+						VisualStateManager.GoToState(this, "FlyoutOpen", useTransitions);
+					}
 				}
 				// SplitButton and ToggleSplitButton share a template -- this section is driving the checked states for Toggle
 				else if (InternalIsChecked())
@@ -248,28 +312,32 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		internal void OpenFlyout()
 		{
-			var flyout = Flyout;
-			if (flyout != null)
+			if (Flyout is { } flyout)
 			{
-				if (SharedHelpers.IsFlyoutShowOptionsAvailable())
-				{
-					FlyoutShowOptions options = new FlyoutShowOptions();
-					options.Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft;
-					flyout.ShowAt(this, options);
-				}
-				else
-				{
-					flyout.ShowAt(this);
-				}
+				FlyoutShowOptions options = new FlyoutShowOptions();
+				options.Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft;
+				flyout.ShowAt(this, options);
 			}
 		}
 
 		internal void CloseFlyout()
 		{
-			var flyout = Flyout;
-			if (flyout != null)
+			if (Flyout is { } flyout)
 			{
 				flyout.Hide();
+			}
+		}
+
+		private void ExecuteCommand()
+		{
+			if (Command is { } command)
+			{
+				var commandParameter = CommandParameter;
+
+				if (command.CanExecute(commandParameter))
+				{
+					command.Execute(commandParameter);
+				}
 			}
 		}
 
@@ -292,10 +360,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			UpdateVisualStates();
 		}
 
-		internal virtual void OnClickPrimary(object sender, RoutedEventArgs args)
+		protected virtual void OnClickPrimary(object sender, RoutedEventArgs args)
 		{
 			var eventArgs = new SplitButtonClickEventArgs();
-
 			Click?.Invoke(this, eventArgs);
 
 			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
@@ -308,6 +375,26 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		private void OnClickSecondary(object sender, RoutedEventArgs args)
 		{
 			OpenFlyout();
+		}
+
+		internal void Invoke()
+		{
+			bool invoked = false;
+
+			if (FrameworkElementAutomationPeer.FromElement(m_primaryButton) is AutomationPeer peer)
+			{
+				if (peer.GetPattern(PatternInterface.Invoke) is IInvokeProvider invokeProvider)
+				{
+					invokeProvider.Invoke();
+					invoked = true;
+				}
+			}
+
+			// If we don't have a primary button that provides an invoke provider, we'll fall back to calling OnClickPrimary manually.
+			if (!invoked)
+			{
+				OnClickPrimary(null, null);
+			}
 		}
 
 		private void OnPointerEvent(object sender, PointerRoutedEventArgs args)
@@ -349,12 +436,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (IsEnabled)
 				{
 					OnClickPrimary(null, null);
+					ExecuteCommand();
 					args.Handled = true;
 				}
 			}
 			else if (key == VirtualKey.Down)
 			{
-				CoreVirtualKeyStates menuState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
+				CoreVirtualKeyStates menuState = Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu);
 				bool menuKeyDown = (menuState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 				if (IsEnabled && menuKeyDown)
@@ -377,34 +465,27 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// This explicitly unregisters all events related to the two buttons in OnApplyTemplate
 			// in case the new template doesn't have all the expected elements.
 
-			if (m_primaryButton != null)
-			{
-				m_primaryButton.Click -= OnClickPrimary;
+			m_clickPrimaryRevoker.Dispose();
+			m_pressedPrimaryRevoker.Dispose();
+			m_pointerOverPrimaryRevoker.Dispose();
 
-				m_primaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, m_pressedPrimaryRevoker);
-				m_primaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, m_pointerOverPrimaryRevoker);
+			m_pointerEnteredPrimaryRevoker.Dispose();
+			m_pointerExitedPrimaryRevoker.Dispose();
+			m_pointerPressedPrimaryRevoker.Dispose();
+			m_pointerReleasedPrimaryRevoker.Dispose();
+			m_pointerCanceledPrimaryRevoker.Dispose();
+			m_pointerCaptureLostPrimaryRevoker.Dispose();
 
-				m_primaryButton.PointerEntered -= OnPointerEvent;
-				m_primaryButton.PointerExited -= OnPointerEvent;
-				m_primaryButton.PointerPressed -= OnPointerEvent;
-				m_primaryButton.PointerReleased -= OnPointerEvent;
-				m_primaryButton.PointerCanceled -= OnPointerEvent;
-				m_primaryButton.PointerCaptureLost -= OnPointerEvent;
-			}
+			m_clickSecondaryRevoker.Dispose();
+			m_pressedSecondaryRevoker.Dispose();
+			m_pointerOverSecondaryRevoker.Dispose();
 
-			if (m_secondaryButton != null)
-			{
-				m_secondaryButton.Click -= OnClickSecondary;
-				m_secondaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, m_pressedSecondaryRevoker);
-				m_secondaryButton.UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, m_pointerOverSecondaryRevoker);
-
-				m_secondaryButton.PointerEntered -= OnPointerEvent;
-				m_secondaryButton.PointerExited -= OnPointerEvent;
-				m_secondaryButton.PointerPressed -= OnPointerEvent;
-				m_secondaryButton.PointerReleased -= OnPointerEvent;
-				m_secondaryButton.PointerCanceled -= OnPointerEvent;
-				m_secondaryButton.PointerCaptureLost -= OnPointerEvent;
-			}
+			m_pointerEnteredSecondaryRevoker.Dispose();
+			m_pointerExitedSecondaryRevoker.Dispose();
+			m_pointerPressedSecondaryRevoker.Dispose();
+			m_pointerReleasedSecondaryRevoker.Dispose();
+			m_pointerCanceledSecondaryRevoker.Dispose();
+			m_pointerCaptureLostSecondaryRevoker.Dispose();
 		}
 
 		internal bool IsFlyoutOpen => m_isFlyoutOpen;

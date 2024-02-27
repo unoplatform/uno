@@ -45,11 +45,11 @@
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
 				<Setter Property="BorderBrush"
-						Value="{StaticResource Color05Brush}" />
+						Value="{ThemeResource Color05Brush}" />
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Background"
-						Value="{StaticResource ApplicationPageBackgroundThemeBrush}" />
+						Value="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
 				<Setter Property="Height"
 								Value="50" />
 			</Style>
@@ -266,6 +266,7 @@
 
 				<!-- LIBRARY (Categories)-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
+					  Height="80"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
 					<Grid.ColumnDefinitions>
@@ -273,7 +274,13 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
 					<!-- Runtime tests button -->
 					<Button Style="{StaticResource IconButtonStyle}"
@@ -283,12 +290,15 @@
 						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
 									   Margin="5,0" />
 					</Button>
+					
+					<!-- Playground button -->
 					<Button Style="{StaticResource IconButtonStyle}"
+							Foreground="{StaticResource Color06Brush}"
 							Grid.Column="1"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
-							Command="{Binding CreateNewWindowCommand}">
-						<FontIcon Glyph="&#xE8A7;" />
+							Command="{Binding OpenPlaygroundCommand}">
+						<FontIcon Glyph="&#xE7FC;" />
 					</Button>
 
 					<!-- Title -->
@@ -299,9 +309,18 @@
 						HorizontalAlignment="Center"
 						Text="Library" />
 
+					<Button Style="{StaticResource IconButtonStyle}"
+							Foreground="{StaticResource Color06Brush}"
+							Grid.Column="3"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Right"
+							Command="{Binding CreateNewWindowCommand}">
+						<FontIcon Glyph="&#xE8A7;" />
+					</Button>
+
 					<!-- Record All Tests Button -->
 					<Button
-						Grid.Column="3"
+						Grid.Column="4"
 						Style="{StaticResource IconButtonStyle}"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Right"
@@ -309,6 +328,9 @@
 						<u:PathControl Style="{StaticResource Icon_RunAll}"
 									   Margin="5,0" />
 					</Button>
+
+					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
+							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
 				</Grid>
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
 								Grid.Row="1"
@@ -592,6 +614,20 @@
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Grid.Row="1"/>
+
+				<StackPanel Grid.Row="2"
+							Padding="8"
+							BorderThickness="0,1,0,0"
+							BorderBrush="{ThemeResource Color05Brush}"
+							Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+							Visibility="{Binding CurrentSelectedSample.Description, Converter={StaticResource StringEmptyToVisibilityConverter}}">
+					<TextBlock Text="Description"
+							Style="{StaticResource Typo03}"
+							Margin="0,0,0,4" />
+					<TextBlock Text="{Binding CurrentSelectedSample.Description}"
+							Style="{StaticResource Typo05}"
+							MaxHeight="80" />
+				</StackPanel>
 			</Grid>
 		</SplitView.Content>
 	</SplitView>

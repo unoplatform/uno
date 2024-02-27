@@ -11,9 +11,21 @@ uid: Uno.Features.WDHaptics
 
 ## `VibrationDevice` class
 
-The `RequestAccessAsync` method is implemented on all platforms and returns `Allowed` on all platforms, except for Android and Tizen. In the case of Android, the `android.permission.VIBRATE` permission needs to be declared. In the case of Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared.
-
 The `GetDefaultAsync` method is implemented on all platforms and returns `null` for the unsupported platforms (WPF, GTK).
+
+### Platform-specific requirements
+
+#### Android
+
+For Android, there is one permission you must configure before using this API in your project. To do that, add the following to `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+
+#### Tizen
+
+For Tizen, the `http://tizen.org/privilege/haptic` privilege needs to be declared in `tizen-manifest.xml` file.
 
 ## `SimpleHapticsController`
 

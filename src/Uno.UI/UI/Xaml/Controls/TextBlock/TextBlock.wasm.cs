@@ -12,6 +12,10 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml;
 
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Media;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement
@@ -146,6 +150,12 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				arrangeSize = finalSize;
+			}
+
+			if (Foreground is GradientBrush or RadialGradientBrush)
+			{
+				// Make sure to always re-set the foreground when the size is changed.
+				this.SetForeground(Foreground);
 			}
 
 			return base.ArrangeOverride(arrangeSize);

@@ -6,7 +6,7 @@ uid: Uno.UI.CommonIssues
 
 The Uno Platform features and support are constantly evolving, yet you may encounter some of the issues while building your application, for which answers and details are available below.
 
-[!include[getting-help](getting-help.md)]
+[!include[getting-help](includes/getting-help.md)]
 
 ## Hot Reload
 
@@ -17,6 +17,7 @@ More troubleshooting information is available [in this section](xref:Uno.Feature
 - [All Development Environments](xref:Uno.UI.CommonIssues.AllIDEs)
 - [Visual Studio 2022 for Windows](xref:Uno.UI.CommonIssues.vs2022)
 - [VS Code](xref:Uno.UI.CommonIssues.vscode)
+- [Rider](xref:Uno.UI.CommonIssues.rider)
 
 ## Platforms
 

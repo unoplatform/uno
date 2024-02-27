@@ -16,7 +16,7 @@ namespace Windows.Graphics.Display
 		private DisplayMetricsCache _cachedDisplayMetrics;
 		private SurfaceOrientation _cachedRotation;
 
-		private static DisplayInformation InternalGetForCurrentView()
+		private static DisplayInformation GetForCurrentViewAndroid()
 		{
 			if (_instance == null)
 			{

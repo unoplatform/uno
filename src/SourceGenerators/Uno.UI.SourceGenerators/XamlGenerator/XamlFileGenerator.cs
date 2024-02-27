@@ -63,7 +63,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private int _resourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
-		private readonly NamespaceDeclaration _defaultXmlNamespace;
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
 		private readonly string _fileUniqueId;
@@ -247,8 +246,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isUnoAssembly = isUnoAssembly;
 			_isUnoFluentAssembly = isUnoFluentAssembly;
-
-			_defaultXmlNamespace = _fileDefinition.Namespaces.First(n => n.Prefix == "");
 		}
 
 		/// <summary>
@@ -1738,7 +1735,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Where(IsGenerateUpdateResourceBindings)
 				.ToArray();
 
-			if (resourcesTogenerateUpdateBindings.Any())
+			if (resourcesTogenerateUpdateBindings.Length > 0)
 			{
 				using (writer.BlockInvariant("Loading += (s, e) =>"))
 				{
@@ -2346,7 +2343,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				BuildSourceLineInfo(writer, topLevelControl);
 
-				if (topLevelControl.Members.Any())
+				if (topLevelControl.Members.Count > 0)
 				{
 					var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
 
@@ -2424,7 +2421,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (IsPage(topLevelControlSymbol))
 						{
-							if (implicitContentChild.Objects.Any())
+							if (implicitContentChild.Objects.Count > 0)
 							{
 								writer.AppendLineInvariantIndented("{0}Content = ", setterPrefix);
 
@@ -2433,7 +2430,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (IsBorder(topLevelControlSymbol))
 						{
-							if (implicitContentChild.Objects.Any())
+							if (implicitContentChild.Objects.Count > 0)
 							{
 								if (implicitContentChild.Objects.Count > 1)
 								{
@@ -2600,7 +2597,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											IsLocalizablePropertyType(contentProperty.Type as INamedTypeSymbol) &&
 											BuildLocalizedResourceValue(null, contentProperty.Name, objectUid) != null;
 
-										if (implicitContentChild.Objects.Any() &&
+										if (implicitContentChild.Objects.Count > 0 &&
 											// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
 											!isLocalized)
 										{
@@ -3319,7 +3316,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName);
 							}
 						}
-						else if (member.Objects.Any())
+						else if (member.Objects.Count > 0)
 						{
 							if (member.Member.Name == "_UnknownContent") // So : FindType(member.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
 							{
@@ -3342,9 +3339,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var ownerType = GetType(member.Member.DeclaringType!);
 
-								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name);
+								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name, member.LineNumber, member.LinePosition);
 
-								if (member.Objects.Count == 1 && member.Objects[0] is var child && IsType(child.Type, propertyType))
+								if (member.Objects.Count == 1 && member.Objects[0] is var child && IsAssignableTo(child.Type, propertyType))
 								{
 									writer.AppendLineInvariantIndented(
 										"{0}.Set{1}({2}, ",
@@ -3599,7 +3596,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var implicitContentChild = FindImplicitContentMember(objectDefinition);
 					var lazyContentProperty = FindLazyContentProperty(implicitContentChild, objectDefinitionType);
 
-					if (lazyProperties.Any() || lazyContentProperty != null)
+					if (lazyProperties.Length > 0 || lazyContentProperty != null)
 					{
 						// This block is used to generate lazy initializations of some
 						// inner VisualStateManager properties in VisualState and VisualTransition.
@@ -4223,7 +4220,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.ToArray();
 
 						// members initialization
-						if (setters.Any())
+						if (setters.Length > 0)
 						{
 							if (containsCustomMarkup)
 							{
@@ -4305,7 +4302,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var customResourceResourceId = GetCustomResourceResourceId(member);
 				if (customResourceResourceId != null)
 				{
-					var type = GetPropertyTypeByOwnerSymbol(declaringType!, member.Member.Name);
+					var type = GetPropertyTypeByOwnerSymbol(declaringType!, member.Member.Name, member.LineNumber, member.LinePosition);
 					var rightSide = GetCustomResourceRetrieval(customResourceResourceId, type.GetFullyQualifiedTypeIncludingGlobal());
 					writer.AppendLineInvariantIndented("{0}{1} = {2};", prefix, member.Member.Name, rightSide);
 				}
@@ -5074,8 +5071,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// FIXME: UWP throws on undefined numerical value for some enum type like <StackPanel Orientation="2" />, but not on some others (eg: user-defined enums)".
 					// Setting the same Orientation to 2 in code behind is fine however...
 					// Given the logic is not well understood, we are ignoring this behavior here.
-					var invalidFlags = flags.Where(x => x.DefinedName == null && !x.IsValidNumeric).ToArray();
-					if (invalidFlags.Any())
+					if (flags.Any(x => x.DefinedName == null && !x.IsValidNumeric))
 					{
 						throw new Exception($"Failed to create a '{propertyTypeWithoutGlobal}' from the text '{value}'.");
 					}
@@ -5283,7 +5279,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown".InvariantCultureFormat(member.Member?.Name));
+						throw new Exception($"The property {member.Owner?.Type?.Name}.{member.Member?.Name} is unknown. Line number: {member.LineNumber}, Line position: {member.LinePosition}, File: {_fileDefinition.FilePath}");
 					}
 				}
 				else
@@ -5403,7 +5399,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isPositionalParameter = m.Member.Name == "_PositionalParameters";
 			var memberName = isPositionalParameter ? "Path" : m.Member.Name;
 
-			if (m.Objects.Any())
+			if (m.Objects.Count > 0)
 			{
 				var bindingType = m.Objects.First();
 
@@ -5477,7 +5473,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (memberName == "Path")
 			{
-				var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName), isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty);
+				var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName, m.LineNumber, m.LinePosition), isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty);
 				value = RewriteAttachedPropertyPath(value);
 				return value;
 			}
@@ -5508,7 +5504,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						m.Owner.Members.None(otherMember => otherMember.Member.Name == "Converter"));
 				propertyType = shouldMatchPropertyType
 					? propertyType
-					: GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName);
+					: GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName, m.LineNumber, m.LinePosition);
 				var targetValueType = propertyType;
 
 				// If value is typed and the property is not, the value type should be preserved.
@@ -6168,7 +6164,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var phases = q.Distinct().ToArray();
 
-				if (phases.Any())
+				if (phases.Length > 0)
 				{
 					var phasesValue = phases.OrderBy(i => i).Select(s => s.ToString(CultureInfo.InvariantCulture)).JoinBy(",");
 					return $"global::Uno.UI.FrameworkElementHelper.SetDataTemplateRenderPhases({ownerVariable}, new []{{{phasesValue}}});";
@@ -6312,8 +6308,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataContextMember = FindMember(definition, "DataContext");
 				var nameMember = FindMember(definition, "Name");
 
-				// TODO: We know ElementStub derives from FrameworkElement.
-				// Should we use FrameworkElement directly here?
 				var elementStubBaseType = Generation.ElementStubSymbol.Value.BaseType;
 				if (!(targetType?.Is(elementStubBaseType) ?? false))
 				{

@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
+using Microsoft.UI.Composition.Interactions;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
@@ -19,6 +21,7 @@ namespace Microsoft.UI.Composition
 		private bool _isVisible = true;
 		private float _opacity = 1.0f;
 		private CompositionCompositeMode _compositeMode;
+		private ICompositionTarget? _compositionTarget;
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
@@ -26,6 +29,10 @@ namespace Microsoft.UI.Composition
 		}
 
 		partial void InitializePartial();
+
+		internal VisualInteractionSource? VisualInteractionSource { get; set; }
+
+		internal bool IsTranslationEnabled { get; set; }
 
 		public Matrix4x4 TransformMatrix
 		{
@@ -115,18 +122,75 @@ namespace Microsoft.UI.Composition
 
 		public ContainerVisual? Parent { get; set; }
 
+		internal ICompositionTarget? CompositionTarget
+		{
+			get => _compositionTarget ?? Parent?.CompositionTarget; // TODO: can this be cached?
+			set => _compositionTarget = value;
+		}
+
 		internal bool HasThemeShadow { get; set; }
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
-			// TODO: Determine whether to invalidate renderer based on the fact whether we are attached to a CompositionTarget.
-			//bool isAttached = false;
-			//if (isAttached)
-			//{
-			//	Compositor.InvalidateRender();
-			//}
+			Compositor.InvalidateRender(this);
+		}
 
-			Compositor.InvalidateRender();
+		private protected override bool IsAnimatableProperty(string propertyName)
+		{
+			return propertyName is
+				nameof(AnchorPoint) or
+				nameof(CenterPoint) or
+				nameof(Offset) or
+				nameof(Opacity) or
+				nameof(Orientation) or
+				nameof(RotationAngle) or
+				nameof(RotationAxis) or
+				nameof(Size) or
+				nameof(TransformMatrix);
+		}
+
+		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		{
+			if (propertyName is nameof(AnchorPoint))
+			{
+				AnchorPoint = ValidateValue<Vector2>(propertyValue);
+			}
+			else if (propertyName is nameof(CenterPoint))
+			{
+				CenterPoint = ValidateValue<Vector3>(propertyValue);
+			}
+			else if (propertyName is nameof(Offset))
+			{
+				Offset = ValidateValue<Vector3>(propertyValue);
+			}
+			else if (propertyName is nameof(Opacity))
+			{
+				Opacity = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName is nameof(Orientation))
+			{
+				Orientation = ValidateValue<Quaternion>(propertyValue);
+			}
+			else if (propertyName is nameof(RotationAngle))
+			{
+				RotationAngle = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName is nameof(RotationAxis))
+			{
+				RotationAxis = ValidateValue<Vector3>(propertyValue);
+			}
+			else if (propertyName is nameof(Size))
+			{
+				Size = ValidateValue<Vector2>(propertyValue);
+			}
+			else if (propertyName is nameof(TransformMatrix))
+			{
+				TransformMatrix = ValidateValue<Matrix4x4>(propertyValue);
+			}
+			else
+			{
+				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+			}
 		}
 	}
 }

@@ -29,9 +29,9 @@ $dotnetBuildConfigurations =
     @("Skia.WPF", "", "")
 )
 
-# Debug Config
-dotnet new unoapp-uwp-net6 -n UnoAppAll
+cd src/SolutionTemplate
 
+# Debug Config
 pushd UnoAppAll
 
 for($i = 0; $i -lt $dotnetBuildConfigurations.Length; $i++)
@@ -70,8 +70,6 @@ $dotnetBuildNet6Configurations =
 )
 
 # WinUI - Default
-dotnet new unoapp-winui -n UnoAppWinUI
-
 pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 {
@@ -92,35 +90,27 @@ popd
 
 # XAML Trimming build smoke test
 # See https://github.com/unoplatform/uno/issues/9632
-# dotnet new unoapp-uwp-net6 -n MyAppXamlTrim
-# 
 # dotnet publish -c Debug -r win-x64 -p:PublishTrimmed=true -p:SelfContained=true -p:UnoXamlResourcesTrimming=true MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\MyAppXamlTrim.Skia.Gtk.csproj
 # Assert-ExitCodeIsZero
 # 
 # dotnet run -c Debug --project src\Uno.XamlTrimmingValidator\Uno.XamlTrimmingValidator.csproj -- --hints-file=build\assets\MyAppXamlTrim-hints.txt --target-assembly=MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\bin\Debug\net6.0\win-x64\publish\Uno.UI.dll
 # Assert-ExitCodeIsZero
-# 
-# & dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
-# Assert-ExitCodeIsZero
+
+& dotnet build -c Debug MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj /p:UnoXamlResourcesTrimming=true
+Assert-ExitCodeIsZero
 
 # Uno Library
-dotnet new unolib -n MyUnoLib
 # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
 & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
 Assert-ExitCodeIsZero
 
 # Uno Cross-Runtime Library
-dotnet new unolib-crossruntime -n MyCrossRuntimeLib
 & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
 Assert-ExitCodeIsZero
 
 #
 # Uno Library with assets, Validate assets count
 #
-dotnet new unolib -n MyUnoLib2
-mkdir MyUnoLib2\Assets
-echo "Test file" > MyUnoLib2\Assets\MyTestAsset01.txt
-
 # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
 & $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
 Assert-ExitCodeIsZero

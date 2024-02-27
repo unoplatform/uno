@@ -38,125 +38,9 @@
 	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
+		<CallTarget Targets="UpdateTasksSHA" Condition="$(_isWindows)" />
 		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
-
-	<Target Name="UpdateFileVersions">
-		<PropertyGroup>
-			<MSBuildDeveloperNamespace>
-				<Namespace Prefix="x" Uri="http://schemas.microsoft.com/developer/msbuild/2003"/>
-			</MSBuildDeveloperNamespace>
-		</PropertyGroup>
-
-		<ItemGroup>
-
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj" Exclude="**\bin\**;**\obj\**"/>
-
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Mobile.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Skia.*.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\*.Windows.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_sdkProject Include="..\src\SolutionTemplate\**\UnoQuickStart.csproj" />
-			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.netcore\CrossTargetedLibrary.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate.netcore\CrossTargetedLibrary.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\UnoUITestTemplate\UnoUITestTemplate.csproj"/>
-			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>
-		</ItemGroup>
-
-		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
-							 Query="//x:PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
-							 Value="$(GitVersion_SemVer)"
-							 Namespaces="$(MSBuildDeveloperNamespace)"
-							 />
-
-		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
-							 Query="//x:PackageReference[@Include='Uno.UI.DevServer']/@Version"
-							 Value="$(GitVersion_SemVer)"
-							 Namespaces="$(MSBuildDeveloperNamespace)"
-							 />
-
-		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
-							 Query="//x:PackageReference[@Include='Uno.UI']/@Version"
-							 Value="$(GitVersion_SemVer)"
-							 Namespaces="$(MSBuildDeveloperNamespace)"
-							 />
-
-		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
-							 Query="//x:PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
-							 Value="$(GitVersion_SemVer)"
-							 Namespaces="$(MSBuildDeveloperNamespace)"
-							 />
-
-		<!-- Update templates for Uno.UI -->
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.DevServer']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.DevServer.Messaging']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.WebAssembly']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.Skia.Gtk']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.Skia.Linux.FrameBuffer']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.Skia.Wpf']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.Runtime.WebAssembly']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.Lottie']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-
-		<!-- Update templates for Uno.WinUI -->
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.RemoteControl']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.DevServer']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.DevServer.Messaging']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.WebAssembly']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Gtk']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Linux.FrameBuffer']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.Skia.Wpf']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.Runtime.WebAssembly']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.Lottie']/@Version"
-							 Value="$(GitVersion_SemVer)" />
-
-
-		<!-- Update templates for generic packages -->
-		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.Adapter.Microsoft.Extensions.Logging']/@Version"
-							 Value="$(GitVersion_SemVer)" />	</Target>
 
 	<Target Name="UpdateTasksSHA">
 
@@ -183,51 +67,48 @@
 
 	<Target Name="BuildCIMobile">
 
+		<PropertyGroup>
+			<NetCoreMobileFilter>filters\Uno.UI-packages-netcoremobile-net8.slnf</NetCoreMobileFilter>
+			<NetCoreMobileFilter Condition="'$(UnoDisableNetCurrentMobile)'=='true'">filters\Uno.UI-packages-netcoremobile.slnf</NetCoreMobileFilter>
+		</PropertyGroup>
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-packages-netcoremobile.slnf"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
+			Projects="$(NetCoreMobileFilter)"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 
 	</Target>
 
 	<Target Name="BuildCIWasm">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-packages-wasm.slnf"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
+		<MSBuild
+			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(GITVERSION_SemVer)"
+			Projects="filters\Uno.UI-packages-wasm.slnf"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 
 	</Target>
 
 	<Target Name="BuildCISkia">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-packages-skia.slnf"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
+		<MSBuild
+			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
+			Projects="filters\Uno.UI-packages-skia.slnf"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 
 	</Target>
 
 	<Target Name="BuildCIReference">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-packages-reference.slnf"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
-
-	</Target>
-
-	<Target Name="BuildTemplatePackages">
-
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-internal-templates.slnf"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
+		<MSBuild
+			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
+			Projects="filters\Uno.UI-packages-reference.slnf"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 
 	</Target>
 
@@ -235,11 +116,12 @@
 		<!-- Restore the nuget packages for packages-* solution filters -->
 		<!-- These filters contain Uno.UI project and its dependencies, which are what needs to be restored -->
 		<!-- In addition, the reference project needs to be restored as well. -->
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
-				 Projects="filters\Uno.UI-packages-netcoremobile.slnf;filters\Uno.UI-packages-reference.slnf;filters\Uno.UI-packages-skia.slnf;filters\Uno.UI-packages-wasm.slnf;..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
-				 Targets="Restore;Clean"
-				 RebaseOutputs="false"
-				 BuildInParallel="true" />
+		<MSBuild
+			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+			Projects="filters\Uno.UI-packages-netcoremobile.slnf;filters\Uno.UI-packages-reference.slnf;filters\Uno.UI-packages-skia.slnf;filters\Uno.UI-packages-wasm.slnf;..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
+			Targets="Restore;Clean"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Build" />
 		<MSBuild Properties="Configuration=Release;Platform=x86" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Build" />
@@ -250,19 +132,20 @@
 			<MixinTargetFrameworks Include="net7.0-macos" />
 		</ItemGroup>
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;TargetFramework=%(MixinTargetFrameworks.Identity)"
-						 Projects="..\src\Uno.UI\Uno.UI.netcoremobile.csproj"
-						 Targets="GenerateMixins"
-						 RebaseOutputs="false"
-						 BuildInParallel="true" />
+		<MSBuild
+			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;TargetFramework=%(MixinTargetFrameworks.Identity)"
+			Projects="..\src\Uno.UI\Uno.UI.netcoremobile.csproj"
+			Targets="GenerateMixins"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
 		<MSBuild Properties="Configuration=Debug"
-				 Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
-				 Targets="Restore;Build"
-				 RebaseOutputs="false"
-				 BuildInParallel="true" />
+			Projects="..\src\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"
+			Targets="Restore;Build"
+			RebaseOutputs="false"
+			BuildInParallel="true" />
 
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="powershell .\import_external_docs.ps1" WorkingDirectory="..\doc" />
@@ -271,7 +154,6 @@
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
-
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
@@ -506,7 +388,7 @@
 			<ArtifactsPlatformName Condition="'$(UNO_UWP_BUILD)'=='true'">UWP</ArtifactsPlatformName>
 		</PropertyGroup>
 
-        <ItemGroup>
+		<ItemGroup>
 			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Foldable.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(GITVERSION_SemVer).nupkg" />
@@ -526,7 +408,7 @@
 			<_diffPackage Include="Uno.Foundation.Logging" Other="Uno.Foundation.Logging.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\Uno.Foundation.Runtime.WebAssembly.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="Uno.UI.Adapter.Microsoft.Extensions.Logging.$(GITVERSION_SemVer).nupkg" />
-        </ItemGroup>
+		</ItemGroup>
 
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.25" IgnoreExitCode="true" />
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=%(_diffPackage.Identity) --other=%(_diffPackage.Other) --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.%(_diffPackage.Identity).$(GITVERSION_SemVer).md" />

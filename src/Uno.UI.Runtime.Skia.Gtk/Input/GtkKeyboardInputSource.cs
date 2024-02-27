@@ -42,7 +42,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(evt.Key);
+			var virtualKey = ConvertKey(evt);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -72,7 +72,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(evt.Key);
+			var virtualKey = ConvertKey(evt);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -100,7 +100,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 
 	private static char? KeyCodeToUnicode(uint keyCode, uint keyVal)
 	{
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		if (OperatingSystem.IsWindows())
 		{
 			var result = InputHelper.WindowsKeyCodeToUnicode(keyCode);
 			return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
@@ -111,12 +111,18 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 		return gdkChar == 0 ? null : gdkChar;
 	}
 
-	private static VirtualKey ConvertKey(Gdk.Key key)
+	private static VirtualKey ConvertKey(EventKey e)
 	{
+		if (OperatingSystem.IsWindows())
+		{
+			// This doesn't work correctly on non-Windows.
+			return (VirtualKey)e.HardwareKeycode;
+		}
+
 		// In this function, commented out lines correspond to VirtualKeys not yet
 		// mapped to their native counterparts. Uncomment and fix as needed.
 
-		return key switch
+		return e.Key switch
 		{
 			Gdk.Key.VoidSymbol => VirtualKey.None,
 

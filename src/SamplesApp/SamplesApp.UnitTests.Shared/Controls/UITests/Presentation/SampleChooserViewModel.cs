@@ -65,6 +65,8 @@ namespace SampleControl.Presentation
 
 
 		private List<SampleChooserCategory> _categories;
+		private List<SampleChooserCategory> _unfilteredCategories;
+		private List<SampleChooserCategory> _manualTestsCategories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
 #if !__NETSTD_REFERENCE__
@@ -116,7 +118,7 @@ namespace SampleControl.Presentation
 			InitializeCommands();
 			ObserveChanges();
 
-			_categories = GetSamples();
+			RefreshSamples();
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
@@ -332,7 +334,7 @@ namespace SampleControl.Presentation
 				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
-				var testQuery = from category in _categories
+				var testQuery = from category in _unfilteredCategories
 								from sample in category.SamplesContent
 								where !sample.IgnoreInSnapshotTests
 								// where sample.ControlName.Equals("GridViewVerticalGrouped")
@@ -473,18 +475,23 @@ namespace SampleControl.Presentation
 
 		internal void CreateNewWindow()
 		{
-#if HAS_UNO //TODO: Enable UWP-style new window #8978
+#if HAS_UNO || WINAPPSDK //TODO: Enable UWP-style new window #8978
 			var newWindow = new Window();
 			newWindow.Content = new MainPage();
 			newWindow.Activate();
 #endif
 		}
 
+		internal void OpenPlayground()
+		{
+			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
 
-			var testQuery = from category in _categories
+			var testQuery = from category in _unfilteredCategories
 							from sample in category.SamplesContent
 							where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
 							select sample;
@@ -636,7 +643,7 @@ namespace SampleControl.Presentation
 						return;
 					}
 
-					var results = await SearchAsync(search, Categories, currentSearch.Token);
+					var results = await SearchAsync(search, _unfilteredCategories, currentSearch.Token);
 
 					if (results is null || currentSearch.IsCancellationRequested)
 					{
@@ -742,16 +749,34 @@ namespace SampleControl.Presentation
 #endif
 		}
 
+		private void RefreshSamples()
+		{
+			if (_unfilteredCategories is null)
+			{
+				_unfilteredCategories = GetSamples(false);
+				_manualTestsCategories = GetSamples(true);
+			}
+
+			if (_manualTestsOnly)
+			{
+				Categories = _manualTestsCategories;
+			}
+			else
+			{
+				Categories = _unfilteredCategories;
+			}
+		}
+
 		/// <summary>
 		/// This method retreives all the categories and sample contents associated with them throughout the app.
 		/// </summary>
 		/// <returns></returns>
-		private List<SampleChooserCategory> GetSamples()
+		private List<SampleChooserCategory> GetSamples(bool manualTestsOnly)
 		{
 			var categories =
 				from type in _allSamples
 				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				where sampleAttribute != null
+				where sampleAttribute != null && (!manualTestsOnly || sampleAttribute.IsManualTest)
 				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
@@ -822,7 +847,7 @@ namespace SampleControl.Presentation
 		{
 			// If true, load all samples and not just those of a selected category
 			var samples = getAllSamples
-				? _categories.SelectMany(cat => cat.SamplesContent).ToList()
+				? _unfilteredCategories.SelectMany(cat => cat.SamplesContent).ToList()
 				: SampleContents;
 
 			var favorites = (favoriteSamples != null)
@@ -1021,7 +1046,7 @@ namespace SampleControl.Presentation
 
 		private SampleChooserCategory GetCategory(SampleChooserContent content)
 		{
-			return _categories.FirstOrDefault(cat =>
+			return _unfilteredCategories.FirstOrDefault(cat =>
 						cat.SamplesContent.Any(
 							sample => sample.Equals(content)));
 		}
@@ -1037,7 +1062,7 @@ namespace SampleControl.Presentation
 
 		public string GetAllSamplesNames()
 		{
-			var q = from category in _categories
+			var q = from category in _unfilteredCategories
 					from test in category.SamplesContent
 					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
@@ -1047,7 +1072,7 @@ namespace SampleControl.Presentation
 
 		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
 		{
-			var category = _categories.FirstOrDefault(
+			var category = _unfilteredCategories.FirstOrDefault(
 				c => c.Category != null &&
 				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
 
@@ -1075,7 +1100,7 @@ namespace SampleControl.Presentation
 
 			try
 			{
-				var q = from category in _categories
+				var q = from category in _unfilteredCategories
 						from test in category.SamplesContent
 						where test.ControlType.FullName == metadataName
 						select test;
@@ -1266,8 +1291,13 @@ namespace SampleControl.Presentation
 						BitmapAlphaMode.Ignore,
 						(uint)targetBitmap.PixelWidth,
 						(uint)targetBitmap.PixelHeight,
+#if HAS_UNO
+						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
+						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
+#else
 						DisplayInformation.GetForCurrentView().RawDpiX,
 						DisplayInformation.GetForCurrentView().RawDpiY,
+#endif
 						pixels.ToArray()
 					);
 

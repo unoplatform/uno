@@ -24,11 +24,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PRIResource Include="Resources.resw" />
+		<PRIResource Include="Resources.resw" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="StoryboardTargetTest.xaml" />
+		<EmbeddedResource Include="StoryboardTargetTest.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

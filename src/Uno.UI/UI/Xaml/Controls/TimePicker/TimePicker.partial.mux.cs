@@ -50,7 +50,7 @@ partial class TimePicker
 	//private const int TIMEPICKER_PM_INDEX = 1;
 	private const int TIMEPICKER_RTL_CHARACTER_CODE = 8207;
 	private const int TIMEPICKER_MINUTEINCREMENT_MIN = 0;
-	private const int TIMEPICKER_MINUTEINCREMENT_MAX = 9;
+	private const int TIMEPICKER_MINUTEINCREMENT_MAX = 59;
 	// When the minute increment is set to 0, we want to only have 00 at the minute picker. This
 	// can be easily obtained by treating 0 as 60 with our existing logic. So during our logic, if we see
 	// that minute increment is zero we will use 60 in our calculations.
@@ -413,34 +413,20 @@ partial class TimePicker
 
 	private async void ShowPickerFlyout()
 	{
-		//if (m_tpAsyncSelectionInfo is null)
-		//{
-		//	object spAsyncAsInspectable;
-		//	IAsyncOperation<TimeSpan?> spAsyncOperation;
-		//	var wpThis = WeakReferencePool.RentSelfWeakReference(this);
-		//	var callbackPtr = (IAsyncOperation<TimeSpan?> getOperation, AsyncStatus status) =>
-		//	{
-		//		if (wpThis.IsAlive && wpThis.Target is TimePicker spThis)
-		//		{
-		//			spThis.OnGetTimePickerSelectionAsyncCompleted(getOperation, status);
-		//		}
-		//	};
-
-		//	var xamlControlsGetTimePickerSelectionPtr = reinterpret_cast < decltype(&XamlControlsGetTimePickerSelection) > (.GetProcAddress(GetPhoneModule(), "XamlControlsGetTimePickerSelection"));
-		//	xamlControlsGetTimePickerSelectionPtr(as_iinspectable(this), as_iinspectable(m_tpFlyoutButton), spAsyncAsInspectable.GetAddressOf());
-
-		//	spAsyncOperation = spAsyncAsInspectable.AsOrNull<IAsyncOperation<IReference<TimeSpan>*>>();
-		//	IFCEXPECT(spAsyncOperation);
-		//	spAsyncOperation.Completed = callbackPtr;
-		//	m_tpAsyncSelectionInfo = sp);
-		//}
-
 		if (m_tpAsyncSelectionInfo == null)
 		{
 			var asyncOperation = SelectionExports.XamlControls_GetTimePickerSelection(this, m_tpFlyoutButton);
+			m_tpAsyncSelectionInfo = asyncOperation;
 			var getOperation = asyncOperation.AsTask();
-			await getOperation;
-			OnGetTimePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+			try
+			{
+				await getOperation;
+				OnGetTimePickerSelectionAsyncCompleted(getOperation, asyncOperation.Status);
+			}
+			catch (TaskCanceledException)
+			{
+				// The user canceled the flyout or the control was unloaded. We don't need to do anything.
+			}
 		}
 	}
 

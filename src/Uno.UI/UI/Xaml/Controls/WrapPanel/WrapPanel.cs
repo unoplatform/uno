@@ -8,6 +8,30 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private Orientation _orientation = Orientation.Horizontal;
 
+		internal override Orientation? PhysicalOrientation
+		{
+			get
+			{
+				if (TemplatedParent is GridView gv && gv.Style == Style.GetDefaultStyleForType(GetDefaultStyleKey()))
+				{
+					// This is a workaround for our GridView using a WrapPanel instead of an ItemsWrapGrid (which we don't implement).
+					// The following is the implementation of ItemsWrapGrid::get_PhysicalOrientation from WinUI.
+					if (_orientation is Orientation.Horizontal)
+					{
+						return Orientation.Vertical;
+					}
+					else
+					{
+						return Orientation.Horizontal;
+					}
+				}
+				else
+				{
+					return _orientation;
+				}
+			}
+		}
+
 		public virtual Orientation Orientation
 		{
 			get

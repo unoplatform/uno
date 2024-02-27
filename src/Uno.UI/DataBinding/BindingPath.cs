@@ -244,14 +244,6 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		internal void SetAnimationFillingValue(object value)
-		{
-			if (!_disposed)
-			{
-				_value?.SetAnimationFillingValue(value);
-			}
-		}
-
 		/// <summary>
 		/// Clears the value of the current precedence.
 		/// </summary>
@@ -263,13 +255,6 @@ namespace Uno.UI.DataBinding
 			if (!_disposed)
 			{
 				_value?.ClearValue();
-			}
-		}
-		public void ClearAnimationFillingValue()
-		{
-			if (!_disposed)
-			{
-				_value?.ClearAnimationFillingValue();
 			}
 		}
 

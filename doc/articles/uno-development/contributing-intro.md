@@ -75,4 +75,4 @@ Build artifacts produced by the CI are documented [here](../contributing/build-a
 
 ### More questions?
 
-To discuss an issue you're working on or would like to work on, join us in Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
+To discuss an issue you're working on or would like to work on, join us in Uno's [Discord Server](https://platform.uno/discord).

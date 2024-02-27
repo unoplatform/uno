@@ -154,10 +154,14 @@ namespace Microsoft.UI.Xaml
 					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
 					break;
 				case GradientBrush gradient:
+					// background-size not supported for inlines (e.g, Run) because DesiredSize is always zero there.
+					// In fact, inlines shouldn't have DesiredSize in the first place as they are TextElement → DependencyObject
+					// They don't inherit from UIElement.
 					this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
-						("background-clip", "text")
+						("background-clip", "text"),
+						("background-size", this is TextBlock ? $"{this.DesiredSize.Width}px" : "auto")
 					);
 					break;
 

@@ -109,7 +109,7 @@ public sealed partial class XamlRoot
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
 	/// </summary>
-	public double RasterizationScale => DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+	public double RasterizationScale => GetDisplayInformation(this).RawPixelsPerViewPixel;
 
 	/// <summary>
 	/// Gets a value that indicates whether the XamlRoot is visible.
@@ -124,6 +124,9 @@ public sealed partial class XamlRoot
 #endif
 
 	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
+
+	internal static DisplayInformation GetDisplayInformation(XamlRoot? root)
+		=> root?.HostWindow?.AppWindow.Id is { } id ? DisplayInformation.GetOrCreateForWindowId(id) : DisplayInformation.GetForCurrentViewSafe();
 
 	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
 

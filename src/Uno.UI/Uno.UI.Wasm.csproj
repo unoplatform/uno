@@ -52,12 +52,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="LinkerSubstitution.Wasm.xml" />
-	  <UnoLinkerSubstitution Include="LinkerSubstitution.Wasm.xml" />
-	  <EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+		<None Include="LinkerSubstitution.Wasm.xml" />
+		<UnoLinkerSubstitution Include="LinkerSubstitution.Wasm.xml" />
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
-	  </EmbeddedResource>
-	  <EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
+		</EmbeddedResource>
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingDeterminate.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -77,9 +77,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
-	  <Folder Include="obj\Uno.UI.Wasm\Debug\" />
-	  <Folder Include="tsBindings\" />
+		<Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
+		<Folder Include="obj\Uno.UI.Wasm\Debug\" />
+		<Folder Include="tsBindings\" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

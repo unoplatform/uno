@@ -18,15 +18,15 @@ Follow the getting started guide for [VS Code](xref:Uno.GetStarted.vscode) or [V
 
 #### [**Windows**](#tab/windows)
 
-[!include[windows-setup](../additional-windows-setup-inline.md)]
+[!include[windows-setup](../includes/additional-windows-setup-inline.md)]
 
 #### [**Linux**](#tab/linux)
 
-[!include[linux-setup](../additional-linux-setup-inline.md)]
+[!include[linux-setup](../includes/additional-linux-setup-inline.md)]
 
 #### [**macOS**](#tab/macos)
 
-[!include[macos-setup](../additional-macos-setup-inline.md)]
+[!include[macos-setup](../includes/additional-macos-setup-inline.md)]
 
 ***
 

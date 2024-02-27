@@ -38,9 +38,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
-	  <ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
-	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -63,7 +63,7 @@
 	</Target>
 
 	<ItemGroup>
-	  <SourceGeneratorInput Remove="AssemblyInfo.cs" />
+		<SourceGeneratorInput Remove="AssemblyInfo.cs" />
 	</ItemGroup>
 
 </Project>

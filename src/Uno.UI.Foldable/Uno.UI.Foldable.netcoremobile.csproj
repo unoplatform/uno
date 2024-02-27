@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetPreviousNetCoreMobile)</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-netprevious.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Foldable</AssemblyName>
@@ -18,13 +18,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-    <authors>Uno Platform</authors>
-    <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-    <PackageIcon>uno.png</PackageIcon>
-    <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
-    <Description>This package provides the ability for Uno Platform based apps to use dual screen devices such as the Surface Duo or Neo</Description>
-    <Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
-  </PropertyGroup>
+		<authors>Uno Platform</authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the ability for Uno Platform based apps to use dual screen devices such as the Surface Duo or Neo</Description>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />

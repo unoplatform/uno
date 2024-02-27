@@ -4,6 +4,5 @@ public partial class ImageSource
 {
 	protected ImageSource()
 	{
-		InitializeBinder();
 	}
 }

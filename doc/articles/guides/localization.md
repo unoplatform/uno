@@ -126,4 +126,4 @@ See the completed sample on GitHub: [LocalizationSamples/Localization](https://g
 
 ## Help! I'm having trouble
 
-[!include[getting-help](getting-help.md)]
+[!include[getting-help](../includes/getting-help.md)]

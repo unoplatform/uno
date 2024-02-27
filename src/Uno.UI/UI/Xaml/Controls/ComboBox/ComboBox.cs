@@ -60,6 +60,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private int m_indexForcedToUnselectedVisual = -1;
 		private int m_indexForcedToSelectedVisual = -1;
 
+		private bool _wasPointerPressed;
+
 		/// <summary>
 		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
 		/// </summary>
@@ -101,7 +103,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
-			_editableText = this.GetTemplateChild("EditableText") as TextBox;
+
+			if (IsEditable)
+			{
+				_editableText = this.GetTemplateChild("EditableText") as TextBox;
+			}
 
 			if (_popup is Popup popup)
 			{
@@ -372,7 +378,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnPointerExited(PointerRoutedEventArgs e)
 		{
-			base.OnPointerEntered(e);
+			base.OnPointerExited(e);
+			_wasPointerPressed = false;
 
 			UpdateVisualState();
 		}
@@ -380,6 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCanceled(e);
+			_wasPointerPressed = false;
 
 			UpdateVisualState();
 		}
@@ -387,6 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCaptureLost(e);
+			_wasPointerPressed = false;
 
 			UpdateVisualState();
 		}
@@ -553,6 +562,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerPressed(args);
 
+			_wasPointerPressed = true;
+
 			UpdateVisualState(true);
 			// On UWP ComboBox does handle the pressed event ... but does not capture it!
 			args.Handled = true;
@@ -561,6 +572,14 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
 			base.OnPointerReleased(args);
+
+			if (!_wasPointerPressed)
+			{
+				// The dropdown should open only if the pointer was pressed and released on the ComboBox.
+				return;
+			}
+
+			_wasPointerPressed = false;
 
 			Focus(FocusState.Programmatic);
 			IsDropDownOpen = true;
@@ -1414,26 +1433,40 @@ namespace Microsoft.UI.Xaml.Controls
 					selectedIndex = itemsCount / 2;
 				}
 
-				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
+				var unoPlacement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
+				var winUIPlacement = popup.DesiredPlacement;
+				if (unoPlacement == DropDownPlacement.Auto)
+				{
+					// If the Uno placement is Auto, we use the WinUI placement
+					unoPlacement = winUIPlacement switch
+					{
+						PopupPlacementMode.Auto => DropDownPlacement.Auto,
+						PopupPlacementMode.Bottom => DropDownPlacement.Below,
+						PopupPlacementMode.Top => DropDownPlacement.Above,
+						_ => DropDownPlacement.Centered
+					};
+				}
+
 				var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
-				switch (placement)
+				switch (unoPlacement)
 				{
 					case DropDownPlacement.Below:
+						frame.Y = comboRect.Bottom;
+						break;
 					case DropDownPlacement.Auto when selectedIndex >= 0 && selectedIndex < stickyThreshold:
 						frame.Y = comboRect.Top;
 						break;
-
 					case DropDownPlacement.Above:
+						frame.Y = comboRect.Top - frame.Height;
+						break;
 					case DropDownPlacement.Auto when
 							selectedIndex >= 0 && selectedIndex >= itemsCount - stickyThreshold
 							// As we don't scroll into view to the selected item, this case seems awkward if the selected item
 							// is not directly visible (i.e. without scrolling) when the drop-down appears.
 							// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
 							&& (itemsCount <= _itemsToShow && frame.Height < (combo.ActualHeight * _itemsToShow) - 3):
-
 						frame.Y = comboRect.Bottom - frame.Height;
 						break;
-
 					case DropDownPlacement.Centered:
 					case DropDownPlacement.Auto: // For now we don't support other alignments than top/bottom/center, but on UWP auto can also be 2/3 - 1/3
 					default:
@@ -1441,6 +1474,9 @@ namespace Microsoft.UI.Xaml.Controls
 						frame.Y = comboRect.Top - (frame.Height / 2.0) + (comboRect.Height / 2.0);
 						break;
 				}
+
+				frame.X += popup.HorizontalOffset;
+				frame.Y += popup.VerticalOffset;
 
 				// Make sure that the popup does not appears out of the viewport
 				if (frame.Left < visibleBounds.Left)

@@ -9,7 +9,7 @@ namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 internal interface IIdeChannelServer
 {
-	Task SendToDevServerAsync(IdeMessage message);
+	Task SendToDevServerAsync(IdeMessageEnvelope message);
 
-	event EventHandler<IdeMessage>? MessageFromDevServer;
+	event EventHandler<IdeMessageEnvelope>? MessageFromDevServer;
 }

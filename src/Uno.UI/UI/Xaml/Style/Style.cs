@@ -3,10 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml
 {
@@ -63,6 +66,53 @@ namespace Microsoft.UI.Xaml
 			BasedOn?.Seal();
 		}
 
+		private bool TryGetAdjustedSetter(DependencyPropertyValuePrecedences baseValueSource, DependencyObject dependencyObject, SetterBase originalSetter, [NotNullWhen(true)] out SetterBase? adjustedSetter)
+		{
+			if (originalSetter is not Setter { Property: { } property })
+			{
+				adjustedSetter = null;
+				return false;
+			}
+
+			// Replicates CDependencyObject::InvalidateProperty from WinUI
+			if (property == Control.TemplateProperty)
+			{
+				var oldBaseValueSource = dependencyObject.GetBaseValueSource(property);
+				// Uno docs: In WinUI code, this condition is `baseValueSource < oldBaseValueSource`
+				// In Uno, we use >= instead because our precedence enum is opposite order of WinUI's one.
+				if (baseValueSource >= oldBaseValueSource)
+				{
+					adjustedSetter = null;
+					return false;
+				}
+			}
+
+			// On WinUI, when default style is applied and there is an explicit
+			// style that contains a setter for the same DP, the value from that explicit style is used.
+			// Note that having two different precedences isn't sufficient to handle this case.
+			// The setter application could be throwing an exception, and in this case we don't
+			// want the value from the default style to take effect.
+			// This bit of code isn't ported from WinUI, but is the equivalent of the following call chain:
+			// OnStyleChanged -> InvalidateProperty -> UpdateEffectiveValue -> EvaluateEffectiveValue -> EvaluateBaseValue -> GetValueFromSetter
+			// In DependencyObject::EvaluateBaseValue (DependencyObject.cpp file), the value is updated to that returned from GetValueFromStyle
+			// Then, baseValueSource is updated from BaseValueSourceBuiltInStyle to BaseValueSourceStyle
+			// The OverrideLocalPrecedence call below is the equivalent of the baseValueSource update.
+			if (baseValueSource == DependencyPropertyValuePrecedences.ImplicitStyle &&
+				dependencyObject is FrameworkElement fe &&
+				fe.GetActiveStyle() is { } activeStyle &&
+				// Make sure to only consider active style if it was explicit.
+				fe.Style == activeStyle &&
+				activeStyle != this &&
+				activeStyle.EnsureSetterMap().TryGetValue(property, out var setter))
+			{
+				adjustedSetter = setter;
+				return true;
+			}
+
+			adjustedSetter = null;
+			return false;
+		}
+
 		internal void ApplyTo(DependencyObject o, DependencyPropertyValuePrecedences precedence)
 		{
 			if (o == null)
@@ -70,6 +120,8 @@ namespace Microsoft.UI.Xaml
 				this.Log().Warn("Style.ApplyTo - Applied to null object - Skipping");
 				return;
 			}
+
+			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
 
 			IDisposable? localPrecedenceDisposable = null;
 
@@ -84,7 +136,29 @@ namespace Microsoft.UI.Xaml
 				{
 					for (var i = 0; i < _flattenedSetters.Length; i++)
 					{
-						_flattenedSetters[i].ApplyTo(o);
+						try
+						{
+							if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
+							{
+								using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+								{
+									adjustedSetter.ApplyTo(o);
+								}
+							}
+							else
+							{
+								_flattenedSetters[i].ApplyTo(o);
+							}
+						}
+						catch (Exception ex)
+						{
+							// This empty catch is to keep parity with WinUI's IGNOREHR in
+							// https://github.com/microsoft/microsoft-ui-xaml/blob/93742a178db8f625ba9299f62c21f656e0b195ad/dxaml/xcp/core/core/elements/framework.cpp#L790
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().LogDebug($"An exception occurred while applying style setter. {ex}");
+							}
+						}
 					}
 				}
 

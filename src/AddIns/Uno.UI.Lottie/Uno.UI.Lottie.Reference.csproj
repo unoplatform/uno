@@ -19,18 +19,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
+		 <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="buildTransitive\Uno.UI.Lottie.targets">
-	    <PackagePath>build</PackagePath>
-	    <Pack>true</Pack>
-	  </Content>
+		<Content Include="buildTransitive\Uno.UI.Lottie.targets">
+			<PackagePath>build</PackagePath>
+			<Pack>true</Pack>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

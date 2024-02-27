@@ -8,6 +8,7 @@ using Silk.NET.OpenGL;
 using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -19,7 +20,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		private static DefaultNativeContext NativeContext
 			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
-		public OpenGLRenderSurface(IXamlRootHost host) : base(host)
+		public OpenGLRenderSurface(IGtkXamlRootHost host) : base(host)
 		{
 			SetRequiredVersion(3, 3);
 
@@ -31,7 +32,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			get
 			{
 				// OpenGL support on macOS is currently broken
-				var isMacOs = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+				var isMacOs = OperatingSystem.IsMacOS();
 
 				try
 				{

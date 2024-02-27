@@ -296,8 +296,8 @@ namespace Microsoft.UI.Xaml.Controls
 						_content.Frame = new CGRect(
 							GetAdjustedArrangeX(iFwElt, adjustedMeasure, (nfloat)contentMargin.Horizontal()),
 							GetAdjustedArrangeY(iFwElt, adjustedMeasure, (nfloat)contentMargin.Vertical()),
-							adjustedMeasure.Width,
-							adjustedMeasure.Height
+							Math.Max(0, adjustedMeasure.Width),
+							Math.Max(0, adjustedMeasure.Height)
 						);
 					}
 				}

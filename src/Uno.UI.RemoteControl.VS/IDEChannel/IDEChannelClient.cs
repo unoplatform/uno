@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamJsonRpc;
+using Uno.UI.RemoteControl.Host.IDEChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 
@@ -68,7 +69,7 @@ internal class IdeChannelClient
 	{
 		if (_roslynServer is not null)
 		{
-			await _roslynServer.SendToDevServerAsync(message);
+			await _roslynServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(message));
 		}
 	}
 
@@ -76,14 +77,16 @@ internal class IdeChannelClient
 	{
 		while (_IDEChannelCancellation is { IsCancellationRequested: false })
 		{
-			_roslynServer?.SendToDevServerAsync(new KeepAliveIdeMessage());
+			_roslynServer?.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage()));
 
 			await Task.Delay(5000);
 		}
 	}
 
-	private void ProcessDevServerMessage(object sender, IdeMessage devServerMessage)
+	private void ProcessDevServerMessage(object sender, IdeMessageEnvelope devServerMessageEnvelope)
 	{
+		var devServerMessage = IdeMessageSerializer.Deserialize(devServerMessageEnvelope);
+
 		_logger.Verbose($"IDE: IDEChannel message received {devServerMessage}");
 
 		if (devServerMessage is ForceHotReloadIdeMessage forceHotReloadMessage)

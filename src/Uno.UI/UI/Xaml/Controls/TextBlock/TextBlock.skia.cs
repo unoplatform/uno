@@ -82,6 +82,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
+			if (_inlines is { })
+			{
+				_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
+			}
+
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
 		}
@@ -202,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			};
 
-			_inlines.FireDrawingEventsOnEveryRedraw = true;
+			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
 			_inlines.RenderSelection = IsTextSelectionEnabled;
 		}
 
@@ -236,27 +241,30 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: remove this context menu when TextCommandBarFlyout is implemented
 		private void OnRightTapped(RightTappedRoutedEventArgs e)
 		{
-			e.Handled = true;
-
-			Focus(FocusState.Pointer);
-
-			if (_contextMenu is null)
+			if (IsTextSelectionEnabled)
 			{
-				_contextMenu = new MenuFlyout();
+				e.Handled = true;
 
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
+				Focus(FocusState.Pointer);
+
+				if (_contextMenu is null)
+				{
+					_contextMenu = new MenuFlyout();
+
+					_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBlockCommand(CopySelectionToClipboard) } });
+					_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBlockCommand(SelectAll) } });
+				}
+
+				_contextMenu.Items.Clear();
+
+				if (Selection.start != Selection.end)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+				}
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
+
+				_contextMenu.ShowAt(this, e.GetPosition(this));
 			}
-
-			_contextMenu.Items.Clear();
-
-			if (Selection.start != Selection.end)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-			}
-			_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-
-			_contextMenu.ShowAt(this, e.GetPosition(this));
 		}
 
 		public void CopySelectionToClipboard()

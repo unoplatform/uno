@@ -1,6 +1,6 @@
 ﻿<Project>
 
-	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
+	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />
 
 	<PropertyGroup>
 		<DebugType>portable</DebugType>
@@ -243,13 +243,14 @@
 		<IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);IDE0051;IDE0055</WarningsNotAsErrors>
-		<NoWarn>$(NoWarn);CA1416</NoWarn>
+		
 		<!-- Disable warning about cross platform call sites -->
-		<NoWarn>$(NoWarn);MSB4011</NoWarn>
-		<!-- Disable duplicate msbuild files imports message -->
-		<NoWarn>$(NoWarn);NU1505</NoWarn>
-		<!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
-		<NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);IDE0055</NoWarn>
+		<NoWarn>$(NoWarn);CA1416</NoWarn>
+
+		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
+		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->
+		<!-- For now, we skip formatting in CI UWP builds not running on Windows -->
+		<NoWarn Condition="'$(OS)' != 'Windows_NT' AND '$(UNO_UWP_BUILD)' == 'true' AND ('$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true')">$(NoWarn);IDE0055</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 
 using CoreGraphics;
 using AppKit;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {

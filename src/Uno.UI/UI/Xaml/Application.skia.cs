@@ -1,18 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.ApplicationModel;
-using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
 using Windows.ApplicationModel.Core;
-using Windows.Globalization;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 
@@ -34,12 +30,20 @@ namespace Microsoft.UI.Xaml
 
 			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
-			CoreApplication.SetInvalidateRender(() =>
+			CoreApplication.SetInvalidateRender(compositionTarget =>
 			{
-				var roots = CoreServices.Instance.ContentRootCoordinator.ContentRoots;
-				for (int i = 0; i < roots.Count; i++)
+				Debug.Assert(compositionTarget is null or CompositionTarget);
+
+				if (compositionTarget is CompositionTarget { Root: { } root })
 				{
-					roots[i].XamlRoot?.QueueInvalidateRender();
+					foreach (var cRoot in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+					{
+						if (cRoot?.XamlRoot is { } xRoot && ReferenceEquals(xRoot.VisualTree.RootElement.Visual, root))
+						{
+							xRoot.QueueInvalidateRender();
+							return;
+						}
+					}
 				}
 			});
 		}

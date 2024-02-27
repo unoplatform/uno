@@ -214,6 +214,8 @@
 	</ItemGroup>
 
 	<Target Name="_UnoEmbeddedResourcesInjection"
+	  Inputs="@(ReferencePath);@(EmbeddedResource)"
+	  Outputs="$(IntermediateOutputPath)$(TargetFileName)"
 	  Condition="
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''

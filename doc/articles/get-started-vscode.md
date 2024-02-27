@@ -20,7 +20,7 @@ See these sections for information about using Uno Platform with:
 
 ## Check your environment
 
-[!include[getting-help](use-uno-check-inline-noheader.md)]
+[!include[getting-help](includes/use-uno-check-inline-noheader.md)]
 
 ## Configure VS Code
 
@@ -48,15 +48,15 @@ You may need to follow additional directions, depending on your development envi
 
 # [**Windows**](#tab/windows)
 
-[!include[windows-setup](additional-windows-setup-inline.md)]
+[!include[windows-setup](includes/additional-windows-setup-inline.md)]
 
 # [**Linux**](#tab/linux)
 
-[!include[linux-setup](additional-linux-setup-inline.md)]
+[!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
 # [**macOS**](#tab/macos)
 
-[!include[macos-setup](additional-macos-setup-inline.md)]
+[!include[macos-setup](includes/additional-macos-setup-inline.md)]
 
 ***
 

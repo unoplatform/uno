@@ -31,11 +31,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\MediaElement.ts" />
+		<UpToDateCheckInput Remove="ts\MediaElement.ts" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="tsconfig.json" />
+		<Content Include="tsconfig.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,7 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="WasmScripts\" />
+		 <Folder Include="WasmScripts\" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIMSALOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

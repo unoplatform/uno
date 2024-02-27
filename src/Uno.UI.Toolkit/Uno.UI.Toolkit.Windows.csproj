@@ -26,10 +26,11 @@
 		<Compile Include="..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
 	</ItemGroup>
 
-	<ItemGroup   Condition="'$(UNO_UWP_BUILD)'!='true'" >
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
-		
+
 		<Compile Include="..\Uno.UI\Extensions\ViewExtensions.visual-tree.cs" Link="Uno.UI\Extensions\ViewExtensions.visual-tree.cs" />
+		<Compile Include="..\Uno.UI\Extensions\UIElementExtensions.Debug.cs" Link="Uno.UI\Extensions\UIElementExtensions.Debug.cs" />
 		<Compile Include="..\Uno.UI\Helpers\XamlHelper.cs" Link="Uno.UI\Helpers\XamlHelper.cs" />
 
 		<Compile Include="..\Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" Link="Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" />
@@ -39,6 +40,7 @@
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\WindowExtensions.cs" Link="Uno.UI.RemoteControl\HotReload\WindowExtensions.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\**\*.HotReload.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\%(FileName)%(Extension)" />
 
 		<!--<Compile Include="..\Uno.UI\UI\Xaml\Media\VisualTreeHelper.crossruntime.cs" Link="Uno.UI\UI\Xaml\Media\VisualTreeHelper.crossruntime.cs" />-->
 	</ItemGroup>
@@ -46,7 +48,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj"  Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />

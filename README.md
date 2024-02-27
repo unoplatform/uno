@@ -102,11 +102,11 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [Discord](https://platform.uno/discord) - "Uno-Platform" channel where our engineering and community are.
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [Discord](https://platform.uno/uno-discord) - "Uno-Platform" channel where our engineering and community are.
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the WinRT and WinUI APIs are pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [Discord Channel #uno-platform](https://discord.gg/eBHZSKG) for help on how to contribute!
+There are many ways that you can contribute to the Uno Platform, as the WinRT and WinUI APIs are pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on [Discord](https://platform.uno/uno-discord) for help on how to contribute!
 
 Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [our guide here](doc/articles/features/working-with-gitpod.md).
 

@@ -17,9 +17,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Helpers\DTEHelper.cs" />
-	  <UpToDateCheckInput Remove="Helpers\ILogger.cs" />
-	  <UpToDateCheckInput Remove="IdeChannel\IDEChannelClient.cs" />
+		<UpToDateCheckInput Remove="Helpers\DTEHelper.cs" />
+		<UpToDateCheckInput Remove="Helpers\ILogger.cs" />
+		<UpToDateCheckInput Remove="IdeChannel\IDEChannelClient.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl.Host\IDEChannel\IdeMessageSerializer.cs" Link="IDEChannel\IdeMessageSerializer.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -64,10 +64,39 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					linkerNode.InnerXml += defDoc.DocumentElement.InnerXml;
 				}
 
-				doc.Save(TargetDefinitionFile);
+				string? existingContent;
+				try
+				{
+					existingContent = File.ReadAllText(TargetDefinitionFile);
+				}
+				catch (FileNotFoundException)
+				{
+					// We use catch instead of File.Exists in case it could get deleted in between.
+					existingContent = null;
+				}
+
+				using (var writer = new Utf8StringWriter())
+				{
+					doc.Save(writer);
+					var output = writer.ToString();
+					if (existingContent != output)
+					{
+						// Make sure to only write the file if there is a change.
+						// This has a large effect on the whole build as writing the file here unnecessarily would cause 
+						// _UnoEmbeddedResourcesInjection to run unnecessarily becase:
+						// Input file "obj\Uno.UI.Skia\Debug\net7.0\ILLink.Substitutions.xml" is newer than output file "obj\Uno.UI.Skia\Debug\net7.0\Uno.UI.dll".
+						// which will in turn cause many other things to be considered NOT up-to-date even when they should be up-to-date.
+						File.WriteAllText(TargetDefinitionFile, output, writer.Encoding);
+					}
+				}
 			}
 
 			return true;
+		}
+
+		private class Utf8StringWriter : StringWriter
+		{
+			public override Encoding Encoding => Encoding.UTF8;
 		}
 	}
 }

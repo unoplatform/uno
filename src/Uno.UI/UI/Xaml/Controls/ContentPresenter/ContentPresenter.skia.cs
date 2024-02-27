@@ -9,6 +9,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -23,33 +24,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() => ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter)));
 
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
 		private bool _nativeHostRegistered;
 
-		public ContentPresenter()
+		partial void InitializePlatform()
 		{
-			InitializeContentPresenter();
-
 			Loaded += (s, e) => RegisterNativeHostSupport();
 			Unloaded += (s, e) => UnregisterNativeHostSupport();
-			LayoutUpdated += (s, e) => UpdateBorder();
-		}
-
-		private void SetUpdateTemplate()
-		{
-			UpdateContentTemplateRoot();
-		}
-
-		partial void RegisterContentTemplateRoot()
-		{
-			AddChild(ContentTemplateRoot);
-		}
-
-		partial void UnregisterContentTemplateRoot()
-		{
-			RemoveChild(ContentTemplateRoot);
 		}
 
 		partial void TryRegisterNativeElement(object newValue)
@@ -92,34 +74,6 @@ namespace Microsoft.UI.Xaml.Controls
 				_nativeHostRegistered = false;
 				XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
 			}
-		}
-
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-
-		private void UpdateBorder()
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					null
-				);
-			}
-		}
-
-		private void ClearBorder()
-		{
-			_borderRenderer.Clear();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
 		}
 
 		partial void ArrangeNativeElement(Rect arrangeRect)

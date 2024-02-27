@@ -49,12 +49,12 @@ namespace Uno.UI.DataBinding
 		//          those. If this situation changes, we could remove the associated code and 
 		//          revert to memoized Funcs.
 		//
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler> _getValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler>(CachedTuple<Type, String, DependencyPropertyValuePrecedences?, bool>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>, ValueSetterHandler> _getValueSetter = new Dictionary<CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>, ValueSetterHandler>(CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getPrecedenceSpecificValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getSubstituteValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler> _getValueUnsetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
-		private static Dictionary<CachedTuple<Type, string>, bool> _isEvent = new Dictionary<CachedTuple<Type, string>, bool>(CachedTuple<Type, string>.Comparer);
+		private static Dictionary<GetValueGetterCacheKey, ValueGetterHandler> _getValueGetter = new(GetValueGetterCacheKey.Comparer);
+		private static Dictionary<GetValueSetterCacheKey, ValueSetterHandler> _getValueSetter = new(GetValueSetterCacheKey.Comparer);
+		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getPrecedenceSpecificValueGetter = new(GenericPropertyCacheKey.Comparer);
+		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getSubstituteValueGetter = new(GenericPropertyCacheKey.Comparer);
+		private static Dictionary<GenericPropertyCacheKey, ValueUnsetterHandler> _getValueUnsetter = new(GenericPropertyCacheKey.Comparer);
+		private static Dictionary<EventCacheKey, bool> _isEvent = new(EventCacheKey.Comparer);
 
 		private static HashtableEx _getPropertyType = new HashtableEx(GetPropertyTypeKey.Comparer, usePooling: false);
 		private static GetPropertyTypeKey _getPropertyTypeKey = new();
@@ -96,7 +96,7 @@ namespace Uno.UI.DataBinding
 
 		public static bool IsEvent(Type type, string property)
 		{
-			var key = CachedTuple.Create(type, property);
+			var key = new EventCacheKey(type, property);
 
 			bool result;
 
@@ -137,7 +137,7 @@ namespace Uno.UI.DataBinding
 		/// <param name="allowPrivateMembers">Allows for private members to be included in the search</param>
 		internal static ValueGetterHandler GetValueGetter(Type type, string property, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 		{
-			var key = CachedTuple.Create(type, property, precedence, allowPrivateMembers);
+			var key = new GetValueGetterCacheKey(type, property, precedence, allowPrivateMembers);
 
 			ValueGetterHandler? result;
 
@@ -159,7 +159,7 @@ namespace Uno.UI.DataBinding
 
 		internal static ValueSetterHandler GetValueSetter(Type type, string property, bool convert, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, convert, precedence);
+			var key = new GetValueSetterCacheKey(type, property, precedence, convert);
 
 			ValueSetterHandler? result;
 
@@ -176,7 +176,7 @@ namespace Uno.UI.DataBinding
 
 		internal static ValueGetterHandler GetPrecedenceSpecificValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, precedence);
 
 			ValueGetterHandler? result;
 
@@ -193,7 +193,7 @@ namespace Uno.UI.DataBinding
 
 		internal static ValueGetterHandler GetSubstituteValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, precedence);
 
 			ValueGetterHandler? result;
 
@@ -215,7 +215,7 @@ namespace Uno.UI.DataBinding
 
 		internal static ValueUnsetterHandler GetValueUnsetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
-			var key = CachedTuple.Create(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, precedence);
 
 			ValueUnsetterHandler? result;
 

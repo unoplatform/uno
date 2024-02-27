@@ -132,6 +132,8 @@ namespace SamplesApp
 				AssertIssue12936();
 
 				AssertIssue12937();
+
+				AssertIssue15521();
 			}
 
 			var sw = Stopwatch.StartNew();
@@ -152,6 +154,8 @@ namespace SamplesApp
 
 #if !WINAPPSDK
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
+#else
+			MainWindow!.Title = "Uno Samples";
 #endif
 
 #if __SKIA__ && DEBUG
@@ -159,6 +163,11 @@ namespace SamplesApp
 #endif
 
 			HandleLaunchArguments(e);
+
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
+			{
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
+			}
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
@@ -429,7 +438,7 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
 				// Adjust logging when debugging the Given_HotReloadWorkspace tests
-				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Warning);
+				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);

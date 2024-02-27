@@ -445,7 +445,8 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			try
 			{
-				var scaleFactor = (float)DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+				var displayInformation = XamlRoot.GetDisplayInformation(xamlRootReference.XamlRoot);
+				var scaleFactor = (float)displayInformation.RawPixelsPerViewPixel;
 
 				return new Rect()
 				{
@@ -468,7 +469,8 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			try
 			{
-				var scaleFactor = (float)(DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+				var displayInformation = XamlRoot.GetDisplayInformation(xamlRootReference.XamlRoot);
+				var scaleFactor = (float)displayInformation.RawPixelsPerViewPixel;
 
 				return new Rect
 				{

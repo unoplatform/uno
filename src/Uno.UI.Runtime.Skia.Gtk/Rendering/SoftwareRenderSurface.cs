@@ -1,17 +1,19 @@
 ﻿#nullable enable
 
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Cairo;
-using SkiaSharp;
-using Microsoft.UI.Xaml.Input;
-using WUX = Microsoft.UI.Xaml;
-using Uno.Foundation.Logging;
-using System.Diagnostics;
-using Windows.Graphics.Display;
 using Gtk;
-using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Input;
+using SkiaSharp;
+using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
+using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -27,20 +29,21 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 	private float _dpi = 1;
 
 	private readonly SKColorType _colorType;
-	private readonly IXamlRootHost _host;
+	private readonly IGtkXamlRootHost _host;
 
 	public SKColor BackgroundColor { get; set; }
 		= SKColors.White;
 
-	public SoftwareRenderSurface(IXamlRootHost host)
+	public SoftwareRenderSurface(IGtkXamlRootHost host)
 	{
-		_displayInformation = DisplayInformation.GetForCurrentView();
+		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(host);
+		_displayInformation ??= XamlRoot.GetDisplayInformation(xamlRoot);
 		_displayInformation.DpiChanged += OnDpiChanged;
 		UpdateDpi();
 
 		_colorType = SKImageInfo.PlatformColorType;
 		// R and B channels are inverted on macOS running on arm64 CPU and this is not detected by Skia
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		if (OperatingSystem.IsMacOS())
 		{
 			if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
 			{

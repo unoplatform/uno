@@ -218,6 +218,12 @@ partial class App
 		// The idea is just to make sure the bounds are set correctly before WindowSize event is fired.
 		var applicationViewBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 		Assert.AreEqual(MainWindow.Bounds, applicationViewBounds);
+  }
+
+	private void AssertIssue15521()
+	{
+#if __ANDROID__
+		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
 }

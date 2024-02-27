@@ -142,11 +142,11 @@ namespace Uno.UI.Samples.UITests.Image
 			}
 		}
 
-		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : Enum
+		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : struct, Enum
 		{
 			yield return new ComboBoxItem { Content = $"All {typeof(T).Name} Modes", Tag = null };
 
-			foreach (T t in Enum.GetValues(typeof(T)))
+			foreach (T t in Enum.GetValues<T>())
 			{
 				yield return new ComboBoxItem { Content = t.ToString(), Tag = t };
 			}

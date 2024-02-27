@@ -23,6 +23,7 @@ public class TimePickerIntegrationTests
 	private static Calendar CreateTime(int hours, int minutes, int period = 1)
 	{
 		var time = new Calendar();
+		time.ChangeClock(ClockIdentifiers.TwelveHourValue);
 		time.Hour = hours;
 		time.Minute = minutes;
 		time.Period = period;

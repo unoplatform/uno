@@ -28,6 +28,9 @@ namespace Uno.UI.Xaml
 		internal static Task InitAsync(bool isLoadEventsEnabled)
 			=> NativeMethods.InitAsync(isLoadEventsEnabled);
 
+		internal static void SetBodyCursor(string value)
+			=> NativeMethods.SetBodyCursor(value);
+
 		/// <summary>
 		/// This method has two purposes:
 		/// - Initializes the window size before launch
@@ -705,13 +708,6 @@ namespace Uno.UI.Xaml
 		{
 			NativeMethods.DestroyView(htmlId);
 		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct WindowManagerDestroyViewParams
-		{
-			public IntPtr HtmlId;
-		}
 		#endregion
 
 		#region ResetStyle
@@ -1058,6 +1054,8 @@ namespace Uno.UI.Xaml
 
 		internal static bool GetIsOverflowing(IntPtr htmlId)
 			=> NativeMethods.GetIsOverflowing(htmlId);
+		internal static void SetIsFocusable(IntPtr htmlId, bool isFocusable)
+			=> NativeMethods.SetIsFocusable(htmlId, isFocusable);
 
 		#region Pointers
 		[Flags]
@@ -1109,6 +1107,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.setBodyCursor")]
+			internal static partial void SetBodyCursor(string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.beforeLaunch")]
 			internal static partial string BeforeLaunch();
@@ -1184,6 +1185,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getIsOverflowing")]
 			internal static partial bool GetIsOverflowing(IntPtr htmlId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setIsFocusable")]
+			internal static partial void SetIsFocusable(nint htmlId, bool isFocusable);
 		}
 	}
 }

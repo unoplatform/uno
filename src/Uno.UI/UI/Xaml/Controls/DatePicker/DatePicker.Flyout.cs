@@ -76,7 +76,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private DatePickerFlyout _flyout => _lazyFlyout.Value;
 
-
 		private void InitPartial()
 		{
 #if __IOS__ || __ANDROID__

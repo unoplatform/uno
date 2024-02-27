@@ -47,8 +47,9 @@
 			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf"/>
 		</ItemGroup>
 
-		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')"
-			   Text="Failed to find published filed: %(_validationPath.Identity)" />
+		<Error
+			Condition="!exists('$(PublishDir)%(_validationPath.Identity)')"
+			Text="Failed to find published filed: %(_validationPath.Identity)" />
 	</Target>
 
 </Project>

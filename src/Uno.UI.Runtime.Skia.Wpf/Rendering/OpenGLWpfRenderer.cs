@@ -152,7 +152,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		int width, height;
 
-		_displayInformation ??= DisplayInformation.GetForCurrentView();
+		var xamlRoot = WpfManager.XamlRootMap.GetRootForHost(_host);
+		_displayInformation ??= WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
 
 		var dpi = _displayInformation.RawPixelsPerViewPixel;
 		double dpiScaleX = dpi;

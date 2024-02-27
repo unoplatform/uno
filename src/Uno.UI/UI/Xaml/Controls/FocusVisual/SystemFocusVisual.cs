@@ -126,10 +126,26 @@ internal partial class SystemFocusVisual : Control
 			return;
 		}
 
+		var parentElement = VisualTreeHelper.GetParent(FocusedElement) as UIElement;
+		if (parentElement is null)
+		{
+			Visibility = Visibility.Collapsed;
+			return;
+		}
+
+		RenderTransform = FocusedElement.RenderTransform;
+		RenderTransformOrigin = FocusedElement.RenderTransformOrigin;
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
-		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
+		var parentTransform = parentElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
+		var parentPoint = parentTransform.TransformPoint(new Windows.Foundation.Point(0, 0));
+
+		var point = new Windows.Foundation.Point
+		{
+			X = parentPoint.X + FocusedElement.ActualOffset.X,
+			Y = parentPoint.Y + FocusedElement.ActualOffset.Y
+		};
+
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 
 		if (newRect != _lastRect)
@@ -137,6 +153,7 @@ internal partial class SystemFocusVisual : Control
 			Width = FocusedElement.ActualSize.X;
 			Height = FocusedElement.ActualSize.Y;
 
+			// FocusVisual and Element has same position and width
 			Canvas.SetLeft(this, point.X);
 			Canvas.SetTop(this, point.Y);
 

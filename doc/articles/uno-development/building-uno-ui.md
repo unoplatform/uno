@@ -64,7 +64,7 @@ Once you've built successfully, for the next steps, [consult the guide here](deb
 > [!IMPORTANT]
 > You will need to repeat the above steps 2. and subsequent when changing the active `UnoTargetFrameworkOverride` value.
 
-If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
+If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord Server](https://platform.uno/discord).
 
 ### Windows and long paths issues
 

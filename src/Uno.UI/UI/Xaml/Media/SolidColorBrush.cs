@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 using Windows.UI;
 
 #if __ANDROID__
@@ -79,21 +80,14 @@ namespace Microsoft.UI.Xaml.Media
 
 		public Windows.UI.Color Color
 		{
-			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
-			set { this.SetValue(ColorProperty, value); }
+			get => GetColorValue();
+			set => SetColorValue(value);
 		}
 
-		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static DependencyProperty ColorProperty { get; } =
-			DependencyProperty.Register(
-				"Color",
-				typeof(Windows.UI.Color),
-				typeof(SolidColorBrush),
-				new FrameworkPropertyMetadata(
-					Colors.Transparent,
-					(s, e) => ((SolidColorBrush)s).OnColorChanged((Windows.UI.Color)e.OldValue, (Windows.UI.Color)e.NewValue)
-				)
-			);
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnColorChanged))]
+		public static DependencyProperty ColorProperty { get; } = CreateColorProperty();
+
+		private static Windows.UI.Color GetColorDefaultValue() => Colors.Transparent;
 
 		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue);
 

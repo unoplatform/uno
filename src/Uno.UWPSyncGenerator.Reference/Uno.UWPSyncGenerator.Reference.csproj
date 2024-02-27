@@ -134,52 +134,43 @@
 		<VisualStudioVersion>14.0</VisualStudioVersion>
 	</PropertyGroup>
 	<Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-	<!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Target Name="WorkaroundMissingWinAppSDKDLL" BeforeTargets="BinPlaceBootstrapDll">
-    <!-- Workaround for
-	  C:\a\.nuget\microsoft.windowsappsdk.foundation\1.0.0-experimental1\build\Microsoft.WindowsAppSDK.Bootstrap.targets(11,5):
-	  error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk.foundation\1.0.0-experimental1\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppSDK.Bootstrap.dll" because it was not found.
-	  -->
-    <CreateProperty Value="x86">
-      <Output TaskParameter="Value" PropertyName="_WindowsAppSDKFoundationPlatform" />
-    </CreateProperty>
-  </Target>
-  <Target Name="WorkaroundMissingWinAppSDKDLL_2" BeforeTargets="BeforeBuild">
-    <!-- Workaround for
-         C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4559,5):
-				 error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk\1.0.0-preview3\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppRuntime.Bootstrap.dll" because it was not found.
-	  -->
-    <ItemGroup>
-      <_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
-      <ReferenceCopyLocalPaths Remove="@(_itemToRemove)" />
-    </ItemGroup>
-  </Target>
-  <ItemGroup Condition="'$(PkgMicrosoft_WindowsAppSDK)'!=''">
-    <Reference Include="$(PkgMicrosoft_WindowsAppSDK)\lib\uap10.0\*.winmd" />
-  </ItemGroup>
-  <Target Name="IncludeUap" BeforeTargets="BeforeBuild">
-    <!--
+	<Target Name="WorkaroundMissingWinAppSDKDLL" BeforeTargets="BinPlaceBootstrapDll">
+		<!-- Workaround for
+		C:\a\.nuget\microsoft.windowsappsdk.foundation\1.0.0-experimental1\build\Microsoft.WindowsAppSDK.Bootstrap.targets(11,5):
+		error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk.foundation\1.0.0-experimental1\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppSDK.Bootstrap.dll" because it was not found.
+		-->
+		<CreateProperty Value="x86">
+			<Output TaskParameter="Value" PropertyName="_WindowsAppSDKFoundationPlatform" />
+		</CreateProperty>
+	</Target>
+	<Target Name="WorkaroundMissingWinAppSDKDLL_2" BeforeTargets="BeforeBuild">
+		<!-- Workaround for
+		C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4559,5):
+		error MSB3030: Could not copy the file "C:\a\.nuget\microsoft.windowsappsdk\1.0.0-preview3\build\..\runtimes\lib\native\AnyCPU\Microsoft.WindowsAppRuntime.Bootstrap.dll" because it was not found.
+		-->
+		<ItemGroup>
+			<_itemToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'%(FileName)%(Extension)'=='Microsoft.WindowsAppRuntime.Bootstrap.dll'" />
+			<ReferenceCopyLocalPaths Remove="@(_itemToRemove)" />
+		</ItemGroup>
+	</Target>
+	<ItemGroup Condition="'$(PkgMicrosoft_WindowsAppSDK)'!=''">
+		<Reference Include="$(PkgMicrosoft_WindowsAppSDK)\lib\uap10.0\*.winmd" />
+	</ItemGroup>
+	<Target Name="IncludeUap" BeforeTargets="BeforeBuild">
+	<!--
 		Manually include UAP files that are excluded from the build by the
 		default nuget resolution, which uses `uap10.0.xxx` and ignores `uap10.0`.
 		This target is needed in case the restore happens during the build.
 		-->
-    <ItemGroup>
-      <Reference Include="$(PkgMicrosoft_WindowsAppSDK)\lib\uap10.0\*.winmd" />
-    </ItemGroup>
-  </Target>
-  
-  <Target Name="ExportList" BeforeTargets="AfterBuild">
-	       <WriteLinesToFile
-            File="$(MSBuildProjectDirectory)\references.txt"
-            Lines="@(ReferencePathWithRefAssemblies)"
-            Overwrite="true"
-            Encoding="Unicode"/>
-  </Target>
-  
+	<ItemGroup>
+		<Reference Include="$(PkgMicrosoft_WindowsAppSDK)\lib\uap10.0\*.winmd" />
+	</ItemGroup>
+	</Target>
+	<Target Name="ExportList" BeforeTargets="AfterBuild">
+		<WriteLinesToFile
+			File="$(MSBuildProjectDirectory)\references.txt"
+			Lines="@(ReferencePathWithRefAssemblies)"
+			Overwrite="true"
+			Encoding="Unicode"/>
+	</Target>
 </Project>
