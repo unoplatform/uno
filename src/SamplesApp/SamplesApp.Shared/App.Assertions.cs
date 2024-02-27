@@ -218,6 +218,7 @@ partial class App
 		// The idea is just to make sure the bounds are set correctly before WindowSize event is fired.
 		var applicationViewBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 		Assert.AreEqual(MainWindow.Bounds, applicationViewBounds);
+#endif
   }
 
 	private void AssertIssue15521()
