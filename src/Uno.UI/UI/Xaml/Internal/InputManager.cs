@@ -5,11 +5,11 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 

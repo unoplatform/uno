@@ -1800,6 +1800,8 @@
 		</Events>
 
 		<Fields>
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
 		</Fields>
 
 		<Properties>
@@ -1814,6 +1816,9 @@
 			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+
+			<Member fullName="System.Void Microsoft.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in UWP" />
 		</Methods>
 	</IgnoreSet>
 

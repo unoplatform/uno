@@ -72,7 +72,7 @@ internal partial class ContentRoot
 		FocusAdapter = new FocusAdapter(this);
 		FocusManager.SetFocusObserver(new FocusObserver(this));
 
-		CompositionTarget = new CompositionTarget();
+		CompositionTarget = new CompositionTarget(this);
 		CompositionTarget.Root = ElementCompositionPreview.GetElementVisual(VisualTree.RootElement);
 		CompositionTarget.Root.CompositionTarget = CompositionTarget;
 

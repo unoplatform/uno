@@ -85,6 +85,9 @@
 		<PackageManifest Condition=" Exists('$(WindowsProjectFolder)Package.appxmanifest') ">$(WindowsProjectFolder)Package.appxmanifest</PackageManifest>
 		<_SingleProjectWindowsExcludes>$(WindowsProjectFolder)/**/.*/**</_SingleProjectWindowsExcludes>
 
+		<!-- Hint VS's XAML parser -->
+		<!-- https://github.com/unoplatform/uno/issues/15517 -->
+    	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'=='' and '$(TargetPlatformIdentifier)' != 'windows'">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
 	<!-- Removals -->

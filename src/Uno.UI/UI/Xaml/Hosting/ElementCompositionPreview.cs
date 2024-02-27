@@ -26,7 +26,14 @@ public partial class ElementCompositionPreview
 #if __SKIA__
 		return element.Visual;
 #else
-		return new Composition.Visual(_compositor) { NativeOwner = element };
+		return new Composition.Visual(_compositor)
+		{
+			NativeOwner = element,
+			// TODO: Switch to CompositionTargetGetter and assign a lambda instead.
+			// This will make the Visual usable even if GetElementVisual is called when
+			// the element is not loaded (note that XamlRoot is null when element isn't yet loaded)
+			CompositionTarget = element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget,
+		};
 #endif
 	}
 
