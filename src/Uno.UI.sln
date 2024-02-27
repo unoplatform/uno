@@ -55,11 +55,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Build", "..\build\Un
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesApp.Shared", "SamplesApp\SamplesApp.Shared\SamplesApp.Shared.shproj", "{6279C845-92F8-4333-AB99-3D213163593C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.UWP", "SamplesApp\SamplesApp.UWP\SamplesApp.UWP.csproj", "{6C25BEB3-E332-48D3-B4DE-20A0B71935CD}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E6872579-B7A0-42CE-AE97-44234BB55625} = {E6872579-B7A0-42CE-AE97-44234BB55625}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Wasm", "SamplesApp\SamplesApp.Wasm\SamplesApp.Wasm.csproj", "{21206058-D5EF-466D-8E4D-AC62357FB479}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SamplesApp.UnitTests.Shared", "SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.shproj", "{04B1B5EB-D42E-47DE-ADA0-EB863E5574FD}"
@@ -5890,10 +5885,6 @@ Global
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
 		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{68e667c4-aaed-4242-a47f-3d77c33c489e}*SharedItemsImports = 5
 		SourceGenerators\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems*{69ea1cb5-bb31-414a-9e0b-74c72ff7775f}*SharedItemsImports = 13
-		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
-		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
-		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
-		SamplesApp\UITests.Shared\UITests.Shared.projitems*{6c25beb3-e332-48d3-b4de-20a0b71935cd}*SharedItemsImports = 4
 		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{85238100-94ff-40e6-98d8-7317f4d49923}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{85238100-94ff-40e6-98d8-7317f4d49923}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{85238100-94ff-40e6-98d8-7317f4d49923}*SharedItemsImports = 5
