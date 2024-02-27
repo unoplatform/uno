@@ -389,10 +389,11 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			string interactionRatioPropertyName = m_refreshInfoProvider.InteractionRatioCompositionProperty;
 			CompositionPropertySet interactionRatioPropertySet = m_refreshInfoProvider.CompositionProperties;
 
+			// Uno specific: "f" suffixes are removed as they are not supported.
 			ExpressionAnimation contentInteractionRatioRotationAnimation = m_compositor.CreateExpressionAnimation(
 			   "startingRotationAngle + (Pi * (Clamp(RefreshInteractionRatioPropertySet." +
 			   (string)(interactionRatioPropertyName) +
-			   ", 0.0f, contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * 2)");
+			   ", 0.0, contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * 2)");
 
 			var thresholdRatioName = "DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO";
 			contentVisual.Properties.InsertScalar(thresholdRatioName, (float)(m_executionRatio));
@@ -404,7 +405,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 
 			//Set up the InteractionRatioOpacityAnimation
 			ExpressionAnimation contentInteractionRatioOpacityAnimation = m_compositor.CreateExpressionAnimation(
-			   "((1.0f - contentVisual.MINIMUM_INDICATOR_OPACITY) * RefreshInteractionRatioPropertySet."
+			   "((1.0 - contentVisual.MINIMUM_INDICATOR_OPACITY) * RefreshInteractionRatioPropertySet."
 			   + (string)(interactionRatioPropertyName) +
 			   ") + contentVisual.MINIMUM_INDICATOR_OPACITY");
 			var minOpacityName = "MINIMUM_INDICATOR_OPACITY";
@@ -419,16 +420,16 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			if (IsPullDirectionFar())
 			{
 				contentInteractionRatioParallaxAnimation = m_compositor.CreateExpressionAnimation(
-					"((1.0f - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5f * -1.0f) * min((RefreshInteractionRatioPropertySet."
+					"((1.0 - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5 * -1.0) * min((RefreshInteractionRatioPropertySet."
 					+ (string)(interactionRatioPropertyName) +
-					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0f)");
+					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0)");
 			}
 			else
 			{
 				contentInteractionRatioParallaxAnimation = m_compositor.CreateExpressionAnimation(
-					"((1.0f - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5f) * min((RefreshInteractionRatioPropertySet."
+					"((1.0 - contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO) * rootSize * 0.5) * min((RefreshInteractionRatioPropertySet."
 					+ (string)(interactionRatioPropertyName) +
-					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0f)");
+					" / contentVisual.DEFAULT_REFRESHINDICATOR_THRESHOLD_RATIO), 1.0)");
 			}
 			if (m_root != null)
 			{
@@ -479,15 +480,16 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				m_compositor = contentVisual.Compositor;
 			}
 
-			Vector2KeyFrameAnimation contentScaleAnimation = m_compositor.CreateVector2KeyFrameAnimation();
-			contentScaleAnimation.InsertKeyFrame(0.5f, new Vector2(1.50f, 1.50f));
-			contentScaleAnimation.InsertKeyFrame(1.0f, new Vector2(1.0f, 1.0f));
-			contentScaleAnimation.Duration = TimeSpan.FromMilliseconds(300);
+			// UNO TODO:
+			//Vector2KeyFrameAnimation contentScaleAnimation = m_compositor.CreateVector2KeyFrameAnimation();
+			//contentScaleAnimation.InsertKeyFrame(0.5f, new Vector2(1.50f, 1.50f));
+			//contentScaleAnimation.InsertKeyFrame(1.0f, new Vector2(1.0f, 1.0f));
+			//contentScaleAnimation.Duration = TimeSpan.FromMilliseconds(300);
 
-			Size contentSize = m_content.RenderSize;
-			contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
+			//Size contentSize = m_content.RenderSize;
+			//contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
 
-			contentVisual.StartAnimation("Scale.XY", contentScaleAnimation);
+			//contentVisual.StartAnimation("Scale.XY", contentScaleAnimation);
 		}
 	}
 
@@ -502,16 +504,17 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				m_compositor = contentVisual.Compositor;
 			}
 
-			ScalarKeyFrameAnimation contentExecutionRotationAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle, m_compositor.CreateLinearEasingFunction());
-			contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI), m_compositor.CreateLinearEasingFunction());
-			contentExecutionRotationAnimation.Duration = TimeSpan.FromMilliseconds(500);
-			contentExecutionRotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+			// UNO TODO:
+			//ScalarKeyFrameAnimation contentExecutionRotationAnimation = m_compositor.CreateScalarKeyFrameAnimation();
+			//contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle, m_compositor.CreateLinearEasingFunction());
+			//contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI), m_compositor.CreateLinearEasingFunction());
+			//contentExecutionRotationAnimation.Duration = TimeSpan.FromMilliseconds(500);
+			//contentExecutionRotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
 
-			Size contentSize = m_content.RenderSize;
-			contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
+			//Size contentSize = m_content.RenderSize;
+			//contentVisual.CenterPoint = new Vector3((float)(contentSize.Height / 2), (float)(contentSize.Width / 2), 0.0f);
 
-			contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
+			//contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
 		}
 	}
 

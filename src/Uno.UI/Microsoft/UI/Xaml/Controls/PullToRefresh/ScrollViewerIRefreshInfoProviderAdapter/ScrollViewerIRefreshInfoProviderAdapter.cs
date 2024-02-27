@@ -243,7 +243,8 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter : IRefreshInfoPro
 		var content = GetScrollContent();
 		if (content is not null)
 		{
-			content.CancelDirectManipulations();
+			// UNO TODO:
+			//content.CancelDirectManipulations();
 		}
 
 		double executionRatio = FALLBACK_EXECUTION_RATIO;
