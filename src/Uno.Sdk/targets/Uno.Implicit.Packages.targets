@@ -61,9 +61,10 @@
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
 			<ItemGroup>
-				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Gtk" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.MacOS" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Wpf" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.X11" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
 		</When>
 		<When Condition="$(TargetFramework.Contains('windows10'))">
