@@ -34,7 +34,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
 
-			Assert.AreEqual(7, stubs.Count());
+			Assert.AreEqual(8, stubs.Count());
 		}
 
 		[TestMethod]
