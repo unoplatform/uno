@@ -3,6 +3,7 @@ using Android.App;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
+using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel.Core;
@@ -76,7 +77,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			return default;
 		}
 
-		var windowInsets = ViewCompat.GetRootWindowInsets(activity.Window.DecorView);
+		var windowInsets = GetWindowInsets(activity);
 
 		var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 
@@ -113,6 +114,22 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var flags = activity.Window.Attributes.Flags;
 		return flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
 			|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+	}
+
+	private WindowInsetsCompat GetWindowInsets(Activity activity)
+	{
+		var decorView = activity.Window.DecorView;
+		if (decorView.IsAttachedToWindow)
+		{
+			return ViewCompat.GetRootWindowInsets(decorView);
+		}
+
+		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
+		{
+			return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
+		}
+
+		return null;
 	}
 
 	private Size GetDisplaySize()
