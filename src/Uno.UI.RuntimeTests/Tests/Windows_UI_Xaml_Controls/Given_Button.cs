@@ -55,9 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = SUT
 			};
 
-			WindowHelper.WindowContent = cc;
-
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.Load(cc);
 
 			// The button should be disabled because the outer control is disabled
 			Assert.AreEqual(cc.IsEnabled, false);
