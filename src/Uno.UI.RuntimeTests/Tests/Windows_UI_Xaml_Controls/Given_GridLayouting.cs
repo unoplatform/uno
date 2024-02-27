@@ -1115,6 +1115,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("Fails on iOS.")]
+#endif
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();

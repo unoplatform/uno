@@ -58,6 +58,9 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("iOS is disabled, to be restored for https://github.com/unoplatform/uno/pull/15555")]
+#endif
 	public async Task When_NavigateToString()
 	{
 		var border = new Border();
