@@ -6,13 +6,11 @@
 		<EmbeddedResource Include="$(SkiaProjectFolder)Package.appxmanifest"
 			Condition="Exists('$(SkiaProjectFolder)Package.appxmanifest')"
 			Exclude="@(EmbeddedResource)"
-			IsDefaultItem="true"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+			IsDefaultItem="true" />
 		<Manifest Include="$(SkiaProjectFolder)$(ApplicationManifest)"
 			Condition="Exists('$(SkiaProjectFolder)$(ApplicationManifest)')"
 			Exclude="@(Manifest)"
-			IsDefaultItem="true"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+			IsDefaultItem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
