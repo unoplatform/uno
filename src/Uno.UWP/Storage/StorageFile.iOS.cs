@@ -34,7 +34,7 @@ namespace Windows.Storage
 			{
 				_provider = provider;
 				_parent = parent;
-				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? []);
+				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? Array.Empty<string>());
 			}
 
 			private string? GetIdentifier(string[] identifiers)

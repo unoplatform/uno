@@ -135,7 +135,7 @@ namespace Windows.Storage.Pickers
 				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
 				{
 					var file = StorageFile.GetFromSecurityScopedUrl(nSUrl, null);
-					_taskCompletionSource.SetResult([file]);
+					_taskCompletionSource.SetResult(new[] { file });
 				}
 				else
 				{
