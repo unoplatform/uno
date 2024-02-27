@@ -186,7 +186,6 @@ then
 
 		# Copy the results to the build directory
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
-
 	else
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
 	fi
@@ -244,9 +243,10 @@ if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	return 1
 fi
 
-if ! iconv -f UTF-16 -t UTF-8 "$UNO_ORIGINAL_TEST_RESULTS" | grep -q "<test-case" ; then
-    echo "No test results found in the file, this can indicate a filter error."
-    exit 1
+# Check if the XML test results file contains any test results using XML tooling
+if ! xmllint --xpath "boolean(//test-case)" $UNO_ORIGINAL_TEST_RESULTS 2>/dev/null; then
+	echo "##vso[task.logissue type=error]ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS is not a valid XML file"
+	return 1
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry
