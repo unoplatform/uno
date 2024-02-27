@@ -50,7 +50,7 @@ internal partial class InputManager
 	partial void InjectPointerRemoved(PointerEventArgs args)
 		=> Pointers.InjectPointerRemoved(args);
 
-	internal class PointerManager
+	internal partial class PointerManager
 	{
 		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
 		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
@@ -114,6 +114,11 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
@@ -171,6 +176,11 @@ internal partial class InputManager
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
@@ -202,6 +212,11 @@ internal partial class InputManager
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is used.
 			var originalSource = _inputManager.ContentRoot.VisualTree.RootElement;
 			if (originalSource is null)
@@ -245,6 +260,11 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryRedirectPointerPress(args))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
@@ -277,6 +297,11 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryRedirectPointerRelease(args))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			var isOutOfWindow = originalSource is null;
@@ -321,6 +346,11 @@ internal partial class InputManager
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryRedirectPointerMove(args))
+			{
+				return;
+			}
+
 			var (originalSource, staleBranch) = HitTest(args, _isOver);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -370,6 +400,11 @@ internal partial class InputManager
 
 		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
 		{
+			if (TryClearPointerRedirection(args.CurrentPoint.PointerId))
+			{
+				return;
+			}
+
 			var (originalSource, _) = HitTest(args);
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.

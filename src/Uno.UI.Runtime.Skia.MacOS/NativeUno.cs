@@ -94,7 +94,7 @@ internal static unsafe class ClipboardDataMarshaller
 
 	public static NativeClipboardData ConvertToManaged(ClipboardDataUnmanaged unmanaged)
 	{
-		byte[] data = Array.Empty<byte>();
+		var data = Array.Empty<byte>();
 		if (unmanaged.BitmapData is not null)
 		{
 			data = new byte[unmanaged.BitmapSize];
@@ -185,10 +185,10 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_system_theme_change_callback(delegate* unmanaged[Cdecl]<void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_key_down_callback(delegate* unmanaged[Cdecl]<VirtualKey, VirtualKeyModifiers, uint, int> callback);
-
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_key_up_callback(delegate* unmanaged[Cdecl]<VirtualKey, VirtualKeyModifiers, uint, int> callback);
+	internal static unsafe partial void uno_set_window_events_callbacks(
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyDownCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyUpCallback,
+		delegate* unmanaged[Cdecl]<nint, NativeMouseEventData*, int> pointerCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
@@ -207,9 +207,6 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_window_set_title(nint window, string title);
-
-	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_mouse_event_callback(delegate* unmanaged[Cdecl]<NativeMouseEventData*, int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_should_close_callback(delegate* unmanaged[Cdecl]<int> callback);
@@ -270,7 +267,7 @@ internal static partial class NativeUno
 	internal static partial void uno_cursor_hide();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_cursor_unhide();
+	internal static partial void uno_cursor_show();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]

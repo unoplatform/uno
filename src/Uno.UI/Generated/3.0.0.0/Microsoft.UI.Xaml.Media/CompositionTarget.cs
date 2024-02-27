@@ -8,11 +8,6 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 	public partial class CompositionTarget
 	{
-#if false || false || IS_UNIT_TESTS || false || false || false || __MACOS__
-		internal CompositionTarget()
-		{
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.add

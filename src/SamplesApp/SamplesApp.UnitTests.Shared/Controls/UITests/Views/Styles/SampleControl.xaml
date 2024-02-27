@@ -27,18 +27,6 @@
 											Content="{TemplateBinding Content}"
 											u:StarStackPanel.Size="*"
 											Padding="10,10,10,0"/>
-							<StackPanel Background="{StaticResource Color08Brush}"
-										Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SampleDescription, Converter={StaticResource StringEmptyToVisibilityConverter}}"
-										u:StarStackPanel.Size="Auto"
-										Padding="10,0">
-								<TextBlock Text="DESCRIPTION"
-											 Style="{StaticResource Typo03}"
-											 Margin="0,10,0,5" />
-								<TextBlock Text="{TemplateBinding SampleDescription}"
-											 Style="{StaticResource Typo05}"
-											 MaxHeight="80"
-											 Margin="0,0,0,10" />
-							</StackPanel>
 						</u:StarStackPanel>
 					</Border>
 				</ControlTemplate>

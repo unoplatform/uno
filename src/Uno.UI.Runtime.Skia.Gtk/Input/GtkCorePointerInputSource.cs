@@ -18,6 +18,7 @@ using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Hosting;
 using Windows.Graphics.Display;
+using Microsoft.UI.Xaml;
 using Window = Gdk.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -406,7 +407,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		ModifierType state,
 		Event? evt)
 	{
-		var displayInformation = DisplayInformation.GetForCurrentView();
+		var xamlRoot = GtkManager.XamlRootMap.GetRootForHost(_windowHost);
+		var displayInformation = XamlRoot.GetDisplayInformation(xamlRoot);
 		var positionAdjustment = displayInformation.FractionalScaleAdjustment;
 
 		var pointerDevice = PointerDevice.For(devType);

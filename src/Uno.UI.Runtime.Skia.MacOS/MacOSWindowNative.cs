@@ -4,7 +4,6 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using IOPath = System.IO.Path;
-// using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -27,15 +26,14 @@ internal class MacOSWindowNative
 			defaultHeight = preferredWindowSize.Height;
 		}
 
-		if (MacSkiaHost.Current is not null)
+		if (MacSkiaHost.Current.InitialWindow is null)
 		{
-			MainWindow = true;
+			// it was already created much earlier
 			Handle = NativeUno.uno_app_get_main_window();
-			MacSkiaHost.Current.InitialWindow ??= this;
+			MacSkiaHost.Current.InitialWindow = this;
 		}
 		else
 		{
-			MainWindow = false;
 			Handle = NativeUno.uno_window_create(defaultWidth, defaultHeight);
 		}
 
@@ -57,9 +55,7 @@ internal class MacOSWindowNative
 	}
 
 	internal MacOSWindowHost Host { get; }
-	internal nint Handle { get; }
-
-	internal bool MainWindow { get; }
+	internal nint Handle { get; private set; }
 
 	// FIXME: should be shared with GTK and X11 hosts with a delegate to set the icon from a filename
 	private void UpdateWindowPropertiesFromPackage()

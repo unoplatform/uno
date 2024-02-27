@@ -112,21 +112,21 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				var app = _appBuilder();
 				app.Host = this;
 
+				// Force intialization of the DisplayInformation
+				var displayInformation = DisplayInformation.GetForCurrentViewSafe();
+
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"Display Information: " +
 						$"{_renderer?.FrameBufferDevice.ScreenSize.Width}x{_renderer?.FrameBufferDevice.ScreenSize.Height} " +
 						$"({_renderer?.FrameBufferDevice.ScreenPhysicalDimensions} mm), " +
 						$"PixelFormat: {_renderer?.FrameBufferDevice.PixelFormat}, " +
-						$"ResolutionScale: {DisplayInformation.GetForCurrentView().ResolutionScale}, " +
-						$"LogicalDpi: {DisplayInformation.GetForCurrentView().LogicalDpi}, " +
-						$"RawPixelsPerViewPixel: {DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel}, " +
-						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
-						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
+						$"ResolutionScale: {displayInformation.ResolutionScale}, " +
+						$"LogicalDpi: {displayInformation.LogicalDpi}, " +
+						$"RawPixelsPerViewPixel: {displayInformation.RawPixelsPerViewPixel}, " +
+						$"DiagonalSizeInInches: {displayInformation.DiagonalSizeInInches}, " +
+						$"ScreenInRawPixels: {displayInformation.ScreenWidthInRawPixels}x{displayInformation.ScreenHeightInRawPixels}");
 				}
-
-				// Force intialization of the DisplayInformation
-				DisplayInformation.GetForCurrentView();
 
 				if (_displayInformationExtension is null)
 				{

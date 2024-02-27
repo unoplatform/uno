@@ -29,7 +29,7 @@ typedef NS_ENUM(uint32, CoreCursorType) {
 NS_ASSUME_NONNULL_BEGIN
 
 void uno_cursor_hide(void);
-void uno_cursor_unhide(void);
+void uno_cursor_show(void);
 bool uno_cursor_set(CoreCursorType cursor);
 
 NS_ASSUME_NONNULL_END
