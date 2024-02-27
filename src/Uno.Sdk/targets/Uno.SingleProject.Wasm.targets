@@ -9,7 +9,7 @@
 		<WasmShellWebAppBasePath Condition="$(WasmShellWebAppBasePath) == ''">/</WasmShellWebAppBasePath>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+	<PropertyGroup Condition="'$(Optimize)'!='true'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants Condition="!$(DefineConstants.Contains(DEBUG))">$(DefineConstants);DEBUG</DefineConstants>
 		<DefineConstants Condition="!$(DefineConstants.Contains(TRACE))">$(DefineConstants);TRACE</DefineConstants>

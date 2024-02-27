@@ -9,7 +9,7 @@
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
 		<_UnoImplicitPackageReference Include="Uno.WinUI.Lottie" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-		<_UnoImplicitPackageReference Include="Uno.WinUI.DevServer" Version="$(UnoVersion)" IsImplicitlyDefined="true" Condition="$(Configuration) == 'Debug'" />
+		<_UnoImplicitPackageReference Include="Uno.WinUI.DevServer" Version="$(UnoVersion)" IsImplicitlyDefined="true" Condition="$(Optimize) != 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browser' AND !$(TargetFramework.Contains('windows10'))">

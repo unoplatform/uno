@@ -7,7 +7,7 @@
 		<_IsExecutable Condition=" '$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe' ">true</_IsExecutable>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+	<PropertyGroup Condition=" $(Optimize) != 'true' ">
 		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
 		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
 

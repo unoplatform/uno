@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<!-- Required for C# Hot Reload -->
-		<UseInterpreter Condition="'$(Configuration)' == 'Debug'">True</UseInterpreter>
+		<UseInterpreter Condition="'$(Optimize)' != 'true'">True</UseInterpreter>
 
 		<IPhoneResourcePrefix>$(iOSProjectFolder)Resources</IPhoneResourcePrefix>
 		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements.plist') ">$(iOSProjectFolder)Entitlements.plist</CodesignEntitlements>
