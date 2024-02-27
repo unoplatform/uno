@@ -164,11 +164,6 @@ namespace SamplesApp
 
 			HandleLaunchArguments(e);
 
-			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
-			{
-				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
-			}
-
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
@@ -359,6 +354,11 @@ namespace SamplesApp
 			{
 				var dlg = new MessageDialog(args, "Launch arguments");
 				await dlg.ShowAsync();
+			}
+
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
+			{
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 			}
 		}
 
