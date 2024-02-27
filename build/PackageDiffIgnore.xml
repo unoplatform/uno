@@ -1816,9 +1816,15 @@
 			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			
+			<!-- Begin Skia Builder-->
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost.Run()" reason="Non-breaking API, moved to SkiaHost" />
+			<!-- End Skia Builder-->
 
+			<!-- Begin Composition target updates -->
 			<Member fullName="System.Void Microsoft.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in UWP" />
+			<!-- End Composition target updates -->
 		</Methods>
 	</IgnoreSet>
 

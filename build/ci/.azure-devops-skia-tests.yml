@@ -59,17 +59,6 @@ jobs:
       ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.WPF/SamplesApp.Skia.WPF.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf.binlog
-    displayName: Build WPF Head
-
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\net7.0-windows
-      ArtifactName: skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
-
   - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
@@ -81,26 +70,15 @@ jobs:
       ArtifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Linux.FrameBuffer/SamplesApp.Skia.Linux.FrameBuffer.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-framebuffer.binlog
-    displayName: Build Framebuffer Head
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+    displayName: Build Generic Skia Head
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Linux.FrameBuffer\bin\Release\net7.0
-      ArtifactName: skia-framebuffer-samples-app-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
-
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.X11/SamplesApp.Skia.X11.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
-    displayName: Build X11 Head
-
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    condition: always()
-    inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.X11\bin\Release\net7.0
-      ArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net7.0
+      ArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
@@ -243,8 +221,8 @@ jobs:
 ## WPF
 ##
 
-- job: Skia_Wpf_Screenshot_Tests
-  displayName: 'Run Skia WPF Snapshot Tests'
+- job: Skia_Windows_Screenshot_Tests
+  displayName: 'Run Skia Windows Snapshot Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -254,7 +232,7 @@ jobs:
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
-    SamplesAppArtifactName: skia-wpf-samples-app-WinUI
+    SamplesAppArtifactName: skia-generic-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
@@ -270,9 +248,9 @@ jobs:
 
   - script: |
         cd $(SamplesAppArtifactPath)
-        dotnet SamplesApp.Skia.Wpf.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-wpf-screenshots
+        dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-windows-screenshots
 
-    displayName: Run Skia WPF Snapshot Tests
+    displayName: Run Skia Windows Snapshot Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -282,8 +260,8 @@ jobs:
       ArtifactName: uitests-results
       ArtifactType: Container
 
-- job: Skia_Wpf_Runtime_Tests_Build
-  displayName: 'Run Skia WPF Runtime Tests'
+- job: Skia_Windows_Runtime_Tests_Build
+  displayName: 'Run Skia Windows Runtime Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -292,7 +270,7 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
@@ -308,16 +286,16 @@ jobs:
 
   - script: |
         cd $(SamplesAppArtifactPath)
-        dotnet SamplesApp.Skia.Wpf.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-wpf-runtime-tests-results.xml
+        dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml
 
-    displayName: Run Skia WPF $(XAML_FLAVOR_BUILD) Runtime Tests
+    displayName: Run Skia Windows $(XAML_FLAVOR_BUILD) Runtime Tests
 
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia WPF $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testRunTitle: 'Skia Windows $(XAML_FLAVOR_BUILD) Runtime Tests'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-wpf-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-runtime-tests-results.xml'
       failTaskOnFailedTests: true
 
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
@@ -362,8 +340,8 @@ jobs:
 ## X11
 ##
 
-- job: Skia_X11_Screenshot_Tests
-  displayName: 'Run Skia X11 Snapshot Tests'
+- job: Skia_Linux_Screenshot_Tests
+  displayName: 'Run Skia Linux Snapshot Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -373,7 +351,7 @@ jobs:
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
 
   variables:
-    SamplesAppArtifactName: skia-x11-samples-app-WinUI
+    SamplesAppArtifactName: skia-generic-samples-app-WinUI
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -389,9 +367,9 @@ jobs:
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-x11-screenshots'
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
 
-    displayName: Run Skia X11 Snapshot Tests
+    displayName: Run Skia Linux Snapshot Tests
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -401,8 +379,8 @@ jobs:
       ArtifactName: uitests-results
       ArtifactType: Container
 
-- job: Skia_X11_Runtime_Tests_Build
-  displayName: 'Run Skia X11 Runtime Tests'
+- job: Skia_Linux_Runtime_Tests_Build
+  displayName: 'Run Skia Linux Runtime Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -411,7 +389,7 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-x11-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
@@ -431,7 +409,7 @@ jobs:
 
   - script: |
         cd $(SamplesAppArtifactPath)
-        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.X11.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
+        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
 
     displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
     env:
@@ -441,7 +419,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia X11 $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testRunTitle: 'Skia Linux $(XAML_FLAVOR_BUILD) Runtime Tests'
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-x11-runtime-tests-results.xml'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
       failTaskOnFailedTests: true
