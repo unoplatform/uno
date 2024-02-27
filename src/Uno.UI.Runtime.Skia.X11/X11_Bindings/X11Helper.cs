@@ -72,6 +72,21 @@ internal static class X11Helper
 		return false;
 	}
 
+	public static bool XamlRootHostFromDisplayInformation(Windows.Graphics.Display.DisplayInformation displayInformation, [NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
+	{
+		// TODO: this is a ridiculous amount of indirection, find something better
+		if (AppWindow.GetFromWindowId(displayInformation.WindowId) is { } appWindow &&
+			Window.GetFromAppWindow(appWindow) is { } window &&
+			X11WindowWrapper.GetHostFromWindow(window) is { } host)
+		{
+			x11XamlRootHost = host;
+			return true;
+		}
+
+		x11XamlRootHost = null;
+		return false;
+	}
+
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
 	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
 

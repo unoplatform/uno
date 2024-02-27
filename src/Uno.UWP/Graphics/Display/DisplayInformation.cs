@@ -30,10 +30,13 @@ namespace Windows.Graphics.Display
 		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
 		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
 
-		private DisplayInformation()
+		private DisplayInformation(WindowId windowId)
 		{
+			WindowId = windowId;
 			Initialize();
 		}
+
+		internal WindowId WindowId { get; }
 
 		public static DisplayInformation GetForCurrentView()
 		{
@@ -65,7 +68,7 @@ namespace Windows.Graphics.Display
 		{
 			if (!_windowIdMap.TryGetValue(windowId, out var appView))
 			{
-				appView = new();
+				appView = new(windowId);
 				_windowIdMap[windowId] = appView;
 			}
 

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using Uno.Foundation.Logging;
@@ -14,14 +15,19 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
 internal class UnoWpfWindow : WpfWindow
 {
-	private readonly WinUI.Window _winUIWindow;
 	private readonly ApplicationView _applicationView;
 
 	private bool _shown;
 
+	private static readonly ConcurrentDictionary<WinUI.Window, WpfWindow> _windowToWpfWindow = new();
+
+	public static WpfWindow? GetGtkWindowFromWindow(WinUI.Window window)
+		=> _windowToWpfWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
+
 	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
+		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)

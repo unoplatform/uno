@@ -95,6 +95,9 @@ partial class Window
 		{
 			Initialize();
 		}
+
+		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
+		Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 	}
 
 	private void OnWindowClosed(object sender, object e) => ApplicationHelper.RemoveWindow(this);

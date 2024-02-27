@@ -86,8 +86,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private const double InchesToMilliMeters = 25.4;
 
 		private readonly float? _scaleOverride;
+		private readonly DisplayInformation _owner;
+		private readonly X11XamlRootHost _host;
 		private DisplayInformationDetails _details;
-		private DisplayInformation _owner;
 
 		private record DisplayInformationDetails(
 			uint ScreenWidthInRawPixels,
@@ -114,19 +115,23 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// initialization is redundant, just keeping the compiler happy
 			_details = new DisplayInformationDetails(default, default, default, default, default, default);
 
-			var x11Window = X11XamlRootHost.GetWindow();
-			var host = X11XamlRootHost.GetXamlRootHostFromX11Window(x11Window);
-			host?.SetDisplayInformationExtension(this);
+			if (!X11Helper.XamlRootHostFromDisplayInformation(_owner, out var host))
+			{
+				throw new InvalidOperationException($"{nameof(X11DisplayInformationExtension)} couldn't find a {nameof(X11XamlRootHost)}.");
+			}
+			_host = host;
+			_host.SetDisplayInformationExtension(this);
 
 			UpdateDetails();
 		}
 
 		internal void UpdateDetails()
 		{
-			var x11Window = X11XamlRootHost.GetWindow();
+			var window = _host.X11Window.Window;
+			var display = _host.X11Window.Display;
 
 			var oldDetails = _details;
-			var xLock = X11Helper.XLock(x11Window.Display);
+			var xLock = X11Helper.XLock(display);
 			using var __ = Disposable.Create(() =>
 			{
 				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
@@ -138,13 +143,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			});
 
 			XWindowAttributes attributes = default;
-			var _1 = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
+			var _1 = XLib.XGetWindowAttributes(display, window, ref attributes);
 			var screen = attributes.screen;
 
-			if (XLib.XRRQueryExtension(x11Window.Display, out _, out _) != 0 &&
-				XLib.XRRQueryVersion(x11Window.Display, out var major, out var minor) != 0 &&
+			if (XLib.XRRQueryExtension(display, out _, out _) != 0 &&
+				XLib.XRRQueryVersion(display, out var major, out var minor) != 0 &&
 				(major > 1 || (major == 1 && minor >= 3)) &&
-				GetDisplayInformationXRandR1_3(x11Window.Display, x11Window.Window) is { } details)
+				GetDisplayInformationXRandR1_3(display, window) is { } details)
 			{
 				_details = details;
 			}
