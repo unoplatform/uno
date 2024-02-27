@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Optimize)'!='true'">
-		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<MonoRuntimeDebuggerEnabled Condition="$(MonoRuntimeDebuggerEnabled) == ''">true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants Condition="!$(DefineConstants.Contains(DEBUG))">$(DefineConstants);DEBUG</DefineConstants>
 		<DefineConstants Condition="!$(DefineConstants.Contains(TRACE))">$(DefineConstants);TRACE</DefineConstants>
 		<!--
