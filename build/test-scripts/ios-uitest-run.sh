@@ -213,9 +213,9 @@ export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
 export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
 
-cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
-
 mkdir -p $LOG_FILEPATH
+
+cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
 
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png
