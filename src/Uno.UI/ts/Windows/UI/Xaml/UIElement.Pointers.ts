@@ -20,26 +20,27 @@
 		private static _dispatchPointerEventMethod: any;
 		private static _dispatchPointerEventArgs: number;
 		private static _dispatchPointerEventResult: number;
+		private static _isManualyDispatchingOut: boolean = false;
 
-		public static setPointerEventArgs(pArgs: number): void {
+		private static ensurePointersInit(): void {
 			if (!UIElement._dispatchPointerEventMethod) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.UIElement.OnNativePointerEvent;
 				} else {
 					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:OnNativePointerEvent");
 				}
+
+				document.getRootNode().addEventListener("pointerover", UIElement_Pointers.onRootPointerOverDispatching, { capture: true, passive: true });
 			}
+		}
+
+		public static setPointerEventArgs(pArgs: number): void {
+			UIElement_Pointers.ensurePointersInit();
 			UIElement._dispatchPointerEventArgs = pArgs;
 		}
 
 		public static setPointerEventResult(pArgs: number): void {
-			if (!UIElement._dispatchPointerEventMethod) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.UIElement.OnNativePointerEvent;
-				} else {
-					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:OnNativePointerEvent");
-				}
-			}
+			UIElement_Pointers.ensurePointersInit();
 			UIElement._dispatchPointerEventResult = pArgs;
 		}
 
@@ -105,7 +106,42 @@
 			UIElement.dispatchPointerEvent(evt.currentTarget as HTMLElement | SVGElement, evt);
 		}
 
+		private static onRootPointerOverDispatching(evt: PointerEvent): void {
+			const target = evt.target as HTMLElement | SVGElement;
+			if (!target) {
+				return;
+			}
+
+			if (target.hasPointerCapture(evt.pointerId)) {
+				return;
+			}
+
+			let prevElt: Element = null;
+			for (let elt of document.elementsFromPoint(evt.clientX, evt.clientY)) {
+				if (!elt.contains(target) // The elt is under the target (not a parent!)
+					&& !elt.contains(prevElt) // The elt is not a parent of the previous element (so it has already been processed!)
+				) {
+					// The element is under the target (not a parent!), with chromium browsers, if the target just popped up,
+					// it happens that the pointerout event is not raised on those elemnts under.
+					// Here we ensure to raise it manually before the pointerover event is being dispatched.
+					try {
+						UIElement._isManualyDispatchingOut = true;
+						elt.dispatchEvent(new PointerEvent("pointerout", evt));
+					}
+					finally {
+						UIElement._isManualyDispatchingOut = false;
+					}
+				}
+				prevElt = elt;
+			}
+		}
+
 		private static onPointerOutReceived(evt: PointerEvent): void {
+			if (UIElement._isManualyDispatchingOut) {
+				UIElement.onPointerEventReceived(evt);
+				return;
+			}
+
 			const element = evt.currentTarget as HTMLElement | SVGElement;
 
 			// When we capture the pointer, browser will raise an "out" event on nested elements
@@ -117,13 +153,14 @@
 			// If the relatedTarget (the element that capture or release the pointer) is a child of (or is) the current element,
 			// it means pointer might not leaving the current element!
 			let elt = evt.relatedTarget as HTMLElement | SVGElement;
-			if (elt && element.contains(elt)
+			if (elt
+				&& element.contains(elt)
 				&& (
 					// on capture, we just check if it has the the capture
 					elt.hasPointerCapture(evt.pointerId)
 					// on release, the target is the element itself
 					|| evt.target == element)
-			)
+				)
 			{
 				evt.stopPropagation();
 				return;
