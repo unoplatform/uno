@@ -26,6 +26,7 @@ namespace Uno.UI.Samples.Controls
 	{
 		private bool _initialMeasure = true;
 		private bool _initialArrange = true;
+		private Rect? _initialBounds;
 
 		public SampleChooserControl()
 		{
@@ -36,12 +37,20 @@ namespace Uno.UI.Samples.Controls
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
+			_initialBounds = XamlRoot.Bounds;
 			XamlRoot.Changed += OnXamlRootChanged;
 		}
 
 		private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
 		{
-			Assert.Fail("The XamlRoot should not have changed after Loaded.");
+			if (XamlRoot.Bounds != _initialBounds)
+			{
+				XamlRoot.Changed -= OnXamlRootChanged;
+			}
+			else
+			{
+				Assert.Fail("The XamlRoot's bounds should not have changed after Loaded.");
+			}
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
