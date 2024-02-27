@@ -48,6 +48,9 @@ public class Given_WebView
 #endif
 
 	[TestMethod]
+#if __IOS__
+	[Ignore("iOS is disabled, to be restored for https://github.com/unoplatform/uno/pull/15555")]
+#endif
 	public void When_NavigateToString()
 	{
 		var webView = new WebView();
