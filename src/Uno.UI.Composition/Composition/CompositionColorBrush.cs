@@ -20,20 +20,25 @@ namespace Microsoft.UI.Composition
 			set { SetProperty(ref _color, value); }
 		}
 
-		private protected override bool IsAnimatableProperty(string propertyName)
-		{
-			return propertyName is nameof(Color);
-		}
-
-		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 		{
 			if (propertyName is nameof(Color))
 			{
-				Color = ValidateValue<Color>(propertyValue);
+				return true;
+			}
+
+			return base.IsAnimatableProperty(propertyName);
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName is nameof(Color))
+			{
+				Color = UpdateColor(subPropertyName, Color, propertyValue);
 			}
 			else
 			{
-				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 			}
 		}
 	}

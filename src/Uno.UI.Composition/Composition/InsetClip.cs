@@ -40,16 +40,17 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _bottomInset, value);
 		}
 
-		private protected override bool IsAnimatableProperty(string propertyName)
+		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 		{
-			return propertyName is
-				nameof(BottomInset) or
-				nameof(LeftInset) or
-				nameof(RightInset) or
-				nameof(TopInset);
+			if (propertyName is nameof(BottomInset) or nameof(LeftInset) or nameof(RightInset) or nameof(TopInset))
+			{
+				return true;
+			}
+
+			return base.IsAnimatableProperty(propertyName);
 		}
 
-		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
 			if (propertyName is nameof(BottomInset))
 			{
@@ -69,7 +70,7 @@ namespace Microsoft.UI.Composition
 			}
 			else
 			{
-				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 			}
 		}
 	}

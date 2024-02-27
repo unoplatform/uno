@@ -56,7 +56,9 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		foreach (var specification in _specifications)
 		{
 			if (specification.ClassName is null &&
-				specification.MethodName.Equals(name, StringComparison.Ordinal) &&
+				// WinUI appears to be case-insensitive.
+				// Actually, their usage of ExpressionAnimation in RefreshContainer uses `min` instead of `Min`
+				specification.MethodName.Equals(name, StringComparison.OrdinalIgnoreCase) &&
 				specification.ParametersLength == _arguments.Length)
 			{
 				return EvaluateSpecification(specification, expressionAnimation);

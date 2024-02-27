@@ -135,9 +135,9 @@ namespace Microsoft.UI.Composition
 			Compositor.InvalidateRender(this);
 		}
 
-		private protected override bool IsAnimatableProperty(string propertyName)
+		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 		{
-			return propertyName is
+			if (propertyName is
 				nameof(AnchorPoint) or
 				nameof(CenterPoint) or
 				nameof(Offset) or
@@ -146,22 +146,27 @@ namespace Microsoft.UI.Composition
 				nameof(RotationAngle) or
 				nameof(RotationAxis) or
 				nameof(Size) or
-				nameof(TransformMatrix);
+				nameof(TransformMatrix))
+			{
+				return true;
+			}
+
+			return base.IsAnimatableProperty(propertyName);
 		}
 
-		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
 			if (propertyName is nameof(AnchorPoint))
 			{
-				AnchorPoint = ValidateValue<Vector2>(propertyValue);
+				AnchorPoint = UpdateVector2(subPropertyName, AnchorPoint, propertyValue);
 			}
 			else if (propertyName is nameof(CenterPoint))
 			{
-				CenterPoint = ValidateValue<Vector3>(propertyValue);
+				CenterPoint = UpdateVector3(subPropertyName, CenterPoint, propertyValue);
 			}
 			else if (propertyName is nameof(Offset))
 			{
-				Offset = ValidateValue<Vector3>(propertyValue);
+				Offset = UpdateVector3(subPropertyName, Offset, propertyValue);
 			}
 			else if (propertyName is nameof(Opacity))
 			{
@@ -169,7 +174,7 @@ namespace Microsoft.UI.Composition
 			}
 			else if (propertyName is nameof(Orientation))
 			{
-				Orientation = ValidateValue<Quaternion>(propertyValue);
+				Orientation = UpdateQuaternion(subPropertyName, Orientation, propertyValue);
 			}
 			else if (propertyName is nameof(RotationAngle))
 			{
@@ -177,19 +182,19 @@ namespace Microsoft.UI.Composition
 			}
 			else if (propertyName is nameof(RotationAxis))
 			{
-				RotationAxis = ValidateValue<Vector3>(propertyValue);
+				RotationAxis = UpdateVector3(subPropertyName, RotationAxis, propertyValue);
 			}
 			else if (propertyName is nameof(Size))
 			{
-				Size = ValidateValue<Vector2>(propertyValue);
+				Size = UpdateVector2(subPropertyName, Size, propertyValue);
 			}
 			else if (propertyName is nameof(TransformMatrix))
 			{
-				TransformMatrix = ValidateValue<Matrix4x4>(propertyValue);
+				TransformMatrix = UpdateMatrix4x4(subPropertyName, TransformMatrix, propertyValue);
 			}
 			else
 			{
-				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 			}
 		}
 	}

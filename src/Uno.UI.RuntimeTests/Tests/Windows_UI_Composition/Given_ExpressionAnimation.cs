@@ -38,16 +38,53 @@ internal partial class Given_ExpressionAnimation
 		visual.StartAnimation("Offset", expressionAnimation);
 		try
 		{
-			Assert.AreEqual(visual.Offset, Vector3.Zero);
-			Assert.AreEqual(myVisual.Offset, Vector3.Zero);
+			Assert.AreEqual(Vector3.Zero, visual.Offset);
+			Assert.AreEqual(Vector3.Zero, myVisual.Offset);
 
 			myVisual.Offset = new Vector3(10, 20, 0);
-			Assert.AreEqual(visual.Offset, new Vector3(10, 20, 0));
-			Assert.AreEqual(myVisual.Offset, new Vector3(10, 20, 0));
+			Assert.AreEqual(new Vector3(10, 20, 0), visual.Offset);
+			Assert.AreEqual(new Vector3(10, 20, 0), myVisual.Offset);
 		}
 		finally
 		{
 			visual.StopAnimation("Offset");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Animating_Visual_Translation()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		var myVisual = ElementCompositionPreview.GetElementVisual(new Border());
+
+		await UITestHelper.Load(border);
+
+		var expressionAnimation = visual.Compositor.CreateExpressionAnimation("myVisual.Offset");
+		expressionAnimation.SetReferenceParameter("myVisual", myVisual);
+
+		visual.Properties.InsertVector3("Translation", Vector3.Zero);
+
+		visual.StartAnimation("Translation", expressionAnimation);
+		try
+		{
+			Assert.AreEqual(Vector3.Zero, visual.Offset);
+			Assert.AreEqual(Vector3.Zero, myVisual.Offset);
+
+			myVisual.Offset = new Vector3(10, 20, 0);
+			Assert.AreEqual(CompositionGetValueStatus.Succeeded, visual.Properties.TryGetVector3("Translation", out var visualTranslation));
+			Assert.AreEqual(new Vector3(10, 20, 0), visualTranslation);
+			Assert.AreEqual(new Vector3(10, 20, 0), myVisual.Offset);
+		}
+		finally
+		{
+			visual.StopAnimation("Translation");
 		}
 	}
 
@@ -72,16 +109,87 @@ internal partial class Given_ExpressionAnimation
 		visual.StartAnimation("Offset", expressionAnimation);
 		try
 		{
-			Assert.AreEqual(visual.Offset, Vector3.Zero);
-			Assert.AreEqual(myVisual.Offset, Vector3.Zero);
+			Assert.AreEqual(Vector3.Zero, visual.Offset);
+			Assert.AreEqual(Vector3.Zero, myVisual.Offset);
 
 			myVisual.Offset = new Vector3(10, 20, 0);
-			Assert.AreEqual(visual.Offset, new Vector3(10, 20, 0));
-			Assert.AreEqual(myVisual.Offset, new Vector3(10, 20, 0));
+			Assert.AreEqual(new Vector3(10, 20, 0), visual.Offset);
+			Assert.AreEqual(new Vector3(10, 20, 0), myVisual.Offset);
 		}
 		finally
 		{
 			visual.StopAnimation("Offset");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Animating_Visual_Offset_X()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		var myVisual = ElementCompositionPreview.GetElementVisual(new Border());
+
+		await UITestHelper.Load(border);
+
+		var expressionAnimation = visual.Compositor.CreateExpressionAnimation("myVisual.Offset.X");
+		expressionAnimation.SetReferenceParameter("myVisual", myVisual);
+
+		visual.StartAnimation("Offset.X", expressionAnimation);
+		try
+		{
+			Assert.AreEqual(Vector3.Zero, visual.Offset);
+			Assert.AreEqual(Vector3.Zero, myVisual.Offset);
+
+			myVisual.Offset = new Vector3(10, 20, 0);
+			Assert.AreEqual(new Vector3(10, 0, 0), visual.Offset);
+			Assert.AreEqual(new Vector3(10, 20, 0), myVisual.Offset);
+		}
+		finally
+		{
+			visual.StopAnimation("Offset.X");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Animating_Visual_Translation_X()
+	{
+		var border = new Border()
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		var myVisual = ElementCompositionPreview.GetElementVisual(new Border());
+
+		await UITestHelper.Load(border);
+
+		var expressionAnimation = visual.Compositor.CreateExpressionAnimation("myVisual.Offset.X");
+		expressionAnimation.SetReferenceParameter("myVisual", myVisual);
+
+		visual.Properties.InsertVector3("Translation", Vector3.Zero);
+
+		visual.StartAnimation("Translation.X", expressionAnimation);
+		try
+		{
+			Assert.AreEqual(Vector3.Zero, visual.Offset);
+			Assert.AreEqual(Vector3.Zero, myVisual.Offset);
+
+			myVisual.Offset = new Vector3(10, 20, 0);
+			Assert.AreEqual(CompositionGetValueStatus.Succeeded, visual.Properties.TryGetVector3("Translation", out var visualTranslation));
+			Assert.AreEqual(new Vector3(10, 0, 0), visualTranslation);
+			Assert.AreEqual(new Vector3(10, 20, 0), myVisual.Offset);
+		}
+		finally
+		{
+			visual.StopAnimation("Translation.X");
 		}
 	}
 }
