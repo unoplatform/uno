@@ -137,7 +137,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(surface);
+		Clip?.Apply(surface, this);
 
 		var session = new DrawingSession(surface, in filters);
 

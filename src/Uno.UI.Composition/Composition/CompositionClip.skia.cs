@@ -7,11 +7,16 @@ namespace Microsoft.UI.Composition;
 
 partial class CompositionClip
 {
-	internal void Apply(SKSurface surface)
+	internal void Apply(SKSurface surface, Visual visual)
 	{
 		if (this is InsetClip insetClip)
 		{
-			surface.Canvas.ClipRect(insetClip.SKRect, SKClipOperation.Intersect, true);
+			var rect = new SKRect(
+				insetClip.LeftInset,
+				insetClip.TopInset,
+				visual.Size.X - insetClip.RightInset,
+				visual.Size.Y - insetClip.BottomInset);
+			surface.Canvas.ClipRect(rect, SKClipOperation.Intersect, true);
 		}
 		else if (this is RectangleClip rectangleClip)
 		{

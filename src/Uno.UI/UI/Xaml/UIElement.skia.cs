@@ -359,11 +359,11 @@ namespace Microsoft.UI.Xaml
 					roundedRectClip = LayoutRound(roundedRectClip);
 				}
 
-				Visual.Clip = Visual.Compositor.CreateInsetClip(
-					topInset: (float)roundedRectClip.Top,
-					leftInset: (float)roundedRectClip.Left,
-					bottomInset: (float)roundedRectClip.Bottom,
-					rightInset: (float)roundedRectClip.Right
+				Visual.Clip = Visual.Compositor.CreateRectangleClip(
+					top: (float)roundedRectClip.Top,
+					left: (float)roundedRectClip.Left,
+					bottom: (float)roundedRectClip.Bottom,
+					right: (float)roundedRectClip.Right
 				);
 			}
 		}

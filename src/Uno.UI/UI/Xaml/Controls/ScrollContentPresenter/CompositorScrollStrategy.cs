@@ -19,7 +19,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (sender is ScrollContentPresenter presenter)
 			{
-				presenter.Visual.Clip = presenter.Visual.Compositor.CreateInsetClip(0, 0, (float)presenter.RenderSize.Width, (float)presenter.RenderSize.Height);
+				// TODO: We probably don't need LayoutUpdated here.
+				presenter.Visual.Clip = presenter.Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
 			}
 		}
 
