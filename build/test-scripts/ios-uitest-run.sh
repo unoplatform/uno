@@ -162,7 +162,8 @@ then
 	echo "App PID: $APP_PID"
 
 	# Set the timeout in seconds 
-	TIMEOUT=$((30 * 60))
+	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
+	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
@@ -243,14 +244,13 @@ if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	return 1
 fi
 
-# Check if the XML test results file contains any test results using XML tooling
-if ! xmllint --xpath "boolean(//test-case)" $UNO_ORIGINAL_TEST_RESULTS 2>/dev/null; then
-	echo "##vso[task.logissue type=error]ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS is not a valid XML file"
-	return 1
-fi
 
-## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+
+# Fail the build on empty results
+dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+
+## Export the failed tests list for reuse in a pipeline retry
 dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
 popd
