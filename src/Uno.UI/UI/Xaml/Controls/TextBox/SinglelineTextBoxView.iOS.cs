@@ -112,11 +112,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var result = base.BecomeFirstResponder();
 
-			if (SecureTextEntry)
+			if (SecureTextEntry && !string.IsNullOrEmpty(Text))
 			{
 				var text = Text;
 				Text = string.Empty;
-				InsertText(text);
+				InsertText($"{text} ");
+				// removes the extra space. Hack to prevent the last character from being displayed
+				DeleteBackward();
 			}
 
 			return result;
