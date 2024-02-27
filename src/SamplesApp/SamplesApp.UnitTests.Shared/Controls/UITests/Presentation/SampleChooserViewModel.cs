@@ -543,8 +543,7 @@ namespace SampleControl.Presentation
 
 					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
-					Console.WriteLine($"Writing results file to {testResultsFilePath}");
-					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
+					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.UTF8);
 				}
 			}
 			finally
