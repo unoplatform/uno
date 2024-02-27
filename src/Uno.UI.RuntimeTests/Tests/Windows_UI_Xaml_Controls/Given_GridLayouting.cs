@@ -1227,6 +1227,9 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	#if __IOS__
+	[Ignore("Fails on iOS for child.SizePassedToArrangeOverride https://github.com/unoplatform/uno/issues/9080")]
+	#endif
 	public async Task When_Grid_RowCollection_Changes()
 	{
 		var SUT = new Grid();
