@@ -9,10 +9,14 @@
 	<PropertyGroup>
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
+	<PropertyGroup>
 
+	<PropertyGroup Condition="$(WindowsAppxManifestPath) == ''">
 		<WindowsAppxManifestPath>$(WindowsProjectFolder)Package.appxmanifest</WindowsAppxManifestPath>
 		<WindowsAppxManifestPath Condition="!Exists($(WindowsAppxManifestPath)) and Exists('Package.appxmanifest')">Package.appxmanifest</WindowsAppxManifestPath>
+	</PropertyGroup>
 
+	<PropertyGroup Condition="$(WindowsPackageType) == ''">
 		<WindowsPackageType Condition="'$(WindowsPackageType)'=='' and Exists('$(WindowsAppxManifestPath)')">MSIX</WindowsPackageType>
 		<WindowsPackageType Condition="'$(WindowsPackageType)'==''">None</WindowsPackageType>
 	</PropertyGroup>
