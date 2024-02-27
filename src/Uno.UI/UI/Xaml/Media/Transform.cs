@@ -73,12 +73,12 @@ namespace Microsoft.UI.Xaml.Media
 		/// <returns>An affine matrix of the transformation</returns>
 		internal abstract Matrix3x2 ToMatrix(Point absoluteOrigin);
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal virtual object Owner { get; set; }
-
-		internal UIElement View => Owner as UIElement;
+		internal virtual UIElement View { get; set; }
+#endif
 
 		#region GeneralTransform overrides
 		/// <inheritdoc />

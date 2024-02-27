@@ -363,20 +363,10 @@ namespace Microsoft.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var newGeometry = e.NewValue as RectangleGeometry;
-
-			if (e.OldValue is RectangleGeometry oldValue && oldValue.ClipOwner == this)
-			{
-				oldValue.ClipOwner = null;
-			}
-
-			if (newGeometry is not null)
-			{
-				newGeometry.ClipOwner = this;
-			}
+			var geometry = e.NewValue as RectangleGeometry;
 
 			ApplyClip();
-			_clipSubscription.Disposable = newGeometry.RegisterDisposableNestedPropertyChangedCallback(
+			_clipSubscription.Disposable = geometry.RegisterDisposableNestedPropertyChangedCallback(
 				(_, __) => ApplyClip(),
 				new[] { RectangleGeometry.RectProperty },
 				new[] { Geometry.TransformProperty },

@@ -33,8 +33,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		#endregion
 
-		internal UIElement ClipOwner { get; set; }
-
 		#region Geometry implementation (not implemented)
 
 #if __ANDROID__

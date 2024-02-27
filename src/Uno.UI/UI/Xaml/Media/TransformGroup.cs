@@ -93,13 +93,17 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildAdded(Transform transform)
 		{
-			transform.Owner = Owner; // Animation support
+#if __ANDROID__ || __IOS__ || __MACOS__
+			transform.View = View; // Animation support
+#endif
 			transform.Changed += OnChildTransformChanged;
 		}
 
 		private void OnChildRemoved(Transform transform)
 		{
-			transform.Owner = null; // Animation support
+#if __ANDROID__ || __IOS__ || __MACOS__
+			transform.View = null; // Animation support
+#endif
 			transform.Changed -= OnChildTransformChanged;
 		}
 
@@ -139,18 +143,20 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 
-		internal override object Owner
+#if __ANDROID__ || __IOS__ || __MACOS__
+		internal override UIElement View
 		{
-			get => base.Owner;
+			get => base.View;
 			set
 			{
-				base.Owner = value;
+				base.View = value;
 				foreach (var child in Children)
 				{
-					child.Owner = value;
+					child.View = value;
 				}
 			}
 		}
+#endif
 		#endregion
 	}
 }

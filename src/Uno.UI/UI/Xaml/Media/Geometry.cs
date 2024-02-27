@@ -59,24 +59,9 @@ namespace Microsoft.UI.Xaml.Media
 				"Transform",
 				typeof(Transform),
 				typeof(Geometry),
-				new FrameworkPropertyMetadata(default(Transform), propertyChangedCallback: OnTransformChanged)
+				new FrameworkPropertyMetadata(default(Transform))
 			);
 
-		private static void OnTransformChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var @this = (Geometry)dependencyObject;
-			if (args.OldValue is Transform oldTransform && oldTransform.Owner == @this)
-			{
-				oldTransform.Owner = null;
-			}
-
-			// This is not ideal, as the transform can only have a single owner.
-			// But, it should be possible that the same transform is set on different geometries.
-			if (args.NewValue is Transform newTransform)
-			{
-				newTransform.Owner = @this;
-			}
-		}
 		#endregion
 
 #if __IOS__ || __MACOS__
