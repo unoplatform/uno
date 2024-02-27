@@ -242,7 +242,7 @@ if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	return 1
 fi
 
-if ! grep -q "<test-case" "$UNO_ORIGINAL_TEST_RESULTS"; then
+if ! iconv -f UTF-16 -t UTF-8 "$UNO_ORIGINAL_TEST_RESULTS" | grep -q "<test-case" ; then
     echo "No test results found in the file, this can indicate a filter error."
     exit 1
 fi
