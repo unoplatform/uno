@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<!-- Required to allow `dotnet build` to work without extra parameters -->
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+	<PropertyGroup Condition="'$(Platform)' == 'AnyCPU' AND $(Optimize) != 'true'">
 		<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 	</PropertyGroup>
 

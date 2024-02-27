@@ -7,7 +7,7 @@
 		<CodesignEntitlements Condition=" Exists('$(MacCatalystProjectFolder)Entitlements.plist') ">$(MacCatalystProjectFolder)Entitlements.plist</CodesignEntitlements>
 		<CodesignEntitlements Condition=" Exists('$(MacCatalystProjectFolder)Entitlements-$(Configuration).plist') ">$(MacCatalystProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<PropertyGroup Condition="'$(Optimize)'=='true'">
 		<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
 		<MtouchExtraArgs Condition="!$(MtouchExtraArgs.Contains('--marshal-objectivec-exceptions'))">$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
 	</PropertyGroup>
