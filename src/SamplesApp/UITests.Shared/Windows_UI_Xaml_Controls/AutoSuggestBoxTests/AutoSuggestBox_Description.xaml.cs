@@ -14,14 +14,13 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 
-namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
+namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
+
+[Sample("AutoSuggestBox", IsManualTest = false)]
+public sealed partial class AutoSuggestBox_Description : Page
 {
-	[Sample("AutoSuggestBox")]
-	public sealed partial class AutoSuggestBox_Description : Page
+	public AutoSuggestBox_Description()
 	{
-		public AutoSuggestBox_Description()
-		{
-			this.InitializeComponent();
-		}
+		this.InitializeComponent();
 	}
 }

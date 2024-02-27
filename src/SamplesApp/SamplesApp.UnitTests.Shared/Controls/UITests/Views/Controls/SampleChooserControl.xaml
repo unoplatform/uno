@@ -508,6 +508,7 @@
 							   HorizontalAlignment="Center"
 							   TextAlignment="Center"
 							   TextWrapping="NoWrap"
+							   IsTextSelectionEnabled="True"
 							   VerticalAlignment="Center"
 							   Grid.Column="1" />
 
