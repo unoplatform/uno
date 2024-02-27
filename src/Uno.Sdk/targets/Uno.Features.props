@@ -1,0 +1,20 @@
+<Project>
+
+	<PropertyGroup>
+		<UnoFeatures Condition="$(UnoFeatures) == ''">;None;</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
+		<UnoTheme Condition="$(UnoFeatures.Contains(';Material;'))">Material</UnoTheme>
+		<UnoTheme Condition="$(UnoFeatures.Contains(';Cupertino;'))">Cupertino</UnoTheme>
+		<UnoTheme Condition="$(UnoTheme) == ''">Fluent</UnoTheme>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))">
+		<UseMaui>true</UseMaui>
+		<!-- This is only used for .NET MAUI Embedding -->
+		<AndroidMaterialVersion Condition=" '$(AndroidMaterialVersion)' == '' ">1.10.0.1</AndroidMaterialVersion>
+		<AndroidXNavigationVersion Condition=" '$(AndroidXNavigationVersion)' == '' ">2.6.0.1</AndroidXNavigationVersion>
+		<AndroidXCollectionVersion Condition=" '$(AndroidXCollectionVersion)' == '' ">1.3.0.1</AndroidXCollectionVersion>
+	</PropertyGroup>
+
+</Project>
