@@ -103,7 +103,6 @@
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Storage.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Serialization.Http" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Serialization.Refit" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Toolkit.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(UnoToolkitVersion) != ''" />
 			</ItemGroup>
 		</When>
 		<When Condition="$(UnoExtensionsVersion) != ''">
@@ -156,9 +155,6 @@
 			<ItemGroup Condition="$(UnoFeatures.Contains(';Serialization;'))">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Serialization.Http" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Serialization.Refit" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
-			</ItemGroup>
-			<ItemGroup Condition="$(UnoFeatures.Contains(';Toolkit;'))">
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Toolkit.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
 		</When>
 	</Choose>
