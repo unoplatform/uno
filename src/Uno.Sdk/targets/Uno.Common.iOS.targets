@@ -4,7 +4,7 @@
 		<IsIOS>true</IsIOS>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
 
-		<EnableDefaultiOSItems>false</EnableDefaultiOSItems>
+		<EnableDefaultiOSItems Condition="$(EnableDefaultiOSItems) == ''">false</EnableDefaultiOSItems>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition="$(SingleProject) == 'true'" />

@@ -10,7 +10,7 @@
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' AND ('$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe') ">true</EnableMsixTooling>
 
 		<EnableWindowsTargeting Condition=" $(EnableWindowsTargeting) == '' ">true</EnableWindowsTargeting>
-		<EnableDefaultWindowsItems>false</EnableDefaultWindowsItems>
+		<EnableDefaultWindowsItems Condition="$(EnableDefaultWindowsItems) == ''">false</EnableDefaultWindowsItems>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) ">

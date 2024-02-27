@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<IsAndroid>true</IsAndroid>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
-		<EnableDefaultAndroidItems>false</EnableDefaultAndroidItems>
+		<EnableDefaultAndroidItems Condition="$(EnableDefaultAndroidItems) == ''">false</EnableDefaultAndroidItems>
 
 		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
 	</PropertyGroup>

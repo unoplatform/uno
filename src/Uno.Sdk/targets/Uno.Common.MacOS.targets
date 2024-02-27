@@ -8,7 +8,7 @@
 		<IsMacOS>true</IsMacOS>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">10.14</SupportedOSPlatformVersion>
 
-		<EnableDefaultMacOSItems>false</EnableDefaultMacOSItems>
+		<EnableDefaultMacOSItems Condition="$(EnableDefaultMacOSItems) == ''">false</EnableDefaultMacOSItems>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacOS.targets" Condition="$(SingleProject) == 'true'" />
