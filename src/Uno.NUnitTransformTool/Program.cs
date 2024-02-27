@@ -44,7 +44,7 @@ namespace Uno.ReferenceImplComparer
 			}
 			else
 			{
-				Console.WriteLine($"The test results file {inputFile} contains {allNodes.Count} results");
+				Console.WriteLine($"The test results file {inputFile} contains {allNodes?.Count} results");
 			}
 
 			return isEmpty ? 1 : 0;
