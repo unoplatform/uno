@@ -34,12 +34,14 @@ namespace Uno.UI.Media
 				? new Size(fwElt.ActualWidth, fwElt.ActualHeight)
 				: new Size(0, 0);
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 			// For backward compatibility we set the "View" property on the transform
 			// This is used only by animations
 			if (transform is not null)
 			{
 				transform.View = owner;
 			}
+#endif
 
 			// Partial constructor
 			Initialized();

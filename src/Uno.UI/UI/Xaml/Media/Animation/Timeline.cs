@@ -396,10 +396,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 						|| (boundProperty.DataContext is SolidColorBrush && boundProperty.PropertyName.EndsWith("Color", StringComparison.Ordinal))
 						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Top", StringComparison.Ordinal)
 						|| boundProperty.PropertyName.Equals("Microsoft.UI.Xaml.Controls:Canvas.Left", StringComparison.Ordinal)
-						|| (boundProperty.DataContext is Transform transform && transform.View != null)
+						|| (boundProperty.DataContext is Transform transform)
 					)
 					{
 						//is not dependent if the target is opacity, the color property of a brush, or a Transform property targeting a view as RenderTransform
+						// NOTE that the Transform check isn't necessarily a RenderTransform and is not accurate.
+						// It's there to handle some cases, e.g, a UIElement having RectangleGeometry Clip that has a Transform
+						// Ideally, we want to be specifically checking if the animation is targeting Clip, but no good way to do it so far.
+						// The current approach may consider some dependent animations as independent in niche scenario, but that's not an issue for now.
 						return false;
 					}
 				}
