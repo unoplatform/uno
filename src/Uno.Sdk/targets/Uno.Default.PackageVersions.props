@@ -3,6 +3,7 @@
 	<!-- Default Versions of packages that may be implicitly defined -->
 	<PropertyGroup>
 		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.4.0-dev.3</UnoResizetizerVersion>
+		<UnoDspTasksVersion Condition="$(UnoDspTasksVersion) == ''">1.2.9</UnoDspTasksVersion>
 		<UnoLoggingVersion Condition="$(UnoLoggingVersion) == ''">1.7.0</UnoLoggingVersion>
 		<UnoCoreLoggingSingletonVersion Condition="$(UnoCoreLoggingSingletonVersion) == ''">4.0.1</UnoCoreLoggingSingletonVersion>
 		<UnoUniversalImageLoader Condition="$(UnoUniversalImageLoader) == ''">1.9.36</UnoUniversalImageLoader>
@@ -15,6 +16,7 @@
 		<WinAppSdkBuildToolsVersion Condition="$(WinAppSdkBuildToolsVersion) == ''">10.0.22621.2428</WinAppSdkBuildToolsVersion>
 		<CommunityToolkitMvvmVersion Condition="$(CommunityToolkitMvvmVersion) == ''">8.2.2</CommunityToolkitMvvmVersion>
 		<PrismVersion Condition="$(PrismVersion) == ''">9.0.401-pre</PrismVersion>
+		<MicrosoftIdentityClientVersion Condition="$(MicrosoftIdentityClientVersion) == ''">4.59.0</MicrosoftIdentityClientVersion>
 	</PropertyGroup>
 
 </Project>

@@ -1,14 +1,5 @@
 <Project>
 
-	<PropertyGroup>
-		<UnoFeatures Condition="$(UnoFeatures) == ''">;None;</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
-		<UnoTheme Condition="$(UnoFeatures.Contains(';Material;'))">Material</UnoTheme>
-		<UnoTheme Condition="$(UnoFeatures.Contains(';Cupertino;'))">Cupertino</UnoTheme>
-		<UnoTheme Condition="$(UnoTheme) == ''">Fluent</UnoTheme>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<_UnoImplicitPackageReference Include="Uno.WinUI" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 		<_UnoImplicitPackageReference Include="Microsoft.Extensions.Logging.Console" Version="$(MicrosoftLoggingVersion)" IsImplicitlyDefined="true" />
@@ -31,9 +22,6 @@
 	</ItemGroup>
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Foldable;'))">
 		<_UnoImplicitPackageReference Include="Uno.WinUI.Foldable" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
-	</ItemGroup>
-	<ItemGroup Condition="$(UnoFeatures.Contains(';Msal;'))">
-		<_UnoImplicitPackageReference Include="Uno.WinUI.MSAL" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 	</ItemGroup>
 
 	<Choose>
@@ -87,8 +75,8 @@
 		</When>
 	</Choose>
 
-	<ItemGroup Condition="$(UnoCSharpMarkupVersion) != ''">
-		<_UnoImplicitPackageReference Include="Uno.Extensions.Markup.WinUI" Version="$(UnoCSharpMarkupVersion)" IsImplicitlyDefined="true" />
+	<ItemGroup Condition="$(UnoCSharpMarkupVersion) != '' AND $(UnoFeatures.Contains(';CSharpMarkup;'))">
+		<_UnoImplicitPackageReference Include="Uno.WinUI.Markup" Version="$(UnoCSharpMarkupVersion)" IsImplicitlyDefined="true" />
 		<_UnoImplicitPackageReference Include="Uno.Extensions.Markup.Generators" Version="$(UnoCSharpMarkupVersion)" IsImplicitlyDefined="true" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
 	</ItemGroup>
 
@@ -98,6 +86,7 @@
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Configuration" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Core.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Hosting.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Http.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
@@ -128,6 +117,9 @@
 			</ItemGroup>
 			<ItemGroup Condition="!$(UnoFeatures.Contains(';Authentication;')) AND $(UnoFeatures.Contains(';AuthenticationOidc;'))">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+			</ItemGroup>
+			<ItemGroup Condition="$(UnoFeatures.Contains(';Configuration;'))">
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Configuration" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
 			<ItemGroup Condition="$(UnoFeatures.Contains(';ExtensionsCore;'))">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Core.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
@@ -180,6 +172,20 @@
 		<_UnoImplicitPackageReference Include="Uno.Toolkit.Skia.WinUI" Version="$(UnoToolkitVersion)" IsImplicitlyDefined="true" Condition="$(UnoFeatures.Contains(';Skia;'))" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoThemesVersion) != '' AND $(UnoTheme) == 'Material'">
+		<_UnoImplicitPackageReference Include="Uno.Material.WinUI" Version="$(UnoThemesVersion)" IsImplicitlyDefined="true" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoImplicitPackageReference Include="Uno.Material.WinUI.Markup" Version="$(UnoThemesVersion)" IsImplicitlyDefined="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<_UnoImplicitPackageReference Include="Uno.Themes.WinUI.Markup" Version="$(UnoThemesVersion)" IsImplicitlyDefined="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoThemesVersion) != '' AND $(UnoTheme) == 'Cupertino'">
+		<_UnoImplicitPackageReference Include="Uno.Cupertino.WinUI" Version="$(UnoThemesVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+		<_UnoImplicitPackageReference Include="Uno.Dsp.Tasks" Version="$(UnoDspTasksVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';Mvvm;'))">
 		<_UnoImplicitPackageReference Include="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" IsImplicitlyDefined="true" />
 	</ItemGroup>
@@ -190,9 +196,89 @@
 		<_UnoImplicitPackageReference Include="Prism.DryIoc.Uno.WinUI" Version="$(PrismVersion)" IsImplicitlyDefined="true" Condition=" $(SingleProject) == 'true' or $(OutputType) == 'WinExe' or $(OutputType) == 'Exe' " />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))">
+		<_UnoImplicitPackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Microsoft.Maui.Graphics" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;')) AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<_UnoImplicitPackageReference Include="Xamarin.Google.Android.Material" VersionOverride="$(AndroidMaterialVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Xamarin.AndroidX.Navigation.UI" VersionOverride="$(AndroidXNavigationVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Xamarin.AndroidX.Navigation.Fragment" VersionOverride="$(AndroidXNavigationVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Xamarin.AndroidX.Navigation.Runtime" VersionOverride="$(AndroidXNavigationVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Xamarin.AndroidX.Navigation.Common" VersionOverride="$(AndroidXNavigationVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Xamarin.AndroidX.Collection" VersionOverride="$(AndroidXCollectionVersion)" IsImplicitlyDefined="true" />
+		<_UnoImplicitPackageReference Include="Xamarin.AndroidX.Collection.Ktx" VersionOverride="$(AndroidXCollectionVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Authentication;')) OR $(UnoFeatures.Contains(';AuthenticationMsal;'))">
+		<_UnoImplicitPackageReference Include="Microsoft.Identity.Client" Version="$(MicrosoftIdentityClientVersion)" IsImplicitlyDefined="true" />
+	</ItemGroup>
+
 	<!-- Add Implicit Package References for Packages that have not already been added -->
 	<ItemGroup>
 		<PackageReference Include="@(_UnoImplicitPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
+
+	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies">
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Extensions;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'Extensions' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Authentication;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';AuthenticationOidc;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';AuthenticationMsal;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Configuration;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';ExtensionsCore;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Hosting;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Http;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Localization;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Logging;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';MauiEmbedding;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Navigation;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Mvux;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Storage;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Serialization;')) AND $(UnoExtensionsVersion) == ''"
+			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Toolkit;')) AND $(UnoToolkitVersion) == ''"
+			Text="The UnoFeature 'Toolkit' was selected, but the property UnoToolkitVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';CSharpMarkup;')) AND $(UnoCSharpMarkupVersion) == ''"
+			Text="The UnoFeature 'CSharpMarkup' was selected, but the property UnoCSharpMarkupVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Material;')) AND $(UnoThemesVersion) == ''"
+			Text="The UnoFeature 'Material' was selected, but the property UnoThemesVersion was not set." />
+		<Error Code="UnoSdk001"
+			Condition="$(UnoFeatures.Contains(';Cupertino;')) AND $(UnoThemesVersion) == ''"
+			Text="The UnoFeature 'Cupertino' was selected, but the property UnoThemesVersion was not set." />
+	</Target>
 
 </Project>

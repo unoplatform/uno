@@ -97,4 +97,14 @@
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+		<UnoDspImportColors Include="Styles\*.zip" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+	</ItemGroup>
+
+	<ItemGroup Condition="($(UnoFeatures.Contains(';Configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
+		<EmbeddedResource Include="appsettings.json" />
+		<EmbeddedResource Include="appsettings.*.json" DependentUpon="appsettings.json" />
+	</ItemGroup>
 </Project>
