@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition;
 
 partial class CompositionObject
 {
-	private protected Color GetColor(ReadOnlySpan<char> subPropertyName, Color existingValue, object? propertyValue)
+	private protected Color UpdateColor(ReadOnlySpan<char> subPropertyName, Color existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -39,7 +39,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Matrix3x2 GetMatrix3x2(ReadOnlySpan<char> subPropertyName, Matrix3x2 existingValue, object? propertyValue)
+	private protected Matrix3x2 UpdateMatrix3x2(ReadOnlySpan<char> subPropertyName, Matrix3x2 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -78,7 +78,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Matrix4x4 GetMatrix4x4(ReadOnlySpan<char> subPropertyName, Matrix4x4 existingValue, object? propertyValue)
+	private protected Matrix4x4 UpdateMatrix4x4(ReadOnlySpan<char> subPropertyName, Matrix4x4 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -157,7 +157,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Quaternion GetQuaternion(ReadOnlySpan<char> subPropertyName, Quaternion existingValue, object? propertyValue)
+	private protected Quaternion UpdateQuaternion(ReadOnlySpan<char> subPropertyName, Quaternion existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -166,19 +166,19 @@ partial class CompositionObject
 
 		if (subPropertyName.Equals("X", StringComparison.Ordinal))
 		{
-			existingValue.X = ValidateValue<byte>(propertyValue);
+			existingValue.X = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
 		{
-			existingValue.Y = ValidateValue<byte>(propertyValue);
+			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
 		{
-			existingValue.Z = ValidateValue<byte>(propertyValue);
+			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("W", StringComparison.Ordinal))
 		{
-			existingValue.W = ValidateValue<byte>(propertyValue);
+			existingValue.W = ValidateValue<float>(propertyValue);
 		}
 		else
 		{
@@ -188,7 +188,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Vector2 GetVector2(ReadOnlySpan<char> subPropertyName, Vector2 existingValue, object? propertyValue)
+	private protected Vector2 UpdateVector2(ReadOnlySpan<char> subPropertyName, Vector2 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -197,11 +197,11 @@ partial class CompositionObject
 
 		if (subPropertyName.Equals("X", StringComparison.Ordinal))
 		{
-			existingValue.X = ValidateValue<byte>(propertyValue);
+			existingValue.X = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
 		{
-			existingValue.Y = ValidateValue<byte>(propertyValue);
+			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
 		else
 		{
@@ -211,7 +211,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Vector3 GetVector3(ReadOnlySpan<char> subPropertyName, Vector3 existingValue, object? propertyValue)
+	private protected Vector3 UpdateVector3(ReadOnlySpan<char> subPropertyName, Vector3 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -220,15 +220,15 @@ partial class CompositionObject
 
 		if (subPropertyName.Equals("X", StringComparison.Ordinal))
 		{
-			existingValue.X = ValidateValue<byte>(propertyValue);
+			existingValue.X = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
 		{
-			existingValue.Y = ValidateValue<byte>(propertyValue);
+			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
 		{
-			existingValue.Z = ValidateValue<byte>(propertyValue);
+			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
 		else
 		{
@@ -238,7 +238,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Vector4 GetVector4(ReadOnlySpan<char> subPropertyName, Vector4 existingValue, object? propertyValue)
+	private protected Vector4 UpdateVector4(ReadOnlySpan<char> subPropertyName, Vector4 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -247,19 +247,19 @@ partial class CompositionObject
 
 		if (subPropertyName.Equals("X", StringComparison.Ordinal))
 		{
-			existingValue.X = ValidateValue<byte>(propertyValue);
+			existingValue.X = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
 		{
-			existingValue.Y = ValidateValue<byte>(propertyValue);
+			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
 		{
-			existingValue.Z = ValidateValue<byte>(propertyValue);
+			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
 		else if (subPropertyName.Equals("W", StringComparison.Ordinal))
 		{
-			existingValue.W = ValidateValue<byte>(propertyValue);
+			existingValue.W = ValidateValue<float>(propertyValue);
 		}
 		else
 		{
@@ -280,19 +280,19 @@ partial class CompositionObject
 			}
 			else if (_properties.TryGetColor(propertyNameString, out var color) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertColor(propertyNameString, GetColor(subPropertyName, color, propertyValue));
+				_properties.InsertColor(propertyNameString, UpdateColor(subPropertyName, color, propertyValue));
 			}
 			else if (_properties.TryGetMatrix3x2(propertyNameString, out var matrix3x2) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertMatrix3x2(propertyNameString, GetMatrix3x2(subPropertyName, matrix3x2, propertyValue));
+				_properties.InsertMatrix3x2(propertyNameString, UpdateMatrix3x2(subPropertyName, matrix3x2, propertyValue));
 			}
 			else if (_properties.TryGetMatrix4x4(propertyNameString, out var matrix4x4) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertMatrix4x4(propertyNameString, GetMatrix4x4(subPropertyName, matrix4x4, propertyValue));
+				_properties.InsertMatrix4x4(propertyNameString, UpdateMatrix4x4(subPropertyName, matrix4x4, propertyValue));
 			}
 			else if (_properties.TryGetQuaternion(propertyNameString, out var quaternion) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertQuaternion(propertyNameString, GetQuaternion(subPropertyName, quaternion, propertyValue));
+				_properties.InsertQuaternion(propertyNameString, UpdateQuaternion(subPropertyName, quaternion, propertyValue));
 			}
 			else if (_properties.TryGetScalar(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
 			{
@@ -300,15 +300,15 @@ partial class CompositionObject
 			}
 			else if (_properties.TryGetVector2(propertyNameString, out var vector2) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertVector2(propertyNameString, GetVector2(subPropertyName, vector2, propertyValue));
+				_properties.InsertVector2(propertyNameString, UpdateVector2(subPropertyName, vector2, propertyValue));
 			}
 			else if (_properties.TryGetVector3(propertyNameString, out var vector3) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertVector3(propertyNameString, GetVector3(subPropertyName, vector3, propertyValue));
+				_properties.InsertVector3(propertyNameString, UpdateVector3(subPropertyName, vector3, propertyValue));
 			}
 			else if (_properties.TryGetVector4(propertyNameString, out var vector4) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertVector4(propertyNameString, GetVector4(subPropertyName, vector4, propertyValue));
+				_properties.InsertVector4(propertyNameString, UpdateVector4(subPropertyName, vector4, propertyValue));
 			}
 			else
 			{

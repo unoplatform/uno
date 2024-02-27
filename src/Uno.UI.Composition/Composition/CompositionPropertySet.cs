@@ -78,15 +78,5 @@ namespace Microsoft.UI.Composition
 
 			_properties[propertyName] = value;
 		}
-
-		// TODO
-		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
-			=> base.IsAnimatableProperty(propertyName);
-
-		// TODO
-		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
-		{
-			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
-		}
 	}
 }

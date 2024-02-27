@@ -158,15 +158,15 @@ namespace Microsoft.UI.Composition
 		{
 			if (propertyName is nameof(AnchorPoint))
 			{
-				AnchorPoint = GetVector2(subPropertyName, AnchorPoint, propertyValue);
+				AnchorPoint = UpdateVector2(subPropertyName, AnchorPoint, propertyValue);
 			}
 			else if (propertyName is nameof(CenterPoint))
 			{
-				CenterPoint = GetVector3(subPropertyName, CenterPoint, propertyValue);
+				CenterPoint = UpdateVector3(subPropertyName, CenterPoint, propertyValue);
 			}
 			else if (propertyName is nameof(Offset))
 			{
-				Offset = GetVector3(subPropertyName, Offset, propertyValue);
+				Offset = UpdateVector3(subPropertyName, Offset, propertyValue);
 			}
 			else if (propertyName is nameof(Opacity))
 			{
@@ -174,7 +174,7 @@ namespace Microsoft.UI.Composition
 			}
 			else if (propertyName is nameof(Orientation))
 			{
-				Orientation = GetQuaternion(subPropertyName, Orientation, propertyValue);
+				Orientation = UpdateQuaternion(subPropertyName, Orientation, propertyValue);
 			}
 			else if (propertyName is nameof(RotationAngle))
 			{
@@ -182,15 +182,15 @@ namespace Microsoft.UI.Composition
 			}
 			else if (propertyName is nameof(RotationAxis))
 			{
-				RotationAxis = GetVector3(subPropertyName, RotationAxis, propertyValue);
+				RotationAxis = UpdateVector3(subPropertyName, RotationAxis, propertyValue);
 			}
 			else if (propertyName is nameof(Size))
 			{
-				Size = GetVector2(subPropertyName, Size, propertyValue);
+				Size = UpdateVector2(subPropertyName, Size, propertyValue);
 			}
 			else if (propertyName is nameof(TransformMatrix))
 			{
-				TransformMatrix = GetMatrix4x4(subPropertyName, TransformMatrix, propertyValue);
+				TransformMatrix = UpdateMatrix4x4(subPropertyName, TransformMatrix, propertyValue);
 			}
 			else
 			{

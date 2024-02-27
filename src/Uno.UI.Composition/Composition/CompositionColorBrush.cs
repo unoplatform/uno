@@ -34,7 +34,7 @@ namespace Microsoft.UI.Composition
 		{
 			if (propertyName is nameof(Color))
 			{
-				Color = GetColor(subPropertyName, Color, propertyValue);
+				Color = UpdateColor(subPropertyName, Color, propertyValue);
 			}
 			else
 			{
