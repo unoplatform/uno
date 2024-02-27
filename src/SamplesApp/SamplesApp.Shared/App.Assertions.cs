@@ -219,7 +219,7 @@ partial class App
 		var applicationViewBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 		Assert.AreEqual(MainWindow.Bounds, applicationViewBounds);
 #endif
-  }
+	}
 
 	private void AssertIssue15521()
 	{
