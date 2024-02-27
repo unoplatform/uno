@@ -1,0 +1,22 @@
+<Project>
+	<PropertyGroup Condition="$(IsBrowser) == 'true'">
+		<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<UnoXamlResourcesTrimming>false</UnoXamlResourcesTrimming>
+		<WasmShellEnableJiterpreter>false</WasmShellEnableJiterpreter>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(IsBrowser) == 'true'">
+		<WasmShellEnableAotProfile Include="aot.profile" Condition="Exists('aot.profile')" />
+		<WasmShellEnableAotProfile Include="$(WasmProjectFolder)aot.profile" Condition="Exists('$(WasmProjectFolder)aot.profile')" />
+	</ItemGroup>
+
+	<Target Name="ValidateAotConfiguration"
+		BeforeTargets="CoreCompile"
+		Condition="$(IsBrowser) == 'true' OR $(IsAndroid) == 'true'">
+		<Error Condition="$(Optimize) != 'true'"
+			HelpLink="https://aka.platform.uno/UNOB0007"
+			Text="AOT compilation is only supported in Release mode. Please set the 'Optimize' property to 'true' in the project file."
+			ErrorCode="UNOB0007" />
+	</Target>
+</Project>

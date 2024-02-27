@@ -77,6 +77,9 @@
 	<Import Project="Uno.Common.Wasm.targets"
 		Condition=" $(_IsStandaloneWasmHead) and $(UsingUnoCommonWasmTargets) == '' " />
 
+	<Import Project="Uno.GenerateAot.targets"
+		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
+
 	<ItemGroup>
 		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
 			Condition=" $(IsAndroid) != 'true' " />
