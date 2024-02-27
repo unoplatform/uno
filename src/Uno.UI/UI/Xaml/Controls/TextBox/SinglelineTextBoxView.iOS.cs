@@ -112,11 +112,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var result = base.BecomeFirstResponder();
 
-			if (SecureTextEntry)
+			if (SecureTextEntry && !string.IsNullOrEmpty(Text))
 			{
+				this.EditingChanged -= OnEditingChanged;
 				var text = Text;
-				Text = string.Empty;
-				InsertText(text);
+				InsertText($"{text}.");
+				this.EditingChanged += OnEditingChanged;
+				DeleteBackward();
 			}
 
 			return result;
