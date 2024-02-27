@@ -34,7 +34,7 @@ parameters:
   - key: '5'
     value: '06'
   - key: '6'
-    value: '07'd
+    value: '07'
   - key: '7'
     value: '08'
 
