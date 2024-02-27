@@ -9,6 +9,14 @@ using Microsoft.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#endif
+
 namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Children))]
@@ -144,7 +152,7 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 
 #if __ANDROID__ || __IOS__ || __MACOS__
-		internal override UIElement View
+		internal override _View View
 		{
 			get => base.View;
 			set
