@@ -27,7 +27,6 @@
 	<Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 			<ItemGroup>
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.UniversalImageLoader" Version="$(UnoUniversalImageLoader)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Xamarin.Google.Android.Material" Version="$(AndroidMaterialVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
@@ -56,7 +55,7 @@
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
 			<ItemGroup>
-				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.OSLog" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
+				<!-- Any Implicit packages we may want to add for MacOS -->
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
