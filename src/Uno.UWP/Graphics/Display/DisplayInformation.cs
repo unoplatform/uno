@@ -30,13 +30,21 @@ namespace Windows.Graphics.Display
 		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
 		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
 
-		private DisplayInformation(WindowId windowId)
+		private DisplayInformation(
+#if !ANDROID
+			WindowId windowId
+#endif
+			)
 		{
+#if !ANDROID
 			WindowId = windowId;
+#endif
 			Initialize();
 		}
 
+#if !ANDROID
 		internal WindowId WindowId { get; }
+#endif
 
 		public static DisplayInformation GetForCurrentView()
 		{
