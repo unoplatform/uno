@@ -15,6 +15,8 @@ parameters:
     - 0
     - 1
     - 2
+    - 3
+    - 4
 
 jobs:
 
@@ -105,7 +107,7 @@ jobs:
           UITEST_TEST_MODE_NAME: RuntimeTests
           UNO_UITEST_BUCKET_ID: RuntimeTests
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
-          UITEST_RUNTIME_TEST_GROUP_COUNT: 3
+          UITEST_RUNTIME_TEST_GROUP_COUNT: 5
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
           TARGETPLATFORM_NAME: net7
           FAILBUILD_ON_FAILURE: true
