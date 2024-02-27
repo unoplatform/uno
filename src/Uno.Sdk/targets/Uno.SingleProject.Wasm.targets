@@ -20,6 +20,12 @@
 		<WasmShellILLinkerEnabled Condition="$(WasmShellILLinkerEnabled) == ''">false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Optimize)'=='true'">
+		<WasmAotFileName Condition="$(WasmAotFileName) == ''">aot.profile</WasmAotFileName>
+		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmProjectFolder)$(WasmAotFileName)') ">$(WasmProjectFolder)$(WasmAotFileName)</WasmAotProfilePath>
+		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmAotFileName)') ">$(WasmAotFileName)</WasmAotProfilePath>
+	</PropertyGroup>
+
 	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
 		<Content Include="$(WasmProjectFolder)manifest.webmanifest"
 			Condition="Exists('$(WasmProjectFolder)manifest.webmanifest')"
@@ -36,6 +42,9 @@
 		<LinkerDescriptor Include="$(WasmProjectFolder)LinkerConfig.xml"
 			Condition="Exists('$(WasmProjectFolder)LinkerConfig.xml')"
 			Exclude="@(LinkerDescriptor)"
+			IsDefaultItem="true" />
+		<WasmShellEnableAotProfile Include="$(WasmAotProfilePath)"
+			Condition="$(WasmAotProfilePath) != ''"
 			IsDefaultItem="true" />
 	</ItemGroup>
 </Project>
