@@ -21,25 +21,21 @@
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
-		<Content Include="$([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', '$(WasmProjectFolder)', 'manifest.webmanifest'))"
+		<Content Include="$(WasmProjectFolder)manifest.webmanifest"
 			Condition="Exists('$(WasmProjectFolder)manifest.webmanifest')"
 			Exclude="@(Content)"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
-		<EmbeddedResource Include="$([System.IO.Path]::Combine('$(WasmProjectFolder)', 'WasmCSS', 'Fonts.css'))"
+		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
 			Condition="Exists('$(WasmProjectFolder)WasmCSS\Fonts.css')"
 			Exclude="@(EmbeddedResource)"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
-		<EmbeddedResource Include="$([System.IO.Path]::Combine('$(WasmProjectFolder)', 'WasmScripts', 'AppManifest.js'))"
+		<EmbeddedResource Include="$(WasmProjectFolder)WasmScripts\AppManifest.js"
 			Condition="Exists('$(WasmProjectFolder)WasmScripts\AppManifest.js')"
 			Exclude="@(EmbeddedResource)"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 		<LinkerDescriptor Include="$(WasmProjectFolder)LinkerConfig.xml"
 			Condition="Exists('$(WasmProjectFolder)LinkerConfig.xml')"
 			Exclude="@(LinkerDescriptor)"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))"
 			IsDefaultItem="true" />
 	</ItemGroup>
 </Project>
