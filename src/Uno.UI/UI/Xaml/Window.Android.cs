@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml
 				return default;
 			}
 
-			var windowInsets = ViewCompat.GetRootWindowInsets(activity.Window.DecorView);
+			var windowInsets = GetWindowInsets(activity);
 
 			var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 
@@ -116,6 +116,22 @@ namespace Microsoft.UI.Xaml
 			var visibleBounds = windowBounds.DeflateBy(translucentInsets);
 
 			return (windowBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels());
+		}
+
+		private WindowInsetsCompat GetWindowInsets(Activity activity)
+		{
+			var decorView = activity.Window.DecorView;
+			if (decorView.IsAttachedToWindow)
+			{
+				return ViewCompat.GetRootWindowInsets(decorView);
+			}
+
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
+			{
+				return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
+			}
+
+			return null;
 		}
 
 		private Size GetDisplaySize()

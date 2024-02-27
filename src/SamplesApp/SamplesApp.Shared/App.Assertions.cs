@@ -5,11 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
-<<<<<<< HEAD
-=======
-using Windows.ApplicationModel.Core;
 using Windows.UI.ViewManagement;
->>>>>>> 9fb7b0d185 (chore: add test and assertion to sample app)
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
