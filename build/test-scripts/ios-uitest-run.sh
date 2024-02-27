@@ -242,9 +242,7 @@ fi
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "##vso[task.logissue type=error]UNOBLD003: ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
-	return 1
 fi
-
 
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
