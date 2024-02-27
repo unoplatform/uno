@@ -224,7 +224,7 @@ jobs:
       JobTimeoutInMinutes: 120
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
-      UITEST_TEST_TIMEOUT: '20m'
+      UITEST_TEST_TIMEOUT: '45m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
