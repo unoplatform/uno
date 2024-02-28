@@ -165,8 +165,8 @@ then
 
 	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
-	while [[ ! adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
-		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+	while [[ ! $(adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE") && $SECONDS -lt $END_TIME ]]; do
+		echo "Waiting $INTERVAL seconds for test results to be written to $UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
 
 		# exit loop if the APP_PID is not running anymore
@@ -177,7 +177,7 @@ then
 	done
 
 	adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
-	
+
 else
 	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 		UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
