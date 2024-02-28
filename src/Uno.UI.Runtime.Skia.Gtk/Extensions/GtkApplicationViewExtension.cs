@@ -14,35 +14,6 @@ internal class GtkApplicationViewExtension : IApplicationViewExtension
 		_owner = (ApplicationView)owner;
 	}
 
-	public void ExitFullScreenMode()
-	{
-		if (GtkHost.Current?.InitialWindow is not { } window)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning("There is no main window set.");
-			}
-			return;
-		}
-
-		window.Unfullscreen();
-	}
-
-	public bool TryEnterFullScreenMode()
-	{
-		if (GtkHost.Current?.InitialWindow is not { } window)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning("There is no main window set.");
-			}
-			return false;
-		}
-
-		window.Fullscreen();
-		return true;
-	}
-
 	public bool TryResizeView(Size size)
 	{
 		if (GtkHost.Current?.InitialWindow is not { } window)
