@@ -349,10 +349,12 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A <see cref="DependencyProperty"/> instance, otherwise null it not found.</returns>
 		internal static DependencyProperty GetProperty(Type type, string name)
 		{
+#if !__WASM__
 			if (!NativeDispatcher.Main.HasThreadAccess)
 			{
 				throw new InvalidOperationException("The dependency property system should not be accessed from non UI thread.");
 			}
+#endif
 
 			_searchPropertyCacheEntry.Update(type, name);
 
