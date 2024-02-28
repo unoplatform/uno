@@ -15,6 +15,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private Rect _bounds;
 	private Rect _visibleBounds;
 	private bool _visible;
+	private string _title = "";
 	private CoreWindowActivationState _activationState;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
@@ -72,7 +73,18 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
-	public abstract string Title { get; set; }
+	public virtual string Title
+	{
+		get => _title;
+		set
+		{
+			_title = value;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"Setting the title of the window is not supported on this platform yet");
+			}
+		}
+	}
 
 	public event EventHandler<Size>? SizeChanged;
 	public event EventHandler<Rect>? VisibleBoundsChanged;

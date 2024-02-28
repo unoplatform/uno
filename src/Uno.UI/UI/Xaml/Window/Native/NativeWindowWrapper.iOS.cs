@@ -2,6 +2,7 @@
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using Uno.Disposables;
 using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -17,6 +18,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
+	private string _title;
 
 	public NativeWindowWrapper()
 	{
@@ -124,16 +126,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
-	//public bool TryEnterFullScreenMode()
-	//{
-	//	CoreDispatcher.CheckThreadAccess();
-	//	UIApplication.SharedApplication.StatusBarHidden = true;
-	//	return UIApplication.SharedApplication.StatusBarHidden;
-	//}
-
-	//public void ExitFullScreenMode()
-	//{
-	//	CoreDispatcher.CheckThreadAccess();
-	//	UIApplication.SharedApplication.StatusBarHidden = false;
-	//}
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		CoreDispatcher.CheckThreadAccess();
+		UIApplication.SharedApplication.StatusBarHidden = true;
+		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
+	}
 }
