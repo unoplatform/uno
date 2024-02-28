@@ -28,30 +28,29 @@ namespace Windows.Storage
 		{
 			private readonly NSItemProvider? _provider;
 			private readonly StorageFolder? _parent;
-			readonly string? _identifier;
+			private readonly string? _identifier;
 			public MediaScopedFile(NSItemProvider provider, StorageFolder? parent) :
-				base(SystemPath.Combine(parent?.Path ?? string.Empty, provider?.SuggestedName ?? string.Empty))
+				base(string.Empty)
 			{
 				_provider = provider;
 				_parent = parent;
+<<<<<<< HEAD
 				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? Array.Empty<string>());
 			}
+=======
+				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? []);
+>>>>>>> ffba912680 (fix(iOS): StorageFile information using PHPicker)
 
-			private string? GetIdentifier(string[] identifiers)
-			{
-				if (!(identifiers?.Length > 0))
-					return null;
-				if (identifiers.Any(i => i.StartsWith(UTType.LivePhoto, StringComparison.InvariantCultureIgnoreCase)) && identifiers.Contains(UTType.JPEG))
-					return identifiers.FirstOrDefault(i => i == UTType.JPEG);
-				if (identifiers.Contains(UTType.QuickTimeMovie))
-					return identifiers.FirstOrDefault(i => i == UTType.QuickTimeMovie);
-				return identifiers.FirstOrDefault();
+				var extension = !string.IsNullOrEmpty(_identifier) ? GetExtension(_identifier) : string.Empty;
+				var fileName = $"{provider?.SuggestedName}.{extension}";
+
+				Path = SystemPath.Combine(path1: parent?.Path ?? string.Empty,
+										  path2: fileName);
 			}
+			public override string ContentType => GetMIMEType(_identifier ?? string.Empty) ?? base.ContentType;
 
 			public override StorageProvider Provider => StorageProviders.IosItemProvider;
-
 			public override DateTimeOffset DateCreated => throw new NotImplementedException();
-
 			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) =>
 				throw new InvalidOperationException("Created date is not available from this source");
 
@@ -81,6 +80,32 @@ namespace Windows.Storage
 
 			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
 			protected override bool IsEqual(ImplementationBase implementation) => throw new NotImplementedException();
+
+			private string? GetExtension(string identifier)
+				=> UTType.CopyAllTags(identifier, UTType.TagClassFilenameExtension)?.FirstOrDefault();
+
+			private string? GetMIMEType(string identifier)
+				=> UTType.CopyAllTags(identifier, UTType.TagClassMIMEType)?.FirstOrDefault();
+
+			private string? GetIdentifier(string[] identifiers)
+			{
+				if (!(identifiers?.Length > 0))
+				{
+					return null;
+				}
+
+				if (identifiers.Any(i => i.StartsWith(UTType.LivePhoto, StringComparison.InvariantCultureIgnoreCase)) && identifiers.Contains(UTType.JPEG))
+				{
+					return identifiers.FirstOrDefault(i => i == UTType.JPEG);
+				}
+
+				if (identifiers.Contains(UTType.QuickTimeMovie))
+				{
+					return identifiers.FirstOrDefault(i => i == UTType.QuickTimeMovie);
+				}
+
+				return identifiers.FirstOrDefault();
+			}
 		}
 		internal class SecurityScopedFile : ImplementationBase
 		{
