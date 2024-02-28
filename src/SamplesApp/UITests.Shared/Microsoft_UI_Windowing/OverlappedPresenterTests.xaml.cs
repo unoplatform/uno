@@ -16,6 +16,7 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Microsoft.UI.Windowing;
 using SamplesApp;
+using SampleControl.Presentation;
 
 
 namespace UITests.Microsoft_UI_Windowing;
@@ -40,33 +41,28 @@ public sealed partial class OverlappedPresenterTests : Page
 internal class OverlappedPresenterTestsViewModel : ViewModelBase
 {
 	private OverlappedPresenter _currentPresenter;
+	private bool _hasBorder;
+	private bool _hasTitleBar;
 
 	public OverlappedPresenterTestsViewModel()
 	{
 		SetDefault();
 	}
 
-	public void SetDefault()
-	{
-		App.MainWindow.AppWindow.SetPresenter(_currentPresenter = OverlappedPresenter.Create());
-		RaisePropertyChanged("");
-	}
+	public void SetDefault() => SetPresenter(OverlappedPresenter.Create());
 
-	public void SetDialog()
-	{
-		App.MainWindow.AppWindow.SetPresenter(_currentPresenter = OverlappedPresenter.CreateForDialog());
-		RaisePropertyChanged("");
-	}
+	public void SetDialog() => SetPresenter(OverlappedPresenter.CreateForDialog());
 
-	public void SetContextMenu()
-	{
-		App.MainWindow.AppWindow.SetPresenter(_currentPresenter = OverlappedPresenter.CreateForContextMenu());
-		RaisePropertyChanged("");
-	}
+	public void SetContextMenu() => SetPresenter(OverlappedPresenter.CreateForContextMenu());
 
-	public void SetToolWindow()
+	public void SetToolWindow() => SetPresenter(OverlappedPresenter.CreateForToolWindow());
+
+	private void SetPresenter(OverlappedPresenter presenter)
 	{
-		App.MainWindow.AppWindow.SetPresenter(_currentPresenter = OverlappedPresenter.CreateForToolWindow());
+		_currentPresenter = presenter;
+		App.MainWindow.AppWindow.SetPresenter(_currentPresenter);
+		_hasBorder = _currentPresenter.HasBorder;
+		_hasTitleBar = _currentPresenter.HasTitleBar;
 		RaisePropertyChanged("");
 	}
 
@@ -94,11 +90,34 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 
 	public bool HasBorder
 	{
-		get => _currentPresenter.HasBorder;
+		get => _hasBorder;
 		set
 		{
 			_currentPresenter.SetBorderAndTitleBar(value, _currentPresenter.HasTitleBar);
 			RaisePropertyChanged("");
+		}
+	}
+
+	public async void SetBorderAndTitleBar()
+	{
+		try
+		{
+			_currentPresenter.SetBorderAndTitleBar(_hasBorder, _hasTitleBar);
+			RaisePropertyChanged("");
+		}
+		catch (Exception ex)
+		{
+			_hasBorder = _currentPresenter.HasBorder;
+			_hasTitleBar = _currentPresenter.HasTitleBar;
+
+			var dialog = new ContentDialog
+			{
+				Title = "Error",
+				Content = ex.Message,
+				CloseButtonText = "OK",
+				XamlRoot = SampleChooserViewModel.Instance.Owner.XamlRoot
+			};
+			await dialog.ShowAsync();
 		}
 	}
 
@@ -139,6 +158,27 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 	public bool IsModal
 	{
 		get => _currentPresenter.IsModal;
-		set => _currentPresenter.IsModal = value;
+		set
+		{
+			try
+			{
+				_currentPresenter.IsModal = value;
+			}
+			catch (Exception ex)
+			{
+				var dialog = new ContentDialog
+				{
+					Title = "Error",
+					Content = ex.Message,
+					CloseButtonText = "OK",
+					XamlRoot = SampleChooserViewModel.Instance.Owner.XamlRoot
+				};
+				_ = dialog.ShowAsync();
+			}
+			finally
+			{
+				RaisePropertyChanged();
+			}
+		}
 	}
 }
