@@ -5,7 +5,7 @@ using Microsoft.UI.Windowing;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Windows.Microsoft.UI.Windowing.Native;
+using Microsoft.UI.Windowing.Native;
 using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Controls;

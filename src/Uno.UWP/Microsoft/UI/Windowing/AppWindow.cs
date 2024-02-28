@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.Microsoft.UI.Windowing.Native;
+using Microsoft.UI.Windowing.Native;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
 

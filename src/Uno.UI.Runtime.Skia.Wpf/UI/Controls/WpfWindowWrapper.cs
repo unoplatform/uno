@@ -112,4 +112,10 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 			_wpfWindow.WindowState = WindowState.Normal;
 		});
 	}
+
+	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
+	{
+		presenter.SetNative(new NativeOverlappedPresenter(_wpfWindow));
+		return Disposable.Empty;
+	}
 }
