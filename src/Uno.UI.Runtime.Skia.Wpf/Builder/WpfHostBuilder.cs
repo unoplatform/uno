@@ -61,8 +61,14 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 			// Setup native images lookup in order for NativeLibrary.TryLoad to succeed
 			var registration = NativeMethods.AddDllDirectory(_windowsDesktopFrameworkPath);
 
+			LoadNativeImage("vcruntime140_cor3.dll");
 			LoadNativeImage("PresentationNative_cor3.dll");
-			LoadNativeImage("wpfgfx_cor3.dll");
+
+			if (RuntimeInformation.ProcessArchitecture is Architecture.X64 or Architecture.X86)
+			{
+				// This image is not needed when running on arm64 on windows.
+				LoadNativeImage("wpfgfx_cor3.dll");
+			}
 		}
 	}
 
