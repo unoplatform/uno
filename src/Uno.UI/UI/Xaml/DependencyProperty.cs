@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.UI.Xaml;
-using Uno.Extensions;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using Uno;
+using System.Text;
 using System.Threading;
+using Microsoft.UI.Xaml;
+using Uno;
+using Uno.Extensions;
+using Uno.UI.Dispatching;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -348,6 +349,13 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A <see cref="DependencyProperty"/> instance, otherwise null it not found.</returns>
 		internal static DependencyProperty GetProperty(Type type, string name)
 		{
+#if !__WASM__
+			if (!NativeDispatcher.Main.HasThreadAccess)
+			{
+				throw new InvalidOperationException("The dependency property system should not be accessed from non UI thread.");
+			}
+#endif
+
 			_searchPropertyCacheEntry.Update(type, name);
 
 			if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
