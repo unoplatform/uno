@@ -23,7 +23,9 @@ public partial class CompositionAnimation
 	internal Dictionary<string, Vector2> Vector2Parameters { get; } = new();
 	internal Dictionary<string, Vector3> Vector3Parameters { get; } = new();
 
-	internal event Action<CompositionAnimation>? PropertyChanged;
+	internal event Action<CompositionAnimation>? AnimationFrame;
+
+	internal virtual bool IsTrackedByCompositor => false;
 
 	public void SetReferenceParameter(string key, CompositionObject compositionObject)
 	{
@@ -51,9 +53,22 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
-	internal virtual object? Start() => null;
-	internal virtual object? Evaluate() => null;
-	internal virtual void Stop() { }
+	internal virtual object? Start()
+	{
+#if __SKIA__
+		Compositor.TrackKeyFrameAnimation(this);
+#endif
+		return null;
+	}
 
-	private protected void RaisePropertyChanged() => PropertyChanged?.Invoke(this);
+	internal virtual object? Evaluate() => null;
+
+	internal virtual void Stop()
+	{
+#if __SKIA__
+		Compositor.ForgetKeyFrameAnimation(this);
+#endif
+	}
+
+	internal void RaiseAnimationFrame() => AnimationFrame?.Invoke(this);
 }

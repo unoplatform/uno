@@ -240,27 +240,6 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSurfaceBrush(Microsoft.UI.Composition.ICompositionSurface)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Vector2KeyFrameAnimation CreateVector2KeyFrameAnimation()
-		{
-			throw new global::System.NotImplementedException("The member Vector2KeyFrameAnimation Compositor.CreateVector2KeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2KeyFrameAnimation%20Compositor.CreateVector2KeyFrameAnimation%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Vector3KeyFrameAnimation CreateVector3KeyFrameAnimation()
-		{
-			throw new global::System.NotImplementedException("The member Vector3KeyFrameAnimation Compositor.CreateVector3KeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3KeyFrameAnimation%20Compositor.CreateVector3KeyFrameAnimation%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
-		{
-			throw new global::System.NotImplementedException("The member Vector4KeyFrameAnimation Compositor.CreateVector4KeyFrameAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector4KeyFrameAnimation%20Compositor.CreateVector4KeyFrameAnimation%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.CompositionCommitBatch GetCommitBatch(global::Microsoft.UI.Composition.CompositionBatchTypes batchType)
 		{
 			throw new global::System.NotImplementedException("The member CompositionCommitBatch Compositor.GetCommitBatch(CompositionBatchTypes batchType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCommitBatch%20Compositor.GetCommitBatch%28CompositionBatchTypes%20batchType%29");

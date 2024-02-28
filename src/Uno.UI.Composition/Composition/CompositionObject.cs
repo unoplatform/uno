@@ -80,7 +80,7 @@ namespace Microsoft.UI.Composition
 
 			_animations ??= new();
 			_animations[propertyName] = animation;
-			animation.PropertyChanged += ReEvaluateAnimation;
+			animation.AnimationFrame += ReEvaluateAnimation;
 			var animationValue = animation.Start();
 
 			try
@@ -133,7 +133,7 @@ namespace Microsoft.UI.Composition
 		{
 			if (_animations?.TryGetValue(propertyName, out var animation) == true)
 			{
-				animation.PropertyChanged -= ReEvaluateAnimation;
+				animation.AnimationFrame -= ReEvaluateAnimation;
 				animation.Stop();
 				_animations.Remove(propertyName);
 			}
