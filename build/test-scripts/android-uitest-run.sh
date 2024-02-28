@@ -147,9 +147,9 @@ then
 
 	# Set the environment variables for the test run, note that the app needs to clone these values to
 	# standard environment variables to be able to use them
-	$ANDROID_HOME/platform-tools/adb shell setprop UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP"
-	$ANDROID_HOME/platform-tools/adb shell setprop UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT"
-	$ANDROID_HOME/platform-tools/adb shell setprop UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
+	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP"
+	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT"
+	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
 
 	# grant the storage permission to the app to read the test results
 	adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE

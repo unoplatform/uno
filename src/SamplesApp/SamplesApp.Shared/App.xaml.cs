@@ -118,7 +118,9 @@ namespace SamplesApp
 
 			void CopyJavaEnvironment(string variable)
 			{
-				if (Java.Lang.JavaSystem.GetProperty(variable) is { Length: > 0 } value)
+				// Only a subset of environment variables are available to the app, and they
+				// are prefixed with "debug.".
+				if (Java.Lang.JavaSystem.GetProperty("debug." + variable) is { Length: > 0 } value)
 				{
 					System.Environment.SetEnvironmentVariable(variable, value);
 				}
