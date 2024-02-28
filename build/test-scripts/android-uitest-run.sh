@@ -32,6 +32,7 @@ then
 fi
 
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
+export UNO_UITEST_APP_ID="uno.platform.unosampleapp"
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
 export IsUiAutomationMappingEnabled=true
@@ -140,27 +141,66 @@ cd $BUILD_SOURCESDIRECTORY/build
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-    UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
+if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+then
+	UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
+
+	# Set the environment variables for the test run, note that the app needs to clone these values to
+	# standard environment variables to be able to use them
+	$ANDROID_HOME/platform-tools/adb shell setprop UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP"
+	$ANDROID_HOME/platform-tools/adb shell setprop UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT"
+	$ANDROID_HOME/platform-tools/adb shell setprop UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
+
+	# grant the storage permission to the app to read the test results
+	adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
+
+	# start the android app using environment variables using adb
+	$ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.intent.category.LAUNCHER 1
+
+	# Set the timeout in seconds 
+	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
+	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+	INTERVAL=15
+	END_TIME=$((SECONDS+TIMEOUT))
+
+	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
+
+	while [[ ! adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
+		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+		sleep $INTERVAL
+
+		# exit loop if the APP_PID is not running anymore
+		if ! adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
+			echo "The app is not running anymore"
+			break
+		fi
+	done
+
+	adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
+	
 else
-    UNO_TESTS_FILTER=$TEST_FILTERS
+	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
+		UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
+	else
+		UNO_TESTS_FILTER=$TEST_FILTERS
+	fi
+
+	echo "Test Parameters:"
+	echo "  Timeout=$UITEST_TEST_TIMEOUT"
+	echo "  Test filters: $UNO_TESTS_FILTER"
+
+	cd $UNO_TESTS_LOCAL_TESTS_FILE
+
+	## Run NUnit tests
+	dotnet test \
+		-c Release \
+		-l:"console;verbosity=normal" \
+		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+		--filter "$UNO_TESTS_FILTER" \
+		--blame-hang-timeout 120m \
+		-v m \
+		|| true
 fi
-
-echo "Test Parameters:"
-echo "  Timeout=$UITEST_TEST_TIMEOUT"
-echo "  Test filters: $UNO_TESTS_FILTER"
-
-cd $UNO_TESTS_LOCAL_TESTS_FILE
-
-## Run NUnit tests
-dotnet test \
-	-c Release \
-	-l:"console;verbosity=normal" \
-	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
-	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout 120m \
-	-v m \
-	|| true
 
 ## Dump the emulator's system log
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt

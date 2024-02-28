@@ -110,6 +110,20 @@ namespace SamplesApp
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			EnsureMainWindow();
+			
+#if __ANDROID__
+			CopyJavaEnvironment("UITEST_RUNTIME_TEST_GROUP_COUNT");
+			CopyJavaEnvironment("UITEST_RUNTIME_TEST_GROUP");
+			CopyJavaEnvironment("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
+
+			void CopyJavaEnvironment(string variable)
+			{
+				if (Java.Lang.JavaSystem.GetProperty(variable) is { Length: > 0 } value)
+				{
+					System.Environment.SetEnvironmentVariable(variable, value);
+				}
+			}
+#endif
 
 #if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
