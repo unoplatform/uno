@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
-	<PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup Condition="$(WindowsAppxManifestPath) == ''">
 		<WindowsAppxManifestPath>$(WindowsProjectFolder)Package.appxmanifest</WindowsAppxManifestPath>
