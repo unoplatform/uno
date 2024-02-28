@@ -76,7 +76,11 @@ namespace Windows.Graphics.Display
 		{
 			if (!_windowIdMap.TryGetValue(windowId, out var appView))
 			{
-				appView = new(windowId);
+				appView = new(
+#if !ANDROID
+					windowId
+#endif
+				);
 				_windowIdMap[windowId] = appView;
 			}
 
