@@ -104,6 +104,8 @@ fi
 echo "Current system date"
 date
 
+mkdir -p $LOG_FILEPATH
+
 export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
 echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
 xcrun simctl list devices --json > $DEVICELIST_FILEPATH
@@ -215,8 +217,6 @@ fi
 # export the simulator logs
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
 export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
-
-mkdir -p $LOG_FILEPATH
 
 cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
 
