@@ -59,6 +59,19 @@ jobs:
       ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
+  # App is build (and published) also in debug for hot-reload testing.
+  # But this is acheived directly in the HR tests job in order to keep the source code at the right location for HR to edit it!
+  #- powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Debug /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk-debug.binlog
+  #  displayName: Build GTK Head - Debug
+  #
+  #- task: PublishBuildArtifacts@1
+  #  retryCountOnTaskFailure: 3
+  #  condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+  #  inputs:
+  #    PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Debug\net7.0
+  #    ArtifactName: skia-gtk-samples-app-debug-$(XAML_FLAVOR_BUILD)
+  #    ArtifactType: Container
+
   - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
@@ -224,12 +237,12 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Skia_Tests_Build
-
   variables:
-    SamplesAppArtifactName: skia-gtk-samples-app-debug-WinUI
-    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
     UnoEnableHRuntimeTests: true
+    GTK_RUNTIME_URL: https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2020-07-15/gtk3-runtime-3.24.20-2020-07-15-ts-win64.exe
+
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
     CI_Build: true
 
@@ -242,12 +255,28 @@ jobs:
 
   steps:
 
-  - task: DownloadBuildArtifacts@0
-    inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+  - checkout: self
+    clean: true
 
+  - template: templates/download-winui-converted-tree.yml
+  - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Debug /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk-debug.binlog
+    displayName: Build GTK Head - Debug
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Debug\net7.0
+      ArtifactName: skia-gtk-samples-app-debug-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container
+
   - template: templates/gtk-install-windows.yml
 
   - script: |
@@ -262,7 +291,7 @@ jobs:
     displayName: Build HR dependencies
 
   - script: |
-        cd $(SamplesAppArtifactPath)
+        cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.Gtk/bin/Debug/net7.0
         dotnet SamplesApp.Skia.Gtk.dll
 
     displayName: Run Skia GTK $(XAML_FLAVOR_BUILD) Runtime Tests - Hot Reload
