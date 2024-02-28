@@ -15,20 +15,6 @@ namespace Windows.UI.ViewManagement
 		private string _title = string.Empty;
 		private Size _preferredMinSize = Size.Empty;
 
-		public string Title
-		{
-			get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : _title;
-			set
-			{
-				if (IsKeyWindowInitialized())
-				{
-					NSApplication.SharedApplication.KeyWindow.Title = value;
-				}
-
-				_title = value;
-			}
-		}
-
 		public bool TryResizeView(Size value)
 		{
 			VerifyKeyWindowInitialized();

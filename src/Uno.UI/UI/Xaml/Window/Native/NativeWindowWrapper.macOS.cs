@@ -49,6 +49,22 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		ObserveOrientationAndSize();
 	}
 
+	public override string Title
+	{
+		get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : base.Title;
+		set
+		{
+			if (IsKeyWindowInitialized())
+			{
+				NSApplication.SharedApplication.KeyWindow.Title = value;
+			}
+
+			base.Title = value;
+		}
+	}
+
+	private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
+
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	public override Uno.UI.Controls.Window NativeWindow => _window;
