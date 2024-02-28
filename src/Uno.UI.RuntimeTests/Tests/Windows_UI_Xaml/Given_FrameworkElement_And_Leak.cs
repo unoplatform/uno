@@ -221,14 +221,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var sw = Stopwatch.StartNew();
 
-			#if __IOS__
+#if __IOS__
 			// iOS Time is increased to account for the GC being less aggressive
 			var endTime = TimeSpan.FromSeconds(30);
 			var maxTime = TimeSpan.FromMinutes(1);
-			#else
+#else
 			var endTime = TimeSpan.FromSeconds(5);
 			var maxTime = TimeSpan.FromSeconds(30);
-			#endif
+#endif
 
 			var lastActiveControls = activeControls;
 
