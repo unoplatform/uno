@@ -110,7 +110,7 @@ namespace SamplesApp
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			EnsureMainWindow();
-			
+
 #if __ANDROID__
 			CopyJavaEnvironment("UITEST_RUNTIME_TEST_GROUP_COUNT");
 			CopyJavaEnvironment("UITEST_RUNTIME_TEST_GROUP");
