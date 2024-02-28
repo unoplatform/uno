@@ -16,6 +16,9 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
+using SamplesApp.UITests;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -23,6 +26,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AutoSuggestBox
 	{
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15662")]
+		public async Task When_SymbolIcon_Verify_Size()
+		{
+			var SUT = new AutoSuggestBox()
+			{
+				QueryIcon = new SymbolIcon(Symbol.Home),
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home);
+
+			Assert.AreEqual(12, tb.FontSize);
+
+			var tbBounds = tb.GetAbsoluteBounds();
+
+			Assert.AreEqual(new Size(12, 12), tbBounds.Size);
+		}
+
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		public async Task When_Text_Changed_Should_Reflect_In_DataTemplate_TextBox()
