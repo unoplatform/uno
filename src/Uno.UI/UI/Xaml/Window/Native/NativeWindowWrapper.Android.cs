@@ -5,6 +5,7 @@ using Android.Util;
 using Android.Views;
 using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
+using Uno.Disposables;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -30,6 +31,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	public override object NativeWindow => Microsoft.UI.Xaml.ApplicationActivity.Instance?.Window;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
+
+	public override string Title
+	{
+		get => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title;
+		set => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title = value;
+	}
 
 	internal int SystemUiVisibility { get; set; }
 
@@ -167,49 +174,40 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	//public bool TryEnterFullScreenMode()
-	//{
-	//	CoreDispatcher.CheckThreadAccess();
-	//	UpdateFullScreenMode(true);
-	//	return true;
-	//}
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		UpdateFullScreenMode(true);
+		return Disposable.Create(() => UpdateFullScreenMode(false));
+	}
 
-	//public void ExitFullScreenMode()
-	//{
-	//	CoreDispatcher.CheckThreadAccess();
-	//	UpdateFullScreenMode(false);
-	//}
+	private void UpdateFullScreenMode(bool isFullscreen)
+	{
+#pragma warning disable 618
+		var activity = ContextHelper.Current as Activity;
+#pragma warning disable CA1422 // Validate platform compatibility
+		var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
+#pragma warning restore CA1422 // Validate platform compatibility
 
+		if (isFullscreen)
+		{
+			uiOptions |= (int)SystemUiFlags.Fullscreen;
+			uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+			uiOptions |= (int)SystemUiFlags.HideNavigation;
+			uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+		}
+		else
+		{
+			uiOptions &= ~(int)SystemUiFlags.Fullscreen;
+			uiOptions &= ~(int)SystemUiFlags.ImmersiveSticky;
+			uiOptions &= ~(int)SystemUiFlags.HideNavigation;
+			uiOptions &= ~(int)SystemUiFlags.LayoutHideNavigation;
+		}
 
-//	private void UpdateFullScreenMode(bool isFullscreen)
-//	{
-//#pragma warning disable 618
-//		var activity = ContextHelper.Current as Activity;
-//#pragma warning disable CA1422 // Validate platform compatibility
-//		var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
-//#pragma warning restore CA1422 // Validate platform compatibility
-
-//		if (isFullscreen)
-//		{
-//			uiOptions |= (int)SystemUiFlags.Fullscreen;
-//			uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-//			uiOptions |= (int)SystemUiFlags.HideNavigation;
-//			uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-//		}
-//		else
-//		{
-//			uiOptions &= ~(int)SystemUiFlags.Fullscreen;
-//			uiOptions &= ~(int)SystemUiFlags.ImmersiveSticky;
-//			uiOptions &= ~(int)SystemUiFlags.HideNavigation;
-//			uiOptions &= ~(int)SystemUiFlags.LayoutHideNavigation;
-//		}
-
-//#pragma warning disable CA1422 // Validate platform compatibility
-//		activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
-//#pragma warning restore CA1422 // Validate platform compatibility
-//#pragma warning restore 618
-//	}
-
+#pragma warning disable CA1422 // Validate platform compatibility
+		activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore 618
+	}
 
 	private void AddPreDrawListener()
 	{
