@@ -34,6 +34,20 @@
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
 	</ItemGroup>
 
+	<!-- Using .NET MAUI Workaround for AnyCPU https://github.com/dotnet/maui/blob/37ca0c26e39a40f14b4fd60416b90a1a62e28473/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.Before.targets#L12-L22 -->
+	<!-- The Windows App SDK does not support AnyCPU without a RID, so make sure we pick the "best" one we can -->
+	<PropertyGroup>
+		<_SingleProjectRIDRequired Condition="'$(OutputType)' == 'WinExe'">true</_SingleProjectRIDRequired>
+		<_SingleProjectRIDSpecified Condition="'$(RuntimeIdentifier)' != '' or '$(RuntimeIdentifiers)' != ''">true</_SingleProjectRIDSpecified>
+		<_SingleProjectRIDSpecified Condition="$(RuntimeIdentifier) == 'AnyCPU'" >false</_SingleProjectRIDSpecified>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(_SingleProjectRIDRequired)' == 'true' and '$(_SingleProjectRIDSpecified)' != 'true' ">
+		<_SingleProjectHostArchitecture>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</_SingleProjectHostArchitecture>
+		<_SingleProjectHostArchitecture>$(_SingleProjectHostArchitecture.ToLower())</_SingleProjectHostArchitecture>
+		<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
+		<RuntimeIdentifier>win-$(_SingleProjectHostArchitecture)</RuntimeIdentifier>
+	</PropertyGroup>
+
 	<!--
 		Sanity Check...
 		The AppxManifest should have come in automatically but if it didn't for some reason we need
