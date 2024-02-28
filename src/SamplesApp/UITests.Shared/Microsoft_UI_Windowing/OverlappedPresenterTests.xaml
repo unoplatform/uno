@@ -23,13 +23,14 @@
 			<Button Click="{x:Bind ViewModel.Restore}">Restore</Button>
 
 			<TextBlock Text="Properties" FontWeight="Bold" />
-			<CheckBox IsChecked="{x:Bind ViewModel.HasBorder, Mode=TwoWay}">Has border</CheckBox>
-			<CheckBox IsChecked="{x:Bind ViewModel.HasTitleBar, Mode=TwoWay}">Has title bar</CheckBox>
 			<CheckBox IsChecked="{x:Bind ViewModel.IsAlwaysOnTop, Mode=TwoWay}">Is always on top</CheckBox>
 			<CheckBox IsChecked="{x:Bind ViewModel.IsMinimizable, Mode=TwoWay}">Is minimizable</CheckBox>
 			<CheckBox IsChecked="{x:Bind ViewModel.IsMaximizable, Mode=TwoWay}">Is maximizable</CheckBox>
 			<CheckBox IsChecked="{x:Bind ViewModel.IsResizable, Mode=TwoWay}">Is resizable</CheckBox>
 			<CheckBox IsChecked="{x:Bind ViewModel.IsModal, Mode=TwoWay}">Is modal</CheckBox>
+			<CheckBox IsChecked="{x:Bind ViewModel.HasBorder, Mode=TwoWay}">Has border</CheckBox>
+			<CheckBox IsChecked="{x:Bind ViewModel.HasTitleBar, Mode=TwoWay}">Has title bar</CheckBox>
+			<Button Click="{x:Bind ViewModel.SetBorderAndTitleBar}">Set border and title bar</Button>
 		</StackPanel>
 	</ScrollViewer>
 </Page>

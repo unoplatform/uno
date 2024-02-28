@@ -21,7 +21,8 @@ using SampleControl.Presentation;
 
 namespace UITests.Microsoft_UI_Windowing;
 
-[Sample("Microsoft.UI.Windowing", "OverlappedPresenter", IsManualTest = true, ViewModelType = typeof(OverlappedPresenterTestsViewModel), Description = "Playground for testing of OverlappedPresenter functionality.")]
+[Sample("Microsoft.UI.Windowing", Name = "OverlappedPresenter", IsManualTest = true, ViewModelType = typeof(OverlappedPresenterTestsViewModel),
+	Description = "Playground for testing of OverlappedPresenter functionality.")]
 public sealed partial class OverlappedPresenterTests : Page
 {
 	public OverlappedPresenterTests()
@@ -93,8 +94,8 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 		get => _hasBorder;
 		set
 		{
-			_currentPresenter.SetBorderAndTitleBar(value, _currentPresenter.HasTitleBar);
-			RaisePropertyChanged("");
+			_hasBorder = value;
+			RaisePropertyChanged();
 		}
 	}
 
@@ -123,11 +124,11 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 
 	public bool HasTitleBar
 	{
-		get => _currentPresenter.HasTitleBar;
+		get => _hasTitleBar;
 		set
 		{
-			_currentPresenter.SetBorderAndTitleBar(_currentPresenter.HasBorder, value);
-			RaisePropertyChanged("");
+			_hasTitleBar = value;
+			RaisePropertyChanged();
 		}
 	}
 
