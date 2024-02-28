@@ -93,6 +93,7 @@
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Http.Refit" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Localization.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.Serilog" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(UnoFeatures.Contains(';MauiEmbedding;')) AND $(UnoFeatures.Contains(';CSharpMarkup;'))" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Navigation.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
@@ -148,6 +149,9 @@
 			<ItemGroup Condition="$(UnoFeatures.Contains(';Mvux;'))">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Reactive.WinUI.Markup" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+			</ItemGroup>
+			<ItemGroup Condition="$(UnoFeatures.Contains(';Serilog;'))">
+				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.Serilog" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
 			<ItemGroup Condition="$(UnoFeatures.Contains(';Storage;'))">
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Storage.WinUI" Version="$(UnoExtensionsVersion)" IsImplicitlyDefined="true" />
