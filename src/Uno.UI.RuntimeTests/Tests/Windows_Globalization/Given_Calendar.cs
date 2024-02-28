@@ -140,4 +140,21 @@ public class Given_Calendar
 			}
 		}
 	}
+
+	[TestMethod]
+	public void When_AddDays_Should_Respect_Daylight_Saving_Time()
+	{
+		// 25/09/1000 01:00:00 +03:00
+		var dateTime = new DateTimeOffset(new DateTime(1000, 9, 25, 1, 0, 0, DateTimeKind.Unspecified), TimeSpan.FromHours(3));
+
+		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
+		calendar.SetDateTime(dateTime);
+		calendar.AddDays(1);
+
+		var dateTimePlusDay = calendar.GetDateTime();
+
+		// 26/09/1000 01:00:00 +02:00
+		Assert.AreEqual(new DateTimeOffset(new DateTime(1000, 9, 26, 1, 0, 0, DateTimeKind.Unspecified), TimeSpan.FromHours(2)), dateTimePlusDay);
+		Assert.AreNotEqual(dateTime.AddDays(1), dateTimePlusDay);
+	}
 }

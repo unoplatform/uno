@@ -345,31 +345,31 @@ namespace Windows.Globalization
 			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "void Calendar.AddEras(int eras)");
 
 		public void AddYears(int years)
-			=> _time = _time.AddYears(years);
+			=> _time = _calendar.AddYears(_time.DateTime, years);
 
 		public void AddMonths(int months)
-			=> _time = _time.AddMonths(months);
+			=> _time = _calendar.AddMonths(_time.DateTime, months);
 
 		public void AddWeeks(int weeks)
-			=> _time = _time.AddDays(weeks * 7);
+			=> _time = _calendar.AddWeeks(_time.DateTime, weeks);
 
 		public void AddDays(int days)
-			=> _time = _time.AddDays(days);
+			=> _time = _calendar.AddDays(_time.DateTime, days);
 
 		public void AddPeriods(int periods)
 			=> AddHours((_clock == ClockIdentifiers.TwentyFourHour ? 24 : 12) * periods);
 
 		public void AddHours(int hours)
-			=> _time = _time.AddHours(hours);
+			=> _time = _calendar.AddHours(_time.DateTime, hours);
 
 		public void AddMinutes(int minutes)
-			=> _time = _time.AddMinutes(minutes);
+			=> _time = _calendar.AddMinutes(_time.DateTime, minutes);
 
 		public void AddSeconds(int seconds)
-			=> _time = _time.AddSeconds(seconds);
+			=> _time = _calendar.AddSeconds(_time.DateTime, seconds);
 
 		public void AddNanoseconds(int nanoseconds)
-				=> _time = _time.AddMilliseconds(nanoseconds / 1000d);
+			=> _time = _calendar.AddMilliseconds(_time.DateTime, nanoseconds / 1000d);
 		#endregion
 
 		#region IComparable
