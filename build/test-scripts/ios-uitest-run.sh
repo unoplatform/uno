@@ -79,6 +79,9 @@ fi
 export UNO_UITEST_PLATFORM=iOS
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
+export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
+export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
+
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-ios-$SCREENSHOTS_FOLDERNAME-${UITEST_SNAPSHOTS_GROUP=automated}-${UITEST_AUTOMATED_GROUP=automated}-${UITEST_RUNTIME_TEST_GROUP=automated}.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
@@ -101,8 +104,9 @@ fi
 echo "Current system date"
 date
 
-echo "Listing iOS simulators"
-xcrun simctl list devices --json
+export DEVICELIST_FILEPATH=$LOG_FILEPATH/DeviceList-$LOG_PREFIX.json
+echo "Listing iOS simulators to $DEVICELIST_FILEPATH"
+xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
@@ -209,8 +213,6 @@ else
 fi
 
 # export the simulator logs
-export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
-export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
 export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
 export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
 
