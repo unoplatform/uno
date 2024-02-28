@@ -141,7 +141,7 @@ cd $BUILD_SOURCESDIRECTORY/build
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-if [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
+if [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
 	UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 
