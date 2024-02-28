@@ -1,3 +1,7 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.Windowing.Native;
+
 namespace Microsoft.UI.Windowing;
 
 /// <summary>
@@ -5,36 +9,81 @@ namespace Microsoft.UI.Windowing;
 /// </summary>
 public partial class OverlappedPresenter : AppWindowPresenter
 {
+	private bool _isResizable;
+	private bool _isModal;
+	private bool _isMinimizable;
+	private bool _isMaximizable;
+	private bool _isAlwaysOnTop;
+	private bool _hasBorder;
+	private bool _hasTitleBar;
+
 	internal OverlappedPresenter() : base(AppWindowPresenterKind.Overlapped)
 	{
 	}
 
-	public bool IsResizable { get; set; }
+	internal INativeOverlappedPresenter Native { get; private set; }
 
-	public bool IsModal { get; set; }
+	public bool IsResizable
+	{
+		get => _isResizable;
+		set
+		{
+			_isResizable = value;
+			Native?.SetIsResizable(value);
+		}
+	}
 
-	public bool IsMinimizable { get; set; }
+	public bool IsModal
+	{
+		get => _isModal;
+		set
+		{
+			_isModal = value;
+			Native?.SetIsModal(value);
+		}
+	}
 
-	public bool IsMaximizable { get; set; }
+	public bool IsMinimizable
+	{
+		get => _isMinimizable;
+		set
+		{
+			_isMinimizable = value;
+			Native?.SetIsMinimizable(value);
+		}
+	}
 
-	public bool IsAlwaysOnTop { get; set; }
+	public bool IsMaximizable
+	{
+		get => _isMaximizable;
+		set
+		{
+			_isMaximizable = value;
+			Native?.SetIsMaximizable(value);
+		}
+	}
 
-	public bool HasBorder { get; internal set; }
+	public bool IsAlwaysOnTop
+	{
+		get => _isAlwaysOnTop;
+		set
+		{
+			_isAlwaysOnTop = value;
+			Native?.SetIsAlwaysOnTop(value);
+		}
+	}
 
-	public bool HasTitleBar { get; internal set; }
+	public bool HasBorder => _hasBorder;
 
-	public OverlappedPresenterState State { get; internal set; } = OverlappedPresenterState.Restored;
+	public bool HasTitleBar => _hasTitleBar;
+
+	public OverlappedPresenterState State => Native?.State ?? OverlappedPresenterState.Restored;
 
 	public static OverlappedPresenterState RequestedStartupState { get; } = OverlappedPresenterState.Restored;
 
-	public void Restore()
-	{
-	}
+	public void Restore() => Restore(false);
 
-	public void Maximize()
-	{
-
-	}
+	public void Maximize() => Native.Maximize();
 
 	/// <summary>
 	/// Minimizes the window that the presenter is applied to.
@@ -45,9 +94,7 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// 
 	/// </summary>
 	/// <param name="activateWindow"></param>
-	public void Minimize(bool activateWindow)
-	{
-	}
+	public void Minimize(bool activateWindow) => Native.Minimize(activateWindow);
 
 	/// <summary>
 	/// Sets the border and title bar properties of the window.
@@ -56,71 +103,97 @@ public partial class OverlappedPresenter : AppWindowPresenter
 	/// <param name="hasTitleBar">True if this window has a title bar; otherwise, false.</param>
 	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
 	{
-		HasBorder = hasBorder;
-		HasTitleBar = hasTitleBar;
+		_hasBorder = hasBorder;
+		_hasTitleBar = hasTitleBar;
+		Native?.SetBorderAndTitleBar(hasBorder, hasTitleBar);
 	}
 
-	public void Restore(bool activateWindow)
-	{
-	}
+	public void Restore(bool activateWindow) => Native.Restore(activateWindow);
 
 	/// <summary>
 	/// Creates a new instance of OverlappedPresenter.
 	/// </summary>
 	/// <returns>A new instance of OverlappedPresenter.</returns>
-	public static OverlappedPresenter Create() => new OverlappedPresenter()
+	public static OverlappedPresenter Create()
 	{
-		HasBorder = true,
-		HasTitleBar = true,
-		IsAlwaysOnTop = false,
-		IsMaximizable = true,
-		IsMinimizable = true,
-		IsModal = false,
-		IsResizable = true,
-	};
+		var presenter = new OverlappedPresenter()
+		{
+			IsAlwaysOnTop = false,
+			IsMaximizable = true,
+			IsMinimizable = true,
+			IsModal = false,
+			IsResizable = true,
+		};
+		presenter.SetBorderAndTitleBar(true, true);
+		return presenter;
+	}
 
 	/// <summary>
 	/// Creates an OverlappedPresenter object pre-populated with the values for a context menu.
 	/// </summary>
 	/// <returns>An OverlappedPresenter object pre-populated with the values for a context menu.</returns>
-	public static OverlappedPresenter CreateForContextMenu() => new OverlappedPresenter()
+	public static OverlappedPresenter CreateForContextMenu()
 	{
-		HasBorder = true,
-		HasTitleBar = false,
-		IsAlwaysOnTop = true,
-		IsMaximizable = false,
-		IsMinimizable = false,
-		IsModal = false,
-		IsResizable = false,
-	};
+		var presenter = new OverlappedPresenter()
+		{
+			IsAlwaysOnTop = true,
+			IsMaximizable = false,
+			IsMinimizable = false,
+			IsModal = false,
+			IsResizable = false,
+		};
+		presenter.SetBorderAndTitleBar(true, false);
+		return presenter;
+	}
 
 	/// <summary>
 	/// Creates an OverlappedPresenter object pre-populated with the values for a dialog.
 	/// </summary>
 	/// <returns>An OverlappedPresenter object pre-populated with the values for a dialog.</returns>
-	public static OverlappedPresenter CreateForDialog() => new OverlappedPresenter()
+	public static OverlappedPresenter CreateForDialog()
 	{
-		HasBorder = true,
-		HasTitleBar = true,
-		IsAlwaysOnTop = true,
-		IsMaximizable = false,
-		IsMinimizable = false,
-		IsModal = false,
-		IsResizable = false,
-	};
+		var presenter = new OverlappedPresenter()
+		{
+			IsAlwaysOnTop = true,
+			IsMaximizable = false,
+			IsMinimizable = false,
+			IsModal = false,
+			IsResizable = false,
+		};
+		presenter.SetBorderAndTitleBar(true, true);
+		return presenter;
+	}
 
 	/// <summary>
 	/// Creates an OverlappedPresenter object pre-populated with the values for a tool window.
-	/// </summary>
+	/// </summary> 
 	/// <returns>An OverlappedPresenter object pre-populated with the values for a tool window.</returns>
-	public static OverlappedPresenter CreateForToolWindow() => new OverlappedPresenter()
+	public static OverlappedPresenter CreateForToolWindow()
 	{
-		HasBorder = true,
-		HasTitleBar = true,
-		IsAlwaysOnTop = false,
-		IsMaximizable = true,
-		IsMinimizable = true,
-		IsModal = false,
-		IsResizable = true,
-	};
+		var presenter = new OverlappedPresenter()
+		{
+			IsAlwaysOnTop = false,
+			IsMaximizable = true,
+			IsMinimizable = true,
+			IsModal = false,
+			IsResizable = true,
+		};
+		presenter.SetBorderAndTitleBar(true, true);
+		return presenter;
+	}
+
+	internal void SetNative(INativeOverlappedPresenter nativePresenter)
+	{
+		Native = nativePresenter;
+		if (Native is not null)
+		{
+			// Apply initial values of all properties
+			Native.SetIsModal(IsModal);
+			Native.SetIsResizable(IsResizable);
+			Native.SetIsMinimizable(IsMinimizable);
+			Native.SetIsMaximizable(IsMaximizable);
+			Native.SetIsAlwaysOnTop(IsAlwaysOnTop);
+			Native.SetBorderAndTitleBar(HasBorder, HasTitleBar);
+		}
+	}
 }

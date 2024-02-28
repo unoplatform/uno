@@ -27,8 +27,5 @@ public partial class AppWindowPresenter
 		}
 
 		Owner = owner;
-
-		// Cleanup old owner actions
-		// Subscribe to new owner actions
 	}
 }

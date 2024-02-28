@@ -2,6 +2,10 @@
 
 using System;
 using System.ComponentModel;
+using System.Windows;
+using Microsoft.UI.Windowing;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -13,6 +17,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class WpfWindowWrapper : NativeWindowWrapperBase
 {
 	private readonly UnoWpfWindow _wpfWindow;
+	private bool _isFullScreen;
 
 	public WpfWindowWrapper(UnoWpfWindow wpfWindow)
 	{
@@ -25,6 +30,12 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.Closed += OnNativeClosed;
 	}
 
+	public override string Title
+	{
+		get => _wpfWindow.Title;
+		set => _wpfWindow.Title = value;
+	}
+
 	public override object NativeWindow => _wpfWindow;
 
 	protected override void ShowCore() => _wpfWindow.Show();
@@ -35,7 +46,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
 	{
-		Bounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
+		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
 		VisibleBounds = Bounds;
 	}
 
@@ -82,5 +93,23 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 			Visible = isVisible;
 			WinUIApplication.Current?.RaiseEnteredBackground(null);
 		}
+	}
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		_wpfWindow.WindowStyle = WindowStyle.None;
+		_wpfWindow.WindowState = WindowState.Maximized;
+
+		return Disposable.Create(() =>
+		{
+			if (!_isFullScreen)
+			{
+				return;
+			}
+
+			_isFullScreen = false;
+			_wpfWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+			_wpfWindow.WindowState = WindowState.Normal;
+		});
 	}
 }

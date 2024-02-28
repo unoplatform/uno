@@ -65,7 +65,6 @@ internal class UnoWpfWindow : WpfWindow
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		Title = _applicationView.Title;
 		MinWidth = _applicationView.PreferredMinSize.Width;
 		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
@@ -102,11 +101,6 @@ internal class UnoWpfWindow : WpfWindow
 					this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
 				}
 			}
-		}
-
-		if (string.IsNullOrEmpty(_applicationView.Title))
-		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 }
