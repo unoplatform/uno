@@ -2,7 +2,10 @@
 
 using System;
 using Microsoft.UI.Windowing;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Microsoft.UI.Windowing.Native;
 using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Controls;
@@ -13,6 +16,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private Rect _visibleBounds;
 	private bool _visible;
 	private CoreWindowActivationState _activationState;
+	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
 	public abstract object? NativeWindow { get; }
 
@@ -68,6 +72,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
+	public abstract string Title { get; set; }
+
 	public event EventHandler<Size>? SizeChanged;
 	public event EventHandler<Rect>? VisibleBoundsChanged;
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
@@ -96,4 +102,27 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	}
 
 	protected void RaiseClosed() => Closed?.Invoke(this, EventArgs.Empty);
+
+	public void SetPresenter(AppWindowPresenter presenter)
+	{
+		switch (presenter)
+		{
+			case FullScreenPresenter _:
+				_presenterSubscription.Disposable = ApplyFullScreenPresenter();
+				break;
+			case OverlappedPresenter overlapped:
+				_presenterSubscription.Disposable = ApplyOverlappedPresenter(overlapped);
+				break;
+			default:
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"AppWindow presenter type {presenter.GetType()} is not supported yet");
+				}
+				break;
+		}
+	}
+
+	protected virtual IDisposable ApplyFullScreenPresenter() => Disposable.Empty;
+
+	protected virtual IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter) => Disposable.Empty;
 }

@@ -14,6 +14,8 @@ internal interface IWindowImplementation
 {
 	bool Visible { get; }
 
+	string Title { get; set; }
+
 	XamlRoot? XamlRoot { get; }
 
 	Rect Bounds { get; }

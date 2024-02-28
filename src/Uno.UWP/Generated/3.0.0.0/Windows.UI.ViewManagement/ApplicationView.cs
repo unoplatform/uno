@@ -8,7 +8,7 @@ namespace Windows.UI.ViewManagement
 #endif
 	public partial class ApplicationView
 	{
-#if false || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public string Title
 		{

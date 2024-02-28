@@ -8,7 +8,7 @@ namespace Microsoft.UI.Windowing
 #endif
 	public partial class CompactOverlayPresenter : global::Microsoft.UI.Windowing.AppWindowPresenter
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		internal CompactOverlayPresenter()
 		{
 		}
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Windowing
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.set
 		// Forced skipping of method Microsoft.UI.Windowing.CompactOverlayPresenter.InitialSize.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Windowing.CompactOverlayPresenter Create()
 		{

@@ -92,4 +92,24 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private void ResizeObserver(NSNotification obj) => RaiseNativeSizeChanged();
+
+
+
+	//public bool TryEnterFullScreenMode()
+	//{
+	//	if (IsFullScreen)
+	//	{
+	//		return false;
+	//	}
+	//	NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
+	//	return true;
+	//}
+
+	//public void ExitFullScreenMode()
+	//{
+	//	if (IsFullScreen)
+	//	{
+	//		NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
+	//	}
+	//}
 }

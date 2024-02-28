@@ -123,4 +123,17 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
+
+	//public bool TryEnterFullScreenMode()
+	//{
+	//	CoreDispatcher.CheckThreadAccess();
+	//	UIApplication.SharedApplication.StatusBarHidden = true;
+	//	return UIApplication.SharedApplication.StatusBarHidden;
+	//}
+
+	//public void ExitFullScreenMode()
+	//{
+	//	CoreDispatcher.CheckThreadAccess();
+	//	UIApplication.SharedApplication.StatusBarHidden = false;
+	//}
 }

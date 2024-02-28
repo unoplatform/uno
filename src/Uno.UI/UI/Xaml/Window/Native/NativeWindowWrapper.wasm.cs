@@ -35,4 +35,16 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	protected override void ShowCore() => WindowManagerInterop.WindowActivate();
+
+	public bool TryEnterFullScreenMode() => SetFullScreenMode(true);
+
+	public void ExitFullScreenMode() => SetFullScreenMode(false);
+
+	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
+
+	public override string Title
+	{
+		get => NativeMethods.GetWindowTitle();
+		set => NativeMethods.SetWindowTitle(value);
+	}
 }

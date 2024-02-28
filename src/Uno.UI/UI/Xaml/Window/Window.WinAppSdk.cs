@@ -33,8 +33,8 @@ partial class Window
 #endif
 	string Title
 	{
-		get => ApplicationView.GetForWindowId(AppWindow.Id).Title;
-		set => ApplicationView.GetForWindowId(AppWindow.Id).Title = value;
+		get => _windowImplementation.Title;
+		set => _windowImplementation.Title = value;
 	}
 #endif
 }
