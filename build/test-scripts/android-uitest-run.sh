@@ -165,7 +165,7 @@ then
 
 	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
-	while [[ ! $(adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE") && $SECONDS -lt $END_TIME ]]; do
+	while [[ ! $(adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
 		echo "Waiting $INTERVAL seconds for test results to be written to $UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
 
