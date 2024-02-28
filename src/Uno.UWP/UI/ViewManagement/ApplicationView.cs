@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -24,7 +26,6 @@ namespace Windows.UI.ViewManagement
 		private static readonly Dictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
 
 		private readonly MUXWindowId _windowId;
-		private AppWindow _appWindow;
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
@@ -40,6 +41,12 @@ namespace Windows.UI.ViewManagement
 		}
 
 		partial void InitializePlatform();
+
+		public string Title
+		{
+			get => AppWindow.GetFromWindowId(_windowId).Title;
+			set => AppWindow.GetFromWindowId(_windowId).Title = value;
+		}
 
 		public ApplicationViewOrientation Orientation
 		{
@@ -94,8 +101,23 @@ namespace Windows.UI.ViewManagement
 
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> VisibleBoundsChanged;
 
-		[global::Uno.NotImplemented]
-		public bool IsFullScreenMode => Wino;
+		/// <summary>
+		/// Gets a value that indicates whether the app is running in full-screen mode.
+		/// </summary>
+		public bool IsFullScreenMode => GetAppWindow()?.Presenter is FullScreenPresenter;
+
+		public bool TryEnterFullScreenMode()
+		{
+			if (GetAppWindow() is { } appWindow)
+			{
+				appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
+				return appWindow.Presenter is FullScreenPresenter;
+			}
+
+			return false;
+		}
+
+		public void ExitFullScreenMode() => GetAppWindow()?.SetPresenter(AppWindowPresenterKind.Default);
 
 		public global::Windows.UI.ViewManagement.ApplicationViewTitleBar TitleBar => _titleBar;
 
@@ -107,7 +129,7 @@ namespace Windows.UI.ViewManagement
 			return GetOrCreateForWindowId(AppWindow.MainWindowId);
 		}
 
-		private AppWindow GetAppWindow() => AppWindow.GetFromWindowId(_windowIdMap);
+		private AppWindow GetAppWindow() => AppWindow.GetFromWindowId(_windowId);
 
 #pragma warning disable RS0030 // Do not use banned APIs
 		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentViewSafe() => GetForCurrentView();

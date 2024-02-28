@@ -54,49 +54,6 @@ partial class ApplicationView
 
 	internal void SetTrueVisibleBounds(Rect trueVisibleBounds) => _trueVisibleBounds = trueVisibleBounds;
 
-	public bool TryEnterFullScreenMode()
-	{
-		CoreDispatcher.CheckThreadAccess();
-		UpdateFullScreenMode(true);
-		return true;
-	}
-
-	public void ExitFullScreenMode()
-	{
-		CoreDispatcher.CheckThreadAccess();
-		UpdateFullScreenMode(false);
-	}
-
-	private void UpdateFullScreenMode(bool isFullscreen)
-	{
-#pragma warning disable 618
-		var activity = ContextHelper.Current as Activity;
-#pragma warning disable CA1422 // Validate platform compatibility
-		var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
-#pragma warning restore CA1422 // Validate platform compatibility
-
-		if (isFullscreen)
-		{
-			uiOptions |= (int)SystemUiFlags.Fullscreen;
-			uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-			uiOptions |= (int)SystemUiFlags.HideNavigation;
-			uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-		}
-		else
-		{
-			uiOptions &= ~(int)SystemUiFlags.Fullscreen;
-			uiOptions &= ~(int)SystemUiFlags.ImmersiveSticky;
-			uiOptions &= ~(int)SystemUiFlags.HideNavigation;
-			uiOptions &= ~(int)SystemUiFlags.LayoutHideNavigation;
-		}
-
-#pragma warning disable CA1422 // Validate platform compatibility
-		activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
-	}
-
-
 	private Activity GetCurrentActivity([CallerMemberName] string propertyName = null)
 	{
 		if (!(ContextHelper.Current is Activity activity))

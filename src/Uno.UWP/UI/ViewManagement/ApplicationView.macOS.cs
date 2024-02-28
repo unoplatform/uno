@@ -29,34 +29,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public bool IsFullScreen
-		{
-			get
-			{
-				VerifyKeyWindowInitialized();
-				return NSApplication.SharedApplication.KeyWindow.StyleMask.HasFlag(NSWindowStyle.FullScreenWindow);
-			}
-		}
-
-		public bool TryEnterFullScreenMode()
-		{
-			if (IsFullScreen)
-			{
-				return false;
-			}
-			NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
-			return true;
-		}
-
-		public void ExitFullScreenMode()
-		{
-			if (IsFullScreen)
-			{
-				NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
-			}
-		}
-
-
 		public bool TryResizeView(Size value)
 		{
 			VerifyKeyWindowInitialized();
