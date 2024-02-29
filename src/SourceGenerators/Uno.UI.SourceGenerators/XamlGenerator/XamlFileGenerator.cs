@@ -939,11 +939,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
 										}
 
-										if (CurrentScope.Location is not null && _isHotReloadEnabled)
-										{
-											TrySetOriginalSourceLocation(writer, "__rootInstance", CurrentScope.Location.LineNumber, CurrentScope.Location.LinePosition);
-										}
-
 										writer.AppendLineIndented("return __rootInstance;");
 									}
 								}
@@ -5959,6 +5954,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildChildThroughSubclass(writer, contentOwner, contentLocation, returnType);
 
 						writer.AppendIndented(")");
+						if (_isHotReloadEnabled)
+						{
+							using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
+							{
+								TrySetOriginalSourceLocation(applyWriter, closureName, contentLocation.LineNumber, contentLocation.LinePosition);
+							}
+						}
+
 					}
 					else
 					{
