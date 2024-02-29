@@ -1,6 +1,6 @@
 <Project>
 	<!-- CI helper to split net8 and net7 builds and actually build on net6 the net6.0-* targets -->
-	<PropertyGroup Condition="'$(UnoDisableNet7Mobile)'=='true'">
+	<PropertyGroup Condition="'$(UnoDisableNetPreviousMobile)'=='true'">
 		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net7.0-ios','').Replace('net7.0-android','').Replace('net7.0-maccatalyst','').Replace('net7.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--

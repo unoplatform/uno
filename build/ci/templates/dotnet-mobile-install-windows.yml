@@ -11,7 +11,7 @@ steps:
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3
-    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
+    condition: and(succeeded(), eq(variables.UnoDisableNetPreviousMobile, 'true'))
 
   - powershell: |
       & dotnet tool update --global uno.check --version 1.14.1 --add-source https://api.nuget.org/v3/index.json
@@ -20,4 +20,4 @@ steps:
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
     retryCountOnTaskFailure: 3
-    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
+    condition: and(succeeded(), ne(variables.UnoDisableNetPreviousMobile, 'true'))
