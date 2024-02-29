@@ -103,6 +103,11 @@ internal class UnoGtkWindow : Window
 				}
 			}
 		}
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
+		{
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
 	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();

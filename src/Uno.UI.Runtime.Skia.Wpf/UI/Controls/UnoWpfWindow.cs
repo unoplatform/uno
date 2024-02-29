@@ -102,5 +102,10 @@ internal class UnoWpfWindow : WpfWindow
 				}
 			}
 		}
+
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
+		{
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
 	}
 }
