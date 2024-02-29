@@ -13,11 +13,27 @@ typedef void (*resize_fn_ptr)(void* /* window */, double /* width */, double /* 
 resize_fn_ptr uno_get_resize_callback(void);
 void uno_set_resize_callback(resize_fn_ptr p);
 
+@interface windowDidChangeScreenNoteClass : NSObject
+{
+    struct SharedScreenData *sharedScreenData;
+}
++ (windowDidChangeScreenNoteClass*) initWith:(void*) screenData;
+- (void) windowDidChangeScreenNotification:(NSNotification*) note;
+- (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
+@end
+
 @interface UNOWindow : NSWindow <NSWindowDelegate>
+
++ (void)initialize;
+- (instancetype)initWithContentRect:(NSRect)contentRect styleMask:(NSWindowStyleMask)style backing:(NSBackingStoreType)backingStoreType defer:(BOOL)flag;
+- (void)dealloc;
 
 @property (strong) UNOMetalViewDelegate* metalViewDelegate;
 
 - (void)sendEvent:(NSEvent *)event;
+
+- (bool)windowShouldClose:(NSWindow *)sender;
+- (void)windowWillClose:(NSNotification *)notification;
 
 @end
 
@@ -257,9 +273,13 @@ typedef int32_t (*window_key_callback_fn_ptr)(UNOWindow* window, VirtualKey key,
 typedef int32_t (*window_mouse_callback_fn_ptr)(UNOWindow* window, struct MouseEventData *data);
 void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer);
 
-typedef bool (*window_should_close_fn_ptr)(void);
+typedef bool (*window_should_close_fn_ptr)(UNOWindow* window);
 window_should_close_fn_ptr uno_get_window_should_close_callback(void);
-void uno_set_window_should_close_callback(window_should_close_fn_ptr p);
+
+typedef void (*window_close_fn_ptr)(UNOWindow* window);
+window_close_fn_ptr uno_get_window_close_callback(void);
+
+void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
 
 void* uno_window_get_metal(UNOWindow* window);
 

@@ -154,20 +154,26 @@ void uno_application_quit(void)
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-    NSWindow *win = uno_app_get_main_window();
 #if DEBUG
+    NSWindow *win = uno_app_get_main_window();
     NSLog(@"UNOApplicationDelegate.applicationDidFinishLaunching notification %@ win %@", notification, win);
 #endif
     // creating the window will call `makeKeyWindow` and `orderFrontRegardless`
 }
 
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
-{
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
 #if DEBUG
-    NSLog(@"UNOApplicationDelegate.applicationShouldTerminateAfterLastWindowClosed %@", theApplication);
+    NSLog(@"UNOApplicationDelegate.applicationShouldTerminate %@", sender);
 #endif
     // as long as `ICoreApplicationExtension.CanExit` returns `true` there's no need for any additional check here
-    return uno_get_application_can_exit_callback()() ? YES : NO;
+    return uno_get_application_can_exit_callback()() ? NSTerminateNow : NSTerminateCancel;
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
+#if DEBUG
+    NSLog(@"UNOApplicationDelegate.applicationShouldTerminateAfterLastWindowClosed %@", sender);
+#endif
+    return YES;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context

@@ -36,7 +36,8 @@ void uno_application_quit(void);
 @interface UNOApplicationDelegate : NSObject <NSApplicationDelegate>
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication;
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender;
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change context:(nullable void *)context;
 
 @end

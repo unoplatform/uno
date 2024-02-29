@@ -6,18 +6,6 @@
 #import "UNOWindow.h"
 #import "UnoNativeMac.h"
 
-static soft_draw_fn_ptr soft_draw;
-
-inline soft_draw_fn_ptr uno_get_soft_draw_callback(void)
-{
-    return soft_draw;
-}
-
-void uno_set_soft_draw_callback(soft_draw_fn_ptr p)
-{
-    soft_draw = p;
-}
-
 @implementation UNOSoftView
 
 - (void)drawRect:(NSRect)dirtyRect
