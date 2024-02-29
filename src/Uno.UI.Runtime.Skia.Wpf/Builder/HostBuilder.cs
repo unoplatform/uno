@@ -15,7 +15,10 @@ public static class HostBuilder
 		builder.AddHostBuilder(() =>
 		{
 			var wpfBuilder = new WpfHostBuilder();
-			windowsBuilder?.Invoke(wpfBuilder);
+			if (wpfBuilder.IsSupported)
+			{
+				windowsBuilder?.Invoke(wpfBuilder);
+			}
 			return wpfBuilder;
 		});
 
