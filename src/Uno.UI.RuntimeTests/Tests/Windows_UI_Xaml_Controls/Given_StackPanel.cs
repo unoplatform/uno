@@ -426,7 +426,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(stackPanel);
 
-			Assert.AreEqual(20 * 3 + 10 * 2, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+			Assert.AreEqual(20 * 3 + 10 * 2, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+
+			ValidateSpacingPositions(orientation, stackPanel);
 		}
 
 		[TestMethod]
@@ -451,7 +453,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			stackPanel.Loaded += (s, e) => isLoaded = true;
 			WindowHelper.WindowContent = stackPanel;
 			await WindowHelper.WaitFor(() => isLoaded);
-			Assert.AreEqual(0, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+			Assert.AreEqual(0, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel);
 		}
 
 		[TestMethod]
@@ -476,7 +479,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(stackPanel);
 
-			Assert.AreEqual(20 * 2 + 10, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+			Assert.AreEqual(20 * 2 + 10, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel);
 		}
 
 		[TestMethod]
@@ -501,7 +505,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(stackPanel);
 
-			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel);
 		}
 
 		[TestMethod]
@@ -526,7 +531,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(stackPanel);
 
-			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel);
 		}
 
 		[TestMethod]
@@ -552,7 +558,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(stackPanel);
 
-			Assert.AreEqual(2 * 20 + 10, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.DesiredSize.Width);
+			Assert.AreEqual(2 * 20 + 10, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel);
+		}
+
+		private static void ValidateSpacingPositions(Orientation orientation, StackPanel stackPanel)
+		{
+			var expectedPosition = 0;
+			foreach (var border in stackPanel.Children)
+			{
+				if (border.Visibility == Visibility.Collapsed)
+				{
+					continue;
+				}
+
+				var position = border.TransformToVisual(stackPanel).TransformPoint(new Point(0, 0));
+				Assert.AreEqual(expectedPosition, orientation == Orientation.Vertical ? position.Y : position.X);
+				Assert.AreEqual(0, orientation == Orientation.Vertical ? position.X : position.Y);
+				expectedPosition += 20 + 10;
+			}
 		}
 	}
 }
