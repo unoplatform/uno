@@ -21,7 +21,7 @@ namespace Uno.Extensions
 			var tcs = new TaskCompletionSource<T>();
 
 			await dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+				priority,
 				async () =>
 				{
 					try
