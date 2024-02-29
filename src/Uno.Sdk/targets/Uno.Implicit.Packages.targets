@@ -1,4 +1,7 @@
 <Project>
+	<PropertyGroup>
+		<UnoFeatures>$([System.Text.RegularExpressions.Regex]::Replace($(UnoFeatures), '\s', ''))</UnoFeatures>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<_UnoImplicitPackageReference Include="Uno.WinUI" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
