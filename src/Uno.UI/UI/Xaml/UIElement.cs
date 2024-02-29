@@ -840,7 +840,10 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
+
+#if __SKIA__
 			InvalidateArrange();
+#endif
 		}
 
 		partial void ApplyNativeClip(Rect rect);
