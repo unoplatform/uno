@@ -145,6 +145,9 @@ if [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
 	UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 
+	# Install the app
+	adb install $UNO_UITEST_ANDROIDAPK_PATH
+
 	# Set the environment variables for the test run, note that the app needs to clone these values to
 	# standard environment variables to be able to use them
 	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP"
