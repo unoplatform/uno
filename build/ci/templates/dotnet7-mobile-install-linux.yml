@@ -1,0 +1,14 @@
+parameters:
+  UnoCheck_Version: '1.20.2'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
+
+steps:
+
+  - template: dotnet-install.yml
+
+  - bash: |
+      dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
+      uno-check --ci --non-interactive --fix --skip gtk3 --manifest ${{ parameters.UnoCheck_Manifest }}
+    displayName: Install .NET Workloads
+    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
+    retryCountOnTaskFailure: 3

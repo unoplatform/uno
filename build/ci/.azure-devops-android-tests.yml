@@ -1,6 +1,7 @@
 parameters:
   vmMacOSImage: ''
   vmWindowsImage: ''
+  vmLinuxImage: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
@@ -24,7 +25,7 @@ jobs:
   displayName: 'Build .NET Mobile Android UI Tests'
 
   pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   variables:
     CI_Build: true
@@ -39,7 +40,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet7-mobile-install-mac.yml
+  - template: templates/dotnet7-mobile-install-linux.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -83,7 +84,7 @@ jobs:
     UNO_UITEST_BUCKET_COUNT: 5
 
   pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   strategy:
     matrix:
@@ -134,6 +135,12 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
 
   - task: DownloadBuildArtifacts@0
     displayName: 'Download SamplesApp UnitTests'

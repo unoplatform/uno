@@ -180,6 +180,7 @@ stages:
   - template: .azure-devops-android-tests.yml
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       vmMacOSImage: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
       XamarinSDKVersion: '$(XamarinSDKVersion)'
