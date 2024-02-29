@@ -7,6 +7,87 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 public class Given_Calendar
 {
 	[TestMethod]
+	public void When_Julian_Calendar()
+	{
+		// It's very important that this test doesn't crash, because that's what CalendarView does when using Julian calendar.
+		// NOTE: Running this test on WinUI will crash!!
+		// However, the crash happens when transitioning from Windows.Foundation.DateTime to System.DateTime (due to negative ticks).
+		// So, the same code in C++ won't crash, which is why we care about this test as CalendarView is ported from C++.
+		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
+		calendar.SetToMin();
+
+		// Doesn't match Windows, but to avoid crashes with CalendarView
+		Assert.AreEqual(new DateTime(2, 1, 1), calendar.GetDateTime().Date);
+
+		Assert.AreEqual(3, calendar.Day);
+
+		calendar.Day = 1;
+		Assert.AreEqual(1, calendar.Day);
+	}
+
+	[TestMethod]
+	public void When_Julian_Calendar_Day_Name()
+	{
+		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
+		calendar.SetDateTime(new DateTime(2024, 2, 29));
+
+		Assert.AreEqual("16", calendar.DayAsString());
+		Assert.AreEqual(DateTimeKind.Unspecified, calendar.GetDateTime().DateTime.Kind);
+	}
+
+	[TestMethod]
+	[DataRow("JulianCalendar", "16", -1)]
+	[DataRow("JulianCalendar", "16", 0)]
+	[DataRow("JulianCalendar", "15", 1)]
+	[DataRow("GregorianCalendar", "29", -1)]
+	[DataRow("GregorianCalendar", "29", 0)]
+	[DataRow("GregorianCalendar", "28", 1)]
+	public void When_Calendar_Unspecified_DateTimeKind_Different_Offsets(string identifier, string expectedDayAsString, double offset)
+	{
+		offset += DateTimeOffset.Now.Offset.TotalHours;
+
+		var calendar = new Calendar(new[] { "en-US" }, identifier, ClockIdentifiers.TwelveHour);
+		var dateTime = new DateTimeOffset(new DateTime(2024, 2, 29, 0, 0, 0, DateTimeKind.Unspecified), TimeSpan.FromHours(offset));
+		calendar.SetDateTime(dateTime);
+
+		Assert.AreEqual(expectedDayAsString, calendar.DayAsString());
+		Assert.IsTrue(dateTime.Equals(calendar.GetDateTime()));
+		Assert.AreEqual(DateTimeKind.Unspecified, calendar.GetDateTime().DateTime.Kind);
+		Assert.AreEqual(DateTimeOffset.Now.Offset, calendar.GetDateTime().Offset);
+	}
+
+	[TestMethod]
+	[DataRow("JulianCalendar", "16")]
+	[DataRow("GregorianCalendar", "29")]
+	public void When_Calendar_Local_DateTimeKind(string identifier, string expectedDayAsString)
+	{
+		var calendar = new Calendar(new[] { "en-US" }, identifier, ClockIdentifiers.TwelveHour);
+		var offset = DateTimeOffset.Now.Offset;
+		var dateTime = new DateTimeOffset(new DateTime(2024, 2, 29, 0, 0, 0, DateTimeKind.Local), offset);
+		calendar.SetDateTime(dateTime);
+
+		Assert.AreEqual(expectedDayAsString, calendar.DayAsString());
+		Assert.IsTrue(dateTime.Equals(calendar.GetDateTime()));
+		Assert.AreEqual(DateTimeKind.Unspecified, calendar.GetDateTime().DateTime.Kind);
+		Assert.AreEqual(DateTimeOffset.Now.Offset, calendar.GetDateTime().Offset);
+	}
+
+	[TestMethod]
+	[DataRow("JulianCalendar", "16")]
+	[DataRow("GregorianCalendar", "29")]
+	public void When_Calendar_Utc_DateTimeKind(string identifier, string expectedDayAsString)
+	{
+		var calendar = new Calendar(new[] { "en-US" }, identifier, ClockIdentifiers.TwelveHour);
+		var dateTime = new DateTimeOffset(new DateTime(2024, 2, 29, 0, 0, 0, DateTimeKind.Utc), TimeSpan.Zero);
+		calendar.SetDateTime(dateTime);
+
+		Assert.AreEqual(expectedDayAsString, calendar.DayAsString());
+		Assert.IsTrue(dateTime.Equals(calendar.GetDateTime()));
+		Assert.AreEqual(DateTimeKind.Unspecified, calendar.GetDateTime().DateTime.Kind);
+		Assert.AreEqual(DateTimeOffset.Now.Offset, calendar.GetDateTime().Offset);
+	}
+
+	[TestMethod]
 	public void When_Switch_Period()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour);
