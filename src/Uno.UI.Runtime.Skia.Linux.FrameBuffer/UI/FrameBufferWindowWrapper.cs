@@ -3,6 +3,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Windows.UI.ViewManagement;
 
 namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
@@ -20,15 +21,15 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
-		Bounds = new Rect(default, newWindowSize);
-		VisibleBounds = new Rect(default, newWindowSize);
+		var newBounds = new Rect(default, newWindowSize);
+		var shouldRaise = newBounds != VisibleBounds;
+		VisibleBounds = newBounds;
+		Bounds = newBounds;
+		if (shouldRaise && Window.IsCurrentSet)
+		{
+			ApplicationView.GetForWindowId(Window!.AppWindow.Id).RaiseVisibleBoundsChanged();
+		}
 	}
-
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
-
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
-
-	internal void OnNativeClosed() => RaiseClosed();
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{

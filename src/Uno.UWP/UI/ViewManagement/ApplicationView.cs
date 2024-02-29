@@ -226,9 +226,12 @@ namespace Windows.UI.ViewManagement
 				{
 					this.Log().Debug($"Updated visible bounds {VisibleBounds}");
 				}
-
-				VisibleBoundsChanged?.Invoke(this, null);
 			}
+		}
+
+		internal void RaiseVisibleBoundsChanged()
+		{
+			VisibleBoundsChanged?.Invoke(this, VisibleBounds);
 		}
 	}
 }

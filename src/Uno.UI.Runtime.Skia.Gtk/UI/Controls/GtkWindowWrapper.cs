@@ -3,12 +3,14 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
+using Microsoft.UI;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
+using Windows.UI.ViewManagement;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
@@ -110,8 +112,14 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostSizeChanged(object? sender, Windows.Foundation.Size size)
 	{
-		Bounds = new Rect(default, size);
-		VisibleBounds = Bounds;
+		var newBounds = new Rect(default, size);
+		var shouldRaise = newBounds != VisibleBounds;
+		VisibleBounds = newBounds;
+		Bounds = newBounds;
+		if (shouldRaise && Microsoft.UI.Xaml.Window.IsCurrentSet)
+		{
+			ApplicationView.GetForWindowId(_gtkWindow.WindowId).RaiseVisibleBoundsChanged();
+		}
 	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)

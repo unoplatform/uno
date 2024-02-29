@@ -79,8 +79,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = new Size(_window.Frame.Width, _window.Frame.Height);
-		Bounds = new Rect(default, newWindowSize);
+		var newBounds = new Rect(default, newWindowSize);
+		var shouldRaise = newBounds != VisibleBounds;
 		VisibleBounds = Bounds;
+		if (shouldRaise && Microsoft.UI.Xaml.Window.IsCurrentSet)
+		{
+			// TODO: Handle when multiwin is supported on macOS
+			ApplicationView.GetForCurrentView()?.RaiseVisibleBoundsChanged();
+		}
 	}
 
 	private void ObserveOrientationAndSize()

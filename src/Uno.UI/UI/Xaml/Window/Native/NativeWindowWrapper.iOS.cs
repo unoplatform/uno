@@ -55,10 +55,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = GetWindowSize();
-
+		var shouldRaise = SetVisibleBounds(_nativeWindow, newWindowSize);
 		Bounds = new Rect(default, newWindowSize);
-
-		SetVisibleBounds(_nativeWindow, newWindowSize);
+		if (shouldRaise && Microsoft.UI.Xaml.Window.IsCurrentSet)
+		{
+			// TODO: Handle closing when multiwindow #13847
+			ApplicationView.GetForCurrentView()?.RaiseVisibleBoundsChanged();
+		}
 	}
 
 	private void ObserveOrientationAndSize()
@@ -95,7 +98,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
 
-	private void SetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
+	private bool SetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
 	{
 		var windowBounds = new Windows.Foundation.Rect(default, windowSize);
 
@@ -119,7 +122,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			height: windowBounds.Height - inset.Top - inset.Bottom
 		);
 
+		var shouldRaise = newVisibleBounds != VisibleBounds;
 		VisibleBounds = newVisibleBounds;
+		return shouldRaise;
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);

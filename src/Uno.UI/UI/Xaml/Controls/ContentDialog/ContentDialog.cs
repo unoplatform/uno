@@ -119,6 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_placementMode != PlacementMode.InPlace)
 			{
+				ResetContentProperties();
 				SizeAndPositionContentInPopup();
 			}
 		}
@@ -548,6 +549,28 @@ namespace Microsoft.UI.Xaml.Controls
 			if (args.Deferral == null)
 			{
 				Complete(args);
+			}
+		}
+
+		private void ResetContentProperties()
+		{
+			//if (m_templateVersion < TemplateVersion::Redstone3)
+			{
+				// Reset the content properties to recalculate the new width and height
+				// position with the original border thickness.
+				if (m_tpContentScrollViewerPart is not null)
+				{
+					m_tpContentScrollViewerPart.Height = double.NaN;
+				}
+
+				if (m_tpBackgroundElementPart is not null)
+				{
+					m_tpBackgroundElementPart.Width = double.NaN;
+				}
+
+				// We need to Update the Layout after we reset the values, this ensures that we will use the correct values to adjust
+				// the ContentDialog size and position.
+				UpdateLayout();
 			}
 		}
 	}
