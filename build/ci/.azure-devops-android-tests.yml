@@ -40,7 +40,12 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/dotnet7-mobile-install-linux.yml
+  - script: |
+      cp global.json global-net7.json
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
+
+  - template: templates/dotnet-mobile-install-linux.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -50,12 +55,12 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net7.0-android -c Release -p:UnoTargetFrameworkOverride=net7.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net8.0-android -c Release -p:UnoTargetFrameworkOverride=net8.0-android /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Android samples app
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-android/publish
       Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
