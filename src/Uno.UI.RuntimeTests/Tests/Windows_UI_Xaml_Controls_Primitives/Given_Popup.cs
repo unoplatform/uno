@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
+using Windows.Media.Capture.Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
@@ -110,6 +111,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			popup.IsOpen = false;
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
+		{
+			var popup = new Popup()
+			{
+				Child = new Button() { Content = "Test" },
+				IsLightDismissEnabled = isLightDismissEnabled
+			};
+			try
+			{
+				TestServices.WindowHelper.WindowContent = popup;
+				popup.IsOpen = true;
+				await WindowHelper.WaitForLoaded(popup);
+				var popupRoot = TestServices.WindowHelper.XamlRoot.VisualTree.PopupRoot;
+				popupRoot.CloseLightDismissablePopups();
+				await WindowHelper.WaitForLoaded(popup);
+				Assert.AreEqual(!isLightDismissEnabled, popup.IsOpen);
+			}
+			finally
+			{
+				popup.IsOpen = false;
+			}
+		}
+#endif
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
 		{

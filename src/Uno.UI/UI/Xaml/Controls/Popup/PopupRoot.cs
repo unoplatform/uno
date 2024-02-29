@@ -53,7 +53,7 @@ internal partial class PopupRoot : Panel
 >>>>>>> 223faacf52 (fix: Avoid closing non-light-dismissable flyouts on Window activation)
 	}
 
-	private void CloseLightDismissablePopups()
+	internal void CloseLightDismissablePopups()
 	{
 		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
