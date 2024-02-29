@@ -161,6 +161,9 @@ namespace Microsoft.UI.Composition
 		public ExpressionAnimation CreateExpressionAnimation(string expression)
 			=> new ExpressionAnimation(this) { Expression = expression };
 
+		public ExpressionAnimation CreateExpressionAnimation()
+			=> new ExpressionAnimation(this);
+
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
 
 		partial void InvalidateRenderPartial(Visual visual);
