@@ -18,7 +18,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
-	private string _title;
 
 	public NativeWindowWrapper()
 	{
