@@ -40,25 +40,25 @@ internal class Transform2DEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "InterpolationMode":
+			case nameof(InterpolationMode):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BorderMode":
+			case nameof(BorderMode):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "TransformMatrix":
+			case nameof(TransformMatrix):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Sharpness":
+			case nameof(Sharpness):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -73,25 +73,23 @@ internal class Transform2DEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return InterpolationMode;
-			case 1:
-				return BorderMode;
-			case 2:
-				return TransformMatrix;
-			case 3:
-				return Sharpness;
-			default:
-				return null;
-		}
-	}
+		0 => (uint)InterpolationMode,
+		1 => (uint)BorderMode,
+		2 => TransformMatrix,
+		3 => Sharpness,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 4;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

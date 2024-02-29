@@ -44,31 +44,31 @@ internal class ArithmeticCompositeEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "MultiplyAmount":
+			case nameof(MultiplyAmount):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Source1Amount":
+			case nameof(Source1Amount):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Source2Amount":
+			case nameof(Source2Amount):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Offset":
+			case nameof(Offset):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "ClampOutput":
+			case nameof(ClampOutput):
 				{
 					index = 4;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -83,28 +83,24 @@ internal class ArithmeticCompositeEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return MultiplyAmount;
-			case 1:
-				return Source1Amount;
-			case 2:
-				return Source2Amount;
-			case 3:
-				return Offset;
-			case 4:
-				return ClampOutput;
-			default:
-				return null;
-		}
-	}
+		0 => MultiplyAmount,
+		1 => Source1Amount,
+		2 => Source2Amount,
+		3 => Offset,
+		4 => ClampOutput,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 5;
 
-	public IGraphicsEffectSource? GetSource(uint index) => index is 0 ? Source1 : Source2;
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source1,
+		1 => Source2,
+		_ => null
+	};
 
 	public uint GetSourceCount() => 2;
 

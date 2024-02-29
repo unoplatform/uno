@@ -35,7 +35,7 @@ This thread will also be used for [independent animations](https://learn.microso
 
 _There are a few known issues associated with the used of the compositor thread, [make sure to read the section below](#known-issues)._
 
-## Brush Anti-aliasing [GTK/WPF]
+## Brush Anti-aliasing [Skia Backends]
 
 On Skia targets (GTK and WPF), anti-aliasing is disabled by default for brushes, You can request it to be anti-aliased by setting this in your application's constructor:
 
@@ -53,7 +53,7 @@ Or alternatively, if you want to enable all available Composition capabilities:
 #endif
 ```
 
-## Implemented APIs [GTK/WPF]
+## Implemented APIs [Skia Backends]
 
 ### Windows.UI.Composition
 

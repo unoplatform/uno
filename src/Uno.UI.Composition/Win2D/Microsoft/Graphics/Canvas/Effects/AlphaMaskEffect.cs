@@ -36,7 +36,14 @@ internal class AlphaMaskEffect : ICanvasEffect
 	public object GetProperty(uint index) => throw new NotSupportedException();
 
 	public uint GetPropertyCount() => 0;
-	public IGraphicsEffectSource? GetSource(uint index) => index == 0 ? Source : AlphaMask;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		1 => AlphaMask,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 2;
 
 	public void Dispose() { }

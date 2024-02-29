@@ -49,31 +49,31 @@ internal class DistantSpecularEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Azimuth":
+			case nameof(Azimuth):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
 					break;
 				}
-			case "Elevation":
+			case nameof(Elevation):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
 					break;
 				}
-			case "SpecularExponent":
+			case nameof(SpecularExponent):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "SpecularAmount":
+			case nameof(SpecularAmount):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LightColor":
+			case nameof(LightColor):
 				{
 					index = 4;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector3;
@@ -88,27 +88,24 @@ internal class DistantSpecularEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Azimuth;
-			case 1:
-				return Elevation;
-			case 2:
-				return SpecularExponent;
-			case 3:
-				return SpecularAmount;
-			case 4:
-				return LightColor;
-			default:
-				return null;
-		}
-	}
+		0 => Azimuth,
+		1 => Elevation,
+		2 => SpecularExponent,
+		3 => SpecularAmount,
+		4 => LightColor,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 5;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

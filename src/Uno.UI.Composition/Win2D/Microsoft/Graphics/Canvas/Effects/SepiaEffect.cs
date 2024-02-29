@@ -33,7 +33,7 @@ internal class SepiaEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Intensity":
+			case nameof(Intensity):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -48,19 +48,20 @@ internal class SepiaEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Intensity;
-			default:
-				return null;
-		}
-	}
+		0 => Intensity,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

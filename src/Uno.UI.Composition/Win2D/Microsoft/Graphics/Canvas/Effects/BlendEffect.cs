@@ -35,7 +35,7 @@ internal class BlendEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Mode":
+			case nameof(Mode):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -50,20 +50,20 @@ internal class BlendEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Mode;
-			default:
-				return null;
-		}
-	}
+		0 => (uint)Mode,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
 
-	public IGraphicsEffectSource? GetSource(uint index) => index is 0 ? Background : Foreground;
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Background,
+		1 => Foreground,
+		_ => null
+	};
 
 	public uint GetSourceCount() => 2;
 

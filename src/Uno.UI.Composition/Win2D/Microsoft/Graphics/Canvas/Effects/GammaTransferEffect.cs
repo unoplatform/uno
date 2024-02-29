@@ -70,103 +70,103 @@ internal class GammaTransferEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "RedAmplitude":
+			case nameof(RedAmplitude):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "RedExponent":
+			case nameof(RedExponent):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "RedOffset":
+			case nameof(RedOffset):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "RedDisable":
+			case nameof(RedDisable):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenAmplitude":
+			case nameof(GreenAmplitude):
 				{
 					index = 4;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenExponent":
+			case nameof(GreenExponent):
 				{
 					index = 5;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenOffset":
+			case nameof(GreenOffset):
 				{
 					index = 6;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenDisable":
+			case nameof(GreenDisable):
 				{
 					index = 7;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueAmplitude":
+			case nameof(BlueAmplitude):
 				{
 					index = 8;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueExponent":
+			case nameof(BlueExponent):
 				{
 					index = 9;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueOffset":
+			case nameof(BlueOffset):
 				{
 					index = 10;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueDisable":
+			case nameof(BlueDisable):
 				{
 					index = 11;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaAmplitude":
+			case nameof(AlphaAmplitude):
 				{
 					index = 12;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaExponent":
+			case nameof(AlphaExponent):
 				{
 					index = 13;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaOffset":
+			case nameof(AlphaOffset):
 				{
 					index = 14;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaDisable":
+			case nameof(AlphaDisable):
 				{
 					index = 15;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "ClampOutput":
+			case nameof(ClampOutput):
 				{
 					index = 16;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -181,51 +181,36 @@ internal class GammaTransferEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return RedAmplitude;
-			case 1:
-				return RedExponent;
-			case 2:
-				return RedOffset;
-			case 3:
-				return RedDisable;
-			case 4:
-				return GreenAmplitude;
-			case 5:
-				return GreenExponent;
-			case 6:
-				return GreenOffset;
-			case 7:
-				return GreenDisable;
-			case 8:
-				return BlueAmplitude;
-			case 9:
-				return BlueExponent;
-			case 10:
-				return BlueOffset;
-			case 11:
-				return BlueDisable;
-			case 12:
-				return AlphaAmplitude;
-			case 13:
-				return AlphaExponent;
-			case 14:
-				return AlphaOffset;
-			case 15:
-				return AlphaDisable;
-			case 16:
-				return ClampOutput;
-			default:
-				return null;
-		}
-	}
+		0 => RedAmplitude,
+		1 => RedExponent,
+		2 => RedOffset,
+		3 => RedDisable,
+		4 => GreenAmplitude,
+		5 => GreenExponent,
+		6 => GreenOffset,
+		7 => GreenDisable,
+		8 => BlueAmplitude,
+		9 => BlueExponent,
+		10 => BlueOffset,
+		11 => BlueDisable,
+		12 => AlphaAmplitude,
+		13 => AlphaExponent,
+		14 => AlphaOffset,
+		15 => AlphaDisable,
+		16 => ClampOutput,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 17;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

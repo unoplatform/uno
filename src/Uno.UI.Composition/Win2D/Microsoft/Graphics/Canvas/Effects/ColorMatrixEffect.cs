@@ -37,19 +37,19 @@ internal class ColorMatrixEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "ColorMatrix":
+			case nameof(ColorMatrix):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaMode":
+			case nameof(AlphaMode):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.ColorMatrixAlphaMode;
 					break;
 				}
-			case "ClampOutput":
+			case nameof(ClampOutput):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -64,23 +64,22 @@ internal class ColorMatrixEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return ColorMatrix.ToArray();
-			case 1:
-				return AlphaMode;
-			case 2:
-				return ClampOutput;
-			default:
-				return null;
-		}
-	}
+		0 => ColorMatrix.ToArray(),
+		1 => (uint)AlphaMode,
+		2 => ClampOutput,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 3;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

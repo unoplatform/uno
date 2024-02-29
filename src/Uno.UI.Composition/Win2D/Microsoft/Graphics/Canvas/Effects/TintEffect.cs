@@ -36,7 +36,7 @@ internal class TintEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Color":
+			case nameof(Color):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector4;
@@ -51,19 +51,20 @@ internal class TintEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Color;
-			default:
-				return null;
-		}
-	}
+		0 => Color,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

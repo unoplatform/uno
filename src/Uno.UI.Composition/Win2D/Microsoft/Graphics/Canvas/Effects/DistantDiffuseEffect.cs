@@ -47,25 +47,25 @@ internal class DistantDiffuseEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Azimuth":
+			case nameof(Azimuth):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
 					break;
 				}
-			case "Elevation":
+			case nameof(Elevation):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
 					break;
 				}
-			case "DiffuseAmount":
+			case nameof(DiffuseAmount):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LightColor":
+			case nameof(LightColor):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector3;
@@ -80,25 +80,23 @@ internal class DistantDiffuseEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Azimuth;
-			case 1:
-				return Elevation;
-			case 2:
-				return DiffuseAmount;
-			case 3:
-				return LightColor;
-			default:
-				return null;
-		}
-	}
+		0 => Azimuth,
+		1 => Elevation,
+		2 => DiffuseAmount,
+		3 => LightColor,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 4;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

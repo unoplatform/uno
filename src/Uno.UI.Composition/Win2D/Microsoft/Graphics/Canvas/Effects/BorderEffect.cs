@@ -35,13 +35,13 @@ internal class BorderEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "ExtendX":
+			case nameof(ExtendX):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "ExtendY":
+			case nameof(ExtendY):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -56,21 +56,21 @@ internal class BorderEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return ExtendX;
-			case 1:
-				return ExtendY;
-			default:
-				return null;
-		}
-	}
+		0 => (uint)ExtendX,
+		1 => (uint)ExtendY,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 2;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

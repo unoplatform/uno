@@ -33,7 +33,7 @@ internal class HueRotationEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Angle":
+			case nameof(Angle):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
@@ -48,19 +48,20 @@ internal class HueRotationEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Angle;
-			default:
-				return null;
-		}
-	}
+		0 => Angle,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

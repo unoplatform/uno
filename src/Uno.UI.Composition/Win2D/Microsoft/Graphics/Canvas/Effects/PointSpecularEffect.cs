@@ -47,25 +47,25 @@ internal class PointSpecularEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "LightPosition":
+			case nameof(LightPosition):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "SpecularExponent":
+			case nameof(SpecularExponent):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "SpecularAmount":
+			case nameof(SpecularAmount):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LightColor":
+			case nameof(LightColor):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector3;
@@ -80,25 +80,23 @@ internal class PointSpecularEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return LightPosition;
-			case 1:
-				return SpecularExponent;
-			case 2:
-				return SpecularAmount;
-			case 3:
-				return LightColor;
-			default:
-				return null;
-		}
-	}
+		0 => LightPosition,
+		1 => SpecularExponent,
+		2 => SpecularAmount,
+		3 => LightColor,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 4;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

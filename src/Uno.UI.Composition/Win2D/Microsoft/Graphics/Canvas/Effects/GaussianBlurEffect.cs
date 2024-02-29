@@ -37,19 +37,19 @@ internal class GaussianBlurEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "BlurAmount":
+			case nameof(BlurAmount):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Optimization":
+			case nameof(Optimization):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BorderMode":
+			case nameof(BorderMode):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -64,23 +64,22 @@ internal class GaussianBlurEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return BlurAmount;
-			case 1:
-				return (uint)Optimization;
-			case 2:
-				return (uint)BorderMode;
-			default:
-				return null;
-		}
-	}
+		0 => BlurAmount,
+		1 => (uint)Optimization,
+		2 => (uint)BorderMode,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 3;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

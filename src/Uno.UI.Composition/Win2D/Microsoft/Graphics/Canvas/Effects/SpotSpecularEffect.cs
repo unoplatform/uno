@@ -47,43 +47,43 @@ internal class SpotSpecularEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "LightPosition":
+			case nameof(LightPosition):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LightTarget":
+			case nameof(LightTarget):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Focus":
+			case nameof(Focus):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LimitingConeAngle":
+			case nameof(LimitingConeAngle):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
 					break;
 				}
-			case "SpecularExponent":
+			case nameof(SpecularExponent):
 				{
 					index = 4;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "SpecularAmount":
+			case nameof(SpecularAmount):
 				{
 					index = 5;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LightColor":
+			case nameof(LightColor):
 				{
 					index = 6;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector3;
@@ -98,31 +98,26 @@ internal class SpotSpecularEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return LightPosition;
-			case 1:
-				return LightTarget;
-			case 2:
-				return Focus;
-			case 3:
-				return LimitingConeAngle;
-			case 4:
-				return SpecularExponent;
-			case 5:
-				return SpecularAmount;
-			case 6:
-				return LightColor;
-			default:
-				return null;
-		}
-	}
+		0 => LightPosition,
+		1 => LightTarget,
+		2 => Focus,
+		3 => LimitingConeAngle,
+		4 => SpecularExponent,
+		5 => SpecularAmount,
+		6 => LightColor,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 7;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

@@ -32,7 +32,13 @@ internal class LuminanceToAlphaEffect : ICanvasEffect
 	public object GetProperty(uint index) => throw new NotSupportedException();
 
 	public uint GetPropertyCount() => 0;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

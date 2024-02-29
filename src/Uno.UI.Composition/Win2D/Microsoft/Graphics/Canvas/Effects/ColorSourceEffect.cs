@@ -39,7 +39,7 @@ internal class ColorSourceEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Color":
+			case nameof(Color):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector4;
@@ -54,19 +54,16 @@ internal class ColorSourceEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Color;
-			default:
-				return null;
-		}
-	}
+		0 => Color,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
+
 	public IGraphicsEffectSource GetSource(uint index) => throw new InvalidOperationException();
+
 	public uint GetSourceCount() => 0;
 
 	public void Dispose() { }

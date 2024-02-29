@@ -33,7 +33,7 @@ internal class ExposureEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Exposure":
+			case nameof(Exposure):
 			case "ExposureValue":
 				{
 					index = 0;
@@ -49,19 +49,20 @@ internal class ExposureEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Exposure;
-			default:
-				return null;
-		}
-	}
+		0 => Exposure,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

@@ -37,13 +37,9 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 			_isCurrentInputBackdrop = false;
 
+			// TODO: Support "Optimization" and "BorderMode" properties
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
-			//effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
-			//effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _); // TODO
-
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
-			//_ = (uint?)effectInterop.GetProperty(optProp);
-			//_ = (uint?)effectInterop.GetProperty(borderProp); // TODO
 
 			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter,
 				new(UseBlurPadding ?
@@ -235,7 +231,7 @@ $$"""
 			_isCurrentInputBackdrop = false;
 
 			effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
-			D2D1BlendEffectMode mode = (D2D1BlendEffectMode)(effectInterop.GetProperty(modeProp) ?? throw new InvalidOperationException("The effect property was null"));
+			D2D1BlendEffectMode mode = (D2D1BlendEffectMode)(uint)(effectInterop.GetProperty(modeProp) ?? throw new InvalidOperationException("The effect property was null"));
 			SKBlendMode skMode = mode.ToSkia();
 
 			if (skMode == (SKBlendMode)0xFF) // Unsupported mode, fallback to default mode, we can add support for other modes when we move to Skia 3 through pixel shaders
@@ -262,7 +258,7 @@ $$"""
 			_isCurrentInputBackdrop = false;
 
 			effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
-			D2D1CompositeMode mode = (D2D1CompositeMode)(effectInterop.GetProperty(modeProp) ?? throw new InvalidOperationException("The effect property was null"));
+			D2D1CompositeMode mode = (D2D1CompositeMode)(uint)(effectInterop.GetProperty(modeProp) ?? throw new InvalidOperationException("The effect property was null"));
 			SKBlendMode skMode = mode.ToSkia();
 
 			if (skMode == (SKBlendMode)0xFF) // Unsupported mode, fallback to default mode, we can add support for other modes when we move to Skia 3 through pixel shaders
@@ -437,7 +433,7 @@ $$"""
 
 	private SKImageFilter? GenerateArithmeticCompositeEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
-		// TODO: support "ClampOutput" property
+		// TODO: Support "ClampOutput" property
 
 		if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource bg && effectInterop.GetSource(1) is IGraphicsEffectSource fg)
 		{
@@ -932,7 +928,7 @@ $$"""
 
 	private SKImageFilter? GenerateTransform2DEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
-		// TODO: support "InterpolationMode", "BorderMode", and "Sharpness" properties
+		// TODO: Support "InterpolationMode", "BorderMode", and "Sharpness" properties
 
 		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 		{
@@ -984,12 +980,12 @@ $$"""
 
 			effectInterop.GetNamedPropertyMapping("ExtendX", out uint modeXProp, out _);
 			effectInterop.GetNamedPropertyMapping("ExtendY", out uint modeYProp, out _);
-			D2D1BorderEdgeMode xmode = (D2D1BorderEdgeMode)(effectInterop.GetProperty(modeXProp) ?? throw new InvalidOperationException("The effect property was null"));
-			D2D1BorderEdgeMode ymode = (D2D1BorderEdgeMode)(effectInterop.GetProperty(modeYProp) ?? throw new InvalidOperationException("The effect property was null"));
+			D2D1BorderEdgeMode xmode = (D2D1BorderEdgeMode)(uint)(effectInterop.GetProperty(modeXProp) ?? throw new InvalidOperationException("The effect property was null"));
+			D2D1BorderEdgeMode ymode = (D2D1BorderEdgeMode)(uint)(effectInterop.GetProperty(modeYProp) ?? throw new InvalidOperationException("The effect property was null"));
 
 			SKShaderTileMode mode;
 
-			//TODO: support separate X,Y modes
+			//TODO: Support separate X,Y modes
 			if (xmode != ymode)
 			{
 				if (xmode != default)
@@ -1033,7 +1029,7 @@ $$"""
 
 	private SKImageFilter? GenerateSepiaEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
-		// TODO: support "AlphaMode" property maybe?
+		// TODO: Support "AlphaMode" property maybe?
 
 		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 		{
@@ -1101,7 +1097,7 @@ $$"""
 
 	private SKImageFilter? GenerateColorMatrixEffect(IGraphicsEffectD2D1Interop effectInterop, SKRect bounds)
 	{
-		// TODO: support "AlphaMode" and "ClampOutput" properties
+		// TODO: Support "AlphaMode" and "ClampOutput" properties
 
 		if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 		{

@@ -62,79 +62,79 @@ internal class LinearTransferEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "RedOffset":
+			case nameof(RedOffset):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "RedSlope":
+			case nameof(RedSlope):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "RedDisable":
+			case nameof(RedDisable):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenOffset":
+			case nameof(GreenOffset):
 				{
 					index = 3;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenSlope":
+			case nameof(GreenSlope):
 				{
 					index = 4;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "GreenDisable":
+			case nameof(GreenDisable):
 				{
 					index = 5;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueOffset":
+			case nameof(BlueOffset):
 				{
 					index = 6;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueSlope":
+			case nameof(BlueSlope):
 				{
 					index = 7;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "BlueDisable":
+			case nameof(BlueDisable):
 				{
 					index = 8;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaOffset":
+			case nameof(AlphaOffset):
 				{
 					index = 9;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaSlope":
+			case nameof(AlphaSlope):
 				{
 					index = 10;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "AlphaDisable":
+			case nameof(AlphaDisable):
 				{
 					index = 11;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "ClampOutput":
+			case nameof(ClampOutput):
 				{
 					index = 12;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -149,43 +149,32 @@ internal class LinearTransferEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return RedOffset;
-			case 1:
-				return RedSlope;
-			case 2:
-				return RedDisable;
-			case 3:
-				return GreenOffset;
-			case 4:
-				return GreenSlope;
-			case 5:
-				return GreenDisable;
-			case 6:
-				return BlueOffset;
-			case 7:
-				return BlueSlope;
-			case 8:
-				return BlueDisable;
-			case 9:
-				return AlphaOffset;
-			case 10:
-				return AlphaSlope;
-			case 11:
-				return AlphaDisable;
-			case 12:
-				return ClampOutput;
-			default:
-				return null;
-		}
-	}
+		0 => RedOffset,
+		1 => RedSlope,
+		2 => RedDisable,
+		3 => GreenOffset,
+		4 => GreenSlope,
+		5 => GreenDisable,
+		6 => BlueOffset,
+		7 => BlueSlope,
+		8 => BlueDisable,
+		9 => AlphaOffset,
+		10 => AlphaSlope,
+		11 => AlphaDisable,
+		12 => ClampOutput,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 13;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

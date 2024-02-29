@@ -38,8 +38,8 @@ internal class CrossFadeEffect : ICanvasEffect
 		switch (name)
 		{
 			case "Weight":
-			case "CrossFade":
 			case "Crossfade":
+			case nameof(CrossFade):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -54,19 +54,21 @@ internal class CrossFadeEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return CrossFade;
-			default:
-				return null;
-		}
-	}
+		0 => CrossFade,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 1;
-	public IGraphicsEffectSource? GetSource(uint index) => index is 0 ? Source1 : Source2;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source1,
+		1 => Source2,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 2;
 
 	public void Dispose() { }

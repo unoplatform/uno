@@ -45,19 +45,19 @@ internal class PointDiffuseEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "LightPosition":
+			case nameof(LightPosition):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "DiffuseAmount":
+			case nameof(DiffuseAmount):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "LightColor":
+			case nameof(LightColor):
 				{
 					index = 2;
 					mapping = GraphicsEffectPropertyMapping.ColorToVector3;
@@ -72,23 +72,22 @@ internal class PointDiffuseEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return LightPosition;
-			case 1:
-				return DiffuseAmount;
-			case 2:
-				return LightColor;
-			default:
-				return null;
-		}
-	}
+		0 => LightPosition,
+		1 => DiffuseAmount,
+		2 => LightColor,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 3;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }

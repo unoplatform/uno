@@ -35,13 +35,13 @@ internal class TemperatureAndTintEffect : ICanvasEffect
 	{
 		switch (name)
 		{
-			case "Temperature":
+			case nameof(Temperature):
 				{
 					index = 0;
 					mapping = GraphicsEffectPropertyMapping.Direct;
 					break;
 				}
-			case "Tint":
+			case nameof(Tint):
 				{
 					index = 1;
 					mapping = GraphicsEffectPropertyMapping.Direct;
@@ -56,21 +56,21 @@ internal class TemperatureAndTintEffect : ICanvasEffect
 		}
 	}
 
-	public object? GetProperty(uint index)
+	public object? GetProperty(uint index) => index switch
 	{
-		switch (index)
-		{
-			case 0:
-				return Temperature;
-			case 1:
-				return Tint;
-			default:
-				return null;
-		}
-	}
+		0 => Temperature,
+		1 => Tint,
+		_ => null,
+	};
 
 	public uint GetPropertyCount() => 2;
-	public IGraphicsEffectSource? GetSource(uint index) => Source;
+
+	public IGraphicsEffectSource? GetSource(uint index) => index switch
+	{
+		0 => Source,
+		_ => null
+	};
+
 	public uint GetSourceCount() => 1;
 
 	public void Dispose() { }
