@@ -34,12 +34,7 @@ namespace Windows.Storage
 			{
 				_provider = provider;
 				_parent = parent;
-<<<<<<< HEAD
 				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? Array.Empty<string>());
-			}
-=======
-				_identifier = GetIdentifier(provider?.RegisteredTypeIdentifiers ?? []);
->>>>>>> ffba912680 (fix(iOS): StorageFile information using PHPicker)
 
 				var extension = !string.IsNullOrEmpty(_identifier) ? GetExtension(_identifier) : string.Empty;
 				var fileName = $"{provider?.SuggestedName}.{extension}";
