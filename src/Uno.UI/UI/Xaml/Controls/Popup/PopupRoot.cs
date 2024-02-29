@@ -50,7 +50,7 @@ internal partial class PopupRoot : Panel
 		_subscriptions.Disposable = null;
 	}
 
-	private void CloseLightDismissablePopups()
+	internal void CloseLightDismissablePopups()
 	{
 		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
