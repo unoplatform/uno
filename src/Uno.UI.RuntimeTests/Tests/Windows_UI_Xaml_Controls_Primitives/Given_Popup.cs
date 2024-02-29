@@ -128,10 +128,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			{
 				TestServices.WindowHelper.WindowContent = popup;
 				popup.IsOpen = true;
-				await WindowHelper.WaitForLoaded(popup);
+				await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
 				var popupRoot = TestServices.WindowHelper.XamlRoot.VisualTree.PopupRoot;
 				popupRoot.CloseLightDismissablePopups();
-				await WindowHelper.WaitForLoaded(popup);
+				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(!isLightDismissEnabled, popup.IsOpen);
 			}
 			finally
