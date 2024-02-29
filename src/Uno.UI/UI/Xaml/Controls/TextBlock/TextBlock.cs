@@ -706,10 +706,31 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region DependencyProperty: IsTextTrimmed
+		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
+
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged;
+		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
+		{
+			add
+			{
+#if __WASM__
+				if (!_shouldUpdateIsTextTrimmed)
+				{
+					UpdateIsTextTrimmed();
+
+					_shouldUpdateIsTextTrimmed = true;
+				}
+#endif
+
+				_isTextTrimmedChanged += value;
+			}
+			remove
+			{
+				_isTextTrimmedChanged -= value;
+			}
+		}
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -725,14 +746,27 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		public bool IsTextTrimmed
 		{
-			get => (bool)GetValue(IsTextTrimmedProperty);
+			get
+			{
+#if __WASM__
+				if (!_shouldUpdateIsTextTrimmed)
+				{
+					UpdateIsTextTrimmed();
+
+					_shouldUpdateIsTextTrimmed = true;
+				}
+#endif
+
+				return (bool)GetValue(IsTextTrimmedProperty);
+			}
+
 			private set => SetValue(IsTextTrimmedProperty, value);
 		}
 
 		private void OnIsTextTrimmedChanged()
 		{
 			OnIsTextTrimmedChangedPartial();
-			IsTextTrimmedChanged?.Invoke(this, new());
+			_isTextTrimmedChanged?.Invoke(this, new());
 		}
 
 		partial void OnIsTextTrimmedChangedPartial();
