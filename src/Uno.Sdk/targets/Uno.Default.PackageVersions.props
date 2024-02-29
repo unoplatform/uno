@@ -18,18 +18,18 @@
 
 	<Choose>
 		<When Condition="$(TargetFramework.StartsWith('net8'))">
-			<ItemGroup>
+			<PropertyGroup>
 				<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">8.0.9</UnoWasmBootstrapVersion>
 				<WindowsCompatibilityVersion Condition="$(WindowsCompatibilityVersion) == ''">8.0.2</WindowsCompatibilityVersion>
 				<MicrosoftLoggingVersion Condition="$(MicrosoftLoggingVersion) == ''">8.0.0</MicrosoftLoggingVersion>
-			</ItemGroup>
+			</PropertyGroup>
 		</When>
 		<When Condition="$(TargetFramework.StartsWith('net9'))">
-			<ItemGroup>
+			<PropertyGroup>
 				<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">9.0.0-dev.35</UnoWasmBootstrapVersion>
 				<WindowsCompatibilityVersion Condition="$(WindowsCompatibilityVersion) == ''">9.0.0-preview.1.24081.3</WindowsCompatibilityVersion>
 				<MicrosoftLoggingVersion Condition="$(MicrosoftLoggingVersion) == ''">9.0.0-preview.1.24080.9</MicrosoftLoggingVersion>
-			</ItemGroup>
+			</PropertyGroup>
 		</When>
 	</Choose>
 
