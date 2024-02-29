@@ -207,6 +207,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
 		presenter.SetNative(new NativeOverlappedPresenter(_gtkWindow));
-		return Disposable.Empty;
+		return Disposable.Create(() => presenter.SetNative(null));
 	}
 }

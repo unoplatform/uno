@@ -13,6 +13,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
+using Uno.Disposables;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
@@ -109,23 +110,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private void ResizeObserver(NSNotification obj) => RaiseNativeSizeChanged();
 
-
-
-	//public bool TryEnterFullScreenMode()
-	//{
-	//	if (IsFullScreen)
-	//	{
-	//		return false;
-	//	}
-	//	NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
-	//	return true;
-	//}
-
-	//public void ExitFullScreenMode()
-	//{
-	//	if (IsFullScreen)
-	//	{
-	//		NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
-	//	}
-	//}
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
+		return Disposable.Create(() => NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null));
+	}
 }
