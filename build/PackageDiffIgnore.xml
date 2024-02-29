@@ -1804,6 +1804,8 @@
 		</Fields>
 
 		<Properties>
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView::IsFullScreen()" reason="Not in WinUI" />
 		</Properties>
 
 		<Methods>
@@ -1818,6 +1820,10 @@
 
 			<Member fullName="System.Void Microsoft.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in UWP" />
+
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Void Windows.UI.ViewManagement.ApplicationView..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView.get_IsFullScreen()" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
 

@@ -104,9 +104,9 @@ internal class UnoGtkWindow : Window
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 
@@ -114,7 +114,6 @@ internal class UnoGtkWindow : Window
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		Title = _applicationView.Title;
 		SetSizeRequest((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 	}
 

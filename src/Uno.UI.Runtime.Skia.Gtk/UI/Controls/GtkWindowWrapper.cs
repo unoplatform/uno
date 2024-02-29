@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
+using Microsoft.UI.Windowing;
+using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
@@ -27,6 +29,12 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		_gtkWindow.DeleteEvent += OnWindowClosing;
 		_gtkWindow.Destroyed += OnWindowClosed;
 		_gtkWindow.WindowStateEvent += OnWindowStateChanged;
+	}
+
+	public override string Title
+	{
+		get => _gtkWindow.Title;
+		set => _gtkWindow.Title = value;
 	}
 
 	/// <summary>
@@ -187,5 +195,18 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		{
 			ActivationState = Windows.UI.Core.CoreWindowActivationState.CodeActivated;
 		}
+	}
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		_gtkWindow.Fullscreen();
+
+		return Disposable.Create(() => _gtkWindow.Unfullscreen());
+	}
+
+	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
+	{
+		presenter.SetNative(new NativeOverlappedPresenter(_gtkWindow));
+		return Disposable.Create(() => presenter.SetNative(null));
 	}
 }

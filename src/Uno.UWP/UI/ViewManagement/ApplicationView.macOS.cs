@@ -15,48 +15,6 @@ namespace Windows.UI.ViewManagement
 		private string _title = string.Empty;
 		private Size _preferredMinSize = Size.Empty;
 
-		public string Title
-		{
-			get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : _title;
-			set
-			{
-				if (IsKeyWindowInitialized())
-				{
-					NSApplication.SharedApplication.KeyWindow.Title = value;
-				}
-
-				_title = value;
-			}
-		}
-
-		public bool IsFullScreen
-		{
-			get
-			{
-				VerifyKeyWindowInitialized();
-				return NSApplication.SharedApplication.KeyWindow.StyleMask.HasFlag(NSWindowStyle.FullScreenWindow);
-			}
-		}
-
-		public bool TryEnterFullScreenMode()
-		{
-			if (IsFullScreen)
-			{
-				return false;
-			}
-			NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
-			return true;
-		}
-
-		public void ExitFullScreenMode()
-		{
-			if (IsFullScreen)
-			{
-				NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
-			}
-		}
-
-
 		public bool TryResizeView(Size value)
 		{
 			VerifyKeyWindowInitialized();
