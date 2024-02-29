@@ -91,7 +91,7 @@ public partial class Gamepad
 	[JSExport]
 	internal static int DispatchGamepadAdded(int id)
 	{
-		Gamepad gamepad;
+		Gamepad? gamepad;
 		lock (_gamepadCache)
 		{
 			if (!_gamepadCache.TryGetValue(id, out gamepad))
@@ -107,7 +107,7 @@ public partial class Gamepad
 	[JSExport]
 	internal static int DispatchGamepadRemoved(int id)
 	{
-		Gamepad gamepad;
+		Gamepad? gamepad;
 		lock (_gamepadCache)
 		{
 			if (!_gamepadCache.TryGetValue(id, out gamepad))

@@ -5,17 +5,17 @@ namespace Windows.ApplicationModel.Core
 {
 	public partial class CoreApplicationView
 	{
-		private CoreApplicationViewTitleBar _titleBar;
+		private CoreApplicationViewTitleBar? _titleBar;
 
 		public CoreApplicationView()
 		{
 		}
 
-		public CoreWindow CoreWindow => CoreWindow.Main;
+		public CoreWindow? CoreWindow => CoreWindow.Main;
 
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
-		public DispatcherQueue DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
+		public DispatcherQueue? DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
 
 		public CoreApplicationViewTitleBar TitleBar
 		{

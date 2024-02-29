@@ -11,7 +11,7 @@ namespace Windows.Storage
 			if (UIKit.UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
 				var url = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
-				return url.Path;
+				return url.Path!;
 			}
 			else
 			{

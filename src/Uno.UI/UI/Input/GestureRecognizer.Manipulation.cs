@@ -547,7 +547,7 @@ namespace Windows.UI.Input
 					_dragHoldTimer.Tick += TouchDragMightStart;
 					_dragHoldTimer.Start();
 
-					void TouchDragMightStart(DispatcherQueueTimer sender, object o)
+					void TouchDragMightStart(DispatcherQueueTimer sender, object? o)
 					{
 						sender.Tick -= TouchDragMightStart;
 						sender.Stop();

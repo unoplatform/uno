@@ -9,8 +9,8 @@ namespace Windows.Media.SpeechRecognition
 #endif
 		public bool IsReadBackEnabled { get; set; }
 
-		public string ExampleText { get; set; }
+		public string? ExampleText { get; set; }
 
-		public string AudiblePrompt { get; set; }
+		public string? AudiblePrompt { get; set; }
 	}
 }

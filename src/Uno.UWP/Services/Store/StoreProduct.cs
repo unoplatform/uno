@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 		/// iOS: 333903271
 		/// Android: com.twitter.android
 		/// </remarks>
-		public string StoreId { get; internal set; }
+		public string StoreId { get; internal set; } = null!;
 
 		/// <summary>
 		/// Gets the URI to the Store listing for the product.
@@ -30,6 +30,6 @@ namespace Windows.Services.Store
 		/// iOS: https://itunes.apple.com/app/id333903271
 		/// Android: https://play.google.com/store/apps/details?id=com.twitter.android
 		/// </remarks>
-		public Uri LinkUri { get; internal set; }
+		public Uri LinkUri { get; internal set; } = null!;
 	}
 }

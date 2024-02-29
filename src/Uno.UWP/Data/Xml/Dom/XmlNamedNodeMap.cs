@@ -21,18 +21,18 @@ namespace Windows.Data.Xml.Dom
 
 		public uint Size => (uint)_backingNamedNodeMap.Count;
 
-		public IXmlNode GetNamedItem(string name) => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.GetNamedItem(name));
+		public IXmlNode? GetNamedItem(string name) => (IXmlNode?)_owner.Wrap(_backingNamedNodeMap.GetNamedItem(name));
 
-		public IXmlNode SetNamedItem(IXmlNode node) =>
-			(IXmlNode)_owner.Wrap(
+		public IXmlNode? SetNamedItem(IXmlNode node) =>
+			(IXmlNode?)_owner.Wrap(
 				_backingNamedNodeMap.SetNamedItem(
 					(SystemXmlNode)_owner.Unwrap(node)));
 
-		public IXmlNode RemoveNamedItem(string name) => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.RemoveNamedItem(name));
+		public IXmlNode? RemoveNamedItem(string name) => (IXmlNode?)_owner.Wrap(_backingNamedNodeMap.RemoveNamedItem(name));
 
 		public IXmlNode this[int index]
 		{
-			get => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.Item(index));
+			get => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.Item(index)!);
 			set => throw new InvalidOperationException("XML named node map is read-only.");
 		}
 		public IEnumerator<IXmlNode> GetEnumerator() => new SystemXmlNamedNodeMapEnumerator(_owner, _backingNamedNodeMap.GetEnumerator());

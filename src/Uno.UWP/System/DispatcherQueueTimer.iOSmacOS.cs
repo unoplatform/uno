@@ -12,7 +12,7 @@ namespace Windows.System;
 
 partial class DispatcherQueueTimer
 {
-	private NSTimer _timer;
+	private NSTimer? _timer;
 
 	private void ScheduleTickNative(TimeSpan interval)
 	{

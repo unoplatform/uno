@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 	{
 		private const float Gravity = 9.81f;
 
-		private ShakeDetector _shakeDetector;
+		private ShakeDetector? _shakeDetector;
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
@@ -24,7 +24,7 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public uint ReportInterval { get; set; }
 
-		private static Accelerometer TryCreateInstance()
+		private static Accelerometer? TryCreateInstance()
 		{
 			var initialized = NativeMethods.Initialize();
 			if (initialized)

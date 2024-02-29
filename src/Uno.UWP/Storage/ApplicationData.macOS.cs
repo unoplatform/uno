@@ -11,7 +11,7 @@ namespace Windows.Storage
 		private static string GetLocalCacheFolder()
 		{
 			var url = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
-			return url.Path;
+			return url.Path!;
 		}
 
 		private static string GetTemporaryFolder()

@@ -10,7 +10,7 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private NSObject _didChangeStatusBarOrientationObserver;
+		private NSObject? _didChangeStatusBarOrientationObserver;
 
 		private static readonly UIInterfaceOrientationMask[] _preferredOrientations =
 		{
@@ -151,7 +151,7 @@ namespace Windows.Graphics.Display
 		{
 			if (_dpiChanged == null && _orientationChanged == null)
 			{
-				NSNotificationCenter.DefaultCenter.RemoveObserver(_didChangeStatusBarOrientationObserver);
+				NSNotificationCenter.DefaultCenter.RemoveObserver(_didChangeStatusBarOrientationObserver!);
 				_didChangeStatusBarOrientationObserver = null;
 			}
 		}

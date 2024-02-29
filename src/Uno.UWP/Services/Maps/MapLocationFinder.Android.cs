@@ -26,7 +26,7 @@ namespace Windows.Services.Maps
 			//ToLanguageTag() causes a bug in Xamarin, fixed in Xamarin 4. NoSuchMethodError Java exception is thrown
 #pragma warning disable CS0618 // Type or member is obsolete
 #pragma warning disable CA1422 // Validate platform compatibility
-			var locale = context.Resources.Configuration.Locale ?? Locale.Default;
+			var locale = context.Resources!.Configuration!.Locale ?? Locale.Default;
 #pragma warning restore CS0618 // Type or member is obsolete
 #pragma warning restore CA1422 // Validate platform compatibility
 
@@ -49,7 +49,7 @@ namespace Windows.Services.Maps
 				maxResults: MaxResults
 			);
 
-			var locations = addresses.Select(loc =>
+			var locations = addresses!.Select(loc =>
 			{
 				var point = new Geopoint(new BasicGeoposition
 				{
@@ -72,16 +72,16 @@ namespace Windows.Services.Maps
 					buildingWing: string.Empty, // not supported
 					formattedAddress: string.Join(", ", Enumerable.Range(0, loc.MaxAddressLineIndex).Select(loc.GetAddressLine)), // differs from Windows
 					continent: string.Empty, // not supported
-					country: loc.CountryName,
-					countryCode: loc.CountryCode, // differs from Windows (i.e., "CA" instead of "CAN")
-					district: loc.SubLocality, // seems to be null if a specific address is found (streetNumber, street and postCode)
-					neighborhood: loc.SubLocality, // haven't seen a non-null value yet (on both Windows and Android)
-					postCode: loc.PostalCode,
-					region: loc.AdminArea,
+					country: loc.CountryName!,
+					countryCode: loc.CountryCode!, // differs from Windows (i.e., "CA" instead of "CAN")
+					district: loc.SubLocality!, // seems to be null if a specific address is found (streetNumber, street and postCode)
+					neighborhood: loc.SubLocality!, // haven't seen a non-null value yet (on both Windows and Android)
+					postCode: loc.PostalCode!,
+					region: loc.AdminArea!,
 					regionCode: string.Empty, // haven't seen a non-null value yet (on both Windows and Android)
-					street: loc.Thoroughfare,
-					streetNumber: loc.SubThoroughfare, // usually is a range (i.e., "706-212" instead of "706")
-					town: loc.Locality
+					street: loc.Thoroughfare!,
+					streetNumber: loc.SubThoroughfare!, // usually is a range (i.e., "706-212" instead of "706")
+					town: loc.Locality!
 				);
 
 				return new MapLocation(point, address);

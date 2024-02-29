@@ -16,9 +16,9 @@ namespace Uno.Media.Playback
 		{
 			_player = player;
 		}
-		public override void OnReceive(Context context, Intent intent)
+		public override void OnReceive(Context? context, Intent? intent)
 		{
-			if (Android.Media.AudioManager.ActionAudioBecomingNoisy.Equals(intent.Action))
+			if (Android.Media.AudioManager.ActionAudioBecomingNoisy.Equals(intent!.Action))
 			{
 				_player?.Pause();
 			}

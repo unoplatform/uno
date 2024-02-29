@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Email
 					message.Bcc.Select(bcc => bcc.Address).ToArray());
 			}
 
-			await UIApplication.SharedApplication.KeyWindow?.RootViewController.PresentViewControllerAsync(controller, true);
+			await UIApplication.SharedApplication.KeyWindow?.RootViewController.PresentViewControllerAsync(controller, true)!;
 			await controller.DismissViewControllerAsync(true);
 		}
 #endif

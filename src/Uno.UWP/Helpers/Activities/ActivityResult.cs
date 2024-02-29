@@ -11,7 +11,7 @@ namespace Uno.Helpers.Activities
 {
 	internal class ActivityResult
 	{
-		public ActivityResult(int requestCode, Result result, Intent intent)
+		public ActivityResult(int requestCode, Result result, Intent? intent)
 		{
 			RequestCode = requestCode;
 			Result = result;
@@ -22,7 +22,7 @@ namespace Uno.Helpers.Activities
 
 		public Result Result { get; }
 
-		public Intent Intent { get; }
+		public Intent? Intent { get; }
 	}
 }
 #endif

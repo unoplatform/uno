@@ -9,7 +9,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				UIView responder = null;
+				UIView? responder = null;
 				if (UIApplication.SharedApplication?.KeyWindow?.RootViewController?.View != null)
 				{
 					responder = UIApplication.SharedApplication.KeyWindow.RootViewController.View.FindFirstResponder();

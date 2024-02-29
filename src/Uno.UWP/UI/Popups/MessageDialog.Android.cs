@@ -24,7 +24,7 @@ public partial class MessageDialog
 {
 	const int MaximumCommands = 3;
 
-	private async Task<IUICommand> ShowNativeAsync(CancellationToken ct)
+	private async Task<IUICommand?> ShowNativeAsync(CancellationToken ct)
 	{
 		// Android recommends placing buttons in this order:
 		//  1) positive (default accept)
@@ -33,7 +33,7 @@ public partial class MessageDialog
 		// For the moment, we respect instead the order they were added in Commands,
 		// just like under Windows.
 
-		var result = new TaskCompletionSource<IUICommand>();
+		var result = new TaskCompletionSource<IUICommand?>();
 
 		var themeResourceId = CoreApplication.RequestedTheme == SystemTheme.Light ? Resource.Style.ThemeDeviceDefaultLightDialogNoActionBar : Resource.Style.ThemeDeviceDefaultDialogNoActionBar;
 		var dialog = Commands
@@ -98,21 +98,21 @@ public partial class MessageDialog
 	private class DialogListener : Java.Lang.Object, IDialogInterfaceOnCancelListener, IDialogInterfaceOnDismissListener
 	{
 		private readonly MessageDialog _dialog;
-		private readonly TaskCompletionSource<IUICommand> _source;
+		private readonly TaskCompletionSource<IUICommand?> _source;
 
-		public DialogListener(MessageDialog dialog, TaskCompletionSource<IUICommand> source)
+		public DialogListener(MessageDialog dialog, TaskCompletionSource<IUICommand?> source)
 		{
 			_dialog = dialog;
 			_source = source;
 		}
 
-		public void OnCancel(IDialogInterface dialog)
+		public void OnCancel(IDialogInterface? dialog)
 		{
 			// Cancelling from user action should never throw, but instead return either the "cancel" command, or null.
 			_source.TrySetResult(_dialog.Commands.ElementAtOrDefault((int)_dialog.CancelCommandIndex));
 		}
 
-		public void OnDismiss(IDialogInterface dialog)
+		public void OnDismiss(IDialogInterface? dialog)
 		{
 			// Nothing special here
 		}

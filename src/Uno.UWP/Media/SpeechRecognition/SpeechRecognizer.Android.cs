@@ -5,6 +5,7 @@ using Android.Content;
 using Android.Speech;
 using Windows.Foundation;
 using Windows.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Media.SpeechRecognition
 {
@@ -12,9 +13,10 @@ namespace Windows.Media.SpeechRecognition
 	{
 		private Android.Speech.SpeechRecognizer _speechRecognizer;
 
+		[MemberNotNull(nameof(_speechRecognizer))]
 		private void InitializeSpeechRecognizer()
 		{
-			_speechRecognizer = Android.Speech.SpeechRecognizer.CreateSpeechRecognizer(Android.App.Application.Context);
+			_speechRecognizer = Android.Speech.SpeechRecognizer.CreateSpeechRecognizer(Android.App.Application.Context)!;
 		}
 
 		private async Task<SpeechRecognitionResult> RecognizeTaskAsync(CancellationToken ct)

@@ -16,7 +16,7 @@ namespace Windows.Devices.Lights
 		/// API not supported, always returns null.
 		/// </summary>
 		/// <returns>Null.</returns>
-		public static IAsyncOperation<Lamp> GetDefaultAsync() => Task.FromResult<Lamp>(null).AsAsyncOperation();
+		public static IAsyncOperation<Lamp?> GetDefaultAsync() => Task.FromResult<Lamp?>(null).AsAsyncOperation();
 	}
 }
 #endif

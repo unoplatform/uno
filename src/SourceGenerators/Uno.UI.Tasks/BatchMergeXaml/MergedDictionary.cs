@@ -65,7 +65,7 @@ namespace Uno.UI.Tasks.BatchMerge
 				foreach (string themeDictionaryKey in mergedThemeDictionaryByKeyDictionary.Keys)
 				{
 					mergedThemeDictionaryByKeyDictionary[themeDictionaryKey].FinalizeXaml();
-					XmlElement themeResourceDictionaryElement = mergedThemeDictionaryByKeyDictionary[themeDictionaryKey].GetXaml() as XmlElement;
+					XmlElement themeResourceDictionaryElement = (mergedThemeDictionaryByKeyDictionary[themeDictionaryKey].GetXaml() as XmlElement)!;
 					themeDictionariesElement.AppendChild(themeResourceDictionaryElement);
 					themeResourceDictionaryElement.SetAttribute("Key", "http://schemas.microsoft.com/winfx/2006/xaml", themeDictionaryKey);
 				}
@@ -91,14 +91,14 @@ namespace Uno.UI.Tasks.BatchMerge
 
 		private MergedDictionary(XmlDocument document) : this(document, null) { }
 
-		private MergedDictionary(XmlDocument document, MergedDictionary parentDictionary)
+		private MergedDictionary(XmlDocument document, MergedDictionary? parentDictionary)
 		{
 			owningDocument = document;
 			xmlElement = owningDocument.CreateElement("ResourceDictionary", "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
 
 			if (parentDictionary == null)
 			{
-				xmlElement = owningDocument.AppendChild(xmlElement) as XmlElement;
+				xmlElement = (owningDocument.AppendChild(xmlElement) as XmlElement)!;
 				xmlElement.SetAttribute("xmlns:x", "http://schemas.microsoft.com/winfx/2006/xaml");
 			}
 
@@ -157,7 +157,7 @@ namespace Uno.UI.Tasks.BatchMerge
 						nodeKey = "Default";
 					}
 
-					MergedDictionary mergedThemeDictionary = null;
+					MergedDictionary? mergedThemeDictionary = null;
 
 					if (mergedThemeDictionaryByKeyDictionary.TryGetValue(nodeKey, out mergedThemeDictionary) == false)
 					{
@@ -370,6 +370,6 @@ namespace Uno.UI.Tasks.BatchMerge
 		private Dictionary<string, int> nodeKeyToNodeListIndexDictionary;
 		private Dictionary<string, MergedDictionary> mergedThemeDictionaryByKeyDictionary;
 		private List<string> namespaceList;
-		private MergedDictionary parentDictionary;
+		private MergedDictionary? parentDictionary;
 	}
 }

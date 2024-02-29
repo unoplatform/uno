@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard
 	{
-		private static NSObject _subscriptionToken;
+		private static NSObject? _subscriptionToken;
 
 		public static void SetContent(DataPackage content)
 		{
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static void StopContentChanged()
 		{
-			NSNotificationCenter.DefaultCenter.RemoveObserver(_subscriptionToken);
+			NSNotificationCenter.DefaultCenter.RemoveObserver(_subscriptionToken!);
 		}
 
 		private static void PasteboardChanged(NSNotification notification) => OnContentChanged();

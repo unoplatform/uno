@@ -85,9 +85,9 @@ namespace Windows.Devices.Lights
 			_captureDevice.UnlockForConfiguration();
 		}
 
-		private static Lamp TryCreateInstance()
+		private static Lamp? TryCreateInstance()
 		{
-			var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Video.GetConstant());
+			var captureDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Video.GetConstant()!);
 
 			var lampAvailable =
 				captureDevice != null &&
@@ -95,7 +95,7 @@ namespace Windows.Devices.Lights
 
 			if (lampAvailable)
 			{
-				return new Lamp(captureDevice);
+				return new Lamp(captureDevice!);
 			}
 
 			return null;
@@ -104,7 +104,7 @@ namespace Windows.Devices.Lights
 		public void Dispose()
 		{
 			_captureDevice?.Dispose();
-			_captureDevice = null;
+			_captureDevice = null!;
 		}
 	}
 }

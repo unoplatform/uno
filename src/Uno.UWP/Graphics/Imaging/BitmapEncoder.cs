@@ -45,8 +45,8 @@ partial class BitmapEncoder
 	private static readonly IDictionary<Guid, Bitmap.CompressFormat> _encoderMap =
 		new Dictionary<Guid, Bitmap.CompressFormat>()
 		{
-			{JpegEncoderId, Bitmap.CompressFormat.Jpeg},
-			{PngEncoderId, Bitmap.CompressFormat.Png},
+			{JpegEncoderId, Bitmap.CompressFormat.Jpeg!},
+			{PngEncoderId, Bitmap.CompressFormat.Png!},
 		};
 #elif __IOS__
 	private static readonly Dictionary<Guid, Func<UIImage, NSData>> _encoderMap =

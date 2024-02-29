@@ -8,7 +8,6 @@ namespace Windows.UI.StartScreen
 	public partial class JumpList
 	{
 #if __ANDROID__ || __IOS__
-
 		private JumpList() => Init();
 
 		public JumpListSystemGroupKind SystemGroupKind { get; set; }

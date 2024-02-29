@@ -56,7 +56,7 @@ public partial struct PackageVersion : IEquatable<PackageVersion>
 	public ushort Revision;
 
 	#region Equality Members
-	public override bool Equals(object obj) => obj is PackageVersion version && Equals(version);
+	public override bool Equals(object? obj) => obj is PackageVersion version && Equals(version);
 	public bool Equals(PackageVersion other) => Major == other.Major && Minor == other.Minor && Build == other.Build && Revision == other.Revision;
 
 	public override int GetHashCode()

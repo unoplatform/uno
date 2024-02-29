@@ -11,7 +11,7 @@ namespace Uno.Collections
 		internal delegate bool RefPredicateDelegate(ref T item);
 
 		private Memory<T> _inner;
-		private T[] _originalArray;
+		private T[]? _originalArray;
 
 		public StackVector(int capacity, int initialLength = 0)
 		{

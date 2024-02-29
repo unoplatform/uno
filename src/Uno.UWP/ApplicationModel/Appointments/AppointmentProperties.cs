@@ -61,6 +61,6 @@ public partial class AppointmentProperties
 		AllDay
 	};
 
-	private static string GetAppointmentProperty([CallerMemberName] string propertyName = null) =>
+	private static string GetAppointmentProperty([CallerMemberName] string? propertyName = null) =>
 		$"Appointment.{propertyName}";
 }

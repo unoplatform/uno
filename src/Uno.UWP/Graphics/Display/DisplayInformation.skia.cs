@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
 
 namespace Windows.Graphics.Display;
@@ -7,9 +8,10 @@ public sealed partial class DisplayInformation
 {
 	private IDisplayInformationExtension _displayInformationExtension;
 
+	[MemberNotNull(nameof(_displayInformationExtension))]
 	partial void Initialize()
 	{
-		if (!ApiExtensibility.CreateInstance(this, out _displayInformationExtension))
+		if (!ApiExtensibility.CreateInstance(this, out _displayInformationExtension!))
 		{
 			throw new InvalidOperationException($"Unable to find IDisplayInformationExtension extension");
 		}

@@ -17,9 +17,9 @@ namespace Windows.Media.SpeechRecognition
 
 		public Language CurrentLanguage { get; private set; }
 
-		public event TypedEventHandler<SpeechRecognizer, SpeechRecognitionHypothesisGeneratedEventArgs> HypothesisGenerated;
+		public event TypedEventHandler<SpeechRecognizer, SpeechRecognitionHypothesisGeneratedEventArgs>? HypothesisGenerated;
 
-		public event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs> StateChanged;
+		public event TypedEventHandler<SpeechRecognizer, SpeechRecognizerStateChangedEventArgs>? StateChanged;
 
 		public SpeechRecognizer()
 			: this(new Language(CultureInfo.CurrentCulture.Name))
@@ -43,7 +43,7 @@ namespace Windows.Media.SpeechRecognition
 			});
 		}
 
-		private void OnHypothesisGenerated(string hypothesis)
+		private void OnHypothesisGenerated(string? hypothesis)
 		{
 			HypothesisGenerated?.Invoke(
 				this,

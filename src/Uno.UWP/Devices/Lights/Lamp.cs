@@ -9,10 +9,10 @@ namespace Windows.Devices.Lights
 	{
 		private static readonly object _syncLock = new object();
 
-		private static Lamp _instance;
+		private static Lamp? _instance;
 		private static bool _initializationAttempted;
 
-		public static IAsyncOperation<Lamp> GetDefaultAsync()
+		public static IAsyncOperation<Lamp?> GetDefaultAsync()
 		{
 			if (_initializationAttempted)
 			{

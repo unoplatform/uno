@@ -15,7 +15,7 @@ namespace Windows.UI.Text
 
 		public override int GetHashCode() => Weight.GetHashCode();
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is FontWeight other)
 			{

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 		}
 
 
-		public static event EventHandler<object> CallStateChanged;
+		public static event EventHandler<object?>? CallStateChanged;
 
 		public static bool IsCallActive =>
 			_callObserver.Calls?.Any(

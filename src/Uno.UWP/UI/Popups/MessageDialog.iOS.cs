@@ -66,7 +66,7 @@ public partial class MessageDialog
 
 			try
 			{
-				await UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewControllerAsync(alertController, animated: true);
+				await UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewControllerAsync(alertController, animated: true)!;
 			}
 			finally
 			{

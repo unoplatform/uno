@@ -7,10 +7,10 @@ namespace Windows.System.Power;
 
 internal class PowerSaveModeChangeReceiver : BroadcastReceiver
 {
-	public override void OnReceive(Context context, Intent intent)
+	public override void OnReceive(Context? context, Intent? intent)
 	{
 		if (Android.OS.PowerManager.ActionPowerSaveModeChanged.Equals(
-			intent.Action, StringComparison.InvariantCultureIgnoreCase))
+			intent!.Action, StringComparison.InvariantCultureIgnoreCase))
 		{
 			Windows.System.Power.PowerManager.RaiseEnergySaverStatusChanged();
 		}

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -14,11 +15,12 @@ public partial class SpeechRecognizer : IDisposable
 	private AVAudioEngine _audioEngine = new AVAudioEngine();
 
 	private SFSpeechRecognizer _speechRecognizer;
-	private SFSpeechAudioBufferRecognitionRequest _recognitionRequest;
-	private SFSpeechRecognitionTask _recognitionTask;
-	private Timer _endSilenceTimeout;
-	private Timer _initialSilenceTimeout;
+	private SFSpeechAudioBufferRecognitionRequest? _recognitionRequest;
+	private SFSpeechRecognitionTask? _recognitionTask;
+	private Timer? _endSilenceTimeout;
+	private Timer? _initialSilenceTimeout;
 
+	[MemberNotNull(nameof(_speechRecognizer))]
 	private void InitializeSpeechRecognizer()
 	{
 		_speechRecognizer?.Dispose();
@@ -40,7 +42,7 @@ public partial class SpeechRecognizer : IDisposable
 		_recognitionTask = null;
 
 		var audioSession = AVAudioSession.SharedInstance();
-		NSError err;
+		NSError? err;
 		err = audioSession.SetCategory(AVAudioSessionCategory.Record);
 #if NET8_0_OR_GREATER
 		audioSession.SetMode(AVAudioSessionMode.Measurement, out err);
@@ -120,7 +122,7 @@ public partial class SpeechRecognizer : IDisposable
 				}
 				else
 				{
-					tcs.TrySetException(new Exception($"Error during speech recognition: {error.LocalizedDescription}"));
+					tcs.TrySetException(new Exception($"Error during speech recognition: {error!.LocalizedDescription}"));
 				}
 			}
 		});
@@ -141,7 +143,7 @@ public partial class SpeechRecognizer : IDisposable
 		return tcs.Task.AsAsyncOperation();
 	}
 
-	private void OnTimeout(object sender, ElapsedEventArgs e)
+	private void OnTimeout(object? sender, ElapsedEventArgs e)
 	{
 		StopRecognition();
 	}

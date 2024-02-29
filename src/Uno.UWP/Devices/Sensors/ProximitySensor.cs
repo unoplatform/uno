@@ -7,9 +7,11 @@ public partial class ProximitySensor
 {
 	internal const string InterfaceId = "{5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D}";
 
+#if !__ANDROID__
 	private ProximitySensor()
 	{
 	}
+#endif
 
 	/// <summary>
 	/// Gets the device selector.

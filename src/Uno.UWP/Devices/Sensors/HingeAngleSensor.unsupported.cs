@@ -15,7 +15,7 @@ namespace Windows.Devices.Sensors
 		/// API not supported, always returns null.
 		/// </summary>
 		/// <returns>Null.</returns>
-		public static IAsyncOperation<HingeAngleSensor> GetDefaultAsync() => Task.FromResult<HingeAngleSensor>(null).AsAsyncOperation();
+		public static IAsyncOperation<HingeAngleSensor?> GetDefaultAsync() => Task.FromResult<HingeAngleSensor?>(null).AsAsyncOperation();
 	}
 }
 #endif

@@ -12,11 +12,11 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly static object _syncLock = new object();
 
-		private static Accelerometer _instance;
+		private static Accelerometer? _instance;
 		private static bool _initializationAttempted;
 
-		private Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChanged;
-		private Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> _shaken;
+		private Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>? _readingChanged;
+		private Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs>? _shaken;
 
 		/// <summary>
 		/// Gets or sets the transformation that needs to be applied to sensor data. Transformations to be applied are tied to the display orientation with which to align the sensor data.
@@ -38,7 +38,7 @@ namespace Windows.Devices.Sensors
 		/// Returns the default accelerometer.
 		/// </summary>
 		/// <returns>The default accelerometer or null if no integrated accelerometers are found.</returns>
-		public static Accelerometer GetDefault()
+		public static Accelerometer? GetDefault()
 		{
 			if (_initializationAttempted)
 			{

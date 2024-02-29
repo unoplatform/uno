@@ -33,7 +33,7 @@ namespace Uno.Media.Playback
 		{
 			base.Layout();
 #endif
-			if (Layer.Sublayers == null || Layer.Sublayers.Length == 0)
+			if (Layer!.Sublayers == null || Layer.Sublayers.Length == 0)
 			{
 				return;
 			}

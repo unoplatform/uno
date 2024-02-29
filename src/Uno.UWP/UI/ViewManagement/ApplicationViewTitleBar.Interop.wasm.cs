@@ -7,7 +7,7 @@ namespace __Windows.UI.ViewManagement
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationViewTitleBar.setBackgroundColor")]
-			internal static partial void SetBackgroundColor(string color);
+			internal static partial void SetBackgroundColor(string? color);
 		}
 	}
 }

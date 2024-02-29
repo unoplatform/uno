@@ -11,7 +11,7 @@ namespace Uno.Storage.Streams.Internal
 		private readonly IRentableStream _baseStream;
 		private readonly IDisposable _rent;
 		private long _position;
-		private RefCountDisposable _currentScope;
+		private RefCountDisposable? _currentScope;
 
 		internal RentedStream(IRentableStream baseStream, IDisposable rent)
 		{

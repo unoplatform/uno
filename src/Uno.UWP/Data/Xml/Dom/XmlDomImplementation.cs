@@ -11,6 +11,6 @@ namespace Windows.Data.Xml.Dom
 			_backingImplementation = backingImplementation;
 		}
 
-		public bool HasFeature(string feature, object version) => _backingImplementation.HasFeature(feature, version?.ToString());
+		public bool HasFeature(string feature, object version) => _backingImplementation.HasFeature(feature, version?.ToString()!);
 	}
 }

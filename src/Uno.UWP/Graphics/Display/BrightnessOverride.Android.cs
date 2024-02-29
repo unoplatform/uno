@@ -9,9 +9,9 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class BrightnessOverride
 	{
-		private static Android.Views.Window Window => (ContextHelper.Current as Activity)?.Window;
+		private static Android.Views.Window Window => (ContextHelper.Current as Activity)?.Window!;
 
-		private static Android.Views.WindowManagerLayoutParams LayoutParameters => Window?.Attributes;
+		private static Android.Views.WindowManagerLayoutParams LayoutParameters => Window?.Attributes!;
 
 		/// <summary>
 		/// Sets the brightness level within a range of 0 to 1 and the override options.

@@ -19,16 +19,16 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// This is not a bug, Android uses "output" for input.
 		/// </summary>
-		private MidiOutputPort _midiPort;
-		private MidiDevice _midiDevice;
-		private MessageReceiver _messageReceiver;
+		private MidiOutputPort? _midiPort;
+		private MidiDevice? _midiDevice;
+		private MessageReceiver? _messageReceiver;
 
 		private MidiInPort(
 			string deviceId,
 			MidiDeviceInfo deviceInfo,
 			MidiDeviceInfo.PortInfo portInfo)
 		{
-			_midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
+			_midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>()!;
 			DeviceId = deviceId ?? throw new ArgumentNullException(nameof(deviceId));
 			_deviceInfo = deviceInfo ?? throw new ArgumentNullException(nameof(deviceInfo));
 			_portInfo = portInfo ?? throw new ArgumentNullException(nameof(portInfo));
@@ -37,13 +37,13 @@ namespace Windows.Devices.Midi
 		partial void StartMessageReceived()
 		{
 			_messageReceiver = new MessageReceiver(this);
-			_midiPort.Connect(_messageReceiver);
+			_midiPort!.Connect(_messageReceiver);
 		}
 
 		partial void StopMessageReceived()
 		{
-			_midiPort.Disconnect(_messageReceiver);
-			_messageReceiver.Dispose();
+			_midiPort!.Disconnect(_messageReceiver);
+			_messageReceiver!.Dispose();
 			_messageReceiver = null;
 		}
 
@@ -96,7 +96,7 @@ namespace Windows.Devices.Midi
 				_midiInPort = midiInPort;
 			}
 
-			public override void OnSend(byte[] msg, int offset, int count, long timestamp)
+			public override void OnSend(byte[]? msg, int offset, int count, long timestamp)
 			{
 				_midiInPort.OnMessageReceived(msg, offset, count, TimeSpan.FromMilliseconds(timestamp));
 			}

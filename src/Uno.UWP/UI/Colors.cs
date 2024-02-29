@@ -198,22 +198,16 @@ namespace Windows.UI
 		/// <returns></returns>
 		public static Color FromARGB(string colorCode)
 		{
-			byte a, r, b, g;
-			int offset;
-			int len;
-
 			if (colorCode is null)
 			{
-				len = 0;
-				offset = 0;
+				return new Color(0xFF, 0xFF, 0x00, 0x00);
 			}
-			else
-			{
-				len = colorCode.Length;
-				// skip a starting `#` if present 
-				offset = (len > 0 && colorCode[0] == '#' ? 1 : 0);
-				len -= offset;
-			}
+
+			byte a, r, b, g;
+			int len = colorCode.Length;
+			// skip a starting `#` if present 
+			int offset = (len > 0 && colorCode[0] == '#' ? 1 : 0);
+			len -= offset;
 
 			// deal with an optional alpha value
 			if (len == 4)

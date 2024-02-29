@@ -19,9 +19,9 @@ namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation
 	{
-		private static ConnectivityChangeBroadcastReceiver _connectivityChangeBroadcastReceiver;
-		private static AndroidConnectivityManager _connectivityManager;
-		private static NetworkCallbackListener _networkCallbackListener;
+		private static ConnectivityChangeBroadcastReceiver? _connectivityChangeBroadcastReceiver;
+		private static AndroidConnectivityManager? _connectivityManager;
+		private static NetworkCallbackListener? _networkCallbackListener;
 
 		private static void StartNetworkStatusChanged()
 		{
@@ -30,7 +30,7 @@ namespace Windows.Networking.Connectivity
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.N)
 			{
 				// Use NetworkCallback method
-				_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
+				_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService)!;
 				_networkCallbackListener = new NetworkCallbackListener();
 				_connectivityManager.RegisterDefaultNetworkCallback(_networkCallbackListener);
 			}
@@ -54,7 +54,7 @@ namespace Windows.Networking.Connectivity
 		{
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.N)
 			{
-				_connectivityManager.UnregisterNetworkCallback(_networkCallbackListener);
+				_connectivityManager!.UnregisterNetworkCallback(_networkCallbackListener!);
 				_networkCallbackListener?.Dispose();
 				_networkCallbackListener = null;
 				_connectivityManager?.Dispose();
@@ -79,7 +79,7 @@ namespace Windows.Networking.Connectivity
 		public static IReadOnlyList<HostName> GetHostNames()
 		{
 
-			Android.OS.StrictMode.ThreadPolicy prevPolicy = null;
+			Android.OS.StrictMode.ThreadPolicy? prevPolicy = null;
 
 			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Gingerbread)
 			{
@@ -92,14 +92,14 @@ namespace Windows.Networking.Connectivity
 
 			var uwpList = new List<HostName>();
 
-			var netInterfacesEnum = Java.Net.NetworkInterface.NetworkInterfaces;
+			var netInterfacesEnum = Java.Net.NetworkInterface.NetworkInterfaces!;
 			while (netInterfacesEnum.HasMoreElements)
 			{
 
-				var netInterface = netInterfacesEnum.NextElement() as Java.Net.NetworkInterface;
+				var netInterface = (netInterfacesEnum.NextElement() as Java.Net.NetworkInterface)!;
 				if (netInterface.InterfaceAddresses != null)
 				{
-					string androDisplayName = netInterface.DisplayName;
+					string? androDisplayName = netInterface.DisplayName;
 
 					// another name, netInterface.Name, would be ignored (seems like == androDisplayName)
 					foreach (var interfaceAddress in netInterface.InterfaceAddresses)
@@ -110,7 +110,7 @@ namespace Windows.Networking.Connectivity
 							string androCanonical = interfaceAddress.Address.CanonicalHostName;
 							// seems like == androCanonical
 							string androHostName = interfaceAddress.Address.HostName;
-							bool androIPv46 = (interfaceAddress.Address.GetAddress().Length == 4);
+							bool androIPv46 = (interfaceAddress.Address.GetAddress()!.Length == 4);
 
 							// we have all required data from Android, and we can use them
 							HostName newHost = new HostName();

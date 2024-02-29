@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Activation
 			get;
 		}
 
-		public SplashScreen SplashScreen
+		public SplashScreen? SplashScreen
 		{
 			get;
 		}
@@ -29,12 +29,12 @@ namespace Windows.ApplicationModel.Activation
 		public string Language
 		{
 			get;
-		}
+		} = null!;
 
 		public string QueryText
 		{
 			get;
-		}
+		} = null!;
 
 #if IS_UNSUPPORTED_UWP
 		public SearchPaneQueryLinguisticDetails LinguisticDetails

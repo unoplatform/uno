@@ -17,7 +17,7 @@ public sealed partial class ApplicationData
 {
 	private readonly Lazy<StorageFolder> _localFolderLazy;
 	private readonly Lazy<StorageFolder> _roamingFolderLazy;
-	private readonly Lazy<StorageFolder?> _sharedLocalFolderLazy;
+	private readonly Lazy<StorageFolder> _sharedLocalFolderLazy;
 	private readonly Lazy<StorageFolder> _localCacheFolderLazy;
 	private readonly Lazy<StorageFolder> _temporaryFolderLazy;
 	private readonly Lazy<ApplicationDataContainer> _localSettingsLazy;
@@ -30,7 +30,7 @@ public sealed partial class ApplicationData
 #if !__SKIA__ // The concept of Shared Local folder is not implemented for Skia.
 		_sharedLocalFolderLazy = new(() => new StorageFolder(".shared", GetSharedLocalFolder()));
 #else
-		_sharedLocalFolderLazy = new((StorageFolder?)null);
+		_sharedLocalFolderLazy = new((StorageFolder)null!);
 #endif
 		_localCacheFolderLazy = new(() => new StorageFolder(GetLocalCacheFolder()));
 		_temporaryFolderLazy = new(() => new StorageFolder(GetTemporaryFolder()));
@@ -61,7 +61,7 @@ public sealed partial class ApplicationData
 	/// <summary>
 	/// Gets the root folder in the shared app data store.
 	/// </summary>
-	public StorageFolder? SharedLocalFolder => _sharedLocalFolderLazy.Value;
+	public StorageFolder SharedLocalFolder => _sharedLocalFolderLazy.Value;
 
 	/// <summary>
 	/// Gets the folder in the local app data store where you can save files that are not included in backup and restore.

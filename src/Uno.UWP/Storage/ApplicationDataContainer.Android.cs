@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
+		[MemberNotNull(nameof(Values))]
 		partial void InitializePartial(ApplicationData owner)
 		{
 			Values = new SharedPreferencesPropertySet();
@@ -28,7 +30,7 @@ namespace Windows.Storage
 			private ISharedPreferences CreatePreferences()
 				=> PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
 
-			public object this[string key]
+			public object? this[string key]
 			{
 				get
 				{
@@ -46,8 +48,8 @@ namespace Windows.Storage
 						using var preferences = CreatePreferences();
 
 						preferences
-							.Edit()
-							.PutString(key, DataTypeSerializer.Serialize(value))
+							.Edit()!
+							.PutString(key, DataTypeSerializer.Serialize(value))!
 							.Commit();
 					}
 					else
@@ -64,7 +66,7 @@ namespace Windows.Storage
 					using var preferences = CreatePreferences();
 
 					return preferences
-						.All
+						.All!
 						.Keys
 						.ToArray();
 				}
@@ -77,10 +79,10 @@ namespace Windows.Storage
 					using var preferences = CreatePreferences();
 
 					return preferences
-						.All
+						.All!
 						.Values
-						.Select(v => DataTypeSerializer.Deserialize(v?.ToString()))
-						.ToArray();
+						.Select(v => DataTypeSerializer.Deserialize(v?.ToString()!))
+						.ToArray()!;
 				}
 			}
 
@@ -91,7 +93,7 @@ namespace Windows.Storage
 					using var preferences = CreatePreferences();
 
 					return preferences
-						.All
+						.All!
 						.Values
 						.Count;
 				}
@@ -101,7 +103,7 @@ namespace Windows.Storage
 
 #pragma warning disable 67 // unused member
 			[NotImplemented]
-			public event MapChangedEventHandler<string, object> MapChanged;
+			public event MapChangedEventHandler<string, object>? MapChanged;
 #pragma warning restore 67 // unused member
 
 			public void Add(string key, object value)
@@ -115,8 +117,8 @@ namespace Windows.Storage
 					using var preferences = CreatePreferences();
 
 					preferences
-						.Edit()
-						.PutString(key, DataTypeSerializer.Serialize(value))
+						.Edit()!
+						.PutString(key, DataTypeSerializer.Serialize(value))!
 						.Commit();
 				}
 			}
@@ -129,8 +131,8 @@ namespace Windows.Storage
 				using var preferences = CreatePreferences();
 
 				preferences
-					.Edit()
-					.Clear()
+					.Edit()!
+					.Clear()!
 					.Commit();
 			}
 
@@ -141,7 +143,7 @@ namespace Windows.Storage
 			{
 				using var preferences = CreatePreferences();
 
-				return preferences.All.ContainsKey(key);
+				return preferences.All!.ContainsKey(key);
 			}
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
@@ -152,7 +154,7 @@ namespace Windows.Storage
 				using var preferences = CreatePreferences();
 
 				return preferences
-					.All
+					.All!
 					.GetEnumerator();
 			}
 
@@ -161,8 +163,8 @@ namespace Windows.Storage
 				using var preferences = CreatePreferences();
 
 				preferences
-					.Edit()
-					.Remove(key)
+					.Edit()!
+					.Remove(key)!
 					.Commit();
 
 				return true;
@@ -170,13 +172,13 @@ namespace Windows.Storage
 
 			public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
-			public bool TryGetValue(string key, out object value)
+			public bool TryGetValue(string key, [NotNullWhen(true)] out object? value)
 			{
 				using var preferences = CreatePreferences();
 
-				if (preferences.All.TryGetValue(key, out var serializedValue))
+				if (preferences.All!.TryGetValue(key, out var serializedValue))
 				{
-					value = DataTypeSerializer.Deserialize(serializedValue?.ToString());
+					value = DataTypeSerializer.Deserialize(serializedValue?.ToString()!)!;
 					return true;
 				}
 

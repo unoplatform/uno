@@ -17,7 +17,7 @@ public partial class SystemNavigationManagerPreview
 	/// <summary>
 	/// Occurs when the user invokes the system button for close (the 'x' button in the corner of the app's title bar).
 	/// </summary>
-	public event EventHandler<SystemNavigationCloseRequestedPreviewEventArgs> CloseRequested;
+	public event EventHandler<SystemNavigationCloseRequestedPreviewEventArgs>? CloseRequested;
 
 	internal bool HasConfirmedClose { get; private set; }
 

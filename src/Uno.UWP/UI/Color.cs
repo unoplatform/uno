@@ -57,7 +57,7 @@ namespace Windows.UI
 			_color = color;
 		}
 
-		public override bool Equals(object o) => o is Color color && Equals(color);
+		public override bool Equals(object? o) => o is Color color && Equals(color);
 
 		public bool Equals(Color color) =>
 			color._color == _color;
@@ -81,8 +81,8 @@ namespace Windows.UI
 
 		internal uint AsUInt32() => _color;
 
-		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format, formatProvider);
+		string IFormattable.ToString(string? format, IFormatProvider? formatProvider) => ToString(format, formatProvider);
 
-		private string ToString(string format, IFormatProvider formatProvider) => string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", _a, _r, _g, _b);
+		private string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", _a, _r, _g, _b);
 	}
 }

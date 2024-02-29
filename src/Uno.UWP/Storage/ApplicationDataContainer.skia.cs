@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Uno.Foundation.Logging;
@@ -11,6 +12,7 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
+		[MemberNotNull(nameof(Values))]
 		partial void InitializePartial(ApplicationData owner)
 		{
 			Values = new FilePropertySet(owner, Locality);
@@ -135,7 +137,7 @@ namespace Windows.Storage
 				=> _values.Keys;
 
 			public ICollection<object> Values
-				=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList();
+				=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList()!;
 
 			public int Count
 				=> _values.Count;

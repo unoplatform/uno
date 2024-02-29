@@ -9,7 +9,9 @@ namespace Windows.UI.Notifications
 	{
 		private string _tag;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. - TODO: Fix nullability annotation.
 		public ToastNotification(XmlDocument content)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
 			Content = content;
 		}

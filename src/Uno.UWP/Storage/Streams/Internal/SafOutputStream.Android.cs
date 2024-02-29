@@ -56,8 +56,8 @@ namespace Uno.Storage.Streams.Internal
 			var cacheFolder = await ApplicationData.Current.TemporaryFolder.CreateFolderAsync(CacheFolderName, CreationCollisionOption.OpenIfExists);
 			var cacheFile = await cacheFolder.CreateFileAsync(Guid.NewGuid().ToString());
 			var cacheStream = await cacheFile.OpenStream(CancellationToken.None, FileAccessMode.ReadWrite, StorageOpenOptions.None);
-			var inputStream = Application.Context.ContentResolver.OpenInputStream(uri);
-			await inputStream.CopyToAsync(cacheStream);
+			var inputStream = Application.Context.ContentResolver!.OpenInputStream(uri);
+			await inputStream!.CopyToAsync(cacheStream);
 			cacheStream.Seek(0, SeekOrigin.Begin);
 			return new SafOutputStream(cacheFile, cacheStream, uri);
 		}
@@ -87,22 +87,22 @@ namespace Uno.Storage.Streams.Internal
 			await targetStream.FlushAsync();
 		}
 
-		private Stream CreateTargetStream() => Application.Context.ContentResolver.OpenOutputStream(_targetUri, "wt");
+		private Stream CreateTargetStream() => Application.Context.ContentResolver!.OpenOutputStream(_targetUri, "wt")!;
 
-		private ParcelFileDescriptor CreateTargetDescriptor() => Application.Context.ContentResolver.OpenFileDescriptor(_targetUri, "wt");
+		private ParcelFileDescriptor CreateTargetDescriptor() => Application.Context.ContentResolver!.OpenFileDescriptor(_targetUri, "wt")!;
 
 		private async Task TruncateTargetAsync()
 		{
 			using var descriptor = CreateTargetDescriptor();
 			using var targetStream = new FileOutputStream(descriptor.FileDescriptor);
-			await targetStream.Channel.TruncateAsync(0);
+			await targetStream.Channel!.TruncateAsync(0);
 		}
 
 		private void TruncateTarget()
 		{
 			using var descriptor = CreateTargetDescriptor();
 			using var targetStream = new FileOutputStream(descriptor.FileDescriptor);
-			targetStream.Channel.Truncate(0);
+			targetStream.Channel!.Truncate(0);
 		}
 
 		public override void Flush()

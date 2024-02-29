@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 		internal string LogicalPath { get; }
 
-		public string GetQualifierValue(string qualifierName)
+		public string? GetQualifierValue(string qualifierName)
 		{
 			return Qualifiers.FirstOrDefault(qualifier => qualifier.QualifierName == qualifierName)?.QualifierValue;
 		}
@@ -33,12 +35,12 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			var logicalPath = GetLogicalPath(relativePath);
 
-			var qualifiers = relativePath
+			ResourceQualifier[] qualifiers = relativePath
 				.Split(Path.DirectorySeparatorChar, '_', '.')
 				.Select(ResourceQualifier.Parse)
 				.Reverse()
 				.Where(p => p != null)
-				.ToArray();
+				.ToArray()!;
 
 			return new ResourceCandidate(qualifiers, fullPath, logicalPath);
 		}
@@ -46,7 +48,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		private static string GetLogicalPath(string path)
 		{
 			var directoryNameWithoutQualifiers = Path
-				.GetDirectoryName(path)
+				.GetDirectoryName(path)!
 				.Split(new[] { Path.DirectorySeparatorChar })
 				.Where(x => ResourceQualifier.Parse(x) == null)
 				.ToArray();

@@ -39,7 +39,7 @@ public partial class RetargetAssets_v0
 			// For compatibility measures, get the fonts from the iOS app manifest
 			// and merge them with the generated ones, so existing apps don't lose
 			// explicitly specified ones.
-			var existingFonts = EnumerateFontsFromPList(IosAppManifest);
+			var existingFonts = EnumerateFontsFromPList(IosAppManifest!);
 
 			var outputManifestFile = Path.Combine(IntermediateOutputPath, "FontsPartialInfo.plist");
 

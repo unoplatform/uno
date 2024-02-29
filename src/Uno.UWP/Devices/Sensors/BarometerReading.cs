@@ -30,6 +30,6 @@ namespace Windows.Devices.Sensors
 		public TimeSpan? PerformanceCount { get; }
 
 		[Uno.NotImplemented]
-		public IReadOnlyDictionary<string, object> Properties { get; }
+		public IReadOnlyDictionary<string, object>? Properties { get; }
 	}
 }

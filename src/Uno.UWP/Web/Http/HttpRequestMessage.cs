@@ -18,6 +18,6 @@ public sealed partial class HttpRequestMessage : IDisposable, IStringable
 		Method = new HttpMethod("GET");
 	}
 
-	public Uri RequestUri { get; set; }
-	public HttpRequestHeaderCollection Headers { get; }
+	public Uri? RequestUri { get; set; }
+	public HttpRequestHeaderCollection Headers { get; } = null!; // TODO: This looks wrong.
 }

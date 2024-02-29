@@ -13,14 +13,14 @@ namespace Windows.UI.StartScreen
 
 		private string _description = "";
 		private string _displayName = "";
-		private Uri _logo;
+		private Uri? _logo;
 
 		private JumpListItem(string arguments)
 		{
 			Arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
 		}
 
-		public Uri Logo
+		public Uri? Logo
 		{
 			get => _logo;
 			set

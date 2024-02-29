@@ -210,8 +210,8 @@ namespace Windows.Security.Credentials
 		/// </summary>
 		protected sealed class WriteTransaction : IDisposable
 		{
-			private readonly Action _onCommit;
-			private readonly Action<bool> _onComplete;
+			private readonly Action? _onCommit;
+			private readonly Action<bool>? _onComplete;
 
 			private int _state = State.New;
 
@@ -227,7 +227,7 @@ namespace Windows.Security.Credentials
 			/// </summary>
 			/// <param name="onCommit">Callback invoked when this transaction is committed (cf. <see cref="Commit"/>.</param>
 			/// <param name="onComplete">Callback invoked when this transaction completes (i.e. Disposed).</param>
-			public WriteTransaction(Action onCommit = null, Action<bool> onComplete = null)
+			public WriteTransaction(Action? onCommit = null, Action<bool>? onComplete = null)
 			{
 				_onCommit = onCommit;
 				_onComplete = onComplete;
@@ -289,7 +289,7 @@ namespace Windows.Security.Credentials
 			/// Creates a new instance
 			/// </summary>
 			/// <param name="filePath">The path where the vault should be persisted</param>
-			protected FilePersister(string filePath = null)
+			protected FilePersister(string? filePath = null)
 			{
 				_dst = filePath ?? Path.Combine(ApplicationData.Current.LocalFolder.Path, ".vault");
 				_tmp = _dst + ".tmp";
@@ -381,7 +381,7 @@ namespace Windows.Security.Credentials
 			/// <param name="key">The key, must be 24 bytes length</param>
 			/// <param name="iv">The IV, must be 8 bytes length</param>
 			/// <param name="filePath">The path where the vault should be persisted</param>
-			public UnsecuredPersister(byte[] key, byte[] iv, string filePath = null)
+			public UnsecuredPersister(byte[] key, byte[] iv, string? filePath = null)
 				: base(filePath)
 			{
 				_key = key ?? throw new ArgumentNullException(nameof(key));
@@ -402,7 +402,7 @@ namespace Windows.Security.Credentials
 			/// </summary>
 			/// <param name="password">The password used to encrypt the file</param>
 			/// <param name="filePath">The path where the vault should be persisted</param>
-			public UnsecuredPersister(string password = null, string filePath = null)
+			public UnsecuredPersister(string? password = null, string? filePath = null)
 				: base(filePath)
 			{
 				(_key, _iv) = GenerateSecrets(password ?? GetEntryPointIdentifier());
@@ -411,9 +411,9 @@ namespace Windows.Security.Credentials
 			private static string GetEntryPointIdentifier()
 			{
 				var assembly = Assembly.GetEntryAssembly();
-				var method = assembly.EntryPoint.DeclaringType;
+				var method = assembly!.EntryPoint!.DeclaringType!;
 
-				return assembly.GetName().Name + method.DeclaringType.FullName;
+				return assembly.GetName().Name + method.DeclaringType!.FullName;
 			}
 
 			private static (byte[] key, byte[] iv) GenerateSecrets(string password)
@@ -449,9 +449,9 @@ namespace Windows.Security.Credentials
 				=> StringComparer.OrdinalIgnoreCase.Equals(obj.Resource, resource)
 					&& StringComparer.OrdinalIgnoreCase.Equals(obj.UserName, userName);
 
-			public override bool Equals(PasswordCredential left, PasswordCredential right)
-				=> StringComparer.OrdinalIgnoreCase.Equals(left.Resource, right.Resource)
-					&& StringComparer.OrdinalIgnoreCase.Equals(left.UserName, right.UserName);
+			public override bool Equals(PasswordCredential? left, PasswordCredential? right)
+				=> StringComparer.OrdinalIgnoreCase.Equals(left?.Resource, right?.Resource)
+					&& StringComparer.OrdinalIgnoreCase.Equals(left?.UserName, right?.UserName);
 
 			public override int GetHashCode(PasswordCredential obj)
 				=> StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Resource)

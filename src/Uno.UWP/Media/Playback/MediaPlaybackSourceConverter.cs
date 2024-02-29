@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Windows.Media.Core;
 
@@ -7,18 +8,18 @@ namespace Windows.Media.Playback
 {
 	public partial class MediaPlaybackSourceConverter : TypeConverter
 	{
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
 		{
 			return sourceType == typeof(string) ||
 				 sourceType == typeof(Uri) ||
 				 base.CanConvertFrom(context, sourceType);
 		}
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type sourceType)
+		public override bool CanConvertTo(ITypeDescriptorContext? context, [NotNullWhen(true)] Type? sourceType)
 		{
-			return sourceType == typeof(MediaSource) || base.CanConvertFrom(context, sourceType);
+			return sourceType is not null && (sourceType == typeof(MediaSource) || base.CanConvertFrom(context, sourceType));
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
 		{
 			if (value is string stringValue && !string.IsNullOrWhiteSpace(stringValue))
 			{
@@ -33,9 +34,9 @@ namespace Windows.Media.Playback
 			return base.ConvertFrom(context, culture, value);
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
 		{
-			if (destinationType != null && value is MediaSource source)
+			if (value is MediaSource source)
 			{
 				if (destinationType == typeof(string))
 				{

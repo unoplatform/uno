@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using System.Diagnostics.CodeAnalysis;
+using Android.App;
 using Android.Content.PM;
 using SystemVersion = global::System.Version;
 
@@ -8,20 +9,21 @@ namespace Windows.ApplicationModel
 	{
 		private PackageInfo _packageInfo;
 
+		[MemberNotNull(nameof(_packageInfo))]
 		partial void InitializePlatform()
 		{
 #pragma warning disable CS0618 // Type or member is obsolete
-			_packageInfo = Application.Context.PackageManager.GetPackageInfo(
-				Application.Context.PackageName,
-				PackageInfoFlags.MetaData);
+			_packageInfo = Application.Context.PackageManager!.GetPackageInfo(
+				Application.Context.PackageName!,
+				PackageInfoFlags.MetaData)!;
 #pragma warning restore CS0618 // Type or member is obsolete
 		}
 
-		public string FamilyName => _packageInfo.PackageName;
+		public string? FamilyName => _packageInfo.PackageName;
 
 		public string FullName => $"{_packageInfo.PackageName}_{GetVersionCode()}";
 
-		public string Name => _packageInfo.PackageName;
+		public string? Name => _packageInfo.PackageName;
 
 		public PackageVersion Version
 		{

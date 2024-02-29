@@ -18,7 +18,7 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public uint ReportInterval { get; set; }
 
-		private static Magnetometer TryCreateInstance()
+		private static Magnetometer? TryCreateInstance()
 		{
 			return NativeMethods.Initialize() ? new() : null;
 		}

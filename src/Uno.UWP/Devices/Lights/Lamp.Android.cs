@@ -13,13 +13,13 @@ namespace Windows.Devices.Lights
 	{
 		private readonly object _lock = new object();
 
-		private readonly string _defaultCameraId;
-		private CameraManager _cameraManager;
+		private readonly string? _defaultCameraId;
+		private CameraManager? _cameraManager;
 #pragma warning disable CS0618
 		// using deprecated API for older Android versions
-		private Android.Hardware.Camera _camera;
+		private Android.Hardware.Camera? _camera;
 #pragma warning restore CS0618
-		private SurfaceTexture _surfaceTexture;
+		private SurfaceTexture? _surfaceTexture;
 
 		private float _brightness;
 		private bool _isEnabled;
@@ -58,7 +58,7 @@ namespace Windows.Devices.Lights
 			}
 		}
 
-		private static Lamp TryCreateInstance()
+		private static Lamp? TryCreateInstance()
 		{
 			if (!SupportsFlashlight())
 			{
@@ -74,7 +74,7 @@ namespace Windows.Devices.Lights
 					{
 						var hasFlash = cameraManager.GetCameraCharacteristics(cameraId)
 							.Get(CameraCharacteristics.FlashInfoAvailable);
-						if (Java.Lang.Boolean.True.Equals(hasFlash))
+						if (Java.Lang.Boolean.True!.Equals(hasFlash))
 						{
 							return new Lamp(cameraManager, cameraId);
 						}
@@ -87,7 +87,7 @@ namespace Windows.Devices.Lights
 #pragma warning disable CA1422 // Validate platform compatibility
 				// using deprecated API for older Android versions
 				var surfaceTexture = new SurfaceTexture(0);
-				var camera = Android.Hardware.Camera.Open();
+				var camera = Android.Hardware.Camera.Open()!;
 				camera.SetPreviewTexture(surfaceTexture);
 				return new Lamp(camera, surfaceTexture);
 #pragma warning restore CA1422 // Validate platform compatibility
@@ -98,7 +98,7 @@ namespace Windows.Devices.Lights
 
 		private static bool SupportsFlashlight()
 		{
-			var packageManager = Application.Context.PackageManager;
+			var packageManager = Application.Context.PackageManager!;
 			return packageManager
 				.GetSystemAvailableFeatures()
 				.Any(feature =>
@@ -115,14 +115,14 @@ namespace Windows.Devices.Lights
 #if ANDROID33_0_OR_GREATER
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.Tiramisu)
 				{
-					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
+					_cameraManager!.SetTorchMode(_defaultCameraId!, isOn);
 					if (!isOn)
 					{
 						return;
 					}
-					var characteristics = _cameraManager.GetCameraCharacteristics(_defaultCameraId);
+					var characteristics = _cameraManager.GetCameraCharacteristics(_defaultCameraId!);
 					const int minLevel = 1;
-					var maxLevel = (Java.Lang.Integer)characteristics.Get(CameraCharacteristics.FlashInfoStrengthMaximumLevel);
+					var maxLevel = (Java.Lang.Integer)characteristics.Get(CameraCharacteristics.FlashInfoStrengthMaximumLevel)!;
 					if (maxLevel is null)
 					{
 						// https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics#FLASH_INFO_STRENGTH_MAXIMUM_LEVEL
@@ -133,19 +133,19 @@ namespace Windows.Devices.Lights
 					// Android ranges from 1 (minLevel) to maxLevel
 					// _brightness ranges from 0 to 1
 					var nativeLevel = minLevel + _brightness * ((int)maxLevel - minLevel);
-					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId, (int)Math.Round(nativeLevel));
+					_cameraManager.TurnOnTorchWithStrengthLevel(_defaultCameraId!, (int)Math.Round(nativeLevel));
 				}
 				else
 #endif
 				if ((int)Build.VERSION.SdkInt >= (int)BuildVersionCodes.M)
 				{
-					_cameraManager.SetTorchMode(_defaultCameraId, isOn);
+					_cameraManager!.SetTorchMode(_defaultCameraId!, isOn);
 				}
 				else
 				{
 					// using deprecated API for older Android versions
 #pragma warning disable CS0618 // Type or member is obsolete
-					var param = _camera.GetParameters();
+					var param = _camera!.GetParameters()!;
 					param.FlashMode = _isEnabled ?
 						Android.Hardware.Camera.Parameters.FlashModeTorch :
 						Android.Hardware.Camera.Parameters.FlashModeOff;

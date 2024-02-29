@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 
-		private static string GetLanguage(string language, string defaultLanguage)
+		private static string GetLanguage(string? language, string defaultLanguage)
 		{
 			if (language == null || language == defaultLanguage)
 			{
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			return $"-{language}";
 		}
 
-		private static string GetDpi(string scale)
+		private static string GetDpi(string? scale)
 		{
 			switch (scale)
 			{
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Resources.Core
 			}
 		}
 
-		private static string GetTheme(string theme)
+		private static string GetTheme(string? theme)
 		{
 			switch (theme)
 			{

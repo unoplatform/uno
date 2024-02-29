@@ -32,11 +32,11 @@ namespace Windows.Graphics.Imaging
 				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
 
-			bitmap.Image = UIImage.FromImage(Copy(image.CGImage));
+			bitmap.Image = UIImage.FromImage(Copy(image.CGImage!));
 		}
 
 		public static SoftwareBitmap Copy(global::Windows.Graphics.Imaging.SoftwareBitmap source) =>
-			new SoftwareBitmap(UIImage.FromImage(Copy(source.Image.CGImage)), false);
+			new SoftwareBitmap(UIImage.FromImage(Copy(source.Image.CGImage!)), false);
 
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{

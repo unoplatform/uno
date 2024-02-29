@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.Chat
 			throw new InvalidOperationException("Not supported on catalyst (https://github.com/xamarin/xamarin-macios/issues/13935)");
 #else
 			var window = UIApplication.SharedApplication.KeyWindow;
-			var controller = window.RootViewController;
+			var controller = window!.RootViewController!;
 
 			var messageController = new MFMessageComposeViewController();
 

@@ -27,7 +27,7 @@ partial class AppWindow
 		DisplayInformation.GetOrCreateForWindowId(Id);
 	}
 
-	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;
+	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs>? Closing;
 
 	internal static MUXWindowId MainWindowId { get; } = new(1);
 

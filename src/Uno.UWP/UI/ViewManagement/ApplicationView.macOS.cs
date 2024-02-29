@@ -89,7 +89,7 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		private void VerifyKeyWindowInitialized([CallerMemberName] string propertyName = null)
+		private void VerifyKeyWindowInitialized([CallerMemberName] string? propertyName = null)
 		{
 			if (!IsKeyWindowInitialized())
 			{

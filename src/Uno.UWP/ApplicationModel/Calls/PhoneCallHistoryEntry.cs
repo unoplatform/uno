@@ -39,7 +39,7 @@ public partial class PhoneCallHistoryEntry
 	/// <summary>
 	/// Gets or sets the address book information for this phone call.
 	/// </summary>
-	public PhoneCallHistoryEntryAddress Address { get; set; }
+	public PhoneCallHistoryEntryAddress? Address { get; set; }
 
 	/// <summary>
 	/// Gets or sets whether the phone call entry is a voicemail message.

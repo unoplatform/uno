@@ -20,16 +20,16 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
 		private readonly MidiPortType _portType;
-		private MidiManager _watchMidiManager;
-		private DeviceCallback _deviceCallback;
+		private MidiManager? _watchMidiManager;
+		private DeviceCallback? _deviceCallback;
 
 		public MidiDeviceClassProviderBase(MidiPortType portType) => _portType = portType;
 
-		public event EventHandler<DeviceInformation> WatchAdded;
-		public event EventHandler<DeviceInformation> WatchEnumerationCompleted;
-		public event EventHandler<DeviceInformationUpdate> WatchRemoved;
-		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
-		public event EventHandler<object> WatchStopped;
+		public event EventHandler<DeviceInformation>? WatchAdded;
+		public event EventHandler<DeviceInformation?>? WatchEnumerationCompleted;
+		public event EventHandler<DeviceInformationUpdate>? WatchRemoved;
+		public event EventHandler<DeviceInformationUpdate>? WatchUpdated;
+		public event EventHandler<object?>? WatchStopped;
 
 		public bool CanWatch => true;
 
@@ -72,7 +72,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		}
 
 		private MidiManager MidiManager
-			=> _watchMidiManager ??= ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
+			=> _watchMidiManager ??= ContextHelper.Current.GetSystemService(Context.MidiService)!.JavaCast<MidiManager>();
 
 		internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
 		{
@@ -80,11 +80,11 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
 			{
 #pragma warning disable CA1422 // Validate platform compatibility
-				return midiManager
-					.GetDevices()
+				return midiManager!
+					.GetDevices()!
 					.Where(d => d.Id == parsed.id)
 					.SelectMany(d =>
-						d.GetPorts()
+						d.GetPorts()!
 							.Where(p =>
 								p.Type == _portType &&
 								p.PortNumber == parsed.portNumber)
@@ -118,8 +118,8 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 #pragma warning disable CA1422 // Validate platform compatibility
 			return MidiManager
-				.GetDevices()
-				.SelectMany(d => FilterMatchingPorts(d.GetPorts()).Select(p => (device: d, port: p)))
+				.GetDevices()!
+				.SelectMany(d => FilterMatchingPorts(d.GetPorts()!).Select(p => (device: d, port: p)))
 				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
 #pragma warning restore CA1422 // Validate platform compatibility
 		}
@@ -129,12 +129,12 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			return port.Where(p => p.Type == _portType);
 		}
 
-		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation) =>
+		private void OnEnumerationCompleted(DeviceInformation? lastDeviceInformation) =>
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 
 		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
 		{
-			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+			foreach (var port in deviceInfo.GetPorts()!.Where(p => p.Type == _portType))
 			{
 				WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
 			}
@@ -142,7 +142,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private void OnDeviceRemoved(MidiDeviceInfo deviceInfo)
 		{
-			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+			foreach (var port in deviceInfo.GetPorts()!.Where(p => p.Type == _portType))
 			{
 				WatchRemoved?.Invoke(this, CreateDeviceInformationUpdate(deviceInfo, port));
 			}
@@ -150,7 +150,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private void OnDeviceUpdated(MidiDeviceStatus status)
 		{
-			foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
+			foreach (var port in status.DeviceInfo!.GetPorts()!.Where(p => p.Type == _portType))
 			{
 				WatchUpdated?.Invoke(this, CreateDeviceInformationUpdate(status.DeviceInfo, port));
 			}
@@ -159,7 +159,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
 		{
 			var name = "";
-			if (deviceInfo.Properties.ContainsKey(MidiDeviceInfo.PropertyName))
+			if (deviceInfo.Properties!.ContainsKey(MidiDeviceInfo.PropertyName))
 			{
 				name = deviceInfo.Properties.GetString(MidiDeviceInfo.PropertyName);
 			}
@@ -174,10 +174,10 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
 
 			var properties = new Dictionary<string, object>();
-			foreach (var key in deviceInfo.Properties.KeySet())
+			foreach (var key in deviceInfo.Properties.KeySet()!)
 			{
 				var value = deviceInfo.Properties.Get(key);
-				properties.Add(key, value);
+				properties.Add(key, value!);
 			}
 
 			var deviceInformation = new DeviceInformation(deviceIdentifier, properties)
@@ -204,25 +204,25 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			public DeviceCallback(MidiDeviceClassProviderBase provider) =>
 				_provider = provider;
 
-			public override void OnDeviceAdded(MidiDeviceInfo device)
+			public override void OnDeviceAdded(MidiDeviceInfo? device)
 			{
-				if (_provider.DeviceMatchesType(device))
+				if (_provider.DeviceMatchesType(device!))
 				{
-					_provider.OnDeviceAdded(device);
+					_provider.OnDeviceAdded(device!);
 				}
 			}
 
-			public override void OnDeviceRemoved(MidiDeviceInfo device)
+			public override void OnDeviceRemoved(MidiDeviceInfo? device)
 			{
-				if (_provider.DeviceMatchesType(device))
+				if (_provider.DeviceMatchesType(device!))
 				{
-					_provider.OnDeviceRemoved(device);
+					_provider.OnDeviceRemoved(device!);
 				}
 			}
 
-			public override void OnDeviceStatusChanged(MidiDeviceStatus status)
+			public override void OnDeviceStatusChanged(MidiDeviceStatus? status)
 			{
-				if (_provider.DeviceMatchesType(status.DeviceInfo))
+				if (_provider.DeviceMatchesType(status!.DeviceInfo!))
 				{
 					_provider.OnDeviceUpdated(status);
 				}

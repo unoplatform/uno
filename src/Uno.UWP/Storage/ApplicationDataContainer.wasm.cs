@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Windows.Storage
 {
 	public partial class ApplicationDataContainer
 	{
+		[MemberNotNull(nameof(Values))]
 		partial void InitializePartial(ApplicationData owner)
 		{
 			Values = new FilePropertySet(owner, Locality);
@@ -82,7 +84,7 @@ namespace Windows.Storage
 					for (int i = 0; i < Count; i++)
 					{
 						var rawValue = ApplicationDataContainerInterop.GetValueByIndex(_locality, i);
-						values.Add(DataTypeSerializer.Deserialize(rawValue));
+						values.Add(DataTypeSerializer.Deserialize(rawValue)!);
 					}
 
 					return values.AsReadOnly();
@@ -220,7 +222,7 @@ namespace Windows.Storage
 	class ApplicationDataContainerInterop
 	{
 		#region TryGetValue
-		internal static bool TryGetValue(ApplicationDataLocality locality, string key, out string? value)
+		internal static bool TryGetValue(ApplicationDataLocality locality, string key, [NotNullWhen(true)] out string? value)
 		{
 			var parms = new ApplicationDataContainer_TryGetValueParams
 			{

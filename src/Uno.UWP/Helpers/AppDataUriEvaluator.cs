@@ -57,10 +57,10 @@ namespace Uno.Helpers
 			// normalize slash type
 			path = Path.GetFullPath(path);
 
-			var root = Path.GetPathRoot(path);
+			var root = Path.GetPathRoot(path)!;
 			var relativePath = path.Substring(root.Length);
 
-			string appDataFolderPath = null;
+			string? appDataFolderPath = null;
 			// locate the application data path
 			if (relativePath.StartsWith(LocalFolderRoute, StringComparison.InvariantCultureIgnoreCase))
 			{

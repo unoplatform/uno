@@ -25,7 +25,7 @@ internal readonly struct PointerIdentifier : IEquatable<PointerIdentifier>
 		=> _uid.GetHashCode();
 
 	/// <inheritdoc />
-	public override bool Equals(object obj)
+	public override bool Equals(object? obj)
 		=> obj is PointerIdentifier other && Equals(this, other);
 
 	/// <inheritdoc />

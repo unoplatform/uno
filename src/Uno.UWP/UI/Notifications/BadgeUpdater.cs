@@ -31,7 +31,7 @@ namespace Windows.UI.Notifications
 
 		public void Clear() => SetBadge(null);
 
-		partial void SetBadge(string value);
+		partial void SetBadge(string? value);
 	}
 }
 #endif

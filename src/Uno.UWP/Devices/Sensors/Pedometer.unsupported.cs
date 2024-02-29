@@ -15,7 +15,7 @@ namespace Windows.Devices.Sensors
 		/// API not supported, always returns null.
 		/// </summary>
 		/// <returns>Null.</returns>
-		public static IAsyncOperation<Pedometer> GetDefaultAsync() => Task.FromResult<Pedometer>(null).AsAsyncOperation();
+		public static IAsyncOperation<Pedometer?> GetDefaultAsync() => Task.FromResult<Pedometer?>(null).AsAsyncOperation();
 	}
 }
 #endif

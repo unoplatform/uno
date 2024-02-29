@@ -6,7 +6,7 @@ namespace Windows.System.Threading
 	public partial class ThreadPoolTimer
 	{
 		private readonly Timer _timer;
-		private readonly TimerDestroyedHandler _destroyed;
+		private readonly TimerDestroyedHandler? _destroyed;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
 
 		public TimeSpan Delay { get; }
@@ -20,7 +20,7 @@ namespace Windows.System.Threading
 			_destroyed?.Invoke(this);
 		}
 
-		internal ThreadPoolTimer(TimerElapsedHandler handler, TimeSpan? period = null, TimeSpan? delay = null, TimerDestroyedHandler destroyed = null)
+		internal ThreadPoolTimer(TimerElapsedHandler handler, TimeSpan? period = null, TimeSpan? delay = null, TimerDestroyedHandler? destroyed = null)
 		{
 			_timer = new Timer(_ =>
 			{

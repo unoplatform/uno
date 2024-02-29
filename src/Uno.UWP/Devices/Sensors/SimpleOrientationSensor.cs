@@ -6,10 +6,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class SimpleOrientationSensor
 	{
-		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChanged;
+		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs>? _orientationChanged;
 
 		#region Static
-		private static SimpleOrientationSensor _instance;
+		private static SimpleOrientationSensor? _instance;
 		private static bool _initialized;
 		private readonly static object _syncLock = new();
 
@@ -19,7 +19,7 @@ namespace Windows.Devices.Sensors
 		/// <returns>
 		/// The default simple orientation sensor or null if no simple orientation sensors are found.
 		/// </returns>
-		public static SimpleOrientationSensor GetDefault()
+		public static SimpleOrientationSensor? GetDefault()
 		{
 			if (_initialized)
 			{
@@ -38,7 +38,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		private static partial SimpleOrientationSensor TryCreateInstance();
+		private static partial SimpleOrientationSensor? TryCreateInstance();
 		#endregion
 
 		partial void StartListeningOrientationChanged();
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		/// Gets the device identifier.
 		/// </summary>
 		[Uno.NotImplemented]
-		public string DeviceId { get; }
+		public string DeviceId { get; } = null!;
 
 		/// <summary>
 		/// Gets or sets the transformation that needs to be applied to sensor data. Transformations to be applied are tied to the display orientation with which to align the sensor data.

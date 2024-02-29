@@ -20,18 +20,18 @@ namespace Windows.UI.ViewManagement
 			get
 			{
 				var activity = GetCurrentActivity();
-				return !activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.Secure);
+				return !activity.Window!.Attributes!.Flags.HasFlag(WindowManagerFlags.Secure);
 			}
 			set
 			{
 				var activity = GetCurrentActivity();
 				if (value)
 				{
-					activity.Window.ClearFlags(WindowManagerFlags.Secure);
+					activity.Window!.ClearFlags(WindowManagerFlags.Secure);
 				}
 				else
 				{
-					activity.Window.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
+					activity.Window!.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
 				}
 			}
 		}
@@ -41,7 +41,7 @@ namespace Windows.UI.ViewManagement
 			get
 			{
 				var activity = GetCurrentActivity();
-				return activity.Title;
+				return activity.Title!;
 			}
 			set
 			{
@@ -72,7 +72,7 @@ namespace Windows.UI.ViewManagement
 #pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
 #pragma warning disable CA1422 // Validate platform compatibility
-			var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
+			var uiOptions = (int)activity!.Window!.DecorView.SystemUiVisibility;
 #pragma warning restore CA1422 // Validate platform compatibility
 
 			if (isFullscreen)
@@ -97,7 +97,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 
-		private Activity GetCurrentActivity([CallerMemberName] string propertyName = null)
+		private Activity GetCurrentActivity([CallerMemberName] string? propertyName = null)
 		{
 			if (!(ContextHelper.Current is Activity activity))
 			{

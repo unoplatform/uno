@@ -6,10 +6,10 @@ namespace Uno.Networking.Connectivity.Internal
 {
 	internal class ConnectivityChangeBroadcastReceiver : BroadcastReceiver
 	{
-		public override void OnReceive(Context context, Intent intent)
+		public override void OnReceive(Context? context, Intent? intent)
 		{
 #pragma warning disable CS0618 // Type or member is obsolete
-			if (intent.Action != Android.Net.ConnectivityManager.ConnectivityAction)
+			if (intent!.Action != Android.Net.ConnectivityManager.ConnectivityAction)
 #pragma warning restore CS0618 // Type or member is obsolete
 			{
 				return;

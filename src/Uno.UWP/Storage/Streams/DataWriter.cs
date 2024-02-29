@@ -12,7 +12,7 @@ namespace Windows.Storage.Streams
 	/// </summary>
 	public sealed partial class DataWriter : IDataWriter, IDisposable
 	{
-		private readonly IOutputStream _outputStream;
+		private readonly IOutputStream _outputStream = null!; // TODO: Fix nullability annotation.
 		private MemoryStream _memoryStream;
 
 		/// <summary>

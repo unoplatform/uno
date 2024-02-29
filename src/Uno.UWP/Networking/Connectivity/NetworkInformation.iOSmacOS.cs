@@ -16,7 +16,7 @@ namespace Windows.Networking.Connectivity
 		internal static CTCellularData CellularData => _cellularData.Value;
 #endif
 
-		private static ReachabilityListener _reachabilityListener;
+		private static ReachabilityListener? _reachabilityListener;
 
 		private static void StartNetworkStatusChanged()
 		{

@@ -8,6 +8,7 @@
 		<AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>

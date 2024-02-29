@@ -12,13 +12,13 @@ namespace Windows.System.Display
 		partial void ActivateScreenLock()
 		{
 			var activity = GetActivity();
-			activity.Window.AddFlags(WindowManagerFlags.KeepScreenOn);
+			activity.Window!.AddFlags(WindowManagerFlags.KeepScreenOn);
 		}
 
 		partial void DeactivateScreenLock()
 		{
 			var activity = GetActivity();
-			activity.Window.ClearFlags(WindowManagerFlags.KeepScreenOn);
+			activity.Window!.ClearFlags(WindowManagerFlags.KeepScreenOn);
 		}
 
 		private static Activity GetActivity()

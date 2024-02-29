@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Android.Content;
 using Android.OS;
 using AndroidBatteryStatus = Android.OS.BatteryStatus;
@@ -14,14 +15,15 @@ public partial class PowerManager
 	private static BatteryManager _batteryManager;
 	private static AndroidPowerManager _powerManager;
 
-	private static PowerSaveModeChangeReceiver _powerSaveModeChangeReceiver;
-	private static PowerConnectionBroadcastReceiver _powerConnectionBroadcastReceiver;
-	private static BatteryChangedBroadcastReceiver _batteryChangedBroadcastReceiver;
+	private static PowerSaveModeChangeReceiver? _powerSaveModeChangeReceiver;
+	private static PowerConnectionBroadcastReceiver? _powerConnectionBroadcastReceiver;
+	private static BatteryChangedBroadcastReceiver? _batteryChangedBroadcastReceiver;
 
+	[MemberNotNull(nameof(_batteryManager), nameof(_powerManager))]
 	static partial void InitializePlatform()
 	{
-		_batteryManager = (BatteryManager)Android.App.Application.Context.GetSystemService(Context.BatteryService);
-		_powerManager = (AndroidPowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService);
+		_batteryManager = (BatteryManager)Android.App.Application.Context.GetSystemService(Context.BatteryService)!;
+		_powerManager = (AndroidPowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService)!;
 	}
 
 	private static UwpBatteryStatus GetBatteryStatus()

@@ -11,7 +11,7 @@ namespace Windows.Graphics.Display
 		private static double _targetBrightnessLevel;
 #pragma warning restore CS0649
 
-		private static BrightnessOverride _instance;
+		private static BrightnessOverride? _instance;
 
 		/// <summary>
 		/// Returns a brightness override object.

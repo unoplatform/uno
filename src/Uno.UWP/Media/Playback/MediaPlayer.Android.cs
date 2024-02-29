@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Uno;
 using Uno.Helpers;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Media.Playback
 {
@@ -34,7 +35,7 @@ namespace Windows.Media.Playback
 		AndroidMediaPlayer.IOnVideoSizeChangedListener,
 		View.IOnLayoutChangeListener
 	{
-		private AndroidMediaPlayer _player;
+		private AndroidMediaPlayer? _player;
 
 		private bool _isPlayRequested;
 		private bool _isPlayerPrepared;
@@ -42,10 +43,10 @@ namespace Windows.Media.Playback
 		private VideoStretch _currentStretch = VideoStretch.Uniform;
 		private bool _isUpdatingStretch;
 
-		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor();
-		private IScheduledFuture _scheduledFuture;
-		private AudioPlayerBroadcastReceiver _noisyAudioStreamReceiver;
-		private List<Uri> _playlistItems;
+		private IScheduledExecutorService _executorService = Executors.NewSingleThreadScheduledExecutor()!;
+		private IScheduledFuture? _scheduledFuture;
+		private AudioPlayerBroadcastReceiver? _noisyAudioStreamReceiver;
+		private List<Uri>? _playlistItems;
 		private int _playlistIndex;
 
 		const string MsAppXScheme = "ms-appx";
@@ -94,6 +95,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		[MemberNotNull(nameof(_player))]
 		private void InitializePlayer()
 		{
 			_player = new AndroidMediaPlayer();
@@ -101,12 +103,12 @@ namespace Windows.Media.Playback
 
 			if (_hasValidHolder)
 			{
-				_player.SetDisplay(surfaceView.Holder);
+				_player.SetDisplay(surfaceView!.Holder);
 				_player.SetScreenOnWhilePlaying(true);
 			}
 			else
 			{
-				surfaceView.Holder.AddCallback(this);
+				surfaceView!.Holder!.AddCallback(this);
 			}
 
 			_player.SetOnErrorListener(this);
@@ -165,6 +167,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		[MemberNotNull(nameof(_playlistItems))]
 		private void SetPlaylistItems(MediaPlaybackList playlist)
 		{
 			_playlistItems = playlist.Items
@@ -182,25 +185,25 @@ namespace Windows.Media.Playback
 			if (uri.IsLocalResource())
 			{
 				var filename = uri.PathAndQuery.TrimStart('/');
-				var afd = Application.Context.Assets.OpenFd(filename);
-				_player.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);
+				var afd = Application.Context.Assets!.OpenFd(filename);
+				_player!.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);
 				return;
 			}
 
 			if (uri.IsAppData())
 			{
 				var filePath = AppDataUriEvaluator.ToPath(uri);
-				_player.SetDataSource(filePath);
+				_player!.SetDataSource(filePath);
 				return;
 			}
 
 			if (uri.IsFile)
 			{
-				_player.SetDataSource(Application.Context, Android.Net.Uri.Parse(uri.PathAndQuery));
+				_player!.SetDataSource(Application.Context, Android.Net.Uri.Parse(uri.PathAndQuery)!);
 				return;
 			}
 
-			_player.SetDataSource(uri.ToString());
+			_player!.SetDataSource(uri.ToString());
 		}
 
 		#endregion
@@ -269,11 +272,11 @@ namespace Windows.Media.Playback
 			PlaybackSession.PositionFromPlayer = Position;
 		}
 
-		public void OnPrepared(AndroidMediaPlayer mp)
+		public void OnPrepared(AndroidMediaPlayer? mp)
 		{
 			if (mp is not null)
 			{
-				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
+				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player!.Duration);
 				NaturalVideoWidth = (uint)mp.VideoWidth;
 				NaturalVideoHeight = (uint)mp.VideoHeight;
 				NaturalVideoDimensionChanged?.Invoke(this, null);
@@ -305,7 +308,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
+		public bool OnError(AndroidMediaPlayer? mp, MediaError what, int extra)
 		{
 			if (PlaybackSession.PlaybackState != MediaPlaybackState.None)
 			{
@@ -317,7 +320,7 @@ namespace Windows.Media.Playback
 			return true;
 		}
 
-		public void OnCompletion(AndroidMediaPlayer mp)
+		public void OnCompletion(AndroidMediaPlayer? mp)
 		{
 			MediaEnded?.Invoke(this, null);
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
@@ -325,14 +328,14 @@ namespace Windows.Media.Playback
 			// Play next item in playlist, if any
 			if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
 			{
-				_player.Reset();
+				_player!.Reset();
 				SetVideoSource(_playlistItems[++_playlistIndex]);
 				_player.Prepare();
 				_player.Start();
 			}
 		}
 
-		private void OnMediaFailed(global::System.Exception ex = null, string message = null)
+		private void OnMediaFailed(global::System.Exception? ex = null, string? message = null)
 		{
 			MediaFailed?.Invoke(this, new(MediaPlayerError.Unknown, message ?? ex?.Message, ex));
 
@@ -505,7 +508,7 @@ namespace Windows.Media.Playback
 
 		#region AndroidMediaPlayer.IOnSeekCompleteListener implementation
 
-		public void OnSeekComplete(AndroidMediaPlayer mp)
+		public void OnSeekComplete(AndroidMediaPlayer? mp)
 		{
 			SeekCompleted?.Invoke(this, null);
 		}
@@ -514,7 +517,7 @@ namespace Windows.Media.Playback
 
 		#region AndroidMediaPlayer.IOnBufferingUpdateListener implementation
 
-		public void OnBufferingUpdate(AndroidMediaPlayer mp, int percent)
+		public void OnBufferingUpdate(AndroidMediaPlayer? mp, int percent)
 		{
 			PlaybackSession.BufferingProgress = percent;
 		}
@@ -523,7 +526,7 @@ namespace Windows.Media.Playback
 
 		#region View.IOnLayoutChangeListener
 
-		public void OnLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+		public void OnLayoutChange(View? v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
 		{
 			UpdateVideoStretch(_currentStretch);
 		}
@@ -532,7 +535,7 @@ namespace Windows.Media.Playback
 
 		#region AndroidMediaPlayer.IOnVideoSizeChangedListener
 
-		public void OnVideoSizeChanged(AndroidMediaPlayer mp, int width, int height)
+		public void OnVideoSizeChanged(AndroidMediaPlayer? mp, int width, int height)
 		{
 
 		}

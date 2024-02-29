@@ -256,10 +256,10 @@ namespace Windows.UI.Input
 				_holdingTimer = null;
 			}
 
-			private static void OnHoldingTimerTick(DispatcherQueueTimer timer, object _)
+			private static void OnHoldingTimerTick(DispatcherQueueTimer timer, object? _)
 			{
 				timer.Stop();
-				((Gesture)timer.State).TryUpdateHolding(timeElapsed: true);
+				((Gesture)timer.State!).TryUpdateHolding(timeElapsed: true);
 			}
 			#endregion
 

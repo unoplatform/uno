@@ -217,13 +217,13 @@ namespace Windows.Media.Playback
 		public void NextTrack()
 			=> _extension?.NextTrack();
 
-		public event TypedEventHandler<MediaPlayer, object> BufferingEnded;
-		public event TypedEventHandler<MediaPlayer, object> BufferingStarted;
-		public event TypedEventHandler<MediaPlayer, object> CurrentStateChanged;
-		public event TypedEventHandler<MediaPlayer, MediaPlayerRateChangedEventArgs> MediaPlayerRateChanged;
-		public event TypedEventHandler<MediaPlayer, PlaybackMediaMarkerReachedEventArgs> PlaybackMediaMarkerReached;
-		public event TypedEventHandler<MediaPlayer, object> VideoFrameAvailable;
-		public event TypedEventHandler<MediaPlayer, object> SubtitleFrameChanged;
+		public event TypedEventHandler<MediaPlayer, object>? BufferingEnded;
+		public event TypedEventHandler<MediaPlayer, object>? BufferingStarted;
+		public event TypedEventHandler<MediaPlayer, object>? CurrentStateChanged;
+		public event TypedEventHandler<MediaPlayer, MediaPlayerRateChangedEventArgs>? MediaPlayerRateChanged;
+		public event TypedEventHandler<MediaPlayer, PlaybackMediaMarkerReachedEventArgs>? PlaybackMediaMarkerReached;
+		public event TypedEventHandler<MediaPlayer, object>? VideoFrameAvailable;
+		public event TypedEventHandler<MediaPlayer, object>? SubtitleFrameChanged;
 	}
 }
 #endif

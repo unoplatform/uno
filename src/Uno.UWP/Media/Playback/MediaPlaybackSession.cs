@@ -108,15 +108,15 @@ namespace Windows.Media.Playback
 			is MediaPlaybackState.Playing
 			or MediaPlaybackState.Buffering;
 
-		public event TypedEventHandler<MediaPlaybackSession, object> BufferingProgressChanged;
+		public event TypedEventHandler<MediaPlaybackSession, object>? BufferingProgressChanged;
 
-		public event TypedEventHandler<MediaPlaybackSession, object> NaturalDurationChanged;
+		public event TypedEventHandler<MediaPlaybackSession, object>? NaturalDurationChanged;
 
-		public event TypedEventHandler<MediaPlaybackSession, object> PlaybackRateChanged;
+		public event TypedEventHandler<MediaPlaybackSession, object>? PlaybackRateChanged;
 
-		public event TypedEventHandler<MediaPlaybackSession, object> PlaybackStateChanged;
+		public event TypedEventHandler<MediaPlaybackSession, object>? PlaybackStateChanged;
 
-		public event TypedEventHandler<MediaPlaybackSession, object> PositionChanged;
+		public event TypedEventHandler<MediaPlaybackSession, object>? PositionChanged;
 
 		internal MediaPlaybackSession(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{

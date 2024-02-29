@@ -8,7 +8,7 @@ namespace Uno.Extensions
 {
 	public static class UIViewExtensions
 	{
-		public static _View FindFirstResponder(this _View view)
+		public static _View? FindFirstResponder(this _View view)
 		{
 #if __IOS__
 			if (view.IsFirstResponder)

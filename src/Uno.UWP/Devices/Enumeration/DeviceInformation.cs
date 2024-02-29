@@ -47,7 +47,7 @@ namespace Windows.Devices.Enumeration
 		/// The name of the device. This name is in the best
 		/// available language for the app.
 		/// </summary>
-		public string Name { get; internal set; }
+		public string? Name { get; internal set; }
 
 		/// <summary>
 		/// Property store containing well-known values as well as additional

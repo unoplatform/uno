@@ -17,5 +17,5 @@ public partial class CreateFromStringAttribute : Attribute
 	/// <summary>
 	/// Full name of the method performing conversion from string.
 	/// </summary>
-	public string MethodName;
+	public string MethodName = null!;
 }

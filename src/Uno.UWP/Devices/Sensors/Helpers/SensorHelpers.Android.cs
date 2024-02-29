@@ -24,6 +24,6 @@ namespace Uno.Devices.Sensors.Helpers
 		}
 
 		public static SensorManager GetSensorManager() =>
-			Application.Context.GetSystemService(Context.SensorService) as SensorManager;
+			(Application.Context.GetSystemService(Context.SensorService) as SensorManager)!;
 	}
 }

@@ -22,7 +22,7 @@ namespace Windows.Devices.Geolocation
 		private static ConcurrentDictionary<string, TaskCompletionSource<Geoposition>> _pendingGeopositionRequests = new ConcurrentDictionary<string, TaskCompletionSource<Geoposition>>();
 		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();
 
-		private string _positionChangedRequestId;
+		private string? _positionChangedRequestId;
 
 		partial void OnActualDesiredAccuracyInMetersChanged()
 		{
@@ -44,8 +44,8 @@ namespace Windows.Devices.Geolocation
 
 		partial void StopPositionChanged()
 		{
-			_positionChangedSubscriptions.TryRemove(_positionChangedRequestId, out var _);
-			NativeMethods.StopPositionWatch(ActualDesiredAccuracyInMeters, _positionChangedRequestId);
+			_positionChangedSubscriptions.TryRemove(_positionChangedRequestId!, out var _);
+			NativeMethods.StopPositionWatch(ActualDesiredAccuracyInMeters, _positionChangedRequestId!);
 		}
 
 		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()

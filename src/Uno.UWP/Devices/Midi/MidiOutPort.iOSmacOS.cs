@@ -16,7 +16,7 @@ namespace Windows.Devices.Midi
 	{
 		private MidiEndpoint _endpoint;
 		private MidiClient _client;
-		private MidiPort _port;
+		private MidiPort? _port;
 
 		private MidiOutPort(string deviceId, MidiEndpoint endpoint)
 		{
@@ -37,8 +37,8 @@ namespace Windows.Devices.Midi
 			_client?.Dispose();
 			_endpoint?.Dispose();
 			_port = null;
-			_client = null;
-			_endpoint = null;
+			_client = null!;
+			_endpoint = null!;
 		}
 
 		private static Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)

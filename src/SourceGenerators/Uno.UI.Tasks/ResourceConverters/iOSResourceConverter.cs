@@ -1,4 +1,6 @@
-﻿using System;
+#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -10,14 +12,14 @@ namespace Windows.ApplicationModel.Resources.Core
 	/// </summary>
 	internal static class iOSResourceConverter
 	{
-		public static string Convert(ResourceCandidate resourceCandidate, string defaultLanguage)
+		public static string? Convert(ResourceCandidate resourceCandidate, string defaultLanguage)
 		{
 			try
 			{
 				ValidatePlatform(resourceCandidate);
 
 				var language = GetLanguage(resourceCandidate);
-				var directory = Path.GetDirectoryName(resourceCandidate.LogicalPath);
+				var directory = Path.GetDirectoryName(resourceCandidate.LogicalPath)!;
 				var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(resourceCandidate.LogicalPath);
 				var scale = GetScale(resourceCandidate);
 				var extension = Path.GetExtension(resourceCandidate.LogicalPath).ToLowerInvariant();

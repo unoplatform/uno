@@ -132,7 +132,7 @@ public partial class AppointmentStore
 		for (uint pageGuard = options.MaxCount; pageGuard > 0; pageGuard--)
 		{
 			// two properties always present in result
-			var entry = new Appointment(cursor.GetString(colCalId), cursor.GetString(colId));
+			var entry = new Appointment(cursor.GetString(colCalId)!, cursor.GetString(colId)!);
 
 			// rest of properties can be switched off (absent in result set)
 			if (colAllDay > -1)
@@ -141,11 +141,11 @@ public partial class AppointmentStore
 			}
 			if (colDetails > -1)
 			{
-				entry.Details = cursor.GetString(colDetails);
+				entry.Details = cursor.GetString(colDetails)!;
 			}
 			if (colLocation > -1)
 			{
-				entry.Location = cursor.GetString(colLocation);
+				entry.Location = cursor.GetString(colLocation)!;
 			}
 
 			if (_startTimeRequested)
@@ -163,13 +163,13 @@ public partial class AppointmentStore
 
 			if (colSubject > -1)
 			{
-				entry.Subject = cursor.GetString(colSubject);
+				entry.Subject = cursor.GetString(colSubject)!;
 			}
 
 			if (colOrganizer > -1)
 			{
 				var organ = new AppointmentOrganizer();
-				organ.Address = cursor.GetString(colOrganizer);
+				organ.Address = cursor.GetString(colOrganizer)!;
 				entry.Organizer = organ;
 			}
 

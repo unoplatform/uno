@@ -17,7 +17,7 @@ namespace Windows.Devices.Geolocation
 			double? heading = null,
 			double? speed = null,
 			PositionSource positionSource = PositionSource.Default,
-			GeocoordinateSatelliteData satelliteData = null,
+			GeocoordinateSatelliteData? satelliteData = null,
 			DateTimeOffset? positionSourceTimestamp = null
 		)
 		{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Geolocation
 
 		public global::Windows.Devices.Geolocation.PositionSource PositionSource { get; }
 
-		public global::Windows.Devices.Geolocation.GeocoordinateSatelliteData SatelliteData { get; }
+		public global::Windows.Devices.Geolocation.GeocoordinateSatelliteData? SatelliteData { get; }
 
 		public global::System.DateTimeOffset? PositionSourceTimestamp { get; }
 	}

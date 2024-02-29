@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
-		private StorageFolder _installedLocation;
+		private StorageFolder? _installedLocation;
 
 		internal Package() => InitializePlatform();
 
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel
 
 #if (__IOS__ || __ANDROID__ || __MACOS__)
 		[global::Uno.NotImplemented]
-		public global::System.Uri Logo => default;
+		public global::System.Uri Logo => default!;
 #endif
 
 #if !__SKIA__

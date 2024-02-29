@@ -1,4 +1,5 @@
-﻿namespace Windows.Gaming.Input;
+﻿#if !__ANDROID__ && !__MACOS__ && !__IOS__ && !__WASM__
+namespace Windows.Gaming.Input;
 
 /// <summary>
 /// Represents a gamepad.
@@ -11,3 +12,4 @@ public partial class Gamepad
 		// on unsupported platforms.
 	}
 }
+#endif

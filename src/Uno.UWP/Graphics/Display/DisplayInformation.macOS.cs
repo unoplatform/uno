@@ -6,7 +6,7 @@ namespace Windows.Graphics.Display
 {
 	public sealed partial class DisplayInformation
 	{
-		private NSObject _didChangeScreenParametersObserver;
+		private NSObject? _didChangeScreenParametersObserver;
 
 		public DisplayOrientations CurrentOrientation
 		{
@@ -117,7 +117,7 @@ namespace Windows.Graphics.Display
 		{
 			if (_dpiChanged == null && _orientationChanged == null)
 			{
-				NSNotificationCenter.DefaultCenter.RemoveObserver(_didChangeScreenParametersObserver);
+				NSNotificationCenter.DefaultCenter.RemoveObserver(_didChangeScreenParametersObserver!);
 				_didChangeScreenParametersObserver = null;
 			}
 		}

@@ -8,6 +8,7 @@ using Windows.Foundation;
 using System.Collections.Generic;
 using Uno.UI.StartScreen.Extensions;
 using Uno.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.UI.StartScreen
 {
@@ -15,9 +16,10 @@ namespace Windows.UI.StartScreen
 	{
 		private ShortcutManager _manager;
 
+		[MemberNotNull(nameof(_manager))]
 		private void Init()
 		{
-			_manager = (ShortcutManager)Application.Context.GetSystemService(Context.ShortcutService);
+			_manager = (ShortcutManager)Application.Context.GetSystemService(Context.ShortcutService)!;
 			LoadItems();
 		}
 

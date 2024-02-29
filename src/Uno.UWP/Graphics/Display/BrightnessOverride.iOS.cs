@@ -56,7 +56,7 @@ namespace Windows.Graphics.Display
 			}
 		}
 
-		private void OnResuming(object sender, object e)
+		private void OnResuming(object? sender, object? e)
 		{
 			StartOverride();
 		}

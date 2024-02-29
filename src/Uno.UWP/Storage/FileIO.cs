@@ -210,7 +210,7 @@ namespace Windows.Storage
 			using StreamReader streamReader = new StreamReader(fileStream, systemEncoding);
 
 			var lines = new List<string>();
-			string line;
+			string? line;
 			while ((line = await streamReader.ReadLineAsync()) != null)
 			{
 				lines.Add(line);

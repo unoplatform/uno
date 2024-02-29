@@ -9,7 +9,7 @@ namespace Windows.Graphics.Imaging
 		{
 			get
 			{
-				var alfaInfo = image.CGImage.AlphaInfo;
+				var alfaInfo = image.CGImage!.AlphaInfo;
 				if (alfaInfo.HasFlag(CoreGraphics.CGImageAlphaInfo.PremultipliedFirst)
 					|| alfaInfo.HasFlag(CoreGraphics.CGImageAlphaInfo.PremultipliedLast))
 				{
@@ -32,10 +32,10 @@ namespace Windows.Graphics.Imaging
 		public bool IsReadOnly { get; }
 
 		public int PixelHeight =>
-			(int)image.CGImage.Height;
+			(int)image.CGImage!.Height;
 
 		public int PixelWidth =>
-			(int)image.CGImage.Width;
+			(int)image.CGImage!.Width;
 
 		public SoftwareBitmap GetReadOnlyView() =>
 			new SoftwareBitmap(image, true);
@@ -60,7 +60,7 @@ namespace Windows.Graphics.Imaging
 						, CGImageAlphaInfo.PremultipliedLast);
 			var rect = new CGRect(0, 0, width, height);
 			context.DrawImage(rect, imageRef);
-			return context.ToImage();
+			return context.ToImage()!;
 		}
 
 		private static CGImage FromPixels(byte[] pixels, BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
@@ -108,7 +108,7 @@ namespace Windows.Graphics.Imaging
 			var rect = new CGRect(0, 0, width, height);
 			context.DrawImage(rect, imageRef);
 
-			return context.ToImage();
+			return context.ToImage()!;
 
 			static void Swap(ref byte foo, ref byte bar)
 			{

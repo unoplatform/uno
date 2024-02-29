@@ -130,7 +130,7 @@ namespace Uno.Buffers
 				return Array.Empty<T>();
 			}
 
-			T[] buffer = null;
+			T[]? buffer = null;
 
 			int index = Utilities.SelectBucketIndex(minimumLength);
 			if (index < _buckets.Length)

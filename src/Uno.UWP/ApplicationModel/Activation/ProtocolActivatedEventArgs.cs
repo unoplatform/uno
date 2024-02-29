@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
+#define IS_IMPLEMENTED
+#endif
+
+using System;
 using Uno;
 
 namespace Windows.ApplicationModel.Activation
@@ -14,12 +18,6 @@ namespace Windows.ApplicationModel.Activation
 		IViewSwitcherProvider,
 		IActivatedEventArgsWithUser
 	{
-		internal ProtocolActivatedEventArgs()
-		{
-
-		}
-
-#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 		/// <summary>
 		/// Internal-only constructor for protocol activation.
 		/// </summary>
@@ -27,9 +25,13 @@ namespace Windows.ApplicationModel.Activation
 		/// <param name="previousExecutionState">Previous execution state.</param>
 		internal ProtocolActivatedEventArgs(Uri uri, ApplicationExecutionState previousExecutionState)
 		{
+#if IS_IMPLEMENTED
 			Uri = uri;
 			PreviousExecutionState = previousExecutionState;
+#endif
 		}
+
+#if IS_IMPLEMENTED
 
 		/// <summary>
 		/// Gets the activation type.
@@ -47,7 +49,7 @@ namespace Windows.ApplicationModel.Activation
 		public Uri Uri { get; }
 
 		[NotImplemented]
-		public SplashScreen SplashScreen
+		public SplashScreen? SplashScreen
 		{
 			get;
 		}

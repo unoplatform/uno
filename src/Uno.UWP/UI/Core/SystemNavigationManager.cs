@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 {
 	public sealed partial class SystemNavigationManager
 	{
-		private static SystemNavigationManager _instance;
+		private static SystemNavigationManager? _instance;
 
 		public static SystemNavigationManager GetForCurrentView()
 		{
@@ -42,7 +42,7 @@ namespace Windows.UI.Core
 			}
 		}
 
-		internal event EventHandler<AppViewBackButtonVisibility> AppViewBackButtonVisibilityChanged;
+		internal event EventHandler<AppViewBackButtonVisibility>? AppViewBackButtonVisibilityChanged;
 		partial void OnAppViewBackButtonVisibility(AppViewBackButtonVisibility visibility);
 
 		/// <summary>

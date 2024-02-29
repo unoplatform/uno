@@ -19,16 +19,16 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
 
-		public event EventHandler<DeviceInformation> WatchAdded;
+		public event EventHandler<DeviceInformation>? WatchAdded;
 
-		public event EventHandler<DeviceInformation> WatchEnumerationCompleted;
+		public event EventHandler<DeviceInformation?>? WatchEnumerationCompleted;
 
-		public event EventHandler<DeviceInformationUpdate> WatchRemoved;
+		public event EventHandler<DeviceInformationUpdate>? WatchRemoved;
 
-		public event EventHandler<object> WatchStopped;
+		public event EventHandler<object?>? WatchStopped;
 
 #pragma warning disable CS0067 // Device update watching is not supported on WASM
-		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
+		public event EventHandler<DeviceInformationUpdate>? WatchUpdated;
 #pragma warning restore CS0067
 
 		public bool CanWatch => true;
@@ -96,7 +96,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchRemoved?.Invoke(this, deviceInformationUpdate);
 		}
 
-		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)
+		private void OnEnumerationCompleted(DeviceInformation? lastDeviceInformation)
 		{
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}

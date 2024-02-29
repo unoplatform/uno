@@ -11,7 +11,7 @@ namespace Windows.Devices.Sensors
 		/// API not supported, always returns null.
 		/// </summary>
 		/// <returns>Null.</returns>
-		public static Magnetometer GetDefault() => null;
+		public static Magnetometer? GetDefault() => null;
 	}
 }
 #endif

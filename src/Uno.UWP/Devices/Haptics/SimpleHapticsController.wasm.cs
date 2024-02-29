@@ -8,7 +8,7 @@ namespace Windows.Devices.Haptics
 {
 	public partial class SimpleHapticsController
 	{
-		private readonly PhoneVibrationDevice _vibrationDevice = PhoneVibrationDevice.GetDefault();
+		private readonly PhoneVibrationDevice? _vibrationDevice = PhoneVibrationDevice.GetDefault();
 
 		public IReadOnlyList<SimpleHapticsControllerFeedback> SupportedFeedback { get; } = new SimpleHapticsControllerFeedback[]
 		{

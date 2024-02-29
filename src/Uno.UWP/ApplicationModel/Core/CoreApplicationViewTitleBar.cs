@@ -10,7 +10,7 @@ namespace Windows.ApplicationModel.Core
 	public partial class CoreApplicationViewTitleBar
 	{
 #pragma warning disable 67
-		internal event Action ExtendViewIntoTitleBarChanged;
+		internal event Action? ExtendViewIntoTitleBarChanged;
 #pragma warning restore 67
 
 #if !__ANDROID__ && !__SKIA__

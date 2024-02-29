@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web
 
 		static WebAuthenticationBroker()
 		{
-			ApiExtensibility.CreateInstance(null, out _authenticationBrokerProvider);
+			ApiExtensibility.CreateInstance(null!, out _authenticationBrokerProvider!);
 
 			// If no custom extension found, default to internal one.
 			if (_authenticationBrokerProvider == null)
@@ -24,7 +24,7 @@ namespace Windows.Security.Authentication.Web
 
 		public static Uri GetCurrentApplicationCallbackUri()
 		{
-			return _authenticationBrokerProvider?.GetCurrentApplicationCallbackUri();
+			return _authenticationBrokerProvider.GetCurrentApplicationCallbackUri();
 		}
 
 		public static IAsyncOperation<WebAuthenticationResult> AuthenticateAsync(WebAuthenticationOptions options, Uri requestUri)

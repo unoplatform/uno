@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 
 		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
-		private Manipulation _manipulation;
+		private Manipulation? _manipulation;
 		private GestureSettings _gestureSettings;
 		private bool _isManipulationOrDragEnabled;
 
@@ -55,7 +55,7 @@ namespace Windows.UI.Input
 		/// This is the owner provided in the ctor. It might be `null` if none provided.
 		/// It's purpose it to allow usage of static event handlers.
 		/// </summary>
-		internal object Owner { get; }
+		internal object? Owner { get; }
 
 		public GestureRecognizer()
 		{
@@ -192,23 +192,23 @@ namespace Windows.UI.Input
 		}
 
 		#region Manipulations
-		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
-		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationConfigured; // Right after the ManipulationStarting, once application has configured settings ** ONLY if not cancelled in starting **
-		internal event TypedEventHandler<GestureRecognizer, Manipulation> ManipulationAborted; // The manipulation has been aborted while in starting state ** ONLY if received a ManipulationConfigured **
-		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
-		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
-		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
-		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
+		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs>? ManipulationStarting; // This is not on the public API!
+		internal event TypedEventHandler<GestureRecognizer, Manipulation>? ManipulationConfigured; // Right after the ManipulationStarting, once application has configured settings ** ONLY if not cancelled in starting **
+		internal event TypedEventHandler<GestureRecognizer, Manipulation>? ManipulationAborted; // The manipulation has been aborted while in starting state ** ONLY if received a ManipulationConfigured **
+		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs>? ManipulationCompleted;
+		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs>? ManipulationInertiaStarting;
+		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs>? ManipulationStarted;
+		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs>? ManipulationUpdated;
 
-		internal Manipulation PendingManipulation => _manipulation;
+		internal Manipulation? PendingManipulation => _manipulation;
 		#endregion
 
 		#region Tap (includes DoubleTap and RightTap)
 		private (ulong id, ulong ts, Point position) _lastSingleTap;
 
-		public event TypedEventHandler<GestureRecognizer, TappedEventArgs> Tapped;
-		public event TypedEventHandler<GestureRecognizer, RightTappedEventArgs> RightTapped;
-		public event TypedEventHandler<GestureRecognizer, HoldingEventArgs> Holding;
+		public event TypedEventHandler<GestureRecognizer, TappedEventArgs>? Tapped;
+		public event TypedEventHandler<GestureRecognizer, RightTappedEventArgs>? RightTapped;
+		public event TypedEventHandler<GestureRecognizer, HoldingEventArgs>? Holding;
 
 		public bool CanBeDoubleTap(PointerPoint value)
 			=> _gestureSettings.HasFlag(GestureSettings.DoubleTap) && Gesture.IsMultiTapGesture(_lastSingleTap, value);
@@ -218,8 +218,8 @@ namespace Windows.UI.Input
 		/// <summary>
 		/// This is being raised for touch only, when the pointer remained long enough at the same location so the drag can start.
 		/// </summary>
-		internal event TypedEventHandler<GestureRecognizer, Manipulation> DragReady;
-		public event TypedEventHandler<GestureRecognizer, DraggingEventArgs> Dragging;
+		internal event TypedEventHandler<GestureRecognizer, Manipulation>? DragReady;
+		public event TypedEventHandler<GestureRecognizer, DraggingEventArgs>? Dragging;
 		#endregion
 
 		private delegate bool CheckButton(PointerPoint point);

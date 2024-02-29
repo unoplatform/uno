@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />

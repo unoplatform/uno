@@ -8,7 +8,7 @@ public sealed partial class SplashScreen
 	{
 	}
 #pragma warning disable CS0067 // The event 'SplashScreen.Dismissed' is never used
-	public event TypedEventHandler<SplashScreen, object> Dismissed;
+	public event TypedEventHandler<SplashScreen, object>? Dismissed;
 #pragma warning restore CS0067 // The event 'SplashScreen.Dismissed' is never used
 
 	public Rect ImageLocation

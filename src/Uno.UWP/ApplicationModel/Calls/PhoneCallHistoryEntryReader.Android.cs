@@ -73,7 +73,7 @@ public partial class PhoneCallHistoryEntryReader
 				entry.StartTime = DateTimeOffset.FromUnixTimeMilliseconds(_cursor.GetLong(callDateColumn));
 
 				entry.Address = new PhoneCallHistoryEntryAddress(
-					_cursor.GetString(callNumberColumn),
+					_cursor.GetString(callNumberColumn)!,
 					PhoneCallHistoryEntryRawAddressKind.PhoneNumber);
 
 				entry.Address.DisplayName = _cursor.GetString(callDisplayNameColumn) ?? "";

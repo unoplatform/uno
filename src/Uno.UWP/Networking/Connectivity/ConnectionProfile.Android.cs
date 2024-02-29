@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		private ConnectionProfile()
 		{
 			NetworkInformation.VerifyNetworkStateAccess();
-			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
+			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService)!;
 
 			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.LollipopMr1)
 			{
@@ -48,7 +48,7 @@ namespace Windows.Networking.Connectivity
 			{
 #pragma warning disable CS0618 // Type or member is obsolete
 #pragma warning disable CA1422 // Validate platform compatibility
-				NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
+				NetworkInfo? info = _connectivityManager.ActiveNetworkInfo;
 				if (info?.IsConnected == true)
 				{
 					IsWwanConnectionProfile = IsConnectionWwan(info.Type);

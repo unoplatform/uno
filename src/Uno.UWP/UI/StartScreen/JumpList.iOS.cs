@@ -15,7 +15,7 @@ namespace Windows.UI.StartScreen
 
 		private void LoadItems()
 		{
-			var shortcuts = UIApplication.SharedApplication.ShortcutItems
+			var shortcuts = UIApplication.SharedApplication.ShortcutItems!
 				.Where(s => s.IsUnoShortcut())
 				.ToArray();
 			Items.Clear();
@@ -28,7 +28,7 @@ namespace Windows.UI.StartScreen
 
 		private IAsyncAction InternalSaveAsync()
 		{
-			var nonUnoShortcuts = UIApplication.SharedApplication.ShortcutItems.Where(s => !s.IsUnoShortcut()).ToArray();
+			var nonUnoShortcuts = UIApplication.SharedApplication.ShortcutItems!.Where(s => !s.IsUnoShortcut()).ToArray();
 			var convertedItems = Items
 				.Select(item => item.ToShortcutItem())
 				.ToArray();

@@ -12,7 +12,7 @@ namespace Windows.Graphics.Imaging
 	{
 		private readonly Func<NSImage, NSData> _encoder;
 		private readonly global::Windows.Storage.Streams.IRandomAccessStream _stream;
-		private global::Windows.Graphics.Imaging.SoftwareBitmap _softwareBitmap;
+		private global::Windows.Graphics.Imaging.SoftwareBitmap? _softwareBitmap;
 
 		private BitmapEncoder(Func<NSImage, NSData> encoder
 			, Storage.Streams.IRandomAccessStream stream)
@@ -86,14 +86,14 @@ namespace Windows.Graphics.Imaging
 
 		static readonly IntPtr AppKit_libraryHandle = ObjCRuntime.Dlfcn.dlopen(ObjCRuntime.Constants.AppKitLibrary, 0);
 
-		static NSString _NSImageCompressionFactor;
+		static NSString? _NSImageCompressionFactor;
 		public static NSString NSImageCompressionFactor
 		{
 			get
 			{
 				if (_NSImageCompressionFactor == null)
 				{
-					_NSImageCompressionFactor = ObjCRuntime.Dlfcn.GetStringConstant(AppKit_libraryHandle, "NSImageCompressionFactor");
+					_NSImageCompressionFactor = ObjCRuntime.Dlfcn.GetStringConstant(AppKit_libraryHandle, "NSImageCompressionFactor")!;
 				}
 				return _NSImageCompressionFactor;
 			}

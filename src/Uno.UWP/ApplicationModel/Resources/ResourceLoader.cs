@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -25,11 +26,13 @@ namespace Windows.ApplicationModel.Resources
 
 		private static readonly List<Assembly> _lookupAssemblies = new List<Assembly>();
 		private static readonly Dictionary<string, ResourceLoader> _loaders = new Dictionary<string, ResourceLoader>(StringComparer.OrdinalIgnoreCase);
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. - TODO: Annotate properly.
 		private static CultureInfo _loadersCulture;
 		private static string _loadersDefault;
 		private static string[] _loadersHierarchy;
 
 		private static string _defaultLanguage;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		private readonly Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
@@ -103,7 +106,7 @@ namespace Windows.ApplicationModel.Resources
 			return string.Empty;
 		}
 
-		private bool FindForCulture(string culture, string resource, out string resourceValue)
+		private bool FindForCulture(string culture, string resource, [NotNullWhen(true)] out string? resourceValue)
 		{
 			if (_log.IsEnabled(LogLevel.Debug))
 			{
@@ -266,7 +269,7 @@ namespace Windows.ApplicationModel.Resources
 			{
 				if (name.EndsWith(".upri", StringComparison.Ordinal))
 				{
-					ProcessResourceFile(name, assembly.GetManifestResourceStream(name), currentCultures);
+					ProcessResourceFile(name, assembly.GetManifestResourceStream(name)!, currentCultures);
 				}
 			}
 		}

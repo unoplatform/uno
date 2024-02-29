@@ -20,7 +20,7 @@ namespace Windows.Devices.Midi
 		private readonly object _syncLock = new object();
 		private readonly MidiMessageParser _parser = new MidiMessageParser();
 
-		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> _messageReceived;
+		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>? _messageReceived;
 
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
@@ -106,9 +106,9 @@ namespace Windows.Devices.Midi
 			return deviceIdentifier;
 		}
 
-		private void OnMessageReceived(byte[] message, int startingOffset, int length, TimeSpan timestamp)
+		private void OnMessageReceived(byte[]? message, int startingOffset, int length, TimeSpan timestamp)
 		{
-			if (message.Length == 0)
+			if (message is null || message.Length == 0)
 			{
 				// ignore empty message
 				return;

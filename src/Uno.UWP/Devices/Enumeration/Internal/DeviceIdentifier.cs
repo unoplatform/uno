@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace Uno.Devices.Enumeration.Internal
 		/// <param name="deviceId">Device ID.</param>
 		/// <param name="deviceIdentifier">Parsed device identifier.</param>
 		/// <returns>Value indicating whether the ID can be parsed.</returns>
-		internal static bool TryParse(string deviceId, out DeviceIdentifier deviceIdentifier)
+		internal static bool TryParse(string deviceId, [NotNullWhen(true)] out DeviceIdentifier? deviceIdentifier)
 		{
 			deviceIdentifier = null;
 

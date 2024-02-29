@@ -1,6 +1,7 @@
 #if __ANDROID__
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace Uno.UI
 {
 	public static class ContextHelper
 	{
-		private static Android.Content.Context _current;
+		private static Android.Content.Context? _current;
 
 		/// <summary>
 		/// Get the current android content context
@@ -35,7 +36,7 @@ namespace Uno.UI
 							"For compatibility with Uno, you should ensure your `MainActivity` " +
 							"is deriving from Windows.UI.Xaml.ApplicationActivity.");
 				}
-				return _current;
+				return _current!;
 			}
 			set => _current = value;
 		}
@@ -45,7 +46,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="context">The context if available</param>
 		/// <returns>true if the current context is available, otherwise false.</returns>
-		internal static bool TryGetCurrent(out Android.Content.Context context)
+		internal static bool TryGetCurrent([NotNullWhen(true)] out Android.Content.Context? context)
 		{
 			context = _current;
 			return _current != null;

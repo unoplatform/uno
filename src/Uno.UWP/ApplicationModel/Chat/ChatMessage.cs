@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.Chat
 {
 	public partial class ChatMessage : IChatItem
 	{
-		private string _body;
+		private string _body = "";
 
 		public ChatMessage()
 		{
@@ -26,7 +26,7 @@ namespace Windows.ApplicationModel.Chat
 		public ChatItemKind ItemKind { get; }
 		public bool IsIncoming { get; set; }
 		public ChatMessageStatus Status { get; set; }
-		public string From { get; set; }
+		public string? From { get; set; } = "";
 		public DateTimeOffset LocalTimestamp { get; set; }
 		public ChatMessageKind MessageKind { get; set; }
 		public ChatMessageOperatorKind MessageOperatorKind { get; set; }

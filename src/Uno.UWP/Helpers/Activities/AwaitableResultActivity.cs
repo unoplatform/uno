@@ -18,7 +18,7 @@ namespace Uno.Helpers.Activities
 			)]
 	internal class AwaitableResultActivity : FragmentActivity
 	{
-		private static event Action<AwaitableResultActivity> Resumed;
+		private static event Action<AwaitableResultActivity>? Resumed;
 
 		// Some devices (Galaxy S4) use a second activity to get the result.
 		// This dictionary is used to keep track of the original activities that requests the values.
@@ -78,7 +78,7 @@ namespace Uno.Helpers.Activities
 			}
 		}
 
-		protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent intent)
+		protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent? intent)
 		{
 			base.OnActivityResult(requestCode, resultCode, intent);
 
