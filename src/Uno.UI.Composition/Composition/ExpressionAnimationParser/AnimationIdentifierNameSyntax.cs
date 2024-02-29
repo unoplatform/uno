@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition;
 
 internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 {
-	private CompositionObject? _result;
+	private object? _result;
 	private ExpressionAnimation? _expressionAnimation;
 
 	public ExpressionAnimationToken Identifier { get; }
@@ -25,11 +25,25 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 
 		_expressionAnimation = expressionAnimation;
 
-		if (expressionAnimation.ReferenceParameters.TryGetValue((string)Identifier.Value!, out var value))
+		var identifierValue = (string)Identifier.Value!;
+
+		if (expressionAnimation.ReferenceParameters.TryGetValue(identifierValue, out var value))
 		{
 			value.AddContext(expressionAnimation, null);
 			_result = value;
 			return value;
+		}
+
+		if (expressionAnimation.ScalarParameters.TryGetValue(identifierValue, out var scalarValue))
+		{
+			_result = scalarValue;
+			return scalarValue;
+		}
+
+		if (identifierValue.Equals("Pi", StringComparison.Ordinal))
+		{
+			_result = Math.PI;
+			return Math.PI;
 		}
 
 		throw new ArgumentException($"Unrecognized identifier '{Identifier.Value}'.");
@@ -39,7 +53,7 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 	{
 		if (_expressionAnimation is not null && _result is not null)
 		{
-			_result.RemoveContext(_expressionAnimation, null);
+			(_result as CompositionObject)?.RemoveContext(_expressionAnimation, null);
 		}
 
 		_result = null;
