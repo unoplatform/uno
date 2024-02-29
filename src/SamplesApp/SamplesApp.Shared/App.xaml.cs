@@ -107,25 +107,11 @@ namespace SamplesApp
 #if HAS_UNO
 			internal
 #endif
-			override void OnLaunched(LaunchActivatedEventArgs e)
+		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			EnsureMainWindow();
 
-#if __ANDROID__
-			CopyJavaEnvironment("UITEST_RUNTIME_TEST_GROUP_COUNT");
-			CopyJavaEnvironment("UITEST_RUNTIME_TEST_GROUP");
-			CopyJavaEnvironment("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
-
-			void CopyJavaEnvironment(string variable)
-			{
-				// Only a subset of environment variables are available to the app, and they
-				// are prefixed with "debug.".
-				if (Java.Lang.JavaSystem.GetProperty("debug." + variable) is { Length: > 0 } value)
-				{
-					System.Environment.SetEnvironmentVariable(variable, value);
-				}
-			}
-#endif
+			SetupAndroidEnvironment();
 
 #if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
@@ -210,6 +196,30 @@ namespace SamplesApp
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
 		}
+
+		private void SetupAndroidEnvironment()
+		{
+#if __ANDROID__
+			// Read a file from /sdcard/environment.txt and set the environment variables	
+			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+			if (File.Exists(environmentFilePath))
+			{
+				var lines = File.ReadAllLines(environmentFilePath);
+				foreach (var line in lines)
+				{
+					var parts = line.Split('=');
+					if (parts.Length == 2)
+					{
+						var key = parts[0];
+						var value = parts[1];
+						Console.WriteLine($"Setting environment variable {key} to {value}");
+						System.Environment.SetEnvironmentVariable(key, value);
+					}
+				}
+			}
+#endif
+		}
+
 
 #if __IOS__
 		/// <summary>

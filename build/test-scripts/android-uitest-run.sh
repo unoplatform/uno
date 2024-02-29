@@ -61,11 +61,15 @@ cd $BUILD_SOURCESDIRECTORY/build
 export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
 export ANDROID_SDK_ROOT=$BUILD_SOURCESDIRECTORY/build/android-sdk
 export CMDLINETOOLS=commandlinetools-mac-8512546_latest.zip
-mkdir -p $ANDROID_HOME
-wget https://dl.google.com/android/repository/$CMDLINETOOLS
-unzip $CMDLINETOOLS -d $ANDROID_HOME/cmdline-tools
-rm $CMDLINETOOLS
-mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+
+if [[ ! -d $ANDROID_HOME ]];
+then
+	mkdir -p $ANDROID_HOME
+	wget https://dl.google.com/android/repository/$CMDLINETOOLS
+	unzip $CMDLINETOOLS -d $ANDROID_HOME/cmdline-tools
+	rm $CMDLINETOOLS
+	mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+fi
 
 # uncomment the following lines to override the installed Xamarin.Android SDK
 # wget -nv https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android-d16-2/49/Azure/processDownloadRequest/xamarin-android/xamarin-android/bin/BuildRelease/Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg
@@ -76,14 +80,21 @@ AVD_CONFIG_FILE=~/.android/avd/$AVD_NAME.avd/config.ini
 
 if [[ ! -f $AVD_CONFIG_FILE ]];
 then
+	# Create a variable that sets x86_64 or aarch64 for the emulator based on the current architecture.
+	# Used for local tested.
+	EMU_ARCH=x86_64
+	if [[ $(uname -m) == "arm64" ]]; then
+		EMU_ARCH=arm64-v8a
+	fi
+
 	# Install AVD files
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;33.0.0' | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
 	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86_64' | tr '\r' '\n' | uniq
-	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86_64" | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-28;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
+	echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" | tr '\r' '\n' | uniq
 
 	if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
 	then
@@ -92,7 +103,7 @@ then
 	fi
 
 	# Create emulator
-	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi "x86_64" -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86_64" --sdcard 128M --force
+	echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n "$AVD_NAME" --abi $EMU_ARCH -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;$EMU_ARCH" --sdcard 128M --force
 
 	# based on https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#hardware
 	# >> Agents that run macOS images are provisioned on Mac pros with a 3 core CPU, 14 GB of RAM, and 14 GB of SSD disk space.
@@ -111,8 +122,26 @@ then
 	# kickstart ADB
 	$ANDROID_HOME/platform-tools/adb devices
 
+	# Show the emulator when running locally
+	if [ "$UITEST_IS_LOCAL" == "true" ];
+	then
+		export EMU_NO_WINDOW=""
+	else
+		export EMU_NO_WINDOW="-no-window"
+	fi
+
 	# Start emulator in background
-	nohup $ANDROID_HOME/emulator/emulator -avd "$AVD_NAME" -skin 1280x800 -memory 4096 -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-emulator-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt 2>&1 &
+	nohup $ANDROID_HOME/emulator/emulator \
+		-avd "$AVD_NAME" \
+		-skin 1280x800 \
+		-memory 4096 \
+		$EMU_NO_WINDOW \
+		-gpu swiftshader_indirect \
+		-no-snapshot \
+		-noaudio \
+		-no-boot-anim \
+		-prop ro.debuggable=1 \
+		> $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-emulator-log-$UNO_UITEST_BUCKET_ID-$UITEST_TEST_MODE_NAME.txt 2>&1 &
 
 	# Wait for the emulator to finish booting
 	source $BUILD_SOURCESDIRECTORY/build/test-scripts/android-uitest-wait-systemui.sh 500
@@ -146,16 +175,19 @@ then
 	UITEST_RUNTIME_AUTOSTART_RESULT_FILE="/sdcard/TestResult-`date +"%Y%m%d%H%M%S"`.xml"
 
 	# Install the app
-	adb install $UNO_UITEST_ANDROIDAPK_PATH
+	$ANDROID_HOME/platform-tools/adb install $UNO_UITEST_ANDROIDAPK_PATH
 
-	# Set the environment variables for the test run, note that the app needs to clone these values to
-	# standard environment variables to be able to use them
-	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_TEST_GROUP "$UITEST_RUNTIME_TEST_GROUP"
-	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_TEST_GROUP_COUNT "$UITEST_RUNTIME_TEST_GROUP_COUNT"
-	$ANDROID_HOME/platform-tools/adb shell setprop debug.UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE"
+	# Create the environment file for the app to read
+	echo "UITEST_RUNTIME_TEST_GROUP=$UITEST_RUNTIME_TEST_GROUP" > samplesapp-environment.txt
+	echo "UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT" >> samplesapp-environment.txt
+	echo "UITEST_RUNTIME_AUTOSTART_RESULT_FILE=$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" >> samplesapp-environment.txt
 
-	# grant the storage permission to the app to read the test results
-	adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
+	# Push the environment file to the device
+	$ANDROID_HOME/platform-tools/adb push samplesapp-environment.txt /sdcard/samplesapp-environment.txt
+
+	# grant the storage permission to the app to write the test results and read the environment file
+	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.WRITE_EXTERNAL_STORAGE
+	$ANDROID_HOME/platform-tools/adb shell pm grant $UNO_UITEST_APP_ID android.permission.READ_EXTERNAL_STORAGE
 
 	# start the android app using environment variables using adb
 	$ANDROID_HOME/platform-tools/adb shell monkey -p $UNO_UITEST_APP_ID -c android.intent.category.LAUNCHER 1
@@ -168,20 +200,21 @@ then
 
 	echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
-	while [[ ! $(adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE") && $SECONDS -lt $END_TIME ]]; do
-		echo "Waiting $INTERVAL seconds for test results to be written to $UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
+	while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_FILE" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
+		# echo "Waiting $INTERVAL seconds for test results to be written to $UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
 
 		# exit loop if the APP_PID is not running anymore
-		if ! adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
+		if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
 			echo "The app is not running anymore"
 			break
 		fi
 	done
 
-	adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
+	$ANDROID_HOME/platform-tools/adb pull $UITEST_RUNTIME_AUTOSTART_RESULT_FILE $UNO_ORIGINAL_TEST_RESULTS || true
 
 else
+
 	if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 		UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
 	else
@@ -201,8 +234,8 @@ else
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout 120m \
-		-v m \
-		|| true
+		-v m || true
+
 fi
 
 ## Dump the emulator's system log
@@ -210,7 +243,6 @@ $ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTO
 
 if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 	echo "ERROR: The test results file $UNO_ORIGINAL_TEST_RESULTS does not exist (did nunit crash ?)"
-	return 1
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry
