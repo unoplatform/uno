@@ -19,19 +19,55 @@ internal partial class PopupRoot : Panel
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
+<<<<<<< HEAD
 		Microsoft.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
 		Microsoft.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+=======
+		Loaded += OnRootLoaded;
+		Unloaded += OnRootUnloaded;
 	}
 
-	private void CloseFlyouts()
+	private void OnRootLoaded(object sender, RoutedEventArgs args)
+	{
+		if (XamlRoot is { } xamlRoot)
+		{
+			void OnChanged(object sender, object args) => CloseLightDismissablePopups();
+
+			CompositeDisposable disposables = new();
+			xamlRoot.Changed += OnChanged;
+			disposables.Add(() => xamlRoot.Changed -= OnChanged);
+
+			if (xamlRoot.HostWindow is { } window)
+			{
+				window.Activated += OnChanged;
+				disposables.Add(() => window.Activated -= OnChanged);
+			}
+
+			_subscriptions.Disposable = disposables;
+		}
+	}
+
+	private void OnRootUnloaded(object sender, RoutedEventArgs args)
+	{
+		_subscriptions.Disposable = null;
+>>>>>>> 223faacf52 (fix: Avoid closing non-light-dismissable flyouts on Window activation)
+	}
+
+	private void CloseLightDismissablePopups()
 	{
 		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
 			var reference = _openPopups[i];
-			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
 			{
-				var f = popup.AssociatedFlyout;
-				f.Hide();
+				if (popup.AssociatedFlyout is { } flyout)
+				{
+					flyout.Hide();
+				}
+				else
+				{
+					popup.IsOpen = false;
+				}
 			}
 		}
 	}
