@@ -465,6 +465,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[RequiresFullWindow] // the test fails if the available size for window content isn't wide enough
 		public async Task ValidateLayoutRoundingForPixelDimensions()
 		{
 			TestCleanupWrapper cleanup;
