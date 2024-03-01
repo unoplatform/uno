@@ -311,7 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return "GregorianCalendar";
 		}
 
-		static DateTime GetDefaultDate()
+		static DateTimeOffset GetDefaultDate()
 		{
 			DateTime currentDate = default;
 
@@ -321,7 +321,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return currentDate;
 		}
 
-		static DateTime GetDefaultMinYear()
+		static DateTimeOffset GetDefaultMinYear()
 		{
 			DateTime minDate = default;
 
@@ -332,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return minDate;
 		}
 
-		static DateTime GetDefaultMaxYear()
+		static DateTimeOffset GetDefaultMaxYear()
 		{
 
 			DateTime maxDate = default;

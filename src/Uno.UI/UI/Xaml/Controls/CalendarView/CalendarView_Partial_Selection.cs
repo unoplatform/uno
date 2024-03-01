@@ -296,11 +296,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				SelectedDatesChangedEventSourceType pEventSource = null;
 				CalendarViewSelectedDatesChangedEventArgs spEventArgs;
-				ValueTypeCollection<DateTime> spAddedDates;
-				ValueTypeCollection<DateTime> spRemovedDates;
+				ValueTypeCollection<DateTimeOffset> spAddedDates;
+				ValueTypeCollection<DateTimeOffset> spRemovedDates;
 
-				spAddedDates = new ValueTypeCollection<DateTime>();
-				spRemovedDates = new ValueTypeCollection<DateTime>();
+				spAddedDates = new ValueTypeCollection<DateTimeOffset>();
+				spRemovedDates = new ValueTypeCollection<DateTimeOffset>();
 
 				foreach (var it in addedDates)
 				{
