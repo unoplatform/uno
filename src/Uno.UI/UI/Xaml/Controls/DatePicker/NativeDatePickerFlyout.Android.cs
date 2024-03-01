@@ -7,6 +7,7 @@ using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -54,10 +55,12 @@ namespace Microsoft.UI.Xaml.Controls
 				date = calendar.GetDateTime();
 			}
 
+			var themeResourceId = CoreApplication.RequestedTheme == Uno.Helpers.Theming.SystemTheme.Light ? global::Android.Resource.Style.ThemeDeviceDefaultLightDialog : global::Android.Resource.Style.ThemeDeviceDefaultDialog;
 			// Note: Month needs to be -1 since on Android months go from 0-11
 			// http://developer.android.com/reference/android/app/DatePickerDialog.OnDateSetListener.html#onDateSet(android.widget.DatePicker, int, int, int)
 			_dialog = new DatePickerDialog(
 				ContextHelper.Current,
+				themeResourceId,
 				OnDateSet,
 				date.Year,
 				date.Month - 1,
