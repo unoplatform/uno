@@ -1816,10 +1816,10 @@
 			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Unused, and API isn't in WinUI" />
 
 			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
-			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle " reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ExplicitStyle" reason="Renamed to ExplicitOrImplicitStyle, and API isn't in WinUI" />
 
 			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
-			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle " reason="Renamed to DefaultStyle, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::ImplicitStyle" reason="Renamed to DefaultStyle, and API isn't in WinUI" />
 		</Fields>
 
 		<Properties>
