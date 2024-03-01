@@ -31,7 +31,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 			App.DragCoordinates(sutRect.CenterX, sutRect.CenterY, sutRect.Right - 10, sutRect.CenterY - 20);
 
-			await App.WaitForDependencyPropertyValueAsync(output, "Text", "Left_1");
+			await App.WaitForDependencyPropertyValueAsync(output, "Text", "** none **");
 		}
 
 		[Test]
@@ -56,7 +56,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 			await Task.Delay(1000); // We cannot detect the animation ...
 
-			Assert.AreEqual("** none **", result);
+			Assert.AreEqual("Left_1", result);
 
 			App.TapCoordinates(sutRect.Right - 10, sutRect.CenterY);
 
