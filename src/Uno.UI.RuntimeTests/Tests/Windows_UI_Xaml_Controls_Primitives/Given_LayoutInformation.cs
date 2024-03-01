@@ -297,6 +297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 #if __SKIA__
 		[Ignore("Fails on CI for unkown reason (wokrs locally).")]
 #endif
+		[RequiresFullWindow] // the test fails if the available size for window content isn't wide enough
 		public async Task When_ElementInPaddedGrid_Then_LayoutSlot(HorizontalAlignment hAlign, VerticalAlignment vAlign, int border, int margin)
 		{
 #if __WASM__
