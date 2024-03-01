@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // No WASM as Holding is not raise for mouse pointers
+		[ActivePlatforms(Platform.iOS)] // No WASM as Holding is not raise for mouse pointers, Android failing https://github.com/unoplatform/uno/issues/9080
 		public void When_Basic()
 		{
 			Run(_xamlTestPage);
@@ -105,7 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // No WASM as Holding is not raise for mouse pointers
+		[ActivePlatforms(Platform.iOS)] // No WASM as Holding is not raise for mouse pointers, Android failing https://github.com/unoplatform/uno/issues/9080
 		public void When_InScroll()
 		{
 			Run(_xamlTestPage);
@@ -156,7 +156,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // No WASM as Holding is not raise for mouse pointers
+		[ActivePlatforms(Platform.iOS)] // No WASM as Holding is not raise for mouse pointers, Android failing https://github.com/unoplatform/uno/issues/9080
 		public void When_InListViewWithItemClick()
 		{
 			Run(_xamlTestPage);
@@ -205,7 +205,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // No WASM as Holding is not raise for mouse pointers
+		[ActivePlatforms(Platform.iOS)] // No WASM as Holding is not raise for mouse pointers, Android failing https://github.com/unoplatform/uno/issues/9080
 		public void When_InListViewWithoutItemClick()
 		{
 			Run(_xamlTestPage);
