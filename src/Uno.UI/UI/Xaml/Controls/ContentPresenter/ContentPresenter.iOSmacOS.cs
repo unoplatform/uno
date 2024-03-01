@@ -72,8 +72,6 @@ partial class ContentPresenter
 
 	private void UpdateBorder() => _borderRenderer.Update();
 
-	partial void ClearBorder() => _borderRenderer.Clear();
-
 	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;

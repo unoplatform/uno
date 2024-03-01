@@ -75,7 +75,11 @@ partial class Panel
 	/// }
 	/// </summary>
 	/// <param name="view"></param>
-	public new void Add(__View view)
+	public
+#if __IOS__
+		new
+#endif
+		void Add(__View view)
 	{
 		Children.Add(view);
 	}
