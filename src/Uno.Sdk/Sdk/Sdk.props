@@ -27,9 +27,18 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<AssetsFolder Condition=" '$(AssetsFolder)' == '' ">Assets\</AssetsFolder>
 		<AssetsFolder>$([MSBuild]::EnsureTrailingSlash('$(AssetsFolder)'))</AssetsFolder>
 
-		<_UnoSdkTargetsDirectory>$([MSBuild]::EnsureTrailingSlash($([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\targets'))))</_UnoSdkTargetsDirectory>
+		<_UnoSdkTargetsDirectory>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\targets'))</_UnoSdkTargetsDirectory>
+		<_UnoSdkTargetsDirectory>$([MSBuild]::EnsureTrailingSlash($(_UnoSdkTargetsDirectory)))</_UnoSdkTargetsDirectory>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Import.SolutionConfig.props</CustomAfterDirectoryBuildProps>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
+		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Features.props</CustomAfterDirectoryBuildProps>
+		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Default.PackageVersions.props</CustomAfterDirectoryBuildProps>
+
+		<AvailablePlatforms Condition="'$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' > '10.0'">Any CPU,x86,x64</AvailablePlatforms>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DisableImplicitUnoPackages Condition=" '$(DisableImplicitUnoPackages)' == '' ">false</DisableImplicitUnoPackages>
 	</PropertyGroup>
 
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />

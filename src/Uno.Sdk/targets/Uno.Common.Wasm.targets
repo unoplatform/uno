@@ -1,6 +1,9 @@
 <Project>
 	<PropertyGroup>
 		<IsBrowser>true</IsBrowser>
+		<UsingUnoCommonWasmTargets>true</UsingUnoCommonWasmTargets>
+
+		<EnableDefaultWasmItems Condition="$(EnableDefaultWasmItems) == ''">false</EnableDefaultWasmItems>
 	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"

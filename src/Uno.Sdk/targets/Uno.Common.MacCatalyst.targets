@@ -3,5 +3,9 @@
 		<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 		<IsMacCatalyst>true</IsMacCatalyst>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.0</SupportedOSPlatformVersion>
+
+		<EnableDefaultMacCatalystItems Condition="$(EnableDefaultMacCatalystItems) == ''">false</EnableDefaultMacCatalystItems>
 	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacCatalyst.targets" Condition="$(SingleProject) == 'true'" />
 </Project>
