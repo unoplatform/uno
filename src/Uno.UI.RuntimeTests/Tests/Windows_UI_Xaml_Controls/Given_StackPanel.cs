@@ -408,161 +408,233 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[DataRow(Orientation.Vertical)]
 		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
 		public async Task When_Spacing_All_Visible(Orientation orientation)
 		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var stackPanel = new StackPanel()
 			{
+				Background = new SolidColorBrush(Colors.Yellow),
 				Orientation = orientation,
-				Spacing = 10,
+				Spacing = itemSpacing,
 				Children =
 				{
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green) },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue) }
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue) }
 				}
 			};
+			grid.Children.Add(stackPanel);
 
-			WindowHelper.WindowContent = stackPanel;
+			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(20 * 3 + 10 * 2, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			Assert.AreEqual(itemSize * 3 + itemSpacing * 2, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
 
-			ValidateSpacingPositions(orientation, stackPanel);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(Orientation.Vertical)]
 		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
 		public async Task When_Spacing_All_Collapsed(Orientation orientation)
 		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var stackPanel = new StackPanel()
 			{
+				Background = new SolidColorBrush(Colors.Yellow),
 				Orientation = orientation,
-				Spacing = 10,
+				Spacing = itemSpacing,
 				Children =
 				{
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
 				}
 			};
 
 			bool isLoaded = false;
 			stackPanel.Loaded += (s, e) => isLoaded = true;
-			WindowHelper.WindowContent = stackPanel;
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
 			await WindowHelper.WaitFor(() => isLoaded);
+			await WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(0, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
-			ValidateSpacingPositions(orientation, stackPanel);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(Orientation.Vertical)]
 		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
 		public async Task When_Spacing_Middle_Collapsed(Orientation orientation)
 		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var stackPanel = new StackPanel()
 			{
+				Background = new SolidColorBrush(Colors.Yellow),
 				Orientation = orientation,
-				Spacing = 10,
+				Spacing = itemSpacing,
 				Children =
 				{
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue) }
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue) }
 				}
 			};
 
-			WindowHelper.WindowContent = stackPanel;
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(20 * 2 + 10, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
-			ValidateSpacingPositions(orientation, stackPanel);
+			Assert.AreEqual(itemSize * 2 + itemSpacing, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(Orientation.Vertical)]
 		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
 		public async Task When_Spacing_Last_Two_Collapsed(Orientation orientation)
 		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var stackPanel = new StackPanel()
 			{
+				Background = new SolidColorBrush(Colors.Yellow),
 				Orientation = orientation,
-				Spacing = 10,
+				Spacing = itemSpacing,
 				Children =
 				{
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
 				}
 			};
 
-			WindowHelper.WindowContent = stackPanel;
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
-			ValidateSpacingPositions(orientation, stackPanel);
+			Assert.AreEqual(itemSize, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(Orientation.Vertical)]
 		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
 		public async Task When_Spacing_Outer_Collapsed(Orientation orientation)
 		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var stackPanel = new StackPanel()
 			{
+				Background = new SolidColorBrush(Colors.Yellow),
 				Orientation = orientation,
-				Spacing = 10,
+				Spacing = itemSpacing,
 				Children =
 				{
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green) },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
 				}
 			};
 
-			WindowHelper.WindowContent = stackPanel;
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(20, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
-			ValidateSpacingPositions(orientation, stackPanel);
+			Assert.AreEqual(itemSize, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(Orientation.Vertical)]
 		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
 		public async Task When_Spacing_Multiple_Collapsed(Orientation orientation)
 		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var stackPanel = new StackPanel()
 			{
+				Background = new SolidColorBrush(Colors.Yellow),
 				Orientation = orientation,
-				Spacing = 10,
+				Spacing = itemSpacing,
 				Children =
 				{
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Red) },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed },
-					new Border() { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Pink) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Pink) },
 				}
 			};
 
-			WindowHelper.WindowContent = stackPanel;
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
 
 			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(2 * 20 + 10, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
-			ValidateSpacingPositions(orientation, stackPanel);
+			Assert.AreEqual(2 * itemSize + itemSpacing, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
-		private static void ValidateSpacingPositions(Orientation orientation, StackPanel stackPanel)
+		private static void ValidateSpacingPositions(Orientation orientation, StackPanel stackPanel, int itemSpacing, int itemSize)
 		{
 			var expectedPosition = 0;
 			foreach (var border in stackPanel.Children)
@@ -575,7 +647,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var position = border.TransformToVisual(stackPanel).TransformPoint(new Point(0, 0));
 				Assert.AreEqual(expectedPosition, orientation == Orientation.Vertical ? position.Y : position.X);
 				Assert.AreEqual(0, orientation == Orientation.Vertical ? position.X : position.Y);
-				expectedPosition += 20 + 10;
+				expectedPosition += itemSize + itemSpacing;
 			}
 		}
 	}
