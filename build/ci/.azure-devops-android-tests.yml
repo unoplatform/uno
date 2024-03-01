@@ -2,6 +2,7 @@ parameters:
   vmMacOSImage: ''
   vmWindowsImage: ''
   vmLinuxImage: ''
+  vmLinuxPool: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
@@ -83,8 +84,8 @@ jobs:
 
     UNO_UITEST_BUCKET_COUNT: 5
 
-  pool:
-    vmImage: ${{ parameters.vmLinuxImage }}
+  pool: ${{ parameters.vmLinuxPool }}
+    # vmImage: ${{ parameters.vmLinuxImage }}
 
   strategy:
     matrix:
