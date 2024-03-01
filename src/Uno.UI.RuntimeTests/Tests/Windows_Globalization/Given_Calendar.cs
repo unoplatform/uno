@@ -29,7 +29,7 @@ public class Given_Calendar
 	public void When_Julian_Calendar_Day_Name()
 	{
 		var calendar = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwelveHour);
-		calendar.SetDateTime(new DateTime(2024, 2, 29));
+		calendar.SetDateTime(new DateTimeOffset(new DateTime(2024, 2, 29)));
 
 		Assert.AreEqual("16", calendar.DayAsString());
 		Assert.AreEqual(DateTimeKind.Unspecified, calendar.GetDateTime().DateTime.Kind);

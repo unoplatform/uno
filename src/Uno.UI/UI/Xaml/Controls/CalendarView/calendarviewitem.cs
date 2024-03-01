@@ -6,7 +6,7 @@ using Windows.System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <inheritdoc />
-		internal override DateTimeOffset DateBase { get; set; }
+		internal override DateTime DateBase { get; set; }
 
 #if DEBUG && false
 		public override DateTime Date

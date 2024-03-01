@@ -7,7 +7,7 @@ using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
 using Uno.Extensions;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -313,8 +313,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				spEventArgs = new CalendarViewSelectedDatesChangedEventArgs();
-				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTime>;
-				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTime>;
+				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTimeOffset>;
+				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTimeOffset>;
 				GetSelectedDatesChangedEventSourceNoRef(out pEventSource);
 				pEventSource?.Invoke(this, spEventArgs);
 
@@ -388,7 +388,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private void OnSelectedDatesChanged(
-			IObservableVector<DateTime> pSender,
+			IObservableVector<DateTimeOffset> pSender,
 			IVectorChangedEventArgs e)
 		{
 			// only raise event for the changes from external.

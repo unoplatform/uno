@@ -324,6 +324,9 @@ namespace Windows.Globalization
 		public void SetDateTime(global::System.DateTimeOffset value)
 			=> _time = value;
 
+		internal void SetDateTime(global::Windows.Foundation.WindowsFoundationDateTime value)
+			=> _time = value;
+
 		public void SetToNow()
 			=> _time = DateTimeOffset.Now;
 

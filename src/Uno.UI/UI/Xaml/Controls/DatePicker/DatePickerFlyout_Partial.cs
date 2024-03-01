@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.System;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Opening += OnOpening;
 			Opened += OnOpened;
 
-			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTime?>(this, () => default);
+			_asyncOperationManager = new FlyoutAsyncOperationManager<DateTimeOffset?>(this, () => default);
 		}
 
 		protected override bool ShouldShowConfirmationButtons()
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return _tpPresenter as Control;
 		}
 
-		public IAsyncOperation<DateTime?> ShowAtAsync(FrameworkElement target)
+		public IAsyncOperation<DateTimeOffset?> ShowAtAsync(FrameworkElement target)
 		{
 			_tpTarget = target;
 			return _asyncOperationManager.Start(target);

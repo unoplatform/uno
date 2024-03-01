@@ -7,7 +7,7 @@ using Windows.UI.Text;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {

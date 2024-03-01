@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Microsoft.UI.Xaml.Input;
 
 #if HAS_UNO_WINUI
@@ -366,12 +366,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// coerce dates
 				minDate = MinDate;
 				maxDate = MaxDate;
-				//coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
-				coercedDate = new DateTime(Math.Min(maxDate.UtcTicks, Math.Max(minDate.UtcTicks, date.UtcTicks)), TimeSpan.Zero);
+				coercedDate.UniversalTime = Math.Min(maxDate.UniversalTime, Math.Max(minDate.UniversalTime, date.UniversalTime));
 
 				// if Date is not in the range of min/max date, we'll coerce it and trigger DateChanged again.
-				//if (coercedDate.UniversalTime != date.UniversalTime)
-				if (coercedDate.UtcTicks != date.UtcTicks)
+				if (coercedDate.UniversalTime != date.UniversalTime)
 				{
 					DateTime spCoercedDateReference;
 					//PropertyValue.CreateFromDateTime(coercedDate, &spCoercedDateReference));
@@ -421,7 +419,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SetDisplayDate(DateTime date)
+		public void SetDisplayDate(global::System.DateTimeOffset date)
 		{
 			if (m_tpCalendarView is { })
 			{
@@ -1050,7 +1048,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (isCalendarOpen)
 				{
 					DateTime? spDateReference;
-					IList<DateTime> spSelectedDates;
+					IList<DateTimeOffset> spSelectedDates;
 
 					m_isSelectedDatesChangingInternally = true;
 					//var selectedDatesChangingGuard = wil.scope_exit([&] {
