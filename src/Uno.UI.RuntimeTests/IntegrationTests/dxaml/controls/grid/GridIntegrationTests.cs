@@ -3,7 +3,6 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
@@ -11,6 +10,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
