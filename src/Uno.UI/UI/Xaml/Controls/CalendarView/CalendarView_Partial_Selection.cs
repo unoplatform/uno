@@ -43,6 +43,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return ppItem;
 		}
 
+		internal DateTime GetMaxDate()
+			=> m_maxDate;
+		internal DateTime GetMinDate()
+			=> m_minDate;
+
 		internal void OnSelectDayItem(CalendarViewDayItem pItem)
 		{
 			try

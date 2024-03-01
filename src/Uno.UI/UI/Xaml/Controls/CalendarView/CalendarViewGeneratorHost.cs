@@ -281,12 +281,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			int index = 0;
 
-			m_lastVisitedDateAndIndex.first = Owner.MinDate;
+			m_lastVisitedDateAndIndex.first = Owner.GetMinDate();
 			m_lastVisitedDateAndIndex.second = 0;
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, Owner.MinDate));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), Owner.GetMinDate()));
 
-			index = CalculateOffsetFromMinDate(Owner.MaxDate);
+			index = CalculateOffsetFromMinDate(Owner.GetMaxDate());
 
 			m_size = (uint)(index) + 1;
 
@@ -497,8 +497,8 @@ namespace Microsoft.UI.Xaml.Controls
 			firstDateOfNextScope = GetCalendar().GetDateTime();
 
 			// when the navigation button is enabled, we should always be able to navigate to the desired scope.
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.MinDate));
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, firstDateOfNextScope));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.GetMinDate()));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), firstDateOfNextScope));
 
 			//Cleanup:
 			pFirstDateOfNextScope = firstDateOfNextScope;
