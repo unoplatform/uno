@@ -7,7 +7,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 	{
 		internal static long UniversalTime(this DateTimeOffset dto)
 		{
-			return ((WindowsFoundationDateTime)dto).UniversalTime;
+			return dto.UtcTicks;
 		}
 	}
 }
