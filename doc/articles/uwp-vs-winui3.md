@@ -17,7 +17,7 @@ WinUI 3 differs in minor ways from UWP XAML in terms of API, and in more substan
 
 ### API
 
-The main difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
+The main difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition`, and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
 
 ### Technical
 
@@ -39,7 +39,7 @@ The questions below should help guide you to the best choice when creating a new
 
 ### Do you use 3rd-party libraries?
 
-While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us at our [Discord channel](https://discord.com/invite/eBHZSKG).
+While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us at our [Discord channel](https://platform.uno/discord).
 
 ### Do you want to use .NET 5 or .NET 6/7/8 or later?
 
@@ -51,7 +51,7 @@ Note that not all non-Windows platforms support .NET 5, see a [full support matr
 
 If Windows is one of your target platforms, then the [technical differences](#technical) discussed above apply. Probably the key question is, can your application run in the sandboxed 'UWP model', or is it better served by the unrestricted 'Win32 model'?
 
-### Do you depend on features that aren't yet migrated to WinUI 3?
+### Do you depend on features that haven't yet migrated to WinUI 3?
 
 [Check the WinUI 3 roadmap](https://github.com/microsoft/microsoft-ui-xaml/blob/master/docs/roadmap.md#winui-30-feature-roadmap) for a list of features that won't be available in the initial supported release, like `InkCanvas`.
 
