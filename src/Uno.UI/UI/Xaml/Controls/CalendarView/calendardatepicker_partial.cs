@@ -109,8 +109,8 @@ namespace Microsoft.UI.Xaml.Controls
 				DateTime? spOldDateReference;
 				//CValueBoxer.UnboxValue<DateTime>(args.OldValue, spOldDateReference);
 				//CValueBoxer.UnboxValue<DateTime>(args.NewValue, spNewDateReference);
-				spOldDateReference = (DateTime?)args.OldValue;
-				spNewDateReference = (DateTime?)args.NewValue;
+				spOldDateReference = (DateTimeOffset?)args.OldValue;
+				spNewDateReference = (DateTimeOffset?)args.NewValue;
 				OnDateChanged(spOldDateReference, spNewDateReference);
 			}
 			else if (args.Property == FrameworkElement.LanguageProperty ||

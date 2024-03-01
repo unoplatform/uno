@@ -195,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return _gregorianCalendar;
 			}
 
-			DateTime ClampDate(
+			DateTimeOffset ClampDate(
 				DateTime date,
 				DateTime minDate,
 				DateTime maxDate)
