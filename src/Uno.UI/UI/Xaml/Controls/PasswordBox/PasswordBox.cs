@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -107,7 +108,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnPasswordChanged(DependencyPropertyChangedEventArgs e)
 		{
-			SetValue(TextProperty, (string)e.NewValue);
+			var newValue = (string)e.NewValue;
+			if (FeatureConfiguration.PasswordBox.PreventPasswordClearOnFocus && newValue.EndsWith(FeatureConfiguration.PasswordBox.PasswordControlChar))
+			{
+				return;
+			}
+
+			SetValue(TextProperty, newValue);
 
 			PasswordChanged?.Invoke(this, new RoutedEventArgs(this));
 

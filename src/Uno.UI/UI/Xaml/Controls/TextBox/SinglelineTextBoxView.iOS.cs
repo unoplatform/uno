@@ -112,13 +112,15 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var result = base.BecomeFirstResponder();
 
-			if (SecureTextEntry && !string.IsNullOrEmpty(Text))
+			if (FeatureConfiguration.PasswordBox.PreventPasswordClearOnFocus)
 			{
-				var text = Text;
-				Text = string.Empty;
-				InsertText($"{text} ");
-				// removes the extra space. Hack to prevent the last character from being displayed
-				DeleteBackward();
+				if (SecureTextEntry && !string.IsNullOrEmpty(Text))
+				{
+					var text = Text;
+					InsertText($"{text}{FeatureConfiguration.PasswordBox.PasswordControlChar}");
+					// removes the extra space. Hack to prevent the last character from being displayed
+					DeleteBackward();
+				}
 			}
 
 			return result;
