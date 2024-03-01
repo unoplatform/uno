@@ -19,38 +19,8 @@ internal partial class PopupRoot : Panel
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
-<<<<<<< HEAD
-		Microsoft.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
-		Microsoft.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
-=======
-		Loaded += OnRootLoaded;
-		Unloaded += OnRootUnloaded;
-	}
-
-	private void OnRootLoaded(object sender, RoutedEventArgs args)
-	{
-		if (XamlRoot is { } xamlRoot)
-		{
-			void OnChanged(object sender, object args) => CloseLightDismissablePopups();
-
-			CompositeDisposable disposables = new();
-			xamlRoot.Changed += OnChanged;
-			disposables.Add(() => xamlRoot.Changed -= OnChanged);
-
-			if (xamlRoot.HostWindow is { } window)
-			{
-				window.Activated += OnChanged;
-				disposables.Add(() => window.Activated -= OnChanged);
-			}
-
-			_subscriptions.Disposable = disposables;
-		}
-	}
-
-	private void OnRootUnloaded(object sender, RoutedEventArgs args)
-	{
-		_subscriptions.Disposable = null;
->>>>>>> 223faacf52 (fix: Avoid closing non-light-dismissable flyouts on Window activation)
+		Microsoft.UI.Xaml.Window.Current.Activated += (_, _) => CloseLightDismissablePopups();
+		Microsoft.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseLightDismissablePopups();
 	}
 
 	internal void CloseLightDismissablePopups()
