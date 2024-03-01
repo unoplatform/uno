@@ -264,12 +264,12 @@
 				<!-- Enable some CA rules from 'Microsoft.CodeAnalysis.NetAnalyzers' as build warnings by default. Specific rules are disabled or downgraded in the repo's editorconfig. -->
 				<!-- Normally, we'd want to use latest -->
 				<!-- But that is currently problematic due to https://github.com/dotnet/roslyn-analyzers/issues/6999 -->
-				<AnalysisLevel>8</AnalysisLevel>
+				<AnalysisLevel>9</AnalysisLevel>
 				<AnalysisModePerformance>AllEnabledByDefault</AnalysisModePerformance>
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0-preview.24072.1" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
