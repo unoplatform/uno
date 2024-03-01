@@ -36,10 +36,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
-#if __SKIA__
-		[Ignore("Invalid layout of items")]
-#endif
+		[ActivePlatforms(Platform.iOS)] // ignore on android `Left_1` is sometimes ** none ** https://github.com/unoplatform/uno/issues/9080
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_MultipleItems()
 		{
