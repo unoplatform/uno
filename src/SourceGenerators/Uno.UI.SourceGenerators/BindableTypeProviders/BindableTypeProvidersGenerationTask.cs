@@ -146,6 +146,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLine();
 				writer.AppendLineIndented("#pragma warning disable 618  // Ignore obsolete members warnings");
 				writer.AppendLineIndented("#pragma warning disable 1591 // Ignore missing XML comment warnings");
+				writer.AppendLineIndented("#pragma warning disable XAOBS001 // Ignore obsolete Android members");
 				writer.AppendLineIndented("#pragma warning disable Uno0001 // Ignore not implemented members");
 				AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, AnalyzerSuppressions);
 				writer.AppendLineIndented("using System;");
