@@ -51,7 +51,7 @@ internal class ExposureEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Exposure,
+		0 => (object)Exposure,
 		_ => null,
 	};
 

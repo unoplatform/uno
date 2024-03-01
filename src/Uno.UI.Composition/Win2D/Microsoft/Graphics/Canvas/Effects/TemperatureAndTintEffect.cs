@@ -58,8 +58,8 @@ internal class TemperatureAndTintEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Temperature,
-		1 => Tint,
+		0 => (object)Temperature,
+		1 => (object)Tint,
 		_ => null,
 	};
 

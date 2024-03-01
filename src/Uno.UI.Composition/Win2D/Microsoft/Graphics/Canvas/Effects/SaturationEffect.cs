@@ -50,7 +50,7 @@ internal class SaturationEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Saturation,
+		0 => (object)Saturation,
 		_ => null,
 	};
 

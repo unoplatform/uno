@@ -52,7 +52,7 @@ internal class OpacityEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Opacity,
+		0 => (object)Opacity,
 		_ => null,
 	};
 

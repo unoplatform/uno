@@ -53,7 +53,7 @@ internal class TintEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Color,
+		0 => (object)Color,
 		_ => null,
 	};
 

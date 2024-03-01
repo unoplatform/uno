@@ -56,7 +56,7 @@ internal class CrossFadeEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => CrossFade,
+		0 => (object)CrossFade,
 		_ => null,
 	};
 

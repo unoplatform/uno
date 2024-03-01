@@ -50,7 +50,7 @@ internal class SepiaEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Intensity,
+		0 => (object)Intensity,
 		_ => null,
 	};
 

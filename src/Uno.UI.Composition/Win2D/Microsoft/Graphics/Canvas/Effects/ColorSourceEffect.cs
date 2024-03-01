@@ -56,7 +56,7 @@ internal class ColorSourceEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Color,
+		0 => (object)Color,
 		_ => null,
 	};
 

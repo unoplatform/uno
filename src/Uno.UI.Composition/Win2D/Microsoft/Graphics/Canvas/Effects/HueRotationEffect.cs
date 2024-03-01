@@ -50,7 +50,7 @@ internal class HueRotationEffect : ICanvasEffect
 
 	public object? GetProperty(uint index) => index switch
 	{
-		0 => Angle,
+		0 => (object)Angle,
 		_ => null,
 	};
 
