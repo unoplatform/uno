@@ -57,6 +57,7 @@ Or alternatively, if you want to enable all available Composition capabilities:
 
 ### Windows.UI.Composition
 
+- [CompositionAnimation](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionanimation)
 - [CompositionBackdropBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionbackdropbrush)
 - [CompositionBrush](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionbrush)
 - [CompositionCapabilities](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositioncapabilities)
@@ -88,6 +89,7 @@ Or alternatively, if you want to enable all available Composition capabilities:
 - [CompositionVisualSurface](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositionvisualsurface)
 - [Compositor](https://learn.microsoft.com/uwp/api/windows.ui.composition.compositor)
 - [ContainerVisual](https://learn.microsoft.com/uwp/api/windows.ui.composition.containervisual)
+- [ExpressionAnimation](https://learn.microsoft.com/uwp/api/windows.ui.composition.expressionanimation)
 - [InsetClip](https://learn.microsoft.com/uwp/api/windows.ui.composition.insetclip)
 - [IVisualElement](https://learn.microsoft.com/uwp/api/windows.ui.composition.ivisualelement)
 - [IVisualElement2](https://learn.microsoft.com/uwp/api/windows.ui.composition.ivisualelement2)
@@ -97,6 +99,11 @@ Or alternatively, if you want to enable all available Composition capabilities:
 - [SpriteVisual](https://learn.microsoft.com/uwp/api/windows.ui.composition.spritevisual)
 - [Visual](https://learn.microsoft.com/uwp/api/windows.ui.composition.visual)
 - [VisualCollection](https://learn.microsoft.com/uwp/api/windows.ui.composition.visualcollection)
+
+### Windows.UI.Composition.Interactions
+
+- [InteractionTracker](https://learn.microsoft.com/uwp/api/windows.ui.composition.interactions.interactiontracker)
+- [VisualInteractionSource](https://learn.microsoft.com/uwp/api/windows.ui.composition.interactions.visualinteractionsource)
 
 ### Windows.Graphics.Effects
 
@@ -139,7 +146,7 @@ Or alternatively, if you want to enable all available Composition capabilities:
 - [TintEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_TintEffect.htm)
 - [Transform2DEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_Transform2DEffect.htm)
 
-Note that while Uno Platform implements these effects and their Win2D wrappers, the Win2D wrappers are still internal and not exposed to users, but the effects can still be used by temporary implementing the [IGraphicsEffectD2D1Interop](https://learn.microsoft.com/en-us/windows/win32/api/windows.graphics.effects.interop/nn-windows-graphics-effects-interop-igraphicseffectd2d1interop) interface manually until the Win2D wrappers become public, like for example the [GaussianBlurEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_GaussianBlurEffect.htm) can be implemented like this:
+Note that while Uno Platform implements these effects and [their Win2D wrappers](https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Composition/Win2D/Microsoft/Graphics/Canvas/Effects), the Win2D wrappers are still internal and not exposed to users, but the effects can still be used by temporary implementing the [IGraphicsEffectD2D1Interop](https://learn.microsoft.com/en-us/windows/win32/api/windows.graphics.effects.interop/nn-windows-graphics-effects-interop-igraphicseffectd2d1interop) interface manually until the Win2D wrappers become public, like for example the [GaussianBlurEffect](https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_Effects_GaussianBlurEffect.htm) can be implemented like this:
 
 ```csharp
 #nullable enable
@@ -205,6 +212,6 @@ The GUID used in the example above is the Effect CLSID of the [Direct2D Gaussian
 
 ## Known issues
 
-- When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.
+- [Android] When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.
 
-- [GTK/WPF] Some Composition effects don't render properly (or at all) on software rendering (CPU), to check if Uno is running on the software rendering (CPU) or the hardware rendering (GPU), you can call `CompositionCapabilities.GetForCurrentView().AreEffectsFast()`.
+- [Skia Backends] Some Composition effects don't render properly (or at all) on software rendering (CPU), to check if Uno is running on the software rendering (CPU) or the hardware rendering (GPU), you can call `CompositionCapabilities.GetForCurrentView().AreEffectsFast()`.
