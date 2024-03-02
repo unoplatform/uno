@@ -450,7 +450,8 @@ namespace Microsoft.UI.Xaml.Documents
 		private bool TryFastRender(FlowDirection flowDirection, float sessionOpacity, SKCanvas canvas)
 		{
 			if (flowDirection == FlowDirection.LeftToRight &&
-				!(RenderSelection && _selection is not null && _selection.StartIndex != 0 && _selection.EndIndex != 0) &&
+				// Don't use fast render if we are rendering selection and having non-zero start index or non-zero end index.
+				!(RenderSelection && _selection is not null && (_selection.StartIndex != 0 || _selection.EndIndex != 0)) &&
 				!RenderCaret &&
 				_renderLines.Count == 1 &&
 				_renderLines[0].SegmentSpans.Count > 0 &&
