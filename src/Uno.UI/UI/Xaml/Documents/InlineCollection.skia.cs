@@ -483,7 +483,7 @@ namespace Microsoft.UI.Xaml.Documents
 						alpha: (byte)(scbColor.A * scb.Opacity * sessionOpacity));
 				}
 
-				canvas.DrawText(text, 0, _renderLines[0].BaselineOffsetY + _renderLines[0].Height, paint);
+				canvas.DrawText(text, 0, _renderLines[0].BaselineOffsetY + _renderLines[0].Height, skfont, paint);
 				return true;
 			}
 
