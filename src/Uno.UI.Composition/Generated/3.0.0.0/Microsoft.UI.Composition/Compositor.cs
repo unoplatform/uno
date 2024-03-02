@@ -200,14 +200,6 @@ namespace Microsoft.UI.Composition
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect, IEnumerable<string>)
-
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.ExpressionAnimation CreateExpressionAnimation()
-		{
-			throw new global::System.NotImplementedException("The member ExpressionAnimation Compositor.CreateExpressionAnimation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20Compositor.CreateExpressionAnimation%28%29");
-		}
-#endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateExpressionAnimation(string)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateInsetClip()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateInsetClip(float, float, float, float)

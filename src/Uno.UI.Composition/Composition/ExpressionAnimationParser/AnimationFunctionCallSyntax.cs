@@ -16,7 +16,8 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		MinFloatFloatFunctionSpecification.Instance,
 		MaxFloatFloatFunctionSpecification.Instance,
 		Vector2FloatFloatFunctionSpecification.Instance,
-		Vector3FloatFloatFloatFunctionSpecification.Instance
+		Vector3FloatFloatFloatFunctionSpecification.Instance,
+		ClampFloatFloatFloatFunctionSpecification.Instance
 		);
 
 	public AnimationFunctionCallSyntax(AnimationExpressionSyntax identifierOrMemberAccess, ImmutableArray<AnimationExpressionSyntax> arguments)
