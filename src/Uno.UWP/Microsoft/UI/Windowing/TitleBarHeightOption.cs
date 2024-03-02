@@ -14,4 +14,6 @@ public enum TitleBarHeightOption
 	/// Caption buttons and the default drag region are rendered taller than the standard height based on system metrics.
 	/// </summary>
 	Tall = 1,
+
+	Collapsed = 2,
 }
