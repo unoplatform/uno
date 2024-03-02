@@ -447,6 +447,48 @@ namespace Microsoft.UI.Xaml.Documents
 			_drawingValid = (false, false);
 		}
 
+		private bool TryFastRender(FlowDirection flowDirection, float sessionOpacity, SKCanvas canvas)
+		{
+			if (flowDirection == FlowDirection.LeftToRight &&
+				!(RenderSelection && _selection is not null && _selection.StartIndex != 0 && _selection.EndIndex != 0) &&
+				!RenderCaret &&
+				_renderLines.Count == 1 &&
+				_renderLines[0].SegmentSpans.Count > 0 &&
+				_renderLines[0].SegmentSpans[0].Segment.Inline is Run { Text: { } text } run &&
+				text.All(char.IsAscii) &&
+				run.TextDecorations == TextDecorations.None)
+			{
+				var paint = run.Paint;
+				var segment = _renderLines[0].SegmentSpans[0].Segment;
+				SKFont skfont;
+
+				if (segment.FallbackFont is FontDetails fallback)
+				{
+					paint = segment.Paint!;
+					skfont = fallback.SKFont;
+				}
+				else
+				{
+					skfont = run.FontInfo.SKFont;
+				}
+
+				if (run.Foreground is SolidColorBrush scb)
+				{
+					var scbColor = scb.Color;
+					paint.Color = new SKColor(
+						red: scbColor.R,
+						green: scbColor.G,
+						blue: scbColor.B,
+						alpha: (byte)(scbColor.A * scb.Opacity * sessionOpacity));
+				}
+
+				canvas.DrawText(text, 0, _renderLines[0].BaselineOffsetY + _renderLines[0].Height, paint);
+				return true;
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
@@ -482,7 +524,14 @@ namespace Microsoft.UI.Xaml.Documents
 			var canvas = session.Surface.Canvas;
 			var parent = (IBlock)_collection.GetParent();
 			var alignment = parent.TextAlignment;
-			if (parent.FlowDirection == FlowDirection.RightToLeft)
+			var flowDirection = parent.FlowDirection;
+
+			if (TryFastRender(flowDirection, session.Filters.Opacity, canvas))
+			{
+				return;
+			}
+
+			if (flowDirection == FlowDirection.RightToLeft)
 			{
 				alignment = alignment switch
 				{
