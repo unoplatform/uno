@@ -3,7 +3,7 @@
 
 using System;
 using Windows.Globalization;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace DirectUI
 {
@@ -11,22 +11,22 @@ namespace DirectUI
 	{
 		private Calendar m_spCalendar;
 
-		public Func<DateTime, DateTime, bool> LessThanComparer
+		public Func<DateTimeOffset, DateTimeOffset, bool> LessThanComparer
 		{
 			get
 			{
-				return (DateTime lhs, DateTime rhs) =>
+				return (DateTimeOffset lhs, DateTimeOffset rhs) =>
 				{
 					return LessThan(lhs, rhs);
 				};
 			}
 		}
 
-		public Func<DateTime, DateTime, bool> AreEquivalentComparer
+		public Func<DateTimeOffset, DateTimeOffset, bool> AreEquivalentComparer
 		{
 			get
 			{
-				return (DateTime lhs, DateTime rhs) =>
+				return (DateTimeOffset lhs, DateTimeOffset rhs) =>
 				{
 					return AreEquivalent(lhs, rhs);
 				};
@@ -103,14 +103,7 @@ namespace DirectUI
 
 			global::System.Diagnostics.Debug.Assert(m_spCalendar is { });
 
-			// Uno specific: In WinUI, wf::DateTime is a struct that only has "UniversalTime" field.
-			// So, we need to call ToUniversalTime here.
-			// Failure to do so can cause issues when comparing dates like 2024/01/01 10:00:00 PM UTC+2 and 2024/01/02 12:00:00 AM UTC
-			// Both dates should be equal, but getUnit will return 1 and 2 indicating that the first date is smaller.
-			lhs = lhs.ToUniversalTime();
-			rhs = rhs.ToUniversalTime();
-
-			long delta = lhs.Ticks - rhs.Ticks;
+			long delta = lhs.UniversalTime - rhs.UniversalTime;
 			if (delta < 0)
 			{
 				delta = -delta;

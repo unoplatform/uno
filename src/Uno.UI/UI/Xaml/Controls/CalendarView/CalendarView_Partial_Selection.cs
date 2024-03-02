@@ -7,7 +7,7 @@ using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Automation.Peers;
 using DirectUI;
 using Uno.Extensions;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using SelectedDatesChangedEventSourceType = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewSelectedDatesChangedEventArgs>;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -42,6 +42,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return ppItem;
 		}
+
+		internal DateTime GetMaxDate()
+			=> m_maxDate;
+		internal DateTime GetMinDate()
+			=> m_minDate;
 
 		internal void OnSelectDayItem(CalendarViewDayItem pItem)
 		{
@@ -296,11 +301,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				SelectedDatesChangedEventSourceType pEventSource = null;
 				CalendarViewSelectedDatesChangedEventArgs spEventArgs;
-				ValueTypeCollection<DateTime> spAddedDates;
-				ValueTypeCollection<DateTime> spRemovedDates;
+				ValueTypeCollection<DateTimeOffset> spAddedDates;
+				ValueTypeCollection<DateTimeOffset> spRemovedDates;
 
-				spAddedDates = new ValueTypeCollection<DateTime>();
-				spRemovedDates = new ValueTypeCollection<DateTime>();
+				spAddedDates = new ValueTypeCollection<DateTimeOffset>();
+				spRemovedDates = new ValueTypeCollection<DateTimeOffset>();
 
 				foreach (var it in addedDates)
 				{
@@ -313,8 +318,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				spEventArgs = new CalendarViewSelectedDatesChangedEventArgs();
-				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTime>;
-				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTime>;
+				spEventArgs.AddedDates = spAddedDates as IVectorView<DateTimeOffset>;
+				spEventArgs.RemovedDates = spRemovedDates as IVectorView<DateTimeOffset>;
 				GetSelectedDatesChangedEventSourceNoRef(out pEventSource);
 				pEventSource?.Invoke(this, spEventArgs);
 
@@ -388,7 +393,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private void OnSelectedDatesChanged(
-			IObservableVector<DateTime> pSender,
+			IObservableVector<DateTimeOffset> pSender,
 			IVectorChangedEventArgs e)
 		{
 			// only raise event for the changes from external.

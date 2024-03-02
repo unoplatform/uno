@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using DirectUI;
 using Uno.Extensions;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -100,7 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		IEnumerable<string> m_tpCalendarLanguages;
 
-		VectorChangedEventHandler<DateTime> m_epSelectedDatesChangedHandler;
+		VectorChangedEventHandler<DateTimeOffset> m_epSelectedDatesChangedHandler;
 
 
 		// the keydown event args from CalendarItem.
@@ -265,11 +265,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				spSelectedDates = new TrackableDateCollection();
 
-				m_epSelectedDatesChangedHandler ??= new VectorChangedEventHandler<DateTime>((pSender, pArgs) => OnSelectedDatesChanged(pSender, pArgs));
+				m_epSelectedDatesChangedHandler ??= new VectorChangedEventHandler<DateTimeOffset>((pSender, pArgs) => OnSelectedDatesChanged(pSender, pArgs));
 				spSelectedDates.VectorChanged += m_epSelectedDatesChangedHandler;
 
 				spSelectedDates.SetCollectionChangingCallback(
-					(TrackableDateCollection.CollectionChanging action, DateTime addingDate) =>
+					(TrackableDateCollection.CollectionChanging action, DateTimeOffset addingDate) =>
 				{
 					OnSelectedDatesChanging(action, addingDate);
 				});
@@ -1087,7 +1087,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_today = m_tpCalendar.GetDateTime();
 
 			// default displaydate is today
-			if (m_lastDisplayedDate == default)
+			if (m_lastDisplayedDate.UniversalTime == 0)
 			{
 				m_lastDisplayedDate = m_today;
 			}
@@ -1176,12 +1176,12 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpCalendar.SetToMin();
 				tempDate = m_tpCalendar.GetDateTime();
 
-				m_minDate = new DateTimeOffset(Math.Max(minDate.UtcTicks, tempDate.UtcTicks), TimeSpan.Zero);
+				m_minDate.UniversalTime = Math.Max(minDate.UniversalTime, tempDate.UniversalTime);
 
 				m_tpCalendar.SetToMax();
 				tempDate = m_tpCalendar.GetDateTime();
 
-				m_maxDate = new DateTimeOffset(Math.Min(maxDate.UtcTicks, tempDate.UtcTicks), TimeSpan.Zero);
+				m_maxDate.UniversalTime = Math.Min(maxDate.UniversalTime, tempDate.UniversalTime);
 			}
 
 			if (m_dateComparer.LessThan(m_maxDate, m_minDate))
@@ -1743,16 +1743,20 @@ namespace Microsoft.UI.Xaml.Controls
 			return;
 		}
 
-		public void SetDisplayDate(DateTime date)
+		public void SetDisplayDate(global::System.DateTimeOffset date)
 		{
+			// Uno specific: Force conversion from System.DateTimeOffset to Windows.Foundation.DateTime
+			// Don't use date parameter except in this line.
+			DateTime wfDate = date;
+
 			// if m_dateSourceChanged is true, this means we might changed m_minDate or m_maxDate
 			// so we should not call CoerceDate until next measure pass, by then the m_minDate and
 			// m_maxDate are updated.
 			if (!m_dateSourceChanged)
 			{
-				CoerceDate(ref date);
+				CoerceDate(ref wfDate);
 
-				SetDisplayDateInternal(date);
+				SetDisplayDateInternal(wfDate);
 			}
 			else
 			{
@@ -1762,7 +1766,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// the workaround is call it in Arrange pass or later. here we'll call it
 				// in the arrange pass.
 				m_isSetDisplayDateRequested = true;
-				m_lastDisplayedDate = date;
+				m_lastDisplayedDate = wfDate;
 			}
 
 			return;
