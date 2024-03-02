@@ -41,6 +41,11 @@ namespace Microsoft.UI.Composition
 					this.Log().Debug($"Image load result {result}");
 				}
 
+				if (result == SKCodecResult.Success)
+				{
+					_image = SKImage.FromBitmap(bitmap);
+				}
+
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
 			}
 			else

@@ -19,7 +19,7 @@ namespace Uno
 		public enum Options
 		{
 			/// <summary>
-			/// Disables all composition supports in the application.
+			/// Disables all composition capabilities in the application.
 			/// </summary>
 			Disabled = 0,
 
@@ -29,9 +29,14 @@ namespace Uno
 			UseCompositorThread = 0x1,
 
 			/// <summary>
+			/// [SKIA ONLY] Use antialiasing for drawing brushes.
+			/// </summary>
+			UseBrushAntialiasing = 0x2,
+
+			/// <summary>
 			/// Enables all composition capabilities for the current platform.
 			/// </summary>
-			Enabled = UseCompositorThread,
+			Enabled = UseCompositorThread | UseBrushAntialiasing,
 		}
 
 		internal static bool UseCompositorThread
@@ -45,5 +50,7 @@ namespace Uno
 				return value;
 			}
 		}
+
+		internal static bool UseBrushAntialiasing => Configuration.HasFlag(Options.UseBrushAntialiasing);
 	}
 }

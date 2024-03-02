@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using SkiaSharp;
+using Uno;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
@@ -30,10 +31,21 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
+					fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
 
-					fill.UpdatePaint(fillPaint, geometry.Bounds);
-
-					session.Surface.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+					if (FillBrush is CompositionEffectBrush { HasBackdropBrushInput: true })
+					{
+						// workaround until SkiaSharp adds support for SaveLayerRec
+						fillPaint.FilterQuality = SKFilterQuality.High;
+						session.Surface.Canvas.SaveLayer(fillPaint);
+						session.Surface.Canvas.Scale(1.0f / session.Surface.Canvas.TotalMatrix.ScaleX);
+						session.Surface.Canvas.DrawSurface(session.Surface, new(-session.Surface.Canvas.TotalMatrix.TransX, -session.Surface.Canvas.DeviceClipBounds.Top + session.Surface.Canvas.LocalClipBounds.Top));
+						session.Surface.Canvas.Restore();
+					}
+					else
+					{
+						session.Surface.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+					}
 				}
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
@@ -73,12 +85,12 @@ namespace Microsoft.UI.Composition
 		}
 
 		private SKPaint TryCreateAndClearStrokePaint(in DrawingSession session)
-			=> TryCreateAndClearPaint(in session, ref _strokePaint, true);
+			=> TryCreateAndClearPaint(in session, ref _strokePaint, true, CompositionConfiguration.UseBrushAntialiasing);
 
 		private SKPaint TryCreateAndClearFillPaint(in DrawingSession session)
-			=> TryCreateAndClearPaint(in session, ref _fillPaint, false);
+			=> TryCreateAndClearPaint(in session, ref _fillPaint, false, CompositionConfiguration.UseBrushAntialiasing);
 
-		private static SKPaint TryCreateAndClearPaint(in DrawingSession session, ref SKPaint? paint, bool isStroke)
+		private static SKPaint TryCreateAndClearPaint(in DrawingSession session, ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
 		{
 			if (paint == null)
 			{
@@ -87,13 +99,18 @@ namespace Microsoft.UI.Composition
 				paint.IsStroke = isStroke;
 				paint.IsAntialias = true;
 				paint.IsAutohinted = true;
+
+				if (isHighQuality)
+				{
+					paint.FilterQuality = SKFilterQuality.High;
+				}
 			}
 			else
 			{
 				// Cleanup
 				// - Brushes can change, we cant leave color and shader garbage
 				//	 from last rendering around for the next pass.
-				paint.Color = SKColors.White;   // Transparent color wouldnt draw anything
+				paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
 				if (paint.Shader != null)
 				{
 					paint.Shader.Dispose();

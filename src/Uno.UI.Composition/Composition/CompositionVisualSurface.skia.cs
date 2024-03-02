@@ -50,7 +50,12 @@ namespace Microsoft.UI.Composition
 					_surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
 				}
 
+				bool? previousCompMode = Compositor.IsSoftwareRenderer;
+				Compositor.IsSoftwareRenderer = true;
+
 				SourceVisual.Draw(_drawingSession.Value);
+
+				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
 
