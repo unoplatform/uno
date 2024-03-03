@@ -60,7 +60,7 @@ partial class BorderLayerRenderer
 		if (!newState.Equals(_currentState))
 		{
 #if __MACOS__
-			owner.WantsLayer = true;
+			_owner.WantsLayer = true;
 #endif
 
 			_layerDisposable.Disposable = null;

@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using UIKit;
 using __View = UIKit.UIView;
 #elif __MACOS__
+using AppKit;
 using __View = AppKit.NSView;
 #endif
 
