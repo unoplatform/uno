@@ -73,6 +73,9 @@ namespace Microsoft.UI.Composition
 			return _properties is not null && _properties.TryGetValue<bool>(propertyName.ToString(), out _) != CompositionGetValueStatus.NotFound;
 		}
 
+		internal virtual object GetAnimatableProperty(string propertyName, string subPropertyName)
+			=> TryGetFromProperties(propertyName, subPropertyName);
+
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 			=> TryUpdateFromProperties(propertyName, subPropertyName, propertyValue);
 

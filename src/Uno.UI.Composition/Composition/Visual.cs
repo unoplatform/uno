@@ -154,6 +154,50 @@ namespace Microsoft.UI.Composition
 			return base.IsAnimatableProperty(propertyName);
 		}
 
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName is nameof(AnchorPoint))
+			{
+				return GetVector2(subPropertyName, AnchorPoint);
+			}
+			else if (propertyName is nameof(CenterPoint))
+			{
+				return GetVector3(subPropertyName, CenterPoint);
+			}
+			else if (propertyName is nameof(Offset))
+			{
+				return GetVector3(subPropertyName, Offset);
+			}
+			else if (propertyName is nameof(Opacity))
+			{
+				return Opacity;
+			}
+			else if (propertyName is nameof(Orientation))
+			{
+				return GetQuaternion(subPropertyName, Orientation);
+			}
+			else if (propertyName is nameof(RotationAngle))
+			{
+				return RotationAngle;
+			}
+			else if (propertyName is nameof(RotationAxis))
+			{
+				return GetVector3(subPropertyName, RotationAxis);
+			}
+			else if (propertyName is nameof(Size))
+			{
+				return GetVector2(subPropertyName, Size);
+			}
+			else if (propertyName is nameof(TransformMatrix))
+			{
+				return GetMatrix4x4(subPropertyName, TransformMatrix);
+			}
+			else
+			{
+				return GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
 			if (propertyName is nameof(AnchorPoint))

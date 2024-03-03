@@ -50,6 +50,30 @@ namespace Microsoft.UI.Composition
 			return base.IsAnimatableProperty(propertyName);
 		}
 
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName is nameof(BottomInset))
+			{
+				return BottomInset;
+			}
+			else if (propertyName is nameof(LeftInset))
+			{
+				return LeftInset;
+			}
+			else if (propertyName is nameof(RightInset))
+			{
+				return RightInset;
+			}
+			else if (propertyName is nameof(TopInset))
+			{
+				return TopInset;
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
 			if (propertyName is nameof(BottomInset))

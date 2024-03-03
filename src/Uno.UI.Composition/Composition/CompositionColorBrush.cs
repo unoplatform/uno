@@ -30,6 +30,18 @@ namespace Microsoft.UI.Composition
 			return base.IsAnimatableProperty(propertyName);
 		}
 
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName is nameof(Color))
+			{
+				return GetColor(subPropertyName, Color);
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
 			if (propertyName is nameof(Color))
