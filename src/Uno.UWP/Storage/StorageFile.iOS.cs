@@ -21,6 +21,7 @@ namespace Windows.Storage
 		internal static StorageFile GetFromSecurityScopedUrl(NSUrl nsUrl, StorageFolder? parent) =>
 			new StorageFile(new SecurityScopedFile(nsUrl, parent));
 
+<<<<<<< HEAD
 		internal static StorageFile GetFromItemProvider(NSItemProvider provider, StorageFolder? parent) =>
 			new StorageFile(new MediaScopedFile(provider, parent));
 
@@ -102,6 +103,8 @@ namespace Windows.Storage
 				return identifiers.FirstOrDefault();
 			}
 		}
+=======
+>>>>>>> 48a98014e2 (chore: iOS remove unused code)
 		internal class SecurityScopedFile : ImplementationBase
 		{
 			private readonly NSUrl _nsUrl;
