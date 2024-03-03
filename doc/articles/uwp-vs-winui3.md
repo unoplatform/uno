@@ -39,7 +39,7 @@ The questions below should help guide you to the best choice when creating a new
 
 ### Do you use 3rd-party libraries?
 
-While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us at our [Discord channel](https://platform.uno/discord).
+While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us on our [Discord Server](https://platform.uno/discord).
 
 ### Do you want to use .NET 5 or .NET 6/7/8 or later?
 
