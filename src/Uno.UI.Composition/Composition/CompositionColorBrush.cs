@@ -22,7 +22,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 		{
-			if (propertyName is nameof(Color))
+			if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Composition
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
-			if (propertyName is nameof(Color))
+			if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))
 			{
 				return GetColor(subPropertyName, Color);
 			}
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
-			if (propertyName is nameof(Color))
+			if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))
 			{
 				Color = UpdateColor(subPropertyName, Color, propertyValue);
 			}

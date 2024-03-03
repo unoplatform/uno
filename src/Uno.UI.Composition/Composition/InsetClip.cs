@@ -42,7 +42,10 @@ namespace Microsoft.UI.Composition
 
 		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
 		{
-			if (propertyName is nameof(BottomInset) or nameof(LeftInset) or nameof(RightInset) or nameof(TopInset))
+			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase) ||
+				propertyName.Equals(nameof(LeftInset), StringComparison.OrdinalIgnoreCase) ||
+				propertyName.Equals(nameof(RightInset), StringComparison.OrdinalIgnoreCase) ||
+				propertyName.Equals(nameof(TopInset), StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -52,19 +55,19 @@ namespace Microsoft.UI.Composition
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
-			if (propertyName is nameof(BottomInset))
+			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase))
 			{
 				return BottomInset;
 			}
-			else if (propertyName is nameof(LeftInset))
+			else if (propertyName.Equals(nameof(LeftInset), StringComparison.OrdinalIgnoreCase))
 			{
 				return LeftInset;
 			}
-			else if (propertyName is nameof(RightInset))
+			else if (propertyName.Equals(nameof(RightInset), StringComparison.OrdinalIgnoreCase))
 			{
 				return RightInset;
 			}
-			else if (propertyName is nameof(TopInset))
+			else if (propertyName.Equals(nameof(TopInset), StringComparison.OrdinalIgnoreCase))
 			{
 				return TopInset;
 			}
@@ -76,19 +79,19 @@ namespace Microsoft.UI.Composition
 
 		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 		{
-			if (propertyName is nameof(BottomInset))
+			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase))
 			{
 				BottomInset = ValidateValue<float>(propertyValue);
 			}
-			else if (propertyName is nameof(LeftInset))
+			else if (propertyName.Equals(nameof(LeftInset), StringComparison.OrdinalIgnoreCase))
 			{
 				LeftInset = ValidateValue<float>(propertyValue);
 			}
-			else if (propertyName is nameof(RightInset))
+			else if (propertyName.Equals(nameof(RightInset), StringComparison.OrdinalIgnoreCase))
 			{
 				RightInset = ValidateValue<float>(propertyValue);
 			}
-			else if (propertyName is nameof(TopInset))
+			else if (propertyName.Equals(nameof(TopInset), StringComparison.OrdinalIgnoreCase))
 			{
 				TopInset = ValidateValue<float>(propertyValue);
 			}

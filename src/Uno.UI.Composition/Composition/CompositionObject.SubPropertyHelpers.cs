@@ -15,19 +15,19 @@ partial class CompositionObject
 			return ValidateValue<Color>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("A", StringComparison.Ordinal))
+		if (subPropertyName.Equals("A", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.A = ValidateValue<byte>(propertyValue);
 		}
-		else if (subPropertyName.Equals("R", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("R", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.R = ValidateValue<byte>(propertyValue);
 		}
-		else if (subPropertyName.Equals("G", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("G", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.G = ValidateValue<byte>(propertyValue);
 		}
-		else if (subPropertyName.Equals("B", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("B", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.B = ValidateValue<byte>(propertyValue);
 		}
@@ -46,27 +46,27 @@ partial class CompositionObject
 			return ValidateValue<Matrix3x2>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("M11", StringComparison.Ordinal))
+		if (subPropertyName.Equals("M11", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M11 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M12", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M12", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M12 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M21", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M21", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M21 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M22", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M22", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M22 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M31", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M31", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M31 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M32", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M32", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M32 = ValidateValue<float>(propertyValue);
 		}
@@ -85,67 +85,67 @@ partial class CompositionObject
 			return ValidateValue<Matrix4x4>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("M11", StringComparison.Ordinal))
+		if (subPropertyName.Equals("M11", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M11 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M12", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M12", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M12 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M13", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M13", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M13 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M14", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M14", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M14 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M21", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M21", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M21 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M22", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M22", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M22 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M23", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M23", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M23 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M24", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M24", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M24 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M31", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M31", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M31 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M32", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M32", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M32 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M33", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M33", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M33 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M34", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M34", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M34 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M41", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M41", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M41 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M42", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M42", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M42 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M43", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M43", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M43 = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("M44", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M44", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.M44 = ValidateValue<float>(propertyValue);
 		}
@@ -164,19 +164,19 @@ partial class CompositionObject
 			return ValidateValue<Quaternion>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.X = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("W", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("W", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.W = ValidateValue<float>(propertyValue);
 		}
@@ -195,11 +195,11 @@ partial class CompositionObject
 			return ValidateValue<Vector2>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.X = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
@@ -218,15 +218,15 @@ partial class CompositionObject
 			return ValidateValue<Vector3>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.X = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
@@ -245,19 +245,19 @@ partial class CompositionObject
 			return ValidateValue<Vector4>(propertyValue);
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.X = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Y = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.Z = ValidateValue<float>(propertyValue);
 		}
-		else if (subPropertyName.Equals("W", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("W", StringComparison.OrdinalIgnoreCase))
 		{
 			existingValue.W = ValidateValue<float>(propertyValue);
 		}
@@ -276,19 +276,19 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("A", StringComparison.Ordinal))
+		if (subPropertyName.Equals("A", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.A;
 		}
-		else if (subPropertyName.Equals("R", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("R", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.R;
 		}
-		else if (subPropertyName.Equals("G", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("G", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.G;
 		}
-		else if (subPropertyName.Equals("B", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("B", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.B;
 		}
@@ -305,27 +305,27 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("M11", StringComparison.Ordinal))
+		if (subPropertyName.Equals("M11", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M11;
 		}
-		else if (subPropertyName.Equals("M12", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M12", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M12;
 		}
-		else if (subPropertyName.Equals("M21", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M21", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M21;
 		}
-		else if (subPropertyName.Equals("M22", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M22", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M22;
 		}
-		else if (subPropertyName.Equals("M31", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M31", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M31;
 		}
-		else if (subPropertyName.Equals("M32", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M32", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M32;
 		}
@@ -342,67 +342,67 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("M11", StringComparison.Ordinal))
+		if (subPropertyName.Equals("M11", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M11;
 		}
-		else if (subPropertyName.Equals("M12", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M12", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M12;
 		}
-		else if (subPropertyName.Equals("M13", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M13", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M13;
 		}
-		else if (subPropertyName.Equals("M14", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M14", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M14;
 		}
-		else if (subPropertyName.Equals("M21", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M21", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M21;
 		}
-		else if (subPropertyName.Equals("M22", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M22", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M22;
 		}
-		else if (subPropertyName.Equals("M23", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M23", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M23;
 		}
-		else if (subPropertyName.Equals("M24", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M24", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M24;
 		}
-		else if (subPropertyName.Equals("M31", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M31", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M31;
 		}
-		else if (subPropertyName.Equals("M32", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M32", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M32;
 		}
-		else if (subPropertyName.Equals("M33", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M33", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M33;
 		}
-		else if (subPropertyName.Equals("M34", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M34", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M34;
 		}
-		else if (subPropertyName.Equals("M41", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M41", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M41;
 		}
-		else if (subPropertyName.Equals("M42", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M42", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M42;
 		}
-		else if (subPropertyName.Equals("M43", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M43", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M43;
 		}
-		else if (subPropertyName.Equals("M44", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("M44", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.M44;
 		}
@@ -419,19 +419,19 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.X;
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Y;
 		}
-		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Z;
 		}
-		else if (subPropertyName.Equals("W", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("W", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.W;
 		}
@@ -448,11 +448,11 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.X;
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Y;
 		}
@@ -469,15 +469,15 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.X;
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Y;
 		}
-		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Z;
 		}
@@ -494,19 +494,19 @@ partial class CompositionObject
 			return existingValue;
 		}
 
-		if (subPropertyName.Equals("X", StringComparison.Ordinal))
+		if (subPropertyName.Equals("X", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.X;
 		}
-		else if (subPropertyName.Equals("Y", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Y", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Y;
 		}
-		else if (subPropertyName.Equals("Z", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("Z", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.Z;
 		}
-		else if (subPropertyName.Equals("W", StringComparison.Ordinal))
+		else if (subPropertyName.Equals("W", StringComparison.OrdinalIgnoreCase))
 		{
 			return existingValue.W;
 		}

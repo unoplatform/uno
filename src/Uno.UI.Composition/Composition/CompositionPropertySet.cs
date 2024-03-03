@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionPropertySet : CompositionObject
 	{
-		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 		internal CompositionPropertySet(Compositor compositor) : base(compositor)
 		{

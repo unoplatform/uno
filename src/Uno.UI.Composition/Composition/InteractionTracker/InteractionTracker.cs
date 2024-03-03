@@ -114,11 +114,11 @@ public partial class InteractionTracker : CompositionObject
 
 	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 	{
-		if (propertyName is nameof(MinPosition))
+		if (propertyName.Equals(nameof(MinPosition), StringComparison.OrdinalIgnoreCase))
 		{
 			MinPosition = UpdateVector3(subPropertyName, MinPosition, propertyValue);
 		}
-		else if (propertyName is nameof(MaxPosition))
+		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
 		{
 			MaxPosition = UpdateVector3(subPropertyName, MaxPosition, propertyValue);
 		}
@@ -130,15 +130,15 @@ public partial class InteractionTracker : CompositionObject
 
 	internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 	{
-		if (propertyName is nameof(Position))
+		if (propertyName.Equals(nameof(Position), StringComparison.OrdinalIgnoreCase))
 		{
 			return GetVector3(subPropertyName, Position);
 		}
-		else if (propertyName is nameof(MinPosition))
+		else if (propertyName.Equals(nameof(MinPosition), StringComparison.OrdinalIgnoreCase))
 		{
 			return GetVector3(subPropertyName, MinPosition);
 		}
-		else if (propertyName is nameof(MaxPosition))
+		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
 		{
 			return GetVector3(subPropertyName, MinPosition);
 		}
