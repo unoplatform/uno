@@ -118,7 +118,7 @@
 		<!-- In addition, the reference project needs to be restored as well. -->
 		<MSBuild
 			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
-			Projects="filters\Uno.UI-packages-netcoremobile.slnf;filters\Uno.UI-packages-reference.slnf;filters\Uno.UI-packages-skia.slnf;filters\Uno.UI-packages-wasm.slnf;..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
+			Projects="filters\Uno.UI-top-projects-for-sync-gen.slnf;..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
 			Targets="Restore;Clean"
 			RebaseOutputs="false"
 			BuildInParallel="true" />

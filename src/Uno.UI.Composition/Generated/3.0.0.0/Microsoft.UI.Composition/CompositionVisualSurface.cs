@@ -12,11 +12,11 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property SourceSize
 		// Skipping already declared property SourceOffset
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceSize.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceSize.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceOffset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceVisual.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceVisual.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceOffset.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionVisualSurface.SourceSize.get
 		// Processing: Microsoft.UI.Composition.ICompositionSurface
 	}
 }

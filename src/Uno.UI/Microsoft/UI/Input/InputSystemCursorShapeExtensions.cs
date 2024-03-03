@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using Windows.UI.Core;
+
 namespace Microsoft.UI.Input;
 
 internal static partial class InputSystemCursorShapeExtensions
 {
-	internal static InputSystemCursorShape ToInputSystemCursorShape(this Windows.UI.Core.CoreCursorType shape)
+	internal static InputSystemCursorShape ToInputSystemCursorShape(this CoreCursorType shape)
 	{
 		switch (shape)
 		{
@@ -41,7 +42,7 @@ internal static partial class InputSystemCursorShapeExtensions
 			case CoreCursorType.Person:
 				return InputSystemCursorShape.Person;
 			default:
-				throw new InvalidEnumArgumentException(nameof(shape), (int)shape, typeof(Windows.UI.Core.CoreCursorType));
+				throw new InvalidEnumArgumentException(nameof(shape), (int)shape, typeof(CoreCursorType));
 		}
 	}
 

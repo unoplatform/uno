@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml
 #if IS_NATIVE_ELEMENT
 		private bool IsScrollPort { get; } = false;
 		private bool IsVisualTreeRoot { get; } = false;
-		private Windows.Foundation.Point ScrollOffsets { get; } = default;
+		private global::Windows.Foundation.Point ScrollOffsets { get; } = default;
 
 		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()

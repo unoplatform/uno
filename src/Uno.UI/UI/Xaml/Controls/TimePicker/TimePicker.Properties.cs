@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+using Windows.Globalization;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -23,7 +24,7 @@ partial class TimePicker
 			typeof(string),
 			typeof(TimePicker),
 			new FrameworkPropertyMetadata(
-				defaultValue: (string)Windows.Globalization.ClockIdentifiers.TwelveHour,
+				defaultValue: (string)ClockIdentifiers.TwelveHour,
 				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnClockIdentifierChangedPartial((string)e.OldValue, (string)e.NewValue)
 			)

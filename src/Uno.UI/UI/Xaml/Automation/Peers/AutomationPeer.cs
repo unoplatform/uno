@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
@@ -229,7 +230,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			return false;
 		}
 
-		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
+		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId) => ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
 
 		#endregion
 
@@ -238,7 +239,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[Uno.NotImplemented]
 		public static bool ListenerfExists(AutomationEvents eventId)
 		{
-			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
 			return false;
 		}
 
@@ -257,13 +258,13 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		[global::Uno.NotImplemented]
 		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)", LogLevel.Warning);
 		}
 
 		[global::Uno.NotImplemented]
 		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
+			ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)", LogLevel.Warning);
 		}
 		#endregion
 	}

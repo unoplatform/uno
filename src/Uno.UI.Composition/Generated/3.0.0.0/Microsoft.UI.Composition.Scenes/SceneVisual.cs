@@ -27,8 +27,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.Root.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.Root.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneVisual.Root.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneVisual Create(global::Microsoft.UI.Composition.Compositor compositor)

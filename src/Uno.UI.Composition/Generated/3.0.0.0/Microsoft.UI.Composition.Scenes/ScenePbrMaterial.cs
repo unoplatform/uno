@@ -139,23 +139,23 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsDoubleSided.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveInput.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalInput.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveFactor.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.AlphaCutoff.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveInput.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveFactor.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveFactor.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsDoubleSided.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsDoubleSided.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalInput.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalScale.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.EmissiveFactor.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.IsDoubleSided.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.NormalScale.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionInput.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.ScenePbrMaterial.OcclusionStrength.get
 	}
 }

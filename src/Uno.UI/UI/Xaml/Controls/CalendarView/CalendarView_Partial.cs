@@ -1022,7 +1022,7 @@ namespace Microsoft.UI.Xaml.Controls
 			IList<string> spCalendarLanguages;
 			int size = 0;
 
-			spApplicationLanguages = Windows.Globalization.ApplicationLanguages.Languages;
+			spApplicationLanguages = ApplicationLanguages.Languages;
 
 			spCalendarLanguages = new List<string>();
 
@@ -1065,7 +1065,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//	strClock,
 			//	spCalendar);
 
-			spCalendar = new Windows.Globalization.Calendar(m_tpCalendarLanguages, strCalendarIdentifier, strClock);
+			spCalendar = new Calendar(m_tpCalendarLanguages, strCalendarIdentifier, strClock);
 
 			m_tpCalendar = spCalendar;
 

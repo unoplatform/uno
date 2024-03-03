@@ -5,6 +5,8 @@ using System.ComponentModel;
 using Uno.Media;
 using Windows.Foundation;
 
+using Rect = Windows.Foundation.Rect;
+
 #if __IOS__
 using Foundation;
 using UIKit;
@@ -44,9 +46,9 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		}
 
-		public Windows.Foundation.Rect Bounds => ComputeBounds();
+		public Rect Bounds => ComputeBounds();
 
-		private protected virtual Windows.Foundation.Rect ComputeBounds()
+		private protected virtual Rect ComputeBounds()
 		{
 			throw new NotImplementedException($"Bounds property is not implemented on {GetType().Name}.");
 		}

@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum OverlappedPresenterState
 	{
-#if false
-		Maximized = 0,
-#endif
-#if false
-		Minimized = 1,
-#endif
-#if false
-		Restored = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.OverlappedPresenterState.Maximized
+		// Skipping already declared field Microsoft.UI.Windowing.OverlappedPresenterState.Minimized
+		// Skipping already declared field Microsoft.UI.Windowing.OverlappedPresenterState.Restored
 	}
 #endif
 }

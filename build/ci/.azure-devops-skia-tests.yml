@@ -206,7 +206,7 @@ jobs:
       cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
       dotnet build -c Debug
       cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
-      dotnet build -c Debug -p:UnoDisableNet8=true
+      dotnet build -c Debug -p:UnoDisableNetCurrent=true
     displayName: Build HR dependencies
 
   - script: |

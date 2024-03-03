@@ -14,7 +14,7 @@ namespace Windows.UI.Input
 		{
 		}
 
-		internal PointerPointProperties(Windows.UI.Input.PointerPointProperties properties)
+		internal PointerPointProperties(global::Windows.UI.Input.PointerPointProperties properties)
 		{
 			if (properties is null)
 			{
@@ -43,9 +43,9 @@ namespace Windows.UI.Input
 		}
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-		public static explicit operator Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
+		public static explicit operator global::Windows.UI.Input.PointerPointProperties(Microsoft.UI.Input.PointerPointProperties muxProps)
 		{
-			var props = new Windows.UI.Input.PointerPointProperties();
+			var props = new global::Windows.UI.Input.PointerPointProperties();
 
 			props.IsPrimary = muxProps.IsPrimary;
 			props.IsInRange = muxProps.IsInRange;
@@ -62,7 +62,7 @@ namespace Windows.UI.Input
 			props.ContactRect = muxProps.ContactRect;
 			props.TouchConfidence = muxProps.TouchConfidence;
 			props.IsCanceled = muxProps.IsCanceled;
-			props.PointerUpdateKind = (Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
+			props.PointerUpdateKind = (global::Windows.UI.Input.PointerUpdateKind)muxProps.PointerUpdateKind;
 			props.XTilt = muxProps.XTilt;
 			props.YTilt = muxProps.YTilt;
 			props.MouseWheelDelta = muxProps.MouseWheelDelta;

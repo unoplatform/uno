@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum AppWindowPresenterKind
 	{
-#if false
-		Default = 0,
-#endif
-#if false
-		CompactOverlay = 1,
-#endif
-#if false
-		FullScreen = 2,
-#endif
-#if false
-		Overlapped = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.AppWindowPresenterKind.Default
+		// Skipping already declared field Microsoft.UI.Windowing.AppWindowPresenterKind.CompactOverlay
+		// Skipping already declared field Microsoft.UI.Windowing.AppWindowPresenterKind.FullScreen
+		// Skipping already declared field Microsoft.UI.Windowing.AppWindowPresenterKind.Overlapped
 	}
 #endif
 }

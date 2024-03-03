@@ -37,7 +37,9 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMesh.Bounds.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMesh.PrimitiveTopology.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMesh.PrimitiveTopology.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void FillMeshAttribute(global::Microsoft.UI.Composition.Scenes.SceneAttributeSemantic semantic, global::Microsoft.Graphics.DirectX.DirectXPixelFormat format, global::Windows.Foundation.MemoryBuffer memory)
@@ -45,8 +47,6 @@ namespace Microsoft.UI.Composition.Scenes
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMesh", "void SceneMesh.FillMeshAttribute(SceneAttributeSemantic semantic, DirectXPixelFormat format, MemoryBuffer memory)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMesh.PrimitiveTopology.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMesh.Bounds.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMesh Create(global::Microsoft.UI.Composition.Compositor compositor)

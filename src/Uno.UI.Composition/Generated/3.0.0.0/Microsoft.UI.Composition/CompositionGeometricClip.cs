@@ -10,9 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property ViewBox
 		// Skipping already declared property Geometry
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.ViewBox.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionGeometricClip.Geometry.get
 	}
 }

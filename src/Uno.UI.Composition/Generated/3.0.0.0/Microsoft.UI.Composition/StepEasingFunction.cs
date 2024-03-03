@@ -84,14 +84,14 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.set
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsFinalStepSingleFrame.set
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.get
-		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.FinalStep.get
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.InitialStep.set
 		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsFinalStepSingleFrame.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsFinalStepSingleFrame.set
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.get
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.IsInitialStepSingleFrame.set
+		// Forced skipping of method Microsoft.UI.Composition.StepEasingFunction.StepCount.get
 	}
 }

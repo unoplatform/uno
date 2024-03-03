@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Windowing
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum IconShowOptions
 	{
-#if false
-		ShowIconAndSystemMenu = 0,
-#endif
-#if false
-		HideIconAndSystemMenu = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Windowing.IconShowOptions.ShowIconAndSystemMenu
+		// Skipping already declared field Microsoft.UI.Windowing.IconShowOptions.HideIconAndSystemMenu
 	}
 #endif
 }

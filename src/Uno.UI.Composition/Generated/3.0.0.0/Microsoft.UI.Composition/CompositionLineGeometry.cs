@@ -10,9 +10,9 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property Start
 		// Skipping already declared property End
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.Start.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionLineGeometry.End.get
 	}
 }

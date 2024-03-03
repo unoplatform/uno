@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml
 
 				await WindowManagerInterop.InitAsync(isLoadEventsEnabled);
 
-				Windows.Storage.ApplicationData.Init();
+				global::Windows.Storage.ApplicationData.Init();
 
 				callback(new ApplicationInitializationCallbackParams());
 			}

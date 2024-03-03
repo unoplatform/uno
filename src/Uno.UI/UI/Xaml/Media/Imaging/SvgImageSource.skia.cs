@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Media;
+using Windows.Application­Model;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -54,7 +55,7 @@ partial class SvgImageSource
 	private static string GetApplicationPath(string rawPath)
 	{
 		var originalLocalPath =
-			Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
+			Path.Combine(Package.Current.Installed­Location.Path,
 				 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 			);
 

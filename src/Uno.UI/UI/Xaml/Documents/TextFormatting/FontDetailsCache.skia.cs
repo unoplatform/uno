@@ -6,6 +6,7 @@ using SkiaSharp;
 using Uno;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
+using Windows.ApplicationModel;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -44,7 +45,7 @@ internal static class FontDetailsCache
 		else if (XamlFilePathHelper.TryGetMsAppxAssetPath(name, out var path))
 		{
 			var filePath = global::System.IO.Path.Combine(
-				Windows.ApplicationModel.Package.Current.InstalledLocation.Path
+				Package.Current.InstalledLocation.Path
 				, path.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
 
 			// SKTypeface.FromFile may return null if the file is not found (SkiaSharp is not yet nullable attributed)

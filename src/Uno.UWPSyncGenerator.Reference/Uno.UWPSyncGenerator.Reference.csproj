@@ -120,7 +120,7 @@
 		<When Condition="'$(UNO_UWP_BUILD)'=='false'">
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK">
-					<Version>1.2.221209.1</Version>
+					<Version>1.4.240211001</Version>
 				</PackageReference>
 			</ItemGroup>
 		</When>
@@ -143,6 +143,10 @@
 			<Output TaskParameter="Value" PropertyName="_WindowsAppSDKFoundationPlatform" />
 		</CreateProperty>
 	</Target>
+
+	<!-- Hack to avoid error: "This version of the Windows App SDK requires .NET 6. -->
+	<Target Name="WindowsAppSDKVerifyWinrtRuntimeVersion" />
+
 	<Target Name="WorkaroundMissingWinAppSDKDLL_2" BeforeTargets="BeforeBuild">
 		<!-- Workaround for
 		C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(4559,5):

@@ -1,13 +1,14 @@
 ﻿#if HAS_UNO_WINUI
 
 using Uno;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Input
 {
 	public sealed partial class InputLightDismissAction : InputObject
 	{
 #pragma warning disable 67
-		public event Windows.Foundation.TypedEventHandler<InputLightDismissAction, InputLightDismissEventArgs> Dismissed;
+		public event TypedEventHandler<InputLightDismissAction, InputLightDismissEventArgs> Dismissed;
 #pragma warning restore 67
 
 		private InputLightDismissAction()

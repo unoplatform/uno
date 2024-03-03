@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Dispatching;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Metadata;
 using Windows.UI;

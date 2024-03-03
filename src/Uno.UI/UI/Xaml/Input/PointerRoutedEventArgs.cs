@@ -42,8 +42,8 @@ namespace Microsoft.UI.Xaml.Input
 		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
 
 		/// <inheritdoc />
-		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
-			=> (Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
+		global::Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> (global::Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) { GetCurrentPoint(relativeTo) };
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Input
 		public override string ToString()
 			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 
-		Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
+		global::Windows.Devices.Input.PointerIdentifier CoreWindow.IPointerEventArgs.Pointer => Pointer.UniqueId;
 
 		long IDragEventSource.Id => Pointer.UniqueId;
 		uint IDragEventSource.FrameId => FrameId;

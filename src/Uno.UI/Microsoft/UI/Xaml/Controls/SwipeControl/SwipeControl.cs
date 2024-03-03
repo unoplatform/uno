@@ -852,7 +852,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			//m_windowSizeChangedRevoker?.Dispose();
 		}
 
-		private void DismissSwipeOnAcceleratorKeyActivator(Windows.UI.Core.CoreDispatcher sender, AcceleratorKeyEventArgs args)
+		private void DismissSwipeOnAcceleratorKeyActivator(CoreDispatcher sender, AcceleratorKeyEventArgs args)
 		{
 			CloseIfNotRemainOpenExecuteItem();
 		}
@@ -878,7 +878,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			CloseIfNotRemainOpenExecuteItem();
 		}
 
-		private void DismissSwipeOnAnExternalCoreWindowTap(CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
+		private void DismissSwipeOnAnExternalCoreWindowTap(CoreWindow sender, PointerEventArgs args)
 		{
 			DismissSwipeOnAnExternalTap(args.CurrentPoint.RawPosition);
 		}

@@ -16,6 +16,10 @@ jobs:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
   steps:
   - template: templates/nuget-cache.yml
     parameters:
@@ -24,6 +28,7 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - template: templates/gitversion.yml
+  - template: templates/dotnet-mobile-install-windows.yml
   - template: templates/jdk-setup.yml
 
   - task: MSBuild@1
@@ -32,7 +37,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True /p:UnoTargetFrameworkOverride=net7.0 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/generate-docs.binlog
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/generate-docs.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false

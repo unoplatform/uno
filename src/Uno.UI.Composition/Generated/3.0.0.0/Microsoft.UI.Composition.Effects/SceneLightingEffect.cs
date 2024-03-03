@@ -106,20 +106,20 @@ namespace Microsoft.UI.Composition.Effects
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularShine.set
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.Name.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.Name.set
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.get
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.set
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularShine.get
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularShine.set
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.get
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.set
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.Name.get
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.set
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.DiffuseAmount.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.DiffuseAmount.set
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.NormalMapSource.get
 		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.NormalMapSource.set
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.AmbientAmount.get
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.set
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularShine.get
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.set
-		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.get
+		// Forced skipping of method Microsoft.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public SceneLightingEffect()

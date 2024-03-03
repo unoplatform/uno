@@ -8,7 +8,8 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ExpressionAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 	{
-		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.get
+		// Skipping already declared property Expression
 		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.set
+		// Forced skipping of method Microsoft.UI.Composition.ExpressionAnimation.Expression.get
 	}
 }

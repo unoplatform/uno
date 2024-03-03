@@ -3,16 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionEffectFactory : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal CompositionEffectFactory()
-		{
-		}
-#endif
+		// Skipping already declared property ExtendedError
+		// Skipping already declared property LoadStatus
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEffectFactory.CreateBrush()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.LoadStatus.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEffectFactory.ExtendedError.get
 	}
