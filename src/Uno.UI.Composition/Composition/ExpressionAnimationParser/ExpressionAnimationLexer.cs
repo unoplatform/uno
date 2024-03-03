@@ -50,7 +50,6 @@ internal sealed class ExpressionAnimationLexer
 		if (char.IsDigit(Current))
 		{
 			int start = _position;
-			bool isFloatingPoint = false;
 			while (char.IsDigit(Current))
 			{
 				_position++;
@@ -59,7 +58,6 @@ internal sealed class ExpressionAnimationLexer
 			if (Current == '.' && char.IsDigit(Peek(1)))
 			{
 				_position++;
-				isFloatingPoint = true;
 			}
 
 			while (char.IsDigit(Current))
@@ -69,14 +67,11 @@ internal sealed class ExpressionAnimationLexer
 
 			string numberText = _text[start.._position];
 			object value;
-			if (isFloatingPoint)
+			value = float.Parse(numberText, CultureInfo.InvariantCulture);
+
+			if (Current == 'f' || Current == 'F')
 			{
-				// TODO: Support literal suffixes. e.g, "1.5f" (for float) or "500l" (for long)
-				value = double.Parse(numberText, CultureInfo.InvariantCulture);
-			}
-			else
-			{
-				value = int.Parse(numberText, CultureInfo.InvariantCulture);
+				_position++;
 			}
 
 			return new ExpressionAnimationToken(ExpressionAnimationTokenKind.NumericLiteralToken, value);
