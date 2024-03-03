@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 using System.Threading;
 using Uno.UI.Dispatching;
@@ -110,4 +111,40 @@ public partial class InteractionTracker : CompositionObject
 
 	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
 		=> TryUpdatePosition(Position + amount, option);
+
+	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+	{
+		if (propertyName is nameof(MinPosition))
+		{
+			MinPosition = UpdateVector3(subPropertyName, MinPosition, propertyValue);
+		}
+		else if (propertyName is nameof(MaxPosition))
+		{
+			MaxPosition = UpdateVector3(subPropertyName, MaxPosition, propertyValue);
+		}
+		else
+		{
+			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+		}
+	}
+
+	internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+	{
+		if (propertyName is nameof(Position))
+		{
+			return GetVector3(subPropertyName, Position);
+		}
+		else if (propertyName is nameof(MinPosition))
+		{
+			return GetVector3(subPropertyName, MinPosition);
+		}
+		else if (propertyName is nameof(MaxPosition))
+		{
+			return GetVector3(subPropertyName, MinPosition);
+		}
+		else
+		{
+			return base.GetAnimatableProperty(propertyName, subPropertyName);
+		}
+	}
 }
