@@ -20,16 +20,6 @@ namespace Microsoft.UI.Composition
 			set { SetProperty(ref _color, value); }
 		}
 
-		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
-		{
-			if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
-
-			return base.IsAnimatableProperty(propertyName);
-		}
-
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
 			if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))

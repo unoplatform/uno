@@ -135,24 +135,6 @@ namespace Microsoft.UI.Composition
 			Compositor.InvalidateRender(this);
 		}
 
-		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
-		{
-			if (propertyName.Equals(nameof(AnchorPoint), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(CenterPoint), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(Opacity), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(Orientation), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(Size), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
-
-			return base.IsAnimatableProperty(propertyName);
-		}
-
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
 			if (propertyName.Equals(nameof(AnchorPoint), StringComparison.OrdinalIgnoreCase))

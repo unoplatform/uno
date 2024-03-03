@@ -40,19 +40,6 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _bottomInset, value);
 		}
 
-		private protected override bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
-		{
-			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(LeftInset), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(RightInset), StringComparison.OrdinalIgnoreCase) ||
-				propertyName.Equals(nameof(TopInset), StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
-
-			return base.IsAnimatableProperty(propertyName);
-		}
-
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
 			if (propertyName.Equals(nameof(BottomInset), StringComparison.OrdinalIgnoreCase))
