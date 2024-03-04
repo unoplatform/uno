@@ -350,7 +350,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						args.Click()
 						&& args.End();
 #elif __ANDROID__
-					// KNOWN ISSUE: https://github.com/unoplatform/uno/issues/9080
+					// KNOWN ISSUE: https://github.com/unoplatform/uno/issues/15734
 					// On Android the pointer clicked event is not raised properly
 					result =
 						args.One(PointerEnteredEvent)
