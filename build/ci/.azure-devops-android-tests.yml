@@ -1,6 +1,8 @@
 parameters:
   vmMacOSImage: ''
   vmWindowsImage: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
@@ -80,8 +82,10 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-  pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
+    UNO_UITEST_BUCKET_COUNT: 5
+
+  pool: ${{ parameters.vmLinuxPool }}
+    # vmImage: ${{ parameters.vmLinuxImage }}
 
   strategy:
     matrix:
@@ -133,6 +137,12 @@ jobs:
   - checkout: self
     clean: true
 
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM'
+
   - task: DownloadBuildArtifacts@0
     displayName: 'Download SamplesApp UnitTests'
     inputs:
@@ -149,17 +159,12 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
-
-  - task: PowerShell@2
-    displayName: 'Install coreutils'
-    inputs:
-      targetType: inline
-      script: |
-        brew install coreutils
+  # - task: PowerShell@2
+  #   displayName: 'Install coreutils'
+  #   inputs:
+  #     targetType: inline
+  #     script: |
+  #       brew install coreutils
 
   - task: PowerShell@2
     displayName: 'Fill Rerun Variable'
