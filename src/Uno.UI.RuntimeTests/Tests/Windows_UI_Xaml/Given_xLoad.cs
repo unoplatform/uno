@@ -2,6 +2,7 @@
 #if !WINAPPSDK
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -466,6 +467,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 			Assert.IsNull(getter());
+		}
+
+		[TestMethod]
+		public async Task When_xLoad_Visibility_Set()
+		{
+			var SUT = new xLoad_Visibility();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.GetChildren().Count(c => c is ElementStub));
+			Assert.AreEqual(0, SUT.GetChildren().Count(c => c is Border));
 		}
 	}
 }
