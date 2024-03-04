@@ -121,6 +121,21 @@ namespace Microsoft.UI.Xaml
 			OnFwEltLoaded();
 			UpdateHitTest();
 
+			// The way this works on WinUI is that when an element enters the visual tree, all values
+			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
+			// are entered as well.
+			// The property we currently know it has an effect is Resources
+			if (this is FrameworkElement { Resources: { } resources })
+			{
+				foreach (var resource in resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsUIElement)
+					{
+						resourceAsUIElement.OnElementLoaded();
+					}
+				}
+			}
+
 			// Get a materialized copy for Wasm to avoid the use of iterators
 			// where try/finally has a high cost.
 			var children = _children.Materialized;
@@ -130,7 +145,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void OnElementUnloaded()
+		internal void OnElementUnloaded()
 		{
 			if (!IsLoaded)
 			{
@@ -139,6 +154,17 @@ namespace Microsoft.UI.Xaml
 
 			IsLoaded = false;
 			Depth = int.MinValue;
+
+			if (this is FrameworkElement { Resources: { } resources })
+			{
+				foreach (var resource in resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsUIElement)
+					{
+						resourceAsUIElement.OnElementUnloaded();
+					}
+				}
+			}
 
 			// Get a materialized copy for Wasm to avoid the use of iterators
 			// where try/finally has a high cost.
