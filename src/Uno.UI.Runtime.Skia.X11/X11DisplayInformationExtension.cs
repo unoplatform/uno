@@ -315,15 +315,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		{
 			using var _1 = X11Helper.XLock(display);
 
-			Console.WriteLine($"GetScreenResourcesCurrent({display.ToString("X")}, {window.ToString("X")})");
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
 			using var _2 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
 			var _3 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 			XWindowAttributes windowAttrs = default;
-			Console.WriteLine("RAMOOZ BEFORE XGetWindowAttributes 2");
 			var _4 = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
-			Console.WriteLine("RAMOOZ AFTER XGetWindowAttributes 2");
 			XLib.XTranslateCoordinates(display, window, root, windowAttrs.x, windowAttrs.y, out var rootx, out var rooty, out _);
 
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
