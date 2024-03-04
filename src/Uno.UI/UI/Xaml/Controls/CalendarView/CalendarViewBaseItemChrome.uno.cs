@@ -10,9 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
 		private BorderLayerRenderer _borderRenderer;
-#endif
 
 		private Size _lastSize;
 
