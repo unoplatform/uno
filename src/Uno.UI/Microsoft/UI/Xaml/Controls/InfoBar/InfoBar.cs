@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
+using Uno.Disposables;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -36,6 +37,8 @@ public partial class InfoBar : Control
 	private FrameworkElement m_standardIconTextBlock = null;
 	private InfoBarCloseReason m_lastCloseReason = InfoBarCloseReason.Programmatic;
 
+	private SerialDisposable _subscriptions = new();
+
 	/// <summary>
 	/// Initializes a new instance of the InfoBar class.
 	/// </summary>
@@ -59,7 +62,10 @@ public partial class InfoBar : Control
 		var closeButton = GetTemplateChild<Button>(c_closeButtonName);
 		if (closeButton != null)
 		{
-			closeButton.Click += OnCloseButtonClick;
+			/* Begin Uno Specific */
+			// Registration moved to RegisterEvents() 
+			// closeButton.Click += OnCloseButtonClick;
+			/* End Uno Specific */
 
 			// Do localization for the close button
 			if (string.IsNullOrEmpty(AutomationProperties.GetName(closeButton)))
@@ -92,6 +98,38 @@ public partial class InfoBar : Control
 		UpdateIconVisibility();
 		UpdateCloseButton();
 		UpdateForeground();
+
+		/* Begin Uno Specific */
+		RegisterEvents();
+		/* End Uno Specific */
+	}
+
+	/* Begin Uno Specific */
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+		RegisterEvents();
+	}
+
+	private protected override void OnUnloaded()
+	{
+		_subscriptions.Disposable = null;
+
+		base.OnUnloaded();
+	}
+	/* End Uno Specific */
+
+	private void RegisterEvents()
+	{
+		_subscriptions.Disposable = null;
+
+		if (GetTemplateChild<Button>(c_closeButtonName) is { } closeButton)
+		{
+			closeButton.Click += OnCloseButtonClick;
+
+			_subscriptions.Disposable = Disposable.Create(() => closeButton.Click -= OnCloseButtonClick);
+		}
 	}
 
 	private void OnCloseButtonClick(object sender, RoutedEventArgs args)

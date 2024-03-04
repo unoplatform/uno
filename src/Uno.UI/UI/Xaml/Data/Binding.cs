@@ -10,7 +10,7 @@ using _NativeObject = Android.Views.View;
 #elif __IOS__
 using _NativeObject = Foundation.NSObject;
 #else
-using _NativeObject = System.Object;
+using _NativeObject = Microsoft.UI.Xaml.DependencyObject;
 #endif
 
 namespace Microsoft.UI.Xaml.Data
@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <summary>
 		/// A weak <see cref="Source"/> storage for controls bases on native elements.
 		/// </summary>
-		private WeakReference _weakSource;
+		private ManagedWeakReference _weakSource;
 
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		/// <summary>
@@ -146,21 +146,18 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				if (value != null)
 				{
-					// Native iOS and Android objects objects make for native GC loops
-					// Break this cycle for these objects, assuming those objects are 
+					// Native iOS, Android, and FrameworkTemplate pools objects objects
+					// make for pinned GC loops.
+					// To break this cycle for these objects, assuming those objects are 
 					// in the visual tree, where another GC root keeps them alive.
 					// In this case, we create a weak reference so both object can be 
 					// collected properly.
-					// In the other case, we keep a hard reference to the source.
-
-#if __ANDROID__ || __IOS__
 					if (value is _NativeObject no)
 					{
-						_weakSource = new WeakReference(no);
+						_weakSource = WeakReferencePool.RentWeakReference(this, no);
 						_source = null;
 					}
 					else
-#endif
 					{
 						_weakSource = null;
 						_source = value;

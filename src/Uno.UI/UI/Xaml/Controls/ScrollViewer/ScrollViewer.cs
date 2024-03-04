@@ -135,8 +135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
 
-
-			this.RegisterParentChangedCallback(this, (_, _, args) =>
+			this.RegisterParentChangedCallbackStrong(this, (_, _, args) =>
 			{
 				if (args.NewParent is null)
 				{
@@ -153,6 +152,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			EnsureAttachScrollBars();
 
+			UpdateSizeChangedSubscription();
+
 			OnLoadedPartial();
 		}
 
@@ -164,6 +165,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DetachScrollBars();
 			ResetScrollIndicator();
+
+			_sizeChangedSubscription.Disposable = null;
 
 			OnUnloadedPartial();
 		}

@@ -566,14 +566,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateTemplate()
 		{
+			var oldTemplatedRoot = TemplatedRoot;
+
 			// If TemplatedRoot is null, it must be updated even if the templates haven't changed
-			if (TemplatedRoot == null)
+			if (oldTemplatedRoot is null)
 			{
 				_controlTemplateUsedLastUpdate = null;
 			}
 
 			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
 			{
+				// Keep the original template, so we can return the materialized instance
+				// after the new one has been assigned.
+				var previousTemplate = _controlTemplateUsedLastUpdate;
+
 				_controlTemplateUsedLastUpdate = Template;
 
 				if (Template != null)
@@ -585,8 +591,9 @@ namespace Microsoft.UI.Xaml.Controls
 					TemplatedRoot = null;
 				}
 
-				_updateTemplate = false;
+				previousTemplate?.ReleaseTemplateRoot(oldTemplatedRoot);
 
+				_updateTemplate = false;
 			}
 		}
 

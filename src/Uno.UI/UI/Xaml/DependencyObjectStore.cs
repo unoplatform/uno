@@ -1064,6 +1064,12 @@ namespace Microsoft.UI.Xaml
 		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
 			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
 
+		/// <summary>
+		/// Unregisters to parent changes for self
+		/// </summary>
+		internal void UnregisterParentChangedCallbackStrong(ParentChangedCallback callback)
+			=> _parentChangedCallbacks = _parentChangedCallbacks.Remove(callback);
+
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			var stack = _properties.GetPropertyDetails(property);

@@ -678,7 +678,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
-			if (ContentTemplateRoot != null)
+			if (ContentTemplateRoot is { } currentTemplateRoot)
 			{
 				ContentTemplateRoot = null;
 			}
@@ -708,6 +708,8 @@ namespace Microsoft.UI.Xaml.Controls
 					CleanupView(previousValue);
 
 					UnregisterContentTemplateRoot();
+
+					_dataTemplateUsedLastUpdate?.ReleaseTemplateRoot(previousValue);
 
 					UpdateContentTransitions(this.ContentTransitions, null);
 				}

@@ -40,117 +40,137 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 	public class Given_FrameworkElement_And_Leak
 	{
-		[TestMethod]
-		[DataRow(typeof(XamlEvent_Leak_UserControl), 15)]
-		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind), 15)]
-		[DataRow(typeof(XamlEvent_Leak_UserControl_xBind_Event), 15)]
-		[DataRow(typeof(XamlEvent_Leak_TextBox), 15)]
-		[DataRow(typeof(Animation_Leak), 15)]
-		[DataRow(typeof(TextBox), 15)]
-		[DataRow(typeof(Button), 15)]
-		[DataRow(typeof(RadioButton), 15)]
-		[DataRow(typeof(ToggleButton), 15)]
-		[DataRow(typeof(RepeatButton), 15)]
-		[DataRow(typeof(TextBlock), 15)]
-		[DataRow(typeof(CheckBox), 15)]
-		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
-		//[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing), 15)] This leaks, issue #9078
-		[DataRow(typeof(Pivot), 15)]
-		[DataRow(typeof(ScrollBar), 15)]
-		[DataRow(typeof(Slider), 15)]
-		[DataRow(typeof(SymbolIcon), 15)]
-		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar), 15)]
-		[DataRow(typeof(ComboBox), 15)]
-		[DataRow(typeof(Canvas), 15)]
-		[DataRow(typeof(AutoSuggestBox), 15)]
-		[DataRow(typeof(AppBar), 15)]
-		[DataRow(typeof(CommandBar), 15)]
-		[DataRow(typeof(Border), 15)]
-		[DataRow(typeof(ContentControl), 15)]
-		[DataRow(typeof(ContentDialog), 15)]
-		[DataRow(typeof(RelativePanel), 15)]
-		[DataRow(typeof(FlipView), 15)]
-		[DataRow(typeof(DatePicker), 15)]
-		[DataRow(typeof(TimePicker), 15)]
+		private static IEnumerable<object?[]> GetScenarios()
+		{
+			yield return new object[] { typeof(XamlEvent_Leak_UserControl), 15 };
+			yield return new object[] { typeof(XamlEvent_Leak_UserControl_xBind), 15 };
+			yield return new object[] { typeof(XamlEvent_Leak_UserControl_xBind_Event), 15 };
+			yield return new object[] { typeof(XamlEvent_Leak_TextBox), 15 };
+			yield return new object[] { typeof(Animation_Leak), 15 };
+			yield return new object[] { typeof(TextBox), 15 };
+			yield return new object[] { typeof(Button), 15 };
+			yield return new object[] { typeof(RadioButton), 15 };
+			yield return new object[] { typeof(ToggleButton), 15 };
+			yield return new object[] { typeof(RepeatButton), 15 };
+			yield return new object[] { typeof(TextBlock), 15 };
+			yield return new object[] { typeof(CheckBox), 15 };
+			yield return new object[] { typeof(ListView), 15 };
+			yield return new object[] { typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15 };
+			yield return new object[] { typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15 };
+			//yield return new object[]{ typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressRing), 15}; This leaks, issue #9078
+			yield return new object[] { typeof(Pivot), 15 };
+			yield return new object[] { typeof(ScrollBar), 15 };
+			yield return new object[] { typeof(Slider), 15 };
+			yield return new object[] { typeof(SymbolIcon), 15 };
+			yield return new object[] { typeof(Viewbox), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar), 15 };
+			yield return new object[] { typeof(ComboBox), 15 };
+			yield return new object[] { typeof(Canvas), 15 };
+			yield return new object[] { typeof(AutoSuggestBox), 15 };
+			yield return new object[] { typeof(AppBar), 15 };
+			yield return new object[] { typeof(CommandBar), 15 };
+			yield return new object[] { typeof(Border), 15 };
+			yield return new object[] { typeof(ContentControl), 15 };
+			yield return new object[] { typeof(ContentDialog), 15 };
+			yield return new object[] { typeof(RelativePanel), 15 };
+			yield return new object[] { typeof(FlipView), 15 };
+			yield return new object[] { typeof(DatePicker), 15 };
+			yield return new object[] { typeof(TimePicker), 15 };
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(CalendarView), 15)]
+			yield return new object[] { typeof(CalendarView), 15 };
 #endif
-		[DataRow(typeof(Page), 15)]
-		[DataRow(typeof(Image), 15)]
-		[DataRow(typeof(ToggleSwitch), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15)]
-		[DataRow(typeof(SplitView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
+			yield return new object[] { typeof(Page), 15 };
+			yield return new object[] { typeof(Image), 15 };
+			yield return new object[] { typeof(ToggleSwitch), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15 };
+			yield return new object[] { typeof(SplitView), 15 };
+			yield return new object[]{ typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
 #if __ANDROID__
 			LeakTestStyles.Default // Fluent styles disabled - #14341
 #else
-			LeakTestStyles.All
+	LeakTestStyles.All
 #endif
-			)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+	};
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15 };
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15)]
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15 };
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon), 15)]
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.ColorSpectrum), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ImageIcon), 15 };
 #if !WINAPPSDK
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBadge), 15)]
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBadge), 15 };
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBar), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.InfoBarPanel), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.InfoBar), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.InfoBarPanel), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.MonochromaticOverlayPresenter), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15 };
 #if !WINAPPSDK
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15)]
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PagerControl), 15 };
 #endif
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView), 15)]
-		[DataRow("SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15)]
-		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15)]
-		[DataRow("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15)]
-		[DataRow("UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15)]
-		[DataRow("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15)]
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.PipsPager), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshContainer), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioButtons), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RadioMenuFlyoutItem), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.RatingControl), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ItemsRepeater), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.TabViewListView), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeView), 15 };
+			yield return new object[] { typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.TwoPaneView), 15 };
+			yield return new object[] { "SamplesApp.Windows_UI_Xaml.Clipping.XamlButtonWithClipping_Scrollable", 15 };
+			yield return new object[] { "Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard", 15 };
+			yield return new object[] { "Uno.UI.Samples.Content.UITests.ButtonTestsControl.Buttons", 15 };
+			yield return new object[] { "UITests.Windows_UI_Xaml.xLoadTests.xLoad_Test_For_Leak", 15 };
+			yield return new object[] { "UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_LeakTest", 15 };
+			yield return new object[] { "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15 };
+			yield return new object[] { "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15 };
 #if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+			yield return new object[] { "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15 };
 #endif
-		[DataRow(typeof(TextBox_Focus_Leak), 15,
+			yield return new object[]{ typeof(TextBox_Focus_Leak), 15,
 #if __IOS__
-			LeakTestStyles.None // Disabled - #10344
+				LeakTestStyles.None // Disabled - #10344
 #else
-			LeakTestStyles.All
+				LeakTestStyles.All
 #endif
-			)]
-		[DataRow(typeof(PasswordBox_Focus_Leak), 15,
+			};
+			yield return new object[]{ typeof(PasswordBox_Focus_Leak), 15,
 #if __IOS__
-			LeakTestStyles.None // Disabled - #10344
+				LeakTestStyles.None // Disabled - #10344
 #elif __ANDROID__
-			LeakTestStyles.Default // Fluent styles disabled - #14340
+				LeakTestStyles.Default // Fluent styles disabled - #14340
 #else
-			LeakTestStyles.All
+				LeakTestStyles.All
 #endif
-			)]
+			};
+
+		}
+
+		[TestMethod]
+		[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
+		{
+			await When_AddRemove_With_Styles(controlTypeRaw, count, leakTestStyles);
+		}
+
+		[TestMethod]
+		[DynamicData(nameof(GetScenarios), DynamicDataSourceType.Method)]
+		public async Task When_Add_Remove_With_Pooling(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
+		{
+			using var _1 = FeatureConfigurationHelper.UseTemplatePooling();
+
+			await When_AddRemove_With_Styles(controlTypeRaw, count, leakTestStyles);
+		}
+
+		private async Task When_AddRemove_With_Styles(object controlTypeRaw, int count, LeakTestStyles leakTestStyles)
 		{
 			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
 			{
@@ -160,10 +180,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
 			{
-				using (var themeHelper = StyleHelper.UseFluentStyles())
-				{
-					await When_Add_Remove_Inner(controlTypeRaw, count);
-				}
+				using var themeHelper = StyleHelper.UseFluentStyles();
+				await When_Add_Remove_Inner(controlTypeRaw, count);
 			}
 		}
 
@@ -185,7 +203,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 
 			var _holders = new ConditionalWeakTable<DependencyObject, Holder>();
-			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder(HolderUpdate));
+			void TrackDependencyObject(DependencyObject target) => _holders.AddOrUpdate(target, new Holder(HolderUpdate));
 
 			var maxCounter = 0;
 			var activeControls = 0;
@@ -233,10 +251,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
 
+				if (FrameworkTemplatePool.IsPoolingEnabled)
+				{
+					FrameworkTemplatePool.Scavenge();
+				}
+
 				if (lastActiveControls != activeControls)
 				{
 					// Expand the timeout if the count has changed, as the
-					// GC may still be processing levels of the hierarcy on iOS
+					// GC may still be processing levels of the hierarchy on iOS
 					endTime += TimeSpan.FromMilliseconds(500);
 				}
 

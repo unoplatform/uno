@@ -15,6 +15,10 @@ using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
+using System.Collections.Generic;
+using System.Reflection;
+using Windows.Web.Syndication;
+
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -28,98 +32,95 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-internal class Given_FrameworkTemplatePool
+internal partial class Given_FrameworkTemplatePool
 {
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if __ANDROID__
-	[Ignore("https://github.com/unoplatform/uno/issues/13969")]
-#endif
 	public async Task When_Recycle()
 	{
-		using (FeatureConfigurationHelper.UseTemplatePooling())
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		FrameworkTemplatePool.Instance.Scavenge(force: true);
+
+		async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
 		{
-			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
+			var content = new Button();
+			WindowHelper.WindowContent = content;
+			await WindowHelper.WaitForLoaded(content);
+			var templatedRoot = content.TemplatedRoot;
 
-			async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
-			{
-				var content = new Button();
-				WindowHelper.WindowContent = content;
-				await WindowHelper.WaitForLoaded(content);
-				var templatedRoot = content.TemplatedRoot;
+			WindowHelper.WindowContent = null;
 
-				WindowHelper.WindowContent = null;
-
-				return (
-					new WeakReference(content),
-					new WeakReference(templatedRoot));
-			}
-
-			var (targetInstance, targetTemplateRoot) = await CreateAndRelease();
-
-			var timeout = Stopwatch.StartNew();
-			while (targetInstance.IsAlive && timeout.Elapsed < TimeSpan.FromSeconds(5))
-			{
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(50);
-			}
-
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
-			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
-
-			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
-
-			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
-
-			var timeout2 = Stopwatch.StartNew();
-			while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
-			{
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(50);
-			}
-
-			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
+			return (
+				new WeakReference(content),
+				new WeakReference(templatedRoot));
 		}
+
+		var (targetInstance, targetTemplateRoot) = await CreateAndRelease();
+
+		var timeout = Stopwatch.StartNew();
+		while (targetInstance.IsAlive && timeout.Elapsed < TimeSpan.FromSeconds(5))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(50);
+		}
+
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
+		Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
+
+		Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
+
+		FrameworkTemplatePool.Instance.Scavenge(force: true);
+
+		var timeout2 = Stopwatch.StartNew();
+		while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(50);
+		}
+
+		Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplateCount(), "GetPooledTemplateCount is incorrect");
+
 	}
 #endif
 
 	[TestMethod]
-	public async Task TestCheckBox()
+	public async Task When_CheckBox()
 	{
-		using (FeatureConfigurationHelper.UseTemplatePooling())
-		{
-			var scrollViewer = new ScrollViewer();
-			var elevatedViewChild = new Uno.UI.Toolkit.ElevatedView();
-			scrollViewer.Content = elevatedViewChild;
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
 
-			var c = new CheckBox();
-			c.IsChecked = true;
-			bool uncheckedFired = false;
-			c.Unchecked += (_, _) => uncheckedFired = true;
-			elevatedViewChild.ElevatedContent = c;
+		var scrollViewer = new ScrollViewer();
+		var elevatedViewChild = new Uno.UI.Toolkit.ElevatedView();
+		scrollViewer.Content = elevatedViewChild;
 
-			WindowHelper.WindowContent = scrollViewer;
-			await WindowHelper.WaitForLoaded(scrollViewer);
-			var template = scrollViewer.Template;
+		var c = new CheckBox();
+		c.IsChecked = true;
+		bool uncheckedFired = false;
+		c.Unchecked += (_, _) => uncheckedFired = true;
+		elevatedViewChild.ElevatedContent = c;
 
-			scrollViewer.Template = null;
-			scrollViewer.Template = template;
+		WindowHelper.WindowContent = scrollViewer;
+		await WindowHelper.WaitForLoaded(scrollViewer);
+		var template = scrollViewer.Template;
 
-			scrollViewer.ApplyTemplate();
+		scrollViewer.Template = null;
+		scrollViewer.Template = template;
 
-			Assert.IsFalse(uncheckedFired);
-		}
+		scrollViewer.ApplyTemplate();
+
+		Assert.IsFalse(uncheckedFired);
 	}
 
 	[TestMethod]
-	public async Task TestTextBox()
+	public async Task When_TextBox()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
@@ -154,7 +155,7 @@ internal class Given_FrameworkTemplatePool
 	}
 
 	[TestMethod]
-	public async Task TestToggleSwitch()
+	public async Task When_ToggleSwitch()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
@@ -231,4 +232,283 @@ internal class Given_FrameworkTemplatePool
 			AssertEditorContents();
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_ContentControl_Template_Recycled()
+	{
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var TemplateCreated = 0;
+		List<WeakReference> created = new();
+		var dataTemplate = new ControlTemplate(() =>
+		{
+			TemplateCreated++;
+			var b = new TemplatePoolAwareControl();
+			created.Add(new(b));
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			Template = dataTemplate
+		};
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
+
+		Assert.AreEqual(1, TemplateCreated);
+
+		SUT.Template = null;
+
+		Assert.AreEqual(1, TemplateCreated);
+		Assert.AreEqual(1, created.Count);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)created[0].Target)?.TemplateRecycled);
+	}
+
+	[TestMethod]
+	public async Task When_ContentControl_Template_Replaced_Recycled()
+	{
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var template1Created = 0;
+		List<WeakReference> _created = new();
+		var template1 = new ControlTemplate(() =>
+		{
+			template1Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new WeakReference(b));
+			return b;
+		});
+
+		var template2Created = 0;
+		var template2 = new ControlTemplate(() =>
+		{
+			template2Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new WeakReference(b));
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			Template = template1
+		};
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
+
+		Assert.AreEqual(1, template1Created);
+
+		SUT.Template = template2;
+
+		Assert.AreEqual(1, template1Created);
+		Assert.AreEqual(1, template2Created);
+		Assert.AreEqual(2, _created.Count);
+
+		SUT.Template = null;
+
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target).TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target).TemplateRecycled);
+	}
+
+	[TestMethod]
+	public async Task When_ContentControl_ContentTemplate_Recycled()
+	{
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var TemplateCreated = 0;
+		List<WeakReference> _created = new();
+		var dataTemplate = new DataTemplate(() =>
+		{
+			TemplateCreated++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new WeakReference(b));
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			ContentTemplate = dataTemplate
+		};
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
+
+		Assert.AreEqual(1, TemplateCreated);
+
+		SUT.ContentTemplate = null;
+
+		Assert.AreEqual(1, TemplateCreated);
+		Assert.AreEqual(1, _created.Count);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
+	}
+
+	[TestMethod]
+	public async Task When_ContentControl_ContentTemplate_Replaced_Recycled()
+	{
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var template1Created = 0;
+		List<WeakReference> _created = new();
+		var dataTemplate1 = new DataTemplate(() =>
+		{
+			template1Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new(b));
+			return b;
+		});
+
+		var template2Created = 0;
+		var dataTemplate2 = new DataTemplate(() =>
+		{
+			template2Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new(b));
+			return b;
+		});
+
+		var SUT = new ContentControl()
+		{
+			ContentTemplate = dataTemplate1
+		};
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
+
+		Assert.AreEqual(1, template1Created);
+
+		SUT.ContentTemplate = dataTemplate2;
+
+		Assert.AreEqual(1, template1Created);
+		Assert.AreEqual(1, template2Created);
+		Assert.AreEqual(2, _created.Count);
+
+		SUT.ContentTemplate = null;
+
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target)?.TemplateRecycled);
+
+		await AssertCollectedReference(_created[0]);
+		await AssertCollectedReference(_created[1]);
+	}
+
+	[TestMethod]
+	public async Task When_ContentPresenter_ContentTemplate_Replaced_Recycled()
+	{
+		await using var _1 = ValidateActiveInstanceTrackers();
+		using var _2 = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var template1Created = 0;
+		List<WeakReference> _created = new();
+		var dataTemplate1 = new DataTemplate(() =>
+		{
+			template1Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new(b));
+			return b;
+		});
+
+		var template2Created = 0;
+		var dataTemplate2 = new DataTemplate(() =>
+		{
+			template2Created++;
+			var b = new TemplatePoolAwareControl();
+			_created.Add(new(b));
+			return b;
+		});
+
+		var SUT = new ContentPresenter()
+		{
+			ContentTemplate = dataTemplate1
+		};
+
+		var root = new Grid();
+		root.Children.Add(SUT);
+		WindowHelper.WindowContent = root;
+
+		Assert.AreEqual(1, template1Created);
+
+		SUT.ContentTemplate = dataTemplate2;
+
+		Assert.AreEqual(1, template1Created);
+		Assert.AreEqual(1, template2Created);
+		Assert.AreEqual(2, _created.Count);
+
+		SUT.ContentTemplate = null;
+
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[0].Target)?.TemplateRecycled);
+		Assert.AreEqual(1, ((TemplatePoolAwareControl)_created[1].Target)?.TemplateRecycled);
+	}
+
+	public partial class TemplatePoolAwareControl : Grid, IFrameworkTemplatePoolAware
+	{
+		public int TemplateRecycled { get; private set; }
+
+		public void OnTemplateRecycled()
+		{
+			TemplateRecycled++;
+		}
+	}
+
+	private IAsyncDisposable ValidateActiveInstanceTrackers()
+	{
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+		FrameworkTemplatePool.Scavenge();
+
+		var originalTrackers = FrameworkTemplatePool.ActiveInstanceTrackers;
+
+		return new AsyncDisposableAction(async () =>
+		{
+			var sw = Stopwatch.StartNew();
+
+			while (sw.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+
+				if (originalTrackers == FrameworkTemplatePool.ActiveInstanceTrackers)
+				{
+					return;
+				}
+
+				FrameworkTemplatePool.Scavenge();
+
+				await Task.Delay(100);
+			}
+
+			Assert.AreEqual(originalTrackers, FrameworkTemplatePool.ActiveInstanceTrackers);
+		});
+	}
+
+	private async Task AssertCollectedReference(WeakReference reference, string message = "")
+	{
+		var sw = Stopwatch.StartNew();
+		while (sw.Elapsed < TimeSpan.FromSeconds(5))
+		{
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+
+			if (!reference.IsAlive)
+			{
+				return;
+			}
+
+			FrameworkTemplatePool.Scavenge();
+
+			await Task.Delay(100);
+		}
+
+		Assert.IsFalse(reference.IsAlive, message);
+	}
+#endif
 }

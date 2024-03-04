@@ -4818,6 +4818,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					return;
 				}
 
+#if HAS_UNO
+				FrameworkTemplatePool.Scavenge();
+#endif
+
 				await Task.Delay(100);
 			}
 
