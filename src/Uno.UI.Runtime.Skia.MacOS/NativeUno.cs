@@ -180,7 +180,6 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_window_notify_screen_change(nint handle);
 
-
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_system_theme_change_callback(delegate* unmanaged[Cdecl]<void> callback);
 

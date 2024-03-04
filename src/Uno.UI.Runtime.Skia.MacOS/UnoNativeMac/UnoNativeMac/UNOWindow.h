@@ -14,7 +14,9 @@ resize_fn_ptr uno_get_resize_callback(void);
 void uno_set_resize_callback(resize_fn_ptr p);
 
 @interface windowDidChangeScreenNoteClass : NSObject
+
 + (windowDidChangeScreenNoteClass*) init;
+
 - (void) windowDidChangeScreenNotification:(NSNotification*) note;
 - (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
 @end
@@ -272,6 +274,11 @@ void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_
 
 typedef bool (*window_should_close_fn_ptr)(UNOWindow* window);
 window_should_close_fn_ptr uno_get_window_should_close_callback(void);
+
+typedef void (*window_close_fn_ptr)(UNOWindow* window);
+window_close_fn_ptr uno_get_window_close_callback(void);
+
+void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
 
 typedef void (*window_close_fn_ptr)(UNOWindow* window);
 window_close_fn_ptr uno_get_window_close_callback(void);
