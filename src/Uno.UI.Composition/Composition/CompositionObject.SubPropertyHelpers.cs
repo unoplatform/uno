@@ -610,12 +610,12 @@ partial class CompositionObject
 			}
 			else
 			{
-				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+				throw new Exception($"Unable to get property '{propertyName}' on {this}");
 			}
 		}
 		else
 		{
-			throw new Exception($"Unable to set property '{propertyName}' on {this}");
+			throw new Exception($"Unable to get property '{propertyName}' on {this}");
 		}
 	}
 }
