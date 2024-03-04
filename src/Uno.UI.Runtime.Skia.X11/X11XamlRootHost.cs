@@ -37,7 +37,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private static object _x11WindowToXamlRootHostMutex = new();
 	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
 
-	private readonly TaskCompletionSource _closed;
+	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
 	private readonly Window _window;
 
@@ -183,7 +183,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			foreach (var host in _x11WindowToXamlRootHost.Values)
 			{
-				host._closed.SetResult();
+				using (X11Helper.XLock(host.X11Window.Display))
+				{
+					host._closed.SetResult();
+				}
 			}
 
 			_x11WindowToXamlRootHost.Clear();
@@ -206,7 +209,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			if (_x11WindowToXamlRootHost.Remove(x11window, out var host))
 			{
-				host._closed.SetResult();
+				using (X11Helper.XLock(x11window.Display))
+				{
+					host._closed.SetResult();
+				}
 			}
 			else
 			{

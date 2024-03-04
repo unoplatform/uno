@@ -17,13 +17,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		void IX11Renderer.InvalidateRender()
 		{
-			// Could this somehow race? i.e. Closed is completed right after the check?
-			if (host is X11XamlRootHost x11Host && x11Host.Closed.IsCompleted)
+			using var _1 = X11Helper.XLock(x11window.Display);
+
+			if (host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
 				return;
 			}
-
-			using var __ = X11Helper.XLock(x11window.Display);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -31,7 +30,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			XWindowAttributes attributes = default;
-			var _1 = XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
+			var _2 = XLib.XGetWindowAttributes(x11window.Display, x11window.Window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
@@ -81,7 +80,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				bitmap_pad: BitmapPad,
 				bytes_per_line: 0); // 0 bytes per line assume contiguous lines i.e. pad * width
 
-			var _2 = X11Helper.XPutImage(
+			var _4 = X11Helper.XPutImage(
 				display: x11window.Display,
 				drawable: x11window.Window,
 				gc: X11Helper.XDefaultGC(x11window.Display, XLib.XDefaultScreen(x11window.Display)),
@@ -93,7 +92,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				width: (uint)width,
 				height: (uint)height);
 
-			var _4 = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
+			var _5 = XLib.XFlush(x11window.Display); // unnecessary on most X11 implementations
 		}
 	}
 }

@@ -77,6 +77,7 @@ using System.Drawing;
 using System.Globalization;
 using Windows.Graphics.Display;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 
 namespace Uno.WinUI.Runtime.Skia.X11
 {
@@ -130,9 +131,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			var window = _host.X11Window.Window;
 			var display = _host.X11Window.Display;
 
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"updating DisplayInformation details for X11 window: {display.ToString("X", CultureInfo.InvariantCulture)}, {window.ToString("X", CultureInfo.InvariantCulture)}");
+			}
+
 			var oldDetails = _details;
 			var xLock = X11Helper.XLock(display);
-			using var __ = Disposable.Create(() =>
+			using var _2 = Disposable.Create(() =>
 			{
 				// dispose lock before raising DpiChanged in case a user defined callback takes too long.
 				xLock.Dispose();
@@ -142,9 +148,10 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 			});
 
-			XWindowAttributes attributes = default;
-			var _1 = XLib.XGetWindowAttributes(display, window, ref attributes);
-			var screen = attributes.screen;
+			if (_host.Closed.IsCompleted)
+			{
+				return;
+			}
 
 			if (XLib.XRRQueryExtension(display, out _, out _) != 0 &&
 				XLib.XRRQueryVersion(display, out var major, out var minor) != 0 &&
@@ -155,6 +162,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 			else // naive implementation from xdpyinfo
 			{
+				XWindowAttributes attributes = default;
+				var _3 = XLib.XGetWindowAttributes(display, window, ref attributes);
+				var screen = attributes.screen;
 				// Using X<Width|Height>OfScreen calls seems to work more reliably than XDisplay<Width|Height>.
 				// Mostly because XScreenNumberOfScreen (which we need for XDisplay<Width|Height>) isn't working reliably
 				var xres = X11Helper.XWidthOfScreen(screen) * InchesToMilliMeters / X11Helper.XWidthMMOfScreen(screen);
@@ -305,12 +315,15 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		{
 			using var _1 = X11Helper.XLock(display);
 
+			Console.WriteLine($"GetScreenResourcesCurrent({display.ToString("X")}, {window.ToString("X")})");
 			var resources = X11Helper.XRRGetScreenResourcesCurrent(display, window);
 			using var _2 = Disposable.Create(() => X11Helper.XRRFreeScreenResources(resources));
 
 			var _3 = XLib.XQueryTree(display, XLib.XDefaultRootWindow(display), out IntPtr root, out _, out _, out _);
 			XWindowAttributes windowAttrs = default;
+			Console.WriteLine("RAMOOZ BEFORE XGetWindowAttributes 2");
 			var _4 = XLib.XGetWindowAttributes(display, window, ref windowAttrs);
+			Console.WriteLine("RAMOOZ AFTER XGetWindowAttributes 2");
 			XLib.XTranslateCoordinates(display, window, root, windowAttrs.x, windowAttrs.y, out var rootx, out var rooty, out _);
 
 			X11Helper.XRRCrtcInfo* crtcInfo = default;
