@@ -1,83 +1,44 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
 using Windows.Graphics.Display;
-
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSDisplayInformationExtension : IDisplayInformationExtension
 {
-	private static readonly MacOSDisplayInformationExtension _instance = new();
-
-	private MacOSDisplayInformationExtension()
+	internal MacOSDisplayInformationExtension(object _)
 	{
+		MacOSWindowNative.NativeWindowReady += NativeWindowReady;
 	}
 
-	internal static unsafe void Register()
+	private void NativeWindowReady(object? sender, MacOSWindowNative e)
 	{
-		// FIXME: use a single callback method ?
-		NativeUno.uno_set_window_did_change_screen_callback(ref SharedScreenData, &Update);
-		NativeUno.uno_set_window_did_change_screen_parameters_callback(&UpdateParameters);
-		ApiExtensibility.Register(typeof(IDisplayInformationExtension), _ => _instance);
+		MacOSWindowNative.NativeWindowReady -= NativeWindowReady;
+		e.Host.DisplayInformationExtension = this;
+		// post a notification so the values are initialized before we need them
+		NativeUno.uno_window_notify_screen_change(e.Handle);
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	internal struct ScreenData
+	internal void Update(uint width, uint height, double scaleFactor)
 	{
-		public uint ScreenHeightInRawPixels;
-		public uint ScreenWidthInRawPixels;
-		public uint RawPixelsPerViewPixel;
+		ScreenWidthInRawPixels = width;
+		ScreenHeightInRawPixels = height;
+		RawPixelsPerViewPixel = scaleFactor;
+		// update calculated fields from the native/shared ones
+		CurrentOrientation = ScreenWidthInRawPixels > ScreenHeightInRawPixels ? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
+		LogicalDpi = (float)RawPixelsPerViewPixel * /* DisplayInformation.BaseDpi */ 96.0f;
+		ResolutionScale = (ResolutionScale)(int)(RawPixelsPerViewPixel * 100.0);
 	}
 
-	private static ScreenData _data;
-	private static DisplayOrientations _currentOrientation;
-	private static float _logicalDpi;
-	private static ResolutionScale _resolutionScale;
+	public DisplayOrientations CurrentOrientation { get; private set; }
 
-	public DisplayOrientations CurrentOrientation => _currentOrientation;
+	public uint ScreenHeightInRawPixels { get; private set; }
 
-	public uint ScreenHeightInRawPixels => _data.ScreenHeightInRawPixels;
+	public uint ScreenWidthInRawPixels { get; private set; }
 
-	public uint ScreenWidthInRawPixels => _data.ScreenWidthInRawPixels;
+	public float LogicalDpi { get; private set; }
 
-	public float LogicalDpi => _logicalDpi;
+	public double RawPixelsPerViewPixel { get; private set; }
 
-	public double RawPixelsPerViewPixel => _data.RawPixelsPerViewPixel;
-
-	public ResolutionScale ResolutionScale => _resolutionScale;
+	public ResolutionScale ResolutionScale { get; private set; }
 
 	public double? DiagonalSizeInInches => null;
-
-	private static ref ScreenData SharedScreenData => ref _data;
-
-	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	internal static void Update()
-	{
-		if (typeof(MacOSDisplayInformationExtension).Log().IsEnabled(LogLevel.Trace))
-		{
-			typeof(MacOSDisplayInformationExtension).Log().Trace($"MacOSDisplayInformationExtension.Update {_data.ScreenWidthInRawPixels} x {_data.ScreenHeightInRawPixels} @ {_data.RawPixelsPerViewPixel}x");
-		}
-
-		// updated calculated fields from the native/shared ones
-		_currentOrientation = _data.ScreenWidthInRawPixels > _data.ScreenHeightInRawPixels
-			? DisplayOrientations.Landscape : DisplayOrientations.Portrait;
-
-		_logicalDpi = _data.RawPixelsPerViewPixel * /* DisplayInformation.BaseDpi */ 96.0f;
-
-		_resolutionScale = (ResolutionScale)(int)(_data.RawPixelsPerViewPixel * 100.0);
-	}
-
-	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	internal static void UpdateParameters()
-	{
-		if (typeof(MacOSDisplayInformationExtension).Log().IsEnabled(LogLevel.Trace))
-		{
-			typeof(MacOSDisplayInformationExtension).Log().Trace("MacOSDisplayInformationExtension.UpdateParameters");
-		}
-
-		DisplayInformation.GetForCurrentView().NotifyDpiChanged();
-	}
 }
