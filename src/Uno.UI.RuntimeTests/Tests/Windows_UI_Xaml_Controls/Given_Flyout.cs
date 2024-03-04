@@ -26,6 +26,8 @@ using Uno.UI.Toolkit.Extensions;
 
 using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1520,6 +1522,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.Hide();
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
+		{
+			var flyout = new Flyout()
+			{
+				Content = new Button() { Content = "Test" }
+			};
+			bool opened = false;
+			flyout.Opened += (s, e) =>
+			{
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout.XamlRoot).FirstOrDefault(p => p.AssociatedFlyout == flyout);
+				Assert.IsNotNull(popup);
+				popup.IsLightDismissEnabled = isLightDismissEnabled;
+				opened = true;
+			};
+			try
+			{
+				var ownerButton = new Button()
+				{
+					Content = "Owner",
+					Flyout = flyout
+				};
+				TestServices.WindowHelper.WindowContent = ownerButton;
+				await TestServices.WindowHelper.WaitForLoaded(ownerButton);
+				((IInvokeProvider)ownerButton.GetAutomationPeer()).Invoke();
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				var popupRoot = ownerButton.XamlRoot.VisualTree.PopupRoot;
+				popupRoot.CloseLightDismissablePopups();
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual(!isLightDismissEnabled, flyout.IsOpen);
+			}
+			finally
+			{
+				flyout?.Hide();
+			}
+		}
+#endif
 
 #if __IOS__
 		[TestMethod]

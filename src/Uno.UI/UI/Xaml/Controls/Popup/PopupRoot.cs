@@ -19,19 +19,25 @@ internal partial class PopupRoot : Panel
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
-		Microsoft.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
-		Microsoft.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+		Microsoft.UI.Xaml.Window.Current.Activated += (_, _) => CloseLightDismissablePopups();
+		Microsoft.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseLightDismissablePopups();
 	}
 
-	private void CloseFlyouts()
+	internal void CloseLightDismissablePopups()
 	{
 		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
 			var reference = _openPopups[i];
-			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
 			{
-				var f = popup.AssociatedFlyout;
-				f.Hide();
+				if (popup.AssociatedFlyout is { } flyout)
+				{
+					flyout.Hide();
+				}
+				else
+				{
+					popup.IsOpen = false;
+				}
 			}
 		}
 	}
