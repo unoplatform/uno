@@ -12,7 +12,9 @@ using Windows.ApplicationModel.Core;
 using Uno.Helpers.Theming;
 using PhotosUI;
 using Uno.UI.Dispatching;
+using MobileCoreServices;
 using Windows.Foundation.Metadata;
+using Uno.Foundation.Logging;
 
 namespace Windows.Storage.Pickers
 {
@@ -151,17 +153,64 @@ namespace Windows.Storage.Pickers
 			public PhotoPickerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource) =>
 				_taskCompletionSource = taskCompletionSource;
 
-			public override void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
+			public override async void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
 			{
-				var storageFiles = ConvertPickerResults(results);
+				var storageFiles = await ConvertPickerResults(results);
 				_taskCompletionSource.SetResult(storageFiles.ToArray());
 			}
-			static IEnumerable<StorageFile> ConvertPickerResults(PHPickerResult[] results)
-				=> results
+			private async Task<IEnumerable<StorageFile>> ConvertPickerResults(PHPickerResult[] results)
+			{
+				List<StorageFile> storageFiles = new List<StorageFile>();
+				var providers = results
 					.Select(res => res.ItemProvider)
 					.Where(provider => provider != null && provider.RegisteredTypeIdentifiers?.Length > 0)
-					.Select(p => StorageFile.GetFromItemProvider(p, null))
 					.ToArray();
+
+				foreach (NSItemProvider provider in providers)
+				{
+					var identifier = GetIdentifier(provider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
+					var data = await provider.LoadDataRepresentationAsync(identifier);
+
+					if (data is null)
+					{
+						continue;
+					}
+
+					var extension = GetExtension(identifier);
+
+					var destinationUrl = NSFileManager.DefaultManager
+													  .GetTemporaryDirectory()
+													  .Append($"{NSProcessInfo.ProcessInfo.GloballyUniqueString}.{extension}", false);
+					data.Save(destinationUrl, false);
+
+					storageFiles.Add(StorageFile.GetFromSecurityScopedUrl(destinationUrl, null));
+				}
+
+				return storageFiles;
+			}
+			private static string? GetIdentifier(string[] identifiers)
+			{
+				if (!(identifiers?.Length > 0))
+				{
+					return null;
+				}
+
+				if (identifiers.Any(i => i.StartsWith(UTType.LivePhoto, StringComparison.InvariantCultureIgnoreCase)) && identifiers.Contains(UTType.JPEG))
+				{
+					return identifiers.FirstOrDefault(i => i == UTType.JPEG);
+				}
+
+				if (identifiers.Contains(UTType.QuickTimeMovie))
+				{
+					return identifiers.FirstOrDefault(i => i == UTType.QuickTimeMovie);
+				}
+
+				return identifiers.FirstOrDefault();
+			}
+
+			private string? GetExtension(string identifier)
+			=> UTType.CopyAllTags(identifier, UTType.TagClassFilenameExtension)?.FirstOrDefault();
+
 		}
 
 		private class FileOpenPickerDelegate : UIDocumentPickerDelegate
