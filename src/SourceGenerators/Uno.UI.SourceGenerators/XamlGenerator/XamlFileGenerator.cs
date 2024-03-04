@@ -5966,7 +5966,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							_currentStyleTargetTypeStack.Push(FindType(targetType));
 						}
 
-						using (TryGenerateDeferLoadStrategy(writer, knownType, xamlObjectDefinition))
+						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
 							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
 							{
@@ -6199,7 +6199,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			yield break;
 		}
 
-		private IDisposable? TryGenerateDeferLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol? targetType, XamlObjectDefinition definition)
+		private IDisposable? TryGenerateDeferedLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol? targetType, XamlObjectDefinition definition)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var strategy = FindMember(definition, "DeferLoadStrategy");
@@ -6264,98 +6264,94 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							);
 						}
 
+						var members = new List<XamlMemberDefinition>();
+
 						if (hasLoadMarkup)
 						{
+							members.Add(GenerateBinding("Load", loadMember, definition));
+						}
 
-							var members = new List<XamlMemberDefinition>();
+						var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(definition).isInside;
 
-							if (hasLoadMarkup)
+						var needsBindingUpdates = HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition);
+						var childrenNeedBindingUpdates = CurrentXLoadScope?.Components.Any(c => HasXBindMarkupExtension(c.ObjectDefinition) || HasMarkupExtensionNeedingComponent(c.ObjectDefinition)) ?? false;
+						if ((!_isTopLevelDictionary || isInsideFrameworkTemplate) && (needsBindingUpdates || childrenNeedBindingUpdates))
+						{
+							var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition, namespaces: null);
+							xamlObjectDef.Members.AddRange(members);
+
+							AddComponentForParentScope(xamlObjectDef);
+
+							var componentName = CurrentScope.Components.Last().MemberName;
+							writer.AppendLineIndented($"__that.{componentName} = {closureName};");
+
+							if (!isInsideFrameworkTemplate)
 							{
-								members.Add(GenerateBinding("Load", loadMember, definition));
-							}
+								EnsureXClassName();
 
-							var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(definition).isInside;
-							if ((!_isTopLevelDictionary || isInsideFrameworkTemplate)
-								&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
-							{
-								var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition, namespaces: null);
-								xamlObjectDef.Members.AddRange(members);
+								writer.AppendLineIndented($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-								AddComponentForParentScope(xamlObjectDef);
-
-								var componentName = CurrentScope.Components.Last().MemberName;
-								writer.AppendLineIndented($"__that.{componentName} = {closureName};");
-
-								if (!isInsideFrameworkTemplate)
+								if (nameMember != null)
 								{
-									EnsureXClassName();
+									writer.AppendLineIndented($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
+								}
 
-									writer.AppendLineIndented($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-
-									if (nameMember != null)
+								using (writer.BlockInvariant($"void {componentName}_update(global::Microsoft.UI.Xaml.ElementStub sender)"))
+								{
+									using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 									{
-										writer.AppendLineIndented($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
-									}
 
-									using (writer.BlockInvariant($"void {componentName}_update(global::Microsoft.UI.Xaml.ElementStub sender)"))
-									{
-										using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
+										using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
 										{
-
-											using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
-											{
-												writer.AppendLineIndented($"that.Bindings.UpdateResources();");
-												if (nameMember?.Value is string xName)
+											writer.AppendLineIndented($"that.Bindings.UpdateResources();");
+										if (nameMember?.Value is string xName)
 												{
 													writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
-												}
-											}
-										}
+												}}
 									}
+								}
 
-									writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
+								writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
 
-									writer.AppendLineIndented($"var owner = this;");
+								writer.AppendLineIndented($"var owner = this;");
 
+								if (_isHotReloadEnabled)
+								{
+									// Attach the current context to itself to avoid having a closure in the lambda
+									writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"{componentName}_owner\", owner);");
+								}
+
+								using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
+								{
 									if (_isHotReloadEnabled)
 									{
-										// Attach the current context to itself to avoid having a closure in the lambda
-										writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"{componentName}_owner\", owner);");
+										writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{componentName}_owner\");");
 									}
 
-									using (writer.BlockInvariant($"void {componentName}_materializing(object sender)"))
+									// Refresh the bindings when the ElementStub is unloaded. This assumes that
+									// ElementStub will be unloaded **after** the stubbed control has been created
+									// in order for the component field to be filled, and Bindings.Update() to do its work.
+
+									using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 									{
-										if (_isHotReloadEnabled)
+										if (CurrentXLoadScope != null)
 										{
-											writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{componentName}_owner\");");
-										}
-
-										// Refresh the bindings when the ElementStub is unloaded. This assumes that
-										// ElementStub will be unloaded **after** the stubbed control has been created
-										// in order for the component field to be filled, and Bindings.Update() to do its work.
-
-										using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
-										{
-											if (CurrentXLoadScope != null)
+											foreach (var component in CurrentXLoadScope.Components)
 											{
-												foreach (var component in CurrentXLoadScope.Components)
-												{
-													writer.AppendLineIndented($"that.{component.VariableName}.ApplyXBind();");
-													writer.AppendLineIndented($"that.{component.VariableName}.UpdateResourceBindings();");
-												}
-
-												BuildxBindEventHandlerInitializers(writer, CurrentXLoadScope.xBindEventsHandlers, "that.");
+												writer.AppendLineIndented($"that.{component.VariableName}.ApplyXBind();");
+												writer.AppendLineIndented($"that.{component.VariableName}.UpdateResourceBindings();");
 											}
+
+											BuildxBindEventHandlerInitializers(writer, CurrentXLoadScope.xBindEventsHandlers, "that.");
 										}
 									}
-
-									writer.AppendLineIndented($"{closureName}.Materializing += {componentName}_materializing;");
-								}
-								else
-								{
-									// TODO for https://github.com/unoplatform/uno/issues/6700
 								}
 
+								writer.AppendLineIndented($"{closureName}.Materializing += {componentName}_materializing;");
+							}
+							else
+							{
+								// TODO for https://github.com/unoplatform/uno/issues/6700
 							}
 						}
 
@@ -6381,8 +6377,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					xLoadScopeDisposable?.Dispose();
-				}
-				);
+				});
 			}
 
 			return null;
