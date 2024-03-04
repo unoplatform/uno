@@ -4,7 +4,15 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
-This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
+### Lazy loading
+
+To align the behavior with WinUI, lazy loading using `x:Load="False"` and `x:DeferLoadStrategy="lazy"` is no longer affected with changes to the visibility of the lazily-loaded element. Previously, binding the `Visibility` property of the lazily-loaded element and then updating the source of the binding to make the element visible would cause the element to materialize (i.e. load). This is no longer the case. To load the element, add an `x:Name` to the element and call `FindName` with th given name.
+
+## Uno Platform 5.1
+
+Uno Platform 5.1 does not contain breaking changes that require attention when upgrading.
+
+This version however introduces the MSBuild Uno.SDK, which provides support for smaller project files and better Visual Studio integration. Using the Uno.Sdk is entirely optional and previous projects templates are fully supported. If you want to migrate to Uno.Sdk based projects, you can follow the [Migrating Projects to Uno.Sdk](xref:Uno.Development.MigratingToUnoSdk) guide.
 
 ## Uno Platform 5.2
 
