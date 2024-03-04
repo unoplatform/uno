@@ -147,34 +147,18 @@ namespace Microsoft.UI.Xaml
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
-		{
-			base.OnVisibilityChanged(oldValue, newValue);
-
-			if (ContentBuilder != null
-				&& oldValue == Visibility.Collapsed
-				&& newValue == Visibility.Visible
-				&& Parent != null
-			)
-			{
-				Materialize(isVisibilityChanged: true);
-			}
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			if (ContentBuilder != null
-				&& Visibility == Visibility.Visible
-			)
+			if (ContentBuilder != null && Load)
 			{
 				Materialize();
 			}
 		}
 
 		public void Materialize()
-			=> Materialize(isVisibilityChanged: false);
+			=> MaterializeInner();
 
 		private void RaiseMaterializing()
 		{
@@ -184,11 +168,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void Materialize(bool isVisibilityChanged)
+		private void MaterializeInner()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
+				this.Log().Debug($"ElementStub.Materialize()");
 			}
 
 			if (_content == null && !_isMaterializing)
@@ -198,17 +182,6 @@ namespace Microsoft.UI.Xaml
 					_isMaterializing = true;
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-					var targetDependencyObject = _content as DependencyObject;
-
-					if (isVisibilityChanged && targetDependencyObject != null)
-					{
-						var visibilityProperty = GetVisibilityProperty(_content);
-
-						// Set the visibility at the same precedence it was currently set with on the stub.
-						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
-
-						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
-					}
 
 					MaterializationChanged?.Invoke(this);
 				}
@@ -235,18 +208,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				MaterializationChanged?.Invoke(this);
-			}
-		}
-
-		private static DependencyProperty GetVisibilityProperty(View view)
-		{
-			if (view is FrameworkElement)
-			{
-				return VisibilityProperty;
-			}
-			else
-			{
-				return DependencyProperty.GetProperty(view.GetType(), nameof(Visibility));
 			}
 		}
 	}
