@@ -4,7 +4,7 @@
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public sealed class ScrollControllerAddScrollVelocityRequestedEventArgs
+public sealed partial class ScrollControllerAddScrollVelocityRequestedEventArgs
 {
 	//~ScrollControllerPanRequestedEventArgs()
 	//{

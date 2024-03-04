@@ -6,7 +6,7 @@ using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public sealed class ScrollingScrollAnimationStartingEventArgs
+public sealed partial class ScrollingScrollAnimationStartingEventArgs
 {
 	internal ScrollingScrollAnimationStartingEventArgs()
 	{

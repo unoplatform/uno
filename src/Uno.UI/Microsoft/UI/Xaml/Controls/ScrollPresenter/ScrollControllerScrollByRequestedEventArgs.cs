@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public sealed class ScrollControllerScrollByRequestedEventArgs
+public sealed partial class ScrollControllerScrollByRequestedEventArgs
 {
 	//~ScrollControllerScrollByRequestedEventArgs()
 	//{

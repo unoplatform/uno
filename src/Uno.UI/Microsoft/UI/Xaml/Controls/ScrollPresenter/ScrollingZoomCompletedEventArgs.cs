@@ -3,7 +3,7 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public sealed class ScrollingZoomCompletedEventArgs
+public sealed partial class ScrollingZoomCompletedEventArgs
 {
 	internal ScrollingZoomCompletedEventArgs()
 	{

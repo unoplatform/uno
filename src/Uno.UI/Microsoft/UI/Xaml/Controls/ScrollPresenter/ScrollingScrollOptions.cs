@@ -4,7 +4,7 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public class ScrollingScrollOptions
+public partial class ScrollingScrollOptions
 {
 	internal const ScrollingAnimationMode s_defaultAnimationMode = ScrollingAnimationMode.Auto;
 	internal const ScrollingSnapPointsMode s_defaultSnapPointsMode = ScrollingSnapPointsMode.Default;

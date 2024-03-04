@@ -19,7 +19,7 @@ public enum ScrollSnapPointsAlignment
 }
 
 
-public interface IScrollControllerPanningInfo
+public partial interface IScrollControllerPanningInfo
 {
 	bool IsRailEnabled { get; }
 	Orientation PanOrientation { get; }
@@ -37,7 +37,7 @@ public interface IScrollControllerPanningInfo
 }
 
 
-public interface IScrollController
+public partial interface IScrollController
 {
 	IScrollControllerPanningInfo PanningInfo { get; }
 	bool CanScroll { get; }

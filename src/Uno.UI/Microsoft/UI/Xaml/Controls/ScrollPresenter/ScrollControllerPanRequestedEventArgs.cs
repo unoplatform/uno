@@ -6,7 +6,7 @@ using Windows.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public sealed class ScrollControllerPanRequestedEventArgs
+public sealed partial class ScrollControllerPanRequestedEventArgs
 {
 	//~ScrollControllerPanRequestedEventArgs()
 	//{
