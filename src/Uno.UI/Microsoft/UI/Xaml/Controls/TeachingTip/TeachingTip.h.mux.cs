@@ -7,18 +7,19 @@ using System.Numerics;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class TeachingTip
 {
 	private FrameworkElement m_target;
-	internal bool m_isIdle = true;
+
+	private bool m_isIdle = true;
 
 	private readonly long m_automationNameChangedRevoker;
 	private readonly long m_automationIdChangedRevoker;
@@ -26,6 +27,7 @@ partial class TeachingTip
 	private readonly SerialDisposable m_previewKeyDownForF6Revoker = new();
 	// This handler is not required for Winui3 because the framework bug this works around has been fixed.
 	private readonly SerialDisposable m_popupPreviewKeyDownForF6Revoker = new();
+	private readonly SerialDisposable m_lightDismissIndicatorPopupPreviewKeyDownForF6Revoker = new();
 	private readonly SerialDisposable m_closeButtonClickedRevoker = new();
 	private readonly SerialDisposable m_alternateCloseButtonClickedRevoker = new();
 	private readonly SerialDisposable m_actionButtonClickedRevoker = new();
@@ -37,21 +39,22 @@ partial class TeachingTip
 	private readonly SerialDisposable m_popupOpenedRevoker = new();
 	private readonly SerialDisposable m_popupClosedRevoker = new();
 	private readonly SerialDisposable m_lightDismissIndicatorPopupClosedRevoker = new();
-	private readonly SerialDisposable m_windowSizeChangedRevoker = new();
 	private readonly SerialDisposable m_tailOcclusionGridLoadedRevoker = new();
 	private readonly SerialDisposable m_xamlRootChangedRevoker = new();
-	// Hold a strong ref to the xamlRoot while we're open so that the changed revoker works.
-	// This can be removed when internal bug #21302432 is fixed.
-	private XamlRoot m_xamlRoot;
 	private readonly SerialDisposable m_actualThemeChangedRevoker = new();
+
+	private readonly SerialDisposable m_TargetUnloadedRevoker = new();
 
 
 	float TopLeftCornerRadius() => (float)GetTeachingTipCornerRadius().TopLeft;
 	float TopRightCornerRadius() => (float)GetTeachingTipCornerRadius().TopRight;
 
 	private Border m_container;
-	internal Popup m_popup;
+
+	private Popup m_popup;
 	private Popup m_lightDismissIndicatorPopup;
+	private ContentControl m_popupContentControl;
+
 	private UIElement m_rootElement;
 	private Grid m_tailOcclusionGrid;
 	private Grid m_contentRootGrid;
@@ -62,6 +65,8 @@ partial class TeachingTip
 	private Button m_closeButton;
 	private Polygon m_tailPolygon;
 	private Grid m_tailEdgeBorder;
+	private UIElement m_titleTextBlock;
+	private UIElement m_subtitleTextBlock;
 
 	private ManagedWeakReference m_previouslyFocusedElement;
 
@@ -102,6 +107,7 @@ partial class TeachingTip
 
 	private float m_contentElevation = 32.0f;
 	private float m_tailElevation = 0.0f;
+	private bool m_tailShadowTargetsShadowTarget;
 
 	private TimeSpan m_expandAnimationDuration = TimeSpan.FromMilliseconds(300);
 	private TimeSpan m_contractAnimationDuration = TimeSpan.FromMilliseconds(200);
@@ -112,14 +118,17 @@ partial class TeachingTip
 		placement == TeachingTipPlacementMode.Top ||
 		placement == TeachingTipPlacementMode.TopLeft ||
 		placement == TeachingTipPlacementMode.TopRight;
+
 	static bool IsPlacementBottom(TeachingTipPlacementMode placement) =>
 		placement == TeachingTipPlacementMode.Bottom ||
 		placement == TeachingTipPlacementMode.BottomLeft ||
 		placement == TeachingTipPlacementMode.BottomRight;
+
 	static bool IsPlacementLeft(TeachingTipPlacementMode placement) =>
 		placement == TeachingTipPlacementMode.Left ||
 		placement == TeachingTipPlacementMode.LeftTop ||
 		placement == TeachingTipPlacementMode.LeftBottom;
+
 	static bool IsPlacementRight(TeachingTipPlacementMode placement) =>
 		placement == TeachingTipPlacementMode.Right ||
 		placement == TeachingTipPlacementMode.RightTop ||
