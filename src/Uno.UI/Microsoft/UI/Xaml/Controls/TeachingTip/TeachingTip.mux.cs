@@ -1,4 +1,6 @@
-﻿// MUX Reference TeachingTip.cpp, commit 9aee101
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\TeachingTip\TeachingTip.cpp, tag winui3/release/1.5.0, commit c8bd154c0
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,6 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
-using Windows.UI.Composition;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -25,6 +26,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
+using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -50,41 +53,20 @@ public partial class TeachingTip : ContentControl
 		SetValue(TemplateSettingsProperty, new TeachingTipTemplateSettings());
 	}
 
-	protected override AutomationPeer OnCreateAutomationPeer() => new TeachingTipAutomationPeer(this);
+	protected override AutomationPeer OnCreateAutomationPeer() =>
+		new TeachingTipAutomationPeer(this);
 
 	protected override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
 
-		// TODO: Uno specific - event not supported yet
-		if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
-		{
-			Dispatcher.AcceleratorKeyActivated -= OnF6AcceleratorKeyClicked;
-		}
-		EffectiveViewportChanged -= OnTargetLayoutUpdated;
-		if (m_tailOcclusionGrid != null)
-		{
-			m_tailOcclusionGrid.SizeChanged -= OnOcclusionContentChanged;
-		}
-		if (m_closeButton != null)
-		{
-			m_closeButton.Click -= OnCloseButtonClicked;
-		}
-		if (m_alternateCloseButton != null)
-		{
-			m_alternateCloseButton.Click -= OnCloseButtonClicked;
-		}
-		if (m_actionButton != null)
-		{
-			m_actionButton.Click -= OnActionButtonClicked;
-		}
-		var coreWindow = CoreWindow.GetForCurrentThread();
-		if (coreWindow != null)
-		{
-			coreWindow.SizeChanged -= WindowSizeChanged;
-		}
-
-		//IControlProtected controlProtected{ this };
+		m_acceleratorKeyActivatedRevoker.Disposable = null;
+		m_previewKeyDownForF6Revoker.Disposable = null;
+		m_effectiveViewportChangedRevoker.Disposable = null;
+		m_contentSizeChangedRevoker.Disposable = null;
+		m_closeButtonClickedRevoker.Disposable = null;
+		m_alternateCloseButtonClickedRevoker.Disposable = null;
+		m_actionButtonClickedRevoker.Disposable = null;
 
 		m_container = (Border)GetTemplateChild(s_containerName);
 		m_rootElement = m_container.Child;
@@ -101,44 +83,67 @@ public partial class TeachingTip : ContentControl
 		ToggleVisibilityForEmptyContent(c_SubtitleTextBlockVisibleStateName, c_SubtitleTextBlockCollapsedStateName, Subtitle);
 
 		var container = m_container;
-		if (container != null)
+		if (container is not null)
 		{
 			container.Child = null;
 		}
 
-		var tailOcclusionGrid = m_tailOcclusionGrid;
-		if (tailOcclusionGrid != null)
+		IDisposable GetContentSizeChangedRevoker()
 		{
-			tailOcclusionGrid.SizeChanged += OnContentSizeChanged;
+			if (m_tailOcclusionGrid is { } tailOcclusionGrid)
+			{
+				tailOcclusionGrid.SizeChanged += OnContentSizeChanged;
+				return Disposable.Create(() => tailOcclusionGrid.SizeChanged -= OnContentSizeChanged);
+			}
+			return Disposable.Empty;
 		}
 
-		var contentRootGrid = m_contentRootGrid;
-		if (contentRootGrid != null)
+		m_contentSizeChangedRevoker.Disposable = GetContentSizeChangedRevoker();
+
+		if (m_contentRootGrid is { } contentRootGrid)
 		{
 			AutomationProperties.SetLocalizedLandmarkType(contentRootGrid, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipCustomLandmarkName));
 		}
 
-		var closeButton = m_closeButton;
-		if (closeButton != null)
+		IDisposable GetCloseButtonClickedRevoker()
 		{
-			closeButton.Click += OnCloseButtonClicked;
+			if (m_closeButton is { } closeButton)
+			{
+				closeButton.Click += OnCloseButtonClicked;
+				return Disposable.Create(() => closeButton.Click -= OnCloseButtonClicked);
+			}
+			return Disposable.Empty;
 		}
 
-		var alternateCloseButton = m_alternateCloseButton;
-		if (alternateCloseButton != null)
+		m_closeButtonClickedRevoker.Disposable = GetCloseButtonClickedRevoker();
+
+		IDisposable GetAlternateCloseButtonClickedRevoker()
 		{
-			AutomationProperties.SetName(alternateCloseButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipAlternateCloseButtonName));
-			ToolTip tooltip = new ToolTip();
-			tooltip.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipAlternateCloseButtonTooltip);
-			ToolTipService.SetToolTip(alternateCloseButton, tooltip);
-			alternateCloseButton.Click += OnCloseButtonClicked;
+			if (m_alternateCloseButton is { } alternateCloseButton)
+			{
+				AutomationProperties.SetName(alternateCloseButton, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipAlternateCloseButtonName));
+				ToolTip tooltip = new ToolTip();
+				tooltip.Content = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_TeachingTipAlternateCloseButtonTooltip);
+				ToolTipService.SetToolTip(alternateCloseButton, tooltip);
+				alternateCloseButton.Click += OnCloseButtonClicked;
+				return Disposable.Create(() => alternateCloseButton.Click -= OnCloseButtonClicked);
+			}
+			return Disposable.Empty;
 		}
 
-		var actionButton = m_actionButton;
-		if (actionButton != null)
+		m_alternateCloseButtonClickedRevoker.Disposable = GetAlternateCloseButtonClickedRevoker();
+
+		IDisposable GetActionButtonClickedRevoker()
 		{
-			actionButton.Click += OnActionButtonClicked;
+			if (m_actionButton is { } actionButton)
+			{
+				actionButton.Click += OnActionButtonClicked;
+				return Disposable.Create(() => actionButton.Click -= OnActionButtonClicked);
+			}
+			return Disposable.Empty;
 		}
+
+		m_actionButtonClickedRevoker.Disposable = GetActionButtonClickedRevoker();
 
 		UpdateButtonsState();
 		OnIsLightDismissEnabledChanged();
@@ -164,17 +169,17 @@ public partial class TeachingTip : ContentControl
 		else if (property == TargetProperty)
 		{
 			// Unregister from old target if it exists
-			if (args.OldValue is FrameworkElement oldTarget)
+			if (args.OldValue is not null)
 			{
-				oldTarget.Unloaded -= ClosePopupOnUnloadEvent;
+				m_TargetUnloadedRevoker.Disposable = null;
 			}
 
 			// Register to new target if it exists
-			var value = args.NewValue;
-			if (value != null)
+			if (args.NewValue is { } value)
 			{
 				var newTarget = (FrameworkElement)value;
 				newTarget.Unloaded += ClosePopupOnUnloadEvent;
+				m_TargetUnloadedRevoker.Disposable = Disposable.Create(() => newTarget.Unloaded -= ClosePopupOnUnloadEvent);
 			}
 			OnTargetChanged();
 		}
@@ -275,8 +280,7 @@ public partial class TeachingTip : ContentControl
 
 	private void SetPopupAutomationProperties()
 	{
-		var popup = m_popup;
-		if (popup != null)
+		if (m_popup is { } popup)
 		{
 			var name = AutomationProperties.GetName(this);
 			if (string.IsNullOrEmpty(name))
@@ -299,12 +303,7 @@ public partial class TeachingTip : ContentControl
 	private void CreateLightDismissIndicatorPopup()
 	{
 		var popup = new Popup();
-		// Set XamlRoot on the popup to handle XamlIsland/AppWindow scenarios.
-		UIElement uiElement10 = this;
-		if (uiElement10 != null)
-		{
-			popup.XamlRoot = uiElement10.XamlRoot;
-		}
+		popup.XamlRoot = XamlRoot;
 		// A Popup needs contents to open, so set a child that doesn't do anything.
 		var grid = new Grid();
 		popup.Child = grid;
@@ -478,7 +477,7 @@ public partial class TeachingTip : ContentControl
 
 	private void PositionPopup()
 	{
-		bool tipDoesNotFit = false;
+		bool tipDoesNotFit;
 		if (m_target != null)
 		{
 			tipDoesNotFit = PositionTargetedPopup();
@@ -964,6 +963,15 @@ public partial class TeachingTip : ContentControl
 						lightDismissIndicatorPopup.IsOpen = true;
 					}
 					popup.IsOpen = true;
+					if (SharedHelpers.IsAnimationsEnabled())
+					{
+						StartExpandToOpen();
+					}
+					else
+					{
+						// We won't be playing an animation so we're immediately idle.
+						SetIsIdle(true);
+					}
 				}
 				else
 				{
@@ -985,7 +993,8 @@ public partial class TeachingTip : ContentControl
 				return;
 			}
 
-			if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
+			// TODO: We do not have direct analogue for AcceleratorKeyActivated with DispatcherQueue in Islands/ win32. Please refer Task# 30013704 for  more details.
+			if (CoreWindow.GetForCurrentThread() is { } coreWindow)
 			{
 				Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
 				m_acceleratorKeyActivatedRevoker.Disposable = Disposable.Create(() => Dispatcher.AcceleratorKeyActivated -= OnF6AcceleratorKeyClicked);
@@ -1027,22 +1036,17 @@ public partial class TeachingTip : ContentControl
 
 	private void CreateNewPopup()
 	{
-		if (m_popup != null)
-		{
-			m_popup.Opened -= OnPopupOpened;
-			m_popup.Closed -= OnPopupClosed;
-		}
+		m_popupOpenedRevoker.Disposable = null;
+		m_popupClosedRevoker.Disposable = null;
 
 		var popup = new Popup();
 		// Set XamlRoot on the popup to handle XamlIsland/AppWindow scenarios.
-		UIElement uiElement10 = this;
-		if (uiElement10 != null)
-		{
-			popup.XamlRoot = uiElement10.XamlRoot;
-		}
+		popup.XamlRoot = XamlRoot;
 
 		popup.Opened += OnPopupOpened;
+		m_popupOpenedRevoker.Disposable = Disposable.Create(() => popup.Opened -= OnPopupOpened);
 		popup.Closed += OnPopupClosed;
+		m_popupClosedRevoker.Disposable = Disposable.Create(() => popup.Closed -= OnPopupClosed);
 
 		popup.ShouldConstrainToRootBounds = ShouldConstrainToRootBounds;
 
@@ -1090,17 +1094,20 @@ public partial class TeachingTip : ContentControl
 			{
 				lightDismissIndicatorPopup.IsLightDismissEnabled = true;
 				lightDismissIndicatorPopup.Closed += OnLightDismissIndicatorPopupClosed;
+				m_lightDismissIndicatorPopupClosedRevoker.Disposable = Disposable.Create(() => lightDismissIndicatorPopup.Closed -= OnLightDismissIndicatorPopupClosed);
+				lightDismissIndicatorPopup.PreviewKeyDown += OnF6PopupPreviewKeyDownClicked;
+				m_lightDismissIndicatorPopupPreviewKeyDownForF6Revoker.Disposable = Disposable.Create(() => lightDismissIndicatorPopup.PreviewKeyDown -= OnF6PopupPreviewKeyDownClicked);
 			}
 		}
 		else
 		{
 			VisualStateManager.GoToState(this, "NormalDismiss", false);
-			var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup;
-			if (lightDismissIndicatorPopup != null)
+			if (m_lightDismissIndicatorPopup is { } lightDismissIndicatorPopup)
 			{
 				lightDismissIndicatorPopup.IsLightDismissEnabled = false;
-				lightDismissIndicatorPopup.Closed -= OnLightDismissIndicatorPopupClosed;
 			}
+			m_lightDismissIndicatorPopupClosedRevoker.Disposable = null;
+			m_lightDismissIndicatorPopupPreviewKeyDownForF6Revoker.Disposable = null;
 		}
 		UpdateButtonsState();
 	}
@@ -1111,8 +1118,7 @@ public partial class TeachingTip : ContentControl
 		// If we have opened the tip's popup and then this property changes we will need to discard the old popup
 		// and replace it with a new popup.  This variable indicates this state.
 
-		//The underlying popup api is only available on 19h1 plus, if we aren't on that no opt.
-		if (m_popup != null)
+		if (m_popup is not null)
 		{
 			m_createNewPopupOnOpen = true;
 		}
@@ -1213,17 +1219,11 @@ public partial class TeachingTip : ContentControl
 		{
 			if (m_rootElement is { } rootElement)
 			{
-				DependencyObject GetCurrent(UIElement rootElement)
-				{
-					if (rootElement is { })
-					{
-						return FocusManager.GetFocusedElement(rootElement.XamlRoot) as DependencyObject;
-					}
-
-					return FocusManager.GetFocusedElement() as DependencyObject;
-				}
+				DependencyObject GetCurrent(UIElement rootElement) =>
+					FocusManager.GetFocusedElement(rootElement.XamlRoot) as DependencyObject;
 
 				var current = GetCurrent(rootElement);
+
 				while (current is not null)
 				{
 					if ((current as UIElement) == rootElement)
@@ -1253,6 +1253,16 @@ public partial class TeachingTip : ContentControl
 		}
 		else if (!hasFocusInSubtree && !fromPopup)
 		{
+			if (IsLightDismissEnabled)
+			{
+				var focusable = FocusManager.FindFirstFocusableElement(m_rootElement);
+				if (focusable is not null)
+				{
+					SetFocus(focusable, FocusState.Keyboard);
+					return true;
+				}
+			}
+
 			Button GetF6Button()
 			{
 				var firstButton = m_closeButton;
@@ -1283,23 +1293,19 @@ public partial class TeachingTip : ContentControl
 				}
 
 				f6Button.GettingFocus += ScopedHandler;
+				using var _ = Disposable.Create(() => f6Button.GettingFocus -= ScopedHandler);
 				bool setFocus = f6Button.Focus(FocusState.Keyboard);
-				f6Button.GettingFocus -= ScopedHandler;
 				return setFocus;
 			}
 		}
 		return false;
 	}
 
-	private void OnAutomationNameChanged(object sender, object args)
-	{
+	private void OnAutomationNameChanged(object sender, object args) =>
 		SetPopupAutomationProperties();
-	}
 
-	private void OnAutomationIdChanged(object sender, object args)
-	{
+	private void OnAutomationIdChanged(object sender, object args) =>
 		SetPopupAutomationProperties();
-	}
 
 	private void OnCloseButtonClicked(object sender, RoutedEventArgs args)
 	{
@@ -1308,52 +1314,25 @@ public partial class TeachingTip : ContentControl
 		IsOpen = false;
 	}
 
-	private void OnActionButtonClicked(object sender, RoutedEventArgs args)
-	{
+	private void OnActionButtonClicked(object sender, RoutedEventArgs args) =>
 		ActionButtonClick?.Invoke(this, null);
-	}
 
 	private void OnPopupOpened(object sender, object args)
 	{
-		UIElement uiElement10 = this;
-		if (uiElement10 != null)
+		if (XamlRoot is { } xamlRoot)
 		{
-			var xamlRoot = uiElement10.XamlRoot;
-			if (xamlRoot != null)
+			m_currentXamlRootSize = xamlRoot.Size;
+			xamlRoot.Changed += XamlRootChanged;
+			m_xamlRootChangedRevoker.Disposable = Disposable.Create(() => xamlRoot.Changed -= XamlRootChanged);
+			if (m_popup is { } popup)
 			{
-				m_currentXamlRootSize = xamlRoot.Size;
-				m_xamlRoot = xamlRoot;
-				m_xamlRootChangedRevoker.Disposable = RegisterXamlRootChanged(xamlRoot, XamlRootChanged);
-
-				if (m_popup is { } popup)
+				if (popup.Child is { } popupContent)
 				{
-					if (popup.Child is { } popupContent)
-					{
-						// This handler is not required for Winui3 because the framework bug this works around has been fixed.
-						popupContent.PreviewKeyDown += OnF6PopupPreviewKeyDownClicked;
-						m_popupPreviewKeyDownForF6Revoker.Disposable = Disposable.Create(() => popupContent.PreviewKeyDown -= OnF6PopupPreviewKeyDownClicked);
-					}
+					// This handler is not required for Winui3 because the framework bug this works around has been fixed.
+					popupContent.PreviewKeyDown += OnF6PopupPreviewKeyDownClicked;
+					m_popupPreviewKeyDownForF6Revoker.Disposable = Disposable.Create(() => popupContent.PreviewKeyDown -= OnF6PopupPreviewKeyDownClicked);
 				}
 			}
-		}
-		else
-		{
-			var coreWindow = CoreWindow.GetForCurrentThread();
-			if (coreWindow != null)
-			{
-				coreWindow.SizeChanged += WindowSizeChanged;
-			}
-		}
-
-		// Expand animation requires UIElement9
-		if (this is UIElement && SharedHelpers.IsAnimationsEnabled())
-		{
-			StartExpandToOpen();
-		}
-		else
-		{
-			// We won't be playing an animation so we're immediately idle.
-			SetIsIdle(true);
 		}
 
 		var teachingTipPeer = FrameworkElementAutomationPeer.FromElement(this) as TeachingTipAutomationPeer;
@@ -1395,20 +1374,20 @@ public partial class TeachingTip : ContentControl
 			var notificationString = GetNotificationString();
 			teachingTipPeer.RaiseWindowOpenedEvent(notificationString);
 		}
+
+		if (IsLightDismissEnabled)
+		{
+			var focusable = FocusManager.FindFirstFocusableElement(m_rootElement);
+			if (focusable is not null)
+			{
+				SetFocus(focusable, FocusState.Programmatic);
+			}
+		}
 	}
 
 	private void OnPopupClosed(object sender, object args)
 	{
-		var coreWindow = CoreWindow.GetForCurrentThread();
-		if (coreWindow != null)
-		{
-			coreWindow.SizeChanged -= WindowSizeChanged;
-		}
-		if (m_xamlRoot != null)
-		{
-			m_xamlRoot.Changed -= XamlRootChanged;
-		}
-		m_xamlRoot = null;
+		m_xamlRootChangedRevoker.Disposable = null;
 
 		var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup;
 		if (lightDismissIndicatorPopup != null)
@@ -1498,8 +1477,8 @@ public partial class TeachingTip : ContentControl
 	{
 		if (m_popup != null && m_popup.IsOpen)
 		{
-			// Contract animation requires UIElement9
-			if (this is UIElement && SharedHelpers.IsAnimationsEnabled())
+			// Contract animation
+			if (SharedHelpers.IsAnimationsEnabled())
 			{
 				StartContractToClose();
 			}
@@ -1531,8 +1510,7 @@ public partial class TeachingTip : ContentControl
 			lightDismissIndicatorPopup.IsOpen = false;
 		}
 
-		UIElement tailOcclusionGrid = m_tailOcclusionGrid;
-		if (tailOcclusionGrid != null)
+		if (m_tailOcclusionGrid is { } tailOcclusionGrid)
 		{
 			// A previous close animation may have left the rootGrid's scale at a very small value and if this teaching tip
 			// is shown again then its text would be rasterized at this small scale and blown up ~20x. To fix this we have to
@@ -1587,12 +1565,8 @@ public partial class TeachingTip : ContentControl
 
 	private void OnTargetChanged()
 	{
-		if (m_target != null)
-		{
-			m_target.LayoutUpdated -= OnTargetLayoutUpdated;
-			m_target.Loaded -= OnTargetLoaded;
-		}
-		EffectiveViewportChanged -= OnTargetLayoutUpdated;
+		m_targetEffectiveViewportChangedRevoker.Disposable = null;
+		m_targetLoadedRevoker.Disposable = null;
 
 		var target = Target;
 		m_target = target;
@@ -1604,7 +1578,7 @@ public partial class TeachingTip : ContentControl
 
 		if (IsOpen)
 		{
-			if (target != null)
+			if (target is not null && target.IsLoaded)
 			{
 				m_currentTargetBoundsInCoreWindowSpace = target.TransformToVisual(null).TransformBounds(new Rect(
 					0.0,
@@ -1613,7 +1587,12 @@ public partial class TeachingTip : ContentControl
 					(float)(target.ActualHeight)));
 				SetViewportChangedEvent(target);
 			}
-			PositionPopup();
+
+			// if we have a target that is not yet loaded, skip positioning the flayout for now, that will happen once the target loads.
+			if (target is null || (target is not null && target.IsLoaded))
+			{
+				PositionPopup();
+			}
 		}
 	}
 
@@ -1621,34 +1600,17 @@ public partial class TeachingTip : ContentControl
 	{
 		if (m_tipFollowsTarget)
 		{
-			// EffectiveViewPortChanged is only available on RS5 and higher.
-			FrameworkElement targetAsFE7 = target;
-			if (targetAsFE7 != null)
-			{
-				targetAsFE7.EffectiveViewportChanged += OnTargetLayoutUpdated;
-				EffectiveViewportChanged += OnTargetLayoutUpdated;
-			}
-			else
-			{
-				target.LayoutUpdated += OnTargetLayoutUpdated;
-			}
+			target.EffectiveViewportChanged += OnTargetLayoutUpdated;
+			m_targetEffectiveViewportChangedRevoker.Disposable = Disposable.Create(() => target.EffectiveViewportChanged -= OnTargetLayoutUpdated);
+			this.EffectiveViewportChanged += OnTargetLayoutUpdated;
+			m_effectiveViewportChangedRevoker.Disposable = Disposable.Create(() => this.EffectiveViewportChanged -= OnTargetLayoutUpdated);
 		}
 	}
 
 	private void RevokeViewportChangedEvent()
 	{
-		if (m_target != null)
-		{
-			m_target.EffectiveViewportChanged -= OnTargetLayoutUpdated;
-			m_target.LayoutUpdated -= OnTargetLayoutUpdated;
-		}
-		EffectiveViewportChanged -= OnTargetLayoutUpdated;
-	}
-
-	private void WindowSizeChanged(CoreWindow coreWindow, WindowSizeChangedEventArgs args)
-	{
-		// Reposition popup when target/window has finished determining sizes
-		SharedHelpers.QueueCallbackForCompositionRendering(() => RepositionPopup());
+		m_targetEffectiveViewportChangedRevoker.Disposable = null;
+		m_effectiveViewportChangedRevoker.Disposable = null;
 	}
 
 	private void XamlRootChanged(XamlRoot xamlRoot, XamlRootChangedEventArgs args)
@@ -1716,9 +1678,9 @@ public partial class TeachingTip : ContentControl
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
 		if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionEasingFunction"))
 		{
-			var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
+			var compositor = CompositionTarget.GetCompositorForCurrentThread();
 
-			CompositionEasingFunction GetExpandEasingFunction(Compositor compositor)
+			CompositionEasingFunction GetExpandEasingFunction(Microsoft.UI.Composition.Compositor compositor)
 			{
 				if (m_expandEasingFunction == null)
 				{
@@ -1734,18 +1696,20 @@ public partial class TeachingTip : ContentControl
 			KeyFrameAnimation GetExpandAnimation(Compositor compositor, CompositionEasingFunction expandEasingFunction)
 			{
 				var expandAnimation = compositor.CreateVector3KeyFrameAnimation();
-				var tailOcclusionGrid = m_tailOcclusionGrid;
-				if (tailOcclusionGrid != null)
-				{
-					expandAnimation.SetScalarParameter("Width", (float)(tailOcclusionGrid.ActualWidth));
-					expandAnimation.SetScalarParameter("Height", (float)(tailOcclusionGrid.ActualHeight));
-				}
 
-				else
+				var widthToUse = s_defaultTipHeightAndWidth;
+				var heightToUse = s_defaultTipHeightAndWidth;
+
+				if (m_tailOcclusionGrid is { } tailOcclusionGrid)
 				{
-					expandAnimation.SetScalarParameter("Width", s_defaultTipHeightAndWidth);
-					expandAnimation.SetScalarParameter("Height", s_defaultTipHeightAndWidth);
+					if ((tailOcclusionGrid.ActualWidth != 0) && (tailOcclusionGrid.ActualHeight != 0))
+					{
+						widthToUse = (float)tailOcclusionGrid.ActualWidth;
+						heightToUse = (float)tailOcclusionGrid.ActualHeight;
+					}
 				}
+				expandAnimation.SetScalarParameter("Width", widthToUse);
+				expandAnimation.SetScalarParameter("Height", heightToUse);
 
 				expandAnimation.InsertExpressionKeyFrame(0.0f, "Vector3(Min(0.01, 20.0 / Width), Min(0.01, 20.0 / Height), 1.0)");
 				expandAnimation.InsertKeyFrame(1.0f, new Vector3(1.0f, 1.0f, 1.0f), expandEasingFunction);
@@ -1775,7 +1739,7 @@ public partial class TeachingTip : ContentControl
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
 		if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionEasingFunction"))
 		{
-			var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
+			var compositor = CompositionTarget.GetCompositorForCurrentThread();
 
 			CompositionEasingFunction GetContractEasingFunction(Compositor compositor)
 			{
@@ -1837,7 +1801,7 @@ public partial class TeachingTip : ContentControl
 
 		CompositionScopedBatch CreateScopedBatch()
 		{
-			var scopedBatch = Microsoft.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			var scopedBatch = CompositionTarget.GetCompositorForCurrentThread().CreateScopedBatch(CompositionBatchTypes.Animation); ;
 
 			var expandAnimation = m_expandAnimation;
 			if (m_expandAnimation != null)
@@ -1897,7 +1861,7 @@ public partial class TeachingTip : ContentControl
 
 		CompositionScopedBatch CreateScopedBatch()
 		{
-			var scopedBatch = Microsoft.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			var scopedBatch = CompositionTarget.GetCompositorForCurrentThread().CreateScopedBatch(CompositionBatchTypes.Animation); ;
 			var contractAnimation = m_contractAnimation;
 			if (contractAnimation != null)
 			{
@@ -2300,16 +2264,11 @@ public partial class TeachingTip : ContentControl
 
 	private Rect GetWindowBounds()
 	{
-		UIElement uiElement10 = this;
-		if (uiElement10 != null)
+		if (XamlRoot is { } xamlRoot)
 		{
-			var xamlRoot = uiElement10.XamlRoot;
-			if (xamlRoot != null)
-			{
-				return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
-			}
+			return new(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
 		}
-		return Microsoft.UI.Xaml.Window.Current.CoreWindow.Bounds;
+		return default;
 	}
 
 	private TeachingTipPlacementMode[] GetPlacementFallbackOrder(TeachingTipPlacementMode preferredPlacement)
@@ -2379,31 +2338,46 @@ public partial class TeachingTip : ContentControl
 	}
 
 
-	void EstablishShadows()
+	private void EstablishShadows()
 	{
-		if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow"))
+#if TAIL_SHADOW
+#if DBG
+		if (m_tipShadow)
 		{
-			UIElement m_contentRootGrid_uiElement10 = m_contentRootGrid;
-			if (m_contentRootGrid_uiElement10 != null)
+			auto && tailPolygon = m_tailPolygon.get()
+	
+		if (tailPolygon && !tailPolygon.Shadow())
 			{
-				if (m_tipShouldHaveShadow)
+				// This facilitates an experiment around faking a proper tail shadow, shadows are expensive though so we don't want it present for release builds.
+				auto const tailShadow = winrt::Microsoft::UI::Xaml::Media::ThemeShadow{ };
+				tailShadow.Receivers().Append(m_target.get());
+				tailPolygon.Shadow(tailShadow);
+				auto const tailPolygonTranslation = tailPolygon.Translation()
+
+			tailPolygon.Translation({ tailPolygonTranslation.x, tailPolygonTranslation.y, m_tailElevation });
+			}
+		}
+		else
+		{
+			m_tailPolygon.get().Shadow(nullptr);
+		}
+#endif
+#endif
+		if (m_tipShouldHaveShadow)
+		{
+			if (m_contentRootGrid.Shadow is null)
+			{
+				m_contentRootGrid.Shadow = new ThemeShadow();
+				if (m_contentRootGrid is { } contentRootGrid)
 				{
-					if (m_contentRootGrid_uiElement10.Shadow == null)
-					{
-						m_contentRootGrid_uiElement10.Shadow = new ThemeShadow();
-						var contentRootGrid = m_contentRootGrid;
-						if (contentRootGrid != null)
-						{
-							var contentRootGridTranslation = contentRootGrid.Translation;
-							contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
-						}
-					}
-				}
-				else
-				{
-					m_contentRootGrid_uiElement10.Shadow = null;
+					var contentRootGridTranslation = contentRootGrid.Translation;
+					contentRootGrid.Translation = new(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
 				}
 			}
+		}
+		else
+		{
+			m_contentRootGrid.Shadow = null;
 		}
 	}
 
@@ -2470,21 +2444,7 @@ public partial class TeachingTip : ContentControl
 		return 0;
 	}
 
-	private CornerRadius GetTeachingTipCornerRadius()
-	{
-		if (SharedHelpers.IsRS5OrHigher())
-		{
-			return CornerRadius;
-		}
-		else if (m_contentRootGrid is { } contentRootGrid)
-		{
-			return contentRootGrid.CornerRadius;
-		}
-		else
-		{
-			return (CornerRadius)ResourceAccessor.ResourceLookup(this, c_OverlayCornerRadiusName);
-		}
-	}
+	private CornerRadius GetTeachingTipCornerRadius() => CornerRadius;
 
 	////////////////
 	// Test Hooks //
@@ -2513,25 +2473,22 @@ public partial class TeachingTip : ContentControl
 	internal void SetContentElevation(float elevation)
 	{
 		m_contentElevation = elevation;
-		if (SharedHelpers.IsRS5OrHigher())
+
+		if (m_contentRootGrid is { } contentRootGrid)
 		{
-			var contentRootGrid = m_contentRootGrid;
-			if (contentRootGrid != null)
-			{
-				var contentRootGridTranslation = contentRootGrid.Translation;
-				m_contentRootGrid.Translation = new Vector3(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
-			}
-			if (m_expandElevationAnimation != null)
-			{
-				m_expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
-			}
+			var contentRootGridTranslation = contentRootGrid.Translation;
+			m_contentRootGrid.Translation = new(contentRootGridTranslation.X, contentRootGridTranslation.Y, m_contentElevation);
+		}
+		if (m_expandElevationAnimation is not null)
+		{
+			m_expandElevationAnimation.SetScalarParameter("contentElevation", m_contentElevation);
 		}
 	}
 
 	internal void SetTailElevation(float elevation)
 	{
 		m_tailElevation = elevation;
-		if (SharedHelpers.IsRS5OrHigher() && m_tailPolygon != null)
+		if (m_tailPolygon is not null)
 		{
 			var tailPolygon = m_tailPolygon;
 			if (tailPolygon != null)
@@ -2683,30 +2640,21 @@ public partial class TeachingTip : ContentControl
 	{
 		// The way that TeachingTip reparents its content tree breaks ElementTheme calculations. Hook up a listener to
 		// ActualTheme on the TeachingTip and then set the Popup's RequestedTheme to match when it changes.
-		FrameworkElement frameworkElement6 = this;
-		if (frameworkElement6 != null)
+
+		void OnUpdated(object sender, object args)
 		{
-			// Uno specific - instead of a revoker, use boolean flag to check if event handler was attached
-			if (!m_actualThemeChangedAttached && ApiInformation.IsEventPresent("Microsoft.UI.Xaml.FrameworkElement", "ActualThemeChanged"))
-			{
-				frameworkElement6.ActualThemeChanged += OnActualThemeChanged;
-				m_actualThemeChangedAttached = true;
-			}
-
-			var popup = m_popup;
-			if (popup != null)
-			{
-				popup.RequestedTheme = frameworkElement6.ActualTheme;
-			}
+			UpdatePopupRequestedTheme();
 		}
-	}
 
-	// Uno specific - use a method instead of lambda to allow unhooking the event
+		if (m_actualThemeChangedRevoker.Disposable is null)
+		{
+			ActualThemeChanged += OnUpdated;
+			m_actualThemeChangedRevoker.Disposable = Disposable.Create(() => ActualThemeChanged -= OnUpdated);
+		}
 
-	private bool m_actualThemeChangedAttached = false;
-
-	private void OnActualThemeChanged(object sender, object args)
-	{
-		UpdatePopupRequestedTheme();
+		if (m_popup is { } popup)
+		{
+			popup.RequestedTheme = ActualTheme;
+		}
 	}
 }
