@@ -41,7 +41,7 @@ partial class App
 
 		var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 
-		// Used to autostart the runtime tests for iOS Runtime tests
+		// Used to autostart the runtime tests for iOS/Android Runtime tests
 		runtimeTestResultFilePath ??= Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
 
 		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");

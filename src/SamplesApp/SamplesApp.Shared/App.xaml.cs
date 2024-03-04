@@ -357,7 +357,7 @@ namespace SamplesApp
 
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
-			Console.WriteLine($"HandleLaunchArguments 2: {launchActivatedEventArgs.Arguments}");
+			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
 
 			var args = launchActivatedEventArgs.Arguments ?? "";
 
