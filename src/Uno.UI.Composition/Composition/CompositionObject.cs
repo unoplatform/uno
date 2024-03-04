@@ -64,13 +64,8 @@ namespace Microsoft.UI.Composition
 
 		// Overrides are based on:
 		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
-		private protected virtual bool IsAnimatableProperty(ReadOnlySpan<char> propertyName)
-		{
-			// Note: We don't care about the parameter type. So, anything can be used (here we are using bool).
-			// It only decides whether the return status is Succeeded or TypeMismatch, which are equally treated as we are looking for
-			// anything other than NotFound.
-			return _properties is not null && _properties.TryGetValue<bool>(propertyName.ToString(), out _) != CompositionGetValueStatus.NotFound;
-		}
+		internal virtual object GetAnimatableProperty(string propertyName, string subPropertyName)
+			=> TryGetFromProperties(propertyName, subPropertyName);
 
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 			=> TryUpdateFromProperties(propertyName, subPropertyName, propertyValue);
@@ -89,11 +84,6 @@ namespace Microsoft.UI.Composition
 			{
 				firstPropertyName = propertyName;
 				subPropertyName = default;
-			}
-
-			if (!IsAnimatableProperty(firstPropertyName))
-			{
-				throw new ArgumentException($"Property '{firstPropertyName}' is not animatable.");
 			}
 
 			if (_animations?.ContainsKey(propertyName) == true)
