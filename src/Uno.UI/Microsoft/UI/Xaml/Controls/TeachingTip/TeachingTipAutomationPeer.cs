@@ -1,16 +1,19 @@
-﻿// TODO comments MUX Reference TeachingTipAutomationPeer.cpp, commit 46f9da3
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\TeachingTip\TeachingTipAutomationPeer.cpp, tag winui3/release/1.5.0, commit c8bd154c0
 
 #nullable enable
 
-using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer
+public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer, IWindowProvider
 {
 	public TeachingTipAutomationPeer(TeachingTip owner) : base(owner)
 	{
@@ -28,105 +31,75 @@ public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer
 		}
 	}
 
-	protected override string GetClassNameCore()
-	{
-		return nameof(TeachingTip);
-	}
+	protected override string GetClassNameCore() => nameof(TeachingTip);
 
-	private WindowInteractionState InteractionState()
+	WindowInteractionState IWindowProvider.InteractionState
 	{
-		var teachingTip = GetTeachingTip();
-		if (teachingTip.m_isIdle && teachingTip.IsOpen)
+		get
 		{
-			return WindowInteractionState.ReadyForUserInteraction;
+			var teachingTip = GetTeachingTip();
+			if (teachingTip.m_isIdle && teachingTip.IsOpen)
+			{
+				return WindowInteractionState.ReadyForUserInteraction;
+			}
+			else if (teachingTip.m_isIdle && !teachingTip.IsOpen)
+			{
+				return WindowInteractionState.BlockedByModalWindow;
+			}
+			else if (!teachingTip.m_isIdle && !teachingTip.IsOpen)
+			{
+				return WindowInteractionState.Closing;
+			}
+			else
+			{
+				return WindowInteractionState.Running;
+			}
 		}
-		else if (teachingTip.m_isIdle && !teachingTip.IsOpen)
-		{
-			return WindowInteractionState.BlockedByModalWindow;
-		}
-		else if (!teachingTip.m_isIdle && !teachingTip.IsOpen)
-		{
-			return WindowInteractionState.Closing;
-		}
-		else
-		{
-			return WindowInteractionState.Running;
-		}
 	}
 
-	private bool IsModal()
+	bool IWindowProvider.IsModal => GetTeachingTip().IsLightDismissEnabled;
+
+	bool IWindowProvider.IsTopmost => GetTeachingTip().IsOpen;
+
+	bool IWindowProvider.Maximizable => false;
+
+	bool IWindowProvider.Minimizable => false;
+
+	WindowVisualState IWindowProvider.VisualState => WindowVisualState.Normal;
+
+	void IWindowProvider.Close() => GetTeachingTip().IsOpen = false;
+
+	void IWindowProvider.SetVisualState(WindowVisualState state)
 	{
-		return GetTeachingTip().IsLightDismissEnabled;
 	}
 
-	private bool IsTopmost()
-	{
-		return GetTeachingTip().IsOpen;
-	}
-
-	private bool Maximizable()
-	{
-		return false;
-	}
-
-	private bool Minimizable()
-	{
-		return false;
-	}
-
-	private WindowVisualState VisualState()
-	{
-		return WindowVisualState.Normal;
-	}
-
-	private void Close()
-	{
-		(GetTeachingTip()).IsOpen = false;
-	}
-
-	private void SetVisualState(WindowVisualState state)
-	{
-
-	}
-
-	private bool WaitForInputIdle(int milliseconds)
-	{
-		return true;
-	}
+	bool IWindowProvider.WaitForInputIdle(int milliseconds) => true;
 
 	internal void RaiseWindowClosedEvent()
 	{
 		// We only report as a window when light dismiss is enabled.
 		if (GetTeachingTip().IsLightDismissEnabled &&
-			AutomationPeer.ListenerExists(AutomationEvents.WindowClosed))
+			ListenerExists(AutomationEvents.WindowClosed))
 		{
-			// TODO: Uno specific - RaiseAutomationEvent not implemented yet.
-			if (ApiInformation.IsMethodPresent("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseAutomationEvent"))
-			{
-				RaiseAutomationEvent(AutomationEvents.WindowClosed);
-			}
+			RaiseAutomationEvent(AutomationEvents.WindowClosed);
 		}
 	}
 
 	internal void RaiseWindowOpenedEvent(string displayString)
 	{
-		AutomationPeer automationPeer7 = this;
-		if (automationPeer7 != null)
+		AutomationPeer automationPeer = this;
+		if (automationPeer != null)
 		{
-			// TODO: Uno specific - RaiseNotificationEvent not implemented yet.
-			if (ApiInformation.IsMethodPresent("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseNotificationEvent"))
-			{
-				automationPeer7.RaiseNotificationEvent(
-					AutomationNotificationKind.Other,
-					AutomationNotificationProcessing.CurrentThenMostRecent,
-					displayString,
-					"TeachingTipOpenedActivityId");
-			}
+			automationPeer.RaiseNotificationEvent(
+				AutomationNotificationKind.Other,
+				AutomationNotificationProcessing.CurrentThenMostRecent,
+				displayString,
+				"TeachingTipOpenedActivityId");
 		}
 
 		// We only report as a window when light dismiss is enabled.
-		if ((GetTeachingTip()).IsLightDismissEnabled &&
-			AutomationPeer.ListenerExists(AutomationEvents.WindowOpened))
+		if (GetTeachingTip().IsLightDismissEnabled &&
+			ListenerExists(AutomationEvents.WindowOpened))
 		{
 			RaiseAutomationEvent(AutomationEvents.WindowOpened);
 		}

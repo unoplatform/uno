@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TeachingTip.h, tag winui3/release/1.5.0, commit c8bd154c015b914e171a326481fef6532bc943de
+// MUX Reference controls\dev\TeachingTip\TeachingTip.h, tag winui3/release/1.5.0, commit c8bd154c0
 
 #nullable enable
 
@@ -21,7 +21,7 @@ partial class TeachingTip
 {
 	private FrameworkElement m_target;
 
-	private bool m_isIdle = true;
+	internal bool m_isIdle = true;
 
 	private readonly long m_automationNameChangedRevoker;
 	private readonly long m_automationIdChangedRevoker;
