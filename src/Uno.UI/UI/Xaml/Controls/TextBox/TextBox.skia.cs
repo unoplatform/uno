@@ -449,14 +449,17 @@ public partial class TextBox
 				}
 				return;
 			case VirtualKey.X when ctrl:
+				args.Handled = selectionLength != 0;
 				CutSelectionToClipboard();
 				selectionLength = 0;
 				text = Text;
 				break;
 			case VirtualKey.V when ctrl:
 				PasteFromClipboard(); // async so doesn't actually do anything right now
+				args.Handled = true;
 				break;
 			case VirtualKey.C when ctrl:
+				args.Handled = selectionLength != 0;
 				CopySelectionToClipboard();
 				break;
 			case VirtualKey.Escape:
@@ -476,6 +479,7 @@ public partial class TextBox
 					text = text[..start] + c + text[end..];
 					selectionStart = start + 1;
 					selectionLength = 0;
+					args.Handled = true;
 				}
 				break;
 		}
@@ -506,6 +510,7 @@ public partial class TextBox
 		{
 			return;
 		}
+		args.Handled = true;
 		if (selectionLength != 0)
 		{
 			TrySetCurrentlyTyping(false);
