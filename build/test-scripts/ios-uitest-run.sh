@@ -229,6 +229,9 @@ export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITES
 
 cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
 
+# Copy all the dotnet test dmp files to the log directory
+cp -Rv $UNO_TESTS_LOCAL_TESTS_FILE/**/*.d, $LOG_FILEPATH || true
+
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png
 
