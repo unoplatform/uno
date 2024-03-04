@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum ScrollingContentOrientation
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Vertical = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Horizontal = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		None = 2,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Both = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingContentOrientation.Vertical
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingContentOrientation.Horizontal
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingContentOrientation.None
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingContentOrientation.Both
 	}
 #endif
 }

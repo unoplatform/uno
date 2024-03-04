@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum ScrollingInteractionState
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Idle = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Interaction = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Inertia = 2,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Animation = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingInteractionState.Idle
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingInteractionState.Interaction
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingInteractionState.Inertia
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingInteractionState.Animation
 	}
 #endif
 }

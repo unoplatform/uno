@@ -3,15 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum ScrollingSnapPointsMode
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Default = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Ignore = 1,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode.Default
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode.Ignore
 	}
 #endif
 }
