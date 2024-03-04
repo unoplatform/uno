@@ -4,9 +4,9 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -101,7 +101,7 @@ public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer
 			AutomationPeer.ListenerExists(AutomationEvents.WindowClosed))
 		{
 			// TODO: Uno specific - RaiseAutomationEvent not implemented yet.
-			if (ApiInformation.IsMethodPresent("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseAutomationEvent"))
+			if (ApiInformation.IsMethodPresent("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseAutomationEvent"))
 			{
 				RaiseAutomationEvent(AutomationEvents.WindowClosed);
 			}
@@ -114,7 +114,7 @@ public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer
 		if (automationPeer7 != null)
 		{
 			// TODO: Uno specific - RaiseNotificationEvent not implemented yet.
-			if (ApiInformation.IsMethodPresent("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseNotificationEvent"))
+			if (ApiInformation.IsMethodPresent("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseNotificationEvent"))
 			{
 				automationPeer7.RaiseNotificationEvent(
 					AutomationNotificationKind.Other,

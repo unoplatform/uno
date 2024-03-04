@@ -3,13 +3,12 @@
 #nullable enable
 
 using System;
-using Microsoft.UI.Xaml.Controls;
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Composition;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Private.Controls;
 
