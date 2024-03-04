@@ -8,7 +8,6 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;

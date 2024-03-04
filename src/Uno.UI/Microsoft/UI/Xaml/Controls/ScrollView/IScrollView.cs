@@ -4,7 +4,6 @@
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Primitives;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;

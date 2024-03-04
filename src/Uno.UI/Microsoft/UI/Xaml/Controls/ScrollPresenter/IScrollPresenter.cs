@@ -6,7 +6,6 @@ using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Primitives;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;

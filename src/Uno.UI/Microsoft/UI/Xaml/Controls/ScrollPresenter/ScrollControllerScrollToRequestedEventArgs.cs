@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ScrollControllerScrollToRequestedEventArgs.cpp, ScrollControllerScrollToRequestedEventArgs.h, tag winui3/release/1.4.2
 
-using Microsoft.UI.Xaml.Primitives;
-
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public sealed partial class ScrollControllerScrollToRequestedEventArgs
