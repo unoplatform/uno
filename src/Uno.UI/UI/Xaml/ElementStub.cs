@@ -120,7 +120,6 @@ namespace Microsoft.UI.Xaml
 
 		public ElementStub()
 		{
-			Visibility = Visibility.Collapsed;
 		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
