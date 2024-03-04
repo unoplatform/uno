@@ -175,6 +175,7 @@ jobs:
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      AGENT_TEMPDIRECTORY: "$(Agent.TempDirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
 
   - task: CopyFiles@2
