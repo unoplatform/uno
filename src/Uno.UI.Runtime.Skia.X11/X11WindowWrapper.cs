@@ -1,8 +1,10 @@
 ﻿using System.Collections.Concurrent;
+using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -48,12 +50,16 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
-		if (NativeWindow is X11Window x11Window)
+		var x11Window = (X11Window)NativeWindow;
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Forcibly closing X11 window {x11Window.Display.ToString("X", CultureInfo.InvariantCulture)}, {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
+		}
+		using (X11Helper.XLock(x11Window.Display))
 		{
 			X11Manager.XamlRootMap.Unregister(_xamlRoot);
 			X11XamlRootHost.Close(x11Window);
-			using var _1 = X11Helper.XLock(x11Window.Display);
-			var _2 = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
+			var _ = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
 		}
 
 		RaiseClosed();

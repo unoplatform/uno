@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using Gtk;
@@ -17,12 +18,16 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindow : Window
 {
-	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
+	private static readonly ConcurrentDictionary<WinUIWindow, UnoGtkWindow> _windowToGtkWindow = new();
+
+	public static UnoGtkWindow? GetGtkWindowFromWindow(WinUIWindow window)
+		=> _windowToGtkWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
 
 	public UnoGtkWindow(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
+		_windowToGtkWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToGtkWindow.TryRemove(winUIWindow, out _);
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)

@@ -37,7 +37,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private static object _x11WindowToXamlRootHostMutex = new();
 	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
 
-	private readonly TaskCompletionSource _closed;
+	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
 	private readonly Window _window;
 
@@ -183,7 +183,10 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			foreach (var host in _x11WindowToXamlRootHost.Values)
 			{
-				host._closed.SetResult();
+				using (X11Helper.XLock(host.X11Window.Display))
+				{
+					host._closed.SetResult();
+				}
 			}
 
 			_x11WindowToXamlRootHost.Clear();
@@ -200,41 +203,16 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
-	// TODO: return the first window and keep the order somehow
-	// This is just a terrible workaround to deal with DisplayInformation being a singleton instead
-	// of having a DisplayInformation instance per application view.
-	public static X11Window GetWindow()
-	{
-		lock (_x11WindowToXamlRootHost)
-		{
-			foreach (var pair in _x11WindowToXamlRootHost)
-			{
-				if (pair.Value._closed.Task.IsCompleted)
-				{
-					_x11WindowToXamlRootHost.Remove(pair.Key);
-				}
-				else
-				{
-					return pair.Key;
-				}
-			}
-		}
-
-		if (typeof(X11XamlRootHost).Log().IsEnabled(LogLevel.Error))
-		{
-			typeof(X11XamlRootHost).Log().Error($"{nameof(GetWindow)} didn't find any window.");
-		}
-
-		return default;
-	}
-
 	public static void Close(X11Window x11window)
 	{
 		lock (_x11WindowToXamlRootHostMutex)
 		{
 			if (_x11WindowToXamlRootHost.Remove(x11window, out var host))
 			{
-				host._closed.SetResult();
+				using (X11Helper.XLock(x11window.Display))
+				{
+					host._closed.SetResult();
+				}
 			}
 			else
 			{
@@ -313,10 +291,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			_renderer = new X11SoftwareRenderer(this, _x11Window.Value);
 		}
-
-		// This is necessary to initialize the lazy-initialized instance as it will be needed before before the first measure cycle,
-		// which will need the DisplayInformation to calculate the bounds of the window (otherwise we get NaNxNaN).
-		Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md

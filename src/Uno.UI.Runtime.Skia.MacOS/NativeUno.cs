@@ -173,10 +173,12 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, double, double, void> resizeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_did_change_screen_callback(ref MacOSDisplayInformationExtension.ScreenData screenData, delegate* unmanaged[Cdecl]<void> callback);
+	internal static unsafe partial void uno_set_window_screen_change_callbacks(
+		delegate* unmanaged[Cdecl]<nint, uint, uint, double, void> screenChangeCallback,
+		delegate* unmanaged[Cdecl]<nint, void> screenParametersCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static unsafe partial void uno_set_window_did_change_screen_parameters_callback(delegate* unmanaged[Cdecl]<void> callback);
+	internal static unsafe partial void uno_window_notify_screen_change(nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_system_theme_change_callback(delegate* unmanaged[Cdecl]<void> callback);

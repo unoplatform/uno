@@ -68,6 +68,7 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		_appBuilder = appBuilder;
 
 		_eventLoop = new EventLoop();
+		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
 
 		_eventLoop.Schedule(() => _isDispatcherThread = true);
 		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
@@ -76,6 +77,7 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 
 	protected override void RunLoop()
 	{
+		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
 		_eventLoop.Schedule(StartApp);
 
 		while (!X11XamlRootHost.AllWindowsDone())

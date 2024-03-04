@@ -14,10 +14,9 @@ resize_fn_ptr uno_get_resize_callback(void);
 void uno_set_resize_callback(resize_fn_ptr p);
 
 @interface windowDidChangeScreenNoteClass : NSObject
-{
-    struct SharedScreenData *sharedScreenData;
-}
-+ (windowDidChangeScreenNoteClass*) initWith:(void*) screenData;
+
++ (windowDidChangeScreenNoteClass*) init;
+
 - (void) windowDidChangeScreenNotification:(NSNotification*) note;
 - (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note;
 @end
@@ -281,20 +280,21 @@ window_close_fn_ptr uno_get_window_close_callback(void);
 
 void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
 
+typedef void (*window_close_fn_ptr)(UNOWindow* window);
+window_close_fn_ptr uno_get_window_close_callback(void);
+
+void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, window_close_fn_ptr close);
+
 void* uno_window_get_metal(UNOWindow* window);
 
-struct SharedScreenData {
-    uint32 ScreenHeightInRawPixels;
-    uint32 ScreenWidthInRawPixels;
-    uint32 RawPixelsPerViewPixel;
-};
-
-typedef void (*window_did_change_screen_fn_ptr)(void);
+typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);
-void uno_set_window_did_change_screen_callback(struct SharedScreenData *screenData, window_did_change_screen_fn_ptr p);
 
-typedef void (*window_did_change_screen_parameters_fn_ptr)(void);
+typedef void (*window_did_change_screen_parameters_fn_ptr)(NSWindow* window);
 window_did_change_screen_parameters_fn_ptr uno_get_window_did_change_screen_parameters_callback(void);
-void uno_set_window_did_change_screen_parameters_callback(window_did_change_screen_parameters_fn_ptr p);
+
+void uno_set_window_screen_change_callbacks(window_did_change_screen_fn_ptr screen, window_did_change_screen_parameters_fn_ptr parameters);
+
+void uno_window_notify_screen_change(NSWindow *window);
 
 NS_ASSUME_NONNULL_END

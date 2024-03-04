@@ -24,7 +24,6 @@ partial class AppWindow
 
 		_windowIdMap[Id] = this;
 		ApplicationView.GetOrCreateForWindowId(Id);
-		DisplayInformation.GetOrCreateForWindowId(Id);
 	}
 
 	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;

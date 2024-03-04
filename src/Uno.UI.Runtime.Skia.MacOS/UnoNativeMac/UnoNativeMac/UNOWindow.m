@@ -44,10 +44,9 @@ void uno_set_drawing_callbacks(metal_draw_fn_ptr metal, soft_draw_fn_ptr soft, r
 
 @implementation windowDidChangeScreenNoteClass
 
-+ (windowDidChangeScreenNoteClass*) initWith:(void*) screenData
++ (windowDidChangeScreenNoteClass*) init
 {
     windowDidChangeScreenNoteClass *windowDidChangeScreen = [windowDidChangeScreenNoteClass new];
-    windowDidChangeScreen->sharedScreenData = screenData;
     return windowDidChangeScreen;
 }
 
@@ -56,24 +55,23 @@ void uno_set_drawing_callbacks(metal_draw_fn_ptr metal, soft_draw_fn_ptr soft, r
 #if DEBUG
     NSLog(@"windowDidChangeScreenNotification %@", note);
 #endif
-    NSScreen *screen = [note.object screen];
+    NSWindow *window = note.object;
+    NSScreen *screen = window.screen;
+
     CGSize s = [screen convertRectToBacking:screen.frame].size;
-    // store basic, non-calculated values inside shared memory
-    sharedScreenData->ScreenHeightInRawPixels = (uint)s.height;
-    sharedScreenData->ScreenWidthInRawPixels = (uint)s.width;
-    sharedScreenData->RawPixelsPerViewPixel = screen.backingScaleFactor;
 #if DEBUG
-    NSLog(@"ScreenHeightInRawPixels %d ScreenWidthInRawPixels %d RawPixelsPerViewPixel %d", sharedScreenData->ScreenHeightInRawPixels, sharedScreenData->ScreenWidthInRawPixels, sharedScreenData->RawPixelsPerViewPixel);
+    NSLog(@"    ScreenHeightInRawPixels %g ScreenWidthInRawPixels %g RawPixelsPerViewPixel %g", s.height, s.width, screen.backingScaleFactor);
 #endif
-    uno_get_window_did_change_screen_callback()();
+    uno_get_window_did_change_screen_callback()(window, (uint)s.height, (uint)s.width, screen.backingScaleFactor);
 }
 
 - (void) applicationDidChangeScreenParametersNotification:(NSNotification*) note
 {
+    NSWindow *window = note.object;
 #if DEBUG
-    NSLog(@"NSApplicationDidChangeScreenParametersNotification");
+    NSLog(@"NSApplicationDidChangeScreenParametersNotification %@", window);
 #endif
-    uno_get_window_did_change_screen_parameters_callback()();
+    uno_get_window_did_change_screen_parameters_callback()(window);
 }
 
 @end
@@ -114,16 +112,11 @@ NSWindow* uno_window_create(double width, double height)
     
     // Notifications
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    NSNotification *nw = [[NSNotification alloc] initWithName:NSWindowDidChangeScreenNotification object:window userInfo:nil];
 
     assert(windowDidChangeScreen);
     [center addObserver:windowDidChangeScreen selector:@selector(windowDidChangeScreenNotification:) name:NSWindowDidChangeScreenNotification object:window];
-    // we need values for the current screen (before it change, because it might never)
-    [windowDidChangeScreen windowDidChangeScreenNotification:nw];
 
     [center addObserver:windowDidChangeScreen selector:@selector(applicationDidChangeScreenParametersNotification:) name:NSApplicationDidChangeScreenParametersNotification object:window];
-    // we need values for the current screen (before it change, because it might never)
-    [windowDidChangeScreen applicationDidChangeScreenParametersNotification:nw];
     
     [windows addObject:window];
 
@@ -131,6 +124,14 @@ NSWindow* uno_window_create(double width, double height)
     [window orderFrontRegardless];
 
     return window;
+}
+
+void uno_window_notify_screen_change(NSWindow *window)
+{
+    assert(windowDidChangeScreen);
+    NSNotification *nw = [[NSNotification alloc] initWithName:NSWindowDidChangeScreenNotification object:window userInfo:nil];
+    [windowDidChangeScreen windowDidChangeScreenNotification:nw];
+    [windowDidChangeScreen applicationDidChangeScreenParametersNotification:nw];
 }
 
 void uno_window_invalidate(NSWindow *window)
@@ -174,20 +175,16 @@ inline window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback
     return window_did_change_screen;
 }
 
-void uno_set_window_did_change_screen_callback(struct SharedScreenData *screenData, window_did_change_screen_fn_ptr p)
-{
-    windowDidChangeScreen = [windowDidChangeScreenNoteClass initWith:screenData];
-    window_did_change_screen = p;
-}
-
 inline window_did_change_screen_parameters_fn_ptr uno_get_window_did_change_screen_parameters_callback(void)
 {
     return window_did_change_screen_parameters;
 }
 
-void uno_set_window_did_change_screen_parameters_callback(window_did_change_screen_parameters_fn_ptr p)
+void uno_set_window_screen_change_callbacks(window_did_change_screen_fn_ptr screen, window_did_change_screen_parameters_fn_ptr parameters)
 {
-    window_did_change_screen_parameters = p;
+    windowDidChangeScreen = [windowDidChangeScreenNoteClass init];
+    window_did_change_screen = screen;
+    window_did_change_screen_parameters = parameters;
 }
 
 static window_key_callback_fn_ptr window_key_down;

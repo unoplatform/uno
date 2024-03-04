@@ -38,7 +38,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		_nativeWindow = nativeWindow ?? throw new ArgumentNullException(nameof(nativeWindow));
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 
-		_displayInformation = DisplayInformation.GetForCurrentView();
+		_displayInformation = DisplayInformation.GetOrCreateForWindowId(winUIWindow.AppWindow.Id);
 
 		// RegisterForBackgroundColor();
 
@@ -171,6 +171,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => (o as IUnoCorePointerInputSource)!);
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
+
+		NativeUno.uno_set_window_screen_change_callbacks(&ScreenChanged, &ScreenParametersChanged);
+		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new MacOSDisplayInformationExtension(o));
 	}
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
@@ -191,7 +194,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		_windows.Add(handle, new WeakReference<MacOSWindowHost>(host));
 	}
 
-	public static void Unregister(nint handle) => _windows.Remove(handle);
+	private static void Unregister(nint handle) => _windows.Remove(handle);
 
 	private static MacOSWindowHost? GetWindowHost(nint handle)
 	{
@@ -509,6 +512,48 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
 			}
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	// DisplayInformation
+
+	public MacOSDisplayInformationExtension? DisplayInformationExtension { get; set; }
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void ScreenChanged(nint handle, uint width, uint height, double scaleFactor)
+	{
+		if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+		{
+			typeof(MacOSWindowHost).Log().Trace($"MacOSWindowHost.ScreenChanged window: {handle} size {width} x {height} @ {scaleFactor}x");
+		}
+
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.DisplayInformationExtension?.Update(width, height, scaleFactor);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void ScreenParametersChanged(nint handle)
+	{
+		if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+		{
+			typeof(MacOSWindowHost).Log().Trace($"MacOSWindowHost.ScreenParametersChanged window: {handle}");
+		}
+
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?._displayInformation.NotifyDpiChanged();
 		}
 		catch (Exception e)
 		{

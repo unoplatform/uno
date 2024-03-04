@@ -50,12 +50,16 @@ internal class MacOSWindowNative
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
+		NativeWindowReady?.Invoke(this, this);
+
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}
 
 	internal MacOSWindowHost Host { get; }
 	internal nint Handle { get; private set; }
+
+	internal static event EventHandler<MacOSWindowNative>? NativeWindowReady;
 
 	internal void Destroyed()
 	{

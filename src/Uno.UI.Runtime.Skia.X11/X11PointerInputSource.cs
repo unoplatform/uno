@@ -38,8 +38,6 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		_host = (X11XamlRootHost)host;
 		_host.SetPointerSource(this);
 
-		DisplayInformation.GetForCurrentView();
-
 		// Set this on startup in case a different global default was set beforehand
 		PointerCursor = new(CoreCursorType.Arrow, 0);
 		_pointerCursor = PointerCursor; // initialization is not needed, we're just keeping the compiler happy
