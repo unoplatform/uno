@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -17,14 +16,14 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Composition;
 using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -1715,7 +1714,7 @@ public partial class TeachingTip : ContentControl
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
 		if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionEasingFunction"))
 		{
-			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+			var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
 
 			CompositionEasingFunction GetExpandEasingFunction(Compositor compositor)
 			{
@@ -1774,7 +1773,7 @@ public partial class TeachingTip : ContentControl
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
 		if (ApiInformation.IsTypePresent("Windows.UI.Composition.CompositionEasingFunction"))
 		{
-			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
+			var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
 
 			CompositionEasingFunction GetContractEasingFunction(Compositor compositor)
 			{
@@ -1836,7 +1835,7 @@ public partial class TeachingTip : ContentControl
 
 		CompositionScopedBatch CreateScopedBatch()
 		{
-			var scopedBatch = Windows.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			var scopedBatch = Microsoft.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
 
 			var expandAnimation = m_expandAnimation;
 			if (m_expandAnimation != null)
@@ -1896,7 +1895,7 @@ public partial class TeachingTip : ContentControl
 
 		CompositionScopedBatch CreateScopedBatch()
 		{
-			var scopedBatch = Windows.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			var scopedBatch = Microsoft.UI.Xaml.Window.Current.Compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
 			var contractAnimation = m_contractAnimation;
 			if (contractAnimation != null)
 			{
@@ -2308,7 +2307,7 @@ public partial class TeachingTip : ContentControl
 				return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
 			}
 		}
-		return Windows.UI.Xaml.Window.Current.CoreWindow.Bounds;
+		return Microsoft.UI.Xaml.Window.Current.CoreWindow.Bounds;
 	}
 
 	private TeachingTipPlacementMode[] GetPlacementFallbackOrder(TeachingTipPlacementMode preferredPlacement)
@@ -2380,7 +2379,7 @@ public partial class TeachingTip : ContentControl
 
 	void EstablishShadows()
 	{
-		if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow"))
+		if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.ThemeShadow"))
 		{
 			UIElement m_contentRootGrid_uiElement10 = m_contentRootGrid;
 			if (m_contentRootGrid_uiElement10 != null)
@@ -2686,7 +2685,7 @@ public partial class TeachingTip : ContentControl
 		if (frameworkElement6 != null)
 		{
 			// Uno specific - instead of a revoker, use boolean flag to check if event handler was attached
-			if (!m_actualThemeChangedAttached && ApiInformation.IsEventPresent("Windows.UI.Xaml.FrameworkElement", "ActualThemeChanged"))
+			if (!m_actualThemeChangedAttached && ApiInformation.IsEventPresent("Microsoft.UI.Xaml.FrameworkElement", "ActualThemeChanged"))
 			{
 				frameworkElement6.ActualThemeChanged += OnActualThemeChanged;
 				m_actualThemeChangedAttached = true;

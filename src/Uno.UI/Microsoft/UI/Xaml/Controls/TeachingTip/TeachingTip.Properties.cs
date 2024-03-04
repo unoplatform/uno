@@ -4,7 +4,7 @@
 
 using System.Windows.Input;
 using Windows.Foundation;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
 
