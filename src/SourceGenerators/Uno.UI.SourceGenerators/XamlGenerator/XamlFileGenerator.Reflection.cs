@@ -712,7 +712,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static string GetTrimmedNamespace(string nsNamespace)
 		{
 			var nsName = nsNamespace.TrimStart("using:");
-
 			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
