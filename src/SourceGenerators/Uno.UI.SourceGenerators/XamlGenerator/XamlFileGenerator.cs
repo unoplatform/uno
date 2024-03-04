@@ -5966,7 +5966,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							_currentStyleTargetTypeStack.Push(FindType(targetType));
 						}
 
-						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
+						using (TryGenerateDeferLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
 							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
 							{
@@ -6199,7 +6199,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			yield break;
 		}
 
-		private IDisposable? TryGenerateDeferedLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol? targetType, XamlObjectDefinition definition)
+		private IDisposable? TryGenerateDeferLoadStrategy(IIndentedStringBuilder writer, INamedTypeSymbol? targetType, XamlObjectDefinition definition)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var strategy = FindMember(definition, "DeferLoadStrategy");
@@ -6210,7 +6210,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| loadMember?.Value?.ToString()?.ToLowerInvariant() == "false"
 				|| hasLoadMarkup)
 			{
-				var visibilityMember = FindMember(definition, "Visibility");
 				var dataContextMember = FindMember(definition, "DataContext");
 				var nameMember = FindMember(definition, "Name");
 
@@ -6220,13 +6219,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented($"/* Lazy DeferLoadStrategy was ignored because the target type is not based on {elementStubBaseType?.GetFullyQualifiedTypeExcludingGlobal()} */");
 					return null;
 				}
-
-				var hasVisibilityMarkup = HasMarkupExtension(visibilityMember);
-				var isLiteralVisible = !hasVisibilityMarkup && (visibilityMember?.Value?.ToString() == "Visible");
-
-				var hasDataContextMarkup = dataContextMember != null && HasMarkupExtension(dataContextMember);
-
-				var currentOwnerName = CurrentResourceOwnerName;
 
 				var elementStubHolderNameStatement = "";
 
@@ -6259,14 +6251,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var elementStubType = new XamlType(XamlConstants.BaseXamlNamespace, "ElementStub", new List<XamlType>(), new XamlSchemaContext());
 
-						if (hasDataContextMarkup)
-						{
-							// We need to generate the datacontext binding, since the Visibility
-							// may require it to bind properly.
-
-							GenerateBinding("DataContext", dataContextMember, definition);
-						}
-
 						if (nameMember != null)
 						{
 							innerWriter.AppendLineIndented(
@@ -6280,7 +6264,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							);
 						}
 
-						if (hasLoadMarkup || hasVisibilityMarkup)
+						if (hasLoadMarkup)
 						{
 
 							var members = new List<XamlMemberDefinition>();
@@ -6288,11 +6272,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (hasLoadMarkup)
 							{
 								members.Add(GenerateBinding("Load", loadMember, definition));
-							}
-
-							if (hasVisibilityMarkup)
-							{
-								members.Add(GenerateBinding("Visibility", visibilityMember, definition));
 							}
 
 							var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(definition).isInside;
@@ -6377,17 +6356,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									// TODO for https://github.com/unoplatform/uno/issues/6700
 								}
 
-							}
-						}
-						else
-						{
-							if (visibilityMember != null)
-							{
-								innerWriter.AppendLineInvariantIndented(
-									"{0}.Visibility = {1};",
-									closureName,
-									BuildLiteralValue(visibilityMember)
-								);
 							}
 						}
 
