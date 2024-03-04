@@ -34,6 +34,7 @@ public partial class TeachingTip : ContentControl
 	private const string c_TitleTextBlockCollapsedStateName = "CollapseTitleTextBlock";
 	private const string c_SubtitleTextBlockVisibleStateName = "ShowSubtitleTextBlock";
 	private const string c_SubtitleTextBlockCollapsedStateName = "CollapseSubtitleTextBlock";
+
 	private const string c_OverlayCornerRadiusName = "OverlayCornerRadius";
 
 	/// <summary>
@@ -42,6 +43,7 @@ public partial class TeachingTip : ContentControl
 	public TeachingTip()
 	{
 		DefaultStyleKey = typeof(TeachingTip);
+		// EnsureProperties()
 		Unloaded += ClosePopupOnUnloadEvent;
 		m_automationNameChangedRevoker = RegisterPropertyChangedCallback(AutomationProperties.NameProperty, OnAutomationNameChanged);
 		m_automationIdChangedRevoker = RegisterPropertyChangedCallback(AutomationProperties.AutomationIdProperty, OnAutomationIdChanged);
