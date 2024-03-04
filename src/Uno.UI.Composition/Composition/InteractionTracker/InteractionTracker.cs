@@ -122,6 +122,14 @@ public partial class InteractionTracker : CompositionObject
 		{
 			MaxPosition = UpdateVector3(subPropertyName, MaxPosition, propertyValue);
 		}
+		else if (propertyName.Equals(nameof(MinScale), StringComparison.OrdinalIgnoreCase))
+		{
+			MinScale = ValidateValue<float>(propertyValue);
+		}
+		else if (propertyName.Equals(nameof(MaxScale), StringComparison.OrdinalIgnoreCase))
+		{
+			MaxScale = ValidateValue<float>(propertyValue);
+		}
 		else
 		{
 			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
@@ -141,6 +149,18 @@ public partial class InteractionTracker : CompositionObject
 		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
 		{
 			return GetVector3(subPropertyName, MinPosition);
+		}
+		else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+		{
+			return ValidateValue<float>(Scale);
+		}
+		else if (propertyName.Equals(nameof(MinScale), StringComparison.OrdinalIgnoreCase))
+		{
+			return ValidateValue<float>(MinScale);
+		}
+		else if (propertyName.Equals(nameof(MaxScale), StringComparison.OrdinalIgnoreCase))
+		{
+			return ValidateValue<float>(MaxScale);
 		}
 		else
 		{
