@@ -194,11 +194,19 @@ then
 
 else
 
-	echo "Installing idb"
-	# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
-	brew tap facebook/fb
-	brew install idb-companion
-	pip3 install fb-idb
+	# check for the presence of idb, and install it if it's not present
+	if ! command -v idb &> /dev/null
+	then
+		echo "Installing idb"
+		brew install pipx
+		# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
+		brew tap facebook/fb
+		brew install idb-companion
+		pipx install fb-idb
+		export PATH=$PATH:~/.local/bin
+	else
+		echo "Using idb from:" `command -v idb`
+	fi
 
 	echo "Test Parameters:"
 	echo "  Timeout=$UITEST_TEST_TIMEOUT"
