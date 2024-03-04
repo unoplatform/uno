@@ -26,11 +26,38 @@ namespace Uno.UI.Samples.Controls
 	{
 		private bool _initialMeasure = true;
 		private bool _initialArrange = true;
+#if HAS_UNO
+		private Rect? _initialBounds;
+#endif
 
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+
+#if HAS_UNO
+			Loaded += OnLoaded;
+#endif
 		}
+
+#if HAS_UNO
+		private void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			_initialBounds = XamlRoot.Bounds;
+			XamlRoot.Changed += OnXamlRootChanged;
+		}
+
+		private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+		{
+			if (XamlRoot.Bounds != _initialBounds)
+			{
+				XamlRoot.Changed -= OnXamlRootChanged;
+			}
+			else
+			{
+				Assert.Fail("The XamlRoot's bounds should not have changed after Loaded.");
+			}
+		}
+#endif
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
