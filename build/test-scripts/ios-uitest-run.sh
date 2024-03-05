@@ -117,6 +117,20 @@ xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
 export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
 
+# check for the presence of idb, and install it if it's not present
+if ! command -v idb &> /dev/null
+then
+	echo "Installing idb"
+	brew install pipx
+	# # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
+	# brew tap facebook/fb
+	# brew install idb-companion
+	pipx install fb-idb
+	export PATH=$PATH:~/.local/bin
+else
+	echo "Using idb from:" `command -v idb`
+fi
+
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
@@ -194,20 +208,6 @@ then
 	fi
 
 else
-
-	# check for the presence of idb, and install it if it's not present
-	if ! command -v idb &> /dev/null
-	then
-		echo "Installing idb"
-		brew install pipx
-		# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
-		brew tap facebook/fb
-		brew install idb-companion
-		pipx install fb-idb
-		export PATH=$PATH:~/.local/bin
-	else
-		echo "Using idb from:" `command -v idb`
-	fi
 
 	echo "Test Parameters:"
 	echo "  Timeout=$UITEST_TEST_TIMEOUT"
