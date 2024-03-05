@@ -17,19 +17,19 @@ using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Input;
+using Microsoft/* UWP don't rename */.UI.Xaml.Media;
+using Microsoft/* UWP don't rename */.UI.Xaml.Shapes;
 using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
-using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
+using CompositionTarget = Microsoft/* UWP don't rename */.UI.Xaml.Media.CompositionTarget;
 using Microsoft.UI.Composition;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 public partial class TeachingTip : ContentControl
 {
@@ -267,6 +267,7 @@ public partial class TeachingTip : ContentControl
 		}
 	}
 
+#if false // Not used in WinUI
 	private void OnOcclusionContentChanged(object oldContent, object newContent)
 	{
 		if (newContent != null)
@@ -278,6 +279,7 @@ public partial class TeachingTip : ContentControl
 			VisualStateManager.GoToState(this, "NoContent", false);
 		}
 	}
+#endif
 
 	private void SetPopupAutomationProperties()
 	{

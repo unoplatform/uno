@@ -5,13 +5,13 @@
 #nullable enable
 
 using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Provider;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 
 public partial class TeachingTipAutomationPeer : FrameworkElementAutomationPeer, IWindowProvider
 {

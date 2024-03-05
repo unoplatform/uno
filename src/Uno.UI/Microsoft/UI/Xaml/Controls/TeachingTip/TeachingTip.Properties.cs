@@ -4,9 +4,9 @@
 
 using System.Windows.Input;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 partial class TeachingTip
 {
