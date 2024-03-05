@@ -27,8 +27,12 @@ public sealed partial class TeachingTipBasicPage : Page
 		ToggleThemeTeachingTip2.IsOpen = true;
 	}
 
-	private void TestButtonClick3(object sender, RoutedEventArgs e)
+	private async void TestButtonClick3(object sender, RoutedEventArgs e)
 	{
 		ToggleThemeTeachingTip3.IsOpen = true;
+
+		await System.Threading.Tasks.Task.Delay(1000);
+
+		ToggleThemeTeachingTip3.HeroContentPlacement = TeachingTipHeroContentPlacementMode.Bottom;
 	}
 }
