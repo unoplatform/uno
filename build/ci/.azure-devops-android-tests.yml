@@ -153,11 +153,6 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
-  - template: templates/ios-build-select-version.yml
-    parameters:
-      xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
-
   - task: PowerShell@2
     displayName: 'Install coreutils'
     inputs:
