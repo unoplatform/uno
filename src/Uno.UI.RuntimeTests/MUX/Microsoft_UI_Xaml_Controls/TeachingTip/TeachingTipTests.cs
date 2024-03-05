@@ -4,12 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Markup;
 using MUXControlsTestApp.Utilities;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Common;
 using System.Threading;
 
@@ -28,10 +27,10 @@ using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
 
-namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class TeachingTipTests
