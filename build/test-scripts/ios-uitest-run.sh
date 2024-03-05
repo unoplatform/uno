@@ -217,7 +217,7 @@ else
 	dotnet test \
 		-c Release \
 		-l:"console;verbosity=normal" \
-		-f net8.0 \
+		-p:NetPrevious=net8.0 \
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
