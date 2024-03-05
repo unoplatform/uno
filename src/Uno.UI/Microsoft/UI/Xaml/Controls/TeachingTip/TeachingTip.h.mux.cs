@@ -25,6 +25,8 @@ partial class TeachingTip
 
 	internal bool m_isIdle = true;
 
+	private readonly long m_automationNameChangedRevoker;
+	private readonly long m_automationIdChangedRevoker;
 	private readonly SerialDisposable m_acceleratorKeyActivatedRevoker = new();
 	private readonly SerialDisposable m_previewKeyDownForF6Revoker = new();
 	// This handler is not required for Winui3 because the framework bug this works around has been fixed.
