@@ -57,7 +57,8 @@
 			Subtitle="It's easier than ever to see control samples in both light and dark theme!"
 			PreferredPlacement="Bottom">
 			<TeachingTip.HeroContent>
-				<Image Source="ms-appx:///Assets/Formats/uno-overalls.png" Stretch="UniformToFill" AutomationProperties.Name="Sunset" />
+				<Border Background="Red" Height="100" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+				<!--<Image Source="ms-appx:///Assets/Formats/uno-overalls.png" Stretch="UniformToFill" AutomationProperties.Name="Sunset" />-->
 			</TeachingTip.HeroContent>
 			<TeachingTip.Content>
 				<TextBlock TextWrapping="WrapWholeWords" Margin="0,16,0,0">To change your desktop theme visit the <Hyperlink NavigateUri="ms-settings:colors">Settings app</Hyperlink>.</TextBlock>
