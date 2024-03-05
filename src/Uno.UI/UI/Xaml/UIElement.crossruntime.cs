@@ -131,6 +131,7 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
+						resourceAsUIElement.XamlRoot = XamlRoot;
 						resourceAsUIElement.OnElementLoaded();
 					}
 				}
