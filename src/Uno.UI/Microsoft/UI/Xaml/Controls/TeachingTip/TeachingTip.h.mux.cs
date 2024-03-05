@@ -10,12 +10,14 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Shapes;
+using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft/* UWP don't rename */.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls;
+#pragma warning disable IDE0051 // Some of the constants in this file are defined in the WinUI source but are not used.
+
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 partial class TeachingTip
 {
@@ -23,8 +25,6 @@ partial class TeachingTip
 
 	internal bool m_isIdle = true;
 
-	private readonly long m_automationNameChangedRevoker;
-	private readonly long m_automationIdChangedRevoker;
 	private readonly SerialDisposable m_acceleratorKeyActivatedRevoker = new();
 	private readonly SerialDisposable m_previewKeyDownForF6Revoker = new();
 	// This handler is not required for Winui3 because the framework bug this works around has been fixed.

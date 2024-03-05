@@ -2,10 +2,10 @@
 
 #nullable enable
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml;
 
 /// <summary>
 /// Provides calculated values that can be referenced as TemplatedParent sources when defining templates for a TeachingTip.

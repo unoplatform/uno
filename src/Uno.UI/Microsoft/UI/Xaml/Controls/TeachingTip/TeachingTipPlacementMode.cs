@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that indicate the preferred location of the TeachingTip teaching tip.
