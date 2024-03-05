@@ -35,8 +35,14 @@ partial class AppWindow
 
 	public string Title
 	{
-		get => _nativeAppWindow.Title;
-		set => _nativeAppWindow.Title = value;
+		get => _nativeAppWindow?.Title ?? "";
+		set
+		{
+			if (_nativeAppWindow is not null)
+			{
+				_nativeAppWindow.Title = value;
+			}
+		}
 	}
 
 	internal void SetNativeWindow(INativeAppWindow nativeAppWindow)
