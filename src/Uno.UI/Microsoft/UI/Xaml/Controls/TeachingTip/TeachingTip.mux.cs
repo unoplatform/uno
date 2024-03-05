@@ -1676,7 +1676,7 @@ public partial class TeachingTip : ContentControl
 	private void CreateExpandAnimation()
 	{
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
-		if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionEasingFunction"))
+		if (!ApiInformation.IsMethodPresent("Microsoft.UI.Composition.Compositor", "CreateCubicBezierEasingFunction"))
 		{
 			return;
 		}
@@ -1739,7 +1739,7 @@ public partial class TeachingTip : ContentControl
 	private void CreateContractAnimation()
 	{
 		// TODO: Uno specific - CompositionEasingFunction and related types not supported yet.
-		if (ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionEasingFunction"))
+		if (!ApiInformation.IsMethodPresent("Microsoft.UI.Composition.Compositor", "CreateCubicBezierEasingFunction"))
 		{
 			return;
 		}
