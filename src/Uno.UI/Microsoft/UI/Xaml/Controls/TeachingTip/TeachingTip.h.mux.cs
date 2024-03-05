@@ -106,7 +106,9 @@ partial class TeachingTip
 	private bool m_useTestScreenBounds;
 	private Rect m_testScreenBoundsInCoreWindowSpace = Rect.Empty;
 
-	private bool m_tipShouldHaveShadow = true;
+	// Uno specific: Shadows are not working correctly here, so we keep this field false for now.
+	// They are enabled in WinUI. #15751
+	private bool m_tipShouldHaveShadow;
 
 	private bool m_tipFollowsTarget;
 	private bool m_returnTopForOutOfWindowPlacement = true;
