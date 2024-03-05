@@ -4799,14 +4799,16 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		UIElement oldContent,
 		UIElement newContent)
 	{
-		var children = GetChildren();
-		children.Clear();
+		// Uno docs: Doing GetChildren() followed by Clear and Add calls won't work for Uno.
+		// That will modify the UIElement children but not the Visual (composition) children.
+		// Calling ClearChildren and AddChild so that the composition tree is updated as well.
+		ClearChildren();
 
 		UnhookContentPropertyChanged(oldContent);
 
 		if (newContent is not null)
 		{
-			children.Add(newContent);
+			AddChild(newContent);
 
 			if (m_minPositionExpressionAnimation is not null && m_maxPositionExpressionAnimation is not null)
 			{
