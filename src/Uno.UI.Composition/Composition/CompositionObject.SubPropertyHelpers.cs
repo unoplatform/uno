@@ -1,14 +1,30 @@
 #nullable enable
 
 using System;
+using System.Globalization;
 using System.Numerics;
 using Windows.UI;
 
 namespace Microsoft.UI.Composition;
 
-partial class CompositionObject
+internal static class SubPropertyHelpers
 {
-	private protected Color UpdateColor(ReadOnlySpan<char> subPropertyName, Color existingValue, object? propertyValue)
+	internal static T ValidateValue<T>(object? value)
+	{
+		if (value is not T t)
+		{
+			if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
+			{
+				return changed;
+			}
+
+			throw new ArgumentException($"Cannot convert value of type '{value?.GetType()}' to {typeof(T)}");
+		}
+
+		return t;
+	}
+
+	internal static Color UpdateColor(ReadOnlySpan<char> subPropertyName, Color existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -39,7 +55,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Matrix3x2 UpdateMatrix3x2(ReadOnlySpan<char> subPropertyName, Matrix3x2 existingValue, object? propertyValue)
+	internal static Matrix3x2 UpdateMatrix3x2(ReadOnlySpan<char> subPropertyName, Matrix3x2 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -78,7 +94,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Matrix4x4 UpdateMatrix4x4(ReadOnlySpan<char> subPropertyName, Matrix4x4 existingValue, object? propertyValue)
+	internal static Matrix4x4 UpdateMatrix4x4(ReadOnlySpan<char> subPropertyName, Matrix4x4 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -157,7 +173,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Quaternion UpdateQuaternion(ReadOnlySpan<char> subPropertyName, Quaternion existingValue, object? propertyValue)
+	internal static Quaternion UpdateQuaternion(ReadOnlySpan<char> subPropertyName, Quaternion existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -188,7 +204,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Vector2 UpdateVector2(ReadOnlySpan<char> subPropertyName, Vector2 existingValue, object? propertyValue)
+	internal static Vector2 UpdateVector2(ReadOnlySpan<char> subPropertyName, Vector2 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -211,7 +227,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Vector3 UpdateVector3(ReadOnlySpan<char> subPropertyName, Vector3 existingValue, object? propertyValue)
+	internal static Vector3 UpdateVector3(ReadOnlySpan<char> subPropertyName, Vector3 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -238,7 +254,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected Vector4 UpdateVector4(ReadOnlySpan<char> subPropertyName, Vector4 existingValue, object? propertyValue)
+	internal static Vector4 UpdateVector4(ReadOnlySpan<char> subPropertyName, Vector4 existingValue, object? propertyValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -269,7 +285,7 @@ partial class CompositionObject
 		return existingValue;
 	}
 
-	private protected object GetColor(string subPropertyName, Color existingValue)
+	internal static object GetColor(string subPropertyName, Color existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -298,7 +314,7 @@ partial class CompositionObject
 		}
 	}
 
-	private protected object GetMatrix3x2(string subPropertyName, Matrix3x2 existingValue)
+	internal static object GetMatrix3x2(string subPropertyName, Matrix3x2 existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -335,7 +351,7 @@ partial class CompositionObject
 		}
 	}
 
-	private protected object GetMatrix4x4(string subPropertyName, Matrix4x4 existingValue)
+	internal static object GetMatrix4x4(string subPropertyName, Matrix4x4 existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -412,7 +428,7 @@ partial class CompositionObject
 		}
 	}
 
-	private protected object GetQuaternion(string subPropertyName, Quaternion existingValue)
+	internal static object GetQuaternion(string subPropertyName, Quaternion existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -441,7 +457,7 @@ partial class CompositionObject
 		}
 	}
 
-	private protected object GetVector2(string subPropertyName, Vector2 existingValue)
+	internal static object GetVector2(string subPropertyName, Vector2 existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -462,7 +478,7 @@ partial class CompositionObject
 		}
 	}
 
-	private protected object GetVector3(string subPropertyName, Vector3 existingValue)
+	internal static object GetVector3(string subPropertyName, Vector3 existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -487,7 +503,7 @@ partial class CompositionObject
 		}
 	}
 
-	private protected object GetVector4(string subPropertyName, Vector4 existingValue)
+	internal static object GetVector4(string subPropertyName, Vector4 existingValue)
 	{
 		if (subPropertyName.Length == 0)
 		{
@@ -516,106 +532,99 @@ partial class CompositionObject
 		}
 	}
 
-	private void TryUpdateFromProperties(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+	internal static void TryUpdateFromProperties(CompositionPropertySet? properties, ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 	{
-		if (_properties is not null)
+		if (properties is not null)
 		{
 			var propertyNameString = propertyName.ToString();
-			if (_properties.TryGetBoolean(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
+			if (properties.TryGetBoolean(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertBoolean(propertyNameString, ValidateValue<bool>(propertyValue));
+				properties.InsertBoolean(propertyNameString, ValidateValue<bool>(propertyValue));
 			}
-			else if (_properties.TryGetColor(propertyNameString, out var color) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetColor(propertyNameString, out var color) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertColor(propertyNameString, UpdateColor(subPropertyName, color, propertyValue));
+				properties.InsertColor(propertyNameString, UpdateColor(subPropertyName, color, propertyValue));
 			}
-			else if (_properties.TryGetMatrix3x2(propertyNameString, out var matrix3x2) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetMatrix3x2(propertyNameString, out var matrix3x2) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertMatrix3x2(propertyNameString, UpdateMatrix3x2(subPropertyName, matrix3x2, propertyValue));
+				properties.InsertMatrix3x2(propertyNameString, UpdateMatrix3x2(subPropertyName, matrix3x2, propertyValue));
 			}
-			else if (_properties.TryGetMatrix4x4(propertyNameString, out var matrix4x4) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetMatrix4x4(propertyNameString, out var matrix4x4) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertMatrix4x4(propertyNameString, UpdateMatrix4x4(subPropertyName, matrix4x4, propertyValue));
+				properties.InsertMatrix4x4(propertyNameString, UpdateMatrix4x4(subPropertyName, matrix4x4, propertyValue));
 			}
-			else if (_properties.TryGetQuaternion(propertyNameString, out var quaternion) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetQuaternion(propertyNameString, out var quaternion) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertQuaternion(propertyNameString, UpdateQuaternion(subPropertyName, quaternion, propertyValue));
+				properties.InsertQuaternion(propertyNameString, UpdateQuaternion(subPropertyName, quaternion, propertyValue));
 			}
-			else if (_properties.TryGetScalar(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetScalar(propertyNameString, out _) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertScalar(propertyNameString, ValidateValue<float>(propertyValue));
+				properties.InsertScalar(propertyNameString, ValidateValue<float>(propertyValue));
 			}
-			else if (_properties.TryGetVector2(propertyNameString, out var vector2) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetVector2(propertyNameString, out var vector2) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertVector2(propertyNameString, UpdateVector2(subPropertyName, vector2, propertyValue));
+				properties.InsertVector2(propertyNameString, UpdateVector2(subPropertyName, vector2, propertyValue));
 			}
-			else if (_properties.TryGetVector3(propertyNameString, out var vector3) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetVector3(propertyNameString, out var vector3) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertVector3(propertyNameString, UpdateVector3(subPropertyName, vector3, propertyValue));
+				properties.InsertVector3(propertyNameString, UpdateVector3(subPropertyName, vector3, propertyValue));
 			}
-			else if (_properties.TryGetVector4(propertyNameString, out var vector4) == CompositionGetValueStatus.Succeeded)
+			else if (properties.TryGetVector4(propertyNameString, out var vector4) == CompositionGetValueStatus.Succeeded)
 			{
-				_properties.InsertVector4(propertyNameString, UpdateVector4(subPropertyName, vector4, propertyValue));
+				properties.InsertVector4(propertyNameString, UpdateVector4(subPropertyName, vector4, propertyValue));
 			}
 			else
 			{
-				throw new Exception($"Unable to set property '{propertyName}' on {this}");
+				throw new Exception($"Unable to set property '{propertyName}'");
 			}
 		}
 		else
 		{
-			throw new Exception($"Unable to set property '{propertyName}' on {this}");
+			throw new Exception($"Unable to set property '{propertyName}'");
 		}
 	}
 
-	private object TryGetFromProperties(string propertyName, string subPropertyName)
+	internal static object TryGetFromProperties(CompositionPropertySet? properties, string propertyName, string subPropertyName)
 	{
-		if (_properties is not null)
+		if (properties?.TryGetValueNonGeneric(propertyName, out var value) == true)
 		{
-			if (_properties.TryGetBoolean(propertyName, out var @bool) == CompositionGetValueStatus.Succeeded && subPropertyName.Length == 0)
-			{
-				return @bool;
-			}
-			else if (_properties.TryGetColor(propertyName, out var color) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetColor(subPropertyName, color);
-			}
-			else if (_properties.TryGetMatrix3x2(propertyName, out var matrix3x2) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetMatrix3x2(subPropertyName, matrix3x2);
-			}
-			else if (_properties.TryGetMatrix4x4(propertyName, out var matrix4x4) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetMatrix4x4(subPropertyName, matrix4x4);
-			}
-			else if (_properties.TryGetQuaternion(propertyName, out var quaternion) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetQuaternion(subPropertyName, quaternion);
-			}
-			else if (_properties.TryGetScalar(propertyName, out var @float) == CompositionGetValueStatus.Succeeded && subPropertyName.Length == 0)
-			{
-				return @float;
-			}
-			else if (_properties.TryGetVector2(propertyName, out var vector2) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetVector2(subPropertyName, vector2);
-			}
-			else if (_properties.TryGetVector3(propertyName, out var vector3) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetVector3(subPropertyName, vector3);
-			}
-			else if (_properties.TryGetVector4(propertyName, out var vector4) == CompositionGetValueStatus.Succeeded)
-			{
-				return GetVector4(subPropertyName, vector4);
-			}
-			else
-			{
-				throw new Exception($"Unable to get property '{propertyName}' on {this}");
-			}
+			return subPropertyName.Length == 0 ? value : GetSubProperty(subPropertyName, value);
 		}
-		else
+
+		throw new Exception($"Unable to get property '{propertyName}'.");
+	}
+
+	internal static object GetSubProperty(string subPropertyName, object value)
+	{
+		if (value is Vector2 vector2)
 		{
-			throw new Exception($"Unable to get property '{propertyName}' on {this}");
+			return GetVector2(subPropertyName, vector2);
 		}
+		else if (value is Vector3 vector3)
+		{
+			return GetVector3(subPropertyName, vector3);
+		}
+		else if (value is Vector4 vector4)
+		{
+			return GetVector4(subPropertyName, vector4);
+		}
+		else if (value is Color color)
+		{
+			return GetColor(subPropertyName, color);
+		}
+		else if (value is Quaternion quaternion)
+		{
+			return GetQuaternion(subPropertyName, quaternion);
+		}
+		else if (value is Matrix3x2 matrix3x2)
+		{
+			return GetMatrix3x2(subPropertyName, matrix3x2);
+		}
+		else if (value is Matrix4x4 matrix4x4)
+		{
+			return GetMatrix4x4(subPropertyName, matrix4x4);
+		}
+
+		throw new ArgumentException($"Cannot find property '{subPropertyName}' on object of type '{value?.GetType()}'.");
 	}
 }

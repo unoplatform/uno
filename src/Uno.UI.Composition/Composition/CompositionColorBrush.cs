@@ -3,6 +3,8 @@
 using System;
 using Windows.UI;
 
+using static Microsoft.UI.Composition.SubPropertyHelpers;
+
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionColorBrush : CompositionBrush
