@@ -16,7 +16,7 @@ namespace Windows.UI.ViewManagement
 
 		partial void InitializePlatform()
 		{
-			_applicationViewExtension = new Lazy<IApplicationViewExtension?>(() =>
+			_applicationViewExtension = new Lazy<IApplicationViewExtension>(() =>
 			{
 				ApiExtensibility.CreateInstance<IApplicationViewExtension>(this, out var extension);
 				return extension;
