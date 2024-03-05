@@ -23250,7 +23250,7 @@
     <Setter Property="Foreground" Value="{ThemeResource TeachingTipForegroundBrush}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TeachingTipBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TeachingTipContentBorderThicknessUntargeted}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
     <Setter Property="ActionButtonStyle" Value="{ThemeResource DefaultButtonStyle}" />
     <Setter Property="CloseButtonStyle" Value="{ThemeResource DefaultButtonStyle}" />
     <Setter Property="IsTabStop" Value="False" />
@@ -23346,15 +23346,13 @@
                 <VisualState x:Name="HeroContentTop">
                   <VisualState.Setters>
                     <Setter Target="HeroContentBorder.(Grid.Row)" Value="0" />
-                    <contract7Present:Setter Target="HeroContentBorder.CornerRadius" Value="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopCornerRadiusFilterConverter}, FallbackValue=0}" />
-                    <contract7NotPresent:Setter Target="HeroContentBorder.CornerRadius" Value="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource TopCornerRadiusFilterConverter}, FallbackValue=0}" />
+                    <Setter Target="HeroContentBorder.CornerRadius" Value="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopCornerRadiusFilterConverter}, FallbackValue=0}" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="HeroContentBottom">
                   <VisualState.Setters>
                     <Setter Target="HeroContentBorder.(Grid.Row)" Value="2" />
-                    <contract7Present:Setter Target="HeroContentBorder.CornerRadius" Value="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomCornerRadiusFilterConverter}, FallbackValue=0}" />
-                    <contract7NotPresent:Setter Target="HeroContentBorder.CornerRadius" Value="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource BottomCornerRadiusFilterConverter}, FallbackValue=0}" />
+                    <Setter Target="HeroContentBorder.CornerRadius" Value="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomCornerRadiusFilterConverter}, FallbackValue=0}" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -23555,7 +23553,7 @@
                   <RowDefinition Height="{StaticResource TeachingTipTailMargin}" />
                   <RowDefinition Height="{StaticResource TeachingTipTailShortSideLength}" />
                 </Grid.RowDefinitions>
-                <Grid x:Name="ContentRootGrid" AutomationProperties.LandmarkType="Custom" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" FlowDirection="{TemplateBinding FlowDirection}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="3" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}">
+                <Grid x:Name="ContentRootGrid" AutomationProperties.LandmarkType="Custom" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" FlowDirection="{TemplateBinding FlowDirection}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="3" CornerRadius="{TemplateBinding CornerRadius}">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -23635,7 +23633,7 @@
   <x:Double x:Key="TeachingTipBorderThickness">1</x:Double>
   <Thickness x:Key="TeachingTipTopHighlightOffsetForBorder">0,1,0,0</Thickness>
   <Style x:Key="AlternateCloseButtonStyle" TargetType="Button">
-    <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+    <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     <Setter Property="Width" Value="{ThemeResource TeachingTipAlternateCloseButtonSize}" />
     <Setter Property="Height" Value="{ThemeResource TeachingTipAlternateCloseButtonSize}" />
     <Setter Property="Background" Value="{ThemeResource TeachingTipAlternateCloseButtonBackground}" />
@@ -23648,7 +23646,7 @@
     <Setter Property="Padding" Value="4" />
     <Setter Property="BorderThickness" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderThickness}" />
     <Setter Property="Content" Value="&#xE711;" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="FocusVisualMargin" Value="-3" />
     <Setter Property="Template">
       <Setter.Value>
@@ -23698,7 +23696,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" Control.IsTemplateFocusTarget="True" />
+            <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" CornerRadius="{TemplateBinding CornerRadius}" Control.IsTemplateFocusTarget="True" />
           </Border>
         </ControlTemplate>
       </Setter.Value>
