@@ -219,6 +219,7 @@ else
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+		--arch x64 \
 		-v m \
 		|| true
 fi
