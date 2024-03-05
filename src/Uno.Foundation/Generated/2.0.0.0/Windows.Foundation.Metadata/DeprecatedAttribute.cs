@@ -3,6 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
+	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Delegate | global::System.AttributeTargets.Interface | global::System.AttributeTargets.Event | global::System.AttributeTargets.Field | global::System.AttributeTargets.Property | global::System.AttributeTargets.Method | global::System.AttributeTargets.Constructor | global::System.AttributeTargets.Enum | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif

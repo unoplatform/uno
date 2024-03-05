@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {

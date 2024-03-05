@@ -51,11 +51,11 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.UVMappings.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.UVMappings.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Material.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent.Mesh.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMeshRendererComponent Create(global::Microsoft.UI.Composition.Compositor compositor)

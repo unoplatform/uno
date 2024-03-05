@@ -27,7 +27,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowReceiver.ReceivingVisual.get
 	}
 }

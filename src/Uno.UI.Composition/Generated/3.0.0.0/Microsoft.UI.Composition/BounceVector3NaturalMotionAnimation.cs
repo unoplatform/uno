@@ -41,9 +41,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.BounceVector3NaturalMotionAnimation.Restitution.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceVector3NaturalMotionAnimation.Acceleration.set
 		// Forced skipping of method Microsoft.UI.Composition.BounceVector3NaturalMotionAnimation.Acceleration.get
+		// Forced skipping of method Microsoft.UI.Composition.BounceVector3NaturalMotionAnimation.Restitution.get
 		// Forced skipping of method Microsoft.UI.Composition.BounceVector3NaturalMotionAnimation.Restitution.set
 	}
 }

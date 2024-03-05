@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
+using Windows.System;
 
 #if __IOS__
 using UIKit;
@@ -256,10 +257,10 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				switch (args.Key)
 				{
-					case Windows.System.VirtualKey.Up:
-					case Windows.System.VirtualKey.Down:
-					case Windows.System.VirtualKey.Left:
-					case Windows.System.VirtualKey.Right:
+					case VirtualKey.Up:
+					case VirtualKey.Down:
+					case VirtualKey.Left:
+					case VirtualKey.Right:
 						return;
 				}
 				toolTip.IsOpen = false;

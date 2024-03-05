@@ -23,19 +23,19 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.InsertAt(uint, Microsoft.UI.Composition.Scenes.SceneNode)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.ReplaceAll(Microsoft.UI.Composition.Scenes.SceneNode[])
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.SetAt(uint, Microsoft.UI.Composition.Scenes.SceneNode)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.First()
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.GetView()
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.IndexOf(Microsoft.UI.Composition.Scenes.SceneNode, out uint)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.SetAt(uint, Microsoft.UI.Composition.Scenes.SceneNode)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.GetAt(uint)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.InsertAt(uint, Microsoft.UI.Composition.Scenes.SceneNode)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.RemoveAt(uint)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.GetMany(uint, Microsoft.UI.Composition.Scenes.SceneNode[])
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.Append(Microsoft.UI.Composition.Scenes.SceneNode)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.RemoveAtEnd()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.Clear()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.GetMany(uint, Microsoft.UI.Composition.Scenes.SceneNode[])
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.ReplaceAll(Microsoft.UI.Composition.Scenes.SceneNode[])
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneNodeCollection.GetAt(uint)
 		// Processing: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneNode>
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Microsoft.UI.Composition.Scenes.SceneNode>

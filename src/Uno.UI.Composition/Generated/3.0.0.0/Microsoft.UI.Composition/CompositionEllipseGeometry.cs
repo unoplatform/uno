@@ -11,8 +11,8 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property Radius
 		// Skipping already declared property Center
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Radius.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionEllipseGeometry.Center.get
 	}
 }

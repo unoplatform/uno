@@ -5,10 +5,11 @@ using MUXControlsTestApp.Utilities;
 
 using Common;
 using System;
-using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Windows.Foundation.Metadata;
+using Windows.UI.ViewManagement;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -121,7 +122,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				navView.Height = 200.0;
 				navView.Content = "This test should have enough NavigationViewItems to scroll.";
 				Content = navView;
-				Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+				ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 			});
 
 			IdleSynchronizer.Wait();

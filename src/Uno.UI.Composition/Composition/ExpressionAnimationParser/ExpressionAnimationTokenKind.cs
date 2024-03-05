@@ -10,7 +10,12 @@ internal enum ExpressionAnimationTokenKind
 	DivisionToken,
 	OpenParenToken,
 	CloseParenToken,
+	QuestionMarkToken,
+	ColonToken,
+	GreaterThanEqualsToken,
+	GreaterThanToken,
+	LessThanEqualsToken,
+	LessThanToken,
 	IdentifierToken,
 	NumericLiteralToken,
-	// TODO: QuestionMarkToken and ColonToken to support ternary operators.
 }

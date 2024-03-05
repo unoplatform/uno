@@ -34,6 +34,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _textWrappingChanged;
 		private bool _paddingChangedChanged;
 
+		private bool _shouldUpdateIsTextTrimmed;
+
 		public TextBlock() : base("p")
 		{
 			SetDefaultForeground(ForegroundProperty);
@@ -165,7 +167,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLayoutUpdated();
 
-			UpdateIsTextTrimmed();
+			if (_shouldUpdateIsTextTrimmed)
+			{
+				UpdateIsTextTrimmed();
+			}
 		}
 
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;

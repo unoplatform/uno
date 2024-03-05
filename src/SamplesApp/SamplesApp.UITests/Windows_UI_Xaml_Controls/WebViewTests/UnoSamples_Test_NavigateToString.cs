@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.iOS)] // Android disabled, to be restored for https://github.com/unoplatform/uno/pull/15555
 		public void WebView_NavigateToLongString()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.WebView.WebView_NavigateToString2");
@@ -43,7 +43,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.iOS)] // Android disabled, to be restored for https://github.com/unoplatform/uno/pull/15555
 		public void WebView_NavigateToAnchor()
 		{
 			Run("Uno.UI.Samples.Content.UITests.WebView.WebView_AnchorNavigation");

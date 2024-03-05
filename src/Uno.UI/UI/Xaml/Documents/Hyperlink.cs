@@ -145,8 +145,8 @@ namespace Microsoft.UI.Xaml.Documents
 		private void OnUnderlineStyleChanged()
 		{
 			TextDecorations = UnderlineStyle == UnderlineStyle.Single
-				? Windows.UI.Text.TextDecorations.Underline
-				: Windows.UI.Text.TextDecorations.None;
+				? TextDecorations.Underline
+				: TextDecorations.None;
 		}
 
 		#endregion

@@ -5,6 +5,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
+
 
 
 #if HAS_UNO
@@ -17,6 +20,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_ResourceDictionary
 	{
+		[TestMethod]
+#if __IOS__ || __MACOS__
+		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
+#endif
+		public async Task When_FrameworkElement_In_Resources_Should_Receive_Loaded_Unloaded()
+		{
+			var textBlock = new TextBlock();
+			var resourceTextBlock = new TextBlock();
+			var resourceGrid = new Grid()
+			{
+				Children =
+				{
+					resourceTextBlock,
+				},
+			};
+			var grid = new Grid()
+			{
+				Children =
+				{
+					textBlock,
+				},
+				Width = 100,
+				Height = 100,
+			};
+
+			grid.Resources.Add("MyResourceGridKey", resourceGrid);
+
+			string result = "";
+
+			resourceTextBlock.Loaded += (_, _) => result += "ResourceTextBlockLoaded,";
+			resourceGrid.Loaded += (_, _) => result += "ResourceGridLoaded,";
+			textBlock.Loaded += (_, _) => result += "TextBlockLoaded,";
+
+			resourceTextBlock.Unloaded += (_, _) => result += "ResourceTextBlockUnloaded,";
+			resourceGrid.Unloaded += (_, _) => result += "ResourceGridUnloaded,";
+			textBlock.Unloaded += (_, _) => result += "TextBlockUnloaded,";
+
+			await UITestHelper.Load(grid);
+
+#if WINAPPSDK
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
+#endif
+
+			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
+
+#if WINAPPSDK
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#elif __ANDROID__
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
+#endif
+		}
+
+		[TestMethod]
+#if __IOS__ || __MACOS__
+		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
+#endif
+		public async Task When_FrameworkElement_In_Resources_Then_Removed_Should_Receive_Loaded_Unloaded()
+		{
+			var textBlock = new TextBlock();
+			var resourceTextBlock = new TextBlock();
+			var resourceGrid = new Grid()
+			{
+				Children =
+				{
+					resourceTextBlock,
+				},
+			};
+			var grid = new Grid()
+			{
+				Children =
+				{
+					textBlock,
+				},
+				Width = 100,
+				Height = 100,
+			};
+
+			grid.Resources.Add("MyResourceGridKey", resourceGrid);
+
+			string result = "";
+
+			resourceTextBlock.Loaded += (_, _) => result += "ResourceTextBlockLoaded,";
+			resourceGrid.Loaded += (_, _) => result += "ResourceGridLoaded,";
+			textBlock.Loaded += (_, _) => result += "TextBlockLoaded,";
+
+			resourceTextBlock.Unloaded += (_, _) => result += "ResourceTextBlockUnloaded,";
+			resourceGrid.Unloaded += (_, _) => result += "ResourceGridUnloaded,";
+			textBlock.Unloaded += (_, _) => result += "TextBlockUnloaded,";
+
+			await UITestHelper.Load(grid);
+
+#if WINAPPSDK
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
+#endif
+
+			grid.Resources.Remove("MyResourceGridKey");
+			await TestServices.WindowHelper.WaitForIdle();
+
+#if WINAPPSDK
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
+#elif __ANDROID__
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,", result);
+#endif
+
+			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
+
+#if WINAPPSDK
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#elif __ANDROID__
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
+#else
+			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
+#endif
+		}
+
 		[TestMethod]
 		public void When_Key_Overwritten()
 		{

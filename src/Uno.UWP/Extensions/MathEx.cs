@@ -25,14 +25,6 @@ namespace Uno.Extensions
 				: 360 + ToDegree(angleRadian) % 360;
 
 		/// <summary>
-		/// Normalize an angle in degrees in the [0, 360[ range.
-		/// </summary>
-		public static double NormalizeDegree(double angleDegree)
-			=> angleDegree >= 0
-				? angleDegree % 360
-				: 360 + angleDegree % 360;
-
-		/// <summary>
 		/// Tests if two values are equal to within the specified error.
 		/// </summary>
 		/// <param name="value1">First value</param>

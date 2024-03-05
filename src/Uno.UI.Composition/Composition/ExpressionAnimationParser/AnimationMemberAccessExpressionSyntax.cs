@@ -15,18 +15,26 @@ internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 
 	public override object Evaluate(ExpressionAnimation expressionAnimation)
 	{
-		var leftValue = Expression.Evaluate(expressionAnimation);
-		var identifierName = (string)Identifier.Value;
-		var leftType = leftValue.GetType();
-		if (leftType.GetProperty(identifierName) is { } property)
+		if (Expression is AnimationMemberAccessExpressionSyntax expression)
 		{
-			return property.GetValue(leftValue);
-		}
-		else if (leftType.GetField(identifierName) is { } field)
-		{
-			return field.GetValue(leftValue);
+			var mostLeftValue = expression.Expression.Evaluate(expressionAnimation);
+			var mainPropertyName = (string)expression.Identifier.Value;
+			var subPropertyName = (string)Identifier.Value;
+			if (mostLeftValue is CompositionObject mostLeftCompositionObject)
+			{
+				return mostLeftCompositionObject.GetAnimatableProperty(mainPropertyName, subPropertyName);
+			}
+
+			throw new Exception($"Cannot evaluate '{mostLeftValue?.GetType()}.{mainPropertyName}.{subPropertyName}'");
 		}
 
-		throw new ArgumentException($"Cannot find property or field named '{identifierName}' on object of type '{leftType}'.");
+		var leftValue = Expression.Evaluate(expressionAnimation);
+		var propertyName = (string)Identifier.Value;
+		if (leftValue is CompositionObject leftCompositionObject)
+		{
+			return leftCompositionObject.GetAnimatableProperty(propertyName, string.Empty);
+		}
+
+		throw new ArgumentException($"Cannot find evaluate property '{propertyName}' on object of type '{leftValue?.GetType()}'.");
 	}
 }

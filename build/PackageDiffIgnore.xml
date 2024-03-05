@@ -1793,6 +1793,13 @@
 
 	<IgnoreSet baseVersion="5.1">
 		<Types>
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueue" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueController" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueTimer" reason="Only in UWP build. It shouldn't have existed." />
+
+			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
+			
 			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
 		</Types>
 
@@ -1805,6 +1812,8 @@
 		</Fields>
 
 		<Properties>
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView::IsFullScreen()" reason="Not in WinUI" />
 		</Properties>
 
 		<Methods>
@@ -1825,6 +1834,10 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in UWP" />
 			<!-- End Composition target updates -->
+
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Void Windows.UI.ViewManagement.ApplicationView..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView.get_IsFullScreen()" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
 

@@ -27,6 +27,9 @@ jobs:
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
     UITEST_ALLOW_RERUN: ${{ parameters.UITEST_ALLOW_RERUN }}
 
+    
+    UNO_UITEST_BUCKET_COUNT: 5
+
   steps:
   - checkout: self
     clean: true

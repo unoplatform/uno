@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Exponent.get
 		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Mode.get
+		// Forced skipping of method Microsoft.UI.Composition.ExponentialEasingFunction.Exponent.get
 	}
 }

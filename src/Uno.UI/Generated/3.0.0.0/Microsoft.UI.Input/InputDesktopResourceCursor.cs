@@ -10,8 +10,8 @@ namespace Microsoft.UI.Input
 	{
 		// Skipping already declared property ModuleName
 		// Skipping already declared property ResourceId
-		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ResourceId.get
 		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ModuleName.get
+		// Forced skipping of method Microsoft.UI.Input.InputDesktopResourceCursor.ResourceId.get
 		// Skipping already declared method Microsoft.UI.Input.InputDesktopResourceCursor.Create(uint)
 		// Skipping already declared method Microsoft.UI.Input.InputDesktopResourceCursor.CreateFromModule(string, uint)
 	}

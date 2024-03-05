@@ -22,15 +22,15 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isInLayout;
 		private double _sourceImageScale = 1;
 		private SerialDisposable _childViewDisposable = new SerialDisposable();
-		private Windows.Foundation.Size _sourceImageSize;
-		private Windows.Foundation.Size SourceImageSize => _sourceImageSize;
+		private Size _sourceImageSize;
+		private Size SourceImageSize => _sourceImageSize;
 
 		/// <summary>
 		/// Updates the size of the image source (drawable, bitmap, etc.)
 		/// </summary>
 		/// <param name="size">size of the image source (in physical pixels)</param>
 		/// <param name="isLogicalPixels">indicates that the size of the image source is in logical pixels (this is the case when the source is an URI)</param>
-		internal void UpdateSourceImageSize(Windows.Foundation.Size size, bool isLogicalPixels = false)
+		internal void UpdateSourceImageSize(Size size, bool isLogicalPixels = false)
 		{
 			if (_sourceImageSize == size)
 			{
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private Windows.Foundation.Size _lastLayoutSize;
+		private Size _lastLayoutSize;
 
 
 		private int? _targetWidth;
@@ -476,7 +476,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Sets the value of ImageView.ImageMatrix based on Stretch.
 		/// </summary>
 		/// <param name="frameSize">In logical pixels</param>
-		internal void UpdateMatrix(Windows.Foundation.Size frameSize)
+		internal void UpdateMatrix(Size frameSize)
 		{
 			if (_nativeImageView == null)
 			{

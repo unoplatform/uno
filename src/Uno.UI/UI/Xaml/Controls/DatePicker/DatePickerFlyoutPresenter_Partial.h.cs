@@ -4,7 +4,7 @@ using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {

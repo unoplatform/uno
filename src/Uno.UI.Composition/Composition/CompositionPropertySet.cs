@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionPropertySet : CompositionObject
 	{
-		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 		internal CompositionPropertySet(Compositor compositor) : base(compositor)
 		{
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Composition
 
 		public CompositionGetValueStatus TryGetBoolean(string propertyName, out bool value) => TryGetValue(propertyName, out value);
 
-		private CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
+		internal CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
 			where T : struct
 		{
 			value = default;
@@ -77,15 +77,6 @@ namespace Microsoft.UI.Composition
 			}
 
 			_properties[propertyName] = value;
-		}
-
-		// TODO
-		private protected override bool IsAnimatableProperty(string propertyName)
-			=> false;
-
-		// TODO
-		private protected override void SetAnimatableProperty(string propertyName, object? propertyValue)
-		{
 		}
 	}
 }

@@ -19,7 +19,7 @@ parameters:
     value: '05'
 
   # Runtime Test Groups
-  UITEST_RUNTIME_TEST_GROUP_COUNT: 5
+  UITEST_RUNTIME_TEST_GROUP_COUNT: 8
   RUNTIME_TESTS_GROUPS:
   - key: '0'
     value: '01'
@@ -31,8 +31,14 @@ parameters:
     value: '04'
   - key: '4'
     value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
 
-  # Autmated Test Groups
+  # Automated Test Groups
   AUTOMATED_TESTS_GROUPS:
   - key: '1'
     value: '01'
@@ -218,7 +224,7 @@ jobs:
       JobTimeoutInMinutes: 120
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
-      UITEST_TEST_TIMEOUT: '70m'
+      UITEST_TEST_TIMEOUT: '90m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}

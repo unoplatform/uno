@@ -5,13 +5,14 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI;
 
+using Color = Windows.UI.Color;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 #elif __IOS__
 using View = UIKit.UIView;
-using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 #endif
 
@@ -23,7 +24,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <summary>
 		/// Blends the Color set on the SolidColorBrush with its Opacity. Should generally be used for rendering rather than the Color property itself.
 		/// </summary>
-		internal Windows.UI.Color ColorWithOpacity
+		internal Color ColorWithOpacity
 		{
 			get; private set;
 		}
@@ -36,7 +37,7 @@ namespace Microsoft.UI.Xaml.Media
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public SolidColorBrush(Windows.UI.Color color) : this()
+		public SolidColorBrush(Color color) : this()
 		{
 			Color = color;
 			UpdateColorWithOpacity(color);
@@ -59,12 +60,12 @@ namespace Microsoft.UI.Xaml.Media
 		/// requires a round-trip with Objective-C, so updating this value only when opacity
 		/// and color changes is more efficient.
 		/// </remarks>
-		private void UpdateColorWithOpacity(Windows.UI.Color newColor)
+		private void UpdateColorWithOpacity(Color newColor)
 		{
 			ColorWithOpacity = GetColorWithOpacity(newColor);
 		}
 
-		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue)
+		partial void OnColorChanged(Color oldValue, Color newValue)
 		{
 			UpdateColorWithOpacity(newValue);
 		}
@@ -78,7 +79,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		#region Color Dependency Property
 
-		public Windows.UI.Color Color
+		public Color Color
 		{
 			get => GetColorValue();
 			set => SetColorValue(value);
@@ -87,9 +88,9 @@ namespace Microsoft.UI.Xaml.Media
 		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnColorChanged))]
 		public static DependencyProperty ColorProperty { get; } = CreateColorProperty();
 
-		private static Windows.UI.Color GetColorDefaultValue() => Colors.Transparent;
+		private static Color GetColorDefaultValue() => Colors.Transparent;
 
-		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue);
+		partial void OnColorChanged(Color oldValue, Color newValue);
 
 		#endregion
 

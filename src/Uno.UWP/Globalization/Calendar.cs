@@ -84,7 +84,14 @@ namespace Windows.Globalization
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
-		private DateTimeOffset _time;
+
+		// This is needed to be WindowsFoundationDateTime rather than System.DateTimeOffset.
+		// It's done this way to ensure that setting _time = someSystemDateTimeOffset will go through
+		// the implicit conversion from WindowsFoundationDateTime to System.DateTimeOffset
+		// Then retrieving the _time as System.DateTimeOffset will go through the opposite implicit conversion.
+		private global::Windows.Foundation.WindowsFoundationDateTime _time;
+
+		private DateTime DateTime => ((DateTimeOffset)_time).DateTime;
 
 		public Calendar()
 		{
@@ -189,28 +196,28 @@ namespace Windows.Globalization
 		#region Read / Write _time
 		public int Era
 		{
-			get => _calendar.GetEra(_time.DateTime);
+			get => _calendar.GetEra(DateTime);
 			[NotImplemented]
 			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "int Calendar.Era");
 		}
 
 		public int Year
 		{
-			get => _calendar.GetYear(_time.DateTime);
+			get => _calendar.GetYear(DateTime);
 			set => AddYears(value - Year);
 		}
 
 		public int Month
 		{
-			get => _calendar.GetMonth(_time.DateTime);
+			get => _calendar.GetMonth(DateTime);
 			set => AddMonths(value - Month);
 		}
 
-		public global::Windows.Globalization.DayOfWeek DayOfWeek => (global::Windows.Globalization.DayOfWeek)_calendar.GetDayOfWeek(_time.DateTime);
+		public global::Windows.Globalization.DayOfWeek DayOfWeek => (global::Windows.Globalization.DayOfWeek)_calendar.GetDayOfWeek(DateTime);
 
 		public int Day
 		{
-			get => _calendar.GetDayOfMonth(_time.DateTime);
+			get => _calendar.GetDayOfMonth(DateTime);
 			set => AddDays(value - Day);
 		}
 
@@ -218,7 +225,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				var hour = _calendar.GetHour(_time.DateTime);
+				var hour = _calendar.GetHour(DateTime);
 
 				if (_clock == ClockIdentifiers.TwelveHour)
 				{
@@ -265,20 +272,20 @@ namespace Windows.Globalization
 					}
 				}
 
-				var currentHours = _calendar.GetHour(_time.DateTime);
+				var currentHours = _calendar.GetHour(DateTime);
 				AddHours(twentyFourHourValue - currentHours);
 			}
 		}
 
 		public int Minute
 		{
-			get => _calendar.GetMinute(_time.DateTime);
+			get => _calendar.GetMinute(DateTime);
 			set => AddMinutes(value - Minute);
 		}
 
 		public int Second
 		{
-			get => _calendar.GetSecond(_time.DateTime);
+			get => _calendar.GetSecond(DateTime);
 			set => AddSeconds(value - Second);
 		}
 
@@ -310,11 +317,14 @@ namespace Windows.Globalization
 
 		public int Nanosecond
 		{
-			get => (int)(_calendar.GetMilliseconds(_time.DateTime) * 1000);
+			get => (int)(_calendar.GetMilliseconds(DateTime) * 1000);
 			set => AddNanoseconds(value - Nanosecond);
 		}
 
 		public void SetDateTime(global::System.DateTimeOffset value)
+			=> _time = value;
+
+		internal void SetDateTime(global::Windows.Foundation.WindowsFoundationDateTime value)
 			=> _time = value;
 
 		public void SetToNow()
@@ -325,16 +335,24 @@ namespace Windows.Globalization
 
 		public void SetToMin()
 		{
-			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime;
-			var dateTimeOffset = calendarMinSupportedDateTime.ToLocalTime();
-			_time = dateTimeOffset;
+			// We add a Year to avoid issues with different calendars when used by CalendarView.
+			// The problem happens when CalendarView calls SetToMin, then attempts to set either Day or Month to an earlier value.
+			// This works in C++, but not in C# (due to the way .NET DateTimeOffset behaves)
+			// So, we add a Year to the min date to avoid CalendarView from crashing.
+			// Even though the extra year is, unfortunately, not correct, it's unlikely to badly affect anything.
+			// NOTE: We need to add the extra year even if MinSupportedDateTime is not 01/01/0001.
+			// For example, Japanese calendar min date is 08/09/1868. Then, CalendarView will attempt to change the month to 1
+			// which will fail.
+			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime.AddYears(1);
+
+			_time = calendarMinSupportedDateTime;
 		}
 
 		public void SetToMax()
 		{
 			var calendarMaxSupportedDateTime = _calendar.MaxSupportedDateTime;
-			var dateTimeOffset = calendarMaxSupportedDateTime.ToLocalTime();
-			_time = dateTimeOffset;
+
+			_time = calendarMaxSupportedDateTime;
 		}
 
 		public DateTimeOffset GetDateTime()
@@ -345,31 +363,31 @@ namespace Windows.Globalization
 			=> global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "void Calendar.AddEras(int eras)");
 
 		public void AddYears(int years)
-			=> _time = _time.AddYears(years);
+			=> _time = _calendar.AddYears(DateTime, years);
 
 		public void AddMonths(int months)
-			=> _time = _time.AddMonths(months);
+			=> _time = _calendar.AddMonths(DateTime, months);
 
 		public void AddWeeks(int weeks)
-			=> _time = _time.AddDays(weeks * 7);
+			=> _time = _calendar.AddWeeks(DateTime, weeks);
 
 		public void AddDays(int days)
-			=> _time = _time.AddDays(days);
+			=> _time = _calendar.AddDays(DateTime, days);
 
 		public void AddPeriods(int periods)
 			=> AddHours((_clock == ClockIdentifiers.TwentyFourHour ? 24 : 12) * periods);
 
 		public void AddHours(int hours)
-			=> _time = _time.AddHours(hours);
+			=> _time = _calendar.AddHours(DateTime, hours);
 
 		public void AddMinutes(int minutes)
-			=> _time = _time.AddMinutes(minutes);
+			=> _time = _calendar.AddMinutes(DateTime, minutes);
 
 		public void AddSeconds(int seconds)
-			=> _time = _time.AddSeconds(seconds);
+			=> _time = _calendar.AddSeconds(DateTime, seconds);
 
 		public void AddNanoseconds(int nanoseconds)
-				=> _time = _time.AddMilliseconds(nanoseconds / 1000d);
+			=> _time = _calendar.AddMilliseconds(DateTime, nanoseconds / 1000d);
 		#endregion
 
 		#region IComparable
@@ -448,25 +466,25 @@ namespace Windows.Globalization
 			=> _time.Month.ToString(new string('0', minDigits), _resolvedCulture);
 
 		public string DayAsString()
-			=> _time.Day.ToString(_resolvedCulture);
+			=> Day.ToString(_resolvedCulture);
 
 		public string DayAsPaddedString(int minDigits)
-			=> _time.Day.ToString(new string('0', minDigits), _resolvedCulture);
+			=> Day.ToString(new string('0', minDigits), _resolvedCulture);
 
 		public string DayOfWeekAsString()
-			=> _time.ToString("dddd", _resolvedCulture);
+			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
 		internal string DayOfWeekAsFullString()
 			=> DayOfWeekAsString();
 
 		public string DayOfWeekAsString(int idealLength)
-			=> _time.ToString("ddd", _resolvedCulture);
+			=> _resolvedCulture.DateTimeFormat.GetAbbreviatedDayName(_calendar.GetDayOfWeek(DateTime));
 
 		public string DayOfWeekAsSoloString()
-			=> _time.ToString("dddd", _resolvedCulture);
+			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
 		public string DayOfWeekAsSoloString(int idealLength)
-			=> _time.ToString("dddd", _resolvedCulture);
+			=> _resolvedCulture.DateTimeFormat.GetDayName(_calendar.GetDayOfWeek(DateTime));
 
 		public string PeriodAsString()
 			=> _time.ToString("tt", _resolvedCulture);

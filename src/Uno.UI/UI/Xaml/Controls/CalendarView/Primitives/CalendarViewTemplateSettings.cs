@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {

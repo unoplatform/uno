@@ -10,6 +10,11 @@ partial class PropertyValue
 		value = CreateDateTime(date);
 	}
 
+	internal static void CreateFromDateTime(WindowsFoundationDateTime date, out object value)
+	{
+		value = CreateDateTime(date);
+	}
+
 	//internal static bool AreEqual(IPropertyValue oldValue, IPropertyValue newValue)
 	internal static bool AreEqualImpl(object oldValue, object newValue)
 	{

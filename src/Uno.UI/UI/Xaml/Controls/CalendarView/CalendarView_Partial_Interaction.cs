@@ -5,7 +5,7 @@ using System;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls

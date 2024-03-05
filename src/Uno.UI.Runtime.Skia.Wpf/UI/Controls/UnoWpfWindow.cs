@@ -71,7 +71,6 @@ internal class UnoWpfWindow : WpfWindow
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		Title = _applicationView.Title;
 		MinWidth = _applicationView.PreferredMinSize.Width;
 		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
@@ -110,9 +109,9 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 }

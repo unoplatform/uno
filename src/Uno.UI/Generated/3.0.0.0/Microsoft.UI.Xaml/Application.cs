@@ -41,6 +41,8 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Application.UnhandledException.add
 		// Forced skipping of method Microsoft.UI.Xaml.Application.UnhandledException.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Exit()
+		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.add
+		// Forced skipping of method Microsoft.UI.Xaml.Application.ResourceManagerRequested.remove
 		// Skipping already declared method Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Current.get
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Start(Microsoft.UI.Xaml.ApplicationInitializationCallback)
@@ -53,5 +55,21 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared event Microsoft.UI.Xaml.Application.UnhandledException
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Windows.Foundation.TypedEventHandler<object, global::Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs> ResourceManagerRequested
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "event TypedEventHandler<object, ResourceManagerRequestedEventArgs> Application.ResourceManagerRequested");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "event TypedEventHandler<object, ResourceManagerRequestedEventArgs> Application.ResourceManagerRequested");
+			}
+		}
+#endif
 	}
 }

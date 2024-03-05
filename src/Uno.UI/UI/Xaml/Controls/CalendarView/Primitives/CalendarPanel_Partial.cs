@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {

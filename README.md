@@ -14,7 +14,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform?
-The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop and embedded apps quickly.
+The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
 
 It allows C# and WinUI XAML and/or C# code to run on all target platforms while allowing you control of every pixel. It comes with support for Fluent, Material, and Cupertino design systems out of the box. Uno Platform implements a growing number of the WinRT and WinUI APIs, such as **Microsoft.UI.Xaml**, to enable WinUI applications to run on all platforms with native performance. 
 
@@ -42,9 +42,9 @@ For a larger example and features demo:
     * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
     * [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) on Windows (VS2022), Linux and macOS (VS Code)
     * Validate on other platforms as late as possible
-    * Develop in VS Code, Codespaces or GitPod
+    * Develop in VS Code, Codespaces, or GitPod
     * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
-    * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
+    * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS, and Android.
 * Cross Platform Controls:
     * [Control Templating](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/control-templates)
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
@@ -102,7 +102,7 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [Discord](https://platform.uno/uno-discord) - "Uno-Platform" channel where our engineering and community are.
+Make sure to visit our [FAQ](doc/articles/faq.md), [create an issue](https://github.com/unoplatform/uno/issues), [open a GitHub Discussion](https://github.com/unoplatform/uno/discussions) or visit our [Discord Server](https://platform.uno/uno-discord) - where our engineering team and community will be able to help you.
 
 # Contributing
 

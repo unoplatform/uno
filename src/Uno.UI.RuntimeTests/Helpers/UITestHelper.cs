@@ -113,6 +113,7 @@ public static class UITestHelper
 		TextBlock pos;
 		var popup = new ContentDialog
 		{
+			XamlRoot = TestServices.WindowHelper.XamlRoot,
 			MinWidth = bitmap.Width + 2,
 			MinHeight = bitmap.Height + 30,
 			Content = new Grid

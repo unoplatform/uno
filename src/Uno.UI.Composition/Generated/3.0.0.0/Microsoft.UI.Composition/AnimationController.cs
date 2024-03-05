@@ -75,14 +75,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Pause()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "void AnimationController.Pause()");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Resume()
@@ -90,11 +83,18 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "void AnimationController.Resume()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.set
+		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.set
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.get
+		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.set
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void Pause()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "void AnimationController.Pause()");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MaxPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MinPlaybackRate.get
 	}

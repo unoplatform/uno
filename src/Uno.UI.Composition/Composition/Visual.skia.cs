@@ -66,7 +66,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (ignoreLocation)
 		{
 			surface.Canvas.Save();
-			surface.Canvas.Translate(-(Offset.X + AnchorPoint.X), -(Offset.Y + AnchorPoint.Y));
+			var totalOffset = this.GetTotalOffset();
+			surface.Canvas.Translate(-(totalOffset.X + AnchorPoint.X), -(totalOffset.Y + AnchorPoint.Y));
 		}
 
 		using var session = BeginDrawing(surface, DrawingFilters.Default);
@@ -123,7 +124,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		surface.Canvas.Translate(Offset.X + AnchorPoint.X, Offset.Y + AnchorPoint.Y);
+		var totalOffset = this.GetTotalOffset();
+		surface.Canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
 
 		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 		if (this.GetTransform() is { IsIdentity: false } transform)
@@ -135,7 +137,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(surface);
+		Clip?.Apply(surface, this);
 
 		var session = new DrawingSession(surface, in filters);
 

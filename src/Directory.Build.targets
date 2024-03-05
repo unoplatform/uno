@@ -1,5 +1,4 @@
 <Project>
-	<Import Project="TargetFrameworkSelection.targets" />
 	<Import Project="uno.mobile-cross-targeting-disable.props" />
 	<Import Project="Uno.CrossTargetting.targets" />
 

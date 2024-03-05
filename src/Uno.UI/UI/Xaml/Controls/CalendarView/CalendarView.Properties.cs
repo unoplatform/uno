@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Globalization;
 using Windows.UI.Text;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -900,7 +900,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DateTime minDate,
 			DateTime maxDate)
 		{
-			return date < minDate ? minDate : date > maxDate ? maxDate : date;
+			return date.UniversalTime < minDate.UniversalTime ? minDate : date.UniversalTime > maxDate.UniversalTime ? maxDate : date;
 		}
 
 		private static DateTimeOffset GetDefaultMaxDate()

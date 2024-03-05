@@ -426,7 +426,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// This event can be raised synchronously
 			// with the ScrollViewer's ChangeView().
 			// It must be delayed to prevent incorrect re-selection of another value.
-			Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
+			global::Windows.System.DispatcherQueue.GetForCurrentThread().TryEnqueue(ProcessEvent);
 		}
 
 		void OnViewChanging(
@@ -482,7 +482,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//UNREFERENCED_PARAMETER(pEventArgs);
 			var nPointerDeviceType = PointerDeviceType.Touch;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 
 			spPointerPoint = pEventArgs.GetCurrentPoint(null);
 			if (spPointerPoint == null)
@@ -1897,7 +1897,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				//	wrl_wrappers.Hstring(RuntimeClass_Windows_System_DispatcherQueue),
 				//	&spDispatcherQueueStatics));
 				//spDispatcherQueueStatics.GetForCurrentThread(spDispatcherQueue);
-				spDispatcherQueue = Windows.System.DispatcherQueue.GetForCurrentThread();
+				spDispatcherQueue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
 				//(spDispatcherQueue.TryEnqueue(
 				//	WRLHelper.MakeAgileCallback<wsy.IDispatcherQueueHandler>([wrThis, spVerticalOffset]() mutable {
 

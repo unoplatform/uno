@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			var pointerDeviceType = PointerDeviceType.Touch;
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 
 			spPointerPoint = pEventArgs.GetCurrentPoint(null);
 			if (spPointerPoint == null) { return; }

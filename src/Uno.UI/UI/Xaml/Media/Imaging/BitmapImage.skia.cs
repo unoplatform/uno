@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Uno.UI.Xaml.Media;
+using Windows.Application­Model;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -147,7 +148,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 
 			var originalLocalPath =
-				Path.Combine(Windows.Application­Model.Package.Current.InstalledPath,
+				Path.Combine(Package.Current.InstalledPath,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 				);
 

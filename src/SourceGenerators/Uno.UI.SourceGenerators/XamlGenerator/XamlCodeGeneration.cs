@@ -59,7 +59,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectFullPath;
 		private readonly bool _xamlResourcesTrimming;
 		private readonly bool _isUnoHead;
-		private bool _shouldWriteErrorOnInvalidXaml;
+		private readonly bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
 		/// <summary>
@@ -441,7 +441,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						defaultLanguage: _defaultLanguage,
 						shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
 						isWasm: _isWasm,
-						isDebug: _isDebug,
 						isHotReloadEnabled: _isHotReloadEnabled,
 						isInsideMainAssembly: isInsideMainAssembly,
 						isDesignTimeBuild: _isDesignTimeBuild,

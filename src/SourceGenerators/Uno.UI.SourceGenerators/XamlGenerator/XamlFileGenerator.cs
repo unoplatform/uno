@@ -78,7 +78,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _defaultLanguage;
-		private readonly bool _isDebug;
 		private readonly bool _isHotReloadEnabled;
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
@@ -198,7 +197,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string defaultLanguage,
 			bool shouldWriteErrorOnInvalidXaml,
 			bool isWasm,
-			bool isDebug,
 			bool isHotReloadEnabled,
 			bool isDesignTimeBuild,
 			bool isInsideMainAssembly,
@@ -224,7 +222,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
 			_defaultLanguage = defaultLanguage.IsNullOrEmpty() ? "en-US" : defaultLanguage;
-			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
 			_isDesignTimeBuild = isDesignTimeBuild;
@@ -383,7 +380,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						BuildBaseUri(writer);
 
-						using (Scope(_xClassName.Namespace, _xClassName.ClassName, topLevelControl))
+						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
 							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
 							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
@@ -884,11 +881,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var className = kvp.Key;
 					var contentOwner = kvp.Value.ContentOwner;
-					var contentLocation = kvp.Value.Location;
 
 					using (TrySetDefaultBindMode(contentOwner.Owner, kvp.Value.DefaultBindMode))
 					{
-						using (Scope(ns, className, contentLocation))
+						using (Scope(ns, className))
 						{
 							var hrInterfaceName = _isHotReloadEnabled ? $"I{className}" : "";
 							var hrInterfaceImpl = _isHotReloadEnabled ? $": {hrInterfaceName}" : "";
@@ -937,11 +933,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											}
 
 											writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);");
-										}
-
-										if (CurrentScope.Location is not null && _isHotReloadEnabled)
-										{
-											TrySetOriginalSourceLocation(writer, "__rootInstance", CurrentScope.Location.LineNumber, CurrentScope.Location.LinePosition);
 										}
 
 										writer.AppendLineIndented("return __rootInstance;");
@@ -2178,8 +2169,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			INamedTypeSymbol? findType;
 			if (ns != xamlType.PreferredXamlNamespace)
 			{
-				// If GetTrimmedNamespace returned a different string, it's either a "using:"-prefixed
-				// or "clr-namespace:"-prefixed namespace. In those cases, we'll have `baseTypeString` as
+				// If GetTrimmedNamespace returned a different string, it's a "using:"-prefixed namespace.
+				// In this case, we'll have `baseTypeString` as
 				// the fully qualified type name.
 				// In this case, we go through this code path as it's much more efficient than FindType.
 				var baseTypeString = $"{ns}.{xamlType.Name}";
@@ -4123,9 +4114,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			CurrentScope.BackingFields.Add(new BackingFieldDefinition(globalizedType, name, accessibility));
 		}
 
-		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType, IXamlLocation? location)
+		private void RegisterChildSubclass(string name, XamlMemberDefinition owner, string returnType)
 		{
-			CurrentScope.Subclasses[name] = new Subclass(owner, returnType, GetDefaultBindMode(), location);
+			CurrentScope.Subclasses[name] = new Subclass(owner, returnType, GetDefaultBindMode());
 		}
 
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true, ComponentDefinition? componentDefinition = null)
@@ -5956,9 +5947,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
-						BuildChildThroughSubclass(writer, contentOwner, contentLocation, returnType);
+						BuildChildThroughSubclass(writer, contentOwner, returnType);
 
 						writer.AppendIndented(")");
+						if (_isHotReloadEnabled)
+						{
+							using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
+							{
+								TrySetOriginalSourceLocation(applyWriter, closureName, contentLocation.LineNumber, contentLocation.LinePosition);
+							}
+						}
+
 					}
 					else
 					{
@@ -6566,7 +6565,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, IXamlLocation contentLocation, string returnType)
+		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
@@ -6576,7 +6575,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
-			RegisterChildSubclass(subclassName, contentOwner, returnType, contentLocation);
+			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
 			var activator = _isHotReloadEnabled
 				? $"(({namespacePrefix}I{subclassName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{namespacePrefix}{subclassName}>())"
@@ -6765,9 +6764,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private NameScope CurrentScope
 			=> _scopeStack.Peek();
 
-		private IDisposable Scope(string? @namespace, string className, IXamlLocation? location = null)
+		private IDisposable Scope(string? @namespace, string className)
 		{
-			_scopeStack.Push(new NameScope(@namespace, className, location));
+			_scopeStack.Push(new NameScope(@namespace, className));
 
 			return new DisposableAction(() => _scopeStack.Pop());
 		}

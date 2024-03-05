@@ -15,7 +15,7 @@ public partial class Tumb_CapturePreventScroll_Tests : SampleControlUITestBase
 
 	[Test]
 	[AutoRetry]
-	[ActivePlatforms(Platform.iOS, Platform.Android)]
+	[ActivePlatforms(Platform.iOS)] // TODO: Not available on Android https://github.com/unoplatform/uno/issues/9080
 	public void When_Drag_Then_DoesNotScroll()
 	{
 		Run(_sample);

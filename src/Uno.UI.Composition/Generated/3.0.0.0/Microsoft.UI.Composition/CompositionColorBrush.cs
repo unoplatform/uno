@@ -9,7 +9,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionColorBrush : global::Microsoft.UI.Composition.CompositionBrush
 	{
 		// Skipping already declared property Color
-		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Color.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionColorBrush.Color.get
 	}
 }

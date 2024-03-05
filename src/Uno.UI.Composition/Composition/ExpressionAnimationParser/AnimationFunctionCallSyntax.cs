@@ -16,7 +16,8 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		MinFloatFloatFunctionSpecification.Instance,
 		MaxFloatFloatFunctionSpecification.Instance,
 		Vector2FloatFloatFunctionSpecification.Instance,
-		Vector3FloatFloatFloatFunctionSpecification.Instance
+		Vector3FloatFloatFloatFunctionSpecification.Instance,
+		ClampFloatFloatFloatFunctionSpecification.Instance
 		);
 
 	public AnimationFunctionCallSyntax(AnimationExpressionSyntax identifierOrMemberAccess, ImmutableArray<AnimationExpressionSyntax> arguments)
@@ -56,7 +57,9 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 		foreach (var specification in _specifications)
 		{
 			if (specification.ClassName is null &&
-				specification.MethodName.Equals(name, StringComparison.Ordinal) &&
+				// WinUI appears to be case-insensitive.
+				// Actually, their usage of ExpressionAnimation in RefreshContainer uses `min` instead of `Min`
+				specification.MethodName.Equals(name, StringComparison.OrdinalIgnoreCase) &&
 				specification.ParametersLength == _arguments.Length)
 			{
 				return EvaluateSpecification(specification, expressionAnimation);

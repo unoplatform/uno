@@ -9,6 +9,8 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Core;
 
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
@@ -21,11 +23,11 @@ namespace Microsoft.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
-		private readonly Windows.UI.Core.PointerEventArgs _pointerEventArgs;
+		private readonly PointerEventArgs _pointerEventArgs;
 		private readonly PointerPoint _currentPoint;
 
 		internal PointerRoutedEventArgs(
-			Windows.UI.Core.PointerEventArgs pointerEventArgs,
+			PointerEventArgs pointerEventArgs,
 			UIElement source) : this()
 		{
 			_pointerEventArgs = pointerEventArgs;
@@ -57,7 +59,7 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 
-		private Pointer GetPointer(Windows.UI.Core.PointerEventArgs args)
+		private Pointer GetPointer(PointerEventArgs args)
 			=> new Pointer(
 				args.CurrentPoint.PointerId,
 				(PointerDeviceType)args.CurrentPoint.PointerDevice.PointerDeviceType,

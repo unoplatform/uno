@@ -48,7 +48,6 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
 
-		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
@@ -363,16 +362,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var geometry = e.NewValue as RectangleGeometry;
+			if (e.OldValue is RectangleGeometry oldValue)
+			{
+				oldValue.GeometryChanged -= ApplyClip;
+			}
 
 			ApplyClip();
-			_clipSubscription.Disposable = geometry.RegisterDisposableNestedPropertyChangedCallback(
-				(_, __) => ApplyClip(),
-				new[] { RectangleGeometry.RectProperty },
-				new[] { Geometry.TransformProperty },
-				new[] { Geometry.TransformProperty, TranslateTransform.XProperty },
-				new[] { Geometry.TransformProperty, TranslateTransform.YProperty }
-			);
+
+			if (e.NewValue is RectangleGeometry newValue)
+			{
+				newValue.GeometryChanged += ApplyClip;
+			}
 		}
 
 		#endregion
@@ -563,8 +563,9 @@ namespace Microsoft.UI.Xaml
 			// While arranging, it's equivalent to LayoutSlotWithMarginsAndAlignments PLUS UIElement.Translation.
 			// But also, if the user does ElementCompositionPreview.GetElementVisual(uiElement) and modifies
 			// the offset, we want to consider the user-modified value.
-			matrix.M31 += (float)Visual.Offset.X;
-			matrix.M32 += (float)Visual.Offset.Y;
+			var totalOffset = Visual.GetTotalOffset();
+			matrix.M31 += (float)totalOffset.X;
+			matrix.M32 += (float)totalOffset.Y;
 #else
 			var layoutSlot = LayoutSlotWithMarginsAndAlignments;
 			matrix.M31 += (float)layoutSlot.X;
@@ -840,6 +841,10 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
+
+#if __SKIA__
+			InvalidateArrange();
+#endif
 		}
 
 		partial void ApplyNativeClip(Rect rect);

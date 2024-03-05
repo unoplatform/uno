@@ -16,21 +16,21 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property BottomRightRadius
 		// Skipping already declared property BottomLeftRadius
 		// Skipping already declared property Bottom
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Right.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomLeftRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomRightRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomRightRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Left.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Left.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Right.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Bottom.get
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Right.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Bottom.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Left.set
+		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomLeftRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Top.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Top.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopLeftRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopLeftRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.get
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.TopRightRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomLeftRadius.get
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomLeftRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomRightRadius.get
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.BottomRightRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.RectangleClip.Left.get
 	}
 }

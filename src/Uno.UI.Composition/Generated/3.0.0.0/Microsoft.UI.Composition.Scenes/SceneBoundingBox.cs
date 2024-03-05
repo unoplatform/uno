@@ -63,10 +63,10 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Max.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Min.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Extents.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Center.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Max.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Extents.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Min.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneBoundingBox.Center.get
 	}
 }

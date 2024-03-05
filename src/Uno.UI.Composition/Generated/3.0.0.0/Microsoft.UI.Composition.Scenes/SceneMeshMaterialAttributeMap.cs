@@ -23,14 +23,14 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.HasKey(string)
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Insert(string, Microsoft.UI.Composition.Scenes.SceneAttributeSemantic)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.First()
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Remove(string)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Size.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Clear()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.First()
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Lookup(string)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.HasKey(string)
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.GetView()
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Insert(string, Microsoft.UI.Composition.Scenes.SceneAttributeSemantic)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Lookup(string)
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMeshMaterialAttributeMap.Clear()
 		// Processing: System.Collections.Generic.IDictionary<string, Microsoft.UI.Composition.Scenes.SceneAttributeSemantic>
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Microsoft.UI.Composition.Scenes.SceneAttributeSemantic>

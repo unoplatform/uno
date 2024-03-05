@@ -7,12 +7,17 @@ namespace Microsoft.UI.Composition;
 public partial class ExpressionAnimation : CompositionAnimation
 {
 	private AnimationExpressionSyntax? _parsedExpression;
+	private string _expression = string.Empty;
 
 	internal ExpressionAnimation(Compositor compositor) : base(compositor)
 	{
 	}
 
-	public string? Expression { get; set; }
+	public string Expression
+	{
+		get => _expression;
+		set => _expression = value ?? throw new ArgumentException();
+	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
@@ -24,9 +29,9 @@ public partial class ExpressionAnimation : CompositionAnimation
 
 	internal override object? Start()
 	{
-		if (Expression is null)
+		if (Expression.Length == 0)
 		{
-			throw new InvalidOperationException("Property 'Expression' should not be null when starting an ExpressionAnimation");
+			throw new InvalidOperationException("Property 'Expression' should not be empty when starting an ExpressionAnimation");
 		}
 
 		// TODO: Check what to do if this is a second Start call and we already have non-null _parsedExpression;

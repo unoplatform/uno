@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 using System.Threading;
 using Uno.UI.Dispatching;
@@ -110,4 +111,60 @@ public partial class InteractionTracker : CompositionObject
 
 	public int TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option)
 		=> TryUpdatePosition(Position + amount, option);
+
+	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+	{
+		if (propertyName.Equals(nameof(MinPosition), StringComparison.OrdinalIgnoreCase))
+		{
+			MinPosition = UpdateVector3(subPropertyName, MinPosition, propertyValue);
+		}
+		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
+		{
+			MaxPosition = UpdateVector3(subPropertyName, MaxPosition, propertyValue);
+		}
+		else if (propertyName.Equals(nameof(MinScale), StringComparison.OrdinalIgnoreCase))
+		{
+			MinScale = ValidateValue<float>(propertyValue);
+		}
+		else if (propertyName.Equals(nameof(MaxScale), StringComparison.OrdinalIgnoreCase))
+		{
+			MaxScale = ValidateValue<float>(propertyValue);
+		}
+		else
+		{
+			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+		}
+	}
+
+	internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+	{
+		if (propertyName.Equals(nameof(Position), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetVector3(subPropertyName, Position);
+		}
+		else if (propertyName.Equals(nameof(MinPosition), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetVector3(subPropertyName, MinPosition);
+		}
+		else if (propertyName.Equals(nameof(MaxPosition), StringComparison.OrdinalIgnoreCase))
+		{
+			return GetVector3(subPropertyName, MinPosition);
+		}
+		else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+		{
+			return ValidateValue<float>(Scale);
+		}
+		else if (propertyName.Equals(nameof(MinScale), StringComparison.OrdinalIgnoreCase))
+		{
+			return ValidateValue<float>(MinScale);
+		}
+		else if (propertyName.Equals(nameof(MaxScale), StringComparison.OrdinalIgnoreCase))
+		{
+			return ValidateValue<float>(MaxScale);
+		}
+		else
+		{
+			return base.GetAnimatableProperty(propertyName, subPropertyName);
+		}
+	}
 }

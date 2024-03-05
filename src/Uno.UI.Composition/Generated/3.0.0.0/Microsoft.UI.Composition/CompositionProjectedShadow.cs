@@ -89,9 +89,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.Receivers.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MinBlurRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MaxBlurRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.Receivers.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.BlurRadiusMultiplier.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.Casters.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.LightSource.get
@@ -99,5 +98,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.BlurRadiusMultiplier.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MaxBlurRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MinBlurRadius.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadow.MinBlurRadius.set
 	}
 }

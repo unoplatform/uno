@@ -12,11 +12,11 @@ $external_docs = @{
     "uno.toolkit.ui"     = "d7eaf4b923b81e5386a5ceb0aff4ae4014239ffa"
     "uno.check"          = "0350ba1b78ee7488d88f093e8f92cc4d9cb055f5"
     "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
-    "figma-docs"         = "0e204b21d437478d89845b6b0edb212c3f482cbc"
+    "figma-docs"         = "909bfd2f272b584e1312b64136c7fb98c66e625d"
     "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
     "uno.extensions"     = "0cbe572c56e956bbf3d51cb1d51f36f513e0402f"
-    "workshops"          = "0c964f38df5a4b0f32cf36cd74591df3012b8e20"
+    "workshops"          = "4e9bab696ad471785c7466a4c1a48bb97d594865"
 }
 
 $uno_git_url = "https://github.com/unoplatform/"

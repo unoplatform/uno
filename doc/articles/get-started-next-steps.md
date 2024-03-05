@@ -85,7 +85,7 @@ Any UWP/WinUI/XAML material is a great starting point as all we do is take that 
 
 If you have a question about Uno Platform that others might benefit from, post it on [Uno Platform GitHub discussions](https://github.com/unoplatform/uno/discussions) or If you think you've encountered a bug (e.g. something works on WinAppSDK or UWP but not on another platform), [check for an existing issue on GitHub]( https://github.com/unoplatform/uno/issues) and create one if none exists. We don't like bugs, but we do like bug reports!
 
-For more chat-like troubleshooting, visit the Uno Platform team and the Uno community on our [Discord Channel #uno-platform]( https://discord.gg/eBHZSKG). Both have our engineering team monitoring discussions and answering questions.
+For more chat-like troubleshooting, visit the Uno Platform team and community on our [Discord Server](https://platform.uno/discord). Both have our engineering team monitoring discussions and answering questions.
 
 ## Some additional resources
 

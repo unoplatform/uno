@@ -23,9 +23,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.get
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.set
-		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.set
 		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.get
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.get
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Brush.set
+		// Forced skipping of method Microsoft.UI.Composition.SpriteVisual.Shadow.set
 	}
 }
