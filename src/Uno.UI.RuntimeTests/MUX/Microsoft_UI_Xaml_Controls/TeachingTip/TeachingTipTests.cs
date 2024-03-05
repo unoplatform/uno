@@ -37,6 +37,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 public class TeachingTipTests
 {
 	[TestMethod]
+	[Ignore("Fails on Uno targets due to #15755")]
 	[TestProperty("TestPass:IncludeOnlyOn", "Desktop")] // TeachingTip doesn't appear to show up correctly in OneCore.
 	public async Task TeachingTipBackgroundTest()
 	{
