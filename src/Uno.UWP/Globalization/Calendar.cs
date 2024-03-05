@@ -351,6 +351,10 @@ namespace Windows.Globalization
 		public void SetToMax()
 		{
 			var calendarMaxSupportedDateTime = _calendar.MaxSupportedDateTime;
+			if (calendarMaxSupportedDateTime == DateTime.MaxValue)
+			{
+				calendarMaxSupportedDateTime = calendarMaxSupportedDateTime.AddYears(-1);
+			}
 
 			_time = calendarMaxSupportedDateTime;
 		}
