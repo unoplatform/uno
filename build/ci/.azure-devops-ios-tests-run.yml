@@ -34,6 +34,11 @@ jobs:
   - checkout: self
     clean: true
 
+  - script: |
+      cp global.json global-net7.json
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
+
   - task: DownloadBuildArtifacts@0
     displayName: 'Download iOS Samples App'
     inputs:
