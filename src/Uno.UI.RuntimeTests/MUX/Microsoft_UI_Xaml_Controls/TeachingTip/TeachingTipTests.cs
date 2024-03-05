@@ -30,6 +30,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Shapes;
 using Private.Infrastructure;
 using System.Threading.Tasks;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -170,134 +171,186 @@ public class TeachingTipTests
 	[TestMethod]
 	public void TeachingTipWithContentAndWithoutHeroContentDoesNotCrash()
 	{
-		var loadedEvent = new AutoResetEvent(false);
+		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
 		{
-			Grid contentGrid = new Grid();
-			SymbolIconSource iconSource = new SymbolIconSource();
-			iconSource.Symbol = Symbol.People;
-			TeachingTip teachingTip = new TeachingTip();
-			teachingTip.Content = contentGrid;
-			teachingTip.IconSource = (IconSource)iconSource;
-			teachingTip.Loaded += (object sender, RoutedEventArgs args) => { loadedEvent.Set(); };
-			TestServices.WindowHelper.WindowContent = teachingTip;
+			stylesDisposable = StyleHelper.UseFluentStyles();
 		});
 
-		IdleSynchronizer.Wait();
-		loadedEvent.WaitOne();
+		try
+		{
+			var loadedEvent = new AutoResetEvent(false);
+			RunOnUIThread.Execute(() =>
+			{
+				Grid contentGrid = new Grid();
+				SymbolIconSource iconSource = new SymbolIconSource();
+				iconSource.Symbol = Symbol.People;
+				TeachingTip teachingTip = new TeachingTip();
+				teachingTip.Content = contentGrid;
+				teachingTip.IconSource = (IconSource)iconSource;
+				teachingTip.Loaded += (object sender, RoutedEventArgs args) => { loadedEvent.Set(); };
+				TestServices.WindowHelper.WindowContent = teachingTip;
+			});
+
+			IdleSynchronizer.Wait();
+			loadedEvent.WaitOne();
+		}
+		finally
+		{
+			RunOnUIThread.Execute(() => stylesDisposable?.Dispose());
+		}
 	}
 
 	[TestMethod]
 	public void TeachingTipWithContentAndWithoutIconSourceDoesNotCrash()
 	{
-		var loadedEvent = new AutoResetEvent(false);
+		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
 		{
-			Grid contentGrid = new Grid();
-			Grid heroGrid = new Grid();
-			TeachingTip teachingTip = new TeachingTip();
-			teachingTip.Content = contentGrid;
-			teachingTip.HeroContent = heroGrid;
-			teachingTip.Loaded += (object sender, RoutedEventArgs args) => { loadedEvent.Set(); };
-			TestServices.WindowHelper.WindowContent = teachingTip;
+			stylesDisposable = StyleHelper.UseFluentStyles();
 		});
 
-		IdleSynchronizer.Wait();
-		loadedEvent.WaitOne();
+		try
+		{
+			var loadedEvent = new AutoResetEvent(false);
+			RunOnUIThread.Execute(() =>
+			{
+				Grid contentGrid = new Grid();
+				Grid heroGrid = new Grid();
+				TeachingTip teachingTip = new TeachingTip();
+				teachingTip.Content = contentGrid;
+				teachingTip.HeroContent = heroGrid;
+				teachingTip.Loaded += (object sender, RoutedEventArgs args) => { loadedEvent.Set(); };
+				TestServices.WindowHelper.WindowContent = teachingTip;
+			});
+
+			IdleSynchronizer.Wait();
+			loadedEvent.WaitOne();
+		}
+		finally
+		{
+			RunOnUIThread.Execute(() => stylesDisposable?.Dispose());
+		}
 	}
 
 	[TestMethod]
 	public void PropagatePropertiesDown()
 	{
-		TextBlock content = null;
-		TeachingTip tip = null;
+		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
 		{
-			content = new TextBlock()
-			{
-				Text = "Some text"
-			};
+			stylesDisposable = StyleHelper.UseFluentStyles();
+		});
 
-			tip = new TeachingTip()
+		try
+		{
+			TextBlock content = null;
+			TeachingTip tip = null;
+			RunOnUIThread.Execute(() =>
 			{
-				Content = content,
-				FontSize = 22,
-				Foreground = new SolidColorBrush()
+				content = new TextBlock()
 				{
-					Color = Colors.Red
-				}
-			};
+					Text = "Some text"
+				};
 
-			TestServices.WindowHelper.WindowContent = tip;
-			tip.UpdateLayout();
-			tip.IsOpen = true;
-			tip.UpdateLayout();
-		});
+				tip = new TeachingTip()
+				{
+					Content = content,
+					FontSize = 22,
+					Foreground = new SolidColorBrush()
+					{
+						Color = Colors.Red
+					}
+				};
 
-		IdleSynchronizer.Wait();
+				TestServices.WindowHelper.WindowContent = tip;
+				tip.UpdateLayout();
+				tip.IsOpen = true;
+				tip.UpdateLayout();
+			});
 
-		RunOnUIThread.Execute(() =>
+			IdleSynchronizer.Wait();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Verify.IsTrue(Math.Abs(22 - content.FontSize) < 1);
+				var foregroundBrush = content.Foreground as SolidColorBrush;
+				Verify.AreEqual(Colors.Red, foregroundBrush.Color);
+			});
+		}
+		finally
 		{
-			Verify.IsTrue(Math.Abs(22 - content.FontSize) < 1);
-			var foregroundBrush = content.Foreground as SolidColorBrush;
-			Verify.AreEqual(Colors.Red, foregroundBrush.Color);
-		});
+			RunOnUIThread.Execute(() => stylesDisposable?.Dispose());
+		}
 	}
 
 
 	[TestMethod]
 	public void TeachingTipHeroContentPlacementTest()
 	{
+		IDisposable stylesDisposable = null;
 		RunOnUIThread.Execute(() =>
 		{
-			foreach (var iPlacementMode in Enum.GetValues(typeof(TeachingTipHeroContentPlacementMode)))
-			{
-				var placementMode = (TeachingTipHeroContentPlacementMode)iPlacementMode;
-
-				Log.Comment($"Verifying TeachingTipHeroContentPlacementMode [{placementMode}]");
-
-				TeachingTip teachingTip = new TeachingTip();
-				teachingTip.HeroContentPlacement = placementMode;
-
-				// Open the teaching tip to enter the correct visual state for the HeroContentPlacement.
-				teachingTip.IsOpen = true;
-
-				TestServices.WindowHelper.WindowContent = teachingTip;
-				teachingTip.UpdateLayout();
-
-				Verify.IsTrue(teachingTip.HeroContentPlacement == placementMode, $"HeroContentPlacement should have been [{placementMode}]");
-
-				var root = VisualTreeUtils.FindVisualChildByName(teachingTip, "Container") as FrameworkElement;
-
-				switch (placementMode)
-				{
-					case TeachingTipHeroContentPlacementMode.Auto:
-						Verify.IsTrue(IsVisualStateActive(root, "HeroContentPlacementStates", "HeroContentTop"),
-							"The [HeroContentTop] visual state should have been active");
-						break;
-					case TeachingTipHeroContentPlacementMode.Top:
-						Verify.IsTrue(IsVisualStateActive(root, "HeroContentPlacementStates", "HeroContentTop"),
-							"The [HeroContentTop] visual state should have been active");
-						break;
-					case TeachingTipHeroContentPlacementMode.Bottom:
-						Verify.IsTrue(IsVisualStateActive(root, "HeroContentPlacementStates", "HeroContentBottom"),
-							"The [HeroContentBottom] visual state should have been active");
-						break;
-				}
-			}
+			stylesDisposable = StyleHelper.UseFluentStyles();
 		});
 
-		bool IsVisualStateActive(FrameworkElement root, string groupName, string stateName)
+		try
 		{
-			foreach (var group in VisualStateManager.GetVisualStateGroups(root))
+			RunOnUIThread.Execute(() =>
 			{
-				if (group.Name == groupName)
+				foreach (var iPlacementMode in Enum.GetValues(typeof(TeachingTipHeroContentPlacementMode)))
 				{
-					return group.CurrentState != null && group.CurrentState.Name == stateName;
-				}
-			}
+					var placementMode = (TeachingTipHeroContentPlacementMode)iPlacementMode;
 
-			return false;
+					Log.Comment($"Verifying TeachingTipHeroContentPlacementMode [{placementMode}]");
+
+					TeachingTip teachingTip = new TeachingTip();
+					teachingTip.HeroContentPlacement = placementMode;
+
+					// Open the teaching tip to enter the correct visual state for the HeroContentPlacement.
+					teachingTip.IsOpen = true;
+
+					TestServices.WindowHelper.WindowContent = teachingTip;
+					teachingTip.UpdateLayout();
+
+					Verify.IsTrue(teachingTip.HeroContentPlacement == placementMode, $"HeroContentPlacement should have been [{placementMode}]");
+
+					var root = VisualTreeUtils.FindVisualChildByName(teachingTip, "Container") as FrameworkElement;
+
+					switch (placementMode)
+					{
+						case TeachingTipHeroContentPlacementMode.Auto:
+							Verify.IsTrue(IsVisualStateActive(root, "HeroContentPlacementStates", "HeroContentTop"),
+								"The [HeroContentTop] visual state should have been active");
+							break;
+						case TeachingTipHeroContentPlacementMode.Top:
+							Verify.IsTrue(IsVisualStateActive(root, "HeroContentPlacementStates", "HeroContentTop"),
+								"The [HeroContentTop] visual state should have been active");
+							break;
+						case TeachingTipHeroContentPlacementMode.Bottom:
+							Verify.IsTrue(IsVisualStateActive(root, "HeroContentPlacementStates", "HeroContentBottom"),
+								"The [HeroContentBottom] visual state should have been active");
+							break;
+					}
+				}
+			});
+
+			bool IsVisualStateActive(FrameworkElement root, string groupName, string stateName)
+			{
+				foreach (var group in VisualStateManager.GetVisualStateGroups(root))
+				{
+					if (group.Name == groupName)
+					{
+						return group.CurrentState != null && group.CurrentState.Name == stateName;
+					}
+				}
+
+				return false;
+			}
+		}
+		finally
+		{
+			RunOnUIThread.Execute(() => stylesDisposable?.Dispose());
 		}
 	}
 }
