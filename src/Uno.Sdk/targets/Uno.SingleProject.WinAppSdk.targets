@@ -21,11 +21,6 @@
 		<WindowsPackageType Condition="'$(WindowsPackageType)'==''">None</WindowsPackageType>
 	</PropertyGroup>
 
-	<!-- Required to allow `dotnet build` to work without extra parameters -->
-	<PropertyGroup Condition="'$(Platform)' == 'AnyCPU' AND $(Optimize) != 'true'">
-		<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
 		<Manifest Include="$(ApplicationManifest)"
@@ -47,6 +42,15 @@
 		<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 		<RuntimeIdentifier>win-$(_SingleProjectHostArchitecture)</RuntimeIdentifier>
 	</PropertyGroup>
+
+	<Target Name="EnsureDefaultPlatformForAnyCPU"
+			BeforeTargets="UnoSdkVersionCheck"
+			Condition="'$(Platform)' == 'AnyCPU' AND $(Optimize) != 'true'">
+		<!-- Required to allow `dotnet build` to work without extra parameters -->
+		<PropertyGroup>
+			<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
+		</PropertyGroup>
+	</Target>
 
 	<!--
 		Sanity Check...
