@@ -125,6 +125,7 @@ stages:
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
       vmMacOSImage: '$(macOSVMImage)'
+      linuxScaledPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
       XamarinSDKVersion: '$(XamarinSDKVersion)'
   

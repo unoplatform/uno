@@ -1,6 +1,7 @@
 parameters:
   vmMacOSImage: ''
   vmWindowsImage: ''
+  linuxScaledPool: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
 
@@ -78,8 +79,7 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-  pool:
-    vmImage: ${{ parameters.vmMacOSImage }}
+  pool: ${{ parameters.linuxScaledPool }}
 
   strategy:
     matrix:
@@ -130,6 +130,12 @@ jobs:
   steps:
   - checkout: self
     clean: true
+
+  - bash: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    displayName: 'Enable KVM for Android Virtualization'
 
   - task: DownloadBuildArtifacts@0
     displayName: 'Download SamplesApp UnitTests'
