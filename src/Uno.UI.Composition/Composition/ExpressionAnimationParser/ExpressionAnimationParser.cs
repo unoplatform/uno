@@ -50,7 +50,7 @@ internal sealed class ExpressionAnimationParser
 		return token.Kind switch
 		{
 			ExpressionAnimationTokenKind.QuestionMarkToken => 1,
-			ExpressionAnimationTokenKind.LessThanToken or ExpressionAnimationTokenKind.LessThanEqualsToken or ExpressionAnimationTokenKind.GreaterThanToken or ExpressionAnimationTokenKind.GreaterThanToken => 2,
+			ExpressionAnimationTokenKind.LessThanToken or ExpressionAnimationTokenKind.LessThanEqualsToken or ExpressionAnimationTokenKind.GreaterThanToken or ExpressionAnimationTokenKind.GreaterThanEqualsToken => 2,
 			ExpressionAnimationTokenKind.PlusToken or ExpressionAnimationTokenKind.MinusToken => 3,
 			ExpressionAnimationTokenKind.MultiplyToken or ExpressionAnimationTokenKind.DivisionToken => 4,
 			_ => 0
