@@ -80,6 +80,10 @@
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
 
+	<PropertyGroup Condition="$(SingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
 			Condition=" $(IsAndroid) != 'true' " />
