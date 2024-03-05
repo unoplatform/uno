@@ -6,15 +6,15 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Automation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Automation;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +29,7 @@ using TeachingTipHeroContentPlacementMode = Microsoft.UI.Xaml.Controls.TeachingT
 using TeachingTipPlacementMode = Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.Samples.Controls;
-using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
+using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using MUXControlsTestApp.Utilities;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests

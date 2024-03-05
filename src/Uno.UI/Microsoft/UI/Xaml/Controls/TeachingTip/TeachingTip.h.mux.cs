@@ -53,9 +53,11 @@ partial class TeachingTip
 
 	private Border m_container;
 
-	private Popup m_popup;
+	internal Popup m_popup;
 	private Popup m_lightDismissIndicatorPopup;
+#if false // Unused in WinUI
 	private ContentControl m_popupContentControl;
+#endif
 
 	private UIElement m_rootElement;
 	private Grid m_tailOcclusionGrid;
@@ -67,8 +69,10 @@ partial class TeachingTip
 	private Button m_closeButton;
 	private Polygon m_tailPolygon;
 	private Grid m_tailEdgeBorder;
+#if false // Unused in WinUI
 	private UIElement m_titleTextBlock;
 	private UIElement m_subtitleTextBlock;
+#endif
 
 	private ManagedWeakReference m_previouslyFocusedElement;
 
@@ -109,17 +113,21 @@ partial class TeachingTip
 
 	private float m_contentElevation = 32.0f;
 	private float m_tailElevation = 0.0f;
+#if false // Unused in WinUI
 	private bool m_tailShadowTargetsShadowTarget;
+#endif
 
 	private TimeSpan m_expandAnimationDuration = TimeSpan.FromMilliseconds(300);
 	private TimeSpan m_contractAnimationDuration = TimeSpan.FromMilliseconds(200);
 
 	private TeachingTipCloseReason m_lastCloseReason = TeachingTipCloseReason.Programmatic;
 
+#if false // Unused in WinUI
 	private static bool IsPlacementTop(TeachingTipPlacementMode placement) =>
 		placement == TeachingTipPlacementMode.Top ||
 		placement == TeachingTipPlacementMode.TopLeft ||
 		placement == TeachingTipPlacementMode.TopRight;
+#endif
 
 	static bool IsPlacementBottom(TeachingTipPlacementMode placement) =>
 		placement == TeachingTipPlacementMode.Bottom ||
