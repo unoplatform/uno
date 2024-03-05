@@ -168,7 +168,7 @@ namespace Windows.Storage.Pickers
 
 				foreach (NSItemProvider provider in providers)
 				{
-					var identifier = GetIdentifier(provider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
+					var identifier = GetIdentifier(provider.RegisteredTypeIdentifiers ?? Array.Empty<string>()) ?? "public.data";
 					var data = await provider.LoadDataRepresentationAsync(identifier);
 
 					if (data is null)
