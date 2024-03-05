@@ -122,6 +122,7 @@ xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
 # echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
 # xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
+idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
