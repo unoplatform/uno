@@ -9,18 +9,59 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <Grid>
-        <Button
+	<Grid>
+		<StackPanel Spacing="8" Margin="20">
+			<Button
             x:Name="SaveButton"
             Click="ShowTip"
             Content="Save">
-            <Button.Resources>
-                <muxc:TeachingTip
+				<Button.Resources>
+					<muxc:TeachingTip
                     x:Name="AutoSaveTip"
                     Title="Save automatically"
                     Subtitle="When you save your file to OneDrive, we save your changes as you go - so you never have to."
                     Target="{x:Bind SaveButton}" />
-            </Button.Resources>
-        </Button>
-    </Grid>
+				</Button.Resources>
+			</Button>
+
+			<Button x:Name="ThemeButton" Content="Show TeachingTip" Click="TestButtonClick1" />
+
+			<Button Content="Show TeachingTip" Click="TestButtonClick2" />
+
+			<Button Content="Show TeachingTip" Click="TestButtonClick3" />
+		</StackPanel>
+
+
+		<TeachingTip x:Name="ToggleThemeTeachingTip1"
+			Target="{x:Bind ThemeButton}"
+			Title="Change themes without hassle"
+			Subtitle="It's easier than ever to see control samples in both light and dark theme!">
+			<TeachingTip.IconSource>
+				<SymbolIconSource Symbol="Refresh" />
+			</TeachingTip.IconSource>
+		</TeachingTip>
+
+		<TeachingTip x:Name="ToggleThemeTeachingTip2"
+			Title="Change themes without hassle"
+			Subtitle="It's easier than ever to see control samples in both light and dark theme!"
+			PreferredPlacement="Auto"
+			PlacementMargin="20"
+			IsLightDismissEnabled="True"
+			ActionButtonContent="Toggle theme now"
+			CloseButtonContent="Got it!">
+		</TeachingTip>
+
+		<TeachingTip x:Name="ToggleThemeTeachingTip3"
+			Target="{x:Bind ThemeButton}"
+			Title="Change themes without hassle"
+			Subtitle="It's easier than ever to see control samples in both light and dark theme!"
+			PreferredPlacement="Bottom">
+			<TeachingTip.HeroContent>
+				<Image Source="ms-appx:///Assets/Thumbnails/Getting_Started_with_Uno_Platform_for_Figma.png" AutomationProperties.Name="Sunset" />
+			</TeachingTip.HeroContent>
+			<TeachingTip.Content>
+				<TextBlock TextWrapping="WrapWholeWords" Margin="0,16,0,0">To change your desktop theme visit the <Hyperlink NavigateUri="ms-settings:colors">Settings app</Hyperlink>.</TextBlock>
+			</TeachingTip.Content>
+		</TeachingTip>
+	</Grid>
 </Page>
