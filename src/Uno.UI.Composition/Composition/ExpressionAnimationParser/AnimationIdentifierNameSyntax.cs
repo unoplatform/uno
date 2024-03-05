@@ -31,22 +31,29 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 		{
 			value.AddContext(expressionAnimation, null);
 			_result = value;
-			return value;
 		}
-
-		if (expressionAnimation.ScalarParameters.TryGetValue(identifierValue, out var scalarValue))
+		else if (expressionAnimation.ScalarParameters.TryGetValue(identifierValue, out var scalarValue))
 		{
 			_result = scalarValue;
-			return scalarValue;
 		}
-
-		if (identifierValue.Equals("Pi", StringComparison.Ordinal))
+		else if (identifierValue.Equals("Pi", StringComparison.OrdinalIgnoreCase))
 		{
-			_result = Math.PI;
-			return Math.PI;
+			_result = (float)Math.PI;
+		}
+		else if (identifierValue.Equals("True", StringComparison.OrdinalIgnoreCase))
+		{
+			_result = true;
+		}
+		else if (identifierValue.Equals("False", StringComparison.OrdinalIgnoreCase))
+		{
+			_result = false;
+		}
+		else
+		{
+			throw new ArgumentException($"Unrecognized identifier '{Identifier.Value}'.");
 		}
 
-		throw new ArgumentException($"Unrecognized identifier '{Identifier.Value}'.");
+		return _result;
 	}
 
 	public override void Dispose()

@@ -78,6 +78,58 @@ internal class AnimationBinaryExpressionSyntax : AnimationExpressionSyntax
 				_ => throw new ArgumentException($"Cannot evaluate binary / between types '{leftValue.GetType()}' and '{rightValue.GetType()}'.")
 			};
 		}
+		else if (_operatorToken.Kind == ExpressionAnimationTokenKind.GreaterThanToken)
+		{
+			return (leftValue, rightValue) switch
+			{
+				(float leftFloat, float rightFloat) => leftFloat > rightFloat,
+				(byte leftByte, byte rightByte) => leftByte > rightByte,
+				(short leftShort, short rightShort) => leftShort > rightShort,
+				(int leftInt, int rightInt) => leftInt > rightInt,
+				(int leftInt, float rightFloat) => leftInt > rightFloat,
+				(float leftFloat, int rightInt) => leftFloat > rightInt,
+				_ => throw new ArgumentException($"Cannot evaluate binary > between types '{leftValue.GetType()}' and '{rightValue.GetType()}'.")
+			};
+		}
+		else if (_operatorToken.Kind == ExpressionAnimationTokenKind.GreaterThanEqualsToken)
+		{
+			return (leftValue, rightValue) switch
+			{
+				(float leftFloat, float rightFloat) => leftFloat >= rightFloat,
+				(byte leftByte, byte rightByte) => leftByte >= rightByte,
+				(short leftShort, short rightShort) => leftShort >= rightShort,
+				(int leftInt, int rightInt) => leftInt >= rightInt,
+				(int leftInt, float rightFloat) => leftInt >= rightFloat,
+				(float leftFloat, int rightInt) => leftFloat >= rightInt,
+				_ => throw new ArgumentException($"Cannot evaluate binary >= between types '{leftValue.GetType()}' and '{rightValue.GetType()}'.")
+			};
+		}
+		else if (_operatorToken.Kind == ExpressionAnimationTokenKind.LessThanToken)
+		{
+			return (leftValue, rightValue) switch
+			{
+				(float leftFloat, float rightFloat) => leftFloat < rightFloat,
+				(byte leftByte, byte rightByte) => leftByte < rightByte,
+				(short leftShort, short rightShort) => leftShort < rightShort,
+				(int leftInt, int rightInt) => leftInt < rightInt,
+				(int leftInt, float rightFloat) => leftInt < rightFloat,
+				(float leftFloat, int rightInt) => leftFloat < rightInt,
+				_ => throw new ArgumentException($"Cannot evaluate binary < between types '{leftValue.GetType()}' and '{rightValue.GetType()}'.")
+			};
+		}
+		else if (_operatorToken.Kind == ExpressionAnimationTokenKind.LessThanEqualsToken)
+		{
+			return (leftValue, rightValue) switch
+			{
+				(float leftFloat, float rightFloat) => leftFloat <= rightFloat,
+				(byte leftByte, byte rightByte) => leftByte <= rightByte,
+				(short leftShort, short rightShort) => leftShort <= rightShort,
+				(int leftInt, int rightInt) => leftInt <= rightInt,
+				(int leftInt, float rightFloat) => leftInt <= rightFloat,
+				(float leftFloat, int rightInt) => leftFloat <= rightInt,
+				_ => throw new ArgumentException($"Cannot evaluate binary <= between types '{leftValue.GetType()}' and '{rightValue.GetType()}'.")
+			};
+		}
 
 		throw new ArgumentException($"Unable to binary expression for operator '{_operatorToken.Kind}'.");
 	}

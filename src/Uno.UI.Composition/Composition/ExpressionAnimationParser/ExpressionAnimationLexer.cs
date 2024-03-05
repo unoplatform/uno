@@ -23,6 +23,8 @@ internal sealed class ExpressionAnimationLexer
 		[','] = ExpressionAnimationTokenKind.CommaToken,
 		['('] = ExpressionAnimationTokenKind.OpenParenToken,
 		[')'] = ExpressionAnimationTokenKind.CloseParenToken,
+		['?'] = ExpressionAnimationTokenKind.QuestionMarkToken,
+		[':'] = ExpressionAnimationTokenKind.ColonToken,
 	};
 
 	public ExpressionAnimationLexer(string text)
@@ -83,6 +85,30 @@ internal sealed class ExpressionAnimationLexer
 		{
 			_position++;
 			return new ExpressionAnimationToken(kind, null);
+		}
+
+		if (Current == '>')
+		{
+			_position++;
+			if (Current == '=')
+			{
+				_position++;
+				return new ExpressionAnimationToken(ExpressionAnimationTokenKind.GreaterThanEqualsToken, null);
+			}
+
+			return new ExpressionAnimationToken(ExpressionAnimationTokenKind.GreaterThanToken, null);
+		}
+
+		if (Current == '<')
+		{
+			_position++;
+			if (Current == '=')
+			{
+				_position++;
+				return new ExpressionAnimationToken(ExpressionAnimationTokenKind.LessThanEqualsToken, null);
+			}
+
+			return new ExpressionAnimationToken(ExpressionAnimationTokenKind.LessThanToken, null);
 		}
 
 		if (char.IsLetter(Current))
