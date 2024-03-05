@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml
 #endif
 
 		[Flags]
-		internal enum LayoutFlag : byte
+		internal enum LayoutFlag : short
 		{
 			/// <summary>
 			/// Means the Measure is dirty for the current element
@@ -160,6 +160,11 @@ namespace Microsoft.UI.Xaml
 			/// This flag is used during invalidation
 			/// </remarks>
 			ArrangeDirtyPathDisabled = 0b1000_0000,
+
+			/// <summary>
+			/// Indicates that the element is currently being measured during the Arrange cycle.
+			/// </summary>
+			MeasureDuringArrange = 0b0000_0001_0000_0000,
 		}
 
 		private const LayoutFlag DEFAULT_STARTING_LAYOUTFLAGS = 0;

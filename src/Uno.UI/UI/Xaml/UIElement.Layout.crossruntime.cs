@@ -213,6 +213,8 @@ namespace Microsoft.UI.Xaml
 					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
 					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
 
+					var prevSize = DesiredSize;
+
 					// The dirty flag is explicitly set on this element
 #if DEBUG
 					try
@@ -231,6 +233,15 @@ namespace Microsoft.UI.Xaml
 #endif
 					{
 						LayoutInformation.SetAvailableSize(this, availableSize);
+
+						// if (!GetIsMeasureDuringArrange() && ! IsSameSize(prevSize, desiredSize) && !bInLayoutTransition)
+						if (!IsLayoutFlagSet(LayoutFlag.MeasureDuringArrange) && prevSize != DesiredSize)
+						{
+							if (GetUIElementAdjustedParentInternal() is { } pParent)
+							{
+								pParent.OnChildDesiredSizeChanged(pParent);
+							}
+						}
 					}
 
 					break;
@@ -360,7 +371,10 @@ namespace Microsoft.UI.Xaml
 			{
 				if (IsMeasureDirtyOrMeasureDirtyPath)
 				{
+					// Uno doc: in WinUI, the flag is only set and reset if IsMeasureDirty, not IsMeasureDirtyOrMeasureDirtyPath
+					SetLayoutFlags(LayoutFlag.MeasureDuringArrange);
 					DoMeasure(LastAvailableSize);
+					ClearLayoutFlags(LayoutFlag.MeasureDuringArrange);
 				}
 
 				if (isDirty)
