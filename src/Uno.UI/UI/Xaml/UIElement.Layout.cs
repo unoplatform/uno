@@ -121,6 +121,11 @@ namespace Microsoft.UI.Xaml
 			/// Indicates that the element is currently being measured during the Arrange cycle.
 			/// </summary>
 			MeasureDuringArrange = 0b0000_0001_0000_0000,
+
+			/// <summary>
+			/// Indicates that the element is currently being measured.
+			/// </summary>
+			MeasuringSelf = 0b0000_0010_0000_0000,
 #endif
 
 			/// <summary>
@@ -172,6 +177,8 @@ namespace Microsoft.UI.Xaml
 			LayoutFlag.MeasureDirty |
 #if IMPLEMENTS_MANAGED_MEASURE_DIRTY_PATH
 			LayoutFlag.MeasureDirtyPath |
+			LayoutFlag.MeasureDuringArrange |
+			LayoutFlag.MeasuringSelf |
 #endif
 #if !__ANDROID__
 			LayoutFlag.ArrangeDirty |

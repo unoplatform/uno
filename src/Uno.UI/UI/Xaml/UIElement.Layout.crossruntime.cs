@@ -20,14 +20,9 @@ namespace Microsoft.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
-			if (ShouldInterceptInvalidate)
+			if (ShouldInterceptInvalidate || IsMeasureDirty || IsLayoutFlagSet(LayoutFlag.MeasuringSelf))
 			{
 				return;
-			}
-
-			if (IsMeasureDirty)
-			{
-				return; // already dirty
 			}
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
@@ -204,6 +199,8 @@ namespace Microsoft.UI.Xaml
 				SetLayoutFlags(LayoutFlag.FirstMeasureDone);
 			}
 
+			SetLayoutFlags(LayoutFlag.MeasuringSelf);
+
 			var remainingTries = MaxLayoutIterations;
 
 			while (--remainingTries > 0)
@@ -283,6 +280,8 @@ namespace Microsoft.UI.Xaml
 
 				break;
 			}
+
+			ClearLayoutFlags(LayoutFlag.MeasuringSelf);
 		}
 
 		internal virtual void MeasureCore(Size availableSize)
