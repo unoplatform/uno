@@ -215,6 +215,8 @@ namespace SamplesApp.UITests
 			}
 
 			WriteSystemLogs(GetCurrentStepTitle("log"));
+
+			App.Dispose();
 		}
 
 		private static IApp ResetSimulator()
