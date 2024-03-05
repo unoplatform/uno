@@ -10,13 +10,13 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		private Lazy<IApplicationViewExtension> _applicationViewExtension;
+		private Lazy<IApplicationViewExtension?> _applicationViewExtension;
 
 		private Size _preferredMinSize;
 
 		partial void InitializePlatform()
 		{
-			_applicationViewExtension = new Lazy<IApplicationViewExtension>(() =>
+			_applicationViewExtension = new Lazy<IApplicationViewExtension?>(() =>
 			{
 				ApiExtensibility.CreateInstance<IApplicationViewExtension>(this, out var extension);
 				return extension;
