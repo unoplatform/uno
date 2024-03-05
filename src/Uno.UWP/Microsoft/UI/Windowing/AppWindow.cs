@@ -22,6 +22,7 @@ partial class AppWindow
 	private INativeAppWindow _nativeAppWindow;
 
 	private AppWindowPresenter _presenter;
+	private string _title = "";
 
 	internal AppWindow()
 	{
@@ -35,12 +36,14 @@ partial class AppWindow
 
 	public string Title
 	{
-		get => _nativeAppWindow?.Title ?? "";
+		get => _title;
 		set
 		{
+			_title = value;
+
 			if (_nativeAppWindow is not null)
 			{
-				_nativeAppWindow.Title = value;
+				_nativeAppWindow.Title = _title;
 			}
 		}
 	}
@@ -53,6 +56,8 @@ partial class AppWindow
 		}
 
 		_nativeAppWindow = nativeAppWindow;
+		_nativeAppWindow.Title = _title;
+
 		SetPresenter(AppWindowPresenterKind.Default);
 	}
 
