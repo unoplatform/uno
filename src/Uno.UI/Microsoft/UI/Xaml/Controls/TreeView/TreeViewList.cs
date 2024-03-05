@@ -3,15 +3,16 @@
 // MUX Reference TreeViewList.cpp, tag winui3/release/1.4.2
 
 using System.Collections.Generic;
-using Uno.UI.Helpers.WinUI;
-using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Dispatching;
+using Uno.UI.Helpers.WinUI;
+using Windows.ApplicationModel.DataTransfer;
 using TreeViewListAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
 using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs;
-using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -364,7 +365,8 @@ public partial class TreeViewList : ListView
 		templateSettings.ExpandedGlyphVisibility = itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 		templateSettings.CollapsedGlyphVisibility = !itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 
-		base.PrepareContainerForItemOverride(element, item);
+		// Uno specific: Workaround for https://github.com/unoplatform/uno/issues/15214
+		NativeDispatcher.Main.Enqueue(() => base.PrepareContainerForItemOverride(element, item));
 
 		if (selectionState != itemNodeImplNoRef.SelectionState)
 		{

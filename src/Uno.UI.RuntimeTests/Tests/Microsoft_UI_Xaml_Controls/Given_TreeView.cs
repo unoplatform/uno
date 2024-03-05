@@ -50,6 +50,17 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Setting_IsSelected_TakesEffect()
+		{
+			var page = new TreeViewSelectionTestPage();
+			await UITestHelper.Load(page);
+
+			Assert.AreEqual(1, page.SelectionChangedLogs.Count);
+			Assert.AreEqual("Added: 1, Removed: 0", page.SelectionChangedLogs[0]);
+			Assert.AreEqual("SubElement 1.1.1 Selected", page.SelectedElementTextBox.Text);
+		}
+
+		[TestMethod]
 		public async Task When_Setting_SelectedItem_DoesNotTakeEffect()
 		{
 			var treeView = new TreeView();
