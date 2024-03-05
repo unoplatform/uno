@@ -154,13 +154,6 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - task: PowerShell@2
-    displayName: 'Install coreutils'
-    inputs:
-      targetType: inline
-      script: |
-        brew install coreutils
-
-  - task: PowerShell@2
     displayName: 'Fill Rerun Variable'
     inputs:
       ## Expression evaluation for task parameters is not supported
