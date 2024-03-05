@@ -92,8 +92,8 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
-export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-2"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
+export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-16-1"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
@@ -118,6 +118,8 @@ export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_
 export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
 
 # check for the presence of idb, and install it if it's not present
+export PATH=$PATH:~/.local/bin
+
 if ! command -v idb &> /dev/null
 then
 	echo "Installing idb"
@@ -126,7 +128,6 @@ then
 	brew tap facebook/fb
 	brew install idb-companion
 	pipx install fb-idb
-	export PATH=$PATH:~/.local/bin
 else
 	echo "Using idb from:" `command -v idb`
 fi
@@ -217,11 +218,9 @@ else
 	dotnet test \
 		-c Release \
 		-l:"console;verbosity=normal" \
-		-p:NetPrevious=net8.0 \
 		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 		--filter "$UNO_TESTS_FILTER" \
 		--blame-hang-timeout $UITEST_TEST_TIMEOUT \
-		--arch x64 \
 		-v m \
 		|| true
 fi
