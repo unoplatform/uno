@@ -38,7 +38,9 @@ public partial class TeachingTip : ContentControl
 	private const string c_SubtitleTextBlockVisibleStateName = "ShowSubtitleTextBlock";
 	private const string c_SubtitleTextBlockCollapsedStateName = "CollapseSubtitleTextBlock";
 
+#if false // Not used in WinUI
 	private const string c_OverlayCornerRadiusName = "OverlayCornerRadius";
+#endif
 
 	/// <summary>
 	/// Initializes a new instance of the TeachingTip class.
