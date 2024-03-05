@@ -6,6 +6,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Composition
 {
+	[NotImplemented]
 	public partial class CompositionScopedBatch : global::Microsoft.UI.Composition.CompositionObject
 	{
 		internal CompositionScopedBatch() => throw new NotSupportedException("Use the ctor with Compositor");
