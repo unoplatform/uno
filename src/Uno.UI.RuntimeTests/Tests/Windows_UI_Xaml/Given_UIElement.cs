@@ -30,7 +30,6 @@ using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
 using Microsoft.UI.Xaml.Hosting;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.Extensions;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Toolkit.Extensions;

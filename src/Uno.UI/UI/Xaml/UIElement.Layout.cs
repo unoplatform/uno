@@ -116,6 +116,11 @@ namespace Microsoft.UI.Xaml
 			/// Means the Measure is dirty on at least one child of this element
 			/// </summary>
 			MeasureDirtyPath = 0b0000_0010,
+
+			/// <summary>
+			/// Indicates that the element is currently being measured during the Arrange cycle.
+			/// </summary>
+			MeasureDuringArrange = 0b0000_0001_0000_0000,
 #endif
 
 			/// <summary>
@@ -160,11 +165,6 @@ namespace Microsoft.UI.Xaml
 			/// This flag is used during invalidation
 			/// </remarks>
 			ArrangeDirtyPathDisabled = 0b1000_0000,
-
-			/// <summary>
-			/// Indicates that the element is currently being measured during the Arrange cycle.
-			/// </summary>
-			MeasureDuringArrange = 0b0000_0001_0000_0000,
 		}
 
 		private const LayoutFlag DEFAULT_STARTING_LAYOUTFLAGS = 0;
