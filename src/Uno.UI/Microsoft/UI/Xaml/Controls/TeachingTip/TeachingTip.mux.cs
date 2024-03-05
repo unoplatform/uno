@@ -963,7 +963,11 @@ public partial class TeachingTip : ContentControl
 						lightDismissIndicatorPopup.IsOpen = true;
 					}
 					popup.IsOpen = true;
-					if (SharedHelpers.IsAnimationsEnabled())
+					if (SharedHelpers.IsAnimationsEnabled()
+#if HAS_UNO // Uno specific: Make sure we skip animation when the required API is not supported
+						&& ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionScopedBatch")
+#endif
+						)
 					{
 						StartExpandToOpen();
 					}
@@ -1478,7 +1482,11 @@ public partial class TeachingTip : ContentControl
 		if (m_popup != null && m_popup.IsOpen)
 		{
 			// Contract animation
-			if (SharedHelpers.IsAnimationsEnabled())
+			if (SharedHelpers.IsAnimationsEnabled()
+#if HAS_UNO // Uno specific: Make sure we skip animation when the required API is not supported
+				&& ApiInformation.IsTypePresent("Microsoft.UI.Composition.CompositionScopedBatch")
+#endif
+				)
 			{
 				StartContractToClose();
 			}
