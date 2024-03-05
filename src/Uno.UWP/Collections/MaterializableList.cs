@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace Uno.Collections
 	{
 		private readonly List<T> _innerList;
 		private List<T>? _materialized;
+		private List<T>? _materializedSorted;
+		private object? _lastSortingFunc;
 
 		public MaterializableList()
 		{
@@ -46,6 +49,20 @@ namespace Uno.Collections
 		IEnumerator<T> IEnumerable<T>.GetEnumerator() => Materialized.GetEnumerator();
 
 		public MaterializableList<T>.ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(Materialized);
+
+		/// <remarks>
+		/// To optimize sequential calls with the same sorting function, the implementation remembers the sorted list and the last
+		/// provided <see cref="keySelector"/> and compares it by reference. If it's the same function, the sorted list is reused.
+		/// </remarks>
+		public MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
+		{
+			if (_materializedSorted is null || ReferenceEquals(_lastSortingFunc, keySelector))
+			{
+				_materializedSorted = _innerList.OrderBy(keySelector).ToList();
+			}
+			_lastSortingFunc = new WeakReference<object>(keySelector);
+			return new ReverseEnumerator(_materializedSorted);
+		}
 
 		public void Add(T item)
 		{
@@ -121,6 +138,8 @@ namespace Uno.Collections
 		public void ClearMaterialized()
 		{
 			_materialized = null;
+			_materializedSorted = null;
+			_lastSortingFunc = null;
 		}
 
 		public struct ReverseEnumerator : IEnumerator<T>, IEnumerator
