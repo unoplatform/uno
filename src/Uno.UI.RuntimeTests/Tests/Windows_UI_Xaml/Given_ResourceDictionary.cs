@@ -47,11 +47,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			grid.Resources.Add("MyResourceGridKey", resourceGrid);
 
+			bool wasXamlRootNull = false;
 			string result = "";
 
-			resourceTextBlock.Loaded += (_, _) => result += "ResourceTextBlockLoaded,";
-			resourceGrid.Loaded += (_, _) => result += "ResourceGridLoaded,";
-			textBlock.Loaded += (_, _) => result += "TextBlockLoaded,";
+			resourceTextBlock.Loaded += (_, _) =>
+			{
+				wasXamlRootNull |= resourceTextBlock.XamlRoot is null;
+				result += "ResourceTextBlockLoaded,";
+			};
+			resourceGrid.Loaded += (_, _) =>
+			{
+				wasXamlRootNull |= resourceGrid.XamlRoot is null;
+				result += "ResourceGridLoaded,";
+			};
+			textBlock.Loaded += (_, _) =>
+			{
+				wasXamlRootNull |= textBlock.XamlRoot is null;
+				result += "TextBlockLoaded,";
+			};
 
 			resourceTextBlock.Unloaded += (_, _) => result += "ResourceTextBlockUnloaded,";
 			resourceGrid.Unloaded += (_, _) => result += "ResourceGridUnloaded,";
