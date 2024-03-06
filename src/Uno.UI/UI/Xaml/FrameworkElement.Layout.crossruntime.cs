@@ -869,7 +869,7 @@ namespace Microsoft.UI.Xaml
 			// The property we currently know it has an effect is Resources
 			if (Resources is not null)
 			{
-				foreach (var resource in resources.Values)
+				foreach (var resource in Resources.Values)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
@@ -900,7 +900,7 @@ namespace Microsoft.UI.Xaml
 			// The property we currently know it has an effect is Resources
 			if (Resources is not null)
 			{
-				foreach (var resource in resources.Values)
+				foreach (var resource in Resources.Values)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
