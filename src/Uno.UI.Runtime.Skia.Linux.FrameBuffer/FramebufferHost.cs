@@ -58,7 +58,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		{
 			StartConsoleInterception();
 
-			_eventLoop.Schedule(InnerInitialize);
+			_eventLoop.Schedule(InnerInitialize, NativeDispatcherPriority.Normal);
 		}
 
 		protected override Task RunLoop()
@@ -109,7 +109,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
 			void Dispatch(System.Action d, NativeDispatcherPriority p)
-				=> _eventLoop.Schedule(() => d());
+				=> _eventLoop.Schedule(() => d(), p);
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
