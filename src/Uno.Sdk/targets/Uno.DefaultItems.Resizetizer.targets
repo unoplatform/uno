@@ -1,0 +1,38 @@
+<Project>
+	<PropertyGroup>
+		<!-- App Icon Defaults -->
+		<UnoIconFolder Condition="$(UnoIconFolder) == ''">$([MSBuild]::EnsureTrailingSlash('$(AssetsFolder)Icons'))</UnoIconFolder>
+		<UnoSplashFolder Condition="$(UnoSplashFolder) == ''">$([MSBuild]::EnsureTrailingSlash('$(AssetsFolder)Splash'))</UnoSplashFolder>
+		<UnoIconBackgroundFile Condition="$(UnoIconBackgroundFile) == ''">$(UnoIconFolder)icon.svg</UnoIconBackgroundFile>
+		<UnoIconForegroundFile Condition="$(UnoIconForegroundFile) == ''">$(UnoIconFolder)icon_foreground.svg</UnoIconForegroundFile>
+		<UnoIconForegroundScale Condition="$(UnoIconForegroundScale) == ''">0.65</UnoIconForegroundScale>
+		<UnoIconBackgroundColor Condition="$(UnoIconBackgroundColor) == ''">#00000000</UnoIconBackgroundColor>
+		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
+		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">128,128</UnoSplashScreenBaseSize>
+		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
+		<_UnoResizetizerIsCompatibleApp Condition="$(SingleProject) == 'true'">true</_UnoResizetizerIsCompatibleApp>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(SingleProject) == 'true'">
+		<UnoIcon Include="$(UnoIconBackgroundFile)"
+			ForegroundFile="$(UnoIconForegroundFile)"
+			ForegroundScale="$(UnoIconForegroundScale)"
+			Color="$(UnoIconBackgroundColor)"
+			IsDefaultItem="true"
+			Exclude="@(UnoIcon)"
+			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
+		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
+			BaseSize="$(UnoSplashScreenBaseSize)"
+			Color="$(UnoSplashScreenColor)"
+			IsDefaultItem="true"
+			Exclude="@(UnoSplashScreen)"
+			Condition="Exists('$(UnoSplashScreenFile)')" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UnoImage Include="$(AssetsFolder)**\*.svg"
+			Exclude="@(UnoImage);@(UnoIcon);@(UnoSplashScreen);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
+			IsDefaultItem="true"
+			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+	</ItemGroup>
+</Project>

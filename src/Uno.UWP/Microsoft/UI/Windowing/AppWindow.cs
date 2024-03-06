@@ -22,6 +22,7 @@ partial class AppWindow
 	private INativeAppWindow _nativeAppWindow;
 
 	private AppWindowPresenter _presenter;
+	private string _title;
 
 	internal AppWindow()
 	{
@@ -29,15 +30,22 @@ partial class AppWindow
 
 		_windowIdMap[Id] = this;
 		ApplicationView.GetOrCreateForWindowId(Id);
-		DisplayInformation.GetOrCreateForWindowId(Id);
 	}
 
 	public event TypedEventHandler<AppWindow, AppWindowChangedEventArgs> Changed;
 
 	public string Title
 	{
-		get => _nativeAppWindow.Title;
-		set => _nativeAppWindow.Title = value;
+		get => _title;
+		set
+		{
+			_title = value;
+
+			if (_nativeAppWindow is not null)
+			{
+				_nativeAppWindow.Title = _title;
+			}
+		}
 	}
 
 	internal void SetNativeWindow(INativeAppWindow nativeAppWindow)
@@ -48,6 +56,16 @@ partial class AppWindow
 		}
 
 		_nativeAppWindow = nativeAppWindow;
+
+		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_title))
+		{
+			_nativeAppWindow.Title = _title;
+		}
+		else
+		{
+			_title = _nativeAppWindow.Title;
+		}
+
 		SetPresenter(AppWindowPresenterKind.Default);
 	}
 

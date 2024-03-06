@@ -79,7 +79,12 @@ internal partial class InputManager
 		{
 			if (!ApiExtensibility.CreateInstance(host, out _source))
 			{
-				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error(
+						"Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				}
+				return;
 			}
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)

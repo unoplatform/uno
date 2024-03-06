@@ -3,7 +3,10 @@
 #pragma warning disable 67
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
@@ -23,7 +26,7 @@ namespace Windows.UI.ViewManagement
 		private const string PreferredLaunchViewWidthKey = "__Uno.PreferredLaunchViewSizeKey.Width";
 		private const string PreferredLaunchViewHeightKey = "__Uno.PreferredLaunchViewSizeKey.Height";
 
-		private static readonly Dictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
+		private static readonly ConcurrentDictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
 
 		private readonly MUXWindowId _windowId;
 
@@ -145,6 +148,23 @@ namespace Windows.UI.ViewManagement
 			}
 
 			return appView;
+		}
+
+		internal MUXWindowId WindowId
+		{
+			get
+			{
+				// TODO: If this proves costly, let's add another dictionary in the opposite direction.
+				foreach (var kvp in _windowIdMap)
+				{
+					if (kvp.Value == this)
+					{
+						return kvp.Key;
+					}
+				}
+
+				throw new UnreachableException($"Failed to find a WindowId for ApplicationView {this}");
+			}
 		}
 
 		internal static ApplicationView GetOrCreateForWindowId(MUXWindowId windowId)

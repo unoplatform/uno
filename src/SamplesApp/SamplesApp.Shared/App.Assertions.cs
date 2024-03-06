@@ -100,6 +100,11 @@ partial class App
 	public void AssertIssue8641NativeOverlayInitialized()
 	{
 #if __SKIA__
+		if (!ApiExtensibility.IsRegistered<IOverlayTextBoxViewExtension>())
+		{
+			return;
+		}
+
 		// Temporarily add a TextBox to the current page's content to verify native overlay is available
 		if (_mainWindow?.Content is not Frame rootFrame)
 		{
@@ -111,7 +116,6 @@ partial class App
 		textBox.XamlRoot = xamlRoot;
 		var textBoxView = new TextBoxView(textBox);
 		ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-		Assert.IsNotNull(textBoxViewExtension);
 
 		if (textBoxViewExtension is not null)
 		{

@@ -1,0 +1,17 @@
+{
+	"profiles": {
+		"SamplesApp.Skia.Generic": {
+			"commandName": "Project",
+			"nativeDebugging": false,
+			"environmentVariables": {
+				//"COREHOST_TRACE": "1",
+				//"COREHOST_TRACE_VERBOSITY": "4"
+				// "DOTNET_ADDITIONAL_DEPS": "C:\\Program Files\\dotnet\\shared\\Microsoft.WindowsDesktop.App\\8.0.2\\Microsoft.WindowsDesktop.App.deps.json"
+			}
+		},
+		"WSL": {
+			"commandName": "WSL2",
+			"distributionName":  ""
+		}
+	}
+}

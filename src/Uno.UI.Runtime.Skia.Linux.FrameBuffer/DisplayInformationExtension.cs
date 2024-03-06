@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia

@@ -1,0 +1,10 @@
+<Project>
+	<!--
+		We aren't currently fully supporting macos because of
+		https://github.com/xamarin/xamarin-macios/issues/16401
+		https://github.com/dotnet/sdk/issues/21877
+	-->
+	<PropertyGroup>
+		<TrimMode Condition="$(TrimMode) == '' AND '$(Optimize)'=='true'">link</TrimMode>
+	</PropertyGroup>
+</Project>

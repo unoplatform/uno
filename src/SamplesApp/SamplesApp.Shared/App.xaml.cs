@@ -552,7 +552,10 @@ namespace SamplesApp
 				}
 			}
 
+#pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
+#pragma warning restore SYSLIB1045
+
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);

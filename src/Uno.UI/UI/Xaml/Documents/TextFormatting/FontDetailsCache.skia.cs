@@ -8,6 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.ApplicationModel;
 using Windows.UI.Text;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
@@ -36,7 +37,10 @@ internal static class FontDetailsCache
 		SKTypeface? skTypeFace;
 
 		SKTypeface GetDefaultTypeFace()
-			=> SKTypeface.FromFamilyName(null, skWeight, skWidth, skSlant);
+		{
+			// if Segoe UI is not found, it will automatically return a system default
+			return SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant);
+		}
 
 		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
 		{

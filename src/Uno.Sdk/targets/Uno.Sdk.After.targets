@@ -3,4 +3,13 @@
 		<!-- Removes native usings to avoid Ambiguous reference -->
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
 	</ItemGroup>
+
+	<!-- Sanity check ensure that platform files for other targets are not included -->
+	<ItemGroup Condition="$(SingleProject) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Content Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+		<AppxManifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
 </Project>

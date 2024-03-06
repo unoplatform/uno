@@ -31,7 +31,12 @@ partial class InputManager
 		{
 			if (!ApiExtensibility.CreateInstance(host, out _source))
 			{
-				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error(
+						"Failed to initialize the PointerManager: cannot resolve the IUnoKeyboardInputSource.");
+				}
+				return;
 			}
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
@@ -52,13 +57,12 @@ partial class InputManager
 				return;
 			}
 
-			originalSource.RaiseEvent(
-				UIElement.KeyDownEvent,
-				new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
-				{
-					CanBubbleNatively = false
-				}
-			);
+			var krea = new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
+			{
+				CanBubbleNatively = false
+			};
+			originalSource.RaiseEvent(UIElement.KeyDownEvent, krea);
+			args.Handled = krea.Handled;
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{

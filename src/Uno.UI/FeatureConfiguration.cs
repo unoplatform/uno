@@ -196,6 +196,12 @@ namespace Uno.UI
 			}
 
 			/// <summary>
+			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
+			/// This is often needs to be set by users on Linux, where Microsoft's Segoe UI isn't present
+			/// </summary>
+			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
+
+			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
@@ -502,7 +508,7 @@ namespace Uno.UI
 			/// Determines if a native (Gtk/Wpf) TextBox overlay should be used on the skia targets instead of the
 			/// Uno skia-based TextBox implementation.
 			/// </summary>
-			public static bool UseOverlayOnSkia { get; set; } = true;
+			public static bool UseOverlayOnSkia { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -790,6 +796,15 @@ namespace Uno.UI
 			/// will be from the animated value or local value, when the From property is omitted.
 			/// </summary>
 			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
+		}
+
+		public static class Rendering
+		{
+			/// <summary>
+			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
+			/// OpenGL if available. Otherwise, software rendering will be used.
+			/// </summary>
+			public static bool? UseOpenGLOnX11 { get; set; }
 		}
 
 		public static class DependencyProperty

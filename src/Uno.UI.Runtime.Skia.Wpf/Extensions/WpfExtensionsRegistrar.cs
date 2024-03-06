@@ -20,6 +20,7 @@ using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
@@ -49,7 +50,7 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 		ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
-		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
+		ApiExtensibility.Register(typeof(ILauncherExtension), o => new WindowsLauncherExtension(o));
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
