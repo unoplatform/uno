@@ -353,6 +353,15 @@ namespace Windows.Globalization
 			var calendarMaxSupportedDateTime = _calendar.MaxSupportedDateTime;
 			if (calendarMaxSupportedDateTime == DateTime.MaxValue)
 			{
+				// Workaround for CalendarView crash when local time zone is negative.
+				// When max supported date is 9999/12/31, it can cause issues if the local time zone
+				// is negative (e.g, UTC - 5) because trying to convert that to local will overflow.
+				// This is a known issue even in WinUI.
+				// If SetToMax is called followed by GetDateTime, it will crash in WinUI.
+				// The crash doesn't happen on the native side, so CalendarView usually works.
+				// It happens when transitioning from the native Windows.Foundation.DateTime to System.DateTime.
+				// So far, we only know of issues when MaxSupportedDateTime is DateTime.MaxValue.
+				// If, in future, we found similar issues with non-MaxValue date times, we could make this un-conditional.
 				calendarMaxSupportedDateTime = calendarMaxSupportedDateTime.AddYears(-1);
 			}
 
