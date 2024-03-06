@@ -17,6 +17,7 @@ $external_docs = @{
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
     "uno.extensions"     = "0cbe572c56e956bbf3d51cb1d51f36f513e0402f"
     "workshops"          = "4e9bab696ad471785c7466a4c1a48bb97d594865"
+    "uno.chefs"          = "f7ccfcc2d47d7d45e2ae34a1a251d8c95311c309"
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
