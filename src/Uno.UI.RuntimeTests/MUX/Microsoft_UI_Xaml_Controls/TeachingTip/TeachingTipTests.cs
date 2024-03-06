@@ -25,9 +25,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using TeachingTip = Microsoft.UI.Xaml.Controls.TeachingTip;
 using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
-using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
+
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+#endif
+
 using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;

@@ -32,6 +32,8 @@ using Uno.UI.Samples.Controls;
 using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using MUXControlsTestApp.Utilities;
 
+#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
+
 namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 {
 	enum TipLocation
