@@ -22,7 +22,7 @@ partial class AppWindow
 	private INativeAppWindow _nativeAppWindow;
 
 	private AppWindowPresenter _presenter;
-	private string _title = "INVALID";
+	private string _title;
 
 	internal AppWindow()
 	{
@@ -56,7 +56,15 @@ partial class AppWindow
 		}
 
 		_nativeAppWindow = nativeAppWindow;
-		_nativeAppWindow.Title = _title;
+
+		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_title))
+		{
+			_nativeAppWindow.Title = _title;
+		}
+		else
+		{
+			_title = _nativeAppWindow.Title;
+		}
 
 		SetPresenter(AppWindowPresenterKind.Default);
 	}
