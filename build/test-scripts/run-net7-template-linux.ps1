@@ -18,6 +18,18 @@ $release = $default + '-c' + 'Release'
 # WinUI
 cd src/SolutionTemplate
 
+# replace the uno.sdk field value in global.json, recursively in all folders
+Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
+    
+    $globalJsonfilePath = $_.FullName;
+
+    $globalJson = Get-Content $globalJsonfilePath -Raw | ConvertFrom-Json
+    $globalJson.sdk = $env:GITVERSION_SemVer
+    $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
+
+    Write-Host "Updated $globalJsonfilePath with $env:GITVERSION_SemVer"
+}
+
 $projects =
 @(
     # 5.0 and earlier
