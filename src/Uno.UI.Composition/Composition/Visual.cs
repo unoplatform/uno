@@ -6,6 +6,8 @@ using Microsoft.UI.Composition.Interactions;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
+using static Microsoft.UI.Composition.SubPropertyHelpers;
+
 namespace Microsoft.UI.Composition
 {
 	public partial class Visual : CompositionObject, I3DTransformableObject
@@ -175,7 +177,7 @@ namespace Microsoft.UI.Composition
 			}
 			else
 			{
-				return GetAnimatableProperty(propertyName, subPropertyName);
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
 			}
 		}
 
@@ -216,6 +218,16 @@ namespace Microsoft.UI.Composition
 			else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
 			{
 				TransformMatrix = UpdateMatrix4x4(subPropertyName, TransformMatrix, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+			{
+				Scale = UpdateVector3(subPropertyName, Scale, propertyValue);
+			}
+			else if (IsTranslationEnabled && propertyName.Equals("Translation", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = Properties.TryGetVector3("Translation", out var translation);
+				Properties.InsertVector3("Translation", UpdateVector3(subPropertyName, translation, propertyValue));
+				Compositor.InvalidateRender(this);
 			}
 			else
 			{

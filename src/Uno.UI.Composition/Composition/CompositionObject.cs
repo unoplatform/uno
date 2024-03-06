@@ -10,6 +10,8 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
 
+using static Microsoft.UI.Composition.SubPropertyHelpers;
+
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionObject : IDisposable
@@ -47,28 +49,13 @@ namespace Microsoft.UI.Composition
 			return new CompositionPropertySet(Compositor);
 		}
 
-		private protected T ValidateValue<T>(object? value)
-		{
-			if (value is not T t)
-			{
-				if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
-				{
-					return changed;
-				}
-
-				throw new ArgumentException($"Cannot convert value of type '{value?.GetType()}' to {typeof(T)}");
-			}
-
-			return t;
-		}
-
 		// Overrides are based on:
 		// https://learn.microsoft.com/en-us/uwp/api/windows.ui.composition.compositionobject.startanimation?view=winrt-22621
 		internal virtual object GetAnimatableProperty(string propertyName, string subPropertyName)
-			=> TryGetFromProperties(propertyName, subPropertyName);
+			=> TryGetFromProperties(_properties, propertyName, subPropertyName);
 
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
-			=> TryUpdateFromProperties(propertyName, subPropertyName, propertyValue);
+			=> TryUpdateFromProperties(_properties, propertyName, subPropertyName, propertyValue);
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{

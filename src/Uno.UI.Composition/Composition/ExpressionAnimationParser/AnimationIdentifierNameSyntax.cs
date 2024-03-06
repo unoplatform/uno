@@ -36,6 +36,14 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 		{
 			_result = scalarValue;
 		}
+		else if (expressionAnimation.Vector2Parameters.TryGetValue(identifierValue, out var vector2))
+		{
+			_result = vector2;
+		}
+		else if (expressionAnimation.Vector3Parameters.TryGetValue(identifierValue, out var vector3))
+		{
+			_result = vector3;
+		}
 		else if (identifierValue.Equals("Pi", StringComparison.OrdinalIgnoreCase))
 		{
 			_result = (float)Math.PI;

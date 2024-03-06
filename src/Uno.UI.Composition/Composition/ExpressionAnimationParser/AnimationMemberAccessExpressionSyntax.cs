@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Numerics;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition;
 
@@ -15,24 +18,15 @@ internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 
 	public override object Evaluate(ExpressionAnimation expressionAnimation)
 	{
-		if (Expression is AnimationMemberAccessExpressionSyntax expression)
-		{
-			var mostLeftValue = expression.Expression.Evaluate(expressionAnimation);
-			var mainPropertyName = (string)expression.Identifier.Value;
-			var subPropertyName = (string)Identifier.Value;
-			if (mostLeftValue is CompositionObject mostLeftCompositionObject)
-			{
-				return mostLeftCompositionObject.GetAnimatableProperty(mainPropertyName, subPropertyName);
-			}
-
-			throw new Exception($"Cannot evaluate '{mostLeftValue?.GetType()}.{mainPropertyName}.{subPropertyName}'");
-		}
-
 		var leftValue = Expression.Evaluate(expressionAnimation);
 		var propertyName = (string)Identifier.Value;
 		if (leftValue is CompositionObject leftCompositionObject)
 		{
 			return leftCompositionObject.GetAnimatableProperty(propertyName, string.Empty);
+		}
+		else
+		{
+			return GetSubProperty(propertyName, leftValue);
 		}
 
 		throw new ArgumentException($"Cannot find evaluate property '{propertyName}' on object of type '{leftValue?.GetType()}'.");

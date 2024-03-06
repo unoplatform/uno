@@ -374,6 +374,36 @@ namespace Microsoft.UI.Xaml
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
 
+		public void StartAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is ExpressionAnimation expressionAnimation)
+			{
+				if (expressionAnimation.Target.Equals("Translation", StringComparison.OrdinalIgnoreCase) ||
+					expressionAnimation.Target.StartsWith("Translation.", StringComparison.OrdinalIgnoreCase))
+				{
+					ElementCompositionPreview.SetIsTranslationEnabled(this, true);
+				}
+
+				Visual.StartAnimation(expressionAnimation.Target, expressionAnimation);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+			}
+		}
+
+		public void StopAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is ExpressionAnimation expressionAnimation)
+			{
+				Visual.StopAnimation(expressionAnimation.Target);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+			}
+		}
+
 		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
 
 #if DEBUG
