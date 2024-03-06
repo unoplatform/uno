@@ -291,12 +291,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task Change_Grid_Row_After_Load()
 		{
 			Border firstBorder;
 			Border secondBorder;
+			var container = new Grid();
 			var SUT = new Grid
 			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
 				RowDefinitions =
 				{
 					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
@@ -312,8 +316,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Grid.SetRow(firstBorder, 0);
 			Grid.SetRow(secondBorder, 1);
-
-			TestServices.WindowHelper.WindowContent = SUT;
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
 			Point GetRelativePosition(FrameworkElement element)
@@ -340,12 +344,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task Change_Grid_Column_After_Load()
 		{
 			Border firstBorder;
 			Border secondBorder;
+			var container = new Grid();
 			var SUT = new Grid
 			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
 				ColumnDefinitions =
 				{
 					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
@@ -361,8 +369,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Grid.SetColumn(firstBorder, 0);
 			Grid.SetColumn(secondBorder, 1);
-
-			TestServices.WindowHelper.WindowContent = SUT;
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
 			Point GetRelativePosition(FrameworkElement element)
@@ -391,11 +399,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task Change_Grid_RowSpan_After_Load()
 		{
 			Border firstBorder;
+			var container = new Grid();
 			var SUT = new Grid
 			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
 				Background = new SolidColorBrush(Colors.Blue),
 				RowSpacing = 10,
 				RowDefinitions =
@@ -410,8 +422,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			Grid.SetRowSpan(firstBorder, 2);
-
-			TestServices.WindowHelper.WindowContent = SUT;
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
 			Assert.AreEqual(100, SUT.ActualHeight);
@@ -427,11 +439,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task Change_Grid_ColumnSpan_After_Load()
 		{
 			Border firstBorder;
+			var container = new Grid();
 			var SUT = new Grid
 			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
 				Background = new SolidColorBrush(Colors.Blue),
 				ColumnSpacing = 10,
 				ColumnDefinitions =
@@ -446,8 +462,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			Grid.SetColumnSpan(firstBorder, 2);
-
-			TestServices.WindowHelper.WindowContent = SUT;
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 
 			Assert.AreEqual(100, SUT.ActualWidth);
