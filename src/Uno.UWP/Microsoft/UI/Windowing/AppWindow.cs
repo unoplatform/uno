@@ -22,7 +22,7 @@ partial class AppWindow
 	private INativeAppWindow _nativeAppWindow;
 
 	private AppWindowPresenter _presenter;
-	private string _title = "";
+	private string _title = "INVALID";
 
 	internal AppWindow()
 	{
