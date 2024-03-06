@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml
 		private protected virtual void OnFwEltLoaded() { }
 		private protected virtual void OnFwEltUnloaded() { }
 
-		private void OnElementUnloaded()
+		internal void OnElementUnloaded()
 		{
 			IsLoaded = false;
 			IsActiveInVisualTree = false;
