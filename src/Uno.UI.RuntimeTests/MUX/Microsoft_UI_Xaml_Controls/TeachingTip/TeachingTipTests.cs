@@ -7,7 +7,6 @@ using System.Text;
 using Microsoft.UI.Xaml.Markup;
 using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Common;
 using System.Threading;
@@ -39,6 +38,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
+using Microsoft.UI.Private.Controls;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
