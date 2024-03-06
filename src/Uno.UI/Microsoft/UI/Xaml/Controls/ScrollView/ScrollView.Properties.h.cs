@@ -7,8 +7,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ScrollView : Control
 {
-	// UNO TODO: DP Changed callback handlers
-
 	public Visibility ComputedHorizontalScrollBarVisibility
 	{
 		get { return (Visibility)GetValue(ComputedHorizontalScrollBarVisibilityProperty); }
@@ -20,7 +18,7 @@ public partial class ScrollView : Control
 			nameof(ComputedHorizontalScrollBarVisibility),
 			typeof(Visibility),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(Visibility.Collapsed));
+			new FrameworkPropertyMetadata(Visibility.Collapsed, propertyChangedCallback: OnComputedHorizontalScrollBarVisibilityPropertyChanged));
 
 	public ScrollingScrollMode ComputedHorizontalScrollMode
 	{
@@ -33,7 +31,7 @@ public partial class ScrollView : Control
 			nameof(ComputedHorizontalScrollMode),
 			typeof(ScrollingScrollMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingScrollMode.Disabled));
+			new FrameworkPropertyMetadata(ScrollingScrollMode.Disabled, propertyChangedCallback: OnComputedHorizontalScrollModePropertyChanged));
 
 	public Visibility ComputedVerticalScrollBarVisibility
 	{
@@ -46,7 +44,7 @@ public partial class ScrollView : Control
 			nameof(ComputedVerticalScrollBarVisibility),
 			typeof(Visibility),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(Visibility.Collapsed));
+			new FrameworkPropertyMetadata(Visibility.Collapsed, propertyChangedCallback: OnComputedVerticalScrollBarVisibilityPropertyChanged));
 
 
 	public ScrollingScrollMode ComputedVerticalScrollMode
@@ -60,7 +58,7 @@ public partial class ScrollView : Control
 			nameof(ComputedVerticalScrollMode),
 			typeof(ScrollingScrollMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingScrollMode.Disabled));
+			new FrameworkPropertyMetadata(ScrollingScrollMode.Disabled, propertyChangedCallback: OnComputedVerticalScrollModePropertyChanged));
 
 	public UIElement Content
 	{
@@ -73,7 +71,7 @@ public partial class ScrollView : Control
 			nameof(Content),
 			typeof(UIElement),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(default(UIElement)));
+			new FrameworkPropertyMetadata(default(UIElement), propertyChangedCallback: OnContentPropertyChanged));
 
 	public ScrollingContentOrientation ContentOrientation
 	{
@@ -86,7 +84,7 @@ public partial class ScrollView : Control
 			nameof(ContentOrientation),
 			typeof(ScrollingContentOrientation),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingContentOrientation.Vertical));
+			new FrameworkPropertyMetadata(ScrollingContentOrientation.Vertical, propertyChangedCallback: OnContentOrientationPropertyChanged));
 
 	public double HorizontalAnchorRatio
 	{
@@ -99,7 +97,7 @@ public partial class ScrollView : Control
 			nameof(HorizontalAnchorRatio),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(0.0d));
+			new FrameworkPropertyMetadata(0.0d, propertyChangedCallback: OnHorizontalAnchorRatioPropertyChanged));
 
 	public ScrollingScrollBarVisibility HorizontalScrollBarVisibility
 	{
@@ -112,7 +110,7 @@ public partial class ScrollView : Control
 			nameof(HorizontalScrollBarVisibility),
 			typeof(ScrollingScrollBarVisibility),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingScrollBarVisibility.Auto));
+			new FrameworkPropertyMetadata(ScrollingScrollBarVisibility.Auto, propertyChangedCallback: OnHorizontalScrollBarVisibilityPropertyChanged));
 
 	public ScrollingChainMode HorizontalScrollChainMode
 	{
@@ -125,7 +123,7 @@ public partial class ScrollView : Control
 			nameof(HorizontalScrollChainMode),
 			typeof(ScrollingChainMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingChainMode.Auto));
+			new FrameworkPropertyMetadata(ScrollingChainMode.Auto, propertyChangedCallback: OnHorizontalScrollChainModePropertyChanged));
 
 	public ScrollingScrollMode HorizontalScrollMode
 	{
@@ -138,7 +136,7 @@ public partial class ScrollView : Control
 			nameof(HorizontalScrollMode),
 			typeof(ScrollingScrollMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingScrollMode.Auto));
+			new FrameworkPropertyMetadata(ScrollingScrollMode.Auto, propertyChangedCallback: OnHorizontalScrollModePropertyChanged));
 
 	public ScrollingRailMode HorizontalScrollRailMode
 	{
@@ -151,14 +149,14 @@ public partial class ScrollView : Control
 			nameof(HorizontalScrollRailMode),
 			typeof(ScrollingRailMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingRailMode.Enabled));
+			new FrameworkPropertyMetadata(ScrollingRailMode.Enabled, propertyChangedCallback: OnHorizontalScrollRailModePropertyChanged));
 
 	public static DependencyProperty IgnoredInputKindsProperty { get; } =
 		DependencyProperty.Register(
 			nameof(IgnoredInputKinds),
 			typeof(ScrollingInputKinds),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingInputKinds.None));
+			new FrameworkPropertyMetadata(ScrollingInputKinds.None, propertyChangedCallback: OnIgnoredInputKindsPropertyChanged));
 
 	public double MaxZoomFactor
 	{
@@ -171,7 +169,7 @@ public partial class ScrollView : Control
 			nameof(MaxZoomFactor),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(10.0d));
+			new FrameworkPropertyMetadata(10.0d, propertyChangedCallback: OnMaxZoomFactorPropertyChanged));
 
 	public double MinZoomFactor
 	{
@@ -184,7 +182,7 @@ public partial class ScrollView : Control
 			nameof(MinZoomFactor),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(0.1d));
+			new FrameworkPropertyMetadata(0.1d, propertyChangedCallback: OnMinZoomFactorPropertyChanged));
 
 	// In WinUI code, there is ScrollViewProperties::ScrollPresenter()
 	// which gets the value from the DP.
@@ -219,7 +217,7 @@ public partial class ScrollView : Control
 			nameof(ScrollPresenter),
 			typeof(ScrollPresenter),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(default(ScrollPresenter)));
+			new FrameworkPropertyMetadata(default(ScrollPresenter), propertyChangedCallback: OnScrollPresenterPropertyChanged));
 
 	public double VerticalAnchorRatio
 	{
@@ -232,7 +230,7 @@ public partial class ScrollView : Control
 			nameof(VerticalAnchorRatio),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(0.0d));
+			new FrameworkPropertyMetadata(0.0d, propertyChangedCallback: OnVerticalAnchorRatioPropertyChanged));
 
 	public ScrollingScrollBarVisibility VerticalScrollBarVisibility
 	{
@@ -245,7 +243,7 @@ public partial class ScrollView : Control
 			nameof(VerticalScrollBarVisibility),
 			typeof(ScrollingScrollBarVisibility),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingScrollBarVisibility.Auto));
+			new FrameworkPropertyMetadata(ScrollingScrollBarVisibility.Auto, propertyChangedCallback: OnVerticalScrollBarVisibilityPropertyChanged));
 
 	public ScrollingChainMode VerticalScrollChainMode
 	{
@@ -258,7 +256,7 @@ public partial class ScrollView : Control
 			nameof(VerticalScrollChainMode),
 			typeof(ScrollingChainMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingChainMode.Auto));
+			new FrameworkPropertyMetadata(ScrollingChainMode.Auto, propertyChangedCallback: OnVerticalScrollChainModePropertyChanged));
 
 	public ScrollingScrollMode VerticalScrollMode
 	{
@@ -271,7 +269,7 @@ public partial class ScrollView : Control
 			nameof(VerticalScrollMode),
 			typeof(ScrollingScrollMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingScrollMode.Auto));
+			new FrameworkPropertyMetadata(ScrollingScrollMode.Auto, propertyChangedCallback: OnVerticalScrollModePropertyChanged));
 
 	public ScrollingRailMode VerticalScrollRailMode
 	{
@@ -284,7 +282,7 @@ public partial class ScrollView : Control
 			nameof(VerticalScrollRailMode),
 			typeof(ScrollingRailMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingRailMode.Enabled));
+			new FrameworkPropertyMetadata(ScrollingRailMode.Enabled, propertyChangedCallback: OnVerticalScrollRailModePropertyChanged));
 
 	public ScrollingChainMode ZoomChainMode
 	{
@@ -297,7 +295,7 @@ public partial class ScrollView : Control
 			nameof(ZoomChainMode),
 			typeof(ScrollingChainMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingChainMode.Auto));
+			new FrameworkPropertyMetadata(ScrollingChainMode.Auto, propertyChangedCallback: OnZoomChainModePropertyChanged));
 
 	public ScrollingZoomMode ZoomMode
 	{
@@ -310,5 +308,5 @@ public partial class ScrollView : Control
 			nameof(ZoomMode),
 			typeof(ScrollingZoomMode),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(ScrollingZoomMode.Disabled));
+			new FrameworkPropertyMetadata(ScrollingZoomMode.Disabled, propertyChangedCallback: OnZoomModePropertyChanged));
 }

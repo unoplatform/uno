@@ -44,9 +44,9 @@ internal sealed partial class ScrollBarController : IScrollController
 
 	public IScrollControllerPanningInfo PanningInfo => null;
 
-	public bool CanScroll { get; private set; }
+	public bool CanScroll => m_canScroll;
 
-	public bool IsScrollingWithMouse { get; private set; }
+	public bool IsScrollingWithMouse => m_isScrollingWithMouse;
 
 	public void SetIsScrollable(
 		bool isScrollable)

@@ -5,12 +5,15 @@ using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal partial class OffsetsChangeWithAdditionalVelocity : ViewChangeBase
+// Uno specific: inheriting from OffsetsChange.
+// This is getting cast to OffsetChange so inheriting from ViewChangeBase isn't working.
+// Unknown how it works on WinUI.
+internal partial class OffsetsChangeWithAdditionalVelocity : OffsetsChange //: ViewChangeBase
 {
 	public OffsetsChangeWithAdditionalVelocity(
 		Vector2 offsetsVelocity,
 		Vector2 anticipatedOffsetsChange,
-		Vector2? inertiaDecayRate)
+		Vector2? inertiaDecayRate) : base(0, 0 , ScrollPresenterViewKind.Absolute, null)
 	{
 		OffsetsVelocity = offsetsVelocity;
 		AnticipatedOffsetsChange = anticipatedOffsetsChange;

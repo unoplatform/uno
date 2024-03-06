@@ -6238,7 +6238,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			return;
 		}
 
-		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations)
+		// Uno docs: ToArray call is to avoid modifying the collection while iterating.
+		foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations.ToArray())
 		{
 			bool isMatch = requestId == -1 || requestId == interactionTrackerAsyncOperation.GetRequestId();
 			bool isPriorMatch = requestId > interactionTrackerAsyncOperation.GetRequestId() && -1 != interactionTrackerAsyncOperation.GetRequestId();
@@ -6603,6 +6604,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH, METH_NAME, this);
 
 		m_renderingRevoker.Disposable = null;
+		m_renderingRevoker = null;
 	}
 
 	void HookScrollPresenterEvents()

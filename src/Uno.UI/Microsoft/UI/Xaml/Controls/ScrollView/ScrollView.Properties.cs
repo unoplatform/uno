@@ -277,221 +277,225 @@ public partial class ScrollView : Control
 	// 	s_ZoomModeProperty = nullptr;
 	// }
 
-	// void ScrollViewProperties::OnComputedHorizontalScrollBarVisibilityPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnComputedHorizontalScrollBarVisibilityPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	 {
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnComputedHorizontalScrollModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnComputedHorizontalScrollModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnComputedVerticalScrollBarVisibilityPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnComputedVerticalScrollBarVisibilityPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnComputedVerticalScrollModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnComputedVerticalScrollModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnContentPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnContentPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnContentOrientationPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnContentOrientationPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnHorizontalAnchorRatioPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
+	private static void OnHorizontalAnchorRatioPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
 
-	// 	auto value = winrt::unbox_value<double>(args.NewValue());
-	// 	auto coercedValue = value;
-	// 	winrt::get_self<ScrollView>(owner)->ValidateAnchorRatio(coercedValue);
-	// 	if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-	// 	{
-	// 		sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-	// 		return;
-	// 	}
+		var value = (double)args.NewValue;
+		var coercedValue = value;
+		owner.ValidateAnchorRatio(coercedValue);
+		// UNO TODO
+		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
+		//{
+		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
+		//	return;
+		//}
 
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+		owner.OnPropertyChanged(args);
+	 }
 
-	// void ScrollViewProperties::OnHorizontalScrollBarVisibilityPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnHorizontalScrollBarVisibilityPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnHorizontalScrollChainModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnHorizontalScrollChainModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnHorizontalScrollModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnHorizontalScrollModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnHorizontalScrollRailModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnHorizontalScrollRailModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnIgnoredInputKindsPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnIgnoredInputKindsPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnMaxZoomFactorPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
+	private static void OnMaxZoomFactorPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
 
-	// 	auto value = winrt::unbox_value<double>(args.NewValue());
-	// 	auto coercedValue = value;
-	// 	winrt::get_self<ScrollView>(owner)->ValidateZoomFactoryBoundary(coercedValue);
-	// 	if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-	// 	{
-	// 		sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-	// 		return;
-	// 	}
+		var value = (double)args.NewValue;
+		var coercedValue = value;
+		owner.ValidateZoomFactoryBoundary(coercedValue);
+		// UNO TODO:
+		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
+		//{
+		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
+		//	return;
+		//}
 
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+		owner.OnPropertyChanged(args);
+	 }
 
-	// void ScrollViewProperties::OnMinZoomFactorPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
+	private static void OnMinZoomFactorPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
 
-	// 	auto value = winrt::unbox_value<double>(args.NewValue());
-	// 	auto coercedValue = value;
-	// 	winrt::get_self<ScrollView>(owner)->ValidateZoomFactoryBoundary(coercedValue);
-	// 	if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-	// 	{
-	// 		sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-	// 		return;
-	// 	}
+		var value = (double)args.NewValue;
+		var coercedValue = value;
+		owner.ValidateZoomFactoryBoundary(coercedValue);
+		// UNO TODO:
+		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
+		//{
+		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
+		//	return;
+		//}
 
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnScrollPresenterPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnScrollPresenterPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	 }
 
-	// void ScrollViewProperties::OnVerticalAnchorRatioPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
+	private static void OnVerticalAnchorRatioPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
 
-	// 	auto value = winrt::unbox_value<double>(args.NewValue());
-	// 	auto coercedValue = value;
-	// 	winrt::get_self<ScrollView>(owner)->ValidateAnchorRatio(coercedValue);
-	// 	if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-	// 	{
-	// 		sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-	// 		return;
-	// 	}
+		var value = (double)args.NewValue;
+		var coercedValue = value;
+		owner.ValidateAnchorRatio(coercedValue);
+		// UNO TODO:
+		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
+		//{
+		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
+		//	return;
+		//}
 
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnVerticalScrollBarVisibilityPropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnVerticalScrollBarVisibilityPropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnVerticalScrollChainModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnVerticalScrollChainModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnVerticalScrollModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnVerticalScrollModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnVerticalScrollRailModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnVerticalScrollRailModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnZoomChainModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnZoomChainModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
-	// void ScrollViewProperties::OnZoomModePropertyChanged(
-	// 	winrt::DependencyObject const& sender,
-	// 	winrt::DependencyPropertyChangedEventArgs const& args)
-	// {
-	// 	auto owner = sender.as<winrt::ScrollView>();
-	// 	winrt::get_self<ScrollView>(owner)->OnPropertyChanged(args);
-	// }
+	private static void OnZoomModePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (ScrollView)sender;
+		owner.OnPropertyChanged(args);
+	}
 
 	// void ScrollViewProperties::ComputedHorizontalScrollBarVisibility(winrt::Visibility const& value)
 	// {
