@@ -21,9 +21,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using TeachingTip = Microsoft.UI.Xaml.Controls.TeachingTip;
-using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using TeachingTip = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTip;
+using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
+using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;

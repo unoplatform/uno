@@ -18,16 +18,16 @@ using Microsoft.UI.Xaml.Automation;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-using TeachingTip = Microsoft.UI.Xaml.Controls.TeachingTip;
-using TeachingTipClosedEventArgs = Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs;
-using TeachingTipClosingEventArgs = Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs;
+using TeachingTip = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTip;
+using TeachingTipClosedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTipClosedEventArgs;
+using TeachingTipClosingEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTipClosingEventArgs;
 #if HAS_UNO // Private types are internal and available in Uno only.
 using TeachingTipTestHooks = Microsoft.UI.Private.Controls.TeachingTipTestHooks;
 #endif
-using TeachingTipTailVisibility = Microsoft.UI.Xaml.Controls.TeachingTipTailVisibility;
-using TeachingTipHeroContentPlacementMode = Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode;
-using TeachingTipPlacementMode = Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode;
-using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
+using TeachingTipTailVisibility = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTipTailVisibility;
+using TeachingTipHeroContentPlacementMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode;
+using TeachingTipPlacementMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTipPlacementMode;
+using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.Samples.Controls;
 using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using MUXControlsTestApp.Utilities;
