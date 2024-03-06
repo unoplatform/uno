@@ -10,10 +10,10 @@ using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
-using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
-using Microsoft/* UWP don't rename */.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Shapes;
 
 #pragma warning disable IDE0051 // Some of the constants in this file are defined in the WinUI source but are not used.
 

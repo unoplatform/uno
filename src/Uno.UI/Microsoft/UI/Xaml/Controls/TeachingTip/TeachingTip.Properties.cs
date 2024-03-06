@@ -4,7 +4,7 @@
 
 using System.Windows.Input;
 using Windows.Foundation;
-using Microsoft/* UWP don't rename */.UI.Xaml;
+using Microsoft.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
