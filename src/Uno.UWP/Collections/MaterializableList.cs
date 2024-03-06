@@ -52,7 +52,7 @@ namespace Uno.Collections
 
 		/// <remarks>
 		/// To optimize sequential calls with the same sorting function, the implementation remembers the sorted list and the last
-		/// provided <see cref="keySelector"/> and compares it by reference. If it's the same function, the sorted list is reused.
+		/// provided keySelector and compares it by reference. If it's the same function, the sorted list is reused.
 		/// </remarks>
 		public MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
 		{
