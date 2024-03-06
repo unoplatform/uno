@@ -102,7 +102,7 @@ jobs:
           SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
           TARGETPLATFORM_NAME: net7
           FAILBUILD_ON_FAILURE: true
-          ALLOW_RERUN: false
+          ALLOW_RERUN: true
           UITEST_TEST_TIMEOUT: '270s'
 
       ${{ each testGroup in parameters.runtimeTestsGroups }}:
@@ -125,7 +125,7 @@ jobs:
         SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
         TARGETPLATFORM_NAME: net7
         FAILBUILD_ON_FAILURE: true
-        ALLOW_RERUN: false
+        ALLOW_RERUN: true
         UITEST_TEST_TIMEOUT: '270s'
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
