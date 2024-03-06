@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Microsoft.UI.Composition.Interactions;
 
-internal sealed partial class InteractionTrackerInertiaHandler
+internal sealed partial class InteractionTrackerActiveInputInertiaHandler : IInteractionTrackerInertiaHandler
 {
 	private readonly InteractionTracker _interactionTracker;
 	private readonly AxisHelper _xHelper;
@@ -28,7 +28,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 	public Vector3 FinalModifiedPosition => new Vector3(_xHelper.FinalModifiedValue, _yHelper.FinalModifiedValue, _zHelper.FinalModifiedValue);
 	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
 
-	public InteractionTrackerInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId)
+	public InteractionTrackerActiveInputInertiaHandler(InteractionTracker interactionTracker, Vector3 translationVelocities, int requestId)
 	{
 		_interactionTracker = interactionTracker;
 		_xHelper = new AxisHelper(this, translationVelocities, Axis.X);

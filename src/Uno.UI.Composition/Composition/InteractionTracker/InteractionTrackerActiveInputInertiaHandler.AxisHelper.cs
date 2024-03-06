@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Microsoft.UI.Composition.Interactions;
 
-internal sealed partial class InteractionTrackerInertiaHandler
+internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 {
 	private enum Axis
 	{
@@ -19,7 +19,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 		private float? _dampingStateTimeInSeconds;
 		private float? _dampingStatePosition;
 
-		internal InteractionTrackerInertiaHandler Handler { get; }
+		internal InteractionTrackerActiveInputInertiaHandler Handler { get; }
 		internal float DecayRate { get; }
 		internal float InitialVelocity { get; }
 		internal float InitialValue { get; }
@@ -30,7 +30,7 @@ internal sealed partial class InteractionTrackerInertiaHandler
 
 		internal bool HasCompleted { get; private set; }
 
-		public AxisHelper(InteractionTrackerInertiaHandler handler, Vector3 velocities, Axis axis)
+		public AxisHelper(InteractionTrackerActiveInputInertiaHandler handler, Vector3 velocities, Axis axis)
 		{
 			Axis = axis;
 			Handler = handler;
