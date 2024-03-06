@@ -180,7 +180,7 @@ using AppKit;
 						GenerateIBinderImplementation(typeSymbol, builder);
 					}
 
-					_context.AddSource(HashBuilder.BuildIDFromSymbol(typeSymbol), builder.ToString());
+					_context.AddSource(typeSymbol.GetFullMetadataNameForFileName(), builder.ToString());
 				}
 			}
 
