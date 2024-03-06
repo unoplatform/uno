@@ -8,6 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class CompositionAnimation : global::Microsoft.UI.Composition.CompositionObject, global::Microsoft.UI.Composition.ICompositionAnimationBase
 	{
+		// Skipping already declared property Target
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.InitialValueExpressionCollection InitialValueExpressions
@@ -79,6 +80,8 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionAnimation", "void CompositionAnimation.SetQuaternionParameter(string key, Quaternion value)");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetVector2Parameter(string, System.Numerics.Vector2)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionAnimation.SetVector3Parameter(string, System.Numerics.Vector3)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ClearAllParameters()
