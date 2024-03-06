@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -62,15 +63,17 @@ public partial class ScrollPresenter :
 	 FrameworkElement,
 	 IScrollAnchorProvider
 {
-	// Uno docs: ScrollPresenter MUST have a Background DP. Currently, uno already has Background on FrameworkElement so we ignore it here.
-	// However, in future, we should move Background to Control and then we will need it here.
+	public new Brush Background
+	{
+		get => (Brush)GetValue(BackgroundProperty);
+		set => SetValue(BackgroundProperty, value);
+	}
 
 	public UIElement Content
 	{
 		get => (UIElement)GetValue(ContentProperty);
 		set => SetValue(ContentProperty, value);
 	}
-
 
 	public ScrollingContentOrientation ContentOrientation
 	{
@@ -183,6 +186,12 @@ public partial class ScrollPresenter :
 	public event TypedEventHandler<ScrollPresenter, ScrollingZoomCompletedEventArgs> ZoomCompleted;
 	public event TypedEventHandler<ScrollPresenter, ScrollingBringingIntoViewEventArgs> BringingIntoView;
 	public event TypedEventHandler<ScrollPresenter, ScrollingAnchorRequestedEventArgs> AnchorRequested;
+
+	public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+		nameof(Background),
+		typeof(Brush),
+		typeof(ScrollPresenter),
+		new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnBackgroundPropertyChanged(s, e)));
 
 	public static DependencyProperty ContentProperty { get; } = DependencyProperty.Register(
 		nameof(Content),

@@ -1,0 +1,97 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.ScrollViewTests.SimpleScrollViewSample"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ScrollViewTests"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+		<ScrollView Background="Red" Height="500" x:Name="scrollView">
+			<StackPanel>
+				<TextBlock Text="Hello 1" />
+				<TextBlock Text="Hello 2" />
+				<TextBlock Text="Hello 3" />
+				<TextBlock Text="Hello 4" />
+				<TextBlock Text="Hello 5" />
+				<TextBlock Text="Hello 6" />
+				<TextBlock Text="Hello 7" />
+				<TextBlock Text="Hello 8" />
+				<TextBlock Text="Hello 9" />
+				<TextBlock Text="Hello 10" />
+				<TextBlock Text="Hello 11" />
+				<TextBlock Text="Hello 12" />
+				<TextBlock Text="Hello 13" />
+				<TextBlock Text="Hello 14" />
+				<TextBlock Text="Hello 15" />
+				<TextBlock Text="Hello 16" />
+				<TextBlock Text="Hello 17" />
+				<TextBlock Text="Hello 18" />
+				<TextBlock Text="Hello 19" />
+				<TextBlock Text="Hello 20" />
+				<TextBlock Text="Hello 21" />
+				<TextBlock Text="Hello 22" />
+				<TextBlock Text="Hello 23" />
+				<TextBlock Text="Hello 24" />
+				<TextBlock Text="Hello 25" />
+				<TextBlock Text="Hello 26" />
+				<TextBlock Text="Hello 27" />
+				<TextBlock Text="Hello 28" />
+				<TextBlock Text="Hello 29" />
+				<TextBlock Text="Hello 30" />
+				<TextBlock Text="Hello 31" />
+				<TextBlock Text="Hello 32" />
+				<TextBlock Text="Hello 33" />
+				<TextBlock Text="Hello 34" />
+				<TextBlock Text="Hello 35" />
+				<TextBlock Text="Hello 36" />
+				<TextBlock Text="Hello 37" />
+				<TextBlock Text="Hello 38" />
+				<TextBlock Text="Hello 39" />
+				<TextBlock Text="Hello 40" />
+				<TextBlock Text="Hello 41" />
+				<TextBlock Text="Hello 42" />
+				<TextBlock Text="Hello 43" />
+				<TextBlock Text="Hello 44" />
+				<TextBlock Text="Hello 45" />
+				<TextBlock Text="Hello 46" />
+				<TextBlock Text="Hello 47" />
+				<TextBlock Text="Hello 48" />
+				<TextBlock Text="Hello 49" />
+				<TextBlock Text="Hello 50" />
+				<TextBlock Text="Hello 51" />
+				<TextBlock Text="Hello 52" />
+				<TextBlock Text="Hello 53" />
+				<TextBlock Text="Hello 54" />
+				<TextBlock Text="Hello 55" />
+				<TextBlock Text="Hello 56" />
+				<TextBlock Text="Hello 57" />
+				<TextBlock Text="Hello 58" />
+				<TextBlock Text="Hello 59" />
+				<TextBlock Text="Hello 60" />
+				<TextBlock Text="Hello 61" />
+				<TextBlock Text="Hello 62" />
+				<TextBlock Text="Hello 63" />
+				<TextBlock Text="Hello 64" />
+				<TextBlock Text="Hello 65" />
+				<TextBlock Text="Hello 66" />
+				<TextBlock Text="Hello 67" />
+				<TextBlock Text="Hello 68" />
+				<TextBlock Text="Hello 69" />
+				<TextBlock Text="Hello 70" />
+				<TextBlock Text="Hello 71" />
+				<TextBlock Text="Hello 72" />
+				<TextBlock Text="Hello 73" />
+				<TextBlock Text="Hello 74" />
+				<TextBlock Text="Hello 75" />
+				<TextBlock Text="Hello 76" />
+				<TextBlock Text="Hello 77" />
+				<TextBlock Text="Hello 78" />
+				<TextBlock Text="Hello 79" />
+				<TextBlock Text="Hello 80" />
+			</StackPanel>
+		</ScrollView>
+    </Grid>
+</Page>

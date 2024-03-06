@@ -59,10 +59,17 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		HookScrollPresenterEvents();
 
+		// Uno specific
+		InitializePartial();
+		base.Background = new SolidColorBrush(Colors.Transparent); // TODO: Remove when Background is moved from FrameworkElement to Control
+
 		// Set the default Transparent background so that hit-testing allows to start a touch manipulation
 		// outside the boundaries of the Content, when it's smaller than the ScrollPresenter.
 		Background = new SolidColorBrush(Colors.Transparent);
 	}
+
+	// Uno specific
+	partial void InitializePartial();
 
 	#region Automation Peer Helpers
 
@@ -3656,7 +3663,12 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 		else if (dependencyProperty == BackgroundProperty)
 		{
-			// UNO TODO: ScrollPresenter is FrameworkElement, not Panel. Consider deriving from Panel instead?
+			// Uno specific: On WinUI, ScrollPresenter inherits both from Panel (internally) and FrameworkElement (publicly)
+			// So, they can just cast ScrollPresenter to Panel and set the Background.
+			// In our case, we can't do that as there is no multi inheritance in C#.
+			// We use BorderLayerRenderer to draw the background.
+			_borderRenderer.Update();
+
 			//Panel thisAsPanel = this;
 
 			//thisAsPanel.Background = args.NewValue as Brush;
