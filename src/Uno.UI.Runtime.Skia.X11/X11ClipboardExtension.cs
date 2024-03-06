@@ -420,7 +420,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace("XCLIP: Clipboard owner loop, waiting for events.");
+				this.Log().Trace("XCLIP: Clipboard owner loop, waiting for events on {fds[0].fd}.");
 			}
 
 			var ret = X11Helper.poll(fds, 1, -1); // infinite waiting
