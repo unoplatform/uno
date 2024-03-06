@@ -126,9 +126,8 @@ if ($assetsCount -ne 2)
     throw "Not enough assets in the package."
 }
 
-## Tests Per versions of uno
-pushd src/SolutionTemplate
 
+## Tests Per versions of uno
 $default = @('-v', 'detailed', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
 
 $debug = $default + '-c' + 'Debug'
@@ -174,5 +173,3 @@ for($i = 0; $i -lt $projects.Length; $i++)
     dotnet build $release "$projectPath" $projectOptions
     Assert-ExitCodeIsZero
 }
-
-popd
