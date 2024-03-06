@@ -47,7 +47,7 @@ namespace Microsoft.UI.Input
 #endif
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.ContactRect.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.MouseWheelDelta.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsBarrelButtonPressed.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsCanceled.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsEraser.get
@@ -60,7 +60,7 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsRightButtonPressed.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsXButton1Pressed.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.IsXButton2Pressed.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.MouseWheelDelta.get
+		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.ContactRect.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Orientation.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.PointerUpdateKind.get
 		// Forced skipping of method Microsoft.UI.Input.PointerPointProperties.Pressure.get

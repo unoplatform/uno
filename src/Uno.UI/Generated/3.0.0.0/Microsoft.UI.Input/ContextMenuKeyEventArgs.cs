@@ -27,7 +27,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Input.ContextMenuKeyEventArgs.Handled.get
 	}
 }

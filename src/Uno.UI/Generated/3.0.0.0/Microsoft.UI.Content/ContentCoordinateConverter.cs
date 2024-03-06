@@ -15,9 +15,9 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.PointInt32[] ConvertLocalToScreen(global::Windows.Foundation.Point[] localPoints, global::Microsoft.UI.Content.ContentCoordinateRoundingMode roundingMode)
+		public global::Windows.Foundation.Point ConvertScreenToLocal(global::Windows.Graphics.PointInt32 screenPoint)
 		{
-			throw new global::System.NotImplementedException("The member PointInt32[] ContentCoordinateConverter.ConvertLocalToScreen(Point[] localPoints, ContentCoordinateRoundingMode roundingMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%5B%5D%20ContentCoordinateConverter.ConvertLocalToScreen%28Point%5B%5D%20localPoints%2C%20ContentCoordinateRoundingMode%20roundingMode%29");
+			throw new global::System.NotImplementedException("The member Point ContentCoordinateConverter.ConvertScreenToLocal(PointInt32 screenPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20ContentCoordinateConverter.ConvertScreenToLocal%28PointInt32%20screenPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -29,9 +29,9 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.PointInt32 ConvertLocalToScreen(global::Windows.Foundation.Point localPoint)
+		public global::Windows.Graphics.PointInt32[] ConvertLocalToScreen(global::Windows.Foundation.Point[] localPoints, global::Microsoft.UI.Content.ContentCoordinateRoundingMode roundingMode)
 		{
-			throw new global::System.NotImplementedException("The member PointInt32 ContentCoordinateConverter.ConvertLocalToScreen(Point localPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20ContentCoordinateConverter.ConvertLocalToScreen%28Point%20localPoint%29");
+			throw new global::System.NotImplementedException("The member PointInt32[] ContentCoordinateConverter.ConvertLocalToScreen(Point[] localPoints, ContentCoordinateRoundingMode roundingMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%5B%5D%20ContentCoordinateConverter.ConvertLocalToScreen%28Point%5B%5D%20localPoints%2C%20ContentCoordinateRoundingMode%20roundingMode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -43,9 +43,9 @@ namespace Microsoft.UI.Content
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.Point ConvertScreenToLocal(global::Windows.Graphics.PointInt32 screenPoint)
+		public global::Windows.Graphics.PointInt32 ConvertLocalToScreen(global::Windows.Foundation.Point localPoint)
 		{
-			throw new global::System.NotImplementedException("The member Point ContentCoordinateConverter.ConvertScreenToLocal(PointInt32 screenPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20ContentCoordinateConverter.ConvertScreenToLocal%28PointInt32%20screenPoint%29");
+			throw new global::System.NotImplementedException("The member PointInt32 ContentCoordinateConverter.ConvertLocalToScreen(Point localPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20ContentCoordinateConverter.ConvertLocalToScreen%28Point%20localPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
