@@ -72,7 +72,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(grid);
 
-#if WINAPPSDK
+#if WINAPPSDK || __SKIA__
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
 #else
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
@@ -85,7 +85,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #elif __ANDROID__
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
 #else
-			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
 #endif
 		}
 
@@ -128,7 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(grid);
 
-#if WINAPPSDK
+#if WINAPPSDK || __SKIA__
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,", result);
 #else
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,", result);
@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #elif __ANDROID__
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
 #else
-			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,", result);
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,", result);
 #endif
 
 			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
@@ -152,7 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #elif __ANDROID__
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
 #else
-			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
+			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceTextBlockUnloaded,ResourceGridUnloaded,TextBlockUnloaded,", result);
 #endif
 		}
 

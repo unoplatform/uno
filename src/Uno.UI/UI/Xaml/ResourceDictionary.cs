@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 				if (value is FrameworkElement fe)
 				{
 #if __SKIA__ || __WASM__
-					fe.OnElementUnloaded();
+					fe.Leave(new LeaveParams());
 #else
 					fe.PerformOnUnloaded(isFromResources: true);
 #endif
