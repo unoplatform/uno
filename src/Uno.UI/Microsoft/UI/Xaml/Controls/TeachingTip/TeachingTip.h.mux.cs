@@ -15,6 +15,11 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
 
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+#endif
+
 #pragma warning disable IDE0051 // Some of the constants in this file are defined in the WinUI source but are not used.
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;

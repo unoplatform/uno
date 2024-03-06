@@ -834,11 +834,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.TeachingTipTests
 
 		public void OnSetAnimationParametersButtonClicked(object sender, RoutedEventArgs args)
 		{
-			var expandEasing = Window.Current.Compositor.CreateCubicBezierEasingFunction(
+			var expandEasing = global::Microsoft.UI.Xaml.Window.Current.Compositor.CreateCubicBezierEasingFunction(
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint1X.Text), float.Parse(this.ExpandControlPoint1Y.Text)),
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint2X.Text), float.Parse(this.ExpandControlPoint2Y.Text)));
 
-			var contractEasing = Window.Current.Compositor.CreateCubicBezierEasingFunction(
+			var contractEasing = global::Microsoft.UI.Xaml.Window.Current.Compositor.CreateCubicBezierEasingFunction(
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint1X.Text), float.Parse(this.ExpandControlPoint1Y.Text)),
 				new System.Numerics.Vector2(float.Parse(this.ExpandControlPoint2X.Text), float.Parse(this.ExpandControlPoint2Y.Text)));
 
