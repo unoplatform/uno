@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <ResourceDictionary.MergedDictionaries>
+    <!-- Load WinUI resources -->
+    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+
+  </ResourceDictionary.MergedDictionaries>
+  <!-- Add resources here -->
+
+</ResourceDictionary>
