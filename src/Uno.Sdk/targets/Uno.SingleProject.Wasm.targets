@@ -1,7 +1,6 @@
 <Project>
 	<PropertyGroup>
 		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmProjectFolder)manifest.webmanifest</WasmPWAManifestFile>
-		<AppDesignerFolder Condition="$(AppDesignerFolder) == ''">$(WasmProjectFolder)Properties</AppDesignerFolder>
 		<!--
 			Supports Deep Linking Routes
 			https://aka.platform.uno/wasm-deeplink
