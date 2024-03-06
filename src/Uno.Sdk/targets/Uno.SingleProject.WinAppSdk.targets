@@ -44,7 +44,7 @@
 	</PropertyGroup>
 
 	<Target Name="EnsureDefaultPlatformForAnyCPU"
-			BeforeTargets="UnoSdkVersionCheck"
+			BeforeTargets="ResolveReferences;ResolveProjectReferences"
 			Condition="'$(Platform)' == 'AnyCPU' AND $(Optimize) != 'true'">
 		<!-- Required to allow `dotnet build` to work without extra parameters -->
 		<PropertyGroup>
