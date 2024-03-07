@@ -951,14 +951,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			// Changing the visibility DOES NOT materialize the lazily-loaded element.
 			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
 
+			// Calling FindName on an element inside a lazy-loaded element won't materialize the lazy-loaded element
 			var innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
-			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
-			Assert.IsNotNull(innerTextBlock);
-			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
+			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.IsNull(innerTextBlock);
 
 			data.TopLevelVisiblity = false;
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
+			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
+			Assert.IsNotNull(innerTextBlock);
+			Assert.AreEqual(data.InnerText, innerTextBlock.Text);
 			Assert.AreEqual(Visibility.Collapsed, topLevelContent.Visibility);
 		}
 
