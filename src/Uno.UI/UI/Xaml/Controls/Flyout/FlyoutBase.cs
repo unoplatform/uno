@@ -19,9 +19,12 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using System.Runtime.CompilerServices;
+
+#if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
-
-
+#else
+using Windows.System;
+#endif
 
 #if __IOS__
 using View = UIKit.UIView;
