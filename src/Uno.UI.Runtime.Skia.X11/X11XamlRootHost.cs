@@ -104,18 +104,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Sadly, there is no de jure standard for this. It's basically a set of hints used
 		// in the old Motif WM. Other WMs started using it and it became a thing.
 		var hintsAtom = X11Helper.GetAtom(X11Window.Display, X11Helper._MOTIF_WM_HINTS);
-		if (hintsAtom != IntPtr.Zero)
-		{
-			var _ = XLib.XChangeProperty(
-				X11Window.Display,
-				X11Window.Window,
-				hintsAtom,
-				hintsAtom,
-				32,
-				PropertyMode.Replace,
-				new[] { (IntPtr)MotifFlags.Decorations, 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0, 0 },
-				5);
-		}
+		var _ = XLib.XChangeProperty(
+			X11Window.Display,
+			X11Window.Window,
+			hintsAtom,
+			hintsAtom,
+			32,
+			PropertyMode.Replace,
+			new[] { (IntPtr)MotifFlags.Decorations, 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0, 0 },
+			5);
 	}
 
 	private void UpdateWindowPropertiesFromPackage()
