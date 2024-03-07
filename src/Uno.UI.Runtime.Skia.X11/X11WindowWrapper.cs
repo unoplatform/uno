@@ -1,10 +1,13 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -128,5 +131,27 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		// {
 		// 	XLib.XMapWindow(x11Window.Display, x11Window.Window);
 		// }
+	}
+
+	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
+	{
+		presenter.SetNative(new X11NativeOverlappedPresenter(_host.X11Window, this));
+		return Disposable.Create(() => presenter.SetNative(null));
+	}
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		SetFullScreenMode(true);
+
+		return Disposable.Create(() => SetFullScreenMode(false));
+	}
+
+	internal void SetFullScreenMode(bool on)
+	{
+		X11Helper.SetWMHints(
+			_host.X11Window,
+			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE),
+			on ? 1 : 0,
+			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
 	}
 }

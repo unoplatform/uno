@@ -20,12 +20,15 @@
 // SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -43,8 +46,19 @@ internal static class X11Helper
 	public static readonly IntPtr PropertyNewValue = IntPtr.Zero;
 
 	public const string WM_DELETE_WINDOW = "WM_DELETE_WINDOW";
+	public const string _NET_ACTIVE_WINDOW = "_NET_ACTIVE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
+	public const string _NET_WM_STATE_ABOVE = "_NET_WM_STATE_ABOVE";
+	public const string _NET_WM_STATE_HIDDEN = "_NET_WM_STATE_HIDDEN";
+	public const string _NET_WM_STATE_MAXIMIZED_HORZ = "_NET_WM_STATE_MAXIMIZED_HORZ";
+	public const string _NET_WM_STATE_MAXIMIZED_VERT = "_NET_WM_STATE_MAXIMIZED_VERT";
+	public const string _NET_WM_ALLOWED_ACTIONS = "_NET_WM_ALLOWED_ACTIONS";
+	public const string _NET_WM_ACTION_MOVE = "_NET_WM_ACTION_MOVE";
+	public const string _NET_WM_ACTION_RESIZE = "_NET_WM_ACTION_RESIZE";
+	public const string _NET_WM_ACTION_MINIMIZE = "_NET_WM_ACTION_MINIMIZE";
+	public const string _NET_WM_ACTION_MAXIMIZE_HORZ = "_NET_WM_ACTION_MAXIMIZE_HORZ";
+	public const string _NET_WM_ACTION_MAXIMIZE_VERT = "_NET_WM_ACTION_MAXIMIZE_VERT";
 	public const string _NET_WM_ICON = "_NET_WM_ICON";
 	public const string _MOTIF_WM_HINTS = "_MOTIF_WM_HINTS";
 	public const string TIMESTAMP = "TIMESTAMP";
@@ -100,6 +114,125 @@ internal static class X11Helper
 
 		x11XamlRootHost = null;
 		return false;
+	}
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1)
+		=> SetWMHints(x11Window, message_type, ptr1, 0, 0, 0, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2)
+		=> SetWMHints(x11Window, message_type, ptr1, ptr2, 0, 0, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3)
+		=> SetWMHints(x11Window, message_type, ptr1, ptr2, ptr3, 0, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4)
+		=> SetWMHints(x11Window, message_type, ptr1, ptr2, ptr3, ptr4, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4, IntPtr ptr5)
+	{
+		using var _1 = XLock(x11Window.Display);
+
+		// https://stackoverflow.com/a/28396773
+		XClientMessageEvent xclient = default;
+		xclient.send_event = 1;
+		xclient.type = XEventName.ClientMessage;
+		xclient.window = x11Window.Window;
+		xclient.message_type = message_type;
+		xclient.format = 32;
+		xclient.ptr1 = ptr1;
+		xclient.ptr2 = ptr2;
+		xclient.ptr3 = ptr3;
+		xclient.ptr4 = ptr4;
+		xclient.ptr5 = ptr5;
+
+		XEvent xev = default;
+		xev.ClientMessageEvent = xclient;
+		var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+		var _3 = XLib.XFlush(x11Window.Display);
+	}
+
+	public static void SetMotifWMDecorations(X11Window x11Window, bool on, IntPtr decorations)
+		=> SetMotifWMHints(x11Window, on, decorations, null);
+
+	public static void SetMotifWMFunctions(X11Window x11Window, bool on, IntPtr functions)
+		=> SetMotifWMHints(x11Window, on, null, functions);
+
+	// Sadly, there is no de jure standard for this. It's basically a set of hints used
+	// in the old Motif WM. Other WMs started using it and it became a thing.
+	// https://stackoverflow.com/a/13788970
+	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions)
+	{
+		using var _1 = XLock(x11Window.Display);
+
+		var hintsAtom = GetAtom(x11Window.Display, _MOTIF_WM_HINTS);
+		var _2 = XLib.XGetWindowProperty(
+			x11Window.Display,
+			x11Window.Window,
+			hintsAtom,
+			0,
+			LONG_LENGTH,
+			false,
+			AnyPropertyType,
+			out IntPtr actualType,
+			out int actual_format,
+			out IntPtr nItems,
+			out _,
+			out IntPtr prop);
+
+		using var _3 = Disposable.Create(() => XLib.XFree(prop));
+
+		var arr = new IntPtr[5];
+		if (actualType != None)
+		{
+			Debug.Assert(actual_format == 32 && nItems == 5);
+			new Span<IntPtr>(prop.ToPointer(), 5).CopyTo(new Span<IntPtr>(arr, 0, 5));
+		}
+
+		if (decorations is { } d)
+		{
+			arr[0] |= (IntPtr)MotifFlags.Decorations;
+
+			if ((arr[2] & (IntPtr)MotifDecorations.All) != 0)
+			{
+				// Remove the All decoration to be able to turn each decoration or or off individually.
+				var allDecorations = (int[])Enum.GetValuesAsUnderlyingType<MotifDecorations>();
+				arr[2] |= allDecorations.Aggregate(0, (i1, i2) => i1 | i2);
+				arr[2] &= ~(IntPtr)MotifDecorations.All;
+			}
+
+			if (on)
+			{
+				arr[2] |= d;
+			}
+			else
+			{
+				arr[2] &= ~d;
+			}
+		}
+
+		if (functions is { } f)
+		{
+			arr[0] |= (IntPtr)MotifFlags.Functions;
+			if (on)
+			{
+				arr[1] |= f;
+			}
+			else
+			{
+				arr[1] &= ~f;
+			}
+		}
+
+		var _4 = XLib.XChangeProperty(
+			x11Window.Display,
+			x11Window.Window,
+			hintsAtom,
+			hintsAtom,
+			32,
+			PropertyMode.Replace,
+			arr,
+			5);
+		var _5 = XLib.XFlush(x11Window.Display);
 	}
 
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);

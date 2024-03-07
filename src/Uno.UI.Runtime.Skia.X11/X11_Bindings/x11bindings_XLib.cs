@@ -129,6 +129,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static extern int XSetWMProtocols(IntPtr display, IntPtr window, IntPtr[] protocols, int count);
 
 		[DllImport(libX11)]
+		public static extern int XIconifyWindow(IntPtr display, IntPtr window, int screen_number);
+
+		[DllImport(libX11)]
 		public static extern bool XTranslateCoordinates(IntPtr display, IntPtr src_w, IntPtr dest_w, int src_x,
 			int src_y, out int intdest_x_return, out int dest_y_return, out IntPtr child_return);
 
