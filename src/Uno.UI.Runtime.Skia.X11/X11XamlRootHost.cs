@@ -111,7 +111,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			hintsAtom,
 			32,
 			PropertyMode.Replace,
-			new[] { (IntPtr)MotifFlags.Decorations, 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0, 0 },
+			new[] { (IntPtr)MotifFlags.Decorations, 0, coreApplicationView.TitleBar.ExtendViewIntoTitleBar ? 0 : (IntPtr)MotifDecorations.All, 0, 0 },
 			5);
 	}
 
