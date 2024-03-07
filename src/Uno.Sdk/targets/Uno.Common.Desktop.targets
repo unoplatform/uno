@@ -7,7 +7,7 @@
 		<TargetPlatformIdentifier>Desktop</TargetPlatformIdentifier>
 		<TargetFrameworkIdentifier>Desktop</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
-		<TargetPlatformVersion>1.0</TargetPlatformVersion>
+		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Enable the netx.0-desktop target -->
