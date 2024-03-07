@@ -4,8 +4,8 @@ using System.Linq;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;
 

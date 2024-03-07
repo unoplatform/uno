@@ -6,7 +6,7 @@ using Microsoft.Web.WebView2.Core;
 using Uno.Foundation;
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Microsoft.UI.Xaml.Controls;
 
 public class NativeWebView : FrameworkElement, INativeWebView
 {
