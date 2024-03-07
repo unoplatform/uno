@@ -78,10 +78,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		// We could use _NET_WM_NAME instead, which takes priority over the name set by XStoreName if both are set.
-		using var _ = X11Helper.XLock(X11Window.Display);
-		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
-
 		var minSize = _applicationView.PreferredMinSize;
 
 		if (minSize != Size.Empty)
@@ -149,7 +145,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}

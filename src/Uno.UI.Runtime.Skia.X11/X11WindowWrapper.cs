@@ -27,6 +27,22 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		host?.Closed.ContinueWith(task => _windowToHost.TryRemove(window, out _));
 	}
 
+	public override string Title
+	{
+		get
+		{
+			using var _1 = X11Helper.XLock(_host.X11Window.Display);
+			var @out = string.Empty;
+			var _2 = XLib.XFetchName(_host.X11Window.Display, _host.X11Window.Window, ref @out);
+			return @out;
+		}
+		set
+		{
+			using var _1 = X11Helper.XLock(_host.X11Window.Display);
+			var _2 = XLib.XStoreName(_host.X11Window.Display, _host.X11Window.Window, value);
+		}
+	}
+
 	public static X11XamlRootHost? GetHostFromWindow(Window window)
 		=> _windowToHost.TryGetValue(window, out var host) ? host : null;
 

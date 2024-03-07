@@ -90,6 +90,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static extern int XStoreName(IntPtr display, IntPtr window, string window_name);
 
 		[DllImport(libX11)]
+		public static extern int XFetchName(IntPtr display, IntPtr window, ref string window_name);
+
+		[DllImport(libX11)]
 		public static extern void XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
 
 		[DllImport(libX11)]
