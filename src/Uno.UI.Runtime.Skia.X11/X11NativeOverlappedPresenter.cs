@@ -7,7 +7,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrapper wrapper): INativeOverlappedPresenter
+internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrapper wrapper) : INativeOverlappedPresenter
 {
 	// EWMH has _NET_WM_ALLOWED_ACTIONS: https://specifications.freedesktop.org/wm-spec/wm-spec-1.3.html#idm45912237317440
 	// but it turns out that these shouldn't be set by the client, but only read to see what actions are available.
@@ -136,7 +136,10 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 			out _,
 			out IntPtr prop);
 
-		using var _3 = Disposable.Create(() => XLib.XFree(prop));
+		using var _3 = Disposable.Create(() =>
+		{
+			var _ = XLib.XFree(prop);
+		});
 
 		if (actualType == X11Helper.None)
 		{

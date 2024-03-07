@@ -214,7 +214,10 @@ internal static class X11Helper
 			out _,
 			out IntPtr prop);
 
-		using var _3 = Disposable.Create(() => XLib.XFree(prop));
+		using var _3 = Disposable.Create(() =>
+		{
+			var _ = XLib.XFree(prop);
+		});
 
 		var arr = new IntPtr[5];
 		if (actualType == None)
@@ -451,7 +454,7 @@ internal static class X11Helper
 		public int _3_3;
 	}
 
-	private struct LockDisposable(object @lock): IDisposable
+	private struct LockDisposable(object @lock) : IDisposable
 	{
 		public void Dispose() => Monitor.Exit(@lock);
 	}
