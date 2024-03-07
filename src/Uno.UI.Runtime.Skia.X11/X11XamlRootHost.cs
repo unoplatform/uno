@@ -384,7 +384,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
 		attribs.background_pixel = XLib.XWhitePixel(display, screen);
-		attribs.override_redirect = /* True */ 1;
+		// Not sure why this is needed, commented out until further notice
+		// attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, XLib.XRootWindow(display, screen), visual->visual, /* AllocNone */ 0);
 		attribs.event_mask = EventsMask;
 		var window = XLib.XCreateWindow(
