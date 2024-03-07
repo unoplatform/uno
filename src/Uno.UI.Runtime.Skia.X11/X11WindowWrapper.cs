@@ -54,14 +54,27 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	// We could send _NET_ACTIVE_WINDOW as well
 	public override void Activate()
 	{
 		if (NativeWindow is X11Window x11Window)
 		{
 			using var _ = X11Helper.XLock(x11Window.Display);
 			var _1 = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
-			var _2 = XLib.XSetInputFocus(x11Window.Display, x11Window.Window, RevertTo.None, X11Helper.CurrentTime);
+
+			// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
+			// XClientMessageEvent xclient = default;
+			// xclient.send_event = 1;
+			// xclient.type = XEventName.ClientMessage;
+			// xclient.window = x11Window.Window;
+			// xclient.message_type = X11Helper.GetAtom(x11Window.Display, X11Helper._NET_ACTIVE_WINDOW);
+			// xclient.format = 32;
+			// xclient.ptr1 = 1;
+			// xclient.ptr2 = X11Helper.CurrentTime;
+			//
+			// XEvent xev = default;
+			// xev.ClientMessageEvent = xclient;
+			// var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+			// var _3 = XLib.XFlush(x11Window.Display);
 		}
 	}
 
