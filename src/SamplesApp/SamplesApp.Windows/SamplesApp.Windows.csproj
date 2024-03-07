@@ -44,7 +44,7 @@
 		</PackageReference>
 
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
