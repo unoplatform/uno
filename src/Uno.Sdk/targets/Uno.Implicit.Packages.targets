@@ -11,7 +11,7 @@
 		<_UnoImplicitPackageReference Include="Uno.WinUI.DevServer" Version="$(UnoVersion)" IsImplicitlyDefined="true" Condition="$(Optimize) != 'true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browser' AND !$(TargetFramework.Contains('windows10'))">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm' AND !$(TargetFramework.Contains('windows10'))">
 		<_UnoImplicitPackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
 		<_UnoImplicitPackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
 	</ItemGroup>
@@ -30,7 +30,7 @@
 				<_UnoImplicitPackageReference Include="Xamarin.Google.Android.Material" Version="$(AndroidMaterialVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 			<ItemGroup>
 				<_UnoImplicitPackageReference Include="Uno.WinUI.WebAssembly" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />

@@ -65,7 +65,7 @@
 	<Import Project="Uno.Common.Desktop.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' " />
 	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' " />
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' " />
 	<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
 	<Import Project="Uno.Common.WinAppSdk.targets"
 		Condition=" $(TargetFramework.Contains('windows10')) " />
@@ -89,7 +89,7 @@
 		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
 			Condition=" $(IsDesktop) != 'true' " />
 		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
-			Condition=" $(IsBrowser) != 'true' " />
+			Condition=" $(IsBrowserWasm) != 'true' " />
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
 			Condition=" $(IsWinAppSdk) != 'true' " />
 		<Compile Remove="@(_IgnorePlatformFiles)" />

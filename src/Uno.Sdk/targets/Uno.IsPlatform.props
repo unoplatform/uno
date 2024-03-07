@@ -6,7 +6,7 @@
 		<IsMacCatalyst>false</IsMacCatalyst>
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsWinAppSdk>false</IsWinAppSdk>
-		<IsBrowser>false</IsBrowser>
+		<IsBrowserWasm>false</IsBrowserWasm>
 		<IsDesktop>false</IsDesktop>
 	</PropertyGroup>
 
@@ -39,9 +39,9 @@
 				<IsWinAppSdk>true</IsWinAppSdk>
 			</PropertyGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 			<PropertyGroup>
-				<IsBrowser>true</IsBrowser>
+				<IsBrowserWasm>true</IsBrowserWasm>
 			</PropertyGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">

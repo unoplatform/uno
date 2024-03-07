@@ -12,7 +12,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<PropertyGroup>
 		<_DefaultMicrosoftNETSdk>Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
-		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' or $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' or $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
 	</PropertyGroup>
 
 	<PropertyGroup>
