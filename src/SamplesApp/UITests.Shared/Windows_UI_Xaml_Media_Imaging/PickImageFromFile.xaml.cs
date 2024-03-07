@@ -10,6 +10,8 @@ using Microsoft.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Media_Imaging;
 
+[Sample("Microsoft.UI.Xaml.Media", ViewModelType = typeof(PickImageFromFileViewModel), IsManualTest = true,
+	Description = "Allows for selecting .jpg image from storage and displaying it. Not selecting an image should not cause an exception.")]
 public sealed partial class PickImageFromFile : Page
 {
 	public PickImageFromFile()
