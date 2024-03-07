@@ -324,6 +324,9 @@
 		<!-- Lottie move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\Uno.UI.Lottie.targets" DestinationFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\$(PackageNamePrefix).Lottie.targets" />
 
+		<!-- MediaPlayer Skia GTK move file -->
+		<Move SourceFiles="..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\buildTransitive\Uno.UI.MediaPlayer.Skia.Gtk.targets" DestinationFiles="..\src\AddIns\Uno.UI.MediaPlayer.Skia.Gtk\buildTransitive\$(PackageNamePrefix).MediaPlayer.Skia.Gtk.targets" />
+
 		<!-- MSAL move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\Uno.UI.MSAL.targets" DestinationFiles="..\src\AddIns\Uno.UI.MSAL\buildTransitive\$(PackageNamePrefix).MSAL.targets" />
 
