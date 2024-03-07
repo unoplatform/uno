@@ -10,15 +10,15 @@
     <PackageVersion Include="Microsoft.Windows.Compatibility" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.4.240211001" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.Skottie" Version="2.88.6" />
-    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.6" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.Skottie" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
     <PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
     <PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
     <PackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
