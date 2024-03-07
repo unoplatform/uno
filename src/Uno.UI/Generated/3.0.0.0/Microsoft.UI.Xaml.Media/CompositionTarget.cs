@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendered.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Compositor GetCompositorForCurrentThread()
 		{
