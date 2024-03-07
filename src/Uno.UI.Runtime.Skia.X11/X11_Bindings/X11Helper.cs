@@ -22,10 +22,10 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
-using Uno.Disposables;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -59,6 +59,18 @@ internal static class X11Helper
 	public const string INCR = "INCR";
 
 	public const IntPtr LONG_LENGTH = 0x7FFFFFFF;
+
+	private static readonly System.Collections.Concurrent.ConcurrentDictionary<IntPtr, object> _displayToLock = new();
+
+	// For some reason, using XLockDisplay and XLockDisplay seems to cause a deadlock,
+	// specifically when using GLX. We use a managed locking implementation instead,
+	// which might even be faster anyway depending on how slow socket I/O is.
+	public static IDisposable XLock(IntPtr display)
+	{
+		var @lock = _displayToLock.GetOrAdd(display, _ => new object());
+		Monitor.Enter(@lock);
+		return new LockDisposable(@lock);
+	}
 
 	public static bool XamlRootHostFromApplicationView(ApplicationView view, [NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
 	{
@@ -110,21 +122,8 @@ internal static class X11Helper
 	[DllImport(libX11)]
 	public static extern int XInitThreads();
 
-	// Only change the visibility of this method if absolutely necessary. Instead, use XLock()
-	[DllImport(libX11Randr)]
-	private static extern void XLockDisplay(IntPtr display);
-
-	[DllImport(libX11Randr)]
-	private static extern void XUnlockDisplay(IntPtr display);
-
 	[DllImport(libX11)]
 	public static extern int XWidthMMOfScreen(IntPtr screen);
-
-	public static IDisposable XLock(IntPtr display)
-	{
-		XLockDisplay(display);
-		return Disposable.Create(() => XUnlockDisplay(display));
-	}
 
 	[DllImport(libX11)]
 	public static extern int XWidthOfScreen(IntPtr screen);
@@ -260,5 +259,10 @@ internal static class X11Helper
 		public int _3_1;
 		public int _3_2;
 		public int _3_3;
+	}
+
+	private struct LockDisposable(object @lock): IDisposable
+	{
+		public void Dispose() => Monitor.Exit(@lock);
 	}
 }
