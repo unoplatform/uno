@@ -3,7 +3,7 @@
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft.UI.Private.Controls;
 
 internal partial class ScrollPresenterTestHooks
 {

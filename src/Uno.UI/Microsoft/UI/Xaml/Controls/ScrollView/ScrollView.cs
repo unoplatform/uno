@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
+using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Input;
@@ -1123,7 +1124,11 @@ public partial class ScrollView : Control, IScrollView
 
 	private void UnhookCompositionTargetRendering()
 	{
-		m_renderingToken.Disposable = null;
+		if (m_renderingToken is not null)
+		{
+			m_renderingToken.Disposable = null;
+			m_renderingToken = null;
+		}
 	}
 
 	private void HookScrollViewEvents()

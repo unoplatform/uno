@@ -4,11 +4,13 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Microsoft.UI.Private.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Microsoft.UI.Private.Controls;
 
 internal partial class ScrollPresenterTestHooks
 {
@@ -23,52 +25,61 @@ internal partial class ScrollPresenterTestHooks
 		return s_testHooks ??= new ScrollPresenterTestHooks();
 	}
 
-	internal bool AreAnchorNotificationsRaised()
+	internal static bool AreAnchorNotificationsRaised
 	{
-		var hooks = EnsureGlobalTestHooks();
-		return hooks.m_areAnchorNotificationsRaised;
+		get
+		{
+			var hooks = EnsureGlobalTestHooks();
+			return hooks.m_areAnchorNotificationsRaised;
+		}
+		set
+		{
+			var hooks = EnsureGlobalTestHooks();
+			hooks.m_areAnchorNotificationsRaised = value;
+
+		}
 	}
 
-	internal void AreAnchorNotificationsRaised(bool areAnchorNotificationsRaised)
+	internal static bool AreInteractionSourcesNotificationsRaised
 	{
-		var hooks = EnsureGlobalTestHooks();
-		hooks.m_areAnchorNotificationsRaised = areAnchorNotificationsRaised;
+		get
+		{
+			var hooks = EnsureGlobalTestHooks();
+			return hooks.m_areInteractionSourcesNotificationsRaised;
+		}
+		set
+		{
+			var hooks = EnsureGlobalTestHooks();
+			hooks.m_areInteractionSourcesNotificationsRaised = value;
+		}
 	}
 
-	internal bool AreInteractionSourcesNotificationsRaised()
+	internal static bool AreExpressionAnimationStatusNotificationsRaised
 	{
-		var hooks = EnsureGlobalTestHooks();
-		return hooks.m_areInteractionSourcesNotificationsRaised;
+		get
+		{
+			var hooks = EnsureGlobalTestHooks();
+			return hooks.m_areExpressionAnimationStatusNotificationsRaised;
+		}
+		set
+		{
+			var hooks = EnsureGlobalTestHooks();
+			hooks.m_areExpressionAnimationStatusNotificationsRaised = value;
+		}
 	}
 
-	internal void AreInteractionSourcesNotificationsRaised(bool areInteractionSourcesNotificationsRaised)
+	internal static bool? IsAnimationsEnabledOverride
 	{
-		var hooks = EnsureGlobalTestHooks();
-		hooks.m_areInteractionSourcesNotificationsRaised = areInteractionSourcesNotificationsRaised;
-	}
-
-	internal bool AreExpressionAnimationStatusNotificationsRaised()
-	{
-		var hooks = EnsureGlobalTestHooks();
-		return hooks.m_areExpressionAnimationStatusNotificationsRaised;
-	}
-
-	void AreExpressionAnimationStatusNotificationsRaised(bool areExpressionAnimationStatusNotificationsRaised)
-	{
-		var hooks = EnsureGlobalTestHooks();
-		hooks.m_areExpressionAnimationStatusNotificationsRaised = areExpressionAnimationStatusNotificationsRaised;
-	}
-
-	internal bool? IsAnimationsEnabledOverride()
-	{
-		var hooks = EnsureGlobalTestHooks();
-		return hooks.m_isAnimationsEnabledOverride;
-	}
-
-	void IsAnimationsEnabledOverride(bool? isAnimationsEnabledOverride)
-	{
-		var hooks = EnsureGlobalTestHooks();
-		hooks.m_isAnimationsEnabledOverride = isAnimationsEnabledOverride;
+		get
+		{
+			var hooks = EnsureGlobalTestHooks();
+			return hooks.m_isAnimationsEnabledOverride;
+		}
+		set
+		{
+			var hooks = EnsureGlobalTestHooks();
+			hooks.m_isAnimationsEnabledOverride = value;
+		}
 	}
 
 	internal void GetOffsetsChangeVelocityParameters(out int millisecondsPerUnit, out int minMilliseconds, out int maxMilliseconds)
@@ -143,7 +154,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	Vector2 GetArrangeRenderSizesDelta(ScrollPresenter scrollPresenter)
+	internal static Vector2 GetArrangeRenderSizesDelta(ScrollPresenter scrollPresenter)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -152,7 +163,7 @@ internal partial class ScrollPresenterTestHooks
 		return new Vector2(0.0f, 0.0f);
 	}
 
-	Vector2 GetMinPosition(ScrollPresenter scrollPresenter)
+	internal static Vector2 GetMinPosition(ScrollPresenter scrollPresenter)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -170,7 +181,7 @@ internal partial class ScrollPresenterTestHooks
 		return new Vector2(0.0f, 0.0f);
 	}
 
-	ScrollPresenterViewChangeResult GetScrollCompletedResult(ScrollingScrollCompletedEventArgs scrollCompletedEventArgs)
+	internal static ScrollPresenterViewChangeResult GetScrollCompletedResult(ScrollingScrollCompletedEventArgs scrollCompletedEventArgs)
 	{
 		if (scrollCompletedEventArgs is not null)
 		{
@@ -180,7 +191,7 @@ internal partial class ScrollPresenterTestHooks
 		return ScrollPresenterViewChangeResult.Completed;
 	}
 
-	ScrollPresenterViewChangeResult GetZoomCompletedResult(ScrollingZoomCompletedEventArgs zoomCompletedEventArgs)
+	internal static ScrollPresenterViewChangeResult GetZoomCompletedResult(ScrollingZoomCompletedEventArgs zoomCompletedEventArgs)
 	{
 		if (zoomCompletedEventArgs is not null)
 		{
@@ -197,32 +208,32 @@ internal partial class ScrollPresenterTestHooks
 		double viewportAnchorPointVerticalOffset)
 	{
 		var hooks = EnsureGlobalTestHooks();
-		if (hooks.AnchorEvaluated is not null)
+		if (AnchorEvaluated is not null)
 		{
 			var anchorEvaluatedEventArgs = new ScrollPresenterTestHooksAnchorEvaluatedEventArgs(
 				anchorElement, viewportAnchorPointHorizontalOffset, viewportAnchorPointVerticalOffset);
 
-			hooks.AnchorEvaluated.Invoke(sender, anchorEvaluatedEventArgs);
+			AnchorEvaluated.Invoke(sender, anchorEvaluatedEventArgs);
 		}
 	}
 
-	public event TypedEventHandler<ScrollPresenter, ScrollPresenterTestHooksAnchorEvaluatedEventArgs> AnchorEvaluated;
+	public static event TypedEventHandler<ScrollPresenter, ScrollPresenterTestHooksAnchorEvaluatedEventArgs> AnchorEvaluated;
 
 	internal void NotifyInteractionSourcesChanged(
 			ScrollPresenter sender,
 			Microsoft.UI.Composition.Interactions.CompositionInteractionSourceCollection interactionSources)
 	{
 		var hooks = EnsureGlobalTestHooks();
-		if (hooks.InteractionSourcesChanged is not null)
+		if (InteractionSourcesChanged is not null)
 		{
 			var interactionSourcesChangedEventArgs = new ScrollPresenterTestHooksInteractionSourcesChangedEventArgs(
 				interactionSources);
 
-			hooks.InteractionSourcesChanged.Invoke(sender, interactionSourcesChangedEventArgs);
+			InteractionSourcesChanged.Invoke(sender, interactionSourcesChangedEventArgs);
 		}
 	}
 
-	public event TypedEventHandler<ScrollPresenter, ScrollPresenterTestHooksInteractionSourcesChangedEventArgs> InteractionSourcesChanged;
+	public static event TypedEventHandler<ScrollPresenter, ScrollPresenterTestHooksInteractionSourcesChangedEventArgs> InteractionSourcesChanged;
 
 	internal void NotifyExpressionAnimationStatusChanged(
 		ScrollPresenter sender,
@@ -230,16 +241,16 @@ internal partial class ScrollPresenterTestHooks
 		string propertyName)
 	{
 		var hooks = EnsureGlobalTestHooks();
-		if (hooks.ExpressionAnimationStatusChanged is not null)
+		if (ExpressionAnimationStatusChanged is not null)
 		{
 			var expressionAnimationStatusChangedEventArgs = new ScrollPresenterTestHooksExpressionAnimationStatusChangedEventArgs(
 				isExpressionAnimationStarted, propertyName);
 
-			hooks.ExpressionAnimationStatusChanged.Invoke(sender, expressionAnimationStatusChangedEventArgs);
+			ExpressionAnimationStatusChanged.Invoke(sender, expressionAnimationStatusChangedEventArgs);
 		}
 	}
 
-	public event TypedEventHandler<ScrollPresenter, ScrollPresenterTestHooksExpressionAnimationStatusChangedEventArgs> ExpressionAnimationStatusChanged;
+	public static event TypedEventHandler<ScrollPresenter, ScrollPresenterTestHooksExpressionAnimationStatusChangedEventArgs> ExpressionAnimationStatusChanged;
 
 	internal void NotifyContentLayoutOffsetXChanged(ScrollPresenter sender)
 	{
@@ -299,7 +310,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	Vector2 GetHorizontalSnapPointActualApplicableZone(
+	internal static Vector2 GetHorizontalSnapPointActualApplicableZone(
 		ScrollPresenter scrollPresenter,
 		ScrollSnapPointBase scrollSnapPoint)
 	{
@@ -316,7 +327,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	Vector2 GetVerticalSnapPointActualApplicableZone(
+	internal static Vector2 GetVerticalSnapPointActualApplicableZone(
 		ScrollPresenter scrollPresenter,
 		ScrollSnapPointBase scrollSnapPoint)
 	{
@@ -333,7 +344,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	Vector2 GetZoomSnapPointActualApplicableZone(
+	internal static Vector2 GetZoomSnapPointActualApplicableZone(
 		ScrollPresenter scrollPresenter,
 		ZoomSnapPointBase zoomSnapPoint)
 	{
@@ -350,7 +361,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	int GetHorizontalSnapPointCombinationCount(
+	internal static int GetHorizontalSnapPointCombinationCount(
 		ScrollPresenter scrollPresenter,
 		ScrollSnapPointBase scrollSnapPoint)
 	{
@@ -420,7 +431,7 @@ internal partial class ScrollPresenterTestHooks
 #endif // DBG
 	}
 
-	ScrollPresenterViewChangeResult TestHooksViewChangeResult(ScrollPresenterViewChangeResult result)
+	static ScrollPresenterViewChangeResult TestHooksViewChangeResult(ScrollPresenterViewChangeResult result)
 	{
 		switch (result)
 		{

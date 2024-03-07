@@ -8,6 +8,7 @@ using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Input;
+using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
@@ -3334,7 +3335,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 	}
 
-	private InteractionChainingMode InteractionChainingModeFromChainingMode(
+	private static InteractionChainingMode InteractionChainingModeFromChainingMode(
 		ScrollingChainMode chainingMode)
 	{
 		switch (chainingMode)
@@ -3366,19 +3367,19 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	}
 #endif
 
-	private InteractionSourceMode InteractionSourceModeFromScrollMode(
+	private static InteractionSourceMode InteractionSourceModeFromScrollMode(
 		ScrollingScrollMode scrollMode)
 	{
 		return scrollMode == ScrollingScrollMode.Enabled ? InteractionSourceMode.EnabledWithInertia : InteractionSourceMode.Disabled;
 	}
 
-	private InteractionSourceMode InteractionSourceModeFromZoomMode(
+	private static InteractionSourceMode InteractionSourceModeFromZoomMode(
 		ScrollingZoomMode zoomMode)
 	{
 		return zoomMode == ScrollingZoomMode.Enabled ? InteractionSourceMode.EnabledWithInertia : InteractionSourceMode.Disabled;
 	}
 
-	private double ComputeZoomedOffsetWithMinimalChange(
+	private static double ComputeZoomedOffsetWithMinimalChange(
 		double viewportStart,
 		double viewportEnd,
 		double childStart,
@@ -3410,7 +3411,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		return viewportStart;
 	}
 
-	private Rect GetDescendantBounds(
+	private static Rect GetDescendantBounds(
 		UIElement content,
 		UIElement descendant,
 		Rect descendantRect)
@@ -3433,7 +3434,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			descendantRect.Height));
 	}
 
-	private ScrollingAnimationMode GetComputedAnimationMode(
+	private static ScrollingAnimationMode GetComputedAnimationMode(
 		ScrollingAnimationMode animationMode)
 	{
 		if (animationMode == ScrollingAnimationMode.Auto)
@@ -3442,9 +3443,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 			var globalTestHooks = ScrollPresenterTestHooks.GetGlobalTestHooks();
 
-			if (globalTestHooks is not null && globalTestHooks.IsAnimationsEnabledOverride() is not null)
+			if (globalTestHooks is not null && ScrollPresenterTestHooks.IsAnimationsEnabledOverride is not null)
 			{
-				isAnimationsEnabled = globalTestHooks.IsAnimationsEnabledOverride().Value;
+				isAnimationsEnabled = ScrollPresenterTestHooks.IsAnimationsEnabledOverride.Value;
 			}
 			else
 			{
@@ -3457,13 +3458,13 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		return animationMode;
 	}
 
-	bool IsZoomFactorBoundaryValid(
+	static bool IsZoomFactorBoundaryValid(
 		double value)
 	{
 		return !double.IsNaN(value) && double.IsFinite(value);
 	}
 
-	internal void ValidateZoomFactoryBoundary(double value)
+	internal static void ValidateZoomFactoryBoundary(double value)
 	{
 		if (!IsZoomFactorBoundaryValid(value))
 		{
@@ -3486,13 +3487,13 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	}
 
 	// Invoked by both ScrollPresenter and ScrollViewer controls
-	bool IsAnchorRatioValid(
+	static bool IsAnchorRatioValid(
 		double value)
 	{
 		return double.IsNaN(value) || (double.IsFinite(value) && value >= 0.0 && value <= 1.0);
 	}
 
-	internal void ValidateAnchorRatio(double value)
+	internal static void ValidateAnchorRatio(double value)
 	{
 		if (!IsAnchorRatioValid(value))
 		{
@@ -3818,7 +3819,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		{
 			bool delayProcessingViewChanges = false;
 
-			foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations)
+			// Uno docs: Calling ToArray to avoid modifying the collection while enumerating it.
+			foreach (var interactionTrackerAsyncOperation in m_interactionTrackerAsyncOperations.ToArray())
 			{
 				if (interactionTrackerAsyncOperation.IsDelayed())
 				{
@@ -3963,8 +3965,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		if (!IsLoaded)
 		{
-			MUX_ASSERT(RenderSize.Width == 0.0);
-			MUX_ASSERT(RenderSize.Height == 0.0);
+			// Uno docs: Commenting out the assert. This is possibly linked to https://github.com/unoplatform/uno/issues/13299
+			//MUX_ASSERT(RenderSize.Width == 0.0);
+			//MUX_ASSERT(RenderSize.Height == 0.0);
 
 			// All potential pending operations are interrupted when the ScrollPresenter unloads.
 			CompleteInteractionTrackerOperations(
@@ -5277,12 +5280,13 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			m_expressionAnimationSources.InsertVector2(s_offsetSourcePropertyName, new Vector2(m_contentLayoutOffsetX, m_contentLayoutOffsetY));
 		}
 
-		if (m_scrollPresenterVisualInteractionSource is not null)
-		{
-			SetupVisualInteractionSourceCenterPointModifier(
-				m_scrollPresenterVisualInteractionSource,
-				dimension);
-		}
+		// Uno TODO: InteractionTracker featurs used in SetupVisualInteractionSourceCenterPointModifier are not yet supported.
+		//if (m_scrollPresenterVisualInteractionSource is not null)
+		//{
+		//	SetupVisualInteractionSourceCenterPointModifier(
+		//		m_scrollPresenterVisualInteractionSource,
+		//		dimension);
+		//}
 	}
 
 	void ChangeOffsetsPrivate(
@@ -6614,9 +6618,11 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	void UnhookCompositionTargetRendering()
 	{
 		// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH, METH_NAME, this);
-
-		m_renderingRevoker.Disposable = null;
-		m_renderingRevoker = null;
+		if (m_renderingRevoker is not null)
+		{
+			m_renderingRevoker.Disposable = null;
+			m_renderingRevoker = null;
+		}
 	}
 
 	void HookScrollPresenterEvents()
@@ -6731,14 +6737,53 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 			if (contentAsFE is not null)
 			{
-				m_contentMinWidthChangedRevoker.Disposable = null;
-				m_contentWidthChangedRevoker.Disposable = null;
-				m_contentMaxWidthChangedRevoker.Disposable = null;
-				m_contentMinHeightChangedRevoker.Disposable = null;
-				m_contentHeightChangedRevoker.Disposable = null;
-				m_contentMaxHeightChangedRevoker.Disposable = null;
-				m_contentHorizontalAlignmentChangedRevoker.Disposable = null;
-				m_contentVerticalAlignmentChangedRevoker.Disposable = null;
+				if (m_contentMinWidthChangedRevoker is not null)
+				{
+					m_contentMinWidthChangedRevoker.Disposable = null;
+					m_contentMinWidthChangedRevoker = null;
+				}
+
+				if (m_contentWidthChangedRevoker is not null)
+				{
+					m_contentWidthChangedRevoker.Disposable = null;
+					m_contentWidthChangedRevoker = null;
+				}
+
+				if (m_contentMaxWidthChangedRevoker is not null)
+				{
+					m_contentMaxWidthChangedRevoker.Disposable = null;
+					m_contentMaxWidthChangedRevoker = null;
+				}
+
+				if (m_contentMinHeightChangedRevoker is not null)
+				{
+					m_contentMinHeightChangedRevoker.Disposable = null;
+					m_contentMinHeightChangedRevoker = null;
+				}
+
+				if (m_contentHeightChangedRevoker is not null)
+				{
+					m_contentHeightChangedRevoker.Disposable = null;
+					m_contentHeightChangedRevoker = null;
+				}
+
+				if (m_contentMaxHeightChangedRevoker is not null)
+				{
+					m_contentMaxHeightChangedRevoker.Disposable = null;
+					m_contentMaxHeightChangedRevoker = null;
+				}
+
+				if (m_contentHorizontalAlignmentChangedRevoker is not null)
+				{
+					m_contentHorizontalAlignmentChangedRevoker.Disposable = null;
+					m_contentHorizontalAlignmentChangedRevoker = null;
+				}
+
+				if (m_contentVerticalAlignmentChangedRevoker is not null)
+				{
+					m_contentVerticalAlignmentChangedRevoker.Disposable = null;
+					m_contentVerticalAlignmentChangedRevoker = null;
+				}
 			}
 		}
 	}
@@ -6891,7 +6936,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		ScrollPresenterTestHooks globalTestHooks = ScrollPresenterTestHooks.GetGlobalTestHooks();
 
-		if (globalTestHooks is not null && globalTestHooks.AreInteractionSourcesNotificationsRaised())
+		if (globalTestHooks is not null && ScrollPresenterTestHooks.AreInteractionSourcesNotificationsRaised)
 		{
 			globalTestHooks.NotifyInteractionSourcesChanged(this, m_interactionTracker.InteractionSources);
 		}
@@ -6903,7 +6948,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	{
 		ScrollPresenterTestHooks globalTestHooks = ScrollPresenterTestHooks.GetGlobalTestHooks();
 
-		if (globalTestHooks is not null && globalTestHooks.AreExpressionAnimationStatusNotificationsRaised())
+		if (globalTestHooks is not null && ScrollPresenterTestHooks.AreExpressionAnimationStatusNotificationsRaised)
 		{
 			globalTestHooks.NotifyExpressionAnimationStatusChanged(this, isExpressionAnimationStarted, propertyName);
 		}

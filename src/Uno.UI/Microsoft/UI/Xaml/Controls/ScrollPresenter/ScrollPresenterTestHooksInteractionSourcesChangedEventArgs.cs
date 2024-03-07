@@ -15,7 +15,7 @@ internal class ScrollPresenterTestHooksInteractionSourcesChangedEventArgs
 
 	#region IScrollPresenterTestHooksInteractionSourcesChangedEventArgs
 
-	CompositionInteractionSourceCollection InteractionSources { get; }
+	internal CompositionInteractionSourceCollection InteractionSources { get; }
 
 	#endregion
 }

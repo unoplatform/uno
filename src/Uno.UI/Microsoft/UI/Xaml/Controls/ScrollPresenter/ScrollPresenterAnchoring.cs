@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.UI.Private.Controls;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
@@ -316,7 +317,7 @@ public partial class ScrollPresenter : FrameworkElement
 
 			ScrollPresenterTestHooks globalTestHooks = ScrollPresenterTestHooks.GetGlobalTestHooks();
 
-			if (globalTestHooks is not null && globalTestHooks.AreAnchorNotificationsRaised())
+			if (globalTestHooks is not null && ScrollPresenterTestHooks.AreAnchorNotificationsRaised)
 			{
 				globalTestHooks.NotifyAnchorEvaluated(this, null /*anchorElement*/, double.NaN /*viewportAnchorPointHorizontalOffset*/, double.NaN /*viewportAnchorPointVerticalOffset*/);
 			}
@@ -373,7 +374,7 @@ public partial class ScrollPresenter : FrameworkElement
 			m_anchorElement = requestedAnchorElement;
 			m_anchorElementBounds = GetDescendantBounds(content, requestedAnchorElement);
 
-			if (globalTestHooks is not null && globalTestHooks.AreAnchorNotificationsRaised())
+			if (globalTestHooks is not null && ScrollPresenterTestHooks.AreAnchorNotificationsRaised)
 			{
 				globalTestHooks.NotifyAnchorEvaluated(this, requestedAnchorElement, viewportAnchorPointHorizontalOffset, viewportAnchorPointVerticalOffset);
 			}
@@ -442,7 +443,7 @@ public partial class ScrollPresenter : FrameworkElement
 #endif
 		}
 
-		if (globalTestHooks is not null && globalTestHooks.AreAnchorNotificationsRaised())
+		if (globalTestHooks is not null && ScrollPresenterTestHooks.AreAnchorNotificationsRaised)
 		{
 			globalTestHooks.NotifyAnchorEvaluated(this, m_anchorElement, viewportAnchorPointHorizontalOffset, viewportAnchorPointVerticalOffset);
 		}
@@ -519,7 +520,7 @@ public partial class ScrollPresenter : FrameworkElement
 		return GetDescendantBounds(content, descendant, descendantRect);
 	}
 
-	internal bool IsElementValidAnchor(UIElement element, UIElement content)
+	internal static bool IsElementValidAnchor(UIElement element, UIElement content)
 	{
 		MUX_ASSERT(element is not null);
 		MUX_ASSERT(content is not null);

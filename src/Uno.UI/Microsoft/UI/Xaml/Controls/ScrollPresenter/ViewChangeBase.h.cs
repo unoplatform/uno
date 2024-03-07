@@ -3,13 +3,6 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal enum ScrollPresenterViewChangeResult
-{
-    Completed = 0,
-    Interrupted = 1,
-    Ignored = 2,
-}
-
 internal partial class ViewChangeBase
 {
 }

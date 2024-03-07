@@ -343,7 +343,7 @@ public partial class ScrollPresenter :
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateAnchorRatio(coercedValue);
+		ScrollPresenter.ValidateAnchorRatio(coercedValue);
 		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
 		//{
 		//	sender.SetValue(args.Property(), box_value<double>(coercedValue));
@@ -393,7 +393,7 @@ public partial class ScrollPresenter :
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateZoomFactoryBoundary(coercedValue);
+		ScrollPresenter.ValidateZoomFactoryBoundary(coercedValue);
 		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
 		//{
 		//	sender.SetValue(args.Property(), box_value<double>(coercedValue));
@@ -411,7 +411,7 @@ public partial class ScrollPresenter :
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateZoomFactoryBoundary(coercedValue);
+		ScrollPresenter.ValidateZoomFactoryBoundary(coercedValue);
 		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
 		//{
 		//	sender.SetValue(args.Property(), box_value<double>(coercedValue));
@@ -429,7 +429,7 @@ public partial class ScrollPresenter :
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateAnchorRatio(coercedValue);
+		ScrollPresenter.ValidateAnchorRatio(coercedValue);
 		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
 		//{
 		//	sender.SetValue(args.Property(), box_value<double>(coercedValue));
