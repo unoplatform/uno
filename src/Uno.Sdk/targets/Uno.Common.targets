@@ -35,9 +35,9 @@
 		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
 		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
 		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
-		<SkiaProjectFolder Condition=" '$(SkiaProjectFolder)' == '' ">$(PlatformsProjectFolder)Skia\</SkiaProjectFolder>
-		<SkiaProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(SkiaProjectFolder)'))</SkiaProjectFolder>
-		<SkiaProjectFolder Condition=" !Exists('$(SkiaProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Skia'))</SkiaProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' ">$(PlatformsProjectFolder)Desktop\</DesktopProjectFolder>
+		<DesktopProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" !Exists('$(DesktopProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Desktop'))</DesktopProjectFolder>
 		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
 		<WasmProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
 		<WasmProjectFolder Condition=" !Exists('$(WasmProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Wasm'))</WasmProjectFolder>
@@ -62,20 +62,13 @@
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " />
 	<Import Project="Uno.Common.MacOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' " />
-	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia' " />
+	<Import Project="Uno.Common.Desktop.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' " />
 	<Import Project="Uno.Common.Wasm.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' " />
 	<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
 	<Import Project="Uno.Common.WinAppSdk.targets"
 		Condition=" $(TargetFramework.Contains('windows10')) " />
-
-	<!-- Legacy Project Support -->
-	<!-- Includes sanity check in case someone has a seperate project for the Head with Single Project targets -->
-	<Import Project="Uno.Common.Skia.targets"
-		Condition="!$(TargetFramework.Contains('-skia')) and $(MSBuildProjectName.Contains('.Skia.')) and $(UsingUnoCommonSkiaTargets) == '' " />
-	<Import Project="Uno.Common.Wasm.targets"
-		Condition="!$(TargetFramework.Contains('-browser')) and $(_IsStandaloneWasmHead) and $(UsingUnoCommonWasmTargets) == '' " />
 
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
@@ -93,8 +86,8 @@
 			Condition=" $(IsMacCatalyst) != 'true' " />
 		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"
 			Condition=" $(IsMacOS) != 'true' " />
-		<_IgnorePlatformFiles Include="$(SkiaProjectFolder)**"
-			Condition=" $(IsSkia) != 'true' " />
+		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
+			Condition=" $(IsDesktop) != 'true' " />
 		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
 			Condition=" $(IsBrowser) != 'true' " />
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"

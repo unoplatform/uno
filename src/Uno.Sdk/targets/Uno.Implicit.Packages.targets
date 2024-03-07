@@ -57,7 +57,7 @@
 				<!-- Any Implicit packages we may want to add for MacOS -->
 			</ItemGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 			<ItemGroup>
 				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.MacOS" Version="$(UnoVersion)" IsImplicitlyDefined="true" />

@@ -7,7 +7,7 @@
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<IsBrowser>false</IsBrowser>
-		<IsSkia>false</IsSkia>
+		<IsDesktop>false</IsDesktop>
 	</PropertyGroup>
 
 	<Choose>
@@ -44,9 +44,9 @@
 				<IsBrowser>true</IsBrowser>
 			</PropertyGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 			<PropertyGroup>
-				<IsSkia>true</IsSkia>
+				<IsDesktop>true</IsDesktop>
 			</PropertyGroup>
 		</When>
 	</Choose>
