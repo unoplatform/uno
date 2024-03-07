@@ -117,6 +117,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void SetPresenter(AppWindowPresenter presenter)
 	{
+		_presenterSubscription.Disposable?.Dispose();
 		switch (presenter)
 		{
 			case FullScreenPresenter _:
