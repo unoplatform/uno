@@ -12,7 +12,7 @@ internal partial class ScrollPresenterAutomationPeer : FrameworkElementAutomatio
 {
 	private const double s_minimumPercent = 0.0;
 	private const double s_maximumPercent = 100.0;
-	private const double s_noScroll = -1.0 ;
+	private const double s_noScroll = -1.0;
 
 	private double m_horizontalScrollPercent = ScrollPatternIdentifiers.NoScroll;
 	private double m_verticalScrollPercent = ScrollPatternIdentifiers.NoScroll;

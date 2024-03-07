@@ -16,11 +16,11 @@ internal partial class SnapPointWrapper<T> where T : SnapPointBase
 		SnapPoint = snapPoint;
 	}
 
-// #if DBG
-// 	~SnapPointWrapper()
-// 	{
-// 	}
-// #endif //DBG
+	// #if DBG
+	// 	~SnapPointWrapper()
+	// 	{
+	// 	}
+	// #endif //DBG
 
 	public T SnapPoint { get; }
 

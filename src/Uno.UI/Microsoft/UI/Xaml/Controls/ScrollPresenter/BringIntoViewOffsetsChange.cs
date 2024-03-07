@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal sealed partial class BringIntoViewOffsetsChange : OffsetsChange
 {
-	// UNO TODO: Revise element vs owner parameters...
+	// UNO TODO: owner is unused
 	public BringIntoViewOffsetsChange(
 		/*ITrackerHandleManager*/ UIElement owner,
 		double zoomedHorizontalOffset,
@@ -22,7 +22,7 @@ internal sealed partial class BringIntoViewOffsetsChange : OffsetsChange
 		double horizontalOffset,
 		double verticalOffset) : base(zoomedHorizontalOffset, zoomedVerticalOffset, offsetsKind, options)
 	{
-		Element = owner;
+		Element = element;
 		ElementRect = elementRect;
 		HorizontalAlignmentRatio = horizontalAlignmentRatio;
 		VerticalAlignmentRatio = verticalAlignmentRatio;

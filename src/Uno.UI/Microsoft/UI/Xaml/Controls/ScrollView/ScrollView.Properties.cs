@@ -280,7 +280,7 @@ public partial class ScrollView : Control
 	private static void OnComputedHorizontalScrollBarVisibilityPropertyChanged(
 		DependencyObject sender,
 		DependencyPropertyChangedEventArgs args)
-	 {
+	{
 		var owner = (ScrollView)sender;
 		owner.OnPropertyChanged(args);
 	}
@@ -342,7 +342,7 @@ public partial class ScrollView : Control
 		//}
 
 		owner.OnPropertyChanged(args);
-	 }
+	}
 
 	private static void OnHorizontalScrollBarVisibilityPropertyChanged(
 		DependencyObject sender,
@@ -401,7 +401,7 @@ public partial class ScrollView : Control
 		//}
 
 		owner.OnPropertyChanged(args);
-	 }
+	}
 
 	private static void OnMinZoomFactorPropertyChanged(
 		DependencyObject sender,
@@ -428,7 +428,7 @@ public partial class ScrollView : Control
 	{
 		var owner = (ScrollView)sender;
 		owner.OnPropertyChanged(args);
-	 }
+	}
 
 	private static void OnVerticalAnchorRatioPropertyChanged(
 		DependencyObject sender,

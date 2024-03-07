@@ -82,7 +82,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	internal void GetOffsetsChangeVelocityParameters(out int millisecondsPerUnit, out int minMilliseconds, out int maxMilliseconds)
+	internal static void GetOffsetsChangeVelocityParameters(out int millisecondsPerUnit, out int minMilliseconds, out int maxMilliseconds)
 	{
 		var hooks = EnsureGlobalTestHooks();
 		millisecondsPerUnit = hooks.m_offsetsChangeMsPerUnit;
@@ -90,7 +90,7 @@ internal partial class ScrollPresenterTestHooks
 		maxMilliseconds = hooks.m_offsetsChangeMaxMs;
 	}
 
-	void SetOffsetsChangeVelocityParameters(int millisecondsPerUnit, int minMilliseconds, int maxMilliseconds)
+	internal static void SetOffsetsChangeVelocityParameters(int millisecondsPerUnit, int minMilliseconds, int maxMilliseconds)
 	{
 		var hooks = EnsureGlobalTestHooks();
 		hooks.m_offsetsChangeMsPerUnit = millisecondsPerUnit;
@@ -98,7 +98,7 @@ internal partial class ScrollPresenterTestHooks
 		hooks.m_offsetsChangeMaxMs = maxMilliseconds;
 	}
 
-	internal void GetZoomFactorChangeVelocityParameters(out int millisecondsPerUnit, out int minMilliseconds, out int maxMilliseconds)
+	internal static void GetZoomFactorChangeVelocityParameters(out int millisecondsPerUnit, out int minMilliseconds, out int maxMilliseconds)
 	{
 		var hooks = EnsureGlobalTestHooks();
 		millisecondsPerUnit = hooks.m_zoomFactorChangeMsPerUnit;
@@ -106,7 +106,7 @@ internal partial class ScrollPresenterTestHooks
 		maxMilliseconds = hooks.m_zoomFactorChangeMaxMs;
 	}
 
-	void SetZoomFactorChangeVelocityParameters(int millisecondsPerUnit, int minMilliseconds, int maxMilliseconds)
+	internal static void SetZoomFactorChangeVelocityParameters(int millisecondsPerUnit, int minMilliseconds, int maxMilliseconds)
 	{
 		var hooks = EnsureGlobalTestHooks();
 		hooks.m_zoomFactorChangeMsPerUnit = millisecondsPerUnit;
@@ -114,7 +114,7 @@ internal partial class ScrollPresenterTestHooks
 		hooks.m_zoomFactorChangeMaxMs = maxMilliseconds;
 	}
 
-	void GetContentLayoutOffsetX(ScrollPresenter scrollPresenter, out float contentLayoutOffsetX)
+	internal static void GetContentLayoutOffsetX(ScrollPresenter scrollPresenter, out float contentLayoutOffsetX)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -126,7 +126,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	void SetContentLayoutOffsetX(ScrollPresenter scrollPresenter, float contentLayoutOffsetX)
+	internal static void SetContentLayoutOffsetX(ScrollPresenter scrollPresenter, float contentLayoutOffsetX)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -134,7 +134,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	void GetContentLayoutOffsetY(ScrollPresenter scrollPresenter, out float contentLayoutOffsetY)
+	internal static void GetContentLayoutOffsetY(ScrollPresenter scrollPresenter, out float contentLayoutOffsetY)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -146,7 +146,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	void SetContentLayoutOffsetY(ScrollPresenter scrollPresenter, float contentLayoutOffsetY)
+	internal static void SetContentLayoutOffsetY(ScrollPresenter scrollPresenter, float contentLayoutOffsetY)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -172,7 +172,7 @@ internal partial class ScrollPresenterTestHooks
 		return new Vector2(0.0f, 0.0f);
 	}
 
-	Vector2 GetMaxPosition(ScrollPresenter scrollPresenter)
+	internal static Vector2 GetMaxPosition(ScrollPresenter scrollPresenter)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -274,7 +274,7 @@ internal partial class ScrollPresenterTestHooks
 
 	public event TypedEventHandler<ScrollPresenter, object> ContentLayoutOffsetYChanged;
 
-	IList<ScrollSnapPointBase> GetConsolidatedHorizontalScrollSnapPoints(ScrollPresenter scrollPresenter)
+	internal static IList<ScrollSnapPointBase> GetConsolidatedHorizontalScrollSnapPoints(ScrollPresenter scrollPresenter)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -286,7 +286,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	IList<ScrollSnapPointBase> GetConsolidatedVerticalScrollSnapPoints(ScrollPresenter scrollPresenter)
+	internal static IList<ScrollSnapPointBase> GetConsolidatedVerticalScrollSnapPoints(ScrollPresenter scrollPresenter)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -298,7 +298,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	IList<ZoomSnapPointBase> GetConsolidatedZoomSnapPoints(ScrollPresenter scrollPresenter)
+	internal static IList<ZoomSnapPointBase> GetConsolidatedZoomSnapPoints(ScrollPresenter scrollPresenter)
 	{
 		if (scrollPresenter is not null)
 		{
@@ -377,7 +377,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	int GetVerticalSnapPointCombinationCount(
+	internal static int GetVerticalSnapPointCombinationCount(
 		ScrollPresenter scrollPresenter,
 		ScrollSnapPointBase scrollSnapPoint)
 	{
@@ -393,7 +393,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	int GetZoomSnapPointCombinationCount(
+	internal static int GetZoomSnapPointCombinationCount(
 			ScrollPresenter scrollPresenter,
 			ZoomSnapPointBase zoomSnapPoint)
 	{
@@ -409,7 +409,7 @@ internal partial class ScrollPresenterTestHooks
 		}
 	}
 
-	Color GetSnapPointVisualizationColor(SnapPointBase snapPoint)
+	internal static Color GetSnapPointVisualizationColor(SnapPointBase snapPoint)
 	{
 
 #if DEBUG
@@ -421,7 +421,7 @@ internal partial class ScrollPresenterTestHooks
 		return Colors.Black;
 	}
 
-	void SetSnapPointVisualizationColor(SnapPointBase snapPoint, Color color)
+	internal static void SetSnapPointVisualizationColor(SnapPointBase snapPoint, Color color)
 	{
 #if DEBUG
 		if (snapPoint is not null)
@@ -431,7 +431,7 @@ internal partial class ScrollPresenterTestHooks
 #endif // DBG
 	}
 
-	static ScrollPresenterViewChangeResult TestHooksViewChangeResult(ScrollPresenterViewChangeResult result)
+	private static ScrollPresenterViewChangeResult TestHooksViewChangeResult(ScrollPresenterViewChangeResult result)
 	{
 		switch (result)
 		{

@@ -13,7 +13,7 @@ internal partial class OffsetsChangeWithAdditionalVelocity : OffsetsChange //: V
 	public OffsetsChangeWithAdditionalVelocity(
 		Vector2 offsetsVelocity,
 		Vector2 anticipatedOffsetsChange,
-		Vector2? inertiaDecayRate) : base(0, 0 , ScrollPresenterViewKind.Absolute, null)
+		Vector2? inertiaDecayRate) : base(0, 0, ScrollPresenterViewKind.Absolute, null)
 	{
 		OffsetsVelocity = offsetsVelocity;
 		AnticipatedOffsetsChange = anticipatedOffsetsChange;

@@ -14,8 +14,8 @@ internal class ScrollPresenterTestHooksExpressionAnimationStatusChangedEventArgs
 
 	#region IScrollPresenterTestHooksExpressionAnimationStatusChangedEventArgs
 
-    internal bool IsExpressionAnimationStarted { get; }
-    internal string PropertyName { get; }
+	internal bool IsExpressionAnimationStarted { get; }
+	internal string PropertyName { get; }
 
 	#endregion
 }
