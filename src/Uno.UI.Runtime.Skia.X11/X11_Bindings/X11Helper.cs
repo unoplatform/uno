@@ -160,6 +160,41 @@ internal static class X11Helper
 	// Sadly, there is no de jure standard for this. It's basically a set of hints used
 	// in the old Motif WM. Other WMs started using it and it became a thing.
 	// https://stackoverflow.com/a/13788970
+	// https://www.opengroup.org/infosrv/openmotif/R2.1.30/motif/lib/Xm/MwmUtil.h
+	// typedef struct
+	// {
+	// /* These correspond to XmRInt resources. (VendorSE.c) */
+	// int	         flags;
+	// int		 functions;
+	// int		 decorations;
+	// int		 input_mode;
+	// int		 status;
+	// } MotifWmHints;
+	//
+	// typedef MotifWmHints	MwmHints;
+	//
+	// /* bit definitions for MwmHints.flags */
+	// #define MWM_HINTS_FUNCTIONS	(1L << 0)
+	// #define MWM_HINTS_DECORATIONS	(1L << 1)
+	// #define MWM_HINTS_INPUT_MODE	(1L << 2)
+	// #define MWM_HINTS_STATUS	(1L << 3)
+	//
+	// /* bit definitions for MwmHints.functions */
+	// #define MWM_FUNC_ALL		(1L << 0)
+	// #define MWM_FUNC_RESIZE		(1L << 1)
+	// #define MWM_FUNC_MOVE		(1L << 2)
+	// #define MWM_FUNC_MINIMIZE	(1L << 3)
+	// #define MWM_FUNC_MAXIMIZE	(1L << 4)
+	// #define MWM_FUNC_CLOSE		(1L << 5)
+	//
+	// /* bit definitions for MwmHints.decorations */
+	// #define MWM_DECOR_ALL		(1L << 0)
+	// #define MWM_DECOR_BORDER	(1L << 1)
+	// #define MWM_DECOR_RESIZEH	(1L << 2)
+	// #define MWM_DECOR_TITLE		(1L << 3)
+	// #define MWM_DECOR_MENU		(1L << 4)
+	// #define MWM_DECOR_MINIMIZE	(1L << 5)
+	// #define MWM_DECOR_MAXIMIZE	(1L << 6)
 	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions)
 	{
 		using var _1 = XLock(x11Window.Display);
@@ -182,10 +217,45 @@ internal static class X11Helper
 		using var _3 = Disposable.Create(() => XLib.XFree(prop));
 
 		var arr = new IntPtr[5];
-		if (actualType != None)
+		if (actualType == None)
+		{
+			// the property wasn't set. Let's turn on everything by default.
+			arr[0] |= (IntPtr)(MotifFlags.Decorations | MotifFlags.Functions);
+			arr[1] |= (IntPtr)MotifFunctions.All;
+
+			// Border doesn't seem to do anything except show the title bar even if Title is off,
+			// so we turn it off.
+			// arr[2] |= (IntPtr)MotifDecorations.All;
+			arr[2] = ((int[])Enum.GetValuesAsUnderlyingType<MotifDecorations>()).Aggregate(0, (i1, i2) => i1 | i2);
+			arr[2] &= ~(IntPtr)MotifDecorations.Border;
+			arr[2] &= ~(IntPtr)MotifDecorations.All;
+		}
+		else
 		{
 			Debug.Assert(actual_format == 32 && nItems == 5);
 			new Span<IntPtr>(prop.ToPointer(), 5).CopyTo(new Span<IntPtr>(arr, 0, 5));
+		}
+
+		if (functions is { } f)
+		{
+			arr[0] |= (IntPtr)MotifFlags.Functions;
+
+			if ((arr[1] & (IntPtr)MotifDecorations.All) != 0)
+			{
+				// Remove the All function to be able to turn each function or or off individually.
+				var allDecorations = (int[])Enum.GetValuesAsUnderlyingType<MotifFunctions>();
+				arr[1] |= allDecorations.Aggregate(0, (i1, i2) => i1 | i2);
+				arr[1] &= ~(IntPtr)MotifFunctions.All;
+			}
+
+			if (on)
+			{
+				arr[1] |= f;
+			}
+			else
+			{
+				arr[1] &= ~f;
+			}
 		}
 
 		if (decorations is { } d)
@@ -207,19 +277,6 @@ internal static class X11Helper
 			else
 			{
 				arr[2] &= ~d;
-			}
-		}
-
-		if (functions is { } f)
-		{
-			arr[0] |= (IntPtr)MotifFlags.Functions;
-			if (on)
-			{
-				arr[1] |= f;
-			}
-			else
-			{
-				arr[1] &= ~f;
 			}
 		}
 
