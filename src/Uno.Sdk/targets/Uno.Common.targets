@@ -73,9 +73,9 @@
 	<!-- Legacy Project Support -->
 	<!-- Includes sanity check in case someone has a seperate project for the Head with Single Project targets -->
 	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $(MSBuildProjectName.Contains('.Skia.')) and $(UsingUnoCommonSkiaTargets) == '' " />
+		Condition="!$(TargetFramework.Contains('-skia')) and $(MSBuildProjectName.Contains('.Skia.')) and $(UsingUnoCommonSkiaTargets) == '' " />
 	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $(_IsStandaloneWasmHead) and $(UsingUnoCommonWasmTargets) == '' " />
+		Condition="!$(TargetFramework.Contains('-browser')) and $(_IsStandaloneWasmHead) and $(UsingUnoCommonWasmTargets) == '' " />
 
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
