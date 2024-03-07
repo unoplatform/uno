@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
@@ -87,6 +88,16 @@ internal class OverlappedPresenterTestsViewModel : ViewModelBase
 	{
 		_currentPresenter.Restore(ShouldActivateWindow);
 		RaisePropertyChanged(nameof(State));
+	}
+
+	public void RestoreAfter2Seconds()
+	{
+		Dispatcher.RunAsync(async () =>
+		{
+			await Task.Delay(2000);
+			_currentPresenter.Restore(ShouldActivateWindow);
+			RaisePropertyChanged(nameof(State));
+		});
 	}
 
 	public bool HasBorder
