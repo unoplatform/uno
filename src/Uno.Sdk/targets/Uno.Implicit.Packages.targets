@@ -217,7 +217,11 @@
 
 	<!-- Add Implicit Package References for Packages that have not already been added -->
 	<ItemGroup>
-		<PackageReference Include="@(_UnoImplicitPackageReference)" Exclude="@(PackageReference)" />
+		<!-- Include _UnoImplicitPackageReference in PackageReference without duplicate and without considering metadata -->
+		<_UnoImplicitPackageReferenceWithoutMetadata Include="@(_UnoImplicitPackageReference->'%(Identity)')" />
+		<PackageReference Include="@(_UnoImplicitPackageReference)" Exclude="@(_UnoImplicitPackageReferenceWithoutMetadata)" />
+		
+		<_UnoImplicitPackageReferenceWithoutMetadata Remove="@(_UnoImplicitPackageReferenceWithoutMetadata)" />
 	</ItemGroup>
 
 	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies">
