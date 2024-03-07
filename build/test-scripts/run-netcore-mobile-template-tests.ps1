@@ -133,6 +133,18 @@ $default = @('-v', 'detailed', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
 
+# replace the uno.sdk field value in global.json, recursively in all folders
+Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
+    
+    $globalJsonfilePath = $_.FullName;
+
+    Write-Host "Updated $globalJsonfilePath with $env:GITVERSION_SemVer"
+
+    $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
+    $globalJson.'msbuild-sdks'.'Uno.Sdk' = $env:GITVERSION_SemVer
+    $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
+}
+
 $projects =
 @(
     # 5.1 Blank
@@ -140,7 +152,7 @@ $projects =
     @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", ""),
     @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", ""),
     @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Skia.Wasm/uno51blank.Skia.Wasm.csproj", ""),
+    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", ""),
     @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", ""),
 
     # 5.1 Recommended
@@ -149,7 +161,7 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Skia.Wasm/uno51recommended.Skia.Wasm.csproj", ""),
+    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "")
@@ -162,8 +174,8 @@ $projects =
 
 for($i = 0; $i -lt $projects.Length; $i++)
 {
-    $projectPath=$dotnetBuildConfigurations[$i][0];
-    $projectOptions=$dotnetBuildConfigurations[$i][0];
+    $projectPath=$projects[$i][0];
+    $projectOptions=$projects[$i][1];
 
     Write-Host "Building Debug $projectPath with $projectOptions"
     dotnet build $debug "$projectPath" $projectOptions

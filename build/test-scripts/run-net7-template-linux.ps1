@@ -51,6 +51,12 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "")
+
+    
+    ## Note for contributors
+    ##
+    ## When adding new template versions, create them in a separate version named folder
+    ## using all the specific features that can be impacted by the use of the Uno.SDK
 );
 
 for($i = 0; $i -lt $projects.Length; $i++)
