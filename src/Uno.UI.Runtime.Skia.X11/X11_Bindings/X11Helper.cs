@@ -58,6 +58,8 @@ internal static class X11Helper
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
 
+	public const IntPtr LONG_LENGTH = 0x7FFFFFFF;
+
 	public static bool XamlRootHostFromApplicationView(ApplicationView view, [NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
 	{
 		// TODO: this is a ridiculous amount of indirection, find something better
