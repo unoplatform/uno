@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Threading;
 using Windows.Foundation;
 using Windows.System;
@@ -139,6 +140,24 @@ internal partial class X11XamlRootHost
 						break;
 					case XEventName.DestroyNotify:
 						// We handle the WM_DELETE_WINDOW message above, so ignore this.
+						break;
+					case XEventName.MapNotify:
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
+						}
+						break;
+					case XEventName.UnmapNotify:
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
+						}
+						break;
+					case XEventName.ReparentNotify:
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} was reparented to parent window {event_.ReparentEvent.parent.ToString("X", CultureInfo.InvariantCulture)}.");
+						}
 						break;
 					default:
 						if (this.Log().IsEnabled(LogLevel.Error))
