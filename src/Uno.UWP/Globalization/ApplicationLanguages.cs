@@ -116,9 +116,9 @@ namespace Windows.Globalization
 #if __ANDROID__
 				ContextHelper.Current?.Resources?.Configuration?.Locales?.Get(0)?.ToLanguageTag(),
 #endif
-				CultureInfo.InstalledUICulture?.Name,
-				CultureInfo.CurrentUICulture?.Name,
-				CultureInfo.CurrentCulture?.Name
+				CultureInfo.InstalledUICulture?.Name ?? "en-US",
+				CultureInfo.CurrentUICulture?.Name ?? "en-US",
+				CultureInfo.CurrentCulture?.Name ?? "en-US"
 			};
 
 			return languages
