@@ -293,6 +293,7 @@ public partial class ScrollPresenter : FrameworkElement
 		}
 	}
 
+#if false
 	private void ClearAnchorCandidates()
 	{
 #if DEBUG
@@ -302,6 +303,7 @@ public partial class ScrollPresenter : FrameworkElement
 		m_anchorCandidates.Clear();
 		m_isAnchorElementDirty = true;
 	}
+#endif
 
 	private void ResetAnchorElement()
 	{

@@ -12,7 +12,7 @@ internal partial class ScrollPresenterAutomationPeer : FrameworkElementAutomatio
 {
 	private const double s_minimumPercent = 0.0;
 	private const double s_maximumPercent = 100.0;
-	private const double s_noScroll = -1.0;
+	//private const double s_noScroll = -1.0;
 
 	private double m_horizontalScrollPercent = ScrollPatternIdentifiers.NoScroll;
 	private double m_verticalScrollPercent = ScrollPatternIdentifiers.NoScroll;
@@ -44,6 +44,7 @@ internal partial class ScrollPresenterAutomationPeer : FrameworkElementAutomatio
 	// Request to scroll horizontally and vertically by the specified amount.
 	// The ability to call this method and simultaneously scroll horizontally
 	// and vertically provides simple panning support.
+#if false // UNO TODO
 	private void Scroll(ScrollAmount horizontalAmount, ScrollAmount verticalAmount)
 	{
 		// SCROLLPRESENTER_TRACE_VERBOSE(Owner(), TRACE_MSG_METH_STR_STR, METH_NAME, this,
@@ -213,6 +214,7 @@ internal partial class ScrollPresenterAutomationPeer : FrameworkElementAutomatio
 
 		return m_verticallyScrollable;
 	}
+#endif
 
 	// Raise relevant Scroll Pattern events for UIAutomation clients.
 	internal void UpdateScrollPatternProperties()

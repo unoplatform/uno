@@ -11,26 +11,26 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class ScrollView : Control
 {
 	// Properties' default values.
-	private const ScrollingScrollBarVisibility s_defaultHorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Auto;
-	private const ScrollingScrollBarVisibility s_defaultVerticalScrollBarVisibility = ScrollingScrollBarVisibility.Auto;
-	private const ScrollingChainMode s_defaultHorizontalScrollChainMode = ScrollingChainMode.Auto;
-	private const ScrollingChainMode s_defaultVerticalScrollChainMode = ScrollingChainMode.Auto;
-	private const ScrollingRailMode s_defaultHorizontalScrollRailMode = ScrollingRailMode.Enabled;
-	private const ScrollingRailMode s_defaultVerticalScrollRailMode = ScrollingRailMode.Enabled;
-	private const Visibility s_defaultComputedHorizontalScrollBarVisibility = Visibility.Collapsed;
-	private const Visibility s_defaultComputedVerticalScrollBarVisibility = Visibility.Collapsed;
-	private const ScrollingScrollMode s_defaultHorizontalScrollMode = ScrollingScrollMode.Auto;
-	private const ScrollingScrollMode s_defaultVerticalScrollMode = ScrollingScrollMode.Auto;
-	private const ScrollingScrollMode s_defaultComputedHorizontalScrollMode = ScrollingScrollMode.Disabled;
-	private const ScrollingScrollMode s_defaultComputedVerticalScrollMode = ScrollingScrollMode.Disabled;
-	private const ScrollingChainMode s_defaultZoomChainMode = ScrollingChainMode.Auto;
-	private const ScrollingZoomMode s_defaultZoomMode = ScrollingZoomMode.Disabled;
-	private const ScrollingInputKinds s_defaultIgnoredInputKinds = ScrollingInputKinds.None;
-	private const ScrollingContentOrientation s_defaultContentOrientation = ScrollingContentOrientation.Vertical;
-	private const double s_defaultMinZoomFactor = 0.1;
-	private const double s_defaultMaxZoomFactor = 10.0;
-	private const bool s_defaultAnchorAtExtent = true;
-	private const double s_defaultAnchorRatio = 0.0;
+	//private const ScrollingScrollBarVisibility s_defaultHorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Auto;
+	//private const ScrollingScrollBarVisibility s_defaultVerticalScrollBarVisibility = ScrollingScrollBarVisibility.Auto;
+	//private const ScrollingChainMode s_defaultHorizontalScrollChainMode = ScrollingChainMode.Auto;
+	//private const ScrollingChainMode s_defaultVerticalScrollChainMode = ScrollingChainMode.Auto;
+	//private const ScrollingRailMode s_defaultHorizontalScrollRailMode = ScrollingRailMode.Enabled;
+	//private const ScrollingRailMode s_defaultVerticalScrollRailMode = ScrollingRailMode.Enabled;
+	//private const Visibility s_defaultComputedHorizontalScrollBarVisibility = Visibility.Collapsed;
+	//private const Visibility s_defaultComputedVerticalScrollBarVisibility = Visibility.Collapsed;
+	//private const ScrollingScrollMode s_defaultHorizontalScrollMode = ScrollingScrollMode.Auto;
+	//private const ScrollingScrollMode s_defaultVerticalScrollMode = ScrollingScrollMode.Auto;
+	//private const ScrollingScrollMode s_defaultComputedHorizontalScrollMode = ScrollingScrollMode.Disabled;
+	//private const ScrollingScrollMode s_defaultComputedVerticalScrollMode = ScrollingScrollMode.Disabled;
+	//private const ScrollingChainMode s_defaultZoomChainMode = ScrollingChainMode.Auto;
+	//private const ScrollingZoomMode s_defaultZoomMode = ScrollingZoomMode.Disabled;
+	//private const ScrollingInputKinds s_defaultIgnoredInputKinds = ScrollingInputKinds.None;
+	//private const ScrollingContentOrientation s_defaultContentOrientation = ScrollingContentOrientation.Vertical;
+	//private const double s_defaultMinZoomFactor = 0.1;
+	//private const double s_defaultMaxZoomFactor = 10.0;
+	//private const bool s_defaultAnchorAtExtent = true;
+	//private const double s_defaultAnchorRatio = 0.0;
 
 
 	private const string s_rootPartName = "PART_Root";

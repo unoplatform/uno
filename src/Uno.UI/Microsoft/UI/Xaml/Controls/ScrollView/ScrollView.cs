@@ -10,6 +10,7 @@ using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Input;
+using Uno;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -21,6 +22,9 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+#if !__SKIA__
+[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+#endif
 public partial class ScrollView : Control, IScrollView
 {
 	// Change to 'true' to turn on debugging outputs in Output window
@@ -853,21 +857,22 @@ public partial class ScrollView : Control, IScrollView
 		}
 	}
 
-	private void OnAutoHideScrollBarsChanged(
-		UISettings uiSettings,
-		UISettingsAutoHideScrollBarsChangedEventArgs args)
-	{
-		// OnAutoHideScrollBarsChanged is called on a non-UI thread, process notification on the UI thread using a dispatcher.
-		DispatcherQueue.TryEnqueue(() =>
-		{
-			this.m_autoHideScrollControllersValid = false;
-			this.UpdateVisualStates(
-				true  /*useTransitions*/,
-				false /*showIndicators*/,
-				false /*hideIndicators*/,
-				true  /*scrollControllersAutoHidingChanged*/);
-		});
-	}
+	// UNO TODO
+	//private void OnAutoHideScrollBarsChanged(
+	//	UISettings uiSettings,
+	//	UISettingsAutoHideScrollBarsChangedEventArgs args)
+	//{
+	//	// OnAutoHideScrollBarsChanged is called on a non-UI thread, process notification on the UI thread using a dispatcher.
+	//	DispatcherQueue.TryEnqueue(() =>
+	//	{
+	//		this.m_autoHideScrollControllersValid = false;
+	//		this.UpdateVisualStates(
+	//			true  /*useTransitions*/,
+	//			false /*showIndicators*/,
+	//			false /*hideIndicators*/,
+	//			true  /*scrollControllersAutoHidingChanged*/);
+	//	});
+	//}
 
 	private void OnScrollPresenterExtentChanged(
 		object sender,
@@ -2584,7 +2589,7 @@ public partial class ScrollView : Control, IScrollView
 		return canScrollInDirection;
 	}
 
-#if DEBUG
+#if false
 
 	private string DependencyPropertyToString(DependencyProperty dependencyProperty)
 	{

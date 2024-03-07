@@ -25,6 +25,9 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = "Content")]
+#if !__SKIA__
+[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+#endif
 public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, IScrollPresenter
 {
 	// Change to 'true' to turn on debugging outputs in Output window
@@ -1273,6 +1276,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 	}
 
+#if false // UNO TODO
 	private Vector2 ComputeEndOfInertiaPosition()
 	{
 		if (m_state == ScrollingInteractionState.Inertia)
@@ -1294,6 +1298,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			return ComputePositionFromOffsets(m_zoomedHorizontalOffset, m_zoomedVerticalOffset);
 		}
 	}
+#endif
 
 	// Returns zoomed vectors corresponding to InteractionTracker.MinPosition and InteractionTracker.MaxPosition
 	// Determines the min and max positions of the ScrollPresenter.Content based on its size and alignment, and the ScrollPresenter size.
@@ -2618,6 +2623,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		visualInteractionSource.ManipulationRedirectionMode = redirectionMode;
 	}
 
+#if false // UNO TODO
 	private void SetupVisualInteractionSourceCenterPointModifier(
 		VisualInteractionSource visualInteractionSource,
 		ScrollPresenterDimension dimension)
@@ -2672,6 +2678,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			}
 		}
 	}
+#endif
 
 	private ScrollingScrollMode GetComputedScrollMode(ScrollPresenterDimension dimension, bool ignoreZoomMode = false)
 	{
@@ -3025,7 +3032,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			int minDurationTestOverride;
 			int maxDurationTestOverride;
 
-			globalTestHooks.GetOffsetsChangeVelocityParameters(out unitDurationTestOverride, out minDurationTestOverride, out maxDurationTestOverride);
+			ScrollPresenterTestHooks.GetOffsetsChangeVelocityParameters(out unitDurationTestOverride, out minDurationTestOverride, out maxDurationTestOverride);
 
 			minDuration = minDurationTestOverride;
 			maxDuration = maxDurationTestOverride;
@@ -3084,7 +3091,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			int minDurationTestOverride;
 			int maxDurationTestOverride;
 
-			globalTestHooks.GetZoomFactorChangeVelocityParameters(out unitDurationTestOverride, out minDurationTestOverride, out maxDurationTestOverride);
+			ScrollPresenterTestHooks.GetZoomFactorChangeVelocityParameters(out unitDurationTestOverride, out minDurationTestOverride, out maxDurationTestOverride);
 
 			minDuration = minDurationTestOverride;
 			maxDuration = maxDurationTestOverride;
@@ -6356,6 +6363,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		return ticksCountdown;
 	}
 
+#if false // unused, even on WinUI
 	int GetInteractionTrackerOperationsCount(bool includeAnimatedOperations, bool includeNonAnimatedOperations)
 	{
 		MUX_ASSERT(includeAnimatedOperations || includeNonAnimatedOperations);
@@ -6374,6 +6382,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		return operationsCount;
 	}
+#endif
 
 	InteractionTrackerAsyncOperation GetLastNonAnimatedInteractionTrackerOperation(
 		InteractionTrackerAsyncOperation priorToInteractionTrackerOperation)
@@ -7172,7 +7181,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 	}
 #endif // DBG
 
-#if DEBUG
+#if false
 
 	private string DependencyPropertyToString(DependencyProperty dependencyProperty)
 	{

@@ -74,12 +74,14 @@ internal sealed partial class InteractionTrackerAsyncOperation
 		return m_isCanceled;
 	}
 
+#if false
 	void SetIsCanceled(bool isCanceled)
 	{
 		// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH_INT, METH_NAME, this, isCanceled);
 
 		m_isCanceled = isCanceled;
 	}
+#endif
 
 	internal bool IsDelayed()
 	{
@@ -252,7 +254,9 @@ internal sealed partial class InteractionTrackerAsyncOperation
 	private int m_requestId = -1;
 
 	// Set to True when the operation was canceled early enough to take effect.
+#pragma warning disable CS0649 // error CS0649: Field 'InteractionTrackerAsyncOperation.m_isCanceled' is never assigned to, and will always have its default value false
 	private bool m_isCanceled;
+#pragma warning restore CS0649
 
 	// Set to True when the operation is delayed until the scrollPresenter is loaded.
 	private bool m_isDelayed;

@@ -14,6 +14,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class ScrollPresenter
 {
+#if false
 	private bool IsHorizontallyScrollable()
 	{
 		return m_contentOrientation != ScrollingContentOrientation.Vertical;
@@ -23,6 +24,7 @@ public partial class ScrollPresenter
 	{
 		return m_contentOrientation != ScrollingContentOrientation.Horizontal;
 	}
+#endif
 
 	//private event_token ViewportChanged(ViewportChangedEventHandler value)
 	//{
@@ -54,6 +56,7 @@ public partial class ScrollPresenter
 	//	m_configurationChanged.remove(token);
 	//}
 
+#if false
 	private Rect GetRelativeViewport(
 		UIElement child)
 	{
@@ -84,6 +87,7 @@ public partial class ScrollPresenter
 
 		return result;
 	}
+#endif
 
 	public UIElement CurrentAnchor => AnchorElement();
 

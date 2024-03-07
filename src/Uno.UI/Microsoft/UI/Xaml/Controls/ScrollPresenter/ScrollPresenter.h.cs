@@ -213,16 +213,16 @@ public partial class ScrollPresenter : FrameworkElement
 	private SortedSet<SnapPointWrapper<ZoomSnapPointBase>> m_sortedConsolidatedZoomSnapPoints = new(new SnapPointWrapperComparator<ZoomSnapPointBase>());
 
 	// Maximum difference for offsets to be considered equal. Used for pointer wheel scrolling.
-	private const float s_offsetEqualityEpsilon = 0.00001f;
+	//private const float s_offsetEqualityEpsilon = 0.00001f;
 	// Maximum difference for zoom factors to be considered equal. Used for pointer wheel zooming.
-	private const float s_zoomFactorEqualityEpsilon = 0.00001f;
+	//private const float s_zoomFactorEqualityEpsilon = 0.00001f;
 
 	// Property names being targeted for the ScrollPresenter.Content's Visual.
 	// RedStone v1 case:
-	private const string s_transformMatrixTranslateXPropertyName = "TransformMatrix._41";
-	private const string s_transformMatrixTranslateYPropertyName = "TransformMatrix._42";
-	private const string s_transformMatrixScaleXPropertyName = "TransformMatrix._11";
-	private const string s_transformMatrixScaleYPropertyName = "TransformMatrix._22";
+	//private const string s_transformMatrixTranslateXPropertyName = "TransformMatrix._41";
+	//private const string s_transformMatrixTranslateYPropertyName = "TransformMatrix._42";
+	//private const string s_transformMatrixScaleXPropertyName = "TransformMatrix._11";
+	//private const string s_transformMatrixScaleYPropertyName = "TransformMatrix._22";
 	// RedStone v2 and higher case:
 	private const string s_translationPropertyName = "Translation";
 	private const string s_scalePropertyName = "Scale";
