@@ -427,9 +427,9 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 			if (ret < 0)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Error("Polling for X11 events failed, defaulting to SpinWait");
+					this.Log().Debug("Polling for X11 events failed, defaulting to SpinWait");
 				}
 
 				SpinWait.SpinUntil(() =>
