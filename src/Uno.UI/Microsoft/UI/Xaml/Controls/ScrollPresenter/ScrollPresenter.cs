@@ -1265,6 +1265,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		return -zoomedDelta;
 	}
 
+#if false // UNO TODO
 	private float ComputeEndOfInertiaZoomFactor()
 	{
 		if (m_state == ScrollingInteractionState.Inertia)
@@ -1277,7 +1278,6 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		}
 	}
 
-#if false // UNO TODO
 	private Vector2 ComputeEndOfInertiaPosition()
 	{
 		if (m_state == ScrollingInteractionState.Inertia)
