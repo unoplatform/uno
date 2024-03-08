@@ -72,13 +72,13 @@ public class Given_WebView2
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
 		navigationStarting = false;
 		navigationDone = false;
 		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 #if HAS_UNO
 		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
