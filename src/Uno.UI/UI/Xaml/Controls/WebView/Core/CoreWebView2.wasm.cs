@@ -13,16 +13,20 @@ public partial class CoreWebView2
 {
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
-		var webView = ((UIElement)_owner)
+		var nativeWebView = ((UIElement)_owner)
 			.GetChildren()
 			.OfType<NativeWebView>()
 			.FirstOrDefault();
 
-		if (webView is null)
+		if (nativeWebView is null)
 		{
 			return null;
 		}
+		else
+		{
+			nativeWebView.SetOwner(this);
+		}
 
-		return webView;
+		return nativeWebView;
 	}
 }
