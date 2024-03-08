@@ -267,7 +267,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode);
 			keyDown.Invoke(window!, args);
-			return args.Handled ? 1 : 0;
+			// we tell macOS it's always handled as WinUI does not mark as handled some keys that would make it beep in common cases
+			return 1;
 		}
 		catch (Exception e)
 		{
