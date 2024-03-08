@@ -588,7 +588,7 @@ public class ScrollViewTests : MUXApiTestBase
 	private void WaitForEvent(string logComment, EventWaitHandle eventWaitHandle)
 	{
 		Log.Comment(logComment);
-		if (!IsDebuggerPresent())
+		if (!UnoIsDebuggerPresent())
 		{
 			if (!eventWaitHandle.WaitOne(TimeSpan.FromMilliseconds(c_MaxWaitDuration)))
 			{
@@ -603,6 +603,14 @@ public class ScrollViewTests : MUXApiTestBase
 
 	[DllImport("kernel32.dll")]
 	private static extern bool IsDebuggerPresent();
+
+	// Uno specific. Avoid calling IsDebuggerPresent on non-Windows since we are cross-platform :)
+	private static bool UnoIsDebuggerPresent()
+	{
+		if (OperatingSystem.IsWindows())
+			return IsDebuggerPresent();
+		return false;
+	}
 }
 
 // Custom ScrollView that records its visual state changes.

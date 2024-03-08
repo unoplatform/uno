@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿#if __SKIA__
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -22,3 +23,4 @@ partial class ScrollPresenter : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => default;
 }
+#endif
