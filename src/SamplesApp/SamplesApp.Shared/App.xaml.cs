@@ -83,7 +83,14 @@ namespace SamplesApp
 
 			// Manual initialize connection to the dev-server is required within the Uno project
 			Uno.UI.RemoteControl.RemoteControlClient.Initialize(typeof(App));
+#if IS_CI
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultConnectionTimeout *= 25;
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout *= 25;
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultMetadataUpdateTimeout *= 25;
+#else
 			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout = TimeSpan.FromSeconds(300);
+#endif
+
 #if HAS_UNO_WINUI
 			if (Environment.GetEnvironmentVariable("UNO_RUNTIME_TESTS_DEV_SERVER_PATH") is null or { Length: 0 })
 			{
