@@ -1307,7 +1307,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				}
 			}
 
-			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(() => propertyType, memberValue);
+			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(propertyType, memberValue);
 		}
 
 		private void ApplyPostActions(object? instance)
