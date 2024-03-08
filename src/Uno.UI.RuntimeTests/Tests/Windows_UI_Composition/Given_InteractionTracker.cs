@@ -263,4 +263,77 @@ internal partial class Given_InteractionTracker
 		Assert.IsTrue(captureLostRaised);
 		Assert.IsTrue(helper.IsDone);
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is only supported on skia")]
+#endif
+	public async Task When_MouseWheel()
+	{
+		var border = new Border()
+		{
+			Width = 200,
+			Height = 200,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+
+		var position = await UITestHelper.Load(border);
+
+		var visual = ElementCompositionPreview.GetElementVisual(border);
+		var tracker = SetupTracker(visual.Compositor);
+
+		Assert.AreEqual(Vector3.Zero, tracker.Position);
+
+		var vis = VisualInteractionSource.Create(visual);
+		vis.ManipulationRedirectionMode = VisualInteractionSourceRedirectionMode.PointerWheelOnly;
+		vis.PositionXSourceMode = InteractionSourceMode.EnabledWithInertia;
+		vis.PositionYSourceMode = InteractionSourceMode.EnabledWithInertia;
+		tracker.InteractionSources.Add(vis);
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var finger = injector.GetMouse();
+		finger.MoveTo(new(position.Left + 100, position.Top + 100), steps: 1);
+		finger.WheelDown();
+
+		string logs = await WaitTrackerLogs(tracker);
+		var helper = new TrackerAssertHelper(logs);
+
+		Assert.AreEqual(
+			TrackerLogsConstructingHelper.GetInertiaStateEntered(
+				trackerPosition: new(0.0f, 0.0f, 0.0f),
+				requestId: 0,
+				naturalRestingPosition: new(0.0f, 48.0f, 0.0f),
+				modifiedRestingPosition: new(0.0f, 48.0f, 0.0f),
+				positionVelocityInPixelsPerSecond: new(0.0f, 192.0f, 0.0f)),
+			helper.Current);
+
+		helper.Advance();
+
+		var linesSkipped = helper.SkipLines(current => current.StartsWith("ValuesChanged:", StringComparison.Ordinal));
+		Assert.IsTrue(linesSkipped >= 2);
+		helper.Back();
+
+		Assert.AreEqual(
+			TrackerLogsConstructingHelper.GetValuesChanged(
+				trackerPosition: new(0.0f, 48.0f, 0.0f),
+				requestId: 0,
+				argsPosition: new(0.0f, 48.0f, 0.0f)),
+			helper.Current);
+
+		helper.Advance();
+
+		Assert.AreEqual(
+			TrackerLogsConstructingHelper.GetIdleStateEntered(
+				trackerPosition: new(0.0f, 48.0f, 0.0f),
+				requestId: 0),
+			helper.Current);
+
+		helper.Advance();
+		Assert.IsTrue(helper.IsDone);
+	}
+#endif
 }

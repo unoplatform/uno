@@ -41,11 +41,19 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	{
 	}
 
+	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	{
+		// Constant velocity for 250ms
+		var velocityValue = delta / 0.25f;
+		Vector3 velocity = isHorizontal ? new Vector3(velocityValue, 0, 0) : new Vector3(0, velocityValue, 0);
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocity, requestId: 0, isFromPointerWheel: true));
+	}
+
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// State changes to inertia and inertia modifiers are evaluated with requested velocity as initial velocity
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)
