@@ -109,10 +109,9 @@ namespace Microsoft.UI.Xaml.Documents
 				// TODO: we're passing twice to look for the start and end lines. Could easily be done in 1 pass
 				var startLine = GetRenderLineAt(GetRectForIndex(value.start).GetCenter().Y, true)?.index ?? 0;
 				var endLine = GetRenderLineAt(GetRectForIndex(value.end).GetCenter().Y, true)?.index ?? 0;
-				var selection = new SelectionDetails(startLine, value.start, endLine, value.end);
-				if (selection != _selection)
+				if ((startLine, value.start, endLine, value.end) != (_selection.StartLine, _selection.StartIdex, _selection.EndLine, _selection.EndIndex))
 				{
-					_selection = selection;
+					_selection = new SelectionDetails(startLine, value.start, endLine, value.end);
 					((IBlock)_collection.GetParent()).Invalidate(false);
 				}
 			}
