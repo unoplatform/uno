@@ -13,14 +13,11 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using Uno.UI.RuntimeTests.Helpers;
-using Point = System.Drawing.Point;
 
 #if __IOS__
 using UIKit;
@@ -31,6 +28,7 @@ using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
 using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.Extensions;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Toolkit.Extensions;
@@ -680,58 +678,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				sut.IsArrangeDirty.Should().BeFalse("IsArrangeDirty");
 				sut.IsArrangeDirtyPath.Should().BeFalse("IsArrangeDirtyPath");
 			}
-		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_Measure_Explicitly_Called()
-		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
-			{
-				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-			}
-
-			var tb = new TextBlock
-			{
-				Text = "Small"
-			};
-
-			var SUT = new StackPanel
-			{
-				Children =
-				{
-					tb,
-					new ContentControl
-					{
-						HorizontalContentAlignment = HorizontalAlignment.Center,
-						Content = new TextBlock
-						{
-							Text = "Small",
-							Foreground = new SolidColorBrush(Microsoft.UI.Colors.Yellow)
-						}
-					}
-				}
-			};
-
-			var sp = new Grid
-			{
-				ColumnDefinitions =
-				{
-					new ColumnDefinition { Width = 200 }
-				},
-				Children = { SUT }
-			};
-
-			await UITestHelper.Load(sp);
-
-			tb.Text = "very very very very very very very very very very very very very very very very very very very very very very very very wide";
-			await TestServices.WindowHelper.WaitForIdle();
-
-			SUT.Measure(LayoutInformation.GetAvailableSize(SUT) with { Width = 1000 });
-			await TestServices.WindowHelper.WaitForIdle();
-
-			var bitmap = await UITestHelper.ScreenShot(sp);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow);
 		}
 #endif
 

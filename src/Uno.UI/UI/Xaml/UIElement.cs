@@ -164,11 +164,6 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
-		private protected virtual void OnChildDesiredSizeChanged(UIElement child)
-		{
-			InvalidateMeasure();
-		}
-
 		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
 		{
 			var method = type

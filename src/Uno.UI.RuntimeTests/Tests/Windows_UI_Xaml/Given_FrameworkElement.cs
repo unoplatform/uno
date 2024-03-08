@@ -284,12 +284,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = sut;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			// count == 1 on WinUI
-#if __SKIA__ || __WASM__
-			Assert.AreEqual(1, count);
-#else
 			Assert.AreEqual(2, count);
-#endif
 		}
 
 		[TestMethod]
