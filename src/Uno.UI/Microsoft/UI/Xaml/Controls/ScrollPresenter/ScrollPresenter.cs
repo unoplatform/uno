@@ -52,6 +52,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		UnhookScrollPresenterEvents();
 	}
 
+	private UIElementCollection Children { get; }
+
 	public ScrollPresenter()
 	{
 		// SCROLLPRESENTER_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, this);
@@ -66,6 +68,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		// Uno specific
 		InitializePartial();
+		Children = new UIElementCollection(this);
 		base.Background = new SolidColorBrush(Colors.Transparent); // TODO: Remove when Background is moved from FrameworkElement to Control
 
 		// Set the default Transparent background so that hit-testing allows to start a touch manipulation
@@ -3676,7 +3679,9 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			// So, they can just cast ScrollPresenter to Panel and set the Background.
 			// In our case, we can't do that as there is no multi inheritance in C#.
 			// We use BorderLayerRenderer to draw the background.
+#if __SKIA__
 			_borderRenderer.Update();
+#endif
 
 			//Panel thisAsPanel = this;
 
@@ -4822,16 +4827,13 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		UIElement oldContent,
 		UIElement newContent)
 	{
-		// Uno docs: Doing GetChildren() followed by Clear and Add calls won't work for Uno.
-		// That will modify the UIElement children but not the Visual (composition) children.
-		// Calling ClearChildren and AddChild so that the composition tree is updated as well.
-		ClearChildren();
+		Children.Clear();
 
 		UnhookContentPropertyChanged(oldContent);
 
 		if (newContent is not null)
 		{
-			AddChild(newContent);
+			Children.Add(newContent);
 
 			if (m_minPositionExpressionAnimation is not null && m_maxPositionExpressionAnimation is not null)
 			{
