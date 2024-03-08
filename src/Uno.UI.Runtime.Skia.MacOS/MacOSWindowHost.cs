@@ -84,7 +84,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
+			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture}");
 		}
 
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -116,7 +116,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} FullScreen: {NativeUno.uno_application_is_full_screen()}");
+			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight}");
 		}
 
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;

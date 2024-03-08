@@ -90,45 +90,6 @@ bool uno_application_query_url_support(const char *url)
     return [[NSWorkspace sharedWorkspace] URLForApplicationToOpenURL:u] != nil;
 }
 
-bool uno_application_is_full_screen(void)
-{
-    NSWindow *win = [[NSApplication sharedApplication] keyWindow];
-    // keyWindow might not be set, yet - so we return false
-    bool result = win;
-    if (result) {
-        result = (win.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen;
-    }
-#if DEBUG
-    NSLog(@"uno_application_is_fullscreen %@ %s", win, result ? "true" : "false");
-#endif
-    return result;
-}
-
-bool uno_application_enter_full_screen(void)
-{
-    NSWindow *win = [[NSApplication sharedApplication] keyWindow];
-    bool result = win;
-    if (result && (win.styleMask & NSWindowStyleMaskFullScreen) != NSWindowStyleMaskFullScreen) {
-        [win toggleFullScreen:nil];
-        result = true;
-    }
-#if DEBUG
-    NSLog(@"uno_application_enter_fullscreen %@ %s", win, result ? "true" : "false");
-#endif
-    return result;
-}
-
-void uno_application_exit_full_screen(void)
-{
-    NSWindow *win = [[NSApplication sharedApplication] keyWindow];
-    if (win && (win.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen) {
-        [win toggleFullScreen:nil];
-    }
-#if DEBUG
-    NSLog(@"uno_application_exit_fullscreen %@", win);
-#endif
-}
-
 static application_can_exit_fn_ptr application_can_exit;
 
 inline application_can_exit_fn_ptr uno_get_application_can_exit_callback(void)

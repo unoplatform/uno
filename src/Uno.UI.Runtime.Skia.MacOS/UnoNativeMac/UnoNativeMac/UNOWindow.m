@@ -165,9 +165,183 @@ void uno_window_set_min_size(NSWindow *window, double width, double height)
     window.minSize = CGSizeMake(width, height);
 }
 
+char* uno_window_get_title(NSWindow *window)
+{
+    return strdup(window.title.UTF8String);
+}
+
 void uno_window_set_title(NSWindow *window, const char* title)
 {
     window.title = [NSString stringWithUTF8String:title];
+}
+
+bool uno_window_is_full_screen(NSWindow *window)
+{
+    bool result = window != nil;
+    if (result) {
+        result = (window.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen;
+    }
+#if DEBUG
+    NSLog(@"uno_window_is_full_screen %@ %s", window, result ? "true" : "false");
+#endif
+    return result;
+}
+
+bool uno_window_enter_full_screen(NSWindow *window)
+{
+    bool result = window != nil;
+    if (result && (window.styleMask & NSWindowStyleMaskFullScreen) != NSWindowStyleMaskFullScreen) {
+        [window toggleFullScreen:nil];
+        result = true;
+    }
+#if DEBUG
+    NSLog(@"uno_window_enter_full_screen %@ %s", window, result ? "true" : "false");
+#endif
+    return result;
+}
+
+void uno_window_exit_full_screen(NSWindow *window)
+{
+    if (window && (window.styleMask & NSWindowStyleMaskFullScreen) == NSWindowStyleMaskFullScreen) {
+        [window toggleFullScreen:nil];
+    }
+#if DEBUG
+    NSLog(@"uno_window_exit_full_screen %@", window);
+#endif
+}
+
+// on macOS double-clicking on the titlebar maximize the window (not the green icon)
+void uno_window_maximize(NSWindow *window)
+{
+#if DEBUG
+    NSLog(@"uno_window_maximize %@", window);
+#endif
+    [window performZoom:nil];
+}
+
+void uno_window_minimize(NSWindow *window, bool activateWindow)
+{
+#if DEBUG
+    NSLog(@"uno_window_minimize %@ %s", window, activateWindow ? "true" : "false");
+#endif
+    [window miniaturize:nil];
+    if (activateWindow) {
+        [window makeMainWindow];
+    }
+}
+
+void uno_window_restore(NSWindow *window, bool activateWindow)
+{
+#if DEBUG
+    NSLog(@"uno_window_restore %@ %s", window, activateWindow ? "true" : "false");
+#endif
+    switch(uno_window_get_overlapped_presenter_state(window)) {
+        case OverlappedPresenterStateMaximized:
+            [window zoom:nil];
+            break;
+        case OverlappedPresenterStateMinimized:
+            [window deminiaturize:nil];
+            break;
+        default:
+            break;
+    }
+    if (activateWindow) {
+        [window makeMainWindow];
+    }
+}
+
+OverlappedPresenterState uno_window_get_overlapped_presenter_state(NSWindow *window)
+{
+    if (window.isZoomed) {
+        return OverlappedPresenterStateMaximized;
+    } else if (window.isMiniaturized) {
+        return OverlappedPresenterStateMinimized;
+    } else {
+        return OverlappedPresenterStateRestored;
+    }
+}
+
+void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop)
+{
+    NSWindowLevel level = window.level;
+    if (isAlwaysOnTop) {
+        level = NSStatusWindowLevel;
+    } else {
+        level = NSNormalWindowLevel;
+    }
+#if DEBUG
+    NSLog(@"uno_window_set_always_on_top %@ 0x%x %s 0x%x", window, (uint)level, isAlwaysOnTop ? "true" : "false", (uint)level);
+#endif
+    window.level = level;
+}
+
+void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool hasTitleBar)
+{
+    NSWindowStyleMask style = window.styleMask;
+    if (!hasBorder)
+        style |= NSWindowStyleMaskBorderless;
+    else
+        style ^= NSWindowStyleMaskBorderless;
+    if (hasTitleBar)
+        style |= NSWindowStyleMaskTitled;
+    else
+        style ^= NSWindowStyleMaskTitled;
+#if DEBUG
+    NSLog(@"uno_window_set_border_and_title_bar %@ 0x%x hasBorder %s hasTitleBar %s 0x%x", window, (uint)window.styleMask,
+          hasBorder ? "true" : "false", hasTitleBar ? "true" : "false", (uint)style);
+#endif
+    window.styleMask = style;
+}
+
+void uno_window_set_maximizable(NSWindow* window, bool isMaximizable)
+{
+#if DEBUG
+    NSWindowCollectionBehavior cb = window.collectionBehavior;
+#endif
+    // unlike Windows on macOS the (green) maximizable button is for full screen, not zoomed
+    // `windowShouldZoom:toFrame:` will check the collectionBehavior to [dis]allow zooming
+    if (isMaximizable) {
+        [window setCollectionBehavior:NSWindowCollectionBehaviorDefault];
+        [[window standardWindowButton:NSWindowZoomButton] setEnabled:YES];
+    } else {
+        [window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling];
+        [[window standardWindowButton:NSWindowZoomButton] setEnabled:NO];
+    }
+#if DEBUG
+    NSLog(@"uno_window_set_maximizable %@ 0x%x %s 0x%x", window, (uint)cb, isMaximizable ? "true" : "false", (uint)window.collectionBehavior);
+#endif
+}
+
+void uno_window_set_minimizable(NSWindow* window, bool isMinimizable)
+{
+    NSWindowStyleMask style = window.styleMask;
+    if (isMinimizable)
+        style |= NSWindowStyleMaskMiniaturizable;
+    else
+        style ^= NSWindowStyleMaskMiniaturizable;
+#if DEBUG
+    NSLog(@"uno_window_set_minimizable %@ 0x%x %s 0x%x", window, (uint)window.styleMask, isMinimizable ? "true" : "false", (uint)style);
+#endif
+    window.styleMask = style;
+}
+
+bool uno_window_set_modal(NSWindow *window, bool isModal)
+{
+    // this is a read-only property so we simply log if we can't change it o the requested value
+    return isModal == window.isModalPanel;
+}
+
+void uno_window_set_resizable(NSWindow *window, bool isResizable)
+{
+    NSWindowStyleMask style = window.styleMask;
+    if (isResizable)
+        style |= NSWindowStyleMaskResizable;
+    else
+        style ^= NSWindowStyleMaskResizable;
+#if DEBUG
+    NSLog(@"uno_window_set_resizable %@ 0x%x %s 0x%x", window, (uint)window.styleMask, isResizable ? "true" : "false", (uint)style);
+#endif
+    window.styleMask = style;
 }
 
 inline window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void)
@@ -569,6 +743,11 @@ void* uno_window_get_metal_context(UNOWindow* window)
     if (!handled) {
         [super sendEvent:event];
     }
+}
+
+- (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame {
+    // if we disable the (green) maximize button then we don't allow zooming
+    return window.collectionBehavior != (NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling);
 }
 
 - (bool)windowShouldClose:(NSWindow *)sender
