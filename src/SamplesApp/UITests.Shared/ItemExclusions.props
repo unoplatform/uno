@@ -4,10 +4,6 @@
 	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
-	  
-	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
-	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
-	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
 
 	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\RevealBrushes\**" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\RevealBrushes\**" />
@@ -21,10 +17,6 @@
 	<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
 	<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
 	  
-	<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
-	<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
-	<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
-	  
 	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
 	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
@@ -32,5 +24,15 @@
 	<Page Remove="$(MSBuildThisFileDirectory)Lottie\**" />
 	<Compile Remove="$(MSBuildThisFileDirectory)Lottie\**" />
 	<None Include="$(MSBuildThisFileDirectory)Lottie\**" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseWinUI)'=='true'">
+	<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
+	<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\**" />
+
+	<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
+	<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
+	<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
   </ItemGroup>
 </Project>
