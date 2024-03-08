@@ -7,8 +7,6 @@ using Windows.UI.Core.Preview;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 
-using WinUIApplication = Microsoft.UI.Xaml.Application;
-
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSWindowWrapper : NativeWindowWrapperBase
@@ -26,7 +24,8 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => _window;
 
-	public override string Title {
+	public override string Title
+	{
 		get => NativeUno.uno_window_get_title(_window.Handle);
 		set => NativeUno.uno_window_set_title(_window.Handle, value);
 	}
