@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition
 			_resultPaint ??= new SKPaint() { IsAntialias = true };
 
 			UpdatePaint(_resultPaint, bounds);
-			session.Surface?.Canvas.DrawRect(bounds, _resultPaint);
+			session.Canvas?.DrawRect(bounds, _resultPaint);
 		}
 
 		private protected override void DisposeInternal()
