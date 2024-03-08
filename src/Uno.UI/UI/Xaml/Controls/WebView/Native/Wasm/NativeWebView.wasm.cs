@@ -16,6 +16,19 @@ public class NativeWebView : FrameworkElement, INativeWebView
 	{
 		this.HorizontalAlignment = HorizontalAlignment.Stretch;
 		this.VerticalAlignment = VerticalAlignment.Stretch;
+
+		this.RegisterEventHandler("load", OnNavigationCompleted, GenericEventHandlers.RaiseRoutedEventHandler);
+	}
+
+	private void OnNavigationCompleted(object sender, RoutedEventArgs e)
+	{
+		var uriString = this.GetAttribute("src");
+		Uri uri = null;
+		if (!string.IsNullOrEmpty(uriString))
+		{
+			uri = new Uri(uriString);
+		}
+		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 
 	public void SetOwner(CoreWebView2 coreWebView)
@@ -32,18 +45,30 @@ public class NativeWebView : FrameworkElement, INativeWebView
 	public void GoBack() { }
 	public void GoForward() { }
 	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
-	public async void ProcessNavigation(Uri uri)
+
+	private void ScheduleNavigationStarting(string url, Action loadAction)
 	{
-		this.SetAttribute("src", uri.ToString());
-		await Task.Delay(10);
-		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
+		_ = _coreWebView.Owner.Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.High, () =>
+		{
+			_coreWebView.RaiseNavigationStarting(url, out var cancel);
+
+			if (!cancel)
+			{
+				loadAction?.Invoke();
+			}
+		});
 	}
 
-	public async void ProcessNavigation(string html)
+	public void ProcessNavigation(Uri uri)
 	{
-		this.SetAttribute("srcdoc", html);
-		await Task.Delay(10);
-		_coreWebView.RaiseNavigationCompleted(null, true, 200, CoreWebView2WebErrorStatus.Unknown);
+		var uriString = uri.OriginalString;
+		ScheduleNavigationStarting(uriString, () => this.SetAttribute("src", uriString));
+	}
+
+
+	public void ProcessNavigation(string html)
+	{
+		ScheduleNavigationStarting(null, () => this.SetAttribute("srcdoc", html));
 	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
@@ -53,7 +78,9 @@ public class NativeWebView : FrameworkElement, INativeWebView
 
 	public void Reload()
 	{
+		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.location.reload()");
 	}
+
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
 	public void Stop() { }
 }
