@@ -13,6 +13,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -685,6 +686,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_Measure_Explicitly_Called()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var tb = new TextBlock
 			{
 				Text = "Small"
