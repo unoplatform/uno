@@ -48,7 +48,7 @@
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.20" />
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.20" />
-		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.100-1.23067.1" />
+		<PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="8.0.2" />
 	</ItemGroup>
 	<Import Project="..\MyAppXamlTrim.Shared\MyAppXamlTrim.Shared.projitems" Label="Shared" />
 </Project>
