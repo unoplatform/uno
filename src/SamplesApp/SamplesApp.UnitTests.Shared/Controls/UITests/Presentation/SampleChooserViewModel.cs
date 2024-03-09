@@ -35,6 +35,7 @@ using SamplesApp;
 using Uno.UI.Extensions;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
+using Microsoft.UI.Xaml.Media;
 
 namespace SampleControl.Presentation
 {
@@ -336,7 +337,6 @@ namespace SampleControl.Presentation
 				var testQuery = from category in _unfilteredCategories
 								from sample in category.SamplesContent
 								where !sample.IgnoreInSnapshotTests
-								// where sample.ControlName.Equals("GridViewVerticalGrouped")
 								select new SampleInfo
 								{
 									Category = category,
@@ -405,7 +405,7 @@ namespace SampleControl.Presentation
 							await Task.Delay(500, ct);
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
-							var file = await rootFolder.CreateFileAsync(fileName + ".png",
+							var file = await rootFolder.CreateFileAsync(fileName,
 								CreationCollisionOption.ReplaceExisting
 								).AsTask(ct);
 							await GenerateBitmap(ct, target, file, content, GetScreenshotConstraints());
@@ -1266,13 +1266,15 @@ namespace SampleControl.Presentation
 					border.Background = _screenshotBackground;
 				}
 
-				element.InvalidateMeasure();
-				element.InvalidateArrange();
-				await Task.Yield();
+				// This won't do anything on WinUI since the layout will immediately be reapplied the moment we let go
+				// of the Task and it will undo these measure/arrange changes, so we should make sure to take the
+				// snapshot before the runtime has a chance to relayout. Since RenderAsync is, well, async, we can't
+				// guarantee that. We match this behaviour of relayouting on wasm and skia, but it works anyway due to
+				// the way we implement synchronization and RenderAsync, which let us grab the snapshot before the
+				// relayouting.
 				element.Measure(new Windows.Foundation.Size(constraints.Width, constraints.Height));
 				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
 
-				await Task.Yield();
 				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				await targetBitmap.RenderAsync(element).AsTask(ct);
@@ -1293,9 +1295,9 @@ namespace SampleControl.Presentation
 #if HAS_UNO
 						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
 						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
-#else
-						DisplayInformation.GetForCurrentView().RawDpiX,
-						DisplayInformation.GetForCurrentView().RawDpiY,
+#else // WinUI throws an exception here about DisplayInforamation.GetForCurrentView() being callable only within CoreWindow threads (i.e. UWP only)
+						96,
+						96,
 #endif
 						pixels.ToArray()
 					);
