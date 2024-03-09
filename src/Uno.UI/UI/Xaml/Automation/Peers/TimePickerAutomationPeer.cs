@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ToggleMenuFlyoutItemAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml.Controls;
 
@@ -13,7 +16,8 @@ public partial class TimePickerAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override string GetClassNameCore() => nameof(TimePicker);
 
-	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Group;
+	protected override AutomationControlType GetAutomationControlTypeCore()
+		=> AutomationControlType.Group;
 
 	protected override string GetNameCore()
 	{
