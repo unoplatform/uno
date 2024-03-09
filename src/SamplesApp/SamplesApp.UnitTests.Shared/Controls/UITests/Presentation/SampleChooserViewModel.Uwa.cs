@@ -15,6 +15,8 @@ using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices;
+
 
 #if WINAPPSDK
 using Microsoft.UI.Xaml;
@@ -69,8 +71,11 @@ namespace SampleControl.Presentation
 			return folder;
 		}
 
-		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
-			=> (400, 400, 1200, 800);
+		[DllImport("User32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+		private static extern int GetDpiForWindow(IntPtr hwnd);
+
+		private static int GetDpi()
+			=> GetDpiForWindow(WinRT.Interop.WindowNative.GetWindowHandle(SamplesApp.App.MainWindow));
 	}
 }
 #endif

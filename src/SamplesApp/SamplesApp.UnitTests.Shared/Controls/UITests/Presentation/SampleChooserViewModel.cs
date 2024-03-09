@@ -408,7 +408,7 @@ namespace SampleControl.Presentation
 							var file = await rootFolder.CreateFileAsync(fileName + ".png",
 								CreationCollisionOption.ReplaceExisting
 								).AsTask(ct);
-							await GenerateBitmap(ct, target, file, content, GetScreenshotConstraints());
+							await GenerateBitmap(ct, target, file, content);
 						}
 						catch (Exception e)
 						{
@@ -1240,44 +1240,18 @@ namespace SampleControl.Presentation
 			Task GenerateBitmap(CancellationToken ct
 			, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
 			, StorageFile file
-			, FrameworkElement content
-			, (double MinWidth, double MinHeight, double Width, double Height) constraints)
+			, FrameworkElement content)
 		{
 #if __WASM__
 			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
 #else
-			var element = content?.Parent is FrameworkElement parent
-				? parent
-				: (FrameworkElement)content ?? throw new Exception("Invalid element");
+			var element = SamplesApp.App.MainWindow.Content;
 
-			(double oldMinWidth, double oldMinHeight, double oldWidth, double oldHeight)
-				= (element.MinWidth, element.MinHeight, element.Width, element.Height);
 			try
 			{
-				element.MinWidth = constraints.MinWidth;
-				element.MinHeight = constraints.MinHeight;
-				element.Width = constraints.Width;
-				element.Height = constraints.Height;
-
-				var border = element.FindFirstChild<Border>();
-
-				if (border != null)
-				{
-					border.Background = _screenshotBackground;
-				}
-
-				element.InvalidateMeasure();
-				element.InvalidateArrange();
-				await Task.Yield();
-				element.Measure(new Windows.Foundation.Size(constraints.Width, constraints.Height));
-				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
-
-				await Task.Yield();
 				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				await targetBitmap.RenderAsync(element).AsTask(ct);
-
-				content.DataContext = null;
 
 				var pixels = await targetBitmap.GetPixelsAsync().AsTask(ct);
 
@@ -1294,8 +1268,8 @@ namespace SampleControl.Presentation
 						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
 						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
 #else
-						DisplayInformation.GetForCurrentView().RawDpiX,
-						DisplayInformation.GetForCurrentView().RawDpiY,
+						GetDpi(),
+						GetDpi(),
 #endif
 						pixels.ToArray()
 					);
@@ -1306,12 +1280,6 @@ namespace SampleControl.Presentation
 			catch (Exception ex)
 			{
 				_log.Error(ex.Message);
-			}
-			finally
-			{
-				(element.MinWidth, element.MinHeight, element.Width, element.Height) =
-					(oldMinWidth, oldMinHeight, oldWidth, oldHeight);
-				await Task.Yield();
 			}
 #endif
 		}
