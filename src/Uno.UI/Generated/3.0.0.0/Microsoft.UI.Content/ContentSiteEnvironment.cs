@@ -51,9 +51,9 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayId.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayId.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.DisplayId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.AppWindowId.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteEnvironment.View.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

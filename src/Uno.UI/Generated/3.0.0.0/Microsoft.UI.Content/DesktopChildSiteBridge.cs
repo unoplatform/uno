@@ -37,8 +37,8 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.SiteView.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopChildSiteBridge.ResizePolicy.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

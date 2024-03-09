@@ -70,6 +70,20 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2Initialized.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2Initialized.remove
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.Foundation.IAsyncAction EnsureCoreWebView2Async(global::Microsoft.Web.WebView2.Core.CoreWebView2Environment environment)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebView2.EnsureCoreWebView2Async(CoreWebView2Environment environment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebView2.EnsureCoreWebView2Async%28CoreWebView2Environment%20environment%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.Foundation.IAsyncAction EnsureCoreWebView2Async(global::Microsoft.Web.WebView2.Core.CoreWebView2Environment environment, global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions controllerOptions)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction WebView2.EnsureCoreWebView2Async(CoreWebView2Environment environment, CoreWebView2ControllerOptions controllerOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebView2.EnsureCoreWebView2Async%28CoreWebView2Environment%20environment%2C%20CoreWebView2ControllerOptions%20controllerOptions%29");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoForwardProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CanGoBackProperty.get

@@ -27,6 +27,7 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.add
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -35,7 +36,6 @@ namespace Microsoft.UI.Input.DragDrop
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragDropManager", "void DragDropManager.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.add
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.TargetRequested.remove
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragDropManager.AreConcurrentOperationsEnabled.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

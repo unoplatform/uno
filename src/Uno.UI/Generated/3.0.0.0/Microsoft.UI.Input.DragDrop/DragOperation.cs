@@ -46,11 +46,6 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.Data.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
@@ -58,6 +53,11 @@ namespace Microsoft.UI.Input.DragDrop
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.DragDrop.DragOperation", "void DragOperation.SetDragUIContentFromSoftwareBitmap(SoftwareBitmap bitmap)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.AllowedOperations.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.DragUIContentMode.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragOperation.Data.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap, global::Windows.Foundation.Point anchorPoint)
