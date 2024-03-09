@@ -26,6 +26,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_WebView
 {
 	[TestMethod]
+#if __IOS__
+	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public void When_Navigate()
 	{
 		var webView = new WebView();
