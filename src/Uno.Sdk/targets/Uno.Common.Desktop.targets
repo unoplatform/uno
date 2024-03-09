@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<IsDesktop>true</IsDesktop>
 		<UsingUnoCommonDesktopTargets>true</UsingUnoCommonDesktopTargets>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 
 		<!-- Enable the netx.0-desktop target -->
 		<TargetPlatformIdentifier>Desktop</TargetPlatformIdentifier>

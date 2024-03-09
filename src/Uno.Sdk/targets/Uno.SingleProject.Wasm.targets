@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
+		<UnoIsWebAssemblyBrowserHead>true</UnoIsWebAssemblyBrowserHead>
 		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmProjectFolder)manifest.webmanifest</WasmPWAManifestFile>
 		<!--
 			Supports Deep Linking Routes
