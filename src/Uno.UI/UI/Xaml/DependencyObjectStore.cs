@@ -1383,7 +1383,7 @@ namespace Microsoft.UI.Xaml
 
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 		{
-			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
+			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
 			if (binding.SetterBindingPath != null)
 			{
 				try
