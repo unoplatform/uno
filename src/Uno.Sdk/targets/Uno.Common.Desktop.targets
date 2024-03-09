@@ -1,0 +1,26 @@
+<Project>
+	<PropertyGroup>
+		<IsDesktop>true</IsDesktop>
+		<UsingUnoCommonDesktopTargets>true</UsingUnoCommonDesktopTargets>
+
+		<!-- Enable the netx.0-desktop target -->
+		<TargetPlatformIdentifier>Desktop</TargetPlatformIdentifier>
+		<TargetFrameworkIdentifier>Desktop</TargetFrameworkIdentifier>
+		<TargetPlatformSupported>true</TargetPlatformSupported>
+		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
+	</PropertyGroup>
+
+	<!-- Enable the netx.0-desktop target -->
+	<ItemGroup>
+		<SupportedPlatform Include="desktop" />
+		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
+	</ItemGroup>
+
+	<!-- Enable the netx.0-desktop target -->
+	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '8.0')) ">
+		<SdkSupportedTargetPlatformIdentifier Include="desktop" DisplayName="Desktop" />
+	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Desktop.targets"
+			Condition=" $(SingleProject) == 'true' " />
+</Project>

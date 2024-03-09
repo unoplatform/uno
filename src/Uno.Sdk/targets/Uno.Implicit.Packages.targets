@@ -11,7 +11,7 @@
 		<_UnoImplicitPackageReference Include="Uno.WinUI.DevServer" Version="$(UnoVersion)" IsImplicitlyDefined="true" Condition="$(Optimize) != 'true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browser' AND !$(TargetFramework.Contains('windows10'))">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'browserwasm' AND !$(TargetFramework.Contains('windows10'))">
 		<_UnoImplicitPackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
 		<_UnoImplicitPackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" IsImplicitlyDefined="true" />
 	</ItemGroup>
@@ -30,7 +30,7 @@
 				<_UnoImplicitPackageReference Include="Xamarin.Google.Android.Material" Version="$(AndroidMaterialVersion)" IsImplicitlyDefined="true" />
 			</ItemGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 			<ItemGroup>
 				<_UnoImplicitPackageReference Include="Uno.WinUI.WebAssembly" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="$(UnoLoggingVersion)" IsImplicitlyDefined="true" />
@@ -57,7 +57,7 @@
 				<!-- Any Implicit packages we may want to add for MacOS -->
 			</ItemGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 			<ItemGroup>
 				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
 				<_UnoImplicitPackageReference Include="Uno.WinUI.Skia.MacOS" Version="$(UnoVersion)" IsImplicitlyDefined="true" />
@@ -217,7 +217,11 @@
 
 	<!-- Add Implicit Package References for Packages that have not already been added -->
 	<ItemGroup>
-		<PackageReference Include="@(_UnoImplicitPackageReference)" Exclude="@(PackageReference)" />
+		<!-- Include _UnoImplicitPackageReference in PackageReference without duplicate and without considering metadata -->
+		<_UnoImplicitPackageReferenceWithoutMetadata Include="@(_UnoImplicitPackageReference->'%(Identity)')" />
+		<PackageReference Include="@(_UnoImplicitPackageReference)" Exclude="@(_UnoImplicitPackageReferenceWithoutMetadata)" />
+		
+		<_UnoImplicitPackageReferenceWithoutMetadata Remove="@(_UnoImplicitPackageReferenceWithoutMetadata)" />
 	</ItemGroup>
 
 	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies">
