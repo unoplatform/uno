@@ -3,6 +3,9 @@
 // MUX Reference ToggleMenuFlyoutItemAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
+/// <summary>
+/// Exposes ToggleMenuFlyoutItem types to Microsoft UI Automation.
+/// </summary>
 public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutomationPeer, Provider.IToggleProvider
 {
 	public ToggleMenuFlyoutItemAutomationPeer(Controls.ToggleMenuFlyoutItem owner) : base(owner)
@@ -63,6 +66,10 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 		return returnValue;
 	}
 
+	/// <summary>
+	/// Cycles through the toggle states of a control.
+	/// </summary>
+	/// <exception cref="ElementNotEnabledException"></exception>
 	public void Toggle()
 	{
 		if (!IsEnabled())
@@ -73,6 +80,9 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 		(Owner as Controls.ToggleMenuFlyoutItem).Invoke();
 	}
 
+	/// <summary>
+	/// Gets the toggle state of the control.
+	/// </summary>
 	public ToggleState ToggleState
 	{
 		get
@@ -97,11 +107,13 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 
 		if (oldToggleState != newToggleState)
 		{
-			//base.RaisePropertyChangedEvent(AutomationProperties.ToggleStateProperty, oldToggleState, newToggleState);
+			RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldToggleState, newToggleState);
 		}
 	}
 
-	// Convert the Boolean in Inspectable to the ToggleState Enum, if the Inspectable is NULL that corresponds to Indeterminate state.
+	/// <summary>
+	/// Convert the Boolean in Inspectable to the ToggleState Enum, if the Inspectable is NULL that corresponds to Indeterminate state.
+	/// </summary>
 	private ToggleState ConvertToToggleState(object value)
 	{
 		if (value is bool v)
