@@ -13,6 +13,9 @@ jobs:
   dependsOn:
     - Generate_Packages
 
+  variables:
+    UnoDisableNetPreviousMobile: true
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -41,6 +44,9 @@ jobs:
 
   dependsOn:
     - Generate_Packages
+
+  variables:
+    UnoDisableNetPreviousMobile: true
 
   pool: ${{ parameters.vmPoolLinux }}
 
