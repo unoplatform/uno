@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+using DispatcherQueue = Windows.System.DispatcherQueue;
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class SplitView
@@ -183,7 +183,7 @@ public partial class SplitView
 		// 		FALSE /*fRaiseSync*/
 		// 	);
 		// }
-		DispatcherQueue.GetForCurrentThread().TryEnqueue(() => PaneClosing?.Invoke(this, spArgs));
+		DispatcherQueue.TryEnqueue(() => PaneClosing?.Invoke(this, spArgs));
 
 		// Uno Specific
 		// // Queue up a deferred UI thread executor that will actually close the pane
@@ -191,7 +191,7 @@ public partial class SplitView
 		// SplitViewPaneClosingExecutor spSplitViewExecutor;
 		// spSplitViewExecutor.init(new CSplitViewPaneClosingExecutor(this, spArgs.get()));
 		// IFC_RETURN(core->ExecuteOnUIThread(spSplitViewExecutor, ReentrancyBehavior::CrashOnReentrancy));
-		DispatcherQueue.GetForCurrentThread().TryEnqueue(() => new SplitViewPaneClosingExecutor(this, spArgs).Execute());
+		DispatcherQueue.TryEnqueue(() => new SplitViewPaneClosingExecutor(this, spArgs).Execute());
 
 		// Flag that we're attempting to close so that we don't queue up multiple of these messages.
 		m_isPaneClosingByLightDismiss = true;
@@ -374,7 +374,7 @@ public partial class SplitView
 			// 		FALSE /*fRaiseSync*/
 			// 	);
 			// }
-			DispatcherQueue.GetForCurrentThread().TryEnqueue(() => PaneClosing?.Invoke(this, spArgs));
+			DispatcherQueue.TryEnqueue(() => PaneClosing?.Invoke(this, spArgs));
 		}
 
 		if (IsLightDismissible())
@@ -400,7 +400,7 @@ public partial class SplitView
 		//         FALSE /*fRaiseSync*/
 		//         );
 		// }
-		DispatcherQueue.GetForCurrentThread().TryEnqueue(() => PaneClosed?.Invoke(this, null));
+		DispatcherQueue.TryEnqueue(() => PaneClosed?.Invoke(this, null));
 	}
 
 	private void SetFocusToPane()

@@ -20,7 +20,7 @@ internal class SplitViewPaneClosingExecutor
 		if (m_spPaneClosingEventArgs.Cancel)
 		{
 			m_spSplitView.OnCancelClosing();
-			return ;
+			return;
 		}
 
 		m_spSplitView.IsPaneOpen = false;
