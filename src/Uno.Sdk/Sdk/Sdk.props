@@ -12,7 +12,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<PropertyGroup>
 		<_DefaultMicrosoftNETSdk>Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
-		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' or $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly'))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<!-- Legacy Project System Support -->
+		<_DefaultMicrosoftNETSdk Condition="$(SingleProject) != 'true' AND ($(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -41,6 +42,10 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	</PropertyGroup>
 
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
+
+	<!-- This does a custom load of the Web Sdks that exclude Razor / Blazor dependencies as they are not needed -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Server.props" 
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'" />
 
 	<PropertyGroup>
 		<EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
