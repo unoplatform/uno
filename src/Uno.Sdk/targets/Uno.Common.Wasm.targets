@@ -11,6 +11,7 @@
 		<TargetFrameworkIdentifier>BrowserWasm</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
 		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">8.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<!-- Enable the netx.0-browswer-wasm target -->
