@@ -11,6 +11,7 @@
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
 		<PackageIcon>uno.png</PackageIcon>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -71,6 +72,14 @@
 			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
 		<Exec Command='rm -rf "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())"'
 			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
+	</Target>
+
+	<Target Name="PackNuGetLockFiles"
+			AfterTargets="ResolveAssemblyReferences"
+			BeforeTargets="Pack">
+		<ItemGroup>
+			<None Include="@(ReferenceCopyLocalPaths)" Pack="true" PackagePath="targets/$(TargetFramework)" />
+		</ItemGroup>
 	</Target>
 
 	<!-- Using Regex Replace prevents XmlPoke from replacing Tabs with Spaces -->
