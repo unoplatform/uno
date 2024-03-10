@@ -40,7 +40,6 @@ namespace MUXControlsTestApp.Utilities
 		/// Starts spying on the translation facade of the provided element.
 		/// </summary>
 		/// <param name="sourceElement"></param>
-		/// <param name="propertyName"></param>
 		/// <param name="originalValue"></param>
 		public static void StartSpyingTranslationFacade(UIElement sourceElement, Compositor compositor, Vector3 originalValue)
 		{
@@ -58,7 +57,6 @@ namespace MUXControlsTestApp.Utilities
 		/// Starts spying on the translation facade of the provided element.
 		/// </summary>
 		/// <param name="sourceElement"></param>
-		/// <param name="propertyName"></param>
 		/// <param name="originalValue"></param>
 		public static void StartSpyingScaleFacade(UIElement sourceElement, Compositor compositor, Vector3 originalValue)
 		{

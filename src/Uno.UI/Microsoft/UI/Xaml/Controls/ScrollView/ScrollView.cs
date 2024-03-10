@@ -17,8 +17,13 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.ViewManagement;
 
-using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
