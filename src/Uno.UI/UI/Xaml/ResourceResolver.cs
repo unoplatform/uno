@@ -92,7 +92,7 @@ namespace Uno.UI
 				}
 				else
 				{
-					var convertedValue = BindingPropertyHelper.Convert(() => type, value);
+					var convertedValue = BindingPropertyHelper.Convert(type, value);
 					if (convertedValue is null && _log.IsEnabled(LogLevel.Warning))
 					{
 						_log.LogWarning($"Unable to convert value '{value}' of type '{value.GetType()}' to type '{type}'");
@@ -300,7 +300,7 @@ namespace Uno.UI
 			// Set initial value based on statically-available top-level resources.
 			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
-				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
+				owner.SetValue(property, BindingPropertyHelper.Convert(property.Type, value), precedence);
 
 				// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
 				updateReason &= ~ResourceUpdateReason.StaticResourceLoading;

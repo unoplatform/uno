@@ -9,7 +9,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-		<Image x:Name="SelectedImage" Width="600" Height="600" />
-		<Button x:Name="SelectImageButton" Click="SelectImageButton_Click" Content="Pick image file" />
+		<Image Source="{x:Bind ViewModel.SelectedItemSource, Mode=OneWay}"
+			   Width="500"
+			   Height="500" />
+		<Button Click="{x:Bind ViewModel.SelectImageButton}"
+				Content="Pick image file" />
+		<TextBlock Foreground="Red"
+				   Text="{x:Bind ViewModel.ErrorMessage, Mode=OneWay}" TextWrapping="WrapWholeWords" />
 	</StackPanel>
 </Page>

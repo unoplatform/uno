@@ -9,8 +9,8 @@
 		<UnoUniversalImageLoader Condition="$(UnoUniversalImageLoader) == ''">1.9.36</UnoUniversalImageLoader>
 		<SkiaSharpVersion Condition="$(SkiaSharpVersion) == ''">2.88.7</SkiaSharpVersion>
 		<AndroidMaterialVersion Condition="$(AndroidMaterialVersion) == ''">1.10.0.2</AndroidMaterialVersion>
-		<WinAppSdkVersion Condition="$(WinAppSdkVersion) == ''">1.4.240211001</WinAppSdkVersion>
-		<WinAppSdkBuildToolsVersion Condition="$(WinAppSdkBuildToolsVersion) == ''">10.0.22621.2428</WinAppSdkBuildToolsVersion>
+		<WinAppSdkVersion Condition="$(WinAppSdkVersion) == ''">1.5.240227000</WinAppSdkVersion>
+		<WinAppSdkBuildToolsVersion Condition="$(WinAppSdkBuildToolsVersion) == ''">10.0.22621.3233</WinAppSdkBuildToolsVersion>
 		<CommunityToolkitMvvmVersion Condition="$(CommunityToolkitMvvmVersion) == ''">8.2.2</CommunityToolkitMvvmVersion>
 		<PrismVersion Condition="$(PrismVersion) == ''">9.0.401-pre</PrismVersion>
 		<MicrosoftIdentityClientVersion Condition="$(MicrosoftIdentityClientVersion) == ''">4.59.0</MicrosoftIdentityClientVersion>

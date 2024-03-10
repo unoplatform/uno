@@ -47,9 +47,9 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.KeyStatus.get
+		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.KeyCode.get
 		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Handled.get
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.Handled.set
-		// Forced skipping of method Microsoft.UI.Input.CharacterReceivedEventArgs.KeyStatus.get
 	}
 }
