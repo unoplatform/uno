@@ -39,10 +39,13 @@ public class Given_WebView2
 		await TestServices.WindowHelper.WaitForLoaded(border);
 		var uri = new Uri("https://example.com/");
 		await webView.EnsureCoreWebView2Async();
+		bool navigationStarting = false;
 		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.CoreWebView2.Navigate(uri.ToString());
 		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
 		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
@@ -60,14 +63,19 @@ public class Given_WebView2
 		await TestServices.WindowHelper.WaitForLoaded(border);
 		var uri = new Uri("https://example.com/");
 		await webView.EnsureCoreWebView2Async();
+		bool navigationStarting = false;
 		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
+		navigationStarting = false;
 		navigationDone = false;
 		webView.NavigateToString("<html></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 #if HAS_UNO
 		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
