@@ -4,7 +4,7 @@
 using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 

@@ -30,7 +30,7 @@ public class BiDirectionalScrollControllerScrollingScrollCompletedEventArgs
 	}
 }
 
-public sealed class BiDirectionalScrollController : ContentControl
+public sealed partial class BiDirectionalScrollController : ContentControl
 {
 	private class UniScrollControllerScrollingScrollCompletedEventArgs
 	{

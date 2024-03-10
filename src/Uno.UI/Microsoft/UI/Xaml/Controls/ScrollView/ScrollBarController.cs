@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using static Microsoft.UI.Xaml.Controls._Tracing;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 

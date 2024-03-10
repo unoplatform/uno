@@ -473,7 +473,7 @@ public class CompositionScrollControllerOffsetChangeCompletedEventArgs
 	}
 }
 
-public sealed class CompositionScrollController : Control, IScrollController
+public sealed partial class CompositionScrollController : Control, IScrollController
 {
 	public event TypedEventHandler<CompositionScrollController, CompositionScrollControllerOffsetChangeCompletedEventArgs> OffsetChangeCompleted;
 
