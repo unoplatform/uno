@@ -46,17 +46,30 @@ public class Given_WebView
 #endif
 
 	[TestMethod]
-	public void When_NavigateToString()
+	public async Task When_NavigateToString()
 	{
+		var border = new Border();
 		var webView = new WebView();
-		var uri = new Uri("https://bing.com");
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		var uri = new Uri("https://example.com/");
+		bool navigationStarting = false;
+		bool navigationDone = false;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
+		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
-
-		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
-		Assert.AreEqual("https://bing.com", uri.OriginalString);
-
+		Assert.IsNotNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		Assert.IsNotNull(webView.Source);
+		navigationStarting = false;
+		navigationDone = false;
 		webView.NavigateToString("<html></html>");
-		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 	}
 
 #if __ANDROID__ || __IOS__

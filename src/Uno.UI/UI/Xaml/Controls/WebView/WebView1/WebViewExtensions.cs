@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls;
 internal static class WebViewExtensions
 {
 	public static WebViewNavigationStartingEventArgs ToWebViewArgs(this CoreWebView2NavigationStartingEventArgs args) =>
-		new WebViewNavigationStartingEventArgs(args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
+		new WebViewNavigationStartingEventArgs(args.Uri?.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
 		{
 			Cancel = args.Cancel
 		};
@@ -16,7 +16,7 @@ internal static class WebViewExtensions
 		new WebViewNavigationCompletedEventArgs(args.IsSuccess, args.Uri, args.WebErrorStatus.ToWebErrorStatus());
 
 	public static WebViewNewWindowRequestedEventArgs ToWebViewArgs(this CoreWebView2NewWindowRequestedEventArgs args) =>
-		new WebViewNewWindowRequestedEventArgs(null, args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
+		new WebViewNewWindowRequestedEventArgs(null, args.Uri?.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
 		{
 			Handled = args.Handled
 		};
