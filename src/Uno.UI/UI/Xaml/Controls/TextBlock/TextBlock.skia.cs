@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Documents;
 using SkiaSharp;
 using Microsoft.UI.Composition;
 using System.Numerics;
@@ -230,12 +230,74 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsTextSelectionEnabled)
 			{
-				var nullableSpan = Inlines.GetRenderSegmentSpanAt(e.GetPosition(this), false);
-				if (nullableSpan.HasValue)
+				// This could definitely be made faster, but at the cost of uglifying the code quite a bit.
+				// Since double tapping is not very repetitive, this shouldn't matter.
+				var position = e.GetPosition(this);
+				var nullableSpan = Inlines.GetRenderSegmentSpanAt(position, false);
+				if (nullableSpan is { span: var span })
 				{
-					Selection = new Range(Inlines.GetStartAndEndIndicesForSpan(nullableSpan.Value.span, false));
+					// Index
+					var index = Inlines.GetIndexAt(position, false, true);
+					var spanRange = Inlines.GetStartAndEndIndicesForSpan(span, false);
+					var chunk = GetChunkAt(Text[spanRange.start..spanRange.end], index - spanRange.start);
+
+					// the chunk range will be relative to the span, so we have to add the offset of the span relative to the entire Text
+					Selection = new Range(spanRange.start + chunk.start, spanRange.start + chunk.start + chunk.length);
 				}
 			}
+		}
+
+		// Note: this is a very close copy of TextBox.GenerateChunks.
+		private (int start, int length) GetChunkAt(string text, int index)
+		{
+			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
+			// \r and \t are always their own chunks
+			var length = text.Length;
+			for (var i = 0; i < length;)
+			{
+				var start = i;
+				var c = text[i];
+				if (c is '\r' or '\t')
+				{
+					i++;
+				}
+				else if (c == ' ')
+				{
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+				else if (char.IsLetterOrDigit(text[i]))
+				{
+					while (i < length && char.IsLetterOrDigit(text[i]))
+					{
+						i++;
+					}
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+				else
+				{
+					while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
+					{
+						i++;
+					}
+					while (i < length && text[i] == ' ')
+					{
+						i++;
+					}
+				}
+
+				if (start <= index && index < i)
+				{
+					return (start, i - start);
+				}
+			}
+
+			throw new UnreachableException("No chunk was selected after chunking the entire input");
 		}
 
 		// TODO: remove this context menu when TextCommandBarFlyout is implemented

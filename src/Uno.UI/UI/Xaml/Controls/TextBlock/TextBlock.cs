@@ -946,6 +946,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				e.Handled = true;
 				that.Focus(FocusState.Pointer);
+
+				that.CapturePointer(e.Pointer);
 			}
 		};
 
