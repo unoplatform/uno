@@ -7,7 +7,10 @@ using SkiaSharp;
 
 namespace Uno.UI.Composition;
 
-internal record struct DrawingSession(SKSurface Surface, in DrawingFilters Filters) : IDisposable
+
+// Accessing Surface.Canvas is slow due to SkiaSharp interop.
+// Avoid using .Surface.Canvas and use Surface.Canvas right away.
+internal record struct DrawingSession(SKSurface Surface, SKCanvas Canvas, in DrawingFilters Filters) : IDisposable
 {
 	public static void PushOpacity(ref DrawingSession session, float opacity)
 	{
@@ -21,5 +24,5 @@ internal record struct DrawingSession(SKSurface Surface, in DrawingFilters Filte
 
 	/// <inheritdoc />
 	public void Dispose()
-		=> Surface.Canvas.Restore();
+		=> Canvas.Restore();
 }

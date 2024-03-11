@@ -478,7 +478,7 @@ namespace Microsoft.UI.Xaml.Documents
 				return;
 			}
 
-			var canvas = session.Surface.Canvas;
+			var canvas = session.Canvas;
 			var parent = (IBlock)_collection.GetParent();
 			var alignment = parent.TextAlignment;
 			if (parent.FlowDirection == FlowDirection.RightToLeft)
