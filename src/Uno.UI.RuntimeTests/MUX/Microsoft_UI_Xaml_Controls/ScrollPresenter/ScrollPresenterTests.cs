@@ -27,6 +27,9 @@ using Windows.UI;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
+#if !__SKIA__
+[Ignore("Not well supported on platforms other than Skia")]
+#endif
 public partial class ScrollPresenterTests : MUXApiTestBase
 {
 	private const ScrollingInteractionState c_defaultState = ScrollingInteractionState.Idle;
