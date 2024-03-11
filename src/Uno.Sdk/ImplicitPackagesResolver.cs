@@ -99,7 +99,6 @@ public sealed class ImplicitPackagesResolver : Task
 		}
 		catch (Exception ex)
 		{
-			//System.Diagnostics.Debugger.Launch();
 			Log.LogErrorFromException(ex);
 		}
 
@@ -281,7 +280,7 @@ public sealed class ImplicitPackagesResolver : Task
 			&& !features.Contains(UnoFeature.Prism))
 		{
 			AddPackage("Uno.Extensions.Navigation.WinUI", UnoExtensionsVersion);
-			AddPackageForFeature(features, UnoFeature.CSharpMarkup, "Uno.Extensons.Navigation.WinUI.Markup", UnoExtensionsVersion);
+			AddPackageForFeature(features, UnoFeature.CSharpMarkup, "Uno.Extensions.Navigation.WinUI.Markup", UnoExtensionsVersion);
 			AddPackageForFeature(features, UnoFeature.Toolkit, "Uno.Extensions.Navigation.Toolkit.WinUI", UnoExtensionsVersion);
 		}
 
