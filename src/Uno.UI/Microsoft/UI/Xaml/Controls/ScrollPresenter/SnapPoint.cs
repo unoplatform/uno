@@ -13,6 +13,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class SnapPointBase
 {
+	internal SnapPointBase()
+	{
+	}
+
 	private protected string GetTargetExpression(string target)
 	{
 		return StringUtil.FormatString("this.Target.%1!s!", target);

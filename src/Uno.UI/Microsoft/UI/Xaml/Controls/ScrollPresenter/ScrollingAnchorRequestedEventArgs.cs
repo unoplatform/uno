@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public sealed partial class ScrollingAnchorRequestedEventArgs
 {
-	public ScrollingAnchorRequestedEventArgs(ScrollPresenter scrollPresenter)
+	internal ScrollingAnchorRequestedEventArgs(ScrollPresenter scrollPresenter)
 	{
 		// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH_PTR, METH_NAME, this, scrollPresenter);
 
