@@ -85,7 +85,12 @@
 			Condition="$(UnoFeatures.Contains(';Cupertino;')) AND $(UnoThemesVersion) == ''"
 			Text="The UnoFeature 'Cupertino' was selected, but the property UnoThemesVersion was not set." />
 
+		<PropertyGroup>
+			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
+		</PropertyGroup>
+
 		<ImplicitPackagesResolver
+				IntermediateOutput="$(_UnoCacheFolder)"
 				SingleProject="$(SingleProject)"
 				Optimize="$(Optimize)"
 				UnoFeatures="$(UnoFeatures)"

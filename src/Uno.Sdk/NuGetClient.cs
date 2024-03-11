@@ -26,10 +26,15 @@ public class NuGetClient : IDisposable
 
 	internal record VersionsResponse(string[] Versions);
 
-	private async Task<string> GetVersionAsync(string packageId, bool preview, string? minimumVersionString = null)
+	private async Task<IEnumerable<NuGetVersion>> GetPackageVersions(string packageId)
 	{
 		var response = await Client.GetFromJsonAsync<VersionsResponse>($"/v3-flatcontainer/{packageId.ToLower(CultureInfo.InvariantCulture)}/index.json");
-		var versions = response?.Versions.Select(x => new NuGetVersion(x)) ?? [];
+		return response?.Versions.Select(x => new NuGetVersion(x)) ?? [];
+	}
+
+	private async Task<string> GetVersionAsync(string packageId, bool preview, string? minimumVersionString = null)
+	{
+		var versions = await GetPackageVersions(packageId);
 		versions = versions.Where(x => x.IsPreview == preview);
 
 		if (NuGetVersion.TryParse(minimumVersionString, out var minimumVersion))

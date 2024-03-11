@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -14,6 +14,9 @@ public sealed class ImplicitPackagesResolver : Task
 	public bool SingleProject { get; set; }
 
 	public bool Optimize { get; set; }
+
+	[Required]
+	public string IntermediateOutput { get; set; }
 
 	public string UnoFeatures { get; set; }
 
@@ -87,15 +90,25 @@ public sealed class ImplicitPackagesResolver : Task
 		try
 		{
 			var features = GetFeatures();
+			var references = CachedReferences.Load(IntermediateOutput);
 
-			AddUnoCorePackages(features);
-			AddUnoCSharpMarkup(features);
-			AddUnoExtensionsPackages(features);
-			AddUnoToolkitPackages(features);
-			AddUnoThemes(features);
-			AddPrism(features);
-			AddPackageForFeature(features, UnoFeature.Dsp, "Uno.Dsp.Tasks", UnoDspTasksVersion);
-			AddPackageForFeature(features, UnoFeature.Mvvm, "CommunityToolkit.Mvvm", CommunityToolkitMvvmVersion);
+			if (references.NeedsUpdate(features))
+			{
+				AddUnoCorePackages(features);
+				AddUnoCSharpMarkup(features);
+				AddUnoExtensionsPackages(features);
+				AddUnoToolkitPackages(features);
+				AddUnoThemes(features);
+				AddPrism(features);
+				AddPackageForFeature(features, UnoFeature.Dsp, "Uno.Dsp.Tasks", UnoDspTasksVersion);
+				AddPackageForFeature(features, UnoFeature.Mvvm, "CommunityToolkit.Mvvm", CommunityToolkitMvvmVersion);
+				references = new CachedReferences(DateTimeOffset.Now, features, [.. _implicitPackages]);
+				references.SaveCache(IntermediateOutput);
+			}
+			else
+			{
+				_implicitPackages.AddRange(references.References);
+			}
 		}
 		catch (Exception ex)
 		{
