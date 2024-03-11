@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -77,9 +77,10 @@ public sealed class ImplicitPackagesResolver : Task
 	public ITaskItem[] ImplicitPackages => [.. _implicitPackages.Distinct()
 		.Select(x => x.ToTaskItem())];
 
-	private readonly List<ITaskItem> _removePackageVersions = [];
 	[Output]
-	public ITaskItem[] RemovePackageVersions => [.. _removePackageVersions];
+	public ITaskItem[] RemovePackageVersions =>
+		PackageVersions.Where(x =>
+			_implicitPackages.Any(ip => ip.PackageId == x.ItemSpec)).ToArray();
 
 	public override bool Execute()
 	{
@@ -264,7 +265,6 @@ public sealed class ImplicitPackagesResolver : Task
 			AddPackage("Microsoft.Maui.Controls.Compatibility", MauiVersion);
 			AddPackage("Microsoft.Maui.Graphics", MauiVersion);
 
-			// TOOD: Add Android Packages
 			if (TargetFrameworkIdentifier == UnoTarget.Android)
 			{
 				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion, true);
@@ -388,12 +388,6 @@ public sealed class ImplicitPackagesResolver : Task
 			return;
 		}
 
-		var existingPackageVersion = PackageVersions.FirstOrDefault(x => x.ItemSpec == packageId);
-		if (existingPackageVersion is not null)
-		{
-			_removePackageVersions.Add(existingPackageVersion);
-		}
-
 		var existing = _implicitPackages.SingleOrDefault(x => x.PackageId == packageId);
 		if (existing is not null)
 		{
@@ -406,20 +400,5 @@ public sealed class ImplicitPackagesResolver : Task
 		}
 
 		_implicitPackages.Add(new PackageReference(packageId, version, @override));
-	}
-
-	private record PackageReference(string PackageId, string Version, bool Override)
-	{
-		public ITaskItem ToTaskItem()
-		{
-			var taskItem = new TaskItem
-			{
-				ItemSpec = PackageId,
-			};
-			var versionMetadta = Override ? "VersionOverride" : "Version";
-			taskItem.SetMetadata(versionMetadta, Version);
-			taskItem.SetMetadata("IsImplicitlyDefined", bool.TrueString);
-			return taskItem;
-		}
 	}
 }

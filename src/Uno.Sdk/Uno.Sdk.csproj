@@ -22,13 +22,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.3" />
-	  <PackageReference Include="PolySharp" Version="1.14.1">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
-	  <PackageReference Include="System.Text.Json" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.3" />
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.2" />
 	</ItemGroup>
 
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
@@ -68,9 +68,9 @@
 			<ToDelete Include="$(LocalArtifactStagingDirectory)\$(PackageId).$(GitBaseVersionMajor).$(GitBaseVersionMinor).*" />
 		</ItemGroup>
 		<Delete Files="@(ToDelete)" />
-		<Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s'
+		<Exec Command="rd &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot; /q /s"
 			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
-		<Exec Command='rm -rf "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())"'
+		<Exec Command="rm -rf &quot;$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())&quot;"
 			Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
 	</Target>
 
