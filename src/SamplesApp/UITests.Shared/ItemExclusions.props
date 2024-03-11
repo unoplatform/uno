@@ -40,4 +40,11 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(UNO_UWP_BUILD)">
+		<!-- WinUI-only samples -->
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\**" />
+	</ItemGroup>
 </Project>
