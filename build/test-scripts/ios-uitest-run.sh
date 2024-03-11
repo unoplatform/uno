@@ -199,6 +199,7 @@ then
 	done
 
 	if ! [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+ 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, waiting 2 seconds"
  		sleep 2
  	fi
   
