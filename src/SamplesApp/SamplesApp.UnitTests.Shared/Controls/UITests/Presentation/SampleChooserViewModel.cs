@@ -402,7 +402,12 @@ namespace SampleControl.Presentation
 
 							ContentPhone = content;
 
+#if HAS_UNO
+							await _dispatcher.RunIdleAsync(_ => { });
+							await _dispatcher.RunIdleAsync(_ => { });
+#else
 							await Task.Delay(500, ct);
+#endif
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
 							var file = await rootFolder.CreateFileAsync(fileName + ".png",
