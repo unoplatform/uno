@@ -1801,6 +1801,11 @@
 			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
 			
 			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings..ctor(Windows.UI.Xaml.Controls.SplitView splitView)" reason="Should be internal" />
+			<Member fullName="Windows.UI.Xaml.Media.RectangleGeometry Windows.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.get_LeftClip()" reason="Should be internal" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings..ctor(Microsoft.UI.Xaml.Controls.SplitView splitView)" reason="Should be internal" />
+			<Member fullName="Microsoft.UI.Xaml.Media.RectangleGeometry Microsoft.UI.Xaml.Controls.Primitives.SplitViewTemplateSettings.get_LeftClip()" reason="Should be internal" />
 		</Types>
 
 		<Events>
