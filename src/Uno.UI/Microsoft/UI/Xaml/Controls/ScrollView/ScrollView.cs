@@ -595,8 +595,8 @@ public partial class ScrollView : Control, IScrollView
 
 		if (args.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
 		{
-			PointerPoint pointerPoint = args.GetCurrentPoint(null);
-			PointerPointProperties pointerPointProperties = pointerPoint.Properties;
+			var pointerPoint = args.GetCurrentPoint(null);
+			var pointerPointProperties = pointerPoint.Properties;
 
 			m_isLeftMouseButtonPressedForFocus = pointerPointProperties.IsLeftButtonPressed;
 		}
