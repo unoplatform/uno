@@ -46,9 +46,6 @@ namespace SampleControl.Presentation
 				).AsTask(ct);
 			return folder;
 		}
-
-		private (double MinWidth, double MinHeight, double Width, double Height) GetScreenshotConstraints()
-			=> (400, 400, 1280, 800);
 	}
 }
 #endif
