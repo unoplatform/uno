@@ -10,7 +10,7 @@ namespace Uno.Sdk;
 internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, PackageReference[] References)
 {
 	private const string CacheFileName = "implicit-packages.cache";
-	private static readonly JsonSerializerOptions _options = new (JsonSerializerDefaults.General)
+	private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.General)
 	{
 		WriteIndented = true
 	};
