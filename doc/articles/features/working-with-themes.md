@@ -8,6 +8,17 @@ Uno Platform offers fine-grained customization of typography, corner radius, and
 
 These themes affect both the `Background` and `Foreground` colors to accommodate user preferences. All of the color modes mentioned above are available for use in your app. This guide will detail how to change the system theme setting, make your app receive change notifications for it, and react to those changes at runtime.
 
+<div style="position: relative; width: 100%; padding-bottom: 56.25%;">
+    <iframe
+        src="https://www.youtube-nocookie.com/embed/FXHUiHjgAQ4"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    </iframe>
+</div>
+
 ## Enable dark mode
 
 As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms.
