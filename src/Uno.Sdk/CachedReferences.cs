@@ -28,13 +28,26 @@ internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, 
 
 	public void SaveCache(string intermediateOutput)
 	{
-		var json = JsonSerializer.Serialize(this, _options);
-		File.WriteAllText(Path.Combine(intermediateOutput, CacheFileName), json);
+		try
+		{
+			var json = JsonSerializer.Serialize(this, _options);
+			if (!Directory.Exists(intermediateOutput))
+			{
+				Directory.CreateDirectory(intermediateOutput);
+			}
+
+			var path = CacheFilePath(intermediateOutput);
+			File.WriteAllText(path, json);
+		}
+		catch
+		{
+			// Suppress errors: If we have an issue saving this should not affect the build.
+		}
 	}
 
 	public static CachedReferences Load(string intermediateOutput)
 	{
-		var path = Path.Combine(intermediateOutput, CacheFileName);
+		var path = CacheFilePath(intermediateOutput);
 		if (!File.Exists(path))
 		{
 			// We return an Invalid Feature to ensure we force an update.
@@ -52,4 +65,7 @@ internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, 
 			return new CachedReferences(default, [UnoFeature.Invalid], []);
 		}
 	}
+
+	private static string CacheFilePath(string intermediateOutput) =>
+		Path.Combine(intermediateOutput, CacheFileName);
 }
