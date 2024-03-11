@@ -603,7 +603,6 @@ public partial class SplitView : Control
 
 		// Uno Specific
 		// m_outerDismissLayerPopup.SetAssociatedIsland(VisualTree.GetRootOrIslandForElement(this));
-		AddChild(m_outerDismissLayerPopup);
 
 		m_outerDismissLayerPopup.IsOpen = true;
 
