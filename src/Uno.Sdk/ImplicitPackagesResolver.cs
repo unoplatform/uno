@@ -391,7 +391,7 @@ public sealed class ImplicitPackagesResolver : Task
 			using var client = new NuGetClient();
 			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && new NuGetVersion(UnoVersion).IsPreview;
 			version = client.GetVersion(packageId, preview);
-			Log.LogMessage(MessageImportance.High, "Retrived the latest package version '{0}' for the package '{1}'.", version, packageId);
+			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
 
 		if (PackageReferences.Any(x => x.ItemSpec == packageId))
