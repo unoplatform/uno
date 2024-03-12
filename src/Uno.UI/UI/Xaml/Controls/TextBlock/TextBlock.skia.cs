@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Windows.Foundation;
 using SkiaSharp;
 using Microsoft.UI.Composition;
@@ -191,19 +190,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		void IBlock.Invalidate(bool updateText) => InvalidateInlines(updateText);
+		string IBlock.GetText() => Text;
 
 		partial void OnSelectionChanged()
-		{
-			// we "unadjust" the adjustment that comes from AdjustSelectionForSurrogatePairs or wherever.
-			var start = Math.Min(Selection.start, Selection.end);
-			var end = Math.Max(Selection.start, Selection.end);
-			// If this affects performance heavily, we could go through the runes once instead of twice
-			var unadjustedStart = Text[..start].EnumerateRunes().Count();
-			var unadjustedEnd = Text[..end].EnumerateRunes().Count();
-
-			// keep direction
-			Inlines.Selection = Selection.start < Selection.end ? (unadjustedStart, unadjustedEnd) : (unadjustedEnd, unadjustedStart);
-		}
+			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
 
 		partial void SetupInlines()
 		{
@@ -248,13 +238,12 @@ namespace Microsoft.UI.Xaml.Controls
 				if (nullableSpan is { span: var span })
 				{
 					// Index
-					var adjustedIndex = AdjustIndexForSurrogatePairs(Inlines.GetIndexAt(position, false, true));
-					var spanRange = Inlines.GetStartAndEndIndicesForSpan(span, false);
-					var adjustedRange = AdjustSelectionForSurrogatePairs(new Range(spanRange.start, spanRange.end));
-					var chunk = GetChunkAt(Text[adjustedRange.start..adjustedRange.end], adjustedIndex - adjustedRange.start);
+					var adjustedIndex = GetCharacterIndexAtPoint(position, true);
+					var spanRange = Inlines.GetStartAndEndIndicesForSpanAdjusted(span, false);
+					var chunk = GetChunkAt(Text[spanRange.start..spanRange.end], adjustedIndex - spanRange.start);
 
 					// the chunk range will be relative to the span, so we have to add the offset of the span relative to the entire Text
-					Selection = new Range(adjustedRange.start + chunk.start, adjustedRange.start + chunk.start + chunk.length);
+					Selection = new Range(spanRange.start + chunk.start, spanRange.start + chunk.start + chunk.length);
 				}
 			}
 		}
