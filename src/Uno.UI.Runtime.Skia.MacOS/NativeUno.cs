@@ -234,16 +234,19 @@ internal static partial class NativeUno
 	internal static partial void uno_window_set_min_size(nint window, double width, double height);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder();
+	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_single_file(string? prompt);
+	internal static partial string? /* const char* _Nullable */ uno_pick_single_file(string? prompt, string? identifier, int suggestedStartLocation,
+		string[] filters, int filterSize);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt);
+	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
+		string[] filters, int filterSize);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt);
+	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,
+		string[] filters, int filtersSize);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_clear();
