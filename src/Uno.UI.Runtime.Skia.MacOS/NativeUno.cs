@@ -185,8 +185,8 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_events_callbacks(
-		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyDownCallback,
-		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyUpCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyDownCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyUpCallback,
 		delegate* unmanaged[Cdecl]<nint, NativeMouseEventData*, int> pointerCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
