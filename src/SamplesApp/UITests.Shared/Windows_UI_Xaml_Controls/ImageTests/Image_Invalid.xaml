@@ -21,7 +21,7 @@
 		<Button x:Name="HideButton" Click="HideClick">Hide</Button>
 		<StackPanel Width="50" Height="150" Spacing="10" x:Name="ComparePanel" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top">
 			<Image Width="30" Height="30" />
-			<Image Source="https://example.com/iamnotreal.jpg" Width="30" Height="30" />
+			<Image Source="https://example.com/iamnotreal.jpg" crossorigin="anonymous" Width="30" Height="30" />
 			<Image Source="ms-appx:///Assets/InvalidImage.jpg" Width="30" Height="30" />
 		</StackPanel>
 	</Grid>

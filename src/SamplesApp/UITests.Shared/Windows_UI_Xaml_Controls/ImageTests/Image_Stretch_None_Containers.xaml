@@ -24,6 +24,7 @@
 						  HorizontalScrollBarVisibility="Disabled">
 				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   Stretch="None"
+					   crossorigin="anonymous"
 					   Width="300"
 					   Height="300"
 					   VerticalAlignment="Bottom"
@@ -37,6 +38,7 @@
 						  Background="White">
 				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   Stretch="None"
+					   crossorigin="anonymous"
 					   Width="300"
 					   Height="300"
 					   VerticalAlignment="Bottom"
@@ -53,6 +55,7 @@
 						  HorizontalScrollBarVisibility="Visible">
 				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   VerticalAlignment="Bottom"
+					   crossorigin="anonymous"
 					   HorizontalAlignment="Right"
 					   Stretch="None"
 					   Width="300"
@@ -65,6 +68,7 @@
 					Background="White">
 				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   VerticalAlignment="Bottom"
+					   crossorigin="anonymous"
 					   HorizontalAlignment="Right"
 					   Stretch="None"
 					   Width="300"
@@ -77,6 +81,7 @@
 						Background="White">
 				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   VerticalAlignment="Bottom"
+					   crossorigin="anonymous"
 					   HorizontalAlignment="Right"
 					   Stretch="None"
 					   Width="300"

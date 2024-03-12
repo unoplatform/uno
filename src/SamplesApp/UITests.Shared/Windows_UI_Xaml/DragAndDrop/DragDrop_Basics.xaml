@@ -39,7 +39,7 @@
 				<Border Grid.Row="0" x:Name="BasicDragSource" Width="100" Height="100" CanDrag="True" Background="LightPink" />
 				<TextBlock Grid.Row="1" x:Name="TextDragSource" CanDrag="True" Text="Some text that can be dragged and dropped" />
 				<HyperlinkButton Grid.Row="2" x:Name="LinkDragSource" CanDrag="True" NavigateUri="https://platform.uno" Content="A link that can be dragged and dropped" />
-				<Image Grid.Row="3" x:Name="ImageDragSource" CanDrag="True" Source="https://picsum.photos/300/300" />
+				<Image crossorigin="anonymous" Grid.Row="3" x:Name="ImageDragSource" CanDrag="True" Source="https://picsum.photos/300/300" />
 			</Grid>
 		</Border>
 

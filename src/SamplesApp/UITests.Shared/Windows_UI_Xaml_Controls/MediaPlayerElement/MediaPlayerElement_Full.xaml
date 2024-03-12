@@ -13,6 +13,7 @@
 
 		<MediaPlayerElement x:Name="Mpe"
 							Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
+							crossorigin="anonymous"
 							PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
 							AreTransportControlsEnabled="{Binding IsChecked, ElementName=AreTransportControlsEnabled}"
 							AutoPlay="{Binding IsChecked, ElementName=AutoPlay}">

@@ -19,6 +19,7 @@
 			   Width="100"
 			   Height="100"
 			   Stretch="UniformToFill"
+			   crossorigin="anonymous"
 			   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
 
 		<ContentControl x:Name="firstControl"

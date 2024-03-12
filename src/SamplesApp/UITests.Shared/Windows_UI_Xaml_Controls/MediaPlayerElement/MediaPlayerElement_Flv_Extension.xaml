@@ -6,6 +6,7 @@
 
 	<MediaPlayerElement Source="https://sample-videos.com/video123/flv/360/big_buck_bunny_360p_5mb.flv"
 						AreTransportControlsEnabled="True"
+                        crossorigin="anonymous"
 						AutoPlay="True" />
 </UserControl>
 

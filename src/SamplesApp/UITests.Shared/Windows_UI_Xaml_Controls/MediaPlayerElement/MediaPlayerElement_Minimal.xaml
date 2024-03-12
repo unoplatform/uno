@@ -129,7 +129,7 @@
 		
 	</UserControl.Resources>-->
 
-	<MediaPlayerElement Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
+	<MediaPlayerElement crossorigin="anonymous" Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
 						PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
 						AreTransportControlsEnabled="True"
 						AutoPlay="True">

@@ -28,6 +28,7 @@
 						Fatback pork leberkas chuck beef sausage. Ribeye tail tri-tip leberkas turkey rump sausage meatball tongue pork belly porchetta. Sirloin ribeye frankfurter, short loin cupim landjaeger doner boudin fatback. Doner pork chop ground round biltong pancetta turducken tongue turkey kevin. Boudin spare ribs ribeye buffalo. Beef spare ribs short ribs ham bacon. Sausage ham burgdoggen, shankle hamburger strip steak doner pastrami." />
 
 			<Image Source="https://s3.amazonaws.com/uno-website-assets/wp-content/uploads/2018/08/22113759/UnoLogoSmall.png"
+				   crossorigin="anonymous"
 				   Width="50"
 				   Height="50"
 				   Margin="10" />

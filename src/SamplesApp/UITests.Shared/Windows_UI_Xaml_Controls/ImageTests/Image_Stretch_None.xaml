@@ -28,6 +28,7 @@
 						  Width="150">
 				<Image x:Name="image01"
 					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   crossorigin="anonymous"
 					   Stretch="None"
 					   AutomationProperties.AutomationId="image01" />
 			</ScrollViewer>
@@ -40,6 +41,7 @@
 						  Width="150">
 				<Image x:Name="image02"
 					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   crossorigin="anonymous"
 					   Stretch="None" />
 			</ScrollViewer>
 		</StackPanel>
@@ -57,6 +59,7 @@
 						HorizontalAlignment="Center" />
 				<Image x:Name="image03"
 					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   crossorigin="anonymous"
 					   Stretch="None"
 					   Opacity="0.5"
 					   VerticalAlignment="Center"

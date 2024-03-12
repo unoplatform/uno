@@ -19,6 +19,7 @@
 							Height="200">
 						<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
 					   VerticalAlignment="Top"
+					   crossorigin="anonymous"
 					   Stretch="UniformToFill" />
 					</Border>
 					<Border Margin="0,20"
@@ -26,6 +27,7 @@
 							Height="200">
 						<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
 					   VerticalAlignment="Center"
+					   crossorigin="anonymous"
 					   Stretch="UniformToFill" />
 					</Border>
 					<Border Margin="0,20"
@@ -33,6 +35,7 @@
 							Height="200">
 						<Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Big_Pine_landscape.jpg/1920px-Big_Pine_landscape.jpg" 
 					   VerticalAlignment="Bottom"
+					   crossorigin="anonymous"
 					   Stretch="UniformToFill" />
 					</Border>
 					

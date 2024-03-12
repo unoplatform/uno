@@ -26,7 +26,7 @@
 				</StackPanel>
 				<StackPanel Background="SlateGray">
 					<TextBlock Text="SVG source from web"/>
-					<controls:ImageIcon Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" Height="auto" Width="auto"/>
+					<controls:ImageIcon Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" crossorigin="anonymous" Height="auto" Width="auto"/>
 				</StackPanel>
 				<StackPanel Background="SlateGray">
 					<TextBlock Text="Image Icon with SVG source from app Assets"/>
@@ -35,7 +35,7 @@
 				<StackPanel Background="SlateBlue">
 					<TextBlock Text="Images with SVG sources (web - assets)"/>
 					<StackPanel Orientation="Horizontal">
-						<Image Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" Width="auto" Height="200"/>
+						<Image Source="https://raw.githubusercontent.com/DiemenDesign/LibreICONS/master/svg-color/libre-camera-panorama.svg" crossorigin="anonymous" Width="auto" Height="200"/>
 						<Image Source="Assets/libre-camera-panorama.svg" Width="auto" Height="200"/>
 					</StackPanel>
 				</StackPanel>

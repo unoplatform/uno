@@ -211,6 +211,7 @@
 						   Grid.Row="1"
 						   Height="100"
 						   Stretch="Uniform"
+						   crossorigin="anonymous"
 						   Source="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Rain_over_Beinn_Eich%2C_Luss_Hills%2C_Scotland.jpg/2560px-Rain_over_Beinn_Eich%2C_Luss_Hills%2C_Scotland.jpg"
 						   DragStarting="DragSource_DragStarting"
 						   DropCompleted="DragSource_DropCompleted"
