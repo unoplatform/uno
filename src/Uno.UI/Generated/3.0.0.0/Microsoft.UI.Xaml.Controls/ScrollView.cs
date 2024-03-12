@@ -3,603 +3,68 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Content")]
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollView : global::Microsoft.UI.Xaml.Controls.Control
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode HorizontalScrollMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)this.GetValue(HorizontalScrollModeProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalScrollModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingChainMode HorizontalScrollChainMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingChainMode)this.GetValue(HorizontalScrollChainModeProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalScrollChainModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility HorizontalScrollBarVisibility
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility)this.GetValue(HorizontalScrollBarVisibilityProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalScrollBarVisibilityProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingContentOrientation ContentOrientation
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingContentOrientation)this.GetValue(ContentOrientationProperty);
-			}
-			set
-			{
-				this.SetValue(ContentOrientationProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.UIElement Content
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(ContentProperty);
-			}
-			set
-			{
-				this.SetValue(ContentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingInputKinds IgnoredInputKinds
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingInputKinds)this.GetValue(IgnoredInputKindsProperty);
-			}
-			set
-			{
-				this.SetValue(IgnoredInputKindsProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double HorizontalAnchorRatio
-		{
-			get
-			{
-				return (double)this.GetValue(HorizontalAnchorRatioProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalAnchorRatioProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingRailMode HorizontalScrollRailMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingRailMode)this.GetValue(HorizontalScrollRailModeProperty);
-			}
-			set
-			{
-				this.SetValue(HorizontalScrollRailModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingZoomMode ZoomMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingZoomMode)this.GetValue(ZoomModeProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double MaxZoomFactor
-		{
-			get
-			{
-				return (double)this.GetValue(MaxZoomFactorProperty);
-			}
-			set
-			{
-				this.SetValue(MaxZoomFactorProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingChainMode ZoomChainMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingChainMode)this.GetValue(ZoomChainModeProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomChainModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingRailMode VerticalScrollRailMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingRailMode)this.GetValue(VerticalScrollRailModeProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalScrollRailModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode VerticalScrollMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)this.GetValue(VerticalScrollModeProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalScrollModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingChainMode VerticalScrollChainMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingChainMode)this.GetValue(VerticalScrollChainModeProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalScrollChainModeProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility VerticalScrollBarVisibility
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility)this.GetValue(VerticalScrollBarVisibilityProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalScrollBarVisibilityProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double VerticalAnchorRatio
-		{
-			get
-			{
-				return (double)this.GetValue(VerticalAnchorRatioProperty);
-			}
-			set
-			{
-				this.SetValue(VerticalAnchorRatioProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double MinZoomFactor
-		{
-			get
-			{
-				return (double)this.GetValue(MinZoomFactorProperty);
-			}
-			set
-			{
-				this.SetValue(MinZoomFactorProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode ComputedHorizontalScrollMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)this.GetValue(ComputedHorizontalScrollModeProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Visibility ComputedVerticalScrollBarVisibility
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Visibility)this.GetValue(ComputedVerticalScrollBarVisibilityProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode ComputedVerticalScrollMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)this.GetValue(ComputedVerticalScrollModeProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.UIElement CurrentAnchor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UIElement ScrollView.CurrentAnchor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20ScrollView.CurrentAnchor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionPropertySet ExpressionAnimationSources
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionPropertySet ScrollView.ExpressionAnimationSources is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionPropertySet%20ScrollView.ExpressionAnimationSources");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double ExtentHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.ExtentHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.ExtentHeight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double ExtentWidth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.ExtentWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.ExtentWidth");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double HorizontalOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.HorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.HorizontalOffset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter ScrollPresenter
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)this.GetValue(ScrollPresenterProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double ScrollableHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.ScrollableHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.ScrollableHeight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double ScrollableWidth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.ScrollableWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.ScrollableWidth");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingInteractionState State
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ScrollingInteractionState ScrollView.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollingInteractionState%20ScrollView.State");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double VerticalOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.VerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.VerticalOffset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double ViewportHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.ViewportHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.ViewportHeight");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double ViewportWidth
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollView.ViewportWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollView.ViewportWidth");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float ZoomFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ScrollView.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScrollView.ZoomFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Visibility ComputedHorizontalScrollBarVisibility
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Visibility)this.GetValue(ComputedHorizontalScrollBarVisibilityProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ComputedHorizontalScrollBarVisibilityProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ComputedHorizontalScrollBarVisibility), typeof(global::Microsoft.UI.Xaml.Visibility),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Visibility)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ComputedHorizontalScrollModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ComputedHorizontalScrollMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ComputedVerticalScrollBarVisibilityProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ComputedVerticalScrollBarVisibility), typeof(global::Microsoft.UI.Xaml.Visibility),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Visibility)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ComputedVerticalScrollModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ComputedVerticalScrollMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ContentOrientationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentOrientation), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingContentOrientation),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingContentOrientation)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Content), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalAnchorRatioProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalAnchorRatio), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalScrollBarVisibilityProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalScrollBarVisibility), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalScrollChainModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalScrollChainMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingChainMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingChainMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalScrollModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalScrollMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalScrollRailModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalScrollRailMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingRailMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingRailMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IgnoredInputKindsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IgnoredInputKinds), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingInputKinds),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingInputKinds)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MaxZoomFactorProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxZoomFactor), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MinZoomFactorProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MinZoomFactor), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ScrollPresenterProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ScrollPresenter), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalAnchorRatioProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalAnchorRatio), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalScrollBarVisibilityProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalScrollBarVisibility), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingScrollBarVisibility)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalScrollChainModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalScrollChainMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingChainMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingChainMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalScrollModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalScrollMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingScrollMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalScrollRailModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalScrollRailMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingRailMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingRailMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ZoomChainModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomChainMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingChainMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingChainMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ZoomModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomMode), typeof(global::Microsoft.UI.Xaml.Controls.ScrollingZoomMode),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ScrollingZoomMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ScrollView() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "ScrollView.ScrollView()");
-		}
-#endif
+		// Skipping already declared property HorizontalScrollMode
+		// Skipping already declared property HorizontalScrollChainMode
+		// Skipping already declared property HorizontalScrollBarVisibility
+		// Skipping already declared property ContentOrientation
+		// Skipping already declared property Content
+		// Skipping already declared property IgnoredInputKinds
+		// Skipping already declared property HorizontalAnchorRatio
+		// Skipping already declared property HorizontalScrollRailMode
+		// Skipping already declared property ZoomMode
+		// Skipping already declared property MaxZoomFactor
+		// Skipping already declared property ZoomChainMode
+		// Skipping already declared property VerticalScrollRailMode
+		// Skipping already declared property VerticalScrollMode
+		// Skipping already declared property VerticalScrollChainMode
+		// Skipping already declared property VerticalScrollBarVisibility
+		// Skipping already declared property VerticalAnchorRatio
+		// Skipping already declared property MinZoomFactor
+		// Skipping already declared property ComputedHorizontalScrollMode
+		// Skipping already declared property ComputedVerticalScrollBarVisibility
+		// Skipping already declared property ComputedVerticalScrollMode
+		// Skipping already declared property CurrentAnchor
+		// Skipping already declared property ExpressionAnimationSources
+		// Skipping already declared property ExtentHeight
+		// Skipping already declared property ExtentWidth
+		// Skipping already declared property HorizontalOffset
+		// Skipping already declared property ScrollPresenter
+		// Skipping already declared property ScrollableHeight
+		// Skipping already declared property ScrollableWidth
+		// Skipping already declared property State
+		// Skipping already declared property VerticalOffset
+		// Skipping already declared property ViewportHeight
+		// Skipping already declared property ViewportWidth
+		// Skipping already declared property ZoomFactor
+		// Skipping already declared property ComputedHorizontalScrollBarVisibility
+		// Skipping already declared property ComputedHorizontalScrollBarVisibilityProperty
+		// Skipping already declared property ComputedHorizontalScrollModeProperty
+		// Skipping already declared property ComputedVerticalScrollBarVisibilityProperty
+		// Skipping already declared property ComputedVerticalScrollModeProperty
+		// Skipping already declared property ContentOrientationProperty
+		// Skipping already declared property ContentProperty
+		// Skipping already declared property HorizontalAnchorRatioProperty
+		// Skipping already declared property HorizontalScrollBarVisibilityProperty
+		// Skipping already declared property HorizontalScrollChainModeProperty
+		// Skipping already declared property HorizontalScrollModeProperty
+		// Skipping already declared property HorizontalScrollRailModeProperty
+		// Skipping already declared property IgnoredInputKindsProperty
+		// Skipping already declared property MaxZoomFactorProperty
+		// Skipping already declared property MinZoomFactorProperty
+		// Skipping already declared property ScrollPresenterProperty
+		// Skipping already declared property VerticalAnchorRatioProperty
+		// Skipping already declared property VerticalScrollBarVisibilityProperty
+		// Skipping already declared property VerticalScrollChainModeProperty
+		// Skipping already declared property VerticalScrollModeProperty
+		// Skipping already declared property VerticalScrollRailModeProperty
+		// Skipping already declared property ZoomChainModeProperty
+		// Skipping already declared property ZoomModeProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ScrollView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ScrollView()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.Content.set
@@ -652,90 +117,18 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.HorizontalAnchorRatio.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.VerticalAnchorRatio.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.VerticalAnchorRatio.set
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RegisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "void ScrollView.RegisterAnchorCandidate(UIElement element)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UnregisterAnchorCandidate(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "void ScrollView.UnregisterAnchorCandidate(UIElement element)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ScrollTo(double horizontalOffset, double verticalOffset)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ScrollTo(double horizontalOffset, double verticalOffset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ScrollTo%28double%20horizontalOffset%2C%20double%20verticalOffset%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ScrollTo(double horizontalOffset, double verticalOffset, global::Microsoft.UI.Xaml.Controls.ScrollingScrollOptions options)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ScrollTo(double horizontalOffset, double verticalOffset, ScrollingScrollOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ScrollTo%28double%20horizontalOffset%2C%20double%20verticalOffset%2C%20ScrollingScrollOptions%20options%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ScrollBy(double horizontalOffsetDelta, double verticalOffsetDelta)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ScrollBy(double horizontalOffsetDelta, double verticalOffsetDelta) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ScrollBy%28double%20horizontalOffsetDelta%2C%20double%20verticalOffsetDelta%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ScrollBy(double horizontalOffsetDelta, double verticalOffsetDelta, global::Microsoft.UI.Xaml.Controls.ScrollingScrollOptions options)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ScrollBy(double horizontalOffsetDelta, double verticalOffsetDelta, ScrollingScrollOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ScrollBy%28double%20horizontalOffsetDelta%2C%20double%20verticalOffsetDelta%2C%20ScrollingScrollOptions%20options%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int AddScrollVelocity(global::System.Numerics.Vector2 offsetsVelocity, global::System.Numerics.Vector2? inertiaDecayRate)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.AddScrollVelocity(Vector2 offsetsVelocity, Vector2? inertiaDecayRate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.AddScrollVelocity%28Vector2%20offsetsVelocity%2C%20Vector2%3F%20inertiaDecayRate%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ZoomTo(float zoomFactor, global::System.Numerics.Vector2? centerPoint)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ZoomTo(float zoomFactor, Vector2? centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ZoomTo%28float%20zoomFactor%2C%20Vector2%3F%20centerPoint%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ZoomTo(float zoomFactor, global::System.Numerics.Vector2? centerPoint, global::Microsoft.UI.Xaml.Controls.ScrollingZoomOptions options)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ZoomTo(float zoomFactor, Vector2? centerPoint, ScrollingZoomOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ZoomTo%28float%20zoomFactor%2C%20Vector2%3F%20centerPoint%2C%20ScrollingZoomOptions%20options%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ZoomBy(float zoomFactorDelta, global::System.Numerics.Vector2? centerPoint)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ZoomBy(float zoomFactorDelta, Vector2? centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ZoomBy%28float%20zoomFactorDelta%2C%20Vector2%3F%20centerPoint%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int ZoomBy(float zoomFactorDelta, global::System.Numerics.Vector2? centerPoint, global::Microsoft.UI.Xaml.Controls.ScrollingZoomOptions options)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.ZoomBy(float zoomFactorDelta, Vector2? centerPoint, ScrollingZoomOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.ZoomBy%28float%20zoomFactorDelta%2C%20Vector2%3F%20centerPoint%2C%20ScrollingZoomOptions%20options%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int AddZoomVelocity(float zoomFactorVelocity, global::System.Numerics.Vector2? centerPoint, float? inertiaDecayRate)
-		{
-			throw new global::System.NotImplementedException("The member int ScrollView.AddZoomVelocity(float zoomFactorVelocity, Vector2? centerPoint, float? inertiaDecayRate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollView.AddZoomVelocity%28float%20zoomFactorVelocity%2C%20Vector2%3F%20centerPoint%2C%20float%3F%20inertiaDecayRate%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.RegisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.UnregisterAnchorCandidate(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ScrollTo(double, double)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ScrollTo(double, double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ScrollBy(double, double)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ScrollBy(double, double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.AddScrollVelocity(System.Numerics.Vector2, System.Numerics.Vector2?)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ZoomTo(float, System.Numerics.Vector2?)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ZoomTo(float, System.Numerics.Vector2?, Microsoft.UI.Xaml.Controls.ScrollingZoomOptions)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ZoomBy(float, System.Numerics.Vector2?)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.ZoomBy(float, System.Numerics.Vector2?, Microsoft.UI.Xaml.Controls.ScrollingZoomOptions)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollView.AddZoomVelocity(float, System.Numerics.Vector2?, float?)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ExtentChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.ExtentChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.StateChanged.add
@@ -776,149 +169,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.MaxZoomFactorProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.HorizontalAnchorRatioProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollView.VerticalAnchorRatioProperty.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, global::Microsoft.UI.Xaml.Controls.ScrollingAnchorRequestedEventArgs> AnchorRequested
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingAnchorRequestedEventArgs> ScrollView.AnchorRequested");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingAnchorRequestedEventArgs> ScrollView.AnchorRequested");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, global::Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs> BringingIntoView
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingBringingIntoViewEventArgs> ScrollView.BringingIntoView");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingBringingIntoViewEventArgs> ScrollView.BringingIntoView");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, object> ExtentChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, object> ScrollView.ExtentChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, object> ScrollView.ExtentChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, global::Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs> ScrollAnimationStarting
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingScrollAnimationStartingEventArgs> ScrollView.ScrollAnimationStarting");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingScrollAnimationStartingEventArgs> ScrollView.ScrollAnimationStarting");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, global::Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs> ScrollCompleted
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingScrollCompletedEventArgs> ScrollView.ScrollCompleted");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingScrollCompletedEventArgs> ScrollView.ScrollCompleted");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, object> StateChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, object> ScrollView.StateChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, object> ScrollView.StateChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, object> ViewChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, object> ScrollView.ViewChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, object> ScrollView.ViewChanged");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, global::Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs> ZoomAnimationStarting
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingZoomAnimationStartingEventArgs> ScrollView.ZoomAnimationStarting");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingZoomAnimationStartingEventArgs> ScrollView.ZoomAnimationStarting");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ScrollView, global::Microsoft.UI.Xaml.Controls.ScrollingZoomCompletedEventArgs> ZoomCompleted
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingZoomCompletedEventArgs> ScrollView.ZoomCompleted");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollView", "event TypedEventHandler<ScrollView, ScrollingZoomCompletedEventArgs> ScrollView.ZoomCompleted");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.AnchorRequested
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.BringingIntoView
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.ExtentChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.ScrollAnimationStarting
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.ScrollCompleted
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.StateChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.ViewChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.ZoomAnimationStarting
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollView.ZoomCompleted
 	}
 }

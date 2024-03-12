@@ -104,6 +104,34 @@ namespace MUXControlsTestApp
 		}
 
 		public static Application Current => Application.Current;
+
+		/// <summary>
+		/// AdditionalStyles.xaml file for ScrollViewer tests
+		/// </summary>
+		/// 
+		private static ResourceDictionary additionStylesXaml = null;
+		public static ResourceDictionary AdditionStylesXaml
+		{
+			get
+			{
+				if (additionStylesXaml == null)
+				{
+					additionStylesXaml = new ResourceDictionary();
+				}
+
+				return additionStylesXaml;
+			}
+		}
+
+		public static void AppendResourceDictionaryToMergedDictionaries(ResourceDictionary dictionary)
+		{
+			// Check for null and dictionary not present
+			if (!(dictionary is null) &&
+				!Application.Current.Resources.MergedDictionaries.Contains(dictionary))
+			{
+				Application.Current.Resources.MergedDictionaries.Add(dictionary);
+			}
+		}
 	}
 }
 

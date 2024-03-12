@@ -3,60 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollingScrollAnimationStartingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal ScrollingScrollAnimationStartingEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionAnimation Animation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionAnimation ScrollingScrollAnimationStartingEventArgs.Animation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionAnimation%20ScrollingScrollAnimationStartingEventArgs.Animation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs", "CompositionAnimation ScrollingScrollAnimationStartingEventArgs.Animation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int ScrollingScrollAnimationStartingEventArgs.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollingScrollAnimationStartingEventArgs.CorrelationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Vector2 EndPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 ScrollingScrollAnimationStartingEventArgs.EndPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ScrollingScrollAnimationStartingEventArgs.EndPosition");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Vector2 StartPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 ScrollingScrollAnimationStartingEventArgs.StartPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ScrollingScrollAnimationStartingEventArgs.StartPosition");
-			}
-		}
-#endif
+		// Skipping already declared property Animation
+		// Skipping already declared property CorrelationId
+		// Skipping already declared property EndPosition
+		// Skipping already declared property StartPosition
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Animation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.Animation.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs.StartPosition.get

@@ -3,84 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollingBringingIntoViewEventArgs
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal ScrollingBringingIntoViewEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingSnapPointsMode SnapPointsMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ScrollingSnapPointsMode ScrollingBringingIntoViewEventArgs.SnapPointsMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollingSnapPointsMode%20ScrollingBringingIntoViewEventArgs.SnapPointsMode");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs", "ScrollingSnapPointsMode ScrollingBringingIntoViewEventArgs.SnapPointsMode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Cancel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ScrollingBringingIntoViewEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScrollingBringingIntoViewEventArgs.Cancel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs", "bool ScrollingBringingIntoViewEventArgs.Cancel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int ScrollingBringingIntoViewEventArgs.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollingBringingIntoViewEventArgs.CorrelationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs RequestEventArgs
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member BringIntoViewRequestedEventArgs ScrollingBringingIntoViewEventArgs.RequestEventArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BringIntoViewRequestedEventArgs%20ScrollingBringingIntoViewEventArgs.RequestEventArgs");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double TargetHorizontalOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollingBringingIntoViewEventArgs.TargetHorizontalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollingBringingIntoViewEventArgs.TargetHorizontalOffset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double TargetVerticalOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollingBringingIntoViewEventArgs.TargetVerticalOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollingBringingIntoViewEventArgs.TargetVerticalOffset");
-			}
-		}
-#endif
+		// Skipping already declared property SnapPointsMode
+		// Skipping already declared property Cancel
+		// Skipping already declared property CorrelationId
+		// Skipping already declared property RequestEventArgs
+		// Skipping already declared property TargetHorizontalOffset
+		// Skipping already declared property TargetVerticalOffset
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.SnapPointsMode.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingBringingIntoViewEventArgs.RequestEventArgs.get

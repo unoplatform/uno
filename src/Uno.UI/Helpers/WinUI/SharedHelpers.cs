@@ -606,7 +606,7 @@ namespace Uno.UI.Helpers.WinUI
 		public static bool IsAncestor(
 			DependencyObject child,
 			DependencyObject parent,
-			bool checkVisibility)
+			bool checkVisibility = false)
 		{
 			if (child == null || parent == null || child == parent)
 			{
