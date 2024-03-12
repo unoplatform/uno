@@ -342,7 +342,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().LogWarning($"Cursor type '{_pointerCursor.Type}' is not supported on macOS. Default cursor is used instead.");
+						this.Log().LogWarning($"Cursor type '{_pointerCursor.Type}' is not supported on macOS. Closest approximation or default cursor is used instead.");
 					}
 				}
 			}

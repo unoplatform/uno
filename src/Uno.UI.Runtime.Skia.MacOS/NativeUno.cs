@@ -272,5 +272,5 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_cursor_set(CoreCursorType cursor);
+	internal static partial bool uno_cursor_set(CoreCursorType cursorType);
 }
