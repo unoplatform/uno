@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Uno.Collections
@@ -54,13 +55,18 @@ namespace Uno.Collections
 		/// To optimize sequential calls with the same sorting function, the implementation remembers the sorted list and the last
 		/// provided keySelector and compares it by reference. If it's the same function, the sorted list is reused.
 		/// </remarks>
+		/// <remarks>
+		/// The user is responsible for invalidating the caches sorted list whenever the sorting key of one of the
+		/// elements changes.
+		/// </remarks>
 		public MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
 		{
+			Debug.Assert(keySelector.Target is null);
 			if (_materializedSorted is null || ReferenceEquals(_lastSortingFunc, keySelector))
 			{
 				_materializedSorted = _innerList.OrderBy(keySelector).ToList();
 			}
-			_lastSortingFunc = new WeakReference<object>(keySelector);
+			_lastSortingFunc = keySelector;
 			return new ReverseEnumerator(_materializedSorted);
 		}
 
@@ -138,6 +144,16 @@ namespace Uno.Collections
 		public void ClearMaterialized()
 		{
 			_materialized = null;
+			_materializedSorted = null;
+			_lastSortingFunc = null;
+		}
+
+		/// <summary>
+		/// Clears the cached reverse-sorted list used with <see cref="GetReverseSortedEnumerator{TKey}"/> to be
+		/// recomputed the next time it's needed
+		/// </summary>
+		public void ClearCachedReverseSortedList()
+		{
 			_materializedSorted = null;
 			_lastSortingFunc = null;
 		}
