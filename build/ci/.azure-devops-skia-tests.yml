@@ -117,12 +117,12 @@ jobs:
           SNAPSHOT_GROUP: ${{ testGroup }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
   - template: templates/gtk-install-windows.yml
 
   - script: |
@@ -239,12 +239,11 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
-
-  - template: templates/dotnet-install.yml
 
   - script: |
         cd $(SamplesAppArtifactPath)
@@ -357,12 +356,12 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+  - checkout: none
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
   - template: templates/linux-install-xvfb.yml
 
   - script: |
