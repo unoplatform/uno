@@ -1040,6 +1040,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// Make sure not to call this on an already-adjusted range with surrogate pairs in it, as it will
 		/// double count the surrogate pairs.
 		/// </remarks>
+		/// <remarks>Assumes valid indices</remarks>
 		private (int start, int end) AdjustSelectionForSurrogatePairs(int unadjustedStart, int unadjustedEnd)
 		{
 			var start = Math.Min(unadjustedStart, unadjustedEnd);
@@ -1076,8 +1077,14 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		// equivalent to AdjustSelectionForSurrogatePairs for a single index
+		/// <remarks>does nothing on invalid index input (i.e. keeps it invalid)</remarks>
 		private int AdjustIndexForSurrogatePairs(int index)
 		{
+			if (index < 0)
+			{
+				return index;
+			}
+
 			var text = ((IBlock)_collection.GetParent()).GetText();
 			var count = 0;
 			for (int i = 0, j = 0; i < text.Length && j < index; i++, j++, count += 1)
