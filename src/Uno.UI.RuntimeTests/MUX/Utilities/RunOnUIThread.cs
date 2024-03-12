@@ -18,6 +18,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
+#if HAS_UNO_WINUI || WINAPPSDK
+using Executor = Microsoft.UI.Dispatching.DispatcherQueue;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
+#else
+using Executor = Windows.ApplicationModel.Core.CoreApplicationView;
+#endif
+
 using Verify = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace MUXControlsTestApp.Utilities
@@ -26,13 +33,22 @@ namespace MUXControlsTestApp.Utilities
 	{
 		public static void Execute(Action action)
 		{
+#if HAS_UNO_WINUI || WINAPPSDK
+			Execute(IdleSynchronizer.DispatcherQueue, action);
+
+#else
 			Execute(CoreApplication.MainView, action);
+#endif
 		}
 
-		public static void Execute(CoreApplicationView whichView, Action action)
+		public static void Execute(Executor executor, Action action)
 		{
 			Exception exception = null;
-			var dispatcher = whichView.Dispatcher;
+#if HAS_UNO_WINUI || WINAPPSDK
+			var dispatcher = executor;
+#else
+			var dispatcher = executor.Dispatcher;
+#endif
 			if (dispatcher.HasThreadAccess
 #if __WASM__
 				|| !Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported
@@ -70,7 +86,11 @@ namespace MUXControlsTestApp.Utilities
 					else
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
+#if HAS_UNO_WINUI || WINAPPSDK
+						var ignore = dispatcher.TryEnqueue(DispatcherQueuePriority.Normal,
+#else
 						var ignore = dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+#endif
 							() =>
 							{
 								try

@@ -109,6 +109,10 @@ namespace SamplesApp
 #endif
 		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if HAS_UNO_WINUI || WINAPPSDK
+			MUXControlsTestApp.Utilities.IdleSynchronizer.Init();
+#endif
+
 			EnsureMainWindow();
 
 			SetupAndroidEnvironment();
