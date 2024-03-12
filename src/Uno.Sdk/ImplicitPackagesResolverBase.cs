@@ -62,6 +62,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 			}
 			else
 			{
+				Debug("Adding ({0}) Packages from cache file.", references.References.Length);
 				_implicitPackages.AddRange(references.References);
 			}
 		}
@@ -103,7 +104,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 			.Where(x => x != UnoFeature.Invalid)
 			.ToArray();
 
-		Debug("Found {0} UnoFeatures.", unoFeatures.Length);
+		Debug("Found {0} UnoFeatures for platform {1}.", unoFeatures.Length, TargetFrameworkIdentifier ?? "Default");
 		return unoFeatures;
 	}
 
@@ -148,6 +149,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	protected void AddPackage(string packageId, string version, bool @override = false)
 	{
+		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFrameworkIdentifier);
 		if (string.IsNullOrEmpty(version))
 		{
 			Log.LogWarning("The package '{0}' has no available version.", packageId);

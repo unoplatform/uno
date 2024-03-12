@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 #nullable enable
 namespace Uno.Sdk;
@@ -12,6 +13,10 @@ internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, 
 	private const string CacheFileName = "implicit-packages.cache";
 	private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.General)
 	{
+		Converters =
+		{
+			new JsonStringEnumConverter()
+		},
 		WriteIndented = true
 	};
 

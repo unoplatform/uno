@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -248,7 +248,7 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 
 	public void AddUnoToolkitPackages()
 	{
-		if (HasFeature(UnoFeature.Toolkit))
+		if (!HasFeature(UnoFeature.Toolkit))
 		{
 			return;
 		}
