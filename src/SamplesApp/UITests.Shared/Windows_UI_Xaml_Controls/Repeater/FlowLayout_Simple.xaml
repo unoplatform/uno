@@ -4,11 +4,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d"
+	mc:Ignorable="d not_win"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
+	<not_win:Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
@@ -66,5 +67,5 @@
 			</StackPanel>
 			<Slider Value="6" Minimum="1" Maximum="10" x:Name="maxColumns" Header="MaxRowsOrColumns" />
 		</StackPanel>
-	</Grid>
+	</not_win:Grid>
 </Page>

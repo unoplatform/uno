@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINAPPSDK
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -48,3 +49,4 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 
 	}
 }
+#endif
