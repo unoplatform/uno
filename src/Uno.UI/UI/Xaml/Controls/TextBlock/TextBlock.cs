@@ -66,6 +66,67 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// When we read the length of a span or segment from Skia/HarfBuzz, what we actually get is the
+		/// number of glyphs (i.e. Unicode runes), not the number of c# chars, so surrogate pairs will
+		/// only be counted as a single "unit". This method stretches the range to account for surrogate
+		/// pairs being 2 characters, not one.
+		/// </summary>
+		/// <remarks>
+		/// Make sure not to call this on an already-adjusted range with surrogate pairs in it, as it will
+		/// double count the surrogate pairs.
+		/// </remarks>
+		private Range AdjustSelectionForSurrogatePairs(Range range)
+		{
+			var start = Math.Min(range.start, range.end);
+			var end = Math.Max(range.start, range.end);
+
+			var count = 0;
+			for (int i = 0, j = 0; i < Text.Length && j < start; i++, j++, count += 1)
+			{
+				if (i < Text.Length - 1 && char.IsSurrogatePair(Text[i], Text[i + 1]))
+				{
+					// Notice how j didn't move here
+					count += 1;
+					i++;
+				}
+			}
+
+			var adjustedStart = count;
+
+			for (int i = start, j = 0; i < Text.Length && j < end - start; i++, j++, count += 1)
+			{
+				if (i < Text.Length - 1 && char.IsSurrogatePair(Text[i], Text[i + 1]))
+				{
+					// Notice how j didn't move here
+					count += 1;
+					i++;
+				}
+			}
+
+			var adjustedEnd = count;
+
+			// keep direction
+			return range.start < range.end ? new Range(adjustedStart, adjustedEnd) : new Range(adjustedEnd, adjustedStart);
+		}
+
+		// equivalent to AdjustSelectionForSurrogatePairs for a single index
+		private int AdjustIndexForSurrogatePairs(int index)
+		{
+			var count = 0;
+			for (int i = 0, j = 0; i < Text.Length && j < index; i++, j++, count += 1)
+			{
+				if (i < Text.Length - 1 && char.IsSurrogatePair(Text[i], Text[i + 1]))
+				{
+					// Notice how j didn't move here
+					count += 1;
+					i++;
+				}
+			}
+
+			return count;
+		}
+
 		partial void OnSelectionChanged();
 
 #if !UNO_REFERENCE_API
@@ -941,13 +1002,15 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 				if (index >= 0) // should always be true if above TODO is addressed
 				{
+#if __SKIA__
+					that.Selection = that.AdjustSelectionForSurrogatePairs(new Range(index, index));
+#else
 					that.Selection = new Range(index, index);
+#endif
 				}
 
 				e.Handled = true;
 				that.Focus(FocusState.Pointer);
-
-				that.CapturePointer(e.Pointer);
 			}
 		};
 
@@ -1027,7 +1090,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 				if (index >= 0) // should always be true if above TODO is addressed
 				{
+#if __SKIA__
+					that.Selection = that.Selection with { end = that.AdjustIndexForSurrogatePairs(index) };
+#else
 					that.Selection = that.Selection with { end = index };
+#endif
 				}
 			}
 		};

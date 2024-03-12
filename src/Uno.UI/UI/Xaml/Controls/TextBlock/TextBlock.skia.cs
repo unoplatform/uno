@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Windows.Foundation;
 using SkiaSharp;
 using Microsoft.UI.Composition;
@@ -192,7 +193,17 @@ namespace Microsoft.UI.Xaml.Controls
 		void IBlock.Invalidate(bool updateText) => InvalidateInlines(updateText);
 
 		partial void OnSelectionChanged()
-			=> Inlines.Selection = (Math.Min(Selection.start, Selection.end), Math.Max(Selection.start, Selection.end));
+		{
+			// we "unadjust" the adjustment that comes from AdjustSelectionForSurrogatePairs or wherever.
+			var start = Math.Min(Selection.start, Selection.end);
+			var end = Math.Max(Selection.start, Selection.end);
+			// If this affects performance heavily, we could go through the runes once instead of twice
+			var unadjustedStart = Text[..start].EnumerateRunes().Count();
+			var unadjustedEnd = Text[..end].EnumerateRunes().Count();
+
+			// keep direction
+			Inlines.Selection = Selection.start < Selection.end ? (unadjustedStart, unadjustedEnd) : (unadjustedEnd, unadjustedStart);
+		}
 
 		partial void SetupInlines()
 		{
@@ -237,12 +248,13 @@ namespace Microsoft.UI.Xaml.Controls
 				if (nullableSpan is { span: var span })
 				{
 					// Index
-					var index = Inlines.GetIndexAt(position, false, true);
+					var adjustedIndex = AdjustIndexForSurrogatePairs(Inlines.GetIndexAt(position, false, true));
 					var spanRange = Inlines.GetStartAndEndIndicesForSpan(span, false);
-					var chunk = GetChunkAt(Text[spanRange.start..spanRange.end], index - spanRange.start);
+					var adjustedRange = AdjustSelectionForSurrogatePairs(new Range(spanRange.start, spanRange.end));
+					var chunk = GetChunkAt(Text[adjustedRange.start..adjustedRange.end], adjustedIndex - adjustedRange.start);
 
 					// the chunk range will be relative to the span, so we have to add the offset of the span relative to the entire Text
-					Selection = new Range(spanRange.start + chunk.start, spanRange.start + chunk.start + chunk.length);
+					Selection = new Range(adjustedRange.start + chunk.start, adjustedRange.start + chunk.start + chunk.length);
 				}
 			}
 		}
@@ -291,7 +303,8 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				if (start <= index && index < i)
+				// the second condition handles the case of index == length, which happens when you e.g. click at the very end of a chunk
+				if (start <= index && index < i || i == length)
 				{
 					return (start, i - start);
 				}
