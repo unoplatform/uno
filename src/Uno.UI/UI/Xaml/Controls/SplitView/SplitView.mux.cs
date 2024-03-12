@@ -15,7 +15,7 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers.WinUI;
-using Uno.UI.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 

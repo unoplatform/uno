@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
-namespace Uno.UI.UI.Xaml.Controls;
+namespace Uno.UI.Xaml.Controls;
 
 internal static class LightDismissOverlayHelper
 {
