@@ -93,6 +93,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateHitTest();
 
 			_lastMeasuredSize = _zeroSize;
+			_htmlImage.SetAttribute("src", "");
+			_currentImg = default;
 
 			if (newValue is ImageSource source)
 			{
@@ -129,10 +131,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				_sourceDisposable.Disposable = null;
 				_sourceDisposable.Disposable = source.Subscribe(OnSourceOpened);
-			}
-			else
-			{
-				_htmlImage.SetAttribute("src", "");
 			}
 		}
 
