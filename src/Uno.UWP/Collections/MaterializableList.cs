@@ -59,7 +59,7 @@ namespace Uno.Collections
 		/// The user is responsible for invalidating the caches sorted list whenever the sorting key of one of the
 		/// elements changes.
 		/// </remarks>
-		public MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
+		internal MaterializableList<T>.ReverseEnumerator GetReverseSortedEnumerator<TKey>(Func<T, TKey> keySelector)
 		{
 			Debug.Assert(keySelector.Target is null);
 			if (_materializedSorted is null || ReferenceEquals(_lastSortingFunc, keySelector))
@@ -152,7 +152,7 @@ namespace Uno.Collections
 		/// Clears the cached reverse-sorted list used with <see cref="GetReverseSortedEnumerator{TKey}"/> to be
 		/// recomputed the next time it's needed
 		/// </summary>
-		public void ClearCachedReverseSortedList()
+		internal void ClearCachedReverseSortedList()
 		{
 			_materializedSorted = null;
 			_lastSortingFunc = null;
