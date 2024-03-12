@@ -603,6 +603,7 @@ public partial class SplitView : Control
 
 		// Uno Specific
 		// m_outerDismissLayerPopup.SetAssociatedIsland(VisualTree.GetRootOrIslandForElement(this));
+		m_outerDismissLayerPopup.XamlRoot = XamlRoot;
 
 		m_outerDismissLayerPopup.IsOpen = true;
 
