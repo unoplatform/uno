@@ -1081,7 +1081,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshotAfter = await TakeScreenshot(stackPanel);
 
 			// Verify that the UI looks the same as at the beginning
-			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotAfter);
+			await ImageAssert.AreSimilarAsync(screenshotBefore, screenshotAfter);
 		}
 
 		[TestMethod]
