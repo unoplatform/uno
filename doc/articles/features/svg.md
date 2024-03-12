@@ -14,7 +14,7 @@ Uno Platform supports using vector SVG graphics inside of your cross-platform ap
 
 To use SVG, install the following packages into the iOS, macOS, Mac Catalyst, Android and Skia projects:
 
-* `Svg.Skia` (required in the Skia project)
+* `Svg.Skia` (required only for the Skia project)
 * `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using a UWP-based app template)
 * `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using a UWP-based app template)
 
