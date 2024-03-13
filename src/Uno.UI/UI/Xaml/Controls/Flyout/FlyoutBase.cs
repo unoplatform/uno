@@ -327,11 +327,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected void RemoveFromOpenFlyouts()
 		{
-			_isClosedPending = true;
-
 			if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
 			{
 				_openFlyouts.Remove(this);
+
+				_isClosedPending = true;
 
 				// TODO Uno: Closed should occur on PresenterUnloaded,
 				// but that requires aligned loading/unloading lifecycle. #2895
