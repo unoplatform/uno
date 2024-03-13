@@ -62,6 +62,8 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 | Linux (Skia-Gtk)                  | ✔️                                       | ✔️                                                   | ✔️                                               |
 | Windows 7+ (Skia-WPF)             | ❌                                       | ✔️                                                   | ❌                                               |
 
+The latest macOS release and Xcode version are required to develop with Uno Platform for iOS and Mac Catalyst targets. If you have older Mac hardware that does not support the latest release of macOS, see the section for [Developing on older Mac hardware](xref:Uno.UI.CommonIssues.IosCatalyst#developing-on-older-mac-hardware).
+
 # [**Linux**](#tab/linux)
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
