@@ -10,7 +10,8 @@
 
 		// Optional pointer events
 		pointermove = 1 << 5,
-		wheel = 1 << 6,
+		lostpointercapture = 1 << 6,
+		wheel = 1 << 7,
 	}
 
 	// TODO: Duplicate of Uno.UI.HtmlEventDispatchResult to merge!

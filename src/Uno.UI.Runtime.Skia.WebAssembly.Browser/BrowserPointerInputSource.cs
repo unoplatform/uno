@@ -89,7 +89,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			var keyModifiers = GetKeyModifiers(ctrl, shift);
 			var position = new Point(x, y);
 
-			var properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (false, wheelDeltaY), pressure);
+			var properties = GetProperties(pointerType, isInRange, (HtmlPointerButtonsState)buttons, (HtmlPointerButtonUpdate)buttonUpdate, wheel: (false, -wheelDeltaY), pressure);
 
 			var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, properties);
 			var args = new PointerEventArgs(point, keyModifiers);
