@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.System
 {
-	internal static partial class VirtualKeyHelper
+	internal static partial class BrowserVirtualKeyHelper
 	{
 		public static VirtualKey FromKey(string key)
 		{
@@ -13,7 +13,7 @@ namespace Windows.System
 			switch (key)
 			{
 				// Special
-				case "Unindentified":
+				case "Unidentified":
 					return VirtualKey.None;
 				// Modifier
 				case "CapsLock":
@@ -279,6 +279,81 @@ namespace Windows.System
 				default:
 					return VirtualKey.None;
 			}
+		}
+
+		// https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values
+		public static VirtualKey FromCode(string code)
+		{
+			switch (code)
+			{
+				case "Space":
+					return VirtualKey.Space;
+				case "ShiftRight":
+					return VirtualKey.Shift; // NOT LeftShift
+				case "ShiftLeft":
+					return VirtualKey.Shift;
+				case "MetaRight":
+					return VirtualKey.LeftWindows;
+				case "MetaLeft":
+					return VirtualKey.RightWindows;
+				case "AltLeft":
+					return VirtualKey.Menu;
+				case "AltRight":
+					return VirtualKey.Menu;
+				case "NumpadMultiply":
+					return VirtualKey.Multiply;
+				case "NumpadAdd":
+					return VirtualKey.Add;
+				case "NumpadSubtract":
+					return VirtualKey.Subtract;
+				case "NumpadDivide":
+					return VirtualKey.Divide;
+				case "NumpadDecimal":
+					return VirtualKey.Decimal;
+				case "Numpad0":
+					return VirtualKey.Number0;
+				case "Numpad1":
+					return VirtualKey.Number1;
+				case "Numpad2":
+					return VirtualKey.Number2;
+				case "Numpad3":
+					return VirtualKey.Number3;
+				case "Numpad4":
+					return VirtualKey.Number4;
+				case "Numpad5":
+					return VirtualKey.Number5;
+				case "Numpad6":
+					return VirtualKey.Number6;
+				case "Numpad7":
+					return VirtualKey.Number7;
+				case "Numpad8":
+					return VirtualKey.Number8;
+				case "Numpad9":
+					return VirtualKey.Number9;
+			}
+
+			// A lot of keys and codes are similar.
+			var fromKey = FromKey(code);
+			if (fromKey is not VirtualKey.None)
+			{
+				return fromKey;
+			}
+
+			if (code.StartsWith("Key"))
+			{
+				// map KeyA to VirtualKey.A, KeyB to VirtualKey.B, etc.
+				return VirtualKey.A + code[3] - 'A';
+			}
+
+			if (code.StartsWith("Digit"))
+			{
+				// map Digit0 to VirtualKey.Number0, etc.
+				return VirtualKey.Number0 + code[5] - '0';
+			}
+
+			// WinUI sometimes gives unnamed int values to keys like Comma (188) and Period (190).
+			// Since these don't result in a valid enum value, we ignore these.
+			return VirtualKey.None;
 		}
 	}
 }
