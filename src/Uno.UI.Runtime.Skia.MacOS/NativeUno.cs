@@ -205,6 +205,9 @@ internal static partial class NativeUno
 	internal static partial void uno_window_invalidate(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial string uno_window_get_title(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_window_set_title(nint window, string title);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -214,14 +217,41 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_application_is_full_screen();
+	internal static partial bool uno_window_enter_full_screen(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_exit_full_screen(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_maximize(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_minimize(nint window, [MarshalAs(UnmanagedType.I1)] bool activateWindow);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_restore(nint window, [MarshalAs(UnmanagedType.I1)] bool activateWindow);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial int uno_window_get_overlapped_presenter_state(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_always_on_top(nint window, [MarshalAs(UnmanagedType.I1)] bool isAlwaysOnTop);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_border_and_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool hasBorder, [MarshalAs(UnmanagedType.I1)] bool hasTitleBar);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_maximizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isMaximizable);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_minimizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isMinimizable);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_application_enter_full_screen();
+	internal static partial bool uno_window_set_modal(nint window, [MarshalAs(UnmanagedType.I1)] bool isModal);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_application_exit_full_screen();
+	internal static partial void uno_window_set_resizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isResizable);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_window_get_metal_context(nint window);

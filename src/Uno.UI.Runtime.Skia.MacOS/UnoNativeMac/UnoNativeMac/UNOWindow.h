@@ -31,6 +31,7 @@ void uno_set_resize_callback(resize_fn_ptr p);
 
 - (void)sendEvent:(NSEvent *)event;
 
+- (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame;
 - (bool)windowShouldClose:(NSWindow *)sender;
 - (void)windowWillClose:(NSNotification *)notification;
 
@@ -41,7 +42,31 @@ NSWindow* uno_app_get_main_window(void);
 NSWindow* uno_window_create(double width, double height);
 void uno_window_invalidate(NSWindow *window);
 bool uno_window_resize(NSWindow *window, double width, double height);
+
+char* uno_window_get_title(NSWindow *window);
 void uno_window_set_title(NSWindow *window, const char* title);
+
+bool uno_window_is_full_screen(NSWindow *window);
+bool uno_window_enter_full_screen(NSWindow *window);
+void uno_window_exit_full_screen(NSWindow *window);
+
+void uno_window_minimize(NSWindow *window, bool activateWindow);
+void uno_window_restore(NSWindow *window, bool activateWindow);
+
+
+typedef NS_ENUM(sint32, OverlappedPresenterState) {
+    OverlappedPresenterStateMaximized,
+    OverlappedPresenterStateMinimized,
+    OverlappedPresenterStateRestored,
+};
+OverlappedPresenterState uno_window_get_overlapped_presenter_state(NSWindow *window);
+
+void uno_window_set_always_on_top(NSWindow* window, bool isAlwaysOnTop);
+void uno_window_set_border_and_title_bar(NSWindow *window, bool hasBorder, bool hasTitleBar);
+void uno_window_set_maximizable(NSWindow* window, bool isMaximizable);
+void uno_window_set_minimizable(NSWindow* window, bool isMinimizable);
+bool uno_window_set_modal(NSWindow *window, bool isModal);
+void uno_window_set_resizable(NSWindow *window, bool isResizable);
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkey?view=winrt-22621
 typedef NS_ENUM(sint32, VirtualKey) {
