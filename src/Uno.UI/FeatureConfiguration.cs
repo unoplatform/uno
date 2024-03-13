@@ -9,6 +9,7 @@ using Uno.UI.Xaml.Controls;
 using System.ComponentModel;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using System.Runtime.InteropServices;
 
 namespace Uno.UI
 {
@@ -840,7 +841,8 @@ namespace Uno.UI
 			/// Setting this flag to false will prevent the exception from being thrown at the risk
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
-			public static bool DisableThreadingCheck { get; set; }
+			public static bool DisableThreadingCheck { get; }
+				= OperatingSystem.IsBrowser();
 		}
 	}
 }
