@@ -21,6 +21,7 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("FolderPicker is not supported on this target.");
 			}
 
+			_folderPickerExtension.Customize(this);
 			return await _folderPickerExtension.PickSingleFolderAsync(token);
 		}
 	}
