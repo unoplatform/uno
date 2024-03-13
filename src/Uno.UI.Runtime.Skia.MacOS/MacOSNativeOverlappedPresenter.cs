@@ -7,7 +7,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSNativeOverlappedPresenter : INativeOverlappedPresenter
 {
-	private nint _handle;
+	private readonly nint _handle;
 
 	public MacOSNativeOverlappedPresenter(MacOSWindowNative window)
 	{
