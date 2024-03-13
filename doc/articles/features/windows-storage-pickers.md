@@ -352,6 +352,19 @@ The `SuggestedStartLocation` property has no effect on certain Android devices, 
 
 The `FileSavePicker` API, which uses `ACTION_CREATE_DOCUMENT` on Android, has various limitations. To allow for the best possible compatibility across different Android versions, you should always add your file type extension to `FileTypeChoices`, and, if possible, provide only one such file type. In addition, if the `SuggestedFileName` or the user-typed file name matches an existing file, the resulting file will be renamed with `(1)` in the name, e.g., `test.txt` will become `test (1).txt` and the existing file will not be overwritten. However, if the user explicitly taps an existing file in the file browser, the system will show a dialog allowing the app to overwrite the existing file. This inconsistent behavior is caused by Android itself, so there is, unfortunately, no way to work around it from our side. See [this issue](https://issuetracker.google.com/issues/37136466) for more information.
 
+If you want to have further influence on the pickers and, for example, create permanent access to the file for the `FileOpenPicker` (flag with GrantPersistableUriPermission), you can do this with the `FilePickerHelper`.
+
+```csharp
+FileOpenPicker fileOpenPicker = new FileOpenPicker
+{
+    SuggestedStartLocation = PickerLocationId.ComputerFolder
+};
+var intent = new Android.Content.Intent(Android.Content.Intent.ActionOpenDocument);
+intent.AddFlags(Android.Content.ActivityFlags.GrantPersistableUriPermission);
+FilePickerHelper.RegisterOnBeforeStartActivity(fileOpenPicker, intent);
+var result = await fileOpenPicker.PickSingleFileAsync();
+```
+
 ## iOS
 
 iOS does not offer a built-in `FileSavePicker` experience. Luckily, it is possible to implement this functionality, for example, using a combination of a `FolderPicker` and `ContentDialog`.

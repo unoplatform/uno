@@ -18,6 +18,7 @@ public partial class FileSavePicker
 {
 	private const string XmlCorrectMimeToActionCreateDocument = "application/xhtml+xml";
 	private const string XmlIncorrectMimeToActionCreateDocument = "application/xml";
+	private ActivityFlags _activityFlags;
 
 	private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 	{
@@ -30,6 +31,11 @@ public partial class FileSavePicker
 
 		var intent = new Intent(action);
 		intent.AddCategory(Intent.CategoryOpenable);
+		// additional flags are added
+		if (_activityFlags != 0)
+		{
+			intent.AddFlags(_activityFlags);
+		}
 		var mimeTypes = GetMimeTypes();
 		this.AdjustInvalidMimeTypes(mimeTypes);
 
@@ -109,4 +115,7 @@ public partial class FileSavePicker
 		AdjustInvalidMimeTypes(mimes);
 		return mimes ?? Array.Empty<string>();
 	}
+
+	internal void RegisterOnBeforeStartActivity(Intent intent)
+		=> _activityFlags = intent.Flags;
 }

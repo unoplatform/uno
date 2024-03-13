@@ -21,6 +21,7 @@ namespace Windows.Storage.Pickers
 		private const string AnyWildcard = "*/*";
 		private const string ImageWildcard = "image/*";
 		private const string VideoWildcard = "video/*";
+		private ActivityFlags _activityFlags;
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
@@ -73,11 +74,22 @@ namespace Windows.Storage.Pickers
 					// apps related to Photos and Videos to be suggested on the picker.
 					var intent = new Intent(Intent.ActionGetContent);
 					intent.AddCategory(Intent.CategoryOpenable);
+					// additional flags are added
+					if (_activityFlags != 0)
+					{
+						intent.AddFlags(_activityFlags);
+					}
 
 					return intent;
 				}
+				var openDocumentIntent = new Intent(Intent.ActionOpenDocument);
+				// additional flags are added
+				if (_activityFlags != 0)
+				{
+					openDocumentIntent.AddFlags(_activityFlags);
+				}
 
-				return new Intent(Intent.ActionOpenDocument);
+				return openDocumentIntent;
 			}
 
 			var intent = GetIntent();
@@ -234,5 +246,8 @@ namespace Windows.Storage.Pickers
 
 			return mimeTypes.ToArray();
 		}
+
+		internal void RegisterOnBeforeStartActivity(Intent intent)
+			=> _activityFlags = intent.Flags;
 	}
 }
