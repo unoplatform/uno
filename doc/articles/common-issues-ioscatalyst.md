@@ -2,7 +2,7 @@
 uid: Uno.UI.CommonIssues.IosCatalyst
 ---
 
-# Issues related to WebAssembly projects
+# Issues related to iOS/Mac Catalyst projects
 
 ## `Don't know how to marshal a return value of type 'System.IntPtr'`
 
