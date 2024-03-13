@@ -336,16 +336,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					_openFlyouts[0].Hide();
 				}
 
-				_isClosedPending = DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal, () =>
+				_isClosedPending = true;
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
+					Closed?.Invoke(this, EventArgs.Empty);
 					_isClosedPending = false;
-					Closed?.Invoke(this, EventArgs.Empty);
 				});
-
-				if (!_isClosedPending)
-				{
-					Closed?.Invoke(this, EventArgs.Empty);
-				}
 			}
 		}
 
