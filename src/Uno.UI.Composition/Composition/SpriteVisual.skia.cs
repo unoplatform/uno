@@ -30,7 +30,7 @@ namespace Microsoft.UI.Composition
 		{
 			if (color is { } c)
 			{
-				_paint.Color = c;
+				_paint.Color = c.ToSKColor();
 			}
 			else
 			{

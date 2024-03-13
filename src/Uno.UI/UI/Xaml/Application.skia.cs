@@ -89,6 +89,8 @@ namespace Microsoft.UI.Xaml
 
 		private void InvokeOnLaunched()
 		{
+			InitializeSystemTheme();
+
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
 				InitializationCompleted();

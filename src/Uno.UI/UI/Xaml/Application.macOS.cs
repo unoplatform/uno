@@ -36,6 +36,8 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
+			InitializeSystemTheme();
+
 			SetCurrentLanguage();
 
 			SubscribeBackgroundNotifications();

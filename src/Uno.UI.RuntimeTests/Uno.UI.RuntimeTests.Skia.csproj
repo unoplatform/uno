@@ -23,6 +23,12 @@
 	</PropertyGroup>
 	-->
 
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
@@ -60,10 +66,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>

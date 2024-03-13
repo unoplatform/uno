@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
+using System.Runtime.Loader;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.Skia;
 
@@ -12,6 +14,17 @@ namespace SkiaSharpExample
 
 		[STAThread]
 		public static void Main(string[] args)
+		{
+			// Ensures that we're loading the Skia assemblies properly
+			// as we're manipulating the output based on _UnoOverrideReferenceCopyLocalPaths
+			// and _UnoAdjustUserRuntimeAssembly to avoid getting reference assemblies in the
+			// output folder.
+			AssemblyLoadContext.Default.Resolving += Default_Resolving;
+
+			Run();
+		}
+
+		private static void Run()
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
@@ -42,6 +55,23 @@ namespace SkiaSharpExample
 				.Build();
 
 			host.Run();
+		}
+
+		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)
+		{
+			if (Uri.TryCreate(typeof(MainClass).Assembly.Location, UriKind.RelativeOrAbsolute, out var asm))
+			{
+				var appPath = Path.GetDirectoryName(asm.LocalPath)!;
+
+				var asmPath = Path.Combine(appPath, assemblyName.Name! + ".dll");
+
+				if (File.Exists(asmPath))
+				{
+					return alc.LoadFromAssemblyPath(asmPath);
+				}
+			}
+
+			return null;
 		}
 	}
 }

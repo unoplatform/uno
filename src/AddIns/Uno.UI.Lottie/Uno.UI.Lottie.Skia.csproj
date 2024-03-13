@@ -17,6 +17,12 @@
 
 		<DefineConstants>$(DefineConstants);HAS_SKOTTIE</DefineConstants>
 	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 
 	<ItemGroup>
 

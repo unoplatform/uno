@@ -93,7 +93,6 @@ namespace Microsoft.UI.Xaml
 #endif
 			Current = this;
 			ApplicationLanguages.ApplyCulture();
-			InitializeSystemTheme();
 
 			InitializePartial();
 		}
@@ -150,8 +149,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InitializeSystemTheme()
 		{
-			// just cache the theme, but do not notify about a change unnecessarily
-			InternalRequestedTheme = GetSystemTheme();
+			if (!IsThemeSetExplicitly)
+			{
+				// just cache the theme, but do not notify about a change unnecessarily
+				InternalRequestedTheme = GetSystemTheme();
+			}
 		}
 
 		private ApplicationTheme InternalRequestedTheme

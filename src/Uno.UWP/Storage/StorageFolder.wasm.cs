@@ -9,6 +9,7 @@ using Uno.Foundation.Interop;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
+using static __Windows.Storage.StorageFolderNative;
 
 namespace Windows.Storage
 {
@@ -36,23 +37,7 @@ namespace Windows.Storage
 
 		internal static void MakePersistent(params StorageFolder[] folders)
 		{
-			var parms = new StorageFolderMakePersistentParams()
-			{
-				Paths = folders.SelectToArray(f => f.Path),
-				Paths_Length = folders.Length
-			};
-
-			TSInteropMarshaller.InvokeJS("UnoStatic_Windows_Storage_StorageFolder:makePersistent", parms);
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct StorageFolderMakePersistentParams
-		{
-			public int Paths_Length;
-
-			[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
-			public string[] Paths;
+			NativeMakePersistent(folders.SelectToArray(f => f.Path));
 		}
 
 		[JSExport]
@@ -65,5 +50,6 @@ namespace Windows.Storage
 
 			_storageInitialized.TrySetResult(true);
 		}
+
 	}
 }

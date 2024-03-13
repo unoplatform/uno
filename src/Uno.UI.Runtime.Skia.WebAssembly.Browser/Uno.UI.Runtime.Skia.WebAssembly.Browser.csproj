@@ -1,0 +1,122 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<authors>Uno Platform</authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the platform support for Skia / Linux framebuffer in Uno Platform projects.</Description>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.WebAssembly.Browser</PackageId>
+
+		<RootNamespace>Uno.WinUI.Runtime.Skia.WebAssembly.Browser</RootNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*.targets">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<!-- Typescript setup -->
+
+	<ItemGroup>
+		<EmbeddedResource Include="WasmScripts\**\*.js" />
+		<EmbeddedResource Include="WasmCSS\**\*.css" />
+		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
+
+		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
+
+		<UpToDateCheckInput Include="ts\**\*" />
+		<UpToDateCheckInput Include="WasmCSS\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="ts\Runtime\BrowserRenderer.ts" />
+	  <UpToDateCheckInput Remove="ts\Runtime\WebAssemblyWindowWrapper.ts" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="tsconfig.json" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+
+		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+
+		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+	<Target Name="_UnoSetupTSCompilation">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(OutputPath)/javascript/Uno.Runtime.Wasm.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+		<MakeDir Directories="$(OutputPath)/javascript" />
+	</Target>
+
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'" BeforeTargets="_UnoEmbeddedResourcesInjection">
+		<PropertyGroup>
+			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.Runtime.Wasm.d.ts</_unoUIDTsFilePath>
+		</PropertyGroup>
+		<ItemGroup>
+			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
+			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+		</ItemGroup>
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Runtime.Wasm.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
+	</Target>
+
+	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">
+		<ItemGroup>
+			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
+			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
+			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup>
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+</Project>

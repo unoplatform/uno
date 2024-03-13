@@ -165,15 +165,15 @@ partial class App
 			var value = Guid.NewGuid().ToString();
 
 			container.Values[key] = value;
-			Assert.IsTrue(container.Values.ContainsKey(key));
+			Assert.IsTrue(container.Values.ContainsKey(key), $"Container {container} does not contain {key}");
 			Assert.AreEqual(value, container.Values[key]);
 			container.Values.Remove(key);
 		}
 
 		void AssertContainsIdProps(StorageFolder folder)
 		{
-			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal));
-			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal));
+			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal), $"{folder.Path} does not contain {appName}");
+			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
 		}
 
 		void AssertCanCreateFile(StorageFolder folder)

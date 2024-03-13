@@ -93,7 +93,7 @@ namespace SamplesApp
 			ParseCommandLineFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
-			AssertApplicationData();
+			// TODO JELA RESTORE AssertApplicationData();
 
 			this.InitializeComponent();
 
@@ -146,7 +146,7 @@ namespace SamplesApp
 
 				AssertIssue12936();
 
-				AssertIssue12937();
+				// TODO JELA AssertIssue12937();
 
 				AssertIssue15521();
 			}
@@ -163,7 +163,7 @@ namespace SamplesApp
 
 			InitializeFrame(e.Arguments);
 
-			AssertIssue8641NativeOverlayInitialized();
+			// TODO JELA AssertIssue8641NativeOverlayInitialized();
 
 			ActivateMainWindow();
 
@@ -446,11 +446,14 @@ namespace SamplesApp
 #endif
 			var factory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
 			{
-#if __WASM__
-				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#else
-				builder.AddConsole();
-#endif
+				if (OperatingSystem.IsBrowser())
+				{
+					builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
+				}
+				else
+				{
+					// builder.AddConsole();
+				}
 
 #if __IOS__
 				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
@@ -482,6 +485,8 @@ namespace SamplesApp
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
+
+				// builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Trace);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );

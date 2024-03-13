@@ -6,6 +6,12 @@
 
 	<Import Project="../targetframework-override.props" />
 
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Dispatching</AssemblyName>
 		<RootNamespace>Uno.UI.Dispatching</RootNamespace>

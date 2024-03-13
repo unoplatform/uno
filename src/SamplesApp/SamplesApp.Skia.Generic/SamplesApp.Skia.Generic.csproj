@@ -64,13 +64,24 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Wpf\Uno.UI.Runtime.Skia.Wpf.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+	</ItemGroup>
+		
+	<ItemGroup>
+		<!-- Platform overrides, must not be included explicitly -->
+
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -126,4 +137,53 @@
 			<RuntimeFramework Remove="@(_RuntimeFrameworkToRemove)" />
 		</ItemGroup>
 	</Target>
+
+
+	<Target Name="_UnoOverrideReferenceCopyLocalPaths"
+			Condition="'$(UnoRuntimeIdentifier)'!=''"
+			BeforeTargets="_CopyFilesMarkedCopyLocal">
+
+		<ItemGroup>
+			<!--
+			Adjusts the list of assemblies that are transiently copied to the output directory because Uno.UI does reference the Reference build
+			but the Skia build should be in the output folder.
+			-->
+			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
+			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\Uno.UWP\bin\Uno.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
+
+			<_ReferenceCopyLocalPathsToRemove Include="@(ReferenceCopyLocalPaths)" CrossFileName="%(_PlatformSpecificFiles.FileName)%(_PlatformSpecificFiles.Extension)" />
+			<_ReferenceCopyLocalPathsToRemove Remove="@(_ReferenceCopyLocalPathsToRemove)" Condition="'%(_ReferenceCopyLocalPathsToRemove.FileName)%(_ReferenceCopyLocalPathsToRemove.Extension)' != '%(_ReferenceCopyLocalPathsToRemove.CrossFileName)'" />
+
+			<ReferenceCopyLocalPaths Remove="@(_ReferenceCopyLocalPathsToRemove)" />
+
+			<ReferenceCopyLocalPaths Include="@(_PlatformSpecificFiles)" />
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="_UnoAdjustUserRuntimeAssembly"
+			Condition="'$(UnoRuntimeIdentifier)'!=''"
+			AfterTargets="_ComputeUserRuntimeAssemblies">
+
+		<ItemGroup>
+			<!--
+			Adjusts the list of assemblies that are transiently copied to the output directory because Uno.UI does reference the Reference build
+			but the Skia build should be in the output folder.
+			-->
+
+			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
+			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\Uno.UWP\bin\Uno.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
+
+			<_UserRuntimeAssemblyToRemove Include="@(UserRuntimeAssembly)"
+										  CrossFileName="%(_PlatformSpecificFiles2.FileName)%(_PlatformSpecificFiles2.Extension)" />
+			<_UserRuntimeAssemblyToRemove Remove="@(_UserRuntimeAssemblyToRemove)"
+										  Condition="'%(_UserRuntimeAssemblyToRemove.FileName)%(_UserRuntimeAssemblyToRemove.Extension)' != '%(_UserRuntimeAssemblyToRemove.CrossFileName)'" />
+
+			<UserRuntimeAssembly Remove="@(_UserRuntimeAssemblyToRemove)" />
+
+			<UserRuntimeAssembly Include="@(_PlatformSpecificFiles2)" />
+		</ItemGroup>
+
+	</Target>
+
 </Project>

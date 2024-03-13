@@ -1,7 +1,18 @@
 {
+<<<<<<< HEAD
 	"sdk": {
 		"allowPrerelease": false
 	},
+=======
+	//"sdk": {
+	//	"version": "7.0.406",
+	//	"allowPrerelease": false,
+	//	"rollForward": "latestFeature"
+	//},
+	//"tools": {
+	//	"dotnet": "7.0.406"
+	//},
+>>>>>>> d296983cff (feat: Add support for wasm+skia runtime)
 	"msbuild-sdks": {
 		"MSBuild.Sdk.Extras": "3.0.44",
 		"Microsoft.Build.NoTargets": "3.7.56"

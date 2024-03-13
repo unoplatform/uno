@@ -1,6 +1,4 @@
-﻿using static Uno.Foundation.WebAssemblyRuntime;
-
-using NativeMethods = __Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.NativeMethods;
+﻿using NativeMethods = __Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.NativeMethods;
 
 namespace Windows.Security.ExchangeActiveSyncProvisioning
 {

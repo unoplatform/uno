@@ -1,4 +1,5 @@
-﻿using HarfBuzzSharp;
+﻿using System;
+using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;

@@ -11,6 +11,12 @@
 		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
 	</PropertyGroup>
 
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
@@ -31,8 +37,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -10,6 +10,7 @@
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",
       "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
+      "SamplesApp\\SamplesApp.Skia.WebAssembly.Browser\\SamplesApp.Skia.WebAssembly.Browser.csproj",
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
@@ -27,11 +28,15 @@
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
+      "Uno.Foundation.Runtime.WebAssembly\\Uno.Foundation.Runtime.WebAssembly.csproj",
+      "Uno.Foundation\\Uno.Foundation.Reference.csproj",
       "Uno.Foundation\\Uno.Foundation.Skia.csproj",
       "Uno.Sdk\\Uno.Sdk.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Skia.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.Wasm.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Skia.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Skia.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
@@ -44,6 +49,7 @@
       "Uno.UI.Runtime.Skia.Gtk\\Uno.UI.Runtime.Skia.Gtk.csproj",
       "Uno.UI.Runtime.Skia.Linux.FrameBuffer\\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj",
       "Uno.UI.Runtime.Skia.MacOS\\Uno.UI.Runtime.Skia.MacOS.csproj",
+      "Uno.UI.Runtime.Skia.WebAssembly.Browser\\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj",
       "Uno.UI.Runtime.Skia.Wpf\\Uno.UI.Runtime.Skia.Wpf.csproj",
       "Uno.UI.Runtime.Skia.X11\\Uno.UI.Runtime.Skia.X11.csproj",
       "Uno.UI.Runtime.Skia\\Uno.UI.Runtime.Skia.csproj",
@@ -55,7 +61,9 @@
       "Uno.UI\\Uno.UI.Skia.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
-      "Uno.UWP\\Uno.Skia.csproj"
+      "Uno.UWP\\Uno.Reference.csproj",
+      "Uno.UWP\\Uno.Skia.csproj",
+      "Uno.UWP\\Uno.Wasm.csproj"
     ]
   }
 }

@@ -26,6 +26,12 @@
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="PolySharp" Version="1.13.2">

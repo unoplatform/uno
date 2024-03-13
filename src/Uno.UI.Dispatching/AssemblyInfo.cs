@@ -10,6 +10,12 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Gtk")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
+
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]

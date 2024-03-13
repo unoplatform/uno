@@ -96,7 +96,9 @@
 		<PackageReference Update="Xamarin.UITest" Version="4.3.5" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Update="Microsoft.Windows.Compatibility" Version="5.0.1" />
 
+<<<<<<< HEAD
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
@@ -109,8 +111,24 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
+=======
+		<PackageReference Update="SkiaSharp.Views" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.7"  />
+		<PackageReference Update="SkiaSharp" Version="2.88.7"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.7"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.WebAssembly" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.7" />
+>>>>>>> d296983cff (feat: Add support for wasm+skia runtime)
 		
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
 		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />

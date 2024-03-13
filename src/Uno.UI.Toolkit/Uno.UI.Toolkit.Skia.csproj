@@ -5,6 +5,12 @@
 
 	<Import Project="../targetframework-override.props"/>
 
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<Private Condition="'$(OutputType)' == 'library'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Toolkit</AssemblyName>
 		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
@@ -35,9 +41,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj">
 		</ProjectReference>
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj">
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj">
 		</ProjectReference>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj">
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj">
 		</ProjectReference>
 	</ItemGroup>
 

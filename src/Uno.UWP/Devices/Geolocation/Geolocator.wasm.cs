@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
-using static Uno.Foundation.WebAssemblyRuntime;
 
 using System.Runtime.InteropServices.JavaScript;
 

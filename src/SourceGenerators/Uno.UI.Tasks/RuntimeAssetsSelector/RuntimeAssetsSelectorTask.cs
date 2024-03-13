@@ -70,6 +70,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", UnoRuntimeIdentifier));
 						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", UnoRuntimeIdentifier));
+						searchPaths.Add(packageBasePath);
 					}
 
 					if (targetFrameworkVersion >= new Version(7, 0))
@@ -86,7 +87,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
 					}
 
-					if (searchPaths.FirstOrDefault(Directory.Exists) is { } topMostDirectory)
+					if (searchPaths.Where(d => Directory.Exists(d) && Directory.EnumerateFiles(d, "*.dll").Any()).FirstOrDefault() is { } topMostDirectory)
 					{
 						foreach (var assembly in Directory.EnumerateFiles(topMostDirectory, "*.dll"))
 						{
