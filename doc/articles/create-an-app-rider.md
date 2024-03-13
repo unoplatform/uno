@@ -4,6 +4,17 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 # Create an app with Rider
 
+<div style="position: relative; width: 100%; padding-bottom: 56.25%;">
+    <iframe
+        src="https://www.youtube-nocookie.com/embed/BQdj9rqLcos"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    </iframe>
+</div>
+
 > [!NOTE]
 > Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.Rider).
 >
