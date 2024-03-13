@@ -327,20 +327,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected void RemoveFromOpenFlyouts()
 		{
+			_isClosedPending = true;
+
 			if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
 			{
 				_openFlyouts.Remove(this);
-
-				if (_openFlyouts.Count > 0)
-				{
-					_openFlyouts[0].Hide();
-				}
-
-				_isClosedPending = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					Closed?.Invoke(this, EventArgs.Empty);
 					_isClosedPending = false;
+
+					if (_openFlyouts.Count > 0)
+					{
+						_openFlyouts[0].Hide();
+					}
 				});
 			}
 		}
