@@ -42,7 +42,7 @@ partial class ItemsViewTestHooks
 		KeyboardNavigationReferenceOffsetChanged?.Invoke(itemsView, null);
 	}
 
-	static event TypedEventHandler<ItemsView, object> KeyboardNavigationReferenceOffsetChanged;
+	internal static event TypedEventHandler<ItemsView, object> KeyboardNavigationReferenceOffsetChanged;
 
 	internal static ScrollView GetScrollViewPart(ItemsView itemsView)
 	{
