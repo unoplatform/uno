@@ -46,12 +46,17 @@ namespace Uno.Collections
 
 		private void AllocateInner(int newSize)
 		{
+			var newArray = ArrayPool<T>.Shared.Rent(newSize);
+			var newMemory = new Memory<T>(newArray);
+			_inner.CopyTo(newMemory);
+
 			if (_originalArray != null)
 			{
 				ArrayPool<T>.Shared.Return(_originalArray, clearArray: true);
 			}
 
-			_inner = new Memory<T>(_originalArray = ArrayPool<T>.Shared.Rent(newSize));
+			_originalArray = newArray;
+			_inner = new Memory<T>(_originalArray);
 		}
 
 		public void Dispose()

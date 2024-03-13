@@ -73,5 +73,25 @@ namespace Uno.UI.Tests.Foundation
 				}
 			}
 		}
+
+		[TestMethod]
+		public void TestResizingShouldCopyOldElements()
+		{
+			var sut = new StackVector<int>(2);
+
+			for (int i = 0; i < 200; i++)
+			{
+				ref var item1 = ref sut.PushBack();
+				item1 = i;
+			}
+
+			sut.Count.Should().Be(200);
+			sut.Should().HaveCount(200);
+
+			for (int i = 0; i < 200; i++)
+			{
+				Assert.AreEqual(i, sut[i]);
+			}
+		}
 	}
 }
