@@ -97,12 +97,20 @@ namespace Microsoft.UI.Xaml
 
 		private bool ShouldMirrorVisual()
 		{
-			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			if (this is not FrameworkElement fe)
 			{
-				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
+				return false;
+			}
+
+			var parent = VisualTreeHelper.GetParent(this);
+			while (parent is not null)
+			{
+				if (parent is FrameworkElement feParent)
 				{
-					return true;
+					return feParent is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
 				}
+
+				parent = VisualTreeHelper.GetParent(parent);
 			}
 
 			return false;

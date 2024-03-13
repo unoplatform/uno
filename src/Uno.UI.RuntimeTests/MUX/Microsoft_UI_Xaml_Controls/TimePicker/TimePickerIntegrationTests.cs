@@ -161,6 +161,8 @@ public class TimePickerIntegrationTests
 
 			timePicker = new TimePicker();
 			timePicker.Header = "TimePickerTest";
+			// Uno Specific: some tests will fail on 24-hour systems as they expect a period LoopingSelector
+			timePicker.ClockIdentifier = ClockIdentifiers.TwelveHour;
 
 			rootGrid.Children.Add(timePicker);
 		});

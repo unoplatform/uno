@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
@@ -37,14 +38,14 @@ namespace Microsoft.UI.Composition
 					{
 						// workaround until SkiaSharp adds support for SaveLayerRec
 						fillPaint.FilterQuality = SKFilterQuality.High;
-						session.Surface.Canvas.SaveLayer(fillPaint);
-						session.Surface.Canvas.Scale(1.0f / session.Surface.Canvas.TotalMatrix.ScaleX);
-						session.Surface.Canvas.DrawSurface(session.Surface, new(-session.Surface.Canvas.TotalMatrix.TransX, -session.Surface.Canvas.DeviceClipBounds.Top + session.Surface.Canvas.LocalClipBounds.Top));
-						session.Surface.Canvas.Restore();
+						session.Canvas.SaveLayer(fillPaint);
+						session.Canvas.Scale(1.0f / session.Canvas.TotalMatrix.ScaleX);
+						session.Canvas.DrawSurface(session.Surface, new(-session.Canvas.TotalMatrix.TransX, -session.Canvas.DeviceClipBounds.Top + session.Canvas.LocalClipBounds.Top));
+						session.Canvas.Restore();
 					}
 					else
 					{
-						session.Surface.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+						session.Canvas.DrawPath(geometryWithTransformations, fillPaint);
 					}
 				}
 
@@ -79,7 +80,7 @@ namespace Microsoft.UI.Composition
 
 					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
-					session.Surface.Canvas.DrawPath(strokeGeometry, fillPaint);
+					session.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
 		}

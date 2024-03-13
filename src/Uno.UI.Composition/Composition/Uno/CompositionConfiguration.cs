@@ -51,6 +51,6 @@ namespace Uno
 			}
 		}
 
-		internal static bool UseBrushAntialiasing => Configuration.HasFlag(Options.UseBrushAntialiasing);
+		internal static bool UseBrushAntialiasing => (Configuration & Options.UseBrushAntialiasing) != 0;
 	}
 }

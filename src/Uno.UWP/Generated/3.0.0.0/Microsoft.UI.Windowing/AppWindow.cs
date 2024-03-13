@@ -95,7 +95,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.remove
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsVisible.get
@@ -180,8 +180,8 @@ namespace Microsoft.UI.Windowing
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Changed.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Changed.remove
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.TitleBar.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.remove
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Destroying.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Destroying.remove
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.ClientSize.get

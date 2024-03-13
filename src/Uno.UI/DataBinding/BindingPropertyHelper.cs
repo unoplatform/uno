@@ -661,7 +661,7 @@ namespace Uno.UI.DataBinding
 						return instance => handler(
 							instance,
 							new object?[] {
-								Convert(() => indexerParameterType, indexerString)
+								Convert(indexerParameterType, indexerString)
 							}
 						);
 					}
@@ -1352,31 +1352,41 @@ namespace Uno.UI.DataBinding
 			{
 				var t = propertyType();
 
-				if (!value.GetType().Is(t))
+				return Convert(t, value);
+			}
+
+			return value;
+		}
+
+		internal static object? Convert(Type? propertyType, object? value)
+		{
+			if (value != null)
+			{
+				if (!value.GetType().Is(propertyType))
 				{
-					if (FastConvert(t, value, out var fastConvertResult))
+					if (FastConvert(propertyType, value, out var fastConvertResult))
 					{
 						return fastConvertResult;
 					}
-					else if (t is null || t == typeof(object))
+					else if (propertyType is null || propertyType == typeof(object))
 					{
 						return value;
 					}
-					else if (t == typeof(string))
+					else if (propertyType == typeof(string))
 					{
 						return value?.ToString();
 					}
-					else if (t.IsEnum)
+					else if (propertyType.IsEnum)
 					{
-						return ConvertToEnum(t, value);
+						return ConvertToEnum(propertyType, value);
 					}
-					else if ((Nullable.GetUnderlyingType(t) ?? t) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
+					else if ((Nullable.GetUnderlyingType(propertyType) ?? propertyType) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
 					{
 						return ConvertPrimitiveToPrimitive(toTypeUnwrapped, value);
 					}
 					else
 					{
-						return ConvertUsingTypeDescriptor(t, value);
+						return ConvertUsingTypeDescriptor(propertyType, value);
 					}
 				}
 			}

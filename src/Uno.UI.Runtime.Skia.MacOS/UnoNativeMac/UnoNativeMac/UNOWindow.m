@@ -532,6 +532,19 @@ VirtualKeyModifiers get_modifiers(NSEventModifierFlags mods)
     return vkm;
 }
 
+UniChar get_unicode(NSEvent *event)
+{
+    UniCharCount count = 1;
+    UniChar unicode[count];
+    CGEventKeyboardGetUnicodeString(event.CGEvent, count, &count, unicode);
+#if DEBUG
+    if (count > 1) {
+        NSLog(@"get_unicode - more than one unicode character returned");
+    }
+#endif
+    return unicode[0];
+}
+
 static window_mouse_callback_fn_ptr window_mouse_event;
 
 inline static window_mouse_callback_fn_ptr uno_get_window_mouse_event_callback(void)
@@ -658,17 +671,19 @@ void* uno_window_get_metal_context(UNOWindow* window)
         }
         case NSEventTypeKeyDown: {
             unsigned short scanCode = event.keyCode;
-            handled = uno_get_window_key_down_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode);
+            UniChar unicode = get_unicode(event);
+            handled = uno_get_window_key_down_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyDown: %@ window %p handled? %s", event, self, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyDown: %@ window %p unicode %d handled? %s", event, self, unicode, handled ? "true" : "false");
 #endif
             break;
         }
         case NSEventTypeKeyUp: {
             unsigned short scanCode = event.keyCode;
-            handled = uno_get_window_key_up_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode);
+            UniChar unicode = get_unicode(event);
+            handled = uno_get_window_key_up_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyUp: %@ window %p handled? %s", event, self, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyUp: %@ window %p unocode %d handled? %s", event, self, unicode, handled ? "true" : "false");
 #endif
             break;
         }

@@ -98,9 +98,9 @@ namespace Uno.UI.RemoteControl.HotReload
 					{
 						_isIssue93860Fixed = version >=
 #if __IOS__ || __CATALYST__
-							new Version(34, 0, 1, 52); //8.0.102
-#elif __ANDROID__
 							new Version(17, 2, 8022); // 8.0.200
+#elif __ANDROID__
+							new Version(34, 0, 1, 52); //8.0.102
 #endif
 
 						if (!_isIssue93860Fixed.Value && this.Log().IsEnabled(LogLevel.Warning))

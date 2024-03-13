@@ -293,7 +293,7 @@ struct MouseEventData {
     uint32 pid;
 };
 
-typedef int32_t (*window_key_callback_fn_ptr)(UNOWindow* window, VirtualKey key, VirtualKeyModifiers mods, uint32 scanCode);
+typedef int32_t (*window_key_callback_fn_ptr)(UNOWindow* window, VirtualKey key, VirtualKeyModifiers mods, uint32 scanCode, UniChar unicode);
 typedef int32_t (*window_mouse_callback_fn_ptr)(UNOWindow* window, struct MouseEventData *data);
 void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer);
 

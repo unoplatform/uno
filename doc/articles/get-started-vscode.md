@@ -2,7 +2,7 @@
 uid: Uno.GetStarted.vscode
 ---
 
-## Get Started on VS Code
+# Get Started on VS Code
 
 This guide will walk you through the set-up process for building apps with Uno under Windows, Linux or macOS.
 
@@ -46,17 +46,17 @@ To switch between C# Dev Kit and OmniSharp:
 
 You may need to follow additional directions, depending on your development environment.
 
-# [**Windows**](#tab/windows)
+### [**Windows**](#tab/windows)
 
 [!include[windows-setup](includes/additional-windows-setup-inline.md)]
 
-# [**Linux**](#tab/linux)
-
-[!include[linux-setup](includes/additional-linux-setup-inline.md)]
-
-# [**macOS**](#tab/macos)
+### [**macOS**](#tab/macos)
 
 [!include[macos-setup](includes/additional-macos-setup-inline.md)]
+
+### [**Linux**](#tab/linux)
+
+[!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
 ***
 

@@ -206,14 +206,14 @@ namespace Microsoft.UI.Content
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.CoordinateConverter.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.DispatcherQueue.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.Environment.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsConnected.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.set
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.DispatcherQueue.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.set

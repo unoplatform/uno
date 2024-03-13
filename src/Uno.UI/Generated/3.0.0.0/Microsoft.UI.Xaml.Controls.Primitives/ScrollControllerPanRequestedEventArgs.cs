@@ -3,42 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollControllerPanRequestedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ScrollControllerPanRequestedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScrollControllerPanRequestedEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs", "bool ScrollControllerPanRequestedEventArgs.Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Input.PointerPoint PointerPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerPoint ScrollControllerPanRequestedEventArgs.PointerPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerPoint%20ScrollControllerPanRequestedEventArgs.PointerPoint");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ScrollControllerPanRequestedEventArgs(global::Microsoft.UI.Input.PointerPoint pointerPoint)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs", "ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(PointerPoint pointerPoint)");
-		}
-#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property PointerPoint
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(Microsoft.UI.Input.PointerPoint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.ScrollControllerPanRequestedEventArgs(Microsoft.UI.Input.PointerPoint)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.PointerPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.Handled.get

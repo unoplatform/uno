@@ -226,7 +226,7 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaExpansionDeceleration.get
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.PivotRadius.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.AutoProcessInertia.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideExact.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSlideExact.set
@@ -241,7 +241,6 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.PivotCenter.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.PivotCenter.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.PivotRadius.get
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.PivotRadius.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ProcessInertia()
@@ -249,6 +248,7 @@ namespace Microsoft.UI.Input
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessInertia()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationStarted.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaExpansionDeceleration.set
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaExpansion.get
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaExpansion.set
@@ -276,24 +276,24 @@ namespace Microsoft.UI.Input
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessMouseWheelEvent(PointerPoint value, bool isShiftKeyDown, bool isControlKeyDown)");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationStarted.remove
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.InertiaExpansionDeceleration.get
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.ProcessUpEvent(Microsoft.UI.Input.PointerPoint)
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Tapped.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Tapped.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.RightTapped.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.RightTapped.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Holding.add
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.AutoProcessInertia.get
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Holding.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Dragging.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Dragging.remove
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationStarted.add
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationCompleted.remove
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.Holding.remove
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.AutoProcessInertia.get
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationStarted.remove
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationUpdated.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationUpdated.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationInertiaStarting.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationInertiaStarting.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationCompleted.add
-		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationUpdated.add
+		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.ManipulationCompleted.remove
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSliding.add
 		// Forced skipping of method Microsoft.UI.Input.GestureRecognizer.CrossSliding.remove
 		// Skipping already declared method Microsoft.UI.Input.GestureRecognizer.GestureRecognizer()

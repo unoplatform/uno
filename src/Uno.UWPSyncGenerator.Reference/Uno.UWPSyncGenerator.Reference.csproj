@@ -120,7 +120,7 @@
 		<When Condition="'$(UNO_UWP_BUILD)'=='false'">
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK">
-					<Version>1.4.240211001</Version>
+					<Version>1.5.240227000</Version>
 				</PackageReference>
 			</ItemGroup>
 		</When>

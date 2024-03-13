@@ -1,10 +1,30 @@
 <Project>
 	<PropertyGroup>
-		<IsBrowser>true</IsBrowser>
+		<IsBrowserWasm>true</IsBrowserWasm>
 		<UsingUnoCommonWasmTargets>true</UsingUnoCommonWasmTargets>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 
 		<EnableDefaultWasmItems Condition="$(EnableDefaultWasmItems) == ''">false</EnableDefaultWasmItems>
+
+		<!-- Enable the netx.0-browserwasm target -->
+		<TargetPlatformIdentifier>BrowserWasm</TargetPlatformIdentifier>
+		<TargetFrameworkIdentifier>BrowserWasm</TargetFrameworkIdentifier>
+		<TargetPlatformSupported>true</TargetPlatformSupported>
+		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">8.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
+
+	<!-- Enable the netx.0-browserwasm target -->
+	<ItemGroup>
+		<SupportedPlatform Remove="@(SupportedPlatform)" />
+		<SupportedPlatform Include="browserwasm" />
+		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
+	</ItemGroup>
+
+	<!-- Enable the netx.0-browserwasm target -->
+	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '8.0')) ">
+		<SdkSupportedTargetPlatformIdentifier Include="browserwasm" DisplayName="BrowserWasm" />
+	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
 			Condition=" $(SingleProject) == 'true' " />

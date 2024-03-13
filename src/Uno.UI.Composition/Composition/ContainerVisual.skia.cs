@@ -18,7 +18,7 @@ public partial class ContainerVisual : Visual
 		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
 	}
 
-	internal IList<Visual> GetChildrenInRenderOrder()
+	internal List<Visual> GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)
 		{

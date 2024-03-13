@@ -185,8 +185,8 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_events_callbacks(
-		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyDownCallback,
-		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyUpCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyDownCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyUpCallback,
 		delegate* unmanaged[Cdecl]<nint, NativeMouseEventData*, int> pointerCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -264,16 +264,19 @@ internal static partial class NativeUno
 	internal static partial void uno_window_set_min_size(nint window, double width, double height);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder();
+	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_single_file(string? prompt);
+	internal static partial string? /* const char* _Nullable */ uno_pick_single_file(string? prompt, string? identifier, int suggestedStartLocation,
+		string[] filters, int filterSize);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt);
+	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
+		string[] filters, int filterSize);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt);
+	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,
+		string[] filters, int filtersSize);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_clear();
@@ -302,5 +305,5 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_cursor_set(CoreCursorType cursor);
+	internal static partial bool uno_cursor_set(CoreCursorType cursorType);
 }

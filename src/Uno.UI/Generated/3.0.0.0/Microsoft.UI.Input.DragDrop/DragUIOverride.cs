@@ -69,14 +69,14 @@ namespace Microsoft.UI.Input.DragDrop
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.set
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.set
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.get
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsCaptionVisible.set
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsContentVisible.get
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsContentVisible.set
 		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.get
-		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.IsGlyphVisible.set
+		// Forced skipping of method Microsoft.UI.Input.DragDrop.DragUIOverride.Caption.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Clear()

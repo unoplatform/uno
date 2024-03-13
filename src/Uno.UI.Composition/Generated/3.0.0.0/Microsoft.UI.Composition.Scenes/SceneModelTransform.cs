@@ -97,15 +97,15 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAxis.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngle.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngleInDegrees.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Orientation.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngleInDegrees.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAxis.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.RotationAngleInDegrees.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Scale.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneModelTransform.Translation.get

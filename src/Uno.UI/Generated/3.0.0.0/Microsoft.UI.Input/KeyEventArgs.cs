@@ -57,10 +57,10 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.VirtualKey.get
 		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.Handled.set
+		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.KeyStatus.get
 		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.Timestamp.get
-		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.Handled.get
+		// Forced skipping of method Microsoft.UI.Input.KeyEventArgs.VirtualKey.get
 	}
 }
