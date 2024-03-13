@@ -619,7 +619,8 @@ partial class ItemContainer : Control
 
 	void UpdateMousePointerOverInstance(bool isPointerOver)
 	{
-		s_mousePointerOverInstance.TryGetTarget(out var mousePointerOverInstance);
+		ItemContainer mousePointerOverInstance = null;
+		s_mousePointerOverInstance?.TryGetTarget(out mousePointerOverInstance);
 
 		if (isPointerOver)
 		{
