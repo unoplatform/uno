@@ -1,16 +1,18 @@
 ﻿#nullable enable
 
-using System.Numerics;
-using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using System.Xml.Xsl;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
+	/// <summary>
+	/// This is the final transformation matrix from the origin for this Visual. We use this for hit testing.
+	/// </summary>
+	internal SKMatrix? TotalMatrix { get; private set; }
+
 	internal override void Render(in DrawingSession parentSession)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
@@ -47,10 +49,13 @@ public partial class ShapeVisual
 	/// <inheritdoc />
 	internal override void Draw(in DrawingSession session)
 	{
+		var canvas = session.Canvas;
 		if (ViewBox is { } viewBox)
 		{
-			session.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
+			canvas.ClipRect(viewBox.GetRect(), antialias: true);
 		}
+
+		TotalMatrix = canvas.TotalMatrix;
 
 		base.Draw(in session);
 	}
