@@ -83,9 +83,9 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "void AnimationController.Resume()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.get
+		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -69,13 +69,13 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.set
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaScale.set
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaRotationAngle.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.DeltaRotationAngle.set
-		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.get
+		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.CharTranslation.get
 		// Forced skipping of method Microsoft.UI.Input.MouseWheelParameters.PageTranslation.set
 	}
 }

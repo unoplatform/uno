@@ -11,9 +11,9 @@ namespace Microsoft.UI.Dispatching
 		// Skipping already declared property HasThreadAccess
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnqueueEventLoopExit()
+		public void RunEventLoop()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueue", "void DispatcherQueue.EnqueueEventLoopExit()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueue", "void DispatcherQueue.RunEventLoop()");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueueHandler)
@@ -23,7 +23,13 @@ namespace Microsoft.UI.Dispatching
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownCompleted.add
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownCompleted.remove
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.HasThreadAccess.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownStarting.add
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void EnqueueEventLoopExit()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueue", "void DispatcherQueue.EnqueueEventLoopExit()");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void EnsureSystemDispatcherQueue()
@@ -31,13 +37,7 @@ namespace Microsoft.UI.Dispatching
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueue", "void DispatcherQueue.EnsureSystemDispatcherQueue()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RunEventLoop()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueue", "void DispatcherQueue.RunEventLoop()");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueue.ShutdownStarting.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void RunEventLoop(global::Microsoft.UI.Dispatching.DispatcherRunOptions options, global::Microsoft.UI.Dispatching.DispatcherExitDeferral deferral)

@@ -543,13 +543,19 @@ namespace Microsoft.UI.Xaml.Media
 
 			var isChildStale = isStale;
 
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
 			using var child = children
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
+#if __SKIA__
 				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
 				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+#elif __WASM__
 				.GetReverseEnumerator();
+#else
+				.Reverse()
+				.GetEnumerator();
 #endif
 
 			while (child.MoveNext())
@@ -656,11 +662,19 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
 		{
+			// We only take ZIndex into account on skia, which supports Canvas.Zindex for non-canvas panels.
+			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
+			// https://github.com/unoplatform/uno/issues/325
 			using var enumerator = GetManagedVisualChildren(root)
-#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
-				.Reverse().GetEnumerator();
-#else
+#if __SKIA__
+				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
+				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+#elif __WASM__
 				.GetReverseEnumerator();
+#else
+				.Reverse()
+				.GetEnumerator();
 #endif
 
 			while (enumerator.MoveNext())
@@ -683,6 +697,12 @@ namespace Microsoft.UI.Xaml.Media
 
 			return root;
 		}
+
+#if __SKIA__
+		// This is used with MaterializableList.GetReverseSortedEnumerator
+		private static int UIElementToCanvasZIndex(UIElement element)
+			=> element.Visual.ZIndex; // Equivalent to GetValue(Canvas.ZIndexProperty) on skia
+#endif
 
 		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
 		{

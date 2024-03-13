@@ -76,7 +76,7 @@ jobs:
   dependsOn:
   - Android_Build_NetCoreMobile_For_Tests
 
-  timeoutInMinutes: 90
+  timeoutInMinutes: 45
   variables:
     CI_Build: true
     SourceLinkEnabled: false

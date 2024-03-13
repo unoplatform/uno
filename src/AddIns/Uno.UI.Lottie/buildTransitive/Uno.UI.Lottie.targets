@@ -25,7 +25,7 @@
 			<_SkottieRefs Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)' == 'SkiaSharp.Skottie'" />
 		</ItemGroup>
 
-		<Error Condition="'@(_SkiaSharpViewsRefs)'==''" Text="In order to use Uno Lottie support, the '$(_SkiaSharpPackageName)' NuGet Package (2.88.3 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;$(_SkiaSharpPackageName)&quot; Version=&quot;2.88.3&quot; /> to your project." />
-		<Error Condition="'@(_SkottieRefs)'==''" Text="The 'SkiaSharp.Skottie' NuGet Package (2.88.3 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;SkiaSharp.Skottie&quot; Version=&quot;2.88.3&quot; /> to your project." />
+		<Error Condition="'@(_SkiaSharpViewsRefs)'==''" Text="In order to use Uno Lottie support, the '$(_SkiaSharpPackageName)' NuGet Package (2.88.7 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;$(_SkiaSharpPackageName)&quot; Version=&quot;2.88.7&quot; /> to your project." />
+		<Error Condition="'@(_SkottieRefs)'==''" Text="The 'SkiaSharp.Skottie' NuGet Package (2.88.7 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;SkiaSharp.Skottie&quot; Version=&quot;2.88.7&quot; /> to your project." />
 	</Target>
 </Project>

@@ -37,12 +37,16 @@
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<_XcodeBuildArgs Condition="'$(Configuration)'=='Debug'">build-for-testing -scheme UnoNativeMac</_XcodeBuildArgs>
+	</PropertyGroup>
+
 	<Target Name="BuildUnoNativeMac" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-		<Exec Command="$(MSBuildThisFileDirectory)UnoNativeMac/build.sh" WorkingDirectory="$(MSBuildThisFileDirectory)UnoNativeMac/" />
+		<Exec Command="$(MSBuildThisFileDirectory)UnoNativeMac/build.sh $(_XcodeBuildArgs)" WorkingDirectory="$(MSBuildThisFileDirectory)UnoNativeMac/" />
 	</Target>
 
 	<ItemGroup>
-		 <None Include="$(MSBuildThisFileDirectory)runtimes/osx/native/libUnoNativeMac.*"
+		 <None Include="$(MSBuildThisFileDirectory)UnoNativeMac/build/$(Configuration)/libUnoNativeMac.*"
 				PackagePath="runtimes/osx/native"
 				Pack="true"
 				Visible="False" /> 

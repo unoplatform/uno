@@ -22,15 +22,22 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private record AttachedPropertyData
 		{
+			private enum AttachedPropertyDataFlags : byte
+			{
+				HasGetMethodSymbol = 1 << 0,
+				HasSetMethodSymbol = 1 << 1,
+			}
+
 			public string? AttachedBackingFieldOwnerFullyQualifiedName { get; }
 			public string? AttachedBackingFieldOwnerNamespace { get; }
 			public string? AttachedBackingFieldOwnerName { get; }
 
+			private readonly AttachedPropertyDataFlags _flags;
 
 			[MemberNotNullWhen(true, nameof(PropertyTypeFullyQualifiedName), nameof(PropertyTargetFullyQualifiedName))]
-			public bool HasGetMethodSymbol { get; }
+			public bool HasGetMethodSymbol => (_flags & AttachedPropertyDataFlags.HasGetMethodSymbol) != 0;
 
-			public bool HasSetMethodSymbol { get; }
+			public bool HasSetMethodSymbol => (_flags & AttachedPropertyDataFlags.HasSetMethodSymbol) != 0;
 			public string? PropertyTypeFullyQualifiedName { get; }
 			public string? PropertyTargetFullyQualifiedName { get; }
 
@@ -49,8 +56,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				GetMethodSymbolNodeContent = SymbolToNodeString(getMethodSymbol);
 				SetMethodSymbolNodeContent = SymbolToNodeString(setMethodSymbol);
 
-				HasGetMethodSymbol = getMethodSymbol is not null;
-				HasSetMethodSymbol = setMethodSymbol is not null;
+				if (getMethodSymbol is not null)
+				{
+					_flags |= AttachedPropertyDataFlags.HasGetMethodSymbol;
+				}
+
+				if (setMethodSymbol is not null)
+				{
+					_flags |= AttachedPropertyDataFlags.HasSetMethodSymbol;
+				}
+
 				PropertyTypeFullyQualifiedName = getMethodSymbol?.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				PropertyTargetFullyQualifiedName = getMethodSymbol?.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 			}
@@ -58,41 +73,78 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private record PropertyData
 		{
+			private enum PropertyDataFlags : byte
+			{
+				HasProperty = 1 << 0,
+				PropertyHasGetter = 1 << 1,
+				PropertyHasSetter = 1 << 2,
+			}
+
+			private readonly PropertyDataFlags _flags;
+
 			public string? PropertySymbolNodeContent { get; }
 
 
 			public string? PropertyTypeFullyQualifiedName { get; }
 
 			[MemberNotNullWhen(true, nameof(PropertyTypeFullyQualifiedName))]
-			public bool HasProperty { get; }
+			public bool HasProperty => (_flags & PropertyDataFlags.HasProperty) != 0;
 
-			public bool PropertyHasGetter { get; }
-			public bool PropertyHasSetter { get; }
+			public bool PropertyHasGetter => (_flags & PropertyDataFlags.PropertyHasGetter) != 0;
+			public bool PropertyHasSetter => (_flags & PropertyDataFlags.PropertyHasSetter) != 0;
 
 			public PropertyData(ISymbol dpSymbol, string propertyName)
 			{
 				var propertySymbol = dpSymbol.ContainingType.GetPropertiesWithName(propertyName).FirstOrDefault();
 				PropertySymbolNodeContent = SymbolToNodeString(propertySymbol);
 
-				HasProperty = propertySymbol is not null;
+				if (propertySymbol is not null)
+				{
+					_flags |= PropertyDataFlags.HasProperty;
+				}
+
 				PropertyTypeFullyQualifiedName = propertySymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-				PropertyHasGetter = propertySymbol?.GetMethod is not null;
-				PropertyHasSetter = propertySymbol?.SetMethod is not null;
+				if (propertySymbol?.GetMethod is not null)
+				{
+					_flags |= PropertyDataFlags.PropertyHasGetter;
+				}
+
+				if (propertySymbol?.SetMethod is not null)
+				{
+					_flags |= PropertyDataFlags.PropertyHasSetter;
+				}
 			}
 		}
 
 		private record GenerationCandidateData
 		{
+			private enum GenerationCandidateDataFlags : short
+			{
+				CoerceCallback = 1 << 0,
+				LocalCache = 1 << 1,
+				IsAttached = 1 << 2,
+				ContainingTypeIsCandidate = 1 << 3,
+				ContainingTypeHasGetDefaultValueMethod = 1 << 4,
+				HasPropertySuffix = 1 << 5,
+				IsCallbackWithDPChangedArgs = 1 << 6,
+				IsCallbackWithDPChangedArgsOnly = 1 << 7,
+				CallBackWithOldAndNew = 1 << 8,
+				IsParameterlessCallback = 1 << 9,
+				IsInvalidChangedCallbackName = 1 << 10,
+			}
+
+			private readonly GenerationCandidateDataFlags _flags;
+
 			#region Attribute arguments
 			public string MetadataOptions { get; }
 			public KeyValuePair<string, TypedConstant>? DefaultValue { get; }
-			public bool CoerceCallback { get; }
-			public bool LocalCache { get; }
+			public bool CoerceCallback => (_flags & GenerationCandidateDataFlags.CoerceCallback) != 0;
+			public bool LocalCache => (_flags & GenerationCandidateDataFlags.LocalCache) != 0;
 
 			[MemberNotNullWhen(true, nameof(AttachedPropertyData))]
 			[MemberNotNullWhen(false, nameof(PropertyData))]
-			public bool IsAttached { get; }
+			public bool IsAttached => (_flags & GenerationCandidateDataFlags.IsAttached) != 0;
 
 			public string ChangedCallbackName { get; }
 			#endregion
@@ -101,35 +153,51 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public string ContainingTypeName { get; }
 			public string ContainingTypeFullyQualifiedName { get; }
 			public string ContainingTypeHintName { get; }
-			public bool ContainingTypeIsCandidate { get; }
+			public bool ContainingTypeIsCandidate => (_flags & GenerationCandidateDataFlags.ContainingTypeIsCandidate) != 0;
 
 			public PropertyData? PropertyData { get; }
 			public AttachedPropertyData? AttachedPropertyData { get; }
 
-			public bool ContainingTypeHasGetDefaultValueMethod { get; }
+			public bool ContainingTypeHasGetDefaultValueMethod => (_flags & GenerationCandidateDataFlags.ContainingTypeHasGetDefaultValueMethod) != 0;
 			public string PropertyName { get; }
-			public bool HasPropertySuffix { get; }
+			public bool HasPropertySuffix => (_flags & GenerationCandidateDataFlags.HasPropertySuffix) != 0;
 
 			public int? CoerceCallbackMethodParameterLength { get; }
 
-			public bool IsCallbackWithDPChangedArgs { get; }
-			public bool IsCallbackWithDPChangedArgsOnly { get; }
-			public bool CallBackWithOldAndNew { get; }
-			public bool IsParameterlessCallback { get; }
-			public bool IsInvalidChangedCallbackName { get; }
+			public bool IsCallbackWithDPChangedArgs => (_flags & GenerationCandidateDataFlags.IsCallbackWithDPChangedArgs) != 0;
+			public bool IsCallbackWithDPChangedArgsOnly => (_flags & GenerationCandidateDataFlags.IsCallbackWithDPChangedArgsOnly) != 0;
+			public bool CallBackWithOldAndNew => (_flags & GenerationCandidateDataFlags.CallBackWithOldAndNew) != 0;
+			public bool IsParameterlessCallback => (_flags & GenerationCandidateDataFlags.IsParameterlessCallback) != 0;
+			public bool IsInvalidChangedCallbackName => (_flags & GenerationCandidateDataFlags.IsInvalidChangedCallbackName) != 0;
 
 			public string? MemberSymbolNodeContent { get; }
 
 			public GenerationCandidateData(ISymbol dpSymbol, AttributeData attribute)
 			{
 				PropertyName = dpSymbol.Name.TrimEnd("Property");
-				HasPropertySuffix = dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal);
+				if (dpSymbol.Name.EndsWith("Property", StringComparison.Ordinal))
+				{
+					_flags |= GenerationCandidateDataFlags.HasPropertySuffix;
+				}
 
 				MetadataOptions = GetAttributeValue(attribute, "Options")?.Value.Value?.ToString() ?? "0";
 				DefaultValue = GetAttributeValue(attribute, "DefaultValue");
-				CoerceCallback = GetBooleanAttributeValue(attribute, "CoerceCallback", false);
-				LocalCache = GetBooleanAttributeValue(attribute, "LocalCache", true);
-				IsAttached = GetBooleanAttributeValue(attribute, "Attached", false);
+
+				if (GetBooleanAttributeValue(attribute, "CoerceCallback", false))
+				{
+					_flags |= GenerationCandidateDataFlags.CoerceCallback;
+				}
+
+				if (GetBooleanAttributeValue(attribute, "LocalCache", true))
+				{
+					_flags |= GenerationCandidateDataFlags.LocalCache;
+				}
+
+				if (GetBooleanAttributeValue(attribute, "Attached", false))
+				{
+					_flags |= GenerationCandidateDataFlags.IsAttached;
+				}
+
 				ChangedCallbackName = GetAttributeValue(attribute, "ChangedCallbackName")?.Value.Value?.ToString() ?? $"On{PropertyName}Changed";
 
 				ContainingNamespace = dpSymbol.ContainingNamespace.ToString();
@@ -138,12 +206,20 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				var isDependencyObject = dpSymbol.ContainingType.AllInterfaces
 					.Any(t => t.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject);
 
-				ContainingTypeIsCandidate = dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
-					(dpSymbol.ContainingType.IsStatic || isDependencyObject);
+				if (dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
+					(dpSymbol.ContainingType.IsStatic || isDependencyObject))
+				{
+					_flags |= GenerationCandidateDataFlags.ContainingTypeIsCandidate;
+				}
 
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
-				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
+
+				if (dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null)
+				{
+					_flags |= GenerationCandidateDataFlags.ContainingTypeHasGetDefaultValueMethod;
+				}
+
 				CoerceCallbackMethodParameterLength = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName)?.Parameters.Length;
 
 				MemberSymbolNodeContent = SymbolToNodeString(dpSymbol);
@@ -154,23 +230,23 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					if (propertyChangedMethods.Any(m => IsCallbackWithDPChangedArgs(m)))
 					{
-						IsCallbackWithDPChangedArgs = true;
+						_flags |= GenerationCandidateDataFlags.IsCallbackWithDPChangedArgs;
 					}
 					else if (propertyChangedMethods.Any(m => IsCallbackWithDPChangedArgsOnly(m)))
 					{
-						IsCallbackWithDPChangedArgsOnly = true;
+						_flags |= GenerationCandidateDataFlags.IsCallbackWithDPChangedArgsOnly;
 					}
 					else if (propertyChangedMethods.Any(m => m.Parameters.Length == 2))
 					{
-						CallBackWithOldAndNew = true;
+						_flags |= GenerationCandidateDataFlags.CallBackWithOldAndNew;
 					}
 					else if (propertyChangedMethods.Any(m => m.Parameters.Length == 0))
 					{
-						IsParameterlessCallback = true;
+						_flags |= GenerationCandidateDataFlags.IsParameterlessCallback;
 					}
 					else
 					{
-						IsInvalidChangedCallbackName = true;
+						_flags |= GenerationCandidateDataFlags.IsInvalidChangedCallbackName;
 					}
 				}
 

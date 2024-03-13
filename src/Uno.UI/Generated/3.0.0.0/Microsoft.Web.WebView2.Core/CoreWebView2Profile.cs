@@ -165,6 +165,22 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.IsPasswordAutosaveEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.IsGeneralAutofillEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.IsGeneralAutofillEnabled.set
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension> AddBrowserExtensionAsync(string extensionFolderPath)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2BrowserExtension> CoreWebView2Profile.AddBrowserExtensionAsync(string extensionFolderPath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2BrowserExtension%3E%20CoreWebView2Profile.AddBrowserExtensionAsync%28string%20extensionFolderPath%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.Deleted.add
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.Deleted.remove
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void Delete()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "void CoreWebView2Profile.Delete()");
+		}
+#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ProfileName.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.IsInPrivateModeEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ProfilePath.get
@@ -172,5 +188,21 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.DefaultDownloadFolderPath.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.PreferredColorScheme.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.PreferredColorScheme.set
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Profile, object> Deleted
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "event TypedEventHandler<CoreWebView2Profile, object> CoreWebView2Profile.Deleted");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "event TypedEventHandler<CoreWebView2Profile, object> CoreWebView2Profile.Deleted");
+			}
+		}
+#endif
 	}
 }

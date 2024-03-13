@@ -74,6 +74,12 @@
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+		<Copy
+			SourceFiles="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
+			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
+	</Target>
+
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />

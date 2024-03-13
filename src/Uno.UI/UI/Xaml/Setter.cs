@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml
 				else
 				{
 					object? value = _valueProvider != null ? _valueProvider() : _value;
-					o.SetValue(Property, BindingPropertyHelper.Convert(() => Property.Type, value));
+					o.SetValue(Property, BindingPropertyHelper.Convert(Property.Type, value));
 				}
 			}
 			else

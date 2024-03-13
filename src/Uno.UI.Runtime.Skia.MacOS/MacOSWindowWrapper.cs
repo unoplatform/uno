@@ -1,11 +1,11 @@
 using System.ComponentModel;
 
+using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
-
-using WinUIApplication = Microsoft.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -23,6 +23,12 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	}
 
 	public override object NativeWindow => _window;
+
+	public override string Title
+	{
+		get => NativeUno.uno_window_get_title(_window.Handle);
+		set => NativeUno.uno_window_set_title(_window.Handle, value);
+	}
 
 	private void OnHostSizeChanged(object? sender, Size size)
 	{
@@ -53,4 +59,16 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private void OnWindowClosed(object? sender, EventArgs e) => RaiseClosed();
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		NativeUno.uno_window_enter_full_screen(_window.Handle);
+		return Disposable.Create(() => NativeUno.uno_window_exit_full_screen(_window.Handle));
+	}
+
+	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
+	{
+		presenter.SetNative(new MacOSNativeOverlappedPresenter(_window));
+		return Disposable.Create(() => presenter.SetNative(null));
+	}
 }

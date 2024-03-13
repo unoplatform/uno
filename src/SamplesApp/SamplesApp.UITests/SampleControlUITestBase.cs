@@ -66,7 +66,19 @@ namespace SamplesApp.UITests
 			{
 				// Start the app only once, so the tests runs don't restart it
 				// and gain some time for the tests.
-				AppInitializer.ColdStartApp();
+				var coldStartTask = Task.Run(() => AppInitializer.ColdStartApp());
+
+				// Force an explicit timeout to avoid excessive waiting on iOS
+				var timeout = TimeSpan.FromMinutes(5);
+				var timeoutTask = Task.Delay(timeout);
+
+				var allTasks = Task.WhenAny(coldStartTask, timeoutTask);
+				allTasks.Wait();
+
+				if (allTasks.Result == timeoutTask)
+				{
+					throw new Exception("Cold start timeout after timeout");
+				}
 			}
 			catch
 			{

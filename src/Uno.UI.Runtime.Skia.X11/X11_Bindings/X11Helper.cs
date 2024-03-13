@@ -72,6 +72,10 @@ internal static class X11Helper
 	public const string ATOM_PAIR = "ATOM_PAIR";
 	public const string INCR = "INCR";
 
+	public const int POLLIN = 0x001; /* There is data to read.  */
+	public const int POLLPRI = 0x002; /* There is urgent data to read.  */
+	public const int POLLOUT = 0x004; /* Writing now will not block.  */
+
 	public const IntPtr LONG_LENGTH = 0x7FFFFFFF;
 
 	private static readonly System.Collections.Concurrent.ConcurrentDictionary<IntPtr, object> _displayToLock = new();
@@ -298,6 +302,9 @@ internal static class X11Helper
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
 	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
 
+	[DllImport("libc")]
+	public unsafe static extern int poll(Pollfd* __fds, IntPtr __nfds, int __timeout);
+
 	[DllImport(libX11)]
 	public static extern int XPutImage(IntPtr display, IntPtr drawable, IntPtr gc, IntPtr image,
 		int srcx, int srcy, int destx, int desty, uint width, uint height);
@@ -452,6 +459,16 @@ internal static class X11Helper
 		public int _3_1;
 		public int _3_2;
 		public int _3_3;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct Pollfd
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
+		public int fd;
+		public short events;
+		public short revents;
 	}
 
 	private struct LockDisposable(object @lock) : IDisposable

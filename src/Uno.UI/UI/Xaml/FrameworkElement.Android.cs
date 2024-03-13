@@ -65,6 +65,7 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsFrameworkElement)
 					{
+						resourceAsFrameworkElement.XamlRoot = XamlRoot;
 						resourceAsFrameworkElement.PerformOnLoaded(isFromResources: true);
 					}
 				}

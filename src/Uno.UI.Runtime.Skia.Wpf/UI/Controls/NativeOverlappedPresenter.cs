@@ -54,7 +54,7 @@ internal class NativeOverlappedPresenter : INativeOverlappedPresenter
 		// TODO: HasTitleBar support
 	}
 
-	public void SetIsAlwaysOnTop(bool isAlwaysOnTop) => _wpfWindow.Topmost = true;
+	public void SetIsAlwaysOnTop(bool isAlwaysOnTop) => _wpfWindow.Topmost = isAlwaysOnTop;
 
 	public void SetIsMaximizable(bool isMaximizable)
 	{

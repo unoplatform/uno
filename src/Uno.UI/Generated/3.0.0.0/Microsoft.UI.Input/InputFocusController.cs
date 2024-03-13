@@ -23,11 +23,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.add
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.HasFocus.get
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.remove
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.add
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool TrySetFocus()
@@ -35,6 +30,20 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member bool InputFocusController.TrySetFocus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InputFocusController.TrySetFocus%28%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.HasFocus.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.remove
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.remove
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Input.FocusNavigationResult DepartFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
+		{
+			throw new global::System.NotImplementedException("The member FocusNavigationResult InputFocusController.DepartFocus(FocusNavigationRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationResult%20InputFocusController.DepartFocus%28FocusNavigationRequest%20request%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.remove
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
@@ -71,6 +80,22 @@ namespace Microsoft.UI.Input
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event TypedEventHandler<InputFocusController, FocusChangedEventArgs> InputFocusController.LostFocus");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Input.InputFocusController, global::Microsoft.UI.Input.FocusNavigationRequestEventArgs> NavigateFocusRequested
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event TypedEventHandler<InputFocusController, FocusNavigationRequestEventArgs> InputFocusController.NavigateFocusRequested");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.InputFocusController", "event TypedEventHandler<InputFocusController, FocusNavigationRequestEventArgs> InputFocusController.NavigateFocusRequested");
 			}
 		}
 #endif

@@ -60,6 +60,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessExtendedInfo>> GetProcessExtendedInfosAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<CoreWebView2ProcessExtendedInfo>> CoreWebView2Environment.GetProcessExtendedInfosAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CCoreWebView2ProcessExtendedInfo%3E%3E%20CoreWebView2Environment.GetProcessExtendedInfosAsync%28%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest CreateWebResourceRequest(string uri, string Method, global::Windows.Storage.Streams.IRandomAccessStream postData, string Headers)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2WebResourceRequest CoreWebView2Environment.CreateWebResourceRequest(string uri, string Method, IRandomAccessStream postData, string Headers) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceRequest%20CoreWebView2Environment.CreateWebResourceRequest%28string%20uri%2C%20string%20Method%2C%20IRandomAccessStream%20postData%2C%20string%20Headers%29");

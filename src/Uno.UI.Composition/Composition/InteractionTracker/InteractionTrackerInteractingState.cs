@@ -37,7 +37,7 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 			this.Log().Error("Unexpected CompleteUserManipulation while in interacting state");
 		}
 
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, linearVelocity, requestId: 0));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, linearVelocity, requestId: 0, isFromPointerWheel: false));
 	}
 
 	internal override void ReceiveManipulationDelta(Point translationDelta)
@@ -47,7 +47,11 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void ReceiveInertiaStarting(Point linearVelocity)
 	{
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0, isFromPointerWheel: false));
+	}
+
+	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	{
 	}
 
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)

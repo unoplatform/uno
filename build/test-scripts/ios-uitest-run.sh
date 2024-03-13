@@ -117,11 +117,27 @@ xcrun simctl list devices --json > $DEVICELIST_FILEPATH
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
 export UITEST_IOSDEVICE_DATA_PATH=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .dataPath'`
 
+# check for the presence of idb, and install it if it's not present
+export PATH=$PATH:~/.local/bin
+
+if ! command -v idb &> /dev/null
+then
+	echo "Installing idb"
+	brew install pipx
+	# # https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
+	brew tap facebook/fb
+	brew install idb-companion
+	pipx install fb-idb
+else
+	echo "Using idb from:" `command -v idb`
+fi
+
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
-echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
-xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
+# echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
+# xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
+idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
@@ -182,6 +198,11 @@ then
 		fi
 	done
 
+	if ! [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
+ 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, waiting 2 seconds"
+ 		sleep 2
+ 	fi
+  
 	# if the file exists, show a message
 	if [ -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" ]; then
 		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is available, the test run is complete."
@@ -193,12 +214,6 @@ then
 	fi
 
 else
-
-	echo "Installing idb"
-	# https://github.com/microsoft/appcenter/issues/2605#issuecomment-1854414963
-	brew tap facebook/fb
-	brew install idb-companion
-	pip3 install fb-idb
 
 	echo "Test Parameters:"
 	echo "  Timeout=$UITEST_TEST_TIMEOUT"
@@ -220,6 +235,10 @@ export TMP_LOG_FILEPATH=/tmp/DeviceLog-$LOG_PREFIX.logarchive
 export LOG_FILEPATH_FULL=$LOG_FILEPATH/DeviceLog-$UITEST_AUTOMATED_GROUP-${UITEST_RUNTIME_TEST_GROUP=automated}-`date +"%Y%m%d%H%M%S"`.txt
 
 cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml || true
+
+# Copy all the dotnet test dmp files to the log directory
+find $AGENT_TEMPDIRECTORY -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
+find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 
 ## Take a screenshot
 xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png

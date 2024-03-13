@@ -78,6 +78,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static extern int XDestroyWindow(IntPtr display, IntPtr window);
 
 		[DllImport(libX11)]
+		public static extern int XConnectionNumber(IntPtr display);
+
+		[DllImport(libX11)]
 		public static extern int XResizeWindow(IntPtr display, IntPtr window, int width, int height);
 
 		[DllImport(libX11)]

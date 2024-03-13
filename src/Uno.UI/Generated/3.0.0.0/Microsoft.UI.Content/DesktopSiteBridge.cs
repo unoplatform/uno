@@ -91,7 +91,13 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Dispose()");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void MoveInZOrderBelow(global::Microsoft.UI.WindowId windowId)
@@ -106,14 +112,8 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Show()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Dispose()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsVisible.get
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.WindowId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -143,7 +143,13 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.Hide()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsEnabled.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void MoveAndResize(global::Windows.Graphics.RectInt32 rect)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveAndResize(RectInt32 rect)");
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void MoveInZOrderAtBottom()
@@ -158,13 +164,7 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveInZOrderAtTop()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void MoveAndResize(global::Windows.Graphics.RectInt32 rect)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.DesktopSiteBridge", "void DesktopSiteBridge.MoveAndResize(RectInt32 rect)");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsVisible.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.Closed.remove
@@ -173,7 +173,7 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.DispatcherQueue.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.get
 		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.LayoutDirectionOverride.set
-		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.set
+		// Forced skipping of method Microsoft.UI.Content.DesktopSiteBridge.OverrideScale.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()

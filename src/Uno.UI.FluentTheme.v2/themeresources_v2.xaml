@@ -1588,6 +1588,26 @@
           <GradientStop Offset="1.0" Color="{ThemeResource CardStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
+      <StaticResource x:Key="TeachingTipBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+      <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="#0DFFFFFF" />
+      <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
+      <StaticResource x:Key="TeachingTipForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipBackgroundBrush" ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
+      <StaticResource x:Key="TeachingTipTitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipSubtitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">1</Thickness>
       <StaticResource x:Key="TimePickerSpacerFill" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
@@ -3374,6 +3394,26 @@
           <GradientStop Offset="1.0" Color="{ThemeResource CardStrokeColorDefault}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
+      <StaticResource x:Key="TeachingTipBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+      <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="#99FFFFFF" />
+      <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
+      <StaticResource x:Key="TeachingTipForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipBackgroundBrush" ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
+      <StaticResource x:Key="TeachingTipTitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipSubtitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+      <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">1</Thickness>
       <StaticResource x:Key="TimePickerSpacerFill" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
@@ -5145,6 +5185,26 @@
           <GradientStop Offset="1.0" Color="{ThemeResource SystemColorHighlightColor}" />
         </LinearGradientBrush.GradientStops>
       </LinearGradientBrush>
+      <StaticResource x:Key="TeachingTipBorderBrush" ResourceKey="SystemColorWindowTextColorBrush" />
+      <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="Transparent" />
+      <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="AcrylicInAppFillColorDefaultBrush" />
+      <StaticResource x:Key="TeachingTipForegroundBrush" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TeachingTipBackgroundBrush" ResourceKey="SystemColorWindowColorBrush" />
+      <StaticResource x:Key="TeachingTipTitleForegroundBrush" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TeachingTipSubtitleForegroundBrush" ResourceKey="SystemColorWindowTextColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundDisabled" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrush" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+      <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushDisabled" ResourceKey="SystemColorButtonFaceColorBrush" />
+      <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">1</Thickness>
       <StaticResource x:Key="TimePickerSpacerFill" ResourceKey="SystemColorButtonTextColorBrush" />
       <StaticResource x:Key="TimePickerSpacerFillDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
       <StaticResource x:Key="TimePickerHeaderForeground" ResourceKey="SystemColorButtonTextColorBrush" />
@@ -23184,6 +23244,464 @@
   <Thickness x:Key="TabViewItemBorderThickness">1</Thickness>
   <Thickness x:Key="TabViewSelectedItemBorderThickness">1,1,1,0</Thickness>
   <Thickness x:Key="TabViewSelectedItemHeaderMargin">-1,0,-1,0</Thickness>
+  <Style TargetType="controls:TeachingTip" BasedOn="{StaticResource DefaultTeachingTipStyle}" />
+  <Style x:Key="DefaultTeachingTipStyle" TargetType="controls:TeachingTip">
+    <Setter Property="Background" Value="{ThemeResource TeachingTipBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource TeachingTipForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TeachingTipBorderBrush}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TeachingTipContentBorderThicknessUntargeted}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
+    <Setter Property="ActionButtonStyle" Value="{ThemeResource DefaultButtonStyle}" />
+    <Setter Property="CloseButtonStyle" Value="{ThemeResource DefaultButtonStyle}" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:TeachingTip">
+          <Border x:Name="Container" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="LightDismissStates">
+                <VisualState x:Name="LightDismiss">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Fill" Value="{ThemeResource TeachingTipTransientBackground}" />
+                    <Setter Target="ContentRootGrid.Background" Value="{ThemeResource TeachingTipTransientBackground}" />
+                    <Setter Target="MainContentPresenter.Background" Value="{ThemeResource TeachingTipTransientBackground}" />
+                    <Setter Target="HeroContentBorder.Background" Value="{ThemeResource TeachingTipTransientBackground}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NormalDismiss" />
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ButtonsStates">
+                <VisualState x:Name="NoButtonsVisible">
+                  <VisualState.Setters>
+                    <Setter Target="CloseButton.Visibility" Value="Collapsed" />
+                    <Setter Target="ActionButton.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="ActionButtonVisible">
+                  <VisualState.Setters>
+                    <Setter Target="CloseButton.Visibility" Value="Collapsed" />
+                    <Setter Target="ActionButton.Visibility" Value="Visible" />
+                    <Setter Target="ActionButton.(Grid.ColumnSpan)" Value="2" />
+                    <Setter Target="ActionButton.Margin" Value="{ThemeResource TeachingTipButtonPanelMargin}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CloseButtonVisible">
+                  <VisualState.Setters>
+                    <Setter Target="CloseButton.Visibility" Value="Visible" />
+                    <Setter Target="CloseButton.Margin" Value="{ThemeResource TeachingTipButtonPanelMargin}" />
+                    <Setter Target="CloseButton.(Grid.Column)" Value="0" />
+                    <Setter Target="CloseButton.(Grid.ColumnSpan)" Value="2" />
+                    <Setter Target="ActionButton.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BothButtonsVisible">
+                  <VisualState.Setters>
+                    <Setter Target="CloseButton.Visibility" Value="Visible" />
+                    <Setter Target="CloseButton.Margin" Value="{ThemeResource TeachingTipRightButtonMargin}" />
+                    <Setter Target="ActionButton.Visibility" Value="Visible" />
+                    <Setter Target="ActionButton.(Grid.Column)" Value="0" />
+                    <Setter Target="ActionButton.Margin" Value="{ThemeResource TeachingTipLeftButtonMargin}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ContentStates">
+                <VisualState x:Name="Content">
+                  <VisualState.Setters>
+                    <Setter Target="MainContentPresenter.Margin" Value="{StaticResource TeachingTipMainContentPresentMargin}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NoContent">
+                  <VisualState.Setters>
+                    <Setter Target="MainContentPresenter.Margin" Value="{StaticResource TeachingTipMainContentAbsentMargin}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="CloseButtonLocations">
+                <VisualState x:Name="HeaderCloseButton">
+                  <VisualState.Setters>
+                    <Setter Target="TitlesStackPanel.Margin" Value="{StaticResource TeachingTipTitleStackPanelMarginWithHeaderCloseButton}" />
+                    <Setter Target="AlternateCloseButton.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="FooterCloseButton">
+                  <VisualState.Setters>
+                    <Setter Target="TitlesStackPanel.Margin" Value="{StaticResource TeachingTipTitleStackPanelMarginWithFooterCloseButton}" />
+                    <Setter Target="AlternateCloseButton.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="IconStates">
+                <VisualState x:Name="Icon">
+                  <VisualState.Setters>
+                    <Setter Target="IconPresenter.Margin" Value="{StaticResource TeachingTipIconPresenterMarginWithIcon}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NoIcon">
+                  <VisualState.Setters>
+                    <Setter Target="IconPresenter.Margin" Value="{StaticResource TeachingTipIconPresenterMarginWithoutIcon}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="HeroContentPlacementStates">
+                <VisualState x:Name="HeroContentTop">
+                  <VisualState.Setters>
+                    <Setter Target="HeroContentBorder.(Grid.Row)" Value="0" />
+                    <Setter Target="HeroContentBorder.CornerRadius" Value="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopCornerRadiusFilterConverter}, FallbackValue=0}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="HeroContentBottom">
+                  <VisualState.Setters>
+                    <Setter Target="HeroContentBorder.(Grid.Row)" Value="2" />
+                    <Setter Target="HeroContentBorder.CornerRadius" Value="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomCornerRadiusFilterConverter}, FallbackValue=0}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="PlacementStates">
+                <VisualState x:Name="Top">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10, 20,0" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="4" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Center" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Bottom" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginTop}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Bottom">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,10 10,0 20,10" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="0" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Center" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Top" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginBottom}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Left">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10 0,20" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="2" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="4" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Right" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Center" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginLeft}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Right">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="10,0 0,10 10,20" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="2" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="0" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Left" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Center" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginRight}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TopRight">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10 20,0" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="4" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Left" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Bottom" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginTop}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="TopLeft">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10 20,0" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="4" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Right" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Bottom" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginTop}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BottomRight">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,10 10,0 20,10" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="0" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Left" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Top" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginBottom}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BottomLeft">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,10 10,0 20,10" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="0" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Right" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Top" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginBottom}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="LeftTop">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10 0,20" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="2" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="4" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Right" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Bottom" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginLeft}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="LeftBottom">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10 0,20" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="2" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="4" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Right" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Top" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginLeft}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="RightTop">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="10,0 0,10 10,20" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="2" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="0" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Left" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Bottom" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginRight}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="RightBottom">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="10,0 0,10 10,20" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="2" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="0" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Left" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Top" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginRight}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Center">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Visible" />
+                    <Setter Target="TailPolygon.Points" Value="0,0 10,10, 20,0" />
+                    <Setter Target="TailPolygon.(Grid.Row)" Value="4" />
+                    <Setter Target="TailPolygon.(Grid.Column)" Value="2" />
+                    <Setter Target="TailPolygon.HorizontalAlignment" Value="Center" />
+                    <Setter Target="TailPolygon.VerticalAlignment" Value="Bottom" />
+                    <Setter Target="TailPolygon.Margin" Value="{StaticResource TeachingTipTailPolygonMarginTop}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Untargeted">
+                  <VisualState.Setters>
+                    <Setter Target="TailPolygon.Visibility" Value="Collapsed" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="TitleBlockStates">
+                <VisualState x:Name="ShowTitleTextBlock">
+                  <VisualState.Setters>
+                    <Setter Target="TitleTextBlock.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CollapseTitleTextBlock" />
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="SubtitleBlockStates">
+                <VisualState x:Name="ShowSubtitleTextBlock">
+                  <VisualState.Setters>
+                    <Setter Target="SubtitleTextBlock.Visibility" Value="Visible" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CollapseSubtitleTextBlock" />
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid MinHeight="{ThemeResource TeachingTipMinHeight}" MinWidth="{ThemeResource TeachingTipMinWidth}" MaxHeight="{ThemeResource TeachingTipMaxHeight}" MaxWidth="{ThemeResource TeachingTipMaxWidth}" AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource TeachingTipTailShortSideLength}" />
+                <ColumnDefinition Width="{StaticResource TeachingTipTailMargin}" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="{StaticResource TeachingTipTailMargin}" />
+                <ColumnDefinition Width="{StaticResource TeachingTipTailShortSideLength}" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="{StaticResource TeachingTipTailShortSideLength}" />
+                <RowDefinition Height="{StaticResource TeachingTipTailMargin}" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="{StaticResource TeachingTipTailMargin}" />
+                <RowDefinition Height="{StaticResource TeachingTipTailShortSideLength}" />
+              </Grid.RowDefinitions>
+              <Grid x:Name="TailOcclusionGrid" HorizontalAlignment="Left" VerticalAlignment="Top" MinHeight="{ThemeResource TeachingTipMinHeight}" MinWidth="{ThemeResource TeachingTipMinWidth}" MaxHeight="{ThemeResource TeachingTipMaxHeight}" MaxWidth="{ThemeResource TeachingTipMaxWidth}" Grid.ColumnSpan="5" Grid.RowSpan="5">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="{StaticResource TeachingTipTailShortSideLength}" />
+                  <ColumnDefinition Width="{StaticResource TeachingTipTailMargin}" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="{StaticResource TeachingTipTailMargin}" />
+                  <ColumnDefinition Width="{StaticResource TeachingTipTailShortSideLength}" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="{StaticResource TeachingTipTailShortSideLength}" />
+                  <RowDefinition Height="{StaticResource TeachingTipTailMargin}" />
+                  <RowDefinition Height="*" />
+                  <RowDefinition Height="{StaticResource TeachingTipTailMargin}" />
+                  <RowDefinition Height="{StaticResource TeachingTipTailShortSideLength}" />
+                </Grid.RowDefinitions>
+                <Grid x:Name="ContentRootGrid" AutomationProperties.LandmarkType="Custom" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" FlowDirection="{TemplateBinding FlowDirection}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="3" CornerRadius="{TemplateBinding CornerRadius}">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Border x:Name="HeroContentBorder" Grid.Row="0" Child="{TemplateBinding HeroContent}" Background="{TemplateBinding Background}" />
+                  <Grid x:Name="NonHeroContentRootGrid" Grid.Row="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                      <StackPanel Margin="{StaticResource TeachingTipContentMargin}">
+                        <Grid Grid.Row="0">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <ContentPresenter x:Name="IconPresenter" Grid.Column="0" Foreground="{TemplateBinding Foreground}">
+                            <Border Child="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.IconElement}" />
+                          </ContentPresenter>
+                          <StackPanel x:Name="TitlesStackPanel" Grid.Column="1">
+                            <TextBlock x:Name="TitleTextBlock" Grid.Column="0" Text="{TemplateBinding Title}" TextWrapping="WrapWholeWords" Foreground="{ThemeResource TeachingTipTitleForegroundBrush}" FontFamily="{TemplateBinding FontFamily}" FontWeight="SemiBold" Visibility="Collapsed" />
+                            <TextBlock x:Name="SubtitleTextBlock" Grid.Row="1" Text="{TemplateBinding Subtitle}" Foreground="{ThemeResource TeachingTipSubtitleForegroundBrush}" FontFamily="{TemplateBinding FontFamily}" TextWrapping="WrapWholeWords" Visibility="Collapsed" />
+                          </StackPanel>
+                        </Grid>
+                        <ContentPresenter x:Name="MainContentPresenter" Grid.Row="1" Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" FontFamily="{TemplateBinding FontFamily}" FontStretch="{TemplateBinding FontStretch}" />
+                        <Grid Grid.Row="2">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <Button x:Name="ActionButton" HorizontalAlignment="Stretch" Style="{TemplateBinding ActionButtonStyle}" Command="{TemplateBinding ActionButtonCommand}" CommandParameter="{TemplateBinding ActionButtonCommandParameter}">
+                            <ContentPresenter TextWrapping="WrapWholeWords" Content="{TemplateBinding ActionButtonContent}" />
+                          </Button>
+                          <Button x:Name="CloseButton" HorizontalAlignment="Stretch" Style="{TemplateBinding CloseButtonStyle}" Command="{TemplateBinding CloseButtonCommand}" CommandParameter="{TemplateBinding CloseButtonCommandParameter}" Grid.Column="1">
+                            <ContentPresenter TextWrapping="WrapWholeWords" Content="{TemplateBinding CloseButtonContent}" />
+                          </Button>
+                        </Grid>
+                      </StackPanel>
+                    </ScrollViewer>
+                    <Button x:Name="AlternateCloseButton" Style="{ThemeResource AlternateCloseButtonStyle}" />
+                  </Grid>
+                </Grid>
+                <Polygon x:Name="TailPolygon" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" VerticalAlignment="Top" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{StaticResource TeachingTipBorderThickness}" />
+              </Grid>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <x:Double x:Key="TeachingTipMinHeight">40</x:Double>
+  <x:Double x:Key="TeachingTipMaxHeight">520</x:Double>
+  <x:Double x:Key="TeachingTipMinWidth">320</x:Double>
+  <x:Double x:Key="TeachingTipMaxWidth">336</x:Double>
+  <Thickness x:Key="TeachingTipButtonPanelMargin">0,12,0,0</Thickness>
+  <Thickness x:Key="TeachingTipRightButtonMargin">4,12,0,0</Thickness>
+  <Thickness x:Key="TeachingTipLeftButtonMargin">0,12,4,0</Thickness>
+  <Thickness x:Key="TeachingTipMainContentPresentMargin">0,12,0,0</Thickness>
+  <Thickness x:Key="TeachingTipMainContentAbsentMargin">0,0,0,0</Thickness>
+  <Thickness x:Key="TeachingTipTitleStackPanelMarginWithHeaderCloseButton">0,0,28,0</Thickness>
+  <Thickness x:Key="TeachingTipTitleStackPanelMarginWithFooterCloseButton">0,0,0,0</Thickness>
+  <Thickness x:Key="TeachingTipIconPresenterMarginWithIcon">0,0,12,0</Thickness>
+  <Thickness x:Key="TeachingTipIconPresenterMarginWithoutIcon">0,0,0,0</Thickness>
+  <Thickness x:Key="TeachingTipContentBorderThicknessTop">1,1,1,0</Thickness>
+  <Thickness x:Key="TeachingTipContentBorderThicknessBottom">1,0,1,1</Thickness>
+  <Thickness x:Key="TeachingTipContentBorderThicknessLeft">1,1,0,1</Thickness>
+  <Thickness x:Key="TeachingTipContentBorderThicknessRight">0,1,1,1</Thickness>
+  <Thickness x:Key="TeachingTipContentBorderThicknessUntargeted">1,1,1,1</Thickness>
+  <Thickness x:Key="TeachingTipTailPolygonMarginTop">0,-1,0,0</Thickness>
+  <Thickness x:Key="TeachingTipTailPolygonMarginBottom">0,0,0,-1</Thickness>
+  <Thickness x:Key="TeachingTipTailPolygonMarginLeft">-1,0,0,0</Thickness>
+  <Thickness x:Key="TeachingTipTailPolygonMarginRight">0,0,-1,0</Thickness>
+  <GridLength x:Key="TeachingTipTailShortSideLength">8</GridLength>
+  <GridLength x:Key="TeachingTipTailMargin">10</GridLength>
+  <x:Double x:Key="TeachingTipAlternateCloseButtonSize">40</x:Double>
+  <x:Double x:Key="TeachingTipAlternateCloseButtonGlyphSize">16</x:Double>
+  <Thickness x:Key="TeachingTipContentMargin">12</Thickness>
+  <x:Double x:Key="TeachingTipTopHighlightHeight">1</x:Double>
+  <x:Double x:Key="TeachingTipBorderThickness">1</x:Double>
+  <Thickness x:Key="TeachingTipTopHighlightOffsetForBorder">0,1,0,0</Thickness>
+  <Style x:Key="AlternateCloseButtonStyle" TargetType="Button">
+    <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+    <Setter Property="Width" Value="{ThemeResource TeachingTipAlternateCloseButtonSize}" />
+    <Setter Property="Height" Value="{ThemeResource TeachingTipAlternateCloseButtonSize}" />
+    <Setter Property="Background" Value="{ThemeResource TeachingTipAlternateCloseButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TeachingTipAlternateCloseButtonForeground}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrush}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource TeachingTipAlternateCloseButtonGlyphSize}" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Right" />
+    <Setter Property="Padding" Value="4" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderThickness}" />
+    <Setter Property="Content" Value="&#xE711;" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="FocusVisualMargin" Value="-3" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBackgroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrushPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonForegroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBackgroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrushPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonForegroundPressed}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBackgroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrushDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonForegroundDisabled}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" Content="{TemplateBinding Content}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" CornerRadius="{TemplateBinding CornerRadius}" Control.IsTemplateFocusTarget="True" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
   <Thickness x:Key="TimePickerTopHeaderMargin">0,0,0,4</Thickness>
   <x:Double x:Key="TimePickerFlyoutPresenterHighlightHeight">40</x:Double>
   <x:Double x:Key="TimePickerFlyoutPresenterAcceptDismissHostGridHeight">41</x:Double>

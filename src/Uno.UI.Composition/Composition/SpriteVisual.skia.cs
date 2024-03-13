@@ -54,14 +54,14 @@ namespace Microsoft.UI.Composition
 			if (Brush is CompositionEffectBrush { HasBackdropBrushInput: true })
 			{
 				// workaround until SkiaSharp adds support for SaveLayerRec, see https://github.com/mono/SkiaSharp/issues/2773
-				session.Surface.Canvas.SaveLayer(_paint);
-				session.Surface.Canvas.Scale(1.0f / session.Surface.Canvas.TotalMatrix.ScaleX);
-				session.Surface.Canvas.DrawSurface(session.Surface, new(-session.Surface.Canvas.TotalMatrix.TransX, -session.Surface.Canvas.DeviceClipBounds.Top + session.Surface.Canvas.LocalClipBounds.Top));
-				session.Surface.Canvas.Restore();
+				session.Canvas.SaveLayer(_paint);
+				session.Canvas.Scale(1.0f / session.Canvas.TotalMatrix.ScaleX);
+				session.Canvas.DrawSurface(session.Surface, new(-session.Canvas.TotalMatrix.TransX, -session.Canvas.DeviceClipBounds.Top + session.Canvas.LocalClipBounds.Top));
+				session.Canvas.Restore();
 			}
 			else
 			{
-				session.Surface.Canvas.DrawRect(
+				session.Canvas.DrawRect(
 					new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),
 					_paint
 				);

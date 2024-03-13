@@ -17,15 +17,26 @@
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">true</EnableMsixTooling>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
-		<!-- Workaround Uno Issue 15492 - This must be set to true for the Library so that the generated files use the Library name in the path -->
-		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND $(OutputType) != 'WinExe' AND $(OutputType) != 'Exe' ">true</EnableCoreMrtTooling>
-		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
-	</PropertyGroup>
+	<Choose>
+		<When Condition="$(BuildingInsideVisualStudio) == 'true'">
+			<PropertyGroup Condition="$(OutputType) != 'WinExe' AND $(OutputType) != 'Exe'">
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' ">false</EnableCoreMrtTooling>
+				<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">false</EnableMsixTooling>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<!-- Workaround Uno Issue 15492 - This must be set to true for the Library so that the generated files use the Library name in the path -->
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND $(OutputType) != 'WinExe' AND $(OutputType) != 'Exe' ">true</EnableCoreMrtTooling>
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 
 	<PropertyGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
+		<Platform Condition="$(Platform) == 'AnyCPU'">$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 		<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
 		<UseWinUI Condition=" $(UseWinUI) == '' ">true</UseWinUI>
 	</PropertyGroup>
