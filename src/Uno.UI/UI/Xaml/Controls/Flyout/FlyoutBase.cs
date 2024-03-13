@@ -342,7 +342,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					Closed?.Invoke(this, EventArgs.Empty);
 				});
 
-				if (_isClosedPending)
+				if (!_isClosedPending)
 				{
 					Closed?.Invoke(this, EventArgs.Empty);
 				}
