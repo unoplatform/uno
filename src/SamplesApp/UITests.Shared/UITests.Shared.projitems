@@ -70,6 +70,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\ItemsViewSummaryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewAnimationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5381,6 +5385,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\WaitableSampleImageHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\LoggingContentControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\Recipe.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml.cs">
       <DependentUpon>LottieEmbeddedJson.xaml</DependentUpon>
     </Compile>
@@ -5423,6 +5429,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\InfoBarTests\InfoBarPage.xaml.cs">
       <DependentUpon>InfoBarPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\ItemsViewSummaryPage.xaml.cs">
+      <DependentUpon>ItemsViewSummaryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\NavigationViewTests\Common\NavigationViewAnimationPage.xaml.cs">
       <DependentUpon>NavigationViewAnimationPage.xaml</DependentUpon>

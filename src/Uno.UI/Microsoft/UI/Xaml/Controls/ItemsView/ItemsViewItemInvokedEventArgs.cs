@@ -13,6 +13,6 @@ partial class ItemsViewItemInvokedEventArgs
 	}
 
 	#region IItemsViewItemInvokedEventArgs
-	object InvokedItem { get; }
+	public object InvokedItem { get; }
 	#endregion
 }
