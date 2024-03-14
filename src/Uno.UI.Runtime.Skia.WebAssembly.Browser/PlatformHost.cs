@@ -9,7 +9,9 @@ using Uno.UI.Hosting;
 using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -62,6 +64,7 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new BrowserKeyboardInputSource());
 		ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new WebAssemblyNativeElementHostingExtension());
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new WebAssemblyWindowFactoryExtension(this));
+		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new BrowserInvisibleTextBoxViewExtension(o));
 
 		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
@@ -107,7 +110,11 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 	//	CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	//}
 
-	void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
+	void IXamlRootHost.InvalidateRender()
+	{
+		_renderer?.InvalidateRender();
+		Window.CurrentSafe!.RootElement?.XamlRoot?.InvalidateOverlays();
+	}
 
 	UIElement? IXamlRootHost.RootElement => Window.Current!.RootElement;
 }

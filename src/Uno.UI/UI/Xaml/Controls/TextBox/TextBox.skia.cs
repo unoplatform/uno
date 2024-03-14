@@ -304,11 +304,9 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial(FocusState focusState)
 	{
-		if (!_isSkiaTextBox)
-		{
-			TextBoxView?.OnFocusStateChanged(focusState);
-		}
-		else
+		TextBoxView?.OnFocusStateChanged(focusState);
+
+		if (_isSkiaTextBox)
 		{
 			if (focusState != FocusState.Unfocused)
 			{
