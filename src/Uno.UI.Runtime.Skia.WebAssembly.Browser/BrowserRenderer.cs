@@ -113,7 +113,7 @@ internal partial class BrowserRenderer
 		var scale = _displayInformation.RawPixelsPerViewPixel;
 
 		// get the new surface size
-		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.Current!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.Current!.Bounds.Height));
+		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.CurrentSafe!.Bounds.Height));
 
 		// manage the drawing surface
 		if (_renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
