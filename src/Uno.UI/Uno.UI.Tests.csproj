@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
+        <NoWarn>$(NoWarn);UXAML0004</NoWarn>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />

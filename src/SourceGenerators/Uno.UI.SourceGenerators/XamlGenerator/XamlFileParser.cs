@@ -37,9 +37,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly RoslynMetadataHelper _metadataHelper;
 
+		private readonly Action<string, string>? _onSkiaOrWasmCondition;
+
 		private int _depth;
 
-		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper, Action<string, string>? onSkiaOrWasmCondition)
 		{
 			_excludeXamlNamespacesProperty = excludeXamlNamespacesProperty;
 			_excludeXamlNamespaces = excludeXamlNamespaces;
@@ -48,6 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_includeXamlNamespaces = includeXamlNamespaces;
 
 			_metadataHelper = roslynMetadataHelper;
+			_onSkiaOrWasmCondition = onSkiaOrWasmCondition;
 		}
 
 		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, string projectDirectory, CancellationToken cancellationToken)
@@ -114,7 +117,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				XmlReader document = RewriteForXBind(sourceText);
 
-				using (var reader = new XamlXmlReader(document, context, settings, IsIncluded))
+				using (var reader = new XamlXmlReader(document, context, settings, (localName, namespaceUri) => IsIncluded(localName, namespaceUri, targetFilePath)))
 				{
 					if (reader.Read())
 					{
@@ -171,8 +174,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
+		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri, string targetFilePath)
 		{
+			if (_onSkiaOrWasmCondition is not null &&
+				localName is "skia" or "wasm" or "not_skia" or "not_wasm")
+			{
+				_onSkiaOrWasmCondition(localName, targetFilePath);
+			}
+
 			if (_includeXamlNamespaces.Contains(localName))
 			{
 				var result = __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
