@@ -1141,7 +1141,7 @@ public partial class Slider
 					}
 				}
 
-				if (_tpElementHorizontalThumb != null && isThumbToolTipEnabled)
+				if (_tpElementHorizontalThumb != null)
 				{
 					Point origin = Point.Zero;
 					Point targetTopLeft = Point.Zero;
@@ -1227,7 +1227,7 @@ public partial class Slider
 					}
 				}
 
-				if (_tpElementVerticalThumb != null && isThumbToolTipEnabled)
+				if (_tpElementVerticalThumb != null)
 				{
 					Point origin = Point.Zero;
 					Point targetTopLeft = Point.Zero;

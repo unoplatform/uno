@@ -44,6 +44,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 			if (m_toolTip is ToolTip toolTip)
 			{
 				toolTip.Content = GetToolTipString();
+				toolTip.m_isSliderThumbToolTip = true;
 			}
 		}
 

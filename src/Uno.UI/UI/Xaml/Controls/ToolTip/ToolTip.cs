@@ -51,6 +51,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal long CurrentHoverId { get; set; }
 
+		internal bool IsOpenedByHover { get; set; }
+
 		internal IDisposable? OwnerEventSubscriptions { get; set; }
 
 		internal IDisposable? OwnerVisibilitySubscription { get; set; }
@@ -129,6 +131,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnOpenChanged(bool isOpen)
 		{
+			IsOpenedByHover = false;
 			PerformPlacementInternal();
 			if (_owner is not null)
 			{
