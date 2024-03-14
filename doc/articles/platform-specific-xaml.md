@@ -10,6 +10,7 @@ Uno allows you to reuse views and business logic across platforms. Sometimes tho
     <iframe
         src="https://www.youtube-nocookie.com/embed/IZt-ymNZpZw"
         title="YouTube video player"
+        class="video"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen>
