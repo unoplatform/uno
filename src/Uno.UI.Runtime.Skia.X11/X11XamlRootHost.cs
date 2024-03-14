@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
@@ -46,33 +47,57 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public X11Window X11Window => _x11Window!.Value;
 
-	public X11XamlRootHost(Window winUIWindow, Action<Size> resizeCallback, Action closeCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(Window winUIWindow, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_window = winUIWindow;
 
 		_resizeCallback = resizeCallback;
-		_closeCallback = closeCallback;
+		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
-		Closed.ContinueWith(_ => _applicationView.PropertyChanged -= OnApplicationViewPropertyChanged);
+		Closed.ContinueWith(_ =>
+		{
+			_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+			coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+		});
 
 		Initialize();
 		UpdateWindowPropertiesFromPackage();
+		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
 	}
 
 	public Task Closed { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		// We could use _NET_WM_NAME instead
-		using var _ = X11Helper.XLock(X11Window.Display);
-		var __ = XLib.XStoreName(X11Window.Display, X11Window.Window, _applicationView.Title);
+		var minSize = _applicationView.PreferredMinSize;
+
+		if (minSize != Size.Empty)
+		{
+			var hints = new XSizeHints
+			{
+				flags = (int)XSizeHintsFlags.PMinSize,
+				min_width = (int)minSize.Width,
+				min_height = (int)minSize.Height
+			};
+
+			XLib.XSetWMNormalHints(X11Window.Display, X11Window.Window, ref hints);
+		}
+	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+
+		X11Helper.SetMotifWMDecorations(X11Window, !coreApplicationView.TitleBar.ExtendViewIntoTitleBar, 0xFF);
 	}
 
 	private void UpdateWindowPropertiesFromPackage()
@@ -109,7 +134,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
 			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
@@ -341,7 +366,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
 		attribs.background_pixel = XLib.XWhitePixel(display, screen);
-		attribs.override_redirect = /* True */ 1;
+		// Not sure why this is needed, commented out until further notice
+		// attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, XLib.XRootWindow(display, screen), visual->visual, /* AllocNone */ 0);
 		attribs.event_mask = EventsMask;
 		var window = XLib.XCreateWindow(

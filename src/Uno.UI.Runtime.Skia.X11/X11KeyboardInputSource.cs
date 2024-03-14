@@ -28,7 +28,6 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 	{
 		unsafe
 		{
-			// TODO: test on DVORAK, etc.
 			var buffer = stackalloc byte[4]; // unicode is at most 4 bytes
 			int nbytes = XLib.XLookupString(ref keyEvent, buffer, 4, out var keySym, IntPtr.Zero);
 
@@ -67,7 +66,7 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 				},
 				unicodeKey: symbols?[0]);
 
-			X11XamlRootHost.QueueEvent(_host, () =>
+			X11XamlRootHost.QueueAction(_host, () =>
 			{
 				if (pressed)
 				{

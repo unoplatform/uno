@@ -21,7 +21,7 @@ internal partial class X11PointerInputSource
 		_mousePosition = new Point(ev.x, ev.y);
 
 		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
-		X11XamlRootHost.QueueEvent(_host, () => RaisePointerMoved(args));
+		X11XamlRootHost.QueueAction(_host, () => RaisePointerMoved(args));
 	}
 
 	public void ProcessButtonPressedEvent(XButtonEvent ev)
@@ -44,11 +44,11 @@ internal partial class X11PointerInputSource
 				-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta :
 				ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta;
 
-			X11XamlRootHost.QueueEvent(_host, () => RaisePointerWheelChanged(args));
+			X11XamlRootHost.QueueAction(_host, () => RaisePointerWheelChanged(args));
 		}
 		else
 		{
-			X11XamlRootHost.QueueEvent(_host, () => RaisePointerPressed(args));
+			X11XamlRootHost.QueueAction(_host, () => RaisePointerPressed(args));
 		}
 	}
 
@@ -65,6 +65,6 @@ internal partial class X11PointerInputSource
 		_pressedButtons = (byte)(_pressedButtons & ~(1 << ev.button));
 
 		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
-		X11XamlRootHost.QueueEvent(_host, () => RaisePointerReleased(args));
+		X11XamlRootHost.QueueAction(_host, () => RaisePointerReleased(args));
 	}
 }

@@ -20,8 +20,11 @@
 // SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -43,9 +46,21 @@ internal static class X11Helper
 	public static readonly IntPtr PropertyNewValue = IntPtr.Zero;
 
 	public const string WM_DELETE_WINDOW = "WM_DELETE_WINDOW";
+	public const string _NET_ACTIVE_WINDOW = "_NET_ACTIVE_WINDOW";
 	public const string _NET_WM_STATE = "_NET_WM_STATE";
 	public const string _NET_WM_STATE_FULLSCREEN = "_NET_WM_STATE_FULLSCREEN";
+	public const string _NET_WM_STATE_ABOVE = "_NET_WM_STATE_ABOVE";
+	public const string _NET_WM_STATE_HIDDEN = "_NET_WM_STATE_HIDDEN";
+	public const string _NET_WM_STATE_MAXIMIZED_HORZ = "_NET_WM_STATE_MAXIMIZED_HORZ";
+	public const string _NET_WM_STATE_MAXIMIZED_VERT = "_NET_WM_STATE_MAXIMIZED_VERT";
+	public const string _NET_WM_ALLOWED_ACTIONS = "_NET_WM_ALLOWED_ACTIONS";
+	public const string _NET_WM_ACTION_MOVE = "_NET_WM_ACTION_MOVE";
+	public const string _NET_WM_ACTION_RESIZE = "_NET_WM_ACTION_RESIZE";
+	public const string _NET_WM_ACTION_MINIMIZE = "_NET_WM_ACTION_MINIMIZE";
+	public const string _NET_WM_ACTION_MAXIMIZE_HORZ = "_NET_WM_ACTION_MAXIMIZE_HORZ";
+	public const string _NET_WM_ACTION_MAXIMIZE_VERT = "_NET_WM_ACTION_MAXIMIZE_VERT";
 	public const string _NET_WM_ICON = "_NET_WM_ICON";
+	public const string _MOTIF_WM_HINTS = "_MOTIF_WM_HINTS";
 	public const string TIMESTAMP = "TIMESTAMP";
 	public const string MULTIPLE = "MULTIPLE";
 	public const string TARGETS = "TARGETS";
@@ -60,6 +75,20 @@ internal static class X11Helper
 	public const int POLLIN = 0x001; /* There is data to read.  */
 	public const int POLLPRI = 0x002; /* There is urgent data to read.  */
 	public const int POLLOUT = 0x004; /* Writing now will not block.  */
+
+	public const IntPtr LONG_LENGTH = 0x7FFFFFFF;
+
+	private static readonly System.Collections.Concurrent.ConcurrentDictionary<IntPtr, object> _displayToLock = new();
+
+	// For some reason, using XLockDisplay and XLockDisplay seems to cause a deadlock,
+	// specifically when using GLX. We use a managed locking implementation instead,
+	// which might even be faster anyway depending on how slow socket I/O is.
+	public static IDisposable XLock(IntPtr display)
+	{
+		var @lock = _displayToLock.GetOrAdd(display, _ => new object());
+		Monitor.Enter(@lock);
+		return new LockDisposable(@lock);
+	}
 
 	public static bool XamlRootHostFromApplicationView(ApplicationView view, [NotNullWhen(true)] out X11XamlRootHost? x11XamlRootHost)
 	{
@@ -91,6 +120,185 @@ internal static class X11Helper
 		return false;
 	}
 
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1)
+		=> SetWMHints(x11Window, message_type, ptr1, 0, 0, 0, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2)
+		=> SetWMHints(x11Window, message_type, ptr1, ptr2, 0, 0, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3)
+		=> SetWMHints(x11Window, message_type, ptr1, ptr2, ptr3, 0, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4)
+		=> SetWMHints(x11Window, message_type, ptr1, ptr2, ptr3, ptr4, 0);
+
+	public static void SetWMHints(X11Window x11Window, IntPtr message_type, IntPtr ptr1, IntPtr ptr2, IntPtr ptr3, IntPtr ptr4, IntPtr ptr5)
+	{
+		using var _1 = XLock(x11Window.Display);
+
+		// https://stackoverflow.com/a/28396773
+		XClientMessageEvent xclient = default;
+		xclient.send_event = 1;
+		xclient.type = XEventName.ClientMessage;
+		xclient.window = x11Window.Window;
+		xclient.message_type = message_type;
+		xclient.format = 32;
+		xclient.ptr1 = ptr1;
+		xclient.ptr2 = ptr2;
+		xclient.ptr3 = ptr3;
+		xclient.ptr4 = ptr4;
+		xclient.ptr5 = ptr5;
+
+		XEvent xev = default;
+		xev.ClientMessageEvent = xclient;
+		var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+		var _3 = XLib.XFlush(x11Window.Display);
+	}
+
+	public static void SetMotifWMDecorations(X11Window x11Window, bool on, IntPtr decorations)
+		=> SetMotifWMHints(x11Window, on, decorations, null);
+
+	public static void SetMotifWMFunctions(X11Window x11Window, bool on, IntPtr functions)
+		=> SetMotifWMHints(x11Window, on, null, functions);
+
+	// Sadly, there is no de jure standard for this. It's basically a set of hints used
+	// in the old Motif WM. Other WMs started using it and it became a thing.
+	// https://stackoverflow.com/a/13788970
+	// https://www.opengroup.org/infosrv/openmotif/R2.1.30/motif/lib/Xm/MwmUtil.h
+	// typedef struct
+	// {
+	// /* These correspond to XmRInt resources. (VendorSE.c) */
+	// int	         flags;
+	// int		 functions;
+	// int		 decorations;
+	// int		 input_mode;
+	// int		 status;
+	// } MotifWmHints;
+	//
+	// typedef MotifWmHints	MwmHints;
+	//
+	// /* bit definitions for MwmHints.flags */
+	// #define MWM_HINTS_FUNCTIONS	(1L << 0)
+	// #define MWM_HINTS_DECORATIONS	(1L << 1)
+	// #define MWM_HINTS_INPUT_MODE	(1L << 2)
+	// #define MWM_HINTS_STATUS	(1L << 3)
+	//
+	// /* bit definitions for MwmHints.functions */
+	// #define MWM_FUNC_ALL		(1L << 0)
+	// #define MWM_FUNC_RESIZE		(1L << 1)
+	// #define MWM_FUNC_MOVE		(1L << 2)
+	// #define MWM_FUNC_MINIMIZE	(1L << 3)
+	// #define MWM_FUNC_MAXIMIZE	(1L << 4)
+	// #define MWM_FUNC_CLOSE		(1L << 5)
+	//
+	// /* bit definitions for MwmHints.decorations */
+	// #define MWM_DECOR_ALL		(1L << 0)
+	// #define MWM_DECOR_BORDER	(1L << 1)
+	// #define MWM_DECOR_RESIZEH	(1L << 2)
+	// #define MWM_DECOR_TITLE		(1L << 3)
+	// #define MWM_DECOR_MENU		(1L << 4)
+	// #define MWM_DECOR_MINIMIZE	(1L << 5)
+	// #define MWM_DECOR_MAXIMIZE	(1L << 6)
+	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions)
+	{
+		using var _1 = XLock(x11Window.Display);
+
+		var hintsAtom = GetAtom(x11Window.Display, _MOTIF_WM_HINTS);
+		var _2 = XLib.XGetWindowProperty(
+			x11Window.Display,
+			x11Window.Window,
+			hintsAtom,
+			0,
+			LONG_LENGTH,
+			false,
+			AnyPropertyType,
+			out IntPtr actualType,
+			out int actual_format,
+			out IntPtr nItems,
+			out _,
+			out IntPtr prop);
+
+		using var _3 = Disposable.Create(() =>
+		{
+			var _ = XLib.XFree(prop);
+		});
+
+		var arr = new IntPtr[5];
+		if (actualType == None)
+		{
+			// the property wasn't set. Let's turn on everything by default.
+			arr[0] |= (IntPtr)(MotifFlags.Decorations | MotifFlags.Functions);
+			arr[1] |= (IntPtr)MotifFunctions.All;
+
+			// Border doesn't seem to do anything except show the title bar even if Title is off,
+			// so we turn it off.
+			// arr[2] |= (IntPtr)MotifDecorations.All;
+			arr[2] = ((int[])Enum.GetValuesAsUnderlyingType<MotifDecorations>()).Aggregate(0, (i1, i2) => i1 | i2);
+			arr[2] &= ~(IntPtr)MotifDecorations.Border;
+			arr[2] &= ~(IntPtr)MotifDecorations.All;
+		}
+		else
+		{
+			Debug.Assert(actual_format == 32 && nItems == 5);
+			new Span<IntPtr>(prop.ToPointer(), 5).CopyTo(new Span<IntPtr>(arr, 0, 5));
+		}
+
+		if (functions is { } f)
+		{
+			arr[0] |= (IntPtr)MotifFlags.Functions;
+
+			if ((arr[1] & (IntPtr)MotifDecorations.All) != 0)
+			{
+				// Remove the All function to be able to turn each function or or off individually.
+				var allDecorations = (int[])Enum.GetValuesAsUnderlyingType<MotifFunctions>();
+				arr[1] |= allDecorations.Aggregate(0, (i1, i2) => i1 | i2);
+				arr[1] &= ~(IntPtr)MotifFunctions.All;
+			}
+
+			if (on)
+			{
+				arr[1] |= f;
+			}
+			else
+			{
+				arr[1] &= ~f;
+			}
+		}
+
+		if (decorations is { } d)
+		{
+			arr[0] |= (IntPtr)MotifFlags.Decorations;
+
+			if ((arr[2] & (IntPtr)MotifDecorations.All) != 0)
+			{
+				// Remove the All decoration to be able to turn each decoration or or off individually.
+				var allDecorations = (int[])Enum.GetValuesAsUnderlyingType<MotifDecorations>();
+				arr[2] |= allDecorations.Aggregate(0, (i1, i2) => i1 | i2);
+				arr[2] &= ~(IntPtr)MotifDecorations.All;
+			}
+
+			if (on)
+			{
+				arr[2] |= d;
+			}
+			else
+			{
+				arr[2] &= ~d;
+			}
+		}
+
+		var _4 = XLib.XChangeProperty(
+			x11Window.Display,
+			x11Window.Window,
+			hintsAtom,
+			hintsAtom,
+			32,
+			PropertyMode.Replace,
+			arr,
+			5);
+		var _5 = XLib.XFlush(x11Window.Display);
+	}
+
 	private static Func<IntPtr, string, bool, IntPtr> _getAtom = Funcs.CreateMemoized<IntPtr, string, bool, IntPtr>(XLib.XInternAtom);
 	public static IntPtr GetAtom(IntPtr display, string name, bool only_if_exists = false) => _getAtom(display, name, only_if_exists);
 
@@ -114,21 +322,8 @@ internal static class X11Helper
 	[DllImport(libX11)]
 	public static extern int XInitThreads();
 
-	// Only change the visibility of this method if absolutely necessary. Instead, use XLock()
-	[DllImport(libX11Randr)]
-	private static extern void XLockDisplay(IntPtr display);
-
-	[DllImport(libX11Randr)]
-	private static extern void XUnlockDisplay(IntPtr display);
-
 	[DllImport(libX11)]
 	public static extern int XWidthMMOfScreen(IntPtr screen);
-
-	public static IDisposable XLock(IntPtr display)
-	{
-		XLockDisplay(display);
-		return Disposable.Create(() => XUnlockDisplay(display));
-	}
 
 	[DllImport(libX11)]
 	public static extern int XWidthOfScreen(IntPtr screen);
@@ -274,5 +469,10 @@ internal static class X11Helper
 		public int fd;
 		public short events;
 		public short revents;
+	}
+
+	private struct LockDisposable(object @lock) : IDisposable
+	{
+		public void Dispose() => Monitor.Exit(@lock);
 	}
 }

@@ -149,7 +149,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		var args = new PointerEventArgs(point, modifiers);
 
 		CreatePointFromCurrentState(ev.time);
-		X11XamlRootHost.QueueEvent(_host, () => RaisePointerExited(args));
+		X11XamlRootHost.QueueAction(_host, () => RaisePointerExited(args));
 	}
 
 	public void ProcessEnterEvent(XCrossingEvent ev)
@@ -157,7 +157,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		_mousePosition = new Point(ev.x, ev.y);
 
 		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
-		X11XamlRootHost.QueueEvent(_host, () => RaisePointerEntered(args));
+		X11XamlRootHost.QueueAction(_host, () => RaisePointerEntered(args));
 	}
 
 	private PointerEventArgs CreatePointerEventArgsFromCurrentState(IntPtr time, XModifierMask state)
