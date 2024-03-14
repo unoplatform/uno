@@ -59,7 +59,7 @@ partial class SvgImageSource
 
 		if (imageData.Kind == ImageDataKind.ByteArray &&
 			imageData.ByteArray is not null &&
-			await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray))
+			await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray.Value))
 		{
 			return imageData;
 		}

@@ -19,12 +19,12 @@ namespace Uno.UI.Xaml.Media;
 /// </summary>
 internal partial struct ImageData
 {
-	public static ImageData FromBytes(byte[] data) => new(data);
+	public static ImageData FromBytes(ArraySegment<byte> data) => new(data);
 
-	private ImageData(byte[] data)
+	private ImageData(ArraySegment<byte> data)
 	{
 		Kind = ImageDataKind.ByteArray;
-		ByteArray = data ?? throw new ArgumentNullException(nameof(data));
+		ByteArray = data;
 	}
 
 	public static ImageData FromError(Exception exception) => new(exception);
@@ -96,7 +96,7 @@ internal partial struct ImageData
 
 	public Exception? Error { get; } = null;
 
-	public byte[]? ByteArray { get; } = null;
+	public ArraySegment<byte>? ByteArray { get; } = null;
 
 #if __IOS__ || __MACOS__
 	public _UIImage? NativeImage { get; } = null;
@@ -115,7 +115,7 @@ internal partial struct ImageData
 		{
 			ImageDataKind.Empty => "Empty",
 			ImageDataKind.Error => $"Error[{Error}]",
-			ImageDataKind.ByteArray => $"Byte array: Length {ByteArray?.Length ?? -1}",
+			ImageDataKind.ByteArray => $"Byte array: Length {ByteArray?.Count ?? -1}",
 #if __IOS__ || __MACOS__
 			ImageDataKind.NativeImage => $"Native UIImage: {NativeImage}",
 #endif

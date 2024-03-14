@@ -23,7 +23,7 @@ public interface ISvgProvider
 
 	event EventHandler? SourceLoaded;
 
-	Task<bool> TryLoadSvgDataAsync(byte[] imageData);
+	Task<bool> TryLoadSvgDataAsync(ArraySegment<byte> imageData);
 
 	void Unload();
 }
