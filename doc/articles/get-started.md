@@ -92,6 +92,10 @@ To help you choose the appropriate IDE, the following table shows the compatibil
 
 ***
 
+## Questions
+
+For questions about Uno Platform, refer to the [general FAQ](xref:Uno.Development.FAQ) or see the [troubleshooting section](xref:Uno.UI.CommonIssues) for common issues and their solutions.
+
 ## Next Steps
 
 Choose the IDE to Learn more about:
