@@ -126,8 +126,6 @@ internal partial class BrowserRenderer
 			// create or update the dimensions
 			_lastSize = newCanvasSize;
 
-			NativeMethods.SetCanvasSize(_nativeSwapChainPanel, newCanvasSize.Width, newCanvasSize.Height);
-
 			_glInfo = new GRGlFramebufferInfo(_jsInfo.FboId, colorType.ToGlSizedFormat());
 
 			// destroy the old surface
@@ -232,8 +230,5 @@ internal partial class BrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.setEnableRenderLoop")]
 		internal static partial void SetEnableRenderLoop(JSObject nativeSwapChainPanel, bool enable);
-
-		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserRenderer)}.setCanvasSize")]
-		internal static partial void SetCanvasSize(JSObject nativeSwapChainPanel, double width, double height);
 	}
 }

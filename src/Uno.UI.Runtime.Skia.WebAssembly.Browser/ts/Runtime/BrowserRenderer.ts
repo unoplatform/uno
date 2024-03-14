@@ -17,7 +17,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.currentRequest = 0;
 			this.requestRender = undefined;
 			BrowserRenderer.anyGL = (<any>window).GL;
-
+			window.addEventListener("resize", x => this.setCanvasSize());
 			this.buildImports();
 		}
 
@@ -63,11 +63,10 @@ namespace Uno.UI.Runtime.Skia {
 			});
 		}
 
-		private setCanvasSize(width: number, height: number) {
-			//if (!this.canvas)
-			//	return;
-
+		private setCanvasSize() {
 			var scale = window.devicePixelRatio || 1;
+			var width = document.documentElement.clientWidth;
+			var height = document.documentElement.clientHeight
 			var w = width * scale
 			var h = height * scale;
 
@@ -78,10 +77,6 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.canvas.style.width = `${width}px`;
 			this.canvas.style.height = `${height}px`;
-		}
-
-		static setCanvasSize(instance: BrowserRenderer, width: number, height: number) {
-			instance.setCanvasSize(width, height);
 		}
 
 		static setEnableRenderLoop(instance: BrowserRenderer, enable: boolean) {
@@ -130,6 +125,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			// read values
 			this.canvas = canvas;
+			this.setCanvasSize();
 			return {
 				ctx: this.glCtx,
 				fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
