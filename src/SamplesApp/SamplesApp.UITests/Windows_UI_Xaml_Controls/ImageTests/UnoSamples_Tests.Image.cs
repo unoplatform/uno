@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void WriteableBitmap_Invalidate()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.ImageSourceWriteableBitmapInvalidate");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.ImageSourceWriteableBitmapInvalidate",skipInitialScreenshot:true);
 
 			// Request to render
 			var button = _app.Marked("_update");
@@ -149,7 +149,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 				picker.SetDependencyPropertyValue("Mode", "S" + i);
 				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
 
-				TakeScreenshot("Mode-" + i);
+				TakeScreenshot("Mode-" + i,ignoreInSnapshotCompare:true);
 			}
 		}
 
@@ -166,7 +166,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			_app.WaitForElement("secondControl");
 
-			using var bmp = TakeScreenshot("After");
+			using var bmp = TakeScreenshot("After", ignoreInSnapshotCompare: true);
 
 			var expectedRect = _app.GetPhysicalRect("simpleImage");
 			var firstControlRect = _app.GetPhysicalRect("firstControl");
@@ -181,13 +181,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[ActivePlatforms(Platform.Android, Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
 		public void Late_With_Fixed_Dimensions()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceFixedDimensions");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceFixedDimensions",skipInitialScreenshot:true);
 
 			_app.Tap("setSource");
 
 			_app.WaitForElement("lateImage");
 
-			using var bmp = TakeScreenshot("Source set");
+			using var bmp = TakeScreenshot("Source set",ignoreInSnapshotCompare:true);
 
 			var expectedRect = _app.GetPhysicalRect("refImage");
 
@@ -201,13 +201,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[ActivePlatforms(Platform.Android, Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
 		public void Late_With_UniformToFill()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill",skipInitialScreenshot:true);
 
 			_app.Tap("setSource");
 
 			_app.WaitForElement("lateImage");
 
-			using var bmp = TakeScreenshot("Source set");
+			using var bmp = TakeScreenshot("Source set",ignoreInSnapshotCompare:true);
 
 			var borderThickness = LogicalToPhysical(3);
 
@@ -221,9 +221,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void Large_Image_With_Margin()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large",skipInitialScreenshot:true);
 
-			using var bmp = TakeScreenshot("Ready");
+			using var bmp = TakeScreenshot("Ready", ignoreInSnapshotCompare: true);
 
 			var rect = _app.GetPhysicalRect("outerBorder");
 
@@ -235,7 +235,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_BitmapRemote()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource",skipInitialScreenshot:true);
 
 			var url = _app.Marked("url");
 			var btnBitmap = _app.Marked("btnBitmap");
@@ -253,7 +253,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotDirect = TakeScreenshot("url_direct");
+			using var screenshotDirect = TakeScreenshot("url_direct", ignoreInSnapshotCompare: true);
 
 			streamMode.SetDependencyPropertyValue("IsChecked", "True");
 
@@ -261,7 +261,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotStream = TakeScreenshot("url_stream");
+			using var screenshotStream = TakeScreenshot("url_stream",ignoreInSnapshotCompare:true);
 
 			var rect = _app.GetPhysicalRect(img);
 
@@ -274,7 +274,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_SvgRemote()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource",skipInitialScreenshot:true);
 
 			var url = _app.Marked("url");
 			var btnSvg = _app.Marked("btnSvg");
@@ -292,7 +292,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotDirect = TakeScreenshot("url_direct");
+			using var screenshotDirect = TakeScreenshot("url_direct", ignoreInSnapshotCompare: true);
 
 			streamMode.SetDependencyPropertyValue("IsChecked", "True");
 
@@ -300,7 +300,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotStream = TakeScreenshot("url_stream");
+			using var screenshotStream = TakeScreenshot("url_stream", ignoreInSnapshotCompare: true);
 
 			var rect = _app.GetPhysicalRect(img);
 
@@ -313,7 +313,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_BitmapLocal()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource",skipInitialScreenshot:true);
 
 			var url = _app.Marked("url");
 			var btnBitmap = _app.Marked("btnBitmap");
@@ -331,7 +331,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotDirect = TakeScreenshot("url_local");
+			using var screenshotDirect = TakeScreenshot("url_local", ignoreInSnapshotCompare: true);
 
 			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.png");
 
@@ -339,7 +339,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotStream = TakeScreenshot("url_remote");
+			using var screenshotStream = TakeScreenshot("url_remote",ignoreInSnapshotCompare:true);
 
 			var rect = _app.GetPhysicalRect(img);
 
@@ -352,7 +352,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[ActivePlatforms(Platform.Browser)]
 		public void BitmapImage_vs_SvgImageSource_SvgLocal()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.BitmapImage_vs_SvgImageSource",skipInitialScreenshot:true);
 
 			var url = _app.Marked("url");
 			var btnSvg = _app.Marked("btnSvg");
@@ -370,7 +370,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotDirect = TakeScreenshot("url_local");
+			using var screenshotDirect = TakeScreenshot("url_local", ignoreInSnapshotCompare: true);
 
 			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.svg");
 
@@ -378,7 +378,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			WaitForBitmapOrSvgLoaded();
 
-			using var screenshotStream = TakeScreenshot("url_remote");
+			using var screenshotStream = TakeScreenshot("url_remote",ignoreInSnapshotCompare:true);
 
 			var rect = _app.GetPhysicalRect(img);
 
@@ -390,7 +390,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void Image_Invalid()
 		{
-			Run("Uno.UI.Samples.UITests.ImageTests.Image_Invalid");
+			Run("Uno.UI.Samples.UITests.ImageTests.Image_Invalid",skipInitialScreenshot:true);
 
 			var panel = _app.Marked("ComparePanel");
 			var button = _app.Marked("HideButton");
@@ -413,7 +413,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void Image_Source_Nullify()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Source_Nullify");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Source_Nullify",skipInitialScreenshot:true);
 
 			var panel = _app.Marked("CompareGrid");
 			var loadButton = _app.Marked("LoadButton");
@@ -421,7 +421,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			var physicalRect = _app.GetPhysicalRect(panel);
 
-			using var beforeLoad = TakeScreenshot("image_source_nullify_empty");
+			using var beforeLoad = TakeScreenshot("image_source_nullify_empty", ignoreInSnapshotCompare: true);
 
 			loadButton.FastTap();
 

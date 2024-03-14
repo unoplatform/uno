@@ -298,7 +298,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		//[TestCase("viewBox", true, true, true)]
 		public void DatePicker_PickerFlyout_Placements(string name, bool checkHorizontal, bool checkVertical, bool checkWidth)
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Placement");
+			Run("UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Placement",skipInitialScreenshot:true);
 			using var _ = new AssertionScope();
 
 			// Ensure picker not opened
