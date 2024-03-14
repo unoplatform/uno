@@ -17,77 +17,57 @@ using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class ContentPresenter
 {
-	public partial class ContentPresenter
+	private readonly BorderLayerRenderer _borderRenderer;
+
+	public ContentPresenter()
 	{
-		private BorderLayerRenderer _borderRenderer;
+		_borderRenderer = new BorderLayerRenderer(this);
+		InitializeContentPresenter();
 
-		public ContentPresenter()
-		{
-			_borderRenderer = new BorderLayerRenderer(this);
-			InitializeContentPresenter();
-
-			IFrameworkElementHelper.Initialize(this);
-		}
-
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
-		{
-			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
-		}
-
-		private void SetUpdateTemplate()
-		{
-			UpdateContentTemplateRoot();
-			RequestLayout();
-		}
-
-		partial void RegisterContentTemplateRoot()
-		{
-			//This validation is present in order to remove the child from its parent if it already has a parent.
-			//This prevents an exception for an InvalidState when we try to set a new template.
-			if (ContentTemplateRoot.Parent != null)
-			{
-				(ContentTemplateRoot.Parent as ViewGroup)?.RemoveView(ContentTemplateRoot);
-			}
-
-			AddView(ContentTemplateRoot);
-		}
-
-		partial void UnregisterContentTemplateRoot()
-		{
-			this.RemoveViewAndDispose(ContentTemplateRoot);
-		}
-
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
-		{
-			AdjustCornerRadius(canvas, CornerRadius);
-		}
-
-		private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder(false);
-
-		private void UpdateBorder()
-		{
-			UpdateBorder(false);
-		}
-
-		private void UpdateBorder(bool willUpdateMeasures)
-		{
-			_borderRenderer.Update();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder(true);
-		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		IFrameworkElementHelper.Initialize(this);
 	}
+
+	private void SetUpdateTemplate()
+	{
+		UpdateContentTemplateRoot();
+		RequestLayout();
+	}
+
+	partial void RegisterContentTemplateRoot()
+	{
+		//This validation is present in order to remove the child from its parent if it already has a parent.
+		//This prevents an exception for an InvalidState when we try to set a new template.
+		if (ContentTemplateRoot.Parent != null)
+		{
+			(ContentTemplateRoot.Parent as ViewGroup)?.RemoveView(ContentTemplateRoot);
+		}
+
+		AddView(ContentTemplateRoot);
+	}
+
+	partial void UnregisterContentTemplateRoot()
+	{
+		this.RemoveViewAndDispose(ContentTemplateRoot);
+	}
+
+	partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateBorder();
+
+	protected override void OnDraw(Android.Graphics.Canvas canvas)
+	{
+		AdjustCornerRadius(canvas, CornerRadius);
+	}
+
+	private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
+
+	private void UpdateBorder() => _borderRenderer.Update();
+
+	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => UpdateBorder();
+
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 }
