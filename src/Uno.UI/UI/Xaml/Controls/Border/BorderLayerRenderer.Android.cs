@@ -31,6 +31,7 @@ namespace Uno.UI.Xaml.Controls
 		private static readonly float[] _innerRadiiStore = new float[8];
 		private static Paint? _strokePaint;
 		private static Paint? _fillPaint;
+		private Action? _backgroundChanged;
 
 		private static ImageSource? GetBackgroundImageSource(BorderLayerState? state)
 			=> (state?.Background as ImageBrush)?.ImageSource;
@@ -93,7 +94,7 @@ namespace Uno.UI.Xaml.Controls
 			_layerDisposable.Disposable = null;
 		}
 
-		private static IDisposable InnerCreateLayers(
+		private IDisposable InnerCreateLayers(
 			BindableView view,
 			Rect drawArea,
 			Brush? background,
@@ -254,6 +255,9 @@ namespace Uno.UI.Xaml.Controls
 					}
 				}
 			}
+
+			// Don't call base, just update the filling color.
+			Brush.SetupBrushChanged(_currentState.Background, background, ref _backgroundChanged, () => Update(), false);
 
 			return disposables;
 		}
