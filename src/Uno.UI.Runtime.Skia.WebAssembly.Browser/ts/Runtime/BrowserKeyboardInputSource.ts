@@ -1,5 +1,4 @@
 ﻿namespace Uno.UI.Runtime.Skia {
-	// TODO: Duplicate of Uno.UI.HtmlEventDispatchResult to merge!
 	export class BrowserKeyboardInputSource {
 		private static _exports: any;
 		

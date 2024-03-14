@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Windows.System
 {
@@ -339,7 +337,7 @@ namespace Windows.System
 				return fromKey;
 			}
 
-			if (code.StartsWith("Key"))
+			if (code.StartsWith("Key", StringComparison.Ordinal))
 			{
 				// map KeyA to VirtualKey.A, KeyB to VirtualKey.B, etc.
 				return VirtualKey.A + code[3] - 'A';
