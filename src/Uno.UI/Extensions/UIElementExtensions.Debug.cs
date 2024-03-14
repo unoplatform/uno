@@ -198,7 +198,7 @@ static partial class UIElementExtensions
 			null => 0,
 #if __CROSSRUNTIME__
 			UIElement fwElt => fwElt.Depth,
-#else
+#elif HAS_UNO
 			UIElement { IsVisualTreeRoot: true } => 0,
 #endif
 #if __IOS__
