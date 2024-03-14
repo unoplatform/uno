@@ -38,8 +38,6 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, meta={meta}, code={code}, key=${key}");
 		}
 
-		Console.WriteLine($"Native Keyboard Event: down=${down}, ctrl=${ctrl}, shift={shift}, meta={meta}, code={code}, key={key}");
-
 		var args = new KeyEventArgs(
 			"keyboard",
 			BrowserVirtualKeyHelper.FromCode(code),
