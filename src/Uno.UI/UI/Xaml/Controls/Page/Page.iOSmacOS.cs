@@ -9,13 +9,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Page
 {
-	private readonly BorderLayerRenderer _borderRenderer;
-
-	public Page()
-	{
-		_borderRenderer = new BorderLayerRenderer(this);
-	}
-
 #if __IOS__
 	public override void LayoutSubviews()
 	{
@@ -29,6 +22,4 @@ partial class Page
 		UpdateBorder();
 	}
 #endif
-
-	partial void UpdateBorder() => _borderRenderer.Update();
 }
