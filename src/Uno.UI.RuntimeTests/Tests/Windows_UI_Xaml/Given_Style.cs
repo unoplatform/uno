@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				</ControlTemplate>
 				""");
 
-			var style = new Style()
+			var style = new Style(typeof(ContentControl))
 			{
 				Setters =
 				{
@@ -48,6 +48,114 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// This shouldn't throw.
 			_ = new ContentControl() { Style = style };
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_TargetType_Null(bool allowBadTargetTypes)
+		{
+			var old = FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes;
+			FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = allowBadTargetTypes;
+			try
+			{
+				var style = new Style();
+
+				Assert.IsNull(style.TargetType);
+
+				var cc = new ContentControl();
+				if (allowBadTargetTypes)
+				{
+					cc.Style = style;
+				}
+				else
+				{
+					Assert.ThrowsException<InvalidOperationException>(() => cc.Style = style);
+				}
+			}
+			finally
+			{
+				FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = old;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_TargetType_Same_Type(bool allowBadTargetTypes)
+		{
+			var old = FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes;
+			FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = allowBadTargetTypes;
+			try
+			{
+				var style = new Style(typeof(ContentControl));
+
+				Assert.AreEqual(typeof(ContentControl), style.TargetType);
+
+				var cc = new ContentControl();
+				cc.Style = style;
+			}
+			finally
+			{
+				FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = old;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_TargetType_Base_Type(bool allowBadTargetTypes)
+		{
+			var old = FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes;
+			FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = allowBadTargetTypes;
+			try
+			{
+				var style = new Style(typeof(UIElement));
+
+				Assert.AreEqual(typeof(UIElement), style.TargetType);
+
+				var cc = new ContentControl();
+				cc.Style = style;
+			}
+			finally
+			{
+				FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = old;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_TargetType_Derived_Type(bool allowBadTargetTypes)
+		{
+			var old = FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes;
+			FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = allowBadTargetTypes;
+			try
+			{
+				var style = new Style(typeof(Button));
+
+				Assert.AreEqual(typeof(Button), style.TargetType);
+				Assert.IsTrue(typeof(Button).IsAssignableTo(typeof(ContentControl)));
+
+				var cc = new ContentControl();
+
+				if (allowBadTargetTypes)
+				{
+					cc.Style = style;
+				}
+				else
+				{
+					Assert.ThrowsException<InvalidOperationException>(() => cc.Style = style);
+				}
+			}
+			finally
+			{
+				FeatureConfiguration.FrameworkElement.AllowIncompatibleStyleTargetTypes = old;
+			}
 		}
 
 		[TestMethod]

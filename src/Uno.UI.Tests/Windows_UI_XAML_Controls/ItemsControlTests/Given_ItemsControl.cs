@@ -572,7 +572,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 		}
 
 		private Style BuildBasicContainerStyle() =>
-			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
+			new Style(typeof(ContentPresenter))
 			{
 				Setters =  {
 					new Setter<ListViewItem>("Template", t =>

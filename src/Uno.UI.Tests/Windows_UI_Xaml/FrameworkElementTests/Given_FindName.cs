@@ -52,7 +52,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		public void When_ButtonFlyout()
 		{
 			var SUT = new Grid();
-			var button = new Button() { Style = new Style() };
+			var button = new Button() { Style = new Style(typeof(Button)) };
 
 			SUT.Children.Add(button);
 
