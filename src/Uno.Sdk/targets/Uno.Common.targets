@@ -1,6 +1,13 @@
 <Project>
 
-	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+	<PropertyGroup>
+		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
+		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
+		<_IsExecutable>false</_IsExecutable>
+		<_IsExecutable Condition=" '$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe' ">true</_IsExecutable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" $(Optimize) != 'true' ">
 		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
 		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
 
@@ -9,9 +16,44 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
+		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
+		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
+		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
+		<IsUnoHead Condition="$(SingleProject) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AndroidProjectFolder Condition=" '$(AndroidProjectFolder)' == '' ">$(PlatformsProjectFolder)Android\</AndroidProjectFolder>
+		<AndroidProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(AndroidProjectFolder)'))</AndroidProjectFolder>
+		<AndroidProjectFolder Condition=" !Exists('$(AndroidProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Android'))</AndroidProjectFolder>
+		<iOSProjectFolder Condition=" '$(iOSProjectFolder)' == '' ">$(PlatformsProjectFolder)iOS\</iOSProjectFolder>
+		<iOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(iOSProjectFolder)'))</iOSProjectFolder>
+		<iOSProjectFolder Condition=" !Exists($(iOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('iOS'))</iOSProjectFolder>
+		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">$(PlatformsProjectFolder)MacCatalyst\</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacCatalystProjectFolder)'))</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
+		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
+		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
+		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' ">$(PlatformsProjectFolder)Desktop\</DesktopProjectFolder>
+		<DesktopProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" !Exists('$(DesktopProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Desktop'))</DesktopProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
+		<WasmProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
+		<WasmProjectFolder Condition=" !Exists('$(WasmProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Wasm'))</WasmProjectFolder>
+		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
+		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
+		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
 	</PropertyGroup>
 
+	<Import Project="Uno.Implicit.Packages.targets"
+		Condition="$(DisableImplicitUnoPackages) != 'true'" />
+
+	<!-- TFM Specific Targets -->
 	<Import Project="Uno.Common.Android.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
 	<Import Project="Uno.Common.iOS.targets"
@@ -20,16 +62,49 @@
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " />
 	<Import Project="Uno.Common.MacOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' " />
-	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia' " />
-	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $(MSBuildProjectName.Contains('.Skia.')) " />
+	<Import Project="Uno.Common.Desktop.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' " />
 	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' " />
-	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) " />
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' " />
 	<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
 	<Import Project="Uno.Common.WinAppSdk.targets"
 		Condition=" $(TargetFramework.Contains('windows10')) " />
 
+	<Import Project="Uno.GenerateAot.targets"
+		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
+
+	<PropertyGroup Condition="$(SingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
+			Condition=" $(IsAndroid) != 'true' " />
+		<_IgnorePlatformFiles Include="$(iOSProjectFolder)**"
+			Condition=" $(IsIOS) != 'true' " />
+		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
+			Condition=" $(IsMacCatalyst) != 'true' " />
+		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"
+			Condition=" $(IsMacOS) != 'true' " />
+		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
+			Condition=" $(IsDesktop) != 'true' " />
+		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
+			Condition=" $(IsBrowserWasm) != 'true' " />
+		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
+			Condition=" $(IsWinAppSdk) != 'true' " />
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Content Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+		<UnoDspImportColors Include="Styles\*.zip" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+	</ItemGroup>
+
+	<ItemGroup Condition="($(UnoFeatures.Contains(';Configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
+		<EmbeddedResource Include="appsettings.json" />
+		<EmbeddedResource Include="appsettings.*.json" DependentUpon="appsettings.json" />
+	</ItemGroup>
 </Project>

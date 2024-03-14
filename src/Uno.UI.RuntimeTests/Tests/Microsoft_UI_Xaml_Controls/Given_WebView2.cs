@@ -31,6 +31,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_WebView2
 {
 	[TestMethod]
+#if __IOS__
+	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task When_Navigate()
 	{
 		var border = new Border();
@@ -72,11 +75,13 @@ public class Given_WebView2
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
+		navigationStarting = false;
 		navigationDone = false;
 		webView.NavigateToString("<html></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 #if HAS_UNO
 		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);

@@ -6,18 +6,10 @@ namespace Microsoft.UI.Composition.Interactions
 #if false || false || false || false || false || false || false
 	public enum VisualInteractionSourceRedirectionMode
 	{
-#if false || false || false || false || false || false || false
-		Off = 0,
-#endif
-#if false || false || false || false || false || false || false
-		CapableTouchpadOnly = 1,
-#endif
-#if false || false || false || false || false || false || false
-		PointerWheelOnly = 2,
-#endif
-#if false || false || false || false || false || false || false
-		CapableTouchpadAndPointerWheel = 3,
-#endif
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode.Off
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode.CapableTouchpadOnly
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode.PointerWheelOnly
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode.CapableTouchpadAndPointerWheel
 	}
 #endif
 }

@@ -29,7 +29,7 @@ internal partial class PopupRoot : Panel
 	{
 		if (XamlRoot is { } xamlRoot)
 		{
-			void OnChanged(object sender, object args) => CloseFlyouts();
+			void OnChanged(object sender, object args) => CloseLightDismissablePopups();
 
 			CompositeDisposable disposables = new();
 			xamlRoot.Changed += OnChanged;
@@ -50,15 +50,21 @@ internal partial class PopupRoot : Panel
 		_subscriptions.Disposable = null;
 	}
 
-	private void CloseFlyouts()
+	internal void CloseLightDismissablePopups()
 	{
 		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
 			var reference = _openPopups[i];
-			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
 			{
-				var f = popup.AssociatedFlyout;
-				f.Hide();
+				if (popup.AssociatedFlyout is { } flyout)
+				{
+					flyout.Hide();
+				}
+				else
+				{
+					popup.IsOpen = false;
+				}
 			}
 		}
 	}

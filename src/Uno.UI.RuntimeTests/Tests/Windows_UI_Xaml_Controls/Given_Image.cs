@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var imageLoaded = new TaskCompletionSource<bool>();
 
-			var image = new Image { Height = 30, Stretch = Stretch.Uniform, Source = new BitmapImage(new Uri("ms-appx:///Assets/storelogo.png")) };
+			var image = new Image { Height = 30, Stretch = Stretch.Uniform, Source = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png")) };
 			image.Loaded += (s, e) => imageLoaded.TrySetResult(true);
 			image.ImageFailed += (s, e) => imageLoaded.TrySetException(new Exception(e.ErrorMessage));
 

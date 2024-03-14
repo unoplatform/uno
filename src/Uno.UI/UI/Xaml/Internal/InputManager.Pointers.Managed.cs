@@ -22,6 +22,8 @@ using static Microsoft.UI.Xaml.UIElement;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
+using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Composition;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -79,7 +81,12 @@ internal partial class InputManager
 		{
 			if (!ApiExtensibility.CreateInstance(host, out _source))
 			{
-				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error(
+						"Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				}
+				return;
 			}
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
@@ -137,6 +144,24 @@ internal partial class InputManager
 			}
 
 			UpdateLastInputType(args);
+
+#if __SKIA__ // Currently, only Skia supports interaction tracker.
+			Visual? currentVisual = originalSource.Visual;
+			while (currentVisual is not null)
+			{
+				if (currentVisual.VisualInteractionSource is { RedirectsPointerWheel: true } vis)
+				{
+					foreach (var tracker in vis.Trackers)
+					{
+						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
+					}
+
+					return;
+				}
+
+				currentVisual = currentVisual.Parent;
+			}
+#endif
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 

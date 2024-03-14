@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Shapes
 	public partial class Shape
 	{
 		private Android.Graphics.Path _path;
-		private Windows.Foundation.Rect _drawArea;
-		protected Windows.Foundation.Rect _logicalRenderingArea;
+		private global::Windows.Foundation.Rect _drawArea;
+		protected global::Windows.Foundation.Rect _logicalRenderingArea;
 		private static Paint _strokePaint;
 		private static Paint _fillPaint;
 
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected void Render(
 			Android.Graphics.Path path,
-			Windows.Foundation.Size? size = null,
+			global::Windows.Foundation.Size? size = null,
 			double scaleX = 1d,
 			double scaleY = 1d,
 			double renderOriginX = 0d,
@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 		}
 
-		private Windows.Foundation.Rect GetPathBoundingBox(Android.Graphics.Path path)
+		private global::Windows.Foundation.Rect GetPathBoundingBox(Android.Graphics.Path path)
 		{
 			// This method should return the bounding box, *not including* control points.
 			// On Android, there doesn't seem to be an easy built-in way to do that, since ComputeBounds will include control points.
@@ -208,7 +208,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				maxY = Math.Max(maxY, currentY);
 			}
 
-			return new Windows.Foundation.Rect(
+			return new global::Windows.Foundation.Rect(
 				x: minX,
 				y: minY,
 				width: maxX - minX,
@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return _path ?? new Android.Graphics.Path();
 		}
 
-		protected Windows.Foundation.Rect TransformToLogical(Windows.Foundation.Rect renderingArea)
+		protected global::Windows.Foundation.Rect TransformToLogical(global::Windows.Foundation.Rect renderingArea)
 		{
 			//Android's path rendering logic rounds values down to the nearest int, make sure we round up here instead using the ViewHelper scaling logic
 			var physicalRenderingArea = renderingArea.LogicalToPhysicalPixels();
@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			return logicalRenderingArea;
 		}
 
-		protected Windows.Foundation.Size BasicArrangeOverride(Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
+		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
 

@@ -23,19 +23,19 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Size.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Clear()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAt(uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Append(float)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAtEnd()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Clear()
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetAt(uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetMany(uint, float[])
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.ReplaceAll(float[])
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.First()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetAt(uint)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.Size.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.GetView()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.IndexOf(float, out uint)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.SetAt(uint, float)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.InsertAt(uint, float)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionStrokeDashArray.RemoveAt(uint)
 		// Processing: System.Collections.Generic.IList<float>
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<float>

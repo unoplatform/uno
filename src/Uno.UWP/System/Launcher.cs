@@ -10,10 +10,10 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
 		private const string MicrosoftUriPrefix = "ms-";
 
-		private static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
+		internal static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
 #endif
 
 		public static IAsyncOperation<bool> LaunchUriAsync(Uri uri)

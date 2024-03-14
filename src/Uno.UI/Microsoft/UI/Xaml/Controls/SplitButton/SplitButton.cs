@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.Core;
-
+using Windows.Foundation;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -87,7 +87,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 #if __ANDROID__
 			new
 #endif
-			event Windows.Foundation.TypedEventHandler<SplitButton, SplitButtonClickEventArgs> Click;
+			event TypedEventHandler<SplitButton, SplitButtonClickEventArgs> Click;
 
 		protected override void OnApplyTemplate()
 		{

@@ -8,6 +8,8 @@ namespace Microsoft.UI.Input
 #endif
 	public partial class InputCursor : global::System.IDisposable
 	{
+		// Skipping already declared method Microsoft.UI.Input.InputCursor.Dispose()
+		// Skipping already declared method Microsoft.UI.Input.InputCursor.CreateFromCoreCursor(Windows.UI.Core.CoreCursor)
 		// Processing: System.IDisposable
 	}
 }

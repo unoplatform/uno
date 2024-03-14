@@ -32,4 +32,12 @@
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PRIResource Include="Storage\Pickers\Strings\**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Storage\Pickers\Strings\en\" />
+	</ItemGroup>
+
 </Project>

@@ -58,14 +58,12 @@
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)" />
-
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 			<_OverrideTargetFramework Condition="'$(_OverrideTargetFramework)' == 'uap10.0.19041'">UAP</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.WinUI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

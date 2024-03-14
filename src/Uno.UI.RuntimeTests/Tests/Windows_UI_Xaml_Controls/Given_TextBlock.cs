@@ -842,6 +842,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_Chunking_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "Hello_world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			// Double click within Hello. We should only find Hello selected without "_" or "world"
+			mouse.MoveTo(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// compare vertical slices to see if they have highlighted text in them or not
+			for (var i = 0; i < 5; i++)
+			{
+				ImageAssert.HasColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+			// skip 5 for relaxed tolerance
+			for (var i = 6; i < 10; i++)
+			{
+				ImageAssert.DoesNotHaveColorInRectangle(
+					bitmap,
+					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					SUT.SelectionHighlightColor.Color);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "🚫 Hello world",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
 #if !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif

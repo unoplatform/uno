@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Numerics;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition;
 
@@ -16,17 +19,16 @@ internal class AnimationMemberAccessExpressionSyntax : AnimationExpressionSyntax
 	public override object Evaluate(ExpressionAnimation expressionAnimation)
 	{
 		var leftValue = Expression.Evaluate(expressionAnimation);
-		var identifierName = (string)Identifier.Value;
-		var leftType = leftValue.GetType();
-		if (leftType.GetProperty(identifierName) is { } property)
+		var propertyName = (string)Identifier.Value;
+		if (leftValue is CompositionObject leftCompositionObject)
 		{
-			return property.GetValue(leftValue);
+			return leftCompositionObject.GetAnimatableProperty(propertyName, string.Empty);
 		}
-		else if (leftType.GetField(identifierName) is { } field)
+		else
 		{
-			return field.GetValue(leftValue);
+			return GetSubProperty(propertyName, leftValue);
 		}
 
-		throw new ArgumentException($"Cannot find property or field named '{identifierName}' on object of type '{leftType}'.");
+		throw new ArgumentException($"Cannot find evaluate property '{propertyName}' on object of type '{leftValue?.GetType()}'.");
 	}
 }

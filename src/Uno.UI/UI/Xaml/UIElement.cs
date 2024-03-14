@@ -48,13 +48,15 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
 
-		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
+
+		internal void FreezeTemplatedParent() =>
+			((IDependencyObjectStoreProvider)this).Store.IsTemplatedParentFrozen = true;
 
 		//private protected virtual void PrepareState()
 		//{
@@ -95,12 +97,20 @@ namespace Microsoft.UI.Xaml
 
 		private bool ShouldMirrorVisual()
 		{
-			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			if (this is not FrameworkElement fe)
 			{
-				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
+				return false;
+			}
+
+			var parent = VisualTreeHelper.GetParent(this);
+			while (parent is not null)
+			{
+				if (parent is FrameworkElement feParent)
 				{
-					return true;
+					return feParent is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
 				}
+
+				parent = VisualTreeHelper.GetParent(parent);
 			}
 
 			return false;
@@ -160,6 +170,11 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return result;
+		}
+
+		private protected virtual void OnChildDesiredSizeChanged(UIElement child)
+		{
+			InvalidateMeasure();
 		}
 
 		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
@@ -363,16 +378,17 @@ namespace Microsoft.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var geometry = e.NewValue as RectangleGeometry;
+			if (e.OldValue is RectangleGeometry oldValue)
+			{
+				oldValue.GeometryChanged -= ApplyClip;
+			}
 
 			ApplyClip();
-			_clipSubscription.Disposable = geometry.RegisterDisposableNestedPropertyChangedCallback(
-				(_, __) => ApplyClip(),
-				new[] { RectangleGeometry.RectProperty },
-				new[] { Geometry.TransformProperty },
-				new[] { Geometry.TransformProperty, TranslateTransform.XProperty },
-				new[] { Geometry.TransformProperty, TranslateTransform.YProperty }
-			);
+
+			if (e.NewValue is RectangleGeometry newValue)
+			{
+				newValue.GeometryChanged += ApplyClip;
+			}
 		}
 
 		#endregion
@@ -841,6 +857,10 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
+
+#if __SKIA__
+			InvalidateArrange();
+#endif
 		}
 
 		partial void ApplyNativeClip(Rect rect);

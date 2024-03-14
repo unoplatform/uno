@@ -6,15 +6,9 @@ namespace Microsoft.UI.Composition
 #if false || false || false || false || false || false || false
 	public enum CompositionGetValueStatus
 	{
-#if false || false || false || false || false || false || false
-		Succeeded = 0,
-#endif
-#if false || false || false || false || false || false || false
-		TypeMismatch = 1,
-#endif
-#if false || false || false || false || false || false || false
-		NotFound = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.Succeeded
+		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.TypeMismatch
+		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.NotFound
 	}
 #endif
 }

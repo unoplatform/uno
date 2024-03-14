@@ -49,8 +49,10 @@ internal sealed class ExpressionAnimationParser
 	{
 		return token.Kind switch
 		{
-			ExpressionAnimationTokenKind.PlusToken or ExpressionAnimationTokenKind.MinusToken => 1,
-			ExpressionAnimationTokenKind.MultiplyToken or ExpressionAnimationTokenKind.DivisionToken => 2,
+			ExpressionAnimationTokenKind.QuestionMarkToken => 1,
+			ExpressionAnimationTokenKind.LessThanToken or ExpressionAnimationTokenKind.LessThanEqualsToken or ExpressionAnimationTokenKind.GreaterThanToken or ExpressionAnimationTokenKind.GreaterThanEqualsToken => 2,
+			ExpressionAnimationTokenKind.PlusToken or ExpressionAnimationTokenKind.MinusToken => 3,
+			ExpressionAnimationTokenKind.MultiplyToken or ExpressionAnimationTokenKind.DivisionToken => 4,
 			_ => 0
 		};
 	}
@@ -59,7 +61,7 @@ internal sealed class ExpressionAnimationParser
 	{
 		return token.Kind switch
 		{
-			ExpressionAnimationTokenKind.PlusToken or ExpressionAnimationTokenKind.MinusToken => 3,
+			ExpressionAnimationTokenKind.PlusToken or ExpressionAnimationTokenKind.MinusToken => 5,
 			_ => 0
 		};
 	}
@@ -88,9 +90,20 @@ internal sealed class ExpressionAnimationParser
 				break;
 			}
 
-			var operatorToken = NextToken();
-			var right = ParseExpression(precedence);
-			left = new AnimationBinaryExpressionSyntax(left, operatorToken, right);
+			if (HasCurrent && Current.Kind == ExpressionAnimationTokenKind.QuestionMarkToken)
+			{
+				_ = NextToken();
+				var whenTrue = ParseExpression();
+				_ = Match(ExpressionAnimationTokenKind.ColonToken);
+				var whenFalse = ParseExpression();
+				left = new AnimationTernaryExpressionSyntax(left, whenTrue, whenFalse);
+			}
+			else
+			{
+				var operatorToken = NextToken();
+				var right = ParseExpression(precedence);
+				left = new AnimationBinaryExpressionSyntax(left, operatorToken, right);
+			}
 		}
 
 		return left;

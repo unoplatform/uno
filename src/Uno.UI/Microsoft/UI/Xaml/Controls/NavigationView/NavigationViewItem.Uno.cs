@@ -27,7 +27,7 @@ partial class NavigationViewItem
 		{
 			if (_uno_pointerDeferring is null)
 			{
-				_uno_pointerDeferring = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
+				_uno_pointerDeferring = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_uno_pointerDeferring.Interval = TimeSpan.FromMilliseconds(200);
 				_uno_pointerDeferring.IsRepeating = false;
 				_uno_pointerDeferring.Tick += (snd, e) =>

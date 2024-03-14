@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -203,7 +204,7 @@ public partial class CoreWebView2
 		else
 		{
 			_ = _owner.Dispatcher.RunAsync(
-				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				CoreDispatcherPriority.Normal,
 				() => WebMessageReceived?.Invoke(this, new(message)));
 		}
 	}

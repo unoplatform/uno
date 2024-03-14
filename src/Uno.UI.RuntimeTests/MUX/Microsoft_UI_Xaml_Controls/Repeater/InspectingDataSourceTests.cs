@@ -368,7 +368,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 		}
 
-		class WinRTObservableVector : Windows.Foundation.Collections.IObservableVector<object>
+		class WinRTObservableVector : IObservableVector<object>
 		{
 			private IList<object> _items;
 

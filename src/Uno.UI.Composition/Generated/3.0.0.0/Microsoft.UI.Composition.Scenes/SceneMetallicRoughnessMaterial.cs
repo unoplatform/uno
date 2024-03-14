@@ -83,16 +83,16 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.RoughnessFactor.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial Create(global::Microsoft.UI.Composition.Compositor compositor)

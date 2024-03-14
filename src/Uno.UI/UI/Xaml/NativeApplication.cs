@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml
 			// Register assemblies earlier than Application itself, otherwise
 			// ApiInformation may return APIs as not implemented incorrectly.
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(global::Windows.Storage.ApplicationData).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			// Delay create the Microsoft.UI.Xaml.Application in order to get the

@@ -11,11 +11,11 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property GradientOriginOffset
 		// Skipping already declared property EllipseRadius
 		// Skipping already declared property EllipseCenter
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseRadius.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseCenter.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.GradientOriginOffset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionRadialGradientBrush.EllipseRadius.set
 	}
 }

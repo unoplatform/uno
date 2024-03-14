@@ -1,0 +1,30 @@
+<Project>
+
+	<!-- Default Versions of packages that may be implicitly defined -->
+	<PropertyGroup>
+		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.4.0-dev.11</UnoResizetizerVersion>
+		<UnoDspTasksVersion Condition="$(UnoDspTasksVersion) == ''">1.2.9</UnoDspTasksVersion>
+		<UnoLoggingVersion Condition="$(UnoLoggingVersion) == ''">1.7.0</UnoLoggingVersion>
+		<UnoCoreLoggingSingletonVersion Condition="$(UnoCoreLoggingSingletonVersion) == ''">4.0.1</UnoCoreLoggingSingletonVersion>
+		<UnoUniversalImageLoaderVersion Condition="$(UnoUniversalImageLoaderVersion) == ''">1.9.36</UnoUniversalImageLoaderVersion>
+		<SkiaSharpVersion Condition="$(SkiaSharpVersion) == ''">2.88.7</SkiaSharpVersion>
+		<AndroidMaterialVersion Condition="$(AndroidMaterialVersion) == ''">1.10.0.2</AndroidMaterialVersion>
+		<WinAppSdkVersion Condition="$(WinAppSdkVersion) == ''">1.5.240227000</WinAppSdkVersion>
+		<WinAppSdkBuildToolsVersion Condition="$(WinAppSdkBuildToolsVersion) == ''">10.0.22621.3233</WinAppSdkBuildToolsVersion>
+		<CommunityToolkitMvvmVersion Condition="$(CommunityToolkitMvvmVersion) == ''">8.2.2</CommunityToolkitMvvmVersion>
+		<PrismVersion Condition="$(PrismVersion) == ''">9.0.401-pre</PrismVersion>
+		<MicrosoftIdentityClientVersion Condition="$(MicrosoftIdentityClientVersion) == ''">4.59.0</MicrosoftIdentityClientVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(TargetFramework.Contains('net8.0'))">
+		<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">8.0.9</UnoWasmBootstrapVersion>
+		<WindowsCompatibilityVersion Condition="$(WindowsCompatibilityVersion) == ''">8.0.2</WindowsCompatibilityVersion>
+		<MicrosoftLoggingVersion Condition="$(MicrosoftLoggingVersion) == ''">8.0.0</MicrosoftLoggingVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(TargetFramework.Contains('net9.0'))">
+		<UnoWasmBootstrapVersion Condition="$(UnoWasmBootstrapVersion) == ''">9.0.0-dev.35</UnoWasmBootstrapVersion>
+		<WindowsCompatibilityVersion Condition="$(WindowsCompatibilityVersion) == ''">9.0.0-preview.1.24081.3</WindowsCompatibilityVersion>
+		<MicrosoftLoggingVersion Condition="$(MicrosoftLoggingVersion) == ''">9.0.0-preview.1.24080.9</MicrosoftLoggingVersion>
+	</PropertyGroup>
+
+</Project>

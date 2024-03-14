@@ -2,10 +2,11 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Uno.UI.Xaml.Media;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Media;
+using Windows.Foundation;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -106,7 +107,7 @@ public partial class IconElement : FrameworkElement
 
 		var backgroundBrush = new SolidColorBrush()
 		{
-			Color = Windows.UI.Color.FromArgb(0, 0, 0, 0)
+			Color = Color.FromArgb(0, 0, 0, 0)
 		};
 
 		_rootGrid = new Grid()

@@ -34,6 +34,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 			_app.WaitForDependencyPropertyValue(selectedItemText, "Text", "Save");
 		}
 
+#if !HAS_UNO_WINUI
 		[Test]
 		[AutoRetry()]
 		public void NavigateBackAndForthBetweenMenuItemsAndSettings()
@@ -95,5 +96,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 			togglePaneRect.Width.Should().BeLessThan(paneRootRect.Width, "when NavigationView is closed, TogglePaneButton should not take the width of PaneRoot");
 		}
+#endif
 	}
 }

@@ -9,7 +9,7 @@ namespace Windows.Storage.Pickers
 	/// <summary>
 	/// Represents a UI element that lets the user choose and open files.
 	/// </summary>
-	public partial class FileOpenPicker
+	public partial class FileOpenPicker : IFilePicker
 	{
 		private string _settingsIdentifier = string.Empty;
 		private string _commitButtonText = string.Empty;
@@ -46,6 +46,10 @@ namespace Windows.Storage.Pickers
 			get => _commitButtonText;
 			set => _commitButtonText = value ?? throw new ArgumentNullException(nameof(value));
 		}
+
+		string IFilePicker.CommitButtonTextInternal => CommitButtonText;
+		PickerLocationId IFilePicker.SuggestedStartLocationInternal => PickerLocationId.DocumentsLibrary;
+		IList<string> IFilePicker.FileTypeFilterInternal => new FileExtensionVector();
 
 #if __SKIA__ || __WASM__ || __IOS__ || __ANDROID__ || __MACOS__
 		public FileOpenPicker()

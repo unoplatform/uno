@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TeachingTipClosingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		internal TeachingTipClosingEventArgs()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool Cancel
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.TeachingTipCloseReason Reason
 		{
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.Reason.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs.Cancel.set
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{

@@ -41,8 +41,8 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Value.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Condition.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Value.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Condition.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.CompositionConditionalValue.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

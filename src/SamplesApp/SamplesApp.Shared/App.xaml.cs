@@ -107,9 +107,11 @@ namespace SamplesApp
 #if HAS_UNO
 			internal
 #endif
-			override void OnLaunched(LaunchActivatedEventArgs e)
+		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			EnsureMainWindow();
+
+			SetupAndroidEnvironment();
 
 #if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
@@ -164,11 +166,6 @@ namespace SamplesApp
 
 			HandleLaunchArguments(e);
 
-			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
-			{
-				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
-			}
-
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
@@ -199,6 +196,30 @@ namespace SamplesApp
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
 		}
+
+		private void SetupAndroidEnvironment()
+		{
+#if __ANDROID__
+			// Read a file from /sdcard/environment.txt and set the environment variables	
+			var environmentFilePath = "/sdcard/samplesapp-environment.txt";
+			if (File.Exists(environmentFilePath))
+			{
+				var lines = File.ReadAllLines(environmentFilePath);
+				foreach (var line in lines)
+				{
+					var parts = line.Split('=');
+					if (parts.Length == 2)
+					{
+						var key = parts[0];
+						var value = parts[1];
+						Console.WriteLine($"Setting environment variable {key} to {value}");
+						System.Environment.SetEnvironmentVariable(key, value);
+					}
+				}
+			}
+#endif
+		}
+
 
 #if __IOS__
 		/// <summary>
@@ -233,7 +254,7 @@ namespace SamplesApp
 								_ =>
 								{
 									Console.WriteLine($"WatchDog detecting a stall in the dispatcher after {timeout}, terminating the app");
-									throw new Exception($"Watchdog failed");
+									System.Environment.Exit(1);
 								});
 						}
 
@@ -338,10 +359,7 @@ namespace SamplesApp
 		{
 			Console.WriteLine($"HandleLaunchArguments: {launchActivatedEventArgs.Arguments}");
 
-			if (launchActivatedEventArgs.Arguments is not { } args)
-			{
-				return;
-			}
+			var args = launchActivatedEventArgs.Arguments ?? "";
 
 			if (HandleAutoScreenshots(args))
 			{
@@ -362,6 +380,11 @@ namespace SamplesApp
 			{
 				var dlg = new MessageDialog(args, "Launch arguments");
 				await dlg.ShowAsync();
+			}
+
+			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
+			{
+				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 			}
 		}
 
@@ -414,6 +437,10 @@ namespace SamplesApp
 				builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #else
 				builder.AddConsole();
+#endif
+
+#if __IOS__
+				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 
 #if !DEBUG
@@ -529,7 +556,10 @@ namespace SamplesApp
 				}
 			}
 
+#pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
+#pragma warning restore SYSLIB1045
+
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);

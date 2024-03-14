@@ -37,6 +37,13 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static void EnterDisplayMode(global::Microsoft.UI.Xaml.XamlRoot XamlRoot)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Input.AccessKeyManager", "void AccessKeyManager.EnterDisplayMode(XamlRoot XamlRoot)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.IsDisplayModeEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.AreKeyTipsEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Input.AccessKeyManager.AreKeyTipsEnabled.set

@@ -8,7 +8,7 @@ using Windows.Globalization;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.Control, Microsoft.UI.Xaml.Controls.FocusEngagedEventArgs>;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_pHeaderText = null;
 			m_lastVisibleIndicesPair[0] = -1;
 			m_lastVisibleIndicesPair[1] = -1;
-			m_lastVisitedDateAndIndex.first = default; // .ToUniversalTime() = 0; TODO UNO
+			m_lastVisitedDateAndIndex.first.UniversalTime = 0;
 			m_lastVisitedDateAndIndex.second = -1;
 
 		}
@@ -281,12 +281,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			int index = 0;
 
-			m_lastVisitedDateAndIndex.first = Owner.MinDate.ToUniversalTime();
+			m_lastVisitedDateAndIndex.first = Owner.GetMinDate();
 			m_lastVisitedDateAndIndex.second = 0;
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, Owner.MinDate));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), Owner.GetMinDate()));
 
-			index = CalculateOffsetFromMinDate(Owner.MaxDate);
+			index = CalculateOffsetFromMinDate(Owner.GetMaxDate());
 
 			m_size = (uint)(index) + 1;
 
@@ -332,7 +332,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			pCalendar.SetDateTime(m_lastVisitedDateAndIndex.first);
 			AddUnits((int)(index) - m_lastVisitedDateAndIndex.second);
-			date = pCalendar.GetDateTime().ToUniversalTime();
+			date = pCalendar.GetDateTime();
 			m_lastVisitedDateAndIndex.first = date;
 			m_lastVisitedDateAndIndex.second = (int)(index);
 			var pDate = date;
@@ -350,7 +350,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal int CalculateOffsetFromMinDate(DateTime date)
 		{
 			var pIndex = 0;
-			DateTime estimatedDate = m_lastVisitedDateAndIndex.first.ToUniversalTime();
+			DateTime estimatedDate = m_lastVisitedDateAndIndex.first;
 
 			var pCalendar = GetCalendar();
 			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
@@ -373,7 +373,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			while (true)
 			{
-				diffInUTC = date.ToUniversalTime().Ticks - estimatedDate.ToUniversalTime().Ticks;
+				diffInUTC = date.UniversalTime - estimatedDate.UniversalTime;
 
 				// round to the nearest integer
 				diffInUnit = (int)(diffInUTC / averageTicksPerUnit);
@@ -497,8 +497,8 @@ namespace Microsoft.UI.Xaml.Controls
 			firstDateOfNextScope = GetCalendar().GetDateTime();
 
 			// when the navigation button is enabled, we should always be able to navigate to the desired scope.
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.MinDate));
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, firstDateOfNextScope));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(firstDateOfNextScope, Owner.GetMinDate()));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.GetMaxDate(), firstDateOfNextScope));
 
 			//Cleanup:
 			pFirstDateOfNextScope = firstDateOfNextScope;
@@ -593,8 +593,8 @@ namespace Microsoft.UI.Xaml.Controls
 			Owner.CoerceDate(ref minDateOfCurrentScope);
 			Owner.CoerceDate(ref maxDateOfCurrentScope);
 
-			if (minDateOfCurrentScope.ToUniversalTime() != m_minDateOfCurrentScope.ToUniversalTime() ||
-				maxDateOfCurrentScope.ToUniversalTime() != m_maxDateOfCurrentScope.ToUniversalTime())
+			if (minDateOfCurrentScope.UniversalTime != m_minDateOfCurrentScope.UniversalTime ||
+				maxDateOfCurrentScope.UniversalTime != m_maxDateOfCurrentScope.UniversalTime)
 			{
 				m_minDateOfCurrentScope = minDateOfCurrentScope;
 				m_maxDateOfCurrentScope = maxDateOfCurrentScope;

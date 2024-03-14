@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MicaController : global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropController, global::System.IDisposable, global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets
+	public partial class MicaController : global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropController, global::System.IDisposable, global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets, global::Microsoft.UI.IClosableNotifier
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -88,7 +88,24 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool IsClosed
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool MicaController.IsClosed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.IsClosed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
+		{
+			throw new global::System.NotImplementedException("The member bool MicaController.RemoveSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.RemoveSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.State.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetSystemBackdropConfiguration(global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration configuration)
@@ -96,11 +113,37 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.SetSystemBackdropConfiguration(SystemBackdropConfiguration configuration)");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.remove
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Closed.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Closed.remove
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FrameworkClosed.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FrameworkClosed.remove
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
+		{
+			throw new global::System.NotImplementedException("The member bool MicaController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.AddSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void RemoveAllSystemBackdropTargets()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.RemoveAllSystemBackdropTargets()");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintOpacity.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintOpacity.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Kind.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Kind.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void ResetProperties()
@@ -129,34 +172,6 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.State.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
-		{
-			throw new global::System.NotImplementedException("The member bool MicaController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.AddSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAllSystemBackdropTargets()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.RemoveAllSystemBackdropTargets()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
-		{
-			throw new global::System.NotImplementedException("The member bool MicaController.RemoveSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.RemoveSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.add
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.remove
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Kind.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public MicaController()
@@ -188,8 +203,41 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Microsoft.UI.ClosableNotifierHandler Closed
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "event ClosableNotifierHandler MicaController.Closed");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "event ClosableNotifierHandler MicaController.Closed");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Microsoft.UI.ClosableNotifierHandler FrameworkClosed
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "event ClosableNotifierHandler MicaController.FrameworkClosed");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "event ClosableNotifierHandler MicaController.FrameworkClosed");
+			}
+		}
+#endif
 		// Processing: Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropController
 		// Processing: System.IDisposable
 		// Processing: Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets
+		// Processing: Microsoft.UI.IClosableNotifier
 	}
 }

@@ -1,6 +1,6 @@
 parameters:
-  UnoCheck_Version: '1.14.1'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
+  UnoCheck_Version: '1.18.1'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/3728e150e4e148789302dcc00baaeae63e0c7eae/manifests/uno.ui.manifest.json'
 
 steps:
 
@@ -12,5 +12,5 @@ steps:
       dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
       uno-check --ci --non-interactive --fix --skip androidsdk --skip gtk3 --skip xcode --skip vswin --skip vsmac --manifest ${{ parameters.UnoCheck_Manifest }}
     displayName: Install .NET Workloads
-    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
+    condition: and(succeeded(), ne(variables.UnoDisableNetPreviousMobile, 'true'))
     retryCountOnTaskFailure: 3

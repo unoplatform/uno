@@ -253,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
 				}
-				else if (canScrollHorizontally && (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
+				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
 					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),

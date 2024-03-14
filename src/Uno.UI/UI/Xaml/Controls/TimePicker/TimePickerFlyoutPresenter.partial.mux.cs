@@ -722,7 +722,7 @@ partial class TimePickerFlyoutPresenter
 	}
 
 	// Gets the layout ordering of the selectors.
-	private void GetOrder(
+	internal void GetOrder(
 		out int hourOrder,
 		out int minuteOrder,
 		out int periodOrder,

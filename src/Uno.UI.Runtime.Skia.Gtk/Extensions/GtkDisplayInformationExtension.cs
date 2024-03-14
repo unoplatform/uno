@@ -4,6 +4,7 @@ using Gtk;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.Graphics.Display;
+using Microsoft.UI.Windowing;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -28,10 +29,22 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		OnDpiChanged(null, EventArgs.Empty);
 	}
 
-	private Window? GetWindow()
+	private Window GetWindow()
 	{
-		_window ??= GtkHost.Current?.InitialWindow;
+		if (_window is { })
+		{
+			return _window;
+		}
 
+		// TODO: this is a ridiculous amount of indirection, find something better
+		if (AppWindow.GetFromWindowId(_displayInformation.WindowId) is not { } appWindow ||
+			Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+			UnoGtkWindow.GetGtkWindowFromWindow(window) is not { } gtkWindow)
+		{
+			throw new InvalidOperationException($"{nameof(GtkDisplayInformationExtension)} couldn't find a GTK window.");
+		}
+
+		_window = gtkWindow;
 		return _window;
 	}
 

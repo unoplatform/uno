@@ -10,13 +10,13 @@ namespace Microsoft.UI.Composition
 	{
 		// Skipping already declared property IsActive
 		// Skipping already declared property IsEnded
+		// Forced skipping of method Microsoft.UI.Composition.CompositionScopedBatch.Completed.remove
+		// Forced skipping of method Microsoft.UI.Composition.CompositionScopedBatch.Completed.add
+		// Skipping already declared method Microsoft.UI.Composition.CompositionScopedBatch.Resume()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionScopedBatch.IsEnded.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionScopedBatch.End()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionScopedBatch.IsActive.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionScopedBatch.Suspend()
-		// Forced skipping of method Microsoft.UI.Composition.CompositionScopedBatch.Completed.add
-		// Forced skipping of method Microsoft.UI.Composition.CompositionScopedBatch.Completed.remove
-		// Skipping already declared method Microsoft.UI.Composition.CompositionScopedBatch.Resume()
 		// Skipping already declared event Microsoft.UI.Composition.CompositionScopedBatch.Completed
 	}
 }

@@ -17,6 +17,8 @@ using Uno.UI.DataBinding;
 using Windows.Networking.NetworkOperators;
 using Android.Views.Animations;
 
+using Point = Windows.Foundation.Point;
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	public abstract partial class VirtualizingPanelLayout : RecyclerView.LayoutManager, DependencyObject
@@ -1050,7 +1052,7 @@ namespace Microsoft.UI.Xaml.Controls
 				left = direction == GeneratorDirection.Forward ? logicalExtentOffset : logicalExtentOffset - size.Width - eps;
 				top = logicalBreadthOffset;
 			}
-			var frame = new Windows.Foundation.Rect(new Windows.Foundation.Point(left, top), size);
+			var frame = new global::Windows.Foundation.Rect(new global::Windows.Foundation.Point(left, top), size);
 			_layouter.ArrangeChild(child, frame);
 
 			// Due to conversions between physical and logical coordinates, the actual child end can differ from the end we sent to the layouter by a little bit.
@@ -2196,7 +2198,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return offsetStart <= availableExtent && offsetEnd >= 0;
 		}
 
-		internal void UpdateReorderingItem(Windows.Foundation.Point location, FrameworkElement element, object item)
+		internal void UpdateReorderingItem(Point location, FrameworkElement element, object item)
 		{
 			// Note: unlike managed list, we do *not* include the total offset
 			_pendingReorder = ScrollOrientation == Orientation.Horizontal

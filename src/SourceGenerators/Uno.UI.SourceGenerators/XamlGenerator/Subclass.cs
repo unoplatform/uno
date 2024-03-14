@@ -10,12 +10,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class Subclass
 	{
-		public Subclass(XamlMemberDefinition contentOwner, string returnType, string defaultBindMode, IXamlLocation? location)
+		public Subclass(XamlMemberDefinition contentOwner, string returnType, string defaultBindMode)
 		{
 			ContentOwner = contentOwner;
 			ReturnType = returnType;
 			DefaultBindMode = defaultBindMode;
-			Location = location;
 		}
 
 		public XamlMemberDefinition ContentOwner { get; }
@@ -23,7 +22,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public string ReturnType { get; }
 
 		public string DefaultBindMode { get; }
-
-		public IXamlLocation? Location { get; }
 	}
 }

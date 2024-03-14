@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		/// <remarks>This collection might contains pointers that has been released.</remarks>
 		/// <remarks>All pointers are expected to have the same <see cref="PointerIdentifier.Type"/>.</remarks>
-		internal Windows.Devices.Input.PointerIdentifier[] Pointers { get; set; }
+		internal global::Windows.Devices.Input.PointerIdentifier[] Pointers { get; set; }
 
 		public bool Handled { get; set; }
 

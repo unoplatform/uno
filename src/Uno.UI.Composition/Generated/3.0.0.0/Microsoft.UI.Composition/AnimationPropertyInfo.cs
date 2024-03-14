@@ -27,14 +27,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.set
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionObject GetResolvedCompositionObject()
-		{
-			throw new global::System.NotImplementedException("The member CompositionObject AnimationPropertyInfo.GetResolvedCompositionObject() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionObject%20AnimationPropertyInfo.GetResolvedCompositionObject%28%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string GetResolvedCompositionObjectProperty()
@@ -42,6 +35,13 @@ namespace Microsoft.UI.Composition
 			throw new global::System.NotImplementedException("The member string AnimationPropertyInfo.GetResolvedCompositionObjectProperty() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20AnimationPropertyInfo.GetResolvedCompositionObjectProperty%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Composition.CompositionObject GetResolvedCompositionObject()
+		{
+			throw new global::System.NotImplementedException("The member CompositionObject AnimationPropertyInfo.GetResolvedCompositionObject() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionObject%20AnimationPropertyInfo.GetResolvedCompositionObject%28%29");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.AnimationPropertyInfo.AccessMode.set
 	}
 }

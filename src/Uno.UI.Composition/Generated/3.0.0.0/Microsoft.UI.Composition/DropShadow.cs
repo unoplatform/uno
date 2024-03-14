@@ -97,17 +97,17 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.BlurRadius.set
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Opacity.set
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.get
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.set
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Color.get
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Opacity.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Mask.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Mask.set
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.BlurRadius.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Opacity.get
 		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Opacity.set
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.get
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.SourcePolicy.set
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.BlurRadius.set
+		// Forced skipping of method Microsoft.UI.Composition.DropShadow.Color.get
 	}
 }

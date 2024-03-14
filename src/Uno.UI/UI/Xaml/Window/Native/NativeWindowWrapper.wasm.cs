@@ -1,6 +1,8 @@
 using System;
+using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Core;
+using static __Uno.UI.Xaml.Controls.NativeWindowWrapper;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -35,4 +37,18 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	protected override void ShowCore() => WindowManagerInterop.WindowActivate();
+
+	private bool SetFullScreenMode(bool turnOn) => NativeMethods.SetFullScreenMode(turnOn);
+
+	public override string Title
+	{
+		get => NativeMethods.GetWindowTitle();
+		set => NativeMethods.SetWindowTitle(value);
+	}
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		SetFullScreenMode(true);
+		return Disposable.Create(() => SetFullScreenMode(false));
+	}
 }

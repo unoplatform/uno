@@ -18,6 +18,13 @@ namespace Microsoft.UI.Composition.Core
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.Foundation.IAsyncAction EnsurePreviousCommitCompletedAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction CompositorController.EnsurePreviousCommitCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CompositorController.EnsurePreviousCommitCompletedAsync%28%29");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -26,6 +33,8 @@ namespace Microsoft.UI.Composition.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "void CompositorController.Dispose()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Compositor.get
+		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Commit()
@@ -33,15 +42,6 @@ namespace Microsoft.UI.Composition.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "void CompositorController.Commit()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction EnsurePreviousCommitCompletedAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction CompositorController.EnsurePreviousCommitCompletedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CompositorController.EnsurePreviousCommitCompletedAsync%28%29");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.add
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Compositor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public CompositorController()

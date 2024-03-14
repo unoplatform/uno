@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using DirectUI;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 
 namespace Microsoft.UI.Xaml.Controls

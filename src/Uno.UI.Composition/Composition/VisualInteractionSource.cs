@@ -60,6 +60,8 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	/// </summary>
 	public VisualInteractionSourceRedirectionMode ManipulationRedirectionMode { get; set; }
 
+	internal bool RedirectsPointerWheel => (ManipulationRedirectionMode & VisualInteractionSourceRedirectionMode.PointerWheelOnly) != 0;
+
 	public static VisualInteractionSource Create(Visual source)
 	{
 		// WinUI doesn't allow a second `VisualInteractionSource`s with the same source, unless the previous one is disposed.

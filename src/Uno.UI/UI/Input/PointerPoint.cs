@@ -36,7 +36,7 @@ namespace Windows.UI.Input
 		}
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
-		public PointerPoint(Windows.UI.Input.PointerPoint point)
+		public PointerPoint(global::Windows.UI.Input.PointerPoint point)
 		{
 			FrameId = point.FrameId;
 			Timestamp = point.Timestamp;
@@ -56,13 +56,13 @@ namespace Windows.UI.Input
 		// And changing the explicit conversion operator to implicit conversion operator is a binary breaking change.
 		// We manually add this method to avoid this binary breaking change.
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Windows.UI.Input.PointerPoint op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)
+		public static global::Windows.UI.Input.PointerPoint op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)
 			=> muxPointerPoint;
 
 
-		public static implicit operator Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
+		public static implicit operator global::Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
 		{
-			return new Windows.UI.Input.PointerPoint(
+			return new global::Windows.UI.Input.PointerPoint(
 				muxPointerPoint.FrameId,
 				muxPointerPoint.Timestamp,
 				muxPointerPoint.PointerDevice,
@@ -70,7 +70,7 @@ namespace Windows.UI.Input
 				muxPointerPoint.RawPosition,
 				muxPointerPoint.Position,
 				muxPointerPoint.IsInContact,
-				(Windows.UI.Input.PointerPointProperties)muxPointerPoint.Properties);
+				(global::Windows.UI.Input.PointerPointProperties)muxPointerPoint.Properties);
 		}
 #endif
 

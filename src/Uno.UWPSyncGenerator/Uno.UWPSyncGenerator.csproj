@@ -6,7 +6,9 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<RollForward>Major</RollForward>
 
-		<SyncGeneratorCodeAnalysisVersion>4.5.0</SyncGeneratorCodeAnalysisVersion>
+		<!-- NOTE: Updating to 4.9 will break the BinaryLogger usage we have -->
+		<!-- It will silently stop producing binlogs -->
+		<SyncGeneratorCodeAnalysisVersion>4.8.0</SyncGeneratorCodeAnalysisVersion>
 		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
 

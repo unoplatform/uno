@@ -14,20 +14,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.EventsSource.get
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.EventsSource.set
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPattern(Microsoft.UI.Xaml.Automation.Peers.PatternInterface)
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RaiseAutomationEvent(global::Microsoft.UI.Xaml.Automation.Peers.AutomationEvents eventId)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RaisePropertyChangedEvent(global::Microsoft.UI.Xaml.Automation.AutomationProperty automationProperty, object oldValue, object newValue)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaiseAutomationEvent(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents)
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaisePropertyChangedEvent(Microsoft.UI.Xaml.Automation.AutomationProperty, object, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetAcceleratorKey()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetAccessKey()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetAutomationControlType()

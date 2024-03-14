@@ -16,6 +16,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using Microsoft.UI.Windowing;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
@@ -51,6 +52,12 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 	public abstract UIElement? Content { get; set; }
 
 	public abstract XamlRoot? XamlRoot { get; }
+
+	public string Title
+	{
+		get => NativeWindowWrapper!.Title;
+		set => NativeWindowWrapper!.Title = value;
+	}
 
 	public Rect Bounds => NativeWindowWrapper?.Bounds ?? default;
 
@@ -102,6 +109,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		nativeWindow.VisibleBoundsChanged += OnNativeVisibleBoundsChanged;
 
 		NativeWindowWrapper = nativeWindow;
+		Window.AppWindow.SetNativeWindow(nativeWindow);
 		SetVisibleBoundsFromNative();
 	}
 

@@ -14,8 +14,8 @@ namespace Microsoft.UI.Dispatching
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.set
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRunning.get
-		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.get
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.IsRepeating.set
+		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Interval.get
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueueTimer.Start()
 		// Skipping already declared method Microsoft.UI.Dispatching.DispatcherQueueTimer.Stop()
 		// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueTimer.Tick.add

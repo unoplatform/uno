@@ -63,19 +63,20 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
+		var canvas = surface.Canvas;
 		if (ignoreLocation)
 		{
-			surface.Canvas.Save();
+			canvas.Save();
 			var totalOffset = this.GetTotalOffset();
-			surface.Canvas.Translate(-(totalOffset.X + AnchorPoint.X), -(totalOffset.Y + AnchorPoint.Y));
+			canvas.Translate(-(totalOffset.X + AnchorPoint.X), -(totalOffset.Y + AnchorPoint.Y));
 		}
 
-		using var session = BeginDrawing(surface, DrawingFilters.Default);
+		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default);
 		Render(in session);
 
 		if (ignoreLocation)
 		{
-			surface.Canvas.Restore();
+			canvas.Restore();
 		}
 	}
 
@@ -110,36 +111,36 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	private protected DrawingSession BeginDrawing(in DrawingSession parentSession)
-		=> BeginDrawing(parentSession.Surface, parentSession.Filters);
+		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters);
 
-	private protected DrawingSession BeginDrawing(SKSurface surface, in DrawingFilters filters)
+	private protected DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters)
 	{
 		if (ShadowState is { } shadow)
 		{
-			surface.Canvas.SaveLayer(shadow.Paint);
+			canvas.SaveLayer(shadow.Paint);
 		}
 		else
 		{
-			surface.Canvas.Save();
+			canvas.Save();
 		}
 
 		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 		var totalOffset = this.GetTotalOffset();
-		surface.Canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
+		canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
 
 		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 		if (this.GetTransform() is { IsIdentity: false } transform)
 		{
 			var skTransform = transform.ToSKMatrix();
-			surface.Canvas.Concat(ref skTransform);
+			canvas.Concat(ref skTransform);
 		}
 
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(surface, this);
+		Clip?.Apply(canvas, this);
 
-		var session = new DrawingSession(surface, in filters);
+		var session = new DrawingSession(surface, canvas, in filters);
 
 		DrawingSession.PushOpacity(ref session, Opacity);
 

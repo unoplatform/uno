@@ -22,7 +22,11 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
-		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() => ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter)));
+		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
+		{
+			ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter), out var extension);
+			return extension;
+		});
 
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
@@ -125,7 +129,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_lastGlobalRect = globalRect;
 
-					_nativeElementHostingExtension.Value.ArrangeNativeElement(XamlRoot, Content, globalRect);
+					_nativeElementHostingExtension.Value?.ArrangeNativeElement(XamlRoot, Content, globalRect);
 				}
 			}
 		}

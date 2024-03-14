@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using Gtk;
@@ -17,12 +18,16 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindow : Window
 {
-	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
+	private static readonly ConcurrentDictionary<WinUIWindow, UnoGtkWindow> _windowToGtkWindow = new();
+
+	public static UnoGtkWindow? GetGtkWindowFromWindow(WinUIWindow window)
+		=> _windowToGtkWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
 
 	public UnoGtkWindow(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
-		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
+		_windowToGtkWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
+		winUIWindow.Closed += (_, _) => _windowToGtkWindow.TryRemove(winUIWindow, out _);
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
@@ -104,9 +109,9 @@ internal class UnoGtkWindow : Window
 			}
 		}
 
-		if (string.IsNullOrEmpty(_applicationView.Title))
+		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
-			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 
@@ -114,7 +119,6 @@ internal class UnoGtkWindow : Window
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		Title = _applicationView.Title;
 		SetSizeRequest((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 	}
 

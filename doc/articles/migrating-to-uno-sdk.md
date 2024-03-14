@@ -134,7 +134,7 @@ The Uno.Sdk contains a number of Default Items to further reduce the clutter req
 
 ```xml
 <!-- Include all images by default - matches the __WindowsAppSdkDefaultImageIncludes property in the WindowsAppSDK -->
-<Content Include="Assets\**;**/*.png;**/*.bmp;**/*.jpg;**/*.dds;**/*.tif;**/*.tga;**/*.gif" Exclude="bin\**;obj\**;**\*.svg" />
+<Content Include="Assets\**;**\*.png;**\*.bmp;**\*.jpg;**\*.dds;**\*.tif;**\*.tga;**\*.gif" Exclude="bin\**;obj\**;**\*.svg" />
 <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 <Compile Update="**\*.xaml.cs">
     <DependentUpon>%(Filename)</DependentUpon>

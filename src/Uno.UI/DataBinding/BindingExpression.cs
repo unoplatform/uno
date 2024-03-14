@@ -767,7 +767,7 @@ namespace Microsoft.UI.Xaml.Data
 				&& _boundPropertyType != typeof(object) // Always can assign to object
 				&& !value.GetType().Is(_boundPropertyType))
 			{
-				value = BindingPropertyHelper.Convert(() => _boundPropertyType, value);
+				value = BindingPropertyHelper.Convert(_boundPropertyType, value);
 			}
 
 			return value;

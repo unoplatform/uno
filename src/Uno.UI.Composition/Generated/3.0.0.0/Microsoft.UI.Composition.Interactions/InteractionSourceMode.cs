@@ -6,15 +6,9 @@ namespace Microsoft.UI.Composition.Interactions
 #if false || false || false || false || false || false || false
 	public enum InteractionSourceMode
 	{
-#if false || false || false || false || false || false || false
-		Disabled = 0,
-#endif
-#if false || false || false || false || false || false || false
-		EnabledWithInertia = 1,
-#endif
-#if false || false || false || false || false || false || false
-		EnabledWithoutInertia = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionSourceMode.Disabled
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionSourceMode.EnabledWithInertia
+		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionSourceMode.EnabledWithoutInertia
 	}
 #endif
 }

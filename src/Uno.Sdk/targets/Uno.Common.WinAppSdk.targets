@@ -3,28 +3,46 @@
 		<IsWinAppSdk>true</IsWinAppSdk>
 		<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
-		<RuntimeIdentifiers Condition=" $(RuntimeIdentifiers) == '' ">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
 
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' AND ('$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe') ">true</EnableMsixTooling>
 
 		<EnableWindowsTargeting Condition=" $(EnableWindowsTargeting) == '' ">true</EnableWindowsTargeting>
+		<EnableDefaultWindowsItems Condition="$(EnableDefaultWindowsItems) == ''">false</EnableDefaultWindowsItems>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)' != 'true'">
-		<!-- Workaround Uno Issue 15492 - This must be set to true for the Library so that the generated files use the Library name in the path -->
-		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND $(OutputType) != 'WinExe' AND $(OutputType) != 'Exe' ">true</EnableCoreMrtTooling>
-		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
+	<PropertyGroup Condition=" $(_IsExecutable) ">
+		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
+		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">true</EnableMsixTooling>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
+	<Choose>
+		<When Condition="$(BuildingInsideVisualStudio) == 'true'">
+			<PropertyGroup Condition="$(OutputType) != 'WinExe' AND $(OutputType) != 'Exe'">
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' ">false</EnableCoreMrtTooling>
+				<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">false</EnableMsixTooling>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<!-- Workaround Uno Issue 15492 - This must be set to true for the Library so that the generated files use the Library name in the path -->
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND $(OutputType) != 'WinExe' AND $(OutputType) != 'Exe' ">true</EnableCoreMrtTooling>
+				<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
+	<PropertyGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
+		<Platform Condition="$(Platform) == 'AnyCPU'">$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 		<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
 		<UseWinUI Condition=" $(UseWinUI) == '' ">true</UseWinUI>
 	</PropertyGroup>
 
-	<ItemGroup Condition="$(SingleProject)!='true' and $(OutputType)=='WinExe'">
+	<!-- Legacy Project Support -->
+	<ItemGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
 		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
 		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
 	</ItemGroup>

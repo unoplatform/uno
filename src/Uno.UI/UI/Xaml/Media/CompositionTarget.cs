@@ -4,6 +4,7 @@ using Microsoft.UI.Composition.Interactions;
 using Uno.UI.Composition;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Input;
+
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget : ICompositionTarget
@@ -14,6 +15,8 @@ public partial class CompositionTarget : ICompositionTarget
 	{
 		ContentRoot = contentRoot;
 	}
+
+	public static Compositor GetCompositorForCurrentThread() => Compositor.GetSharedCompositor();
 
 	internal ContentRoot ContentRoot { get; }
 

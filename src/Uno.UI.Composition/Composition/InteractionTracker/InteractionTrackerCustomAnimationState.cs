@@ -34,13 +34,17 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 	}
 
+	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	{
+	}
+
 	internal override void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId)
 	{
 		// TODO: Stop current animation. Currently, the TryUpdate[Position|Scale]WithAnimation methods are not implemented.
 
 		// State changes to inertia with inertia modifiers evaluated using requested velocity as initial velocity.
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)

@@ -54,9 +54,9 @@ variables:
   windowsScaledPool: 'Windows2022-20230918'
   linuxVMImage: 'ubuntu-latest'
   linuxScaledPool: 'Ubuntu2204-20230918'
-  macOSVMImage: 'macOS-12'
+  macOSVMImage: 'macOS-13'
   macOSVMImage_UITests: 'macOS-12'
-  xCodeRoot: '/Applications/Xcode_14.1.app'
+  xCodeRoot: '/Applications/Xcode_15.2.app'
   XamarinSDKVersion: 6_12_24
   xCodeRoot_iOS_UITests: '/Applications/Xcode_14.1.app'
   XamarinSDKVersion_iOS_UITests: 6_12_24

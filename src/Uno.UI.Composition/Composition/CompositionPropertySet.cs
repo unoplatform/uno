@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Windows.Storage.Streams;
 using Color = Windows.UI.Color;
@@ -10,7 +11,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionPropertySet : CompositionObject
 	{
-		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 		internal CompositionPropertySet(Compositor compositor) : base(compositor)
 		{
@@ -66,6 +67,11 @@ namespace Microsoft.UI.Composition
 				return CompositionGetValueStatus.TypeMismatch;
 			}
 			return CompositionGetValueStatus.NotFound;
+		}
+
+		internal bool TryGetValueNonGeneric(string propertyName, [NotNullWhen(true)] out object? value)
+		{
+			return _properties.TryGetValue(propertyName, out value);
 		}
 
 		private void SetValue<T>(string propertyName, T value)

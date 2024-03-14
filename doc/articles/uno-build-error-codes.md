@@ -39,6 +39,14 @@ The build process has determined that the version of the Uno.WinUI NuGet package
 
 Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 
+### UNOB0006: The UnoFeature 'XX' was selected, but the property XXXVersion was not set
+
+The build process has determined that you have specified an UnoFeature that requires a version to be set for a Package group such as Uno.Extensions, Uno.Toolkit.WinUI, Uno Themes, or C# Markup. Update your `csproj` file or `Directory.Build.props` with the property specified in the error along with the version that you would like to pin your build to.
+
+### UNOB0007: AOT compilation is only supported in Release mode. Please set the 'Optimize' property to 'true' in the project file
+
+The build process has detected that you have set the value `UnoGenerateAotProfile` to true for a build configuration that has not optimized the assembly (i.e. Debug build Configuration). You should only generate an AOT profile from a build Configuration that will optimize the assembly such as the Release build Configuration.
+
 ## Compiler Errors
 
 ### UNO0001

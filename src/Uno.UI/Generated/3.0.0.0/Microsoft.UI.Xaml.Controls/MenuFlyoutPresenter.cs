@@ -25,17 +25,42 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TemplateSettings
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.SystemBackdrop)this.GetValue(SystemBackdropProperty);
+			}
+			set
+			{
+				this.SetValue(SystemBackdropProperty, value);
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsDefaultShadowEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsDefaultShadowEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty SystemBackdropProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(SystemBackdrop), typeof(global::Microsoft.UI.Xaml.Media.SystemBackdrop),
+			typeof(global::Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SystemBackdrop)));
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.MenuFlyoutPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.TemplateSettings.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabled.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdrop.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdrop.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.MenuFlyoutPresenter.IsDefaultShadowEnabledProperty.get
 	}
 }

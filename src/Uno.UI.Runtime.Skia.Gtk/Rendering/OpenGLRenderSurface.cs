@@ -12,7 +12,6 @@ using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
-
 	internal class OpenGLRenderSurface : GLRenderSurfaceBase
 	{
 		private static DefaultNativeContext? _nativeContext;
@@ -38,18 +37,18 @@ namespace Uno.UI.Runtime.Skia.Gtk
 				{
 					var isAvailable = NativeContext.TryGetProcAddress("glGetString", out var getString);
 
-					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+					if (typeof(OpenGLRenderSurface).Log().IsEnabled(LogLevel.Debug))
 					{
-						typeof(OpenGLESRenderSurface).Log().Debug($"OpenGL support: isAvailable:{isAvailable} isMacOs:{isMacOs}");
+						typeof(OpenGLRenderSurface).Log().Debug($"OpenGL support: isAvailable:{isAvailable} isMacOs:{isMacOs}");
 					}
 
 					return isAvailable && !isMacOs;
 				}
 				catch (Exception e)
 				{
-					if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Information))
+					if (typeof(OpenGLRenderSurface).Log().IsEnabled(LogLevel.Information))
 					{
-						typeof(OpenGLESRenderSurface).Log().LogInfo($"OpenGL is not available {e.Message}");
+						typeof(OpenGLRenderSurface).Log().LogInfo($"OpenGL is not available {e.Message}");
 					}
 
 					return false;
@@ -59,9 +58,9 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		public static void TryValidateExtensions()
 		{
-			if (typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Debug))
+			if (typeof(OpenGLRenderSurface).Log().IsEnabled(LogLevel.Debug))
 			{
-				typeof(OpenGLESRenderSurface).Log().Debug($"Validating OpenGL Extensions");
+				typeof(OpenGLRenderSurface).Log().Debug($"Validating OpenGL Extensions");
 			}
 
 			var extensions = new GL(NativeContext).GetStringS(GLEnum.Extensions);
@@ -69,7 +68,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 			if (hasARBVertexArrayObject.HasValue
 				&& hasARBVertexArrayObject == false
-				&& typeof(OpenGLESRenderSurface).Log().IsEnabled(LogLevel.Error))
+				&& typeof(OpenGLRenderSurface).Log().IsEnabled(LogLevel.Error))
 			{
 				// In this case, the GTK runtime will terminate the app
 				// if some OpenGL extensions cannot be found. This can happen
@@ -86,7 +85,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 				// GL_OES_vertex_array_object
 
 
-				typeof(OpenGLESRenderSurface).Log().Error(
+				typeof(OpenGLRenderSurface).Log().Error(
 					$"OpenGL support on this system is missing extension \"GL_ARB_vertex_array_object\", you may need to enable software " +
 					$"rendering. (https://platform.uno/docs/articles/features/using-skia-gtk.html#changing-the-rendering-target)");
 			}

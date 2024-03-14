@@ -8,6 +8,7 @@ namespace Microsoft.UI.Composition.Interactions
 #endif
 	public partial class InteractionTrackerRequestIgnoredArgs
 	{
+		// Skipping already declared property RequestId
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs.RequestId.get
 	}
 }

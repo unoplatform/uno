@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Input
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
-			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
+			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
 			var position = relativeTo == null
 				? rawPosition

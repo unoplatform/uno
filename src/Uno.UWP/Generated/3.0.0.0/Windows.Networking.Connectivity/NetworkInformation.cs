@@ -16,7 +16,7 @@ namespace Windows.Networking.Connectivity
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Connectivity.ConnectionProfile> GetConnectionProfiles()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ConnectionProfile> NetworkInformation.GetConnectionProfiles() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CConnectionProfile%3E%20NetworkInformation.GetConnectionProfiles%28%29");

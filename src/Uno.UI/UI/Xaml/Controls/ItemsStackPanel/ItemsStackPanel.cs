@@ -1,13 +1,14 @@
 ﻿#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
+using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -65,11 +66,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void IInsertionPanel.GetInsertionIndexes(Windows.Foundation.Point position, out int first, out int second)
+		void IInsertionPanel.GetInsertionIndexes(Point position, out int first, out int second)
 		{
 			first = -1;
 			second = -1;
-			if ((new Windows.Foundation.Rect(default, new Windows.Foundation.Size(ActualSize.X, ActualSize.Y))).Contains(position))
+			if ((new Rect(default, new Size(ActualSize.X, ActualSize.Y))).Contains(position))
 			{
 				if (Children == null || Children.Empty())
 				{

@@ -41,9 +41,9 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation.Period.set
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation.Period.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation.DampingRatio.get
 		// Forced skipping of method Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation.DampingRatio.set
-		// Forced skipping of method Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation.Period.get
+		// Forced skipping of method Microsoft.UI.Composition.SpringVector2NaturalMotionAnimation.Period.set
 	}
 }

@@ -33,6 +33,13 @@ namespace Microsoft.UI.Dispatching
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void ShutdownQueue()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueueController", "void DispatcherQueueController.ShutdownQueue()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Dispatching.DispatcherQueueController CreateOnDedicatedThread()
 		{
 			throw new global::System.NotImplementedException("The member DispatcherQueueController DispatcherQueueController.CreateOnDedicatedThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueueController%20DispatcherQueueController.CreateOnDedicatedThread%28%29");
