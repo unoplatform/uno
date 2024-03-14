@@ -15,12 +15,17 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.ObjectModel;
 using Uno.UI.Core;
+using Uno.Disposables;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class RadioButtons : Control
 	{
+		/* Begin Uno specific */
+		private SerialDisposable _toggleButtonSubscriptions = new();
+		/* End Uno Specific */
+
 		public RadioButtons()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RadioButtons);
@@ -72,11 +77,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 					repeater.ItemTemplate = m_radioButtonsElementFactory;
 
-					repeater.ElementPrepared += OnRepeaterElementPrepared;
-					repeater.ElementClearing += OnRepeaterElementClearing;
-					repeater.ElementIndexChanged += OnRepeaterElementIndexChanged;
-					repeater.Loaded += OnRepeaterLoaded;
-					repeater.Unloaded += OnRepeaterUnloaded;
 					return repeater;
 				}
 				return null;
@@ -312,8 +312,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var toggleButton = element as ToggleButton;
 				if (toggleButton != null)
 				{
-					toggleButton.Checked += OnChildChecked;
-					toggleButton.Unchecked += OnChildUnchecked;
+					CompositeDisposable disposables = new();
+					_toggleButtonSubscriptions.Disposable = disposables;
+
+					disposables.Add(toggleButton.RegisterWeakChecked(OnChildChecked));
+					disposables.Add(toggleButton.RegisterWeakUnchecked(OnChildUnchecked));
 
 					// If the developer adds a checked toggle button to the collection, update selection to this item.
 					if (SharedHelpers.IsTrue(toggleButton.IsChecked))
