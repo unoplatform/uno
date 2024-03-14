@@ -113,7 +113,7 @@ internal partial class BrowserRenderer
 		var scale = _displayInformation.RawPixelsPerViewPixel;
 
 		// get the new surface size
-		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.Current!.Bounds.Width * scale), (int)(Microsoft.UI.Xaml.Window.Current!.Bounds.Height * scale));
+		var newCanvasSize = new SKSizeI((int)(Microsoft.UI.Xaml.Window.Current!.Bounds.Width), (int)(Microsoft.UI.Xaml.Window.Current!.Bounds.Height));
 
 		// manage the drawing surface
 		if (_renderTarget == null || _lastSize != newCanvasSize || !_renderTarget.IsValid)
@@ -137,7 +137,7 @@ internal partial class BrowserRenderer
 
 			// re-create the render target
 			_renderTarget?.Dispose();
-			_renderTarget = new GRBackendRenderTarget(newCanvasSize.Width, newCanvasSize.Height, _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
+			_renderTarget = new GRBackendRenderTarget((int)(newCanvasSize.Width * scale), (int)(newCanvasSize.Height * scale), _jsInfo.Samples, _jsInfo.Stencil, _glInfo);
 
 			if (!_isWindowInitialized)
 			{
@@ -156,7 +156,7 @@ internal partial class BrowserRenderer
 		using (new SKAutoCanvasRestore(_canvas, true))
 		{
 			_surface.Canvas.Clear(SKColors.Red);
-
+			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				Microsoft.UI.Xaml.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);

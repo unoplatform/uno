@@ -67,14 +67,17 @@ namespace Uno.UI.Runtime.Skia {
 			//if (!this.canvas)
 			//	return;
 
-			//var scale = window.devicePixelRatio || 1;
-			//var w = this.canvas.clientWidth * scale
-			//var h = this.canvas.clientHeight * scale;
+			var scale = window.devicePixelRatio || 1;
+			var w = width * scale
+			var h = height * scale;
 
-			if (this.canvas.width !== width)
-				this.canvas.width = width;
-			if (this.canvas.height !== height)
-				this.canvas.height = height;
+			if (this.canvas.width !== w)
+				this.canvas.width = w;
+			if (this.canvas.height !== h)
+				this.canvas.height = h;
+
+			this.canvas.style.width = `${width}px`;
+			this.canvas.style.height = `${height}px`;
 		}
 
 		static setCanvasSize(instance: BrowserRenderer, width: number, height: number) {
@@ -97,7 +100,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId:any) {
+		public static createContextStatic(instance: BrowserRenderer, canvasOrCanvasId: any) {
 			return instance.createContext(canvasOrCanvasId);
 		}
 
