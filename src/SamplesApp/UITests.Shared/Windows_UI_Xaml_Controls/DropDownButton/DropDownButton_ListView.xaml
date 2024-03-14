@@ -1,0 +1,41 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.DropDownButton.DropDownButton_ListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.DropDownButton"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"	
+    mc:Ignorable="d"	
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+	<Grid>
+		<DropDownButton Content="Click me"
+						HorizontalAlignment="Center">
+			<DropDownButton.Flyout>
+				<Flyout Placement="Bottom">
+					<ListView>
+						<ListView.Items>
+							<ListViewItem>
+								This is an example of a pretty long very very very very very and very much longer than anything else.
+							</ListViewItem>
+							<ListViewItem>
+								This is an example of a pretty long string
+							</ListViewItem>
+							<ListViewItem>
+								This is an example of a pretty
+							</ListViewItem>
+							<ListViewItem>
+								This is an example of
+							</ListViewItem>
+							<ListViewItem>
+								This is an
+							</ListViewItem>
+						</ListView.Items>
+					</ListView>
+				</Flyout>
+			</DropDownButton.Flyout>
+		</DropDownButton>
+	</Grid>
+</UserControl>

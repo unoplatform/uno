@@ -71,6 +71,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_ListView_Inside_ContentControl()
+		{
+			var source = new[]
+			{
+				"this is",
+				"this is a very",
+				"this is a very and very very",
+				"this is a very and very very more than very",
+				"this is a very and very very more than very long text",
+				"this is a very and very very more than very long text used to validate",
+				"this is a very and very very more than very long text used to validate a listview scrolling"
+			};
+
+			ListView SUT = new() { ItemsSource = source };
+
+			StackPanel stackPanel = new()
+			{
+				MaxWidth = 456
+			};
+
+			ScrollViewer scroll = new()
+			{
+				ZoomMode = ZoomMode.Disabled,
+				VerticalScrollMode = ScrollMode.Auto,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollMode = ScrollMode.Auto,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				Content = new ContentControl()
+				{
+					Content = SUT,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					VerticalAlignment = VerticalAlignment.Stretch,
+				}
+			};
+
+			stackPanel.Add(scroll);
+
+			WindowHelper.WindowContent = stackPanel;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(456, SUT.ActualWidth);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
