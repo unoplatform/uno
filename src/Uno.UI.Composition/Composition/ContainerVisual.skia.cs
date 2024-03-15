@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.Composition;
@@ -55,5 +54,20 @@ public partial class ContainerVisual : Visual
 		{
 			children[i].Render(in session);
 		}
+	}
+
+	protected internal override bool SetMatrixDirty()
+	{
+		if (base.SetMatrixDirty())
+		{
+			foreach (var child in Children)
+			{
+				child.SetMatrixDirty();
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

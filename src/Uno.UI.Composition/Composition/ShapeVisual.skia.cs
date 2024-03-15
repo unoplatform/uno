@@ -8,11 +8,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	/// <summary>
-	/// This is the final transformation matrix from the origin for this Visual. We use this for hit testing.
-	/// </summary>
-	internal SKMatrix? TotalMatrix { get; private set; }
-
 	internal override void Render(in DrawingSession parentSession)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
@@ -54,8 +49,6 @@ public partial class ShapeVisual
 		{
 			canvas.ClipRect(viewBox.GetRect(), antialias: true);
 		}
-
-		TotalMatrix = canvas.TotalMatrix;
 
 		base.Draw(in session);
 	}

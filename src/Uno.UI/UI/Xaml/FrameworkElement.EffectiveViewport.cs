@@ -47,6 +47,7 @@ namespace Microsoft.UI.Xaml
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
+		private Point? _lastScrollOffsets;
 #if CHECK_LAYOUTED
 		private bool _isLayouted;
 #endif
@@ -205,11 +206,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			if (!isInitial && viewport == _parentViewport)
-			{
-				return;
-			}
-
 			_parentViewport = viewport;
 			PropagateEffectiveViewportChange(isInitial, isInternal);
 		}
@@ -289,9 +285,7 @@ namespace Microsoft.UI.Xaml
 
 				// The visible window of the SCP
 				// TODO: We should constrains the clip only on axis on which we can scroll
-				var scrollport = new Rect(
-					new Point(ScrollOffsets.X, ScrollOffsets.Y),
-					LayoutInformation.GetLayoutSlot(this).Size);
+				var scrollport = LayoutInformation.GetLayoutSlot(this);
 
 				if (viewport.IsInfinite)
 				{
@@ -375,7 +369,7 @@ namespace Microsoft.UI.Xaml
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
-			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
+			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated || _lastScrollOffsets != ScrollOffsets))
 			{
 				_isEnumeratingChildrenInterestedInViewportUpdates = true;
 				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
@@ -392,6 +386,8 @@ namespace Microsoft.UI.Xaml
 					enumerator.Dispose();
 				}
 			}
+
+			_lastScrollOffsets = ScrollOffsets;
 		}
 
 		[Conditional("TRACE_EFFECTIVE_VIEWPORT")]

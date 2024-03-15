@@ -16,9 +16,11 @@ using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices.WindowHelper;
 using static Windows.Foundation.Rect;
 using EffectiveViewportChangedEventArgs = Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs;
@@ -1143,6 +1145,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					result.TrySetException(e);
 				}
 			}
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child.")]
+#endif
+		public async Task When_EVP_ScrollContentPresenter()
+		{
+			var border = new Border
+			{
+				Height = 4192,
+				Width = 256,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+
+			var sv = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = border
+			};
+
+			await UITestHelper.Load(sv);
+
+			var scp = sv.FindVisualChildByType<ScrollContentPresenter>();
+
+			var changedCount = 0;
+			var childChangedCount = 0;
+			scp.EffectiveViewportChanged += (_, _) => changedCount++;
+			border.EffectiveViewportChanged += (_, _) => childChangedCount++;
+
+			sv.ScrollToVerticalOffset(100);
+			await WaitForIdle();
+
+			Assert.AreEqual(1, changedCount);
+			Assert.AreEqual(2, childChangedCount);
 		}
 
 		private async Task RetryAssert(Action assertion)

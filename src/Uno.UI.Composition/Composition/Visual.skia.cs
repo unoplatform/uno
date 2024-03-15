@@ -1,8 +1,6 @@
 ﻿#nullable enable
 //#define TRACE_COMPOSITION
 
-using System;
-using System.Linq;
 using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
@@ -16,6 +14,46 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
+	private bool _matrixDirty = true;
+	private SKMatrix _totalMatrix = SKMatrix.Identity;
+
+	/// <returns>true if wasn't dirty</returns>
+	protected internal virtual bool SetMatrixDirty() => _matrixDirty = true;
+
+	public object? Owner { get; set; }
+
+	/// <summary>
+	/// This is the final transformation matrix from the origin for this Visual.
+	/// </summary>
+	internal SKMatrix TotalMatrix
+	{
+		get
+		{
+			if (_matrixDirty)
+			{
+				_matrixDirty = false;
+
+				var matrix = Parent?.TotalMatrix ?? SKMatrix.Identity;
+
+				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
+				var totalOffset = this.GetTotalOffset();
+				matrix.TransX += totalOffset.X + AnchorPoint.X;
+				matrix.TransY += totalOffset.Y + AnchorPoint.Y;
+
+				// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
+				if (this.GetTransform() is { IsIdentity: false } transform)
+				{
+					matrix = matrix.PreConcat(transform.ToSKMatrix());
+				}
+
+				_totalMatrix = matrix;
+
+			}
+
+			return _totalMatrix;
+		}
+	}
+	internal string? TotalMatrixString => string.Join(", ", TotalMatrix.Values);
 
 	public CompositionClip? Clip
 	{
@@ -123,16 +161,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.Save();
 		}
 
-		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		var totalOffset = this.GetTotalOffset();
-		canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
-
-		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-		if (this.GetTransform() is { IsIdentity: false } transform)
-		{
-			var skTransform = transform.ToSKMatrix();
-			canvas.Concat(ref skTransform);
-		}
+		canvas.SetMatrix(TotalMatrix);
 
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)

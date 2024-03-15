@@ -529,66 +529,62 @@ namespace Microsoft.UI.Xaml
 			}
 
 #if __SKIA__
-			if ((!from.XamlRoot?.RenderDirty ?? false) && from.Visual?.TotalMatrix is { } fromMatrix && (to is null || to.Visual?.TotalMatrix is { }))
+			var finalTransform = (to?.Visual?.TotalMatrix ?? SkiaSharp.SKMatrix.Identity).Invert().PreConcat(from.Visual.TotalMatrix);
+
+			var values = finalTransform.Values;
+			var matrix3x2FinalTransform = new Matrix3x2(
+				m11: values[0],
+				m12: values[3],
+				m21: values[1],
+				m22: values[4],
+				m31: values[2],
+				m32: values[5]);
+
+			if (from.Log().IsEnabled(LogLevel.Trace))
 			{
-				var finalTransform = (to?.Visual?.TotalMatrix ?? SkiaSharp.SKMatrix.Identity).Invert().PreConcat(fromMatrix);
-
-				var matrix3x2FinalTransform = new Matrix3x2(
-					m11: finalTransform.ScaleX,
-					m12: finalTransform.SkewX,
-					m21: finalTransform.SkewY,
-					m22: finalTransform.ScaleY,
-					m31: finalTransform.TransX,
-					m32: finalTransform.TransY);
-
-				if (from.Log().IsEnabled(LogLevel.Trace))
-				{
-					from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix3x2FinalTransform}");
-				}
-
-				return @matrix3x2FinalTransform;
+				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix3x2FinalTransform}");
 			}
-			else
-#endif
-			{
+
+			return @matrix3x2FinalTransform;
+#else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
-				// If possible we try to navigate the tree upward so we have a greater chance
-				// to find an element in the parent hierarchy of the other element.
-				if (to is { } && from.Depth < to.Depth)
-				{
-					return GetTransform(to, from).Inverse();
-				}
+			// If possible we try to navigate the tree upward so we have a greater chance
+			// to find an element in the parent hierarchy of the other element.
+			if (to is { } && from.Depth < to.Depth)
+			{
+				return GetTransform(to, from).Inverse();
+			}
 #endif
 
-				var matrix = Matrix3x2.Identity;
+			var matrix = Matrix3x2.Identity;
 
-				var elt = from;
-				do
-				{
-					elt.ApplyRenderTransform(ref matrix);
-					elt.ApplyLayoutTransform(ref matrix);
-					elt.ApplyElementCustomTransform(ref matrix);
-					elt.ApplyFlowDirectionTransform(ref matrix);
-				} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
+			var elt = from;
+			do
+			{
+				elt.ApplyRenderTransform(ref matrix);
+				elt.ApplyLayoutTransform(ref matrix);
+				elt.ApplyElementCustomTransform(ref matrix);
+				elt.ApplyFlowDirectionTransform(ref matrix);
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
-				if (to is not null && elt != to)
-				{
-					// Unfortunately we didn't find the 'to' in the parent hierarchy,
-					// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
-					// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
-					var toToRoot = GetTransform(to, null);
+			if (to is not null && elt != to)
+			{
+				// Unfortunately we didn't find the 'to' in the parent hierarchy,
+				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
+				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
+				var toToRoot = GetTransform(to, null);
 
-					var rootToTo = toToRoot.Inverse();
-					matrix *= rootToTo;
-				}
-
-				if (from.Log().IsEnabled(LogLevel.Trace))
-				{
-					from.Log().Trace($"{nameof(GetTransform)}(from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix}");
-				}
-
-				return matrix;
+				var rootToTo = toToRoot.Inverse();
+				matrix *= rootToTo;
 			}
+
+			if (from.Log().IsEnabled(LogLevel.Trace))
+			{
+				from.Log().Trace($"{nameof(GetTransform)}(from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix}");
+			}
+
+			return matrix;
+#endif
 		}
 
 		/// <summary>

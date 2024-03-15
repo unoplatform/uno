@@ -134,6 +134,9 @@ namespace Microsoft.UI.Composition
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
+#if __SKIA__
+			SetMatrixDirty();
+#endif
 			Compositor.InvalidateRender(this);
 		}
 
