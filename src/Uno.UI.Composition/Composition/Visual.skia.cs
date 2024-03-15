@@ -109,10 +109,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 	}
 
-	private protected DrawingSession BeginDrawing(in DrawingSession parentSession)
+	private DrawingSession BeginDrawing(in DrawingSession parentSession)
 		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters);
 
-	private protected DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters)
+	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters)
 	{
 		if (ShadowState is { } shadow)
 		{
