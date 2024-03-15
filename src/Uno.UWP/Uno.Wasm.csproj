@@ -92,7 +92,7 @@
 			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
 			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
-		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Wasm.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Wasm.d.ts" DestinationFolder="js" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>
 
 	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">

@@ -9,8 +9,8 @@ internal interface IHtmlHandleableRoutedEventArgs : IHandleableRoutedEventArgs
 	/// </summary>
 	/// <remarks>
 	/// The default value is expected to be customized by events.
-	/// For instance, for pointer events the default will be <see cref="HtmlEventDispatchResult.StopPropagation"/>
-	/// while the common default value is <see cref="HtmlEventDispatchResult.StopPropagation"/> | <see cref="HtmlEventDispatchResult.PreventDefault"/>.
+	/// For instance, for pointer events the default will be <see cref="Microsoft.UI.Xaml.HtmlEventDispatchResult.StopPropagation"/>
+	/// while the common default value is <see cref="Microsoft.UI.Xaml.HtmlEventDispatchResult.StopPropagation"/> | <see cref="Microsoft.UI.Xaml.HtmlEventDispatchResult.PreventDefault"/>.
 	/// </remarks>
-	HtmlEventDispatchResult HandledResult { get; set; }
+	Microsoft.UI.Xaml.HtmlEventDispatchResult HandledResult { get; set; }
 }

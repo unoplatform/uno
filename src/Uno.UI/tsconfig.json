@@ -12,8 +12,9 @@
 	// We need ES2018 types to have support for async iteration (used in File System APIs)
 	"lib": [ "ES2018", "DOM", "DOM.Iterable" ]
   },
-  "include": [
-    "ts/**/*",
-    "tsBindings/**/*"
-  ]
+	"include": [
+		"ts/**/*",
+		"tsBindings/**/*",
+		"../Uno.UWP/js/*",
+	]
 }

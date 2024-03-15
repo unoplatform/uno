@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml;
+namespace Uno.UI.Xaml;
 
 [Flags]
 internal enum HtmlEventDispatchResult : byte

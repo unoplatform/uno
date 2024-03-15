@@ -39,6 +39,8 @@
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
+
+		<TypeScriptCompile Include="..\Uno.UWP\bin\Uno.Wasm\$(Configuration)\$(TargetFramework)\javascript\*.d.ts" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 
 		<UpToDateCheckInput Include="WasmCSS\**\*.css" />
