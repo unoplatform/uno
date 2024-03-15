@@ -114,6 +114,7 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			{
 				AddPackage("Uno.WinUI.WebAssembly", UnoVersion);
 				AddPackage("Uno.Extensions.Logging.WebAssembly.Console", UnoLoggingVersion);
+				AddPackage("Uno.WinUI.MediaPlayer.WebAssembly", UnoVersion);
 				AddPackage("Microsoft.Windows.Compatibility", WindowsCompatibilityVersion);
 
 				if (IsExecutable && (SingleProject || IsLegacyWasmHead()))
