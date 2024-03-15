@@ -55,22 +55,13 @@ public partial class Panel : IEnumerable
 
 	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
-	partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
-	{
-		var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
-		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
-	}
+	partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue) => UpdateBorder();
 
 	partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 	partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-	{
-		// Don't call base, just update the filling color.
-		var newOnInvalidateRender = _backgroundBrushChanged ?? (() => UpdateBorder());
-		Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _backgroundBrushChanged, newOnInvalidateRender);
-	}
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
 
 	protected override void OnBeforeArrange()
 	{
