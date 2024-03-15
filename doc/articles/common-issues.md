@@ -8,6 +8,8 @@ The Uno Platform features and support are constantly evolving, yet you may encou
 
 [!include[getting-help](includes/getting-help.md)]
 
+A better resource for high-level questions about Uno Platform is the [general FAQ](xref:Uno.Development.FAQ).
+
 ## Hot Reload
 
 More troubleshooting information is available [in this section](xref:Uno.Features.HotReload#troubleshooting).
