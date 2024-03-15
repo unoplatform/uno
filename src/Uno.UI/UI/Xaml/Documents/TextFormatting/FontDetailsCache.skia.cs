@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using System.ComponentModel;
-using System.Linq;
-using Uno;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
@@ -17,74 +14,6 @@ using Windows.Storage.Helpers;
 using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
-
-internal static class ApplicationTypeFontLoader
-{
-	static Dictionary<Uri, Task<StorageFile>> _activeLookups = new();
-	static object _activeLookupsGate = new();
-
-	public static event Action<Uri>? FontUpdated;
-
-	public static SKTypeface? FindFont(Uri uri)
-	{
-		if (XamlFilePathHelper.TryGetMsAppxAssetPath(uri, out var path))
-		{
-			Console.WriteLine($"Try loading font {uri}");
-
-			var platformPartialPath = path.Replace('/', global::System.IO.Path.DirectorySeparatorChar);
-
-			var localFilePath = global::System.IO.Path.Combine(
-				global::Windows.ApplicationModel.Package.Current.InstalledLocation.Path
-				, platformPartialPath);
-
-			if (File.Exists(localFilePath))
-			{
-				Console.WriteLine($"Using Font local file {localFilePath}");
-
-				// SKTypeface.FromFile may return null if the file is not found (SkiaSharp is not yet nullable attributed)
-				return SKTypeface.FromFile(localFilePath);
-			}
-
-			lock (_activeLookupsGate)
-			{
-				if (!_activeLookups.TryGetValue(uri, out var lookupTask))
-				{
-					Console.WriteLine($"Initiate reading Font app file {uri}");
-
-					_activeLookups[uri] = lookupTask = GetAppFileAsync(uri);
-				}
-
-				if (!lookupTask.IsCompleted)
-				{
-					Console.WriteLine($"Font App File reading is not available {uri}");
-
-					return null;
-				}
-
-				Console.WriteLine($"Font App File {lookupTask.Result.Path}");
-
-				if (SKTypeface.FromFile(lookupTask.Result.Path) is { } typeFace)
-				{
-					Console.WriteLine($"Loaded Font App File {lookupTask.Result.Path}");
-					return typeFace;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	private static async Task<StorageFile> GetAppFileAsync(Uri uri)
-	{
-		var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-
-		Console.WriteLine($"Font File read {file.Path}");
-
-		FontUpdated?.Invoke(uri);
-
-		return file;
-	}
-}
 
 internal static class FontDetailsCache
 {
