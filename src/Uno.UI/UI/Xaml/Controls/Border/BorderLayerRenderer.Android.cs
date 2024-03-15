@@ -32,6 +32,7 @@ namespace Uno.UI.Xaml.Controls
 		private static Paint? _strokePaint;
 		private static Paint? _fillPaint;
 		private Action? _backgroundChanged;
+		private Action? _borderChanged;
 
 		private static ImageSource? GetBackgroundImageSource(BorderLayerState? state)
 			=> (state?.Background as ImageBrush)?.ImageSource;
@@ -256,8 +257,12 @@ namespace Uno.UI.Xaml.Controls
 				}
 			}
 
-			// Don't call base, just update the filling color.
+			// Subscribe to brush changes. The changes will trigger Update(), which will work,
+			// because even though the brush instance is the same, there are additional properties
+			// that BorderLayerState tracks on Android. This is not ideal and we should avoid it by refactoring
+			// this file to handle brush changes on the same brush instance on its own instead.
 			Brush.SetupBrushChanged(_currentState.Background, background, ref _backgroundChanged, () => Update(), false);
+			Brush.SetupBrushChanged(_currentState.BorderBrush, borderBrush, ref _borderChanged, () => Update(), false);
 
 			return disposables;
 		}
