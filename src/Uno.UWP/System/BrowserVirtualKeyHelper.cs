@@ -343,7 +343,7 @@ namespace Windows.System
 				return VirtualKey.A + code[3] - 'A';
 			}
 
-			if (code.StartsWith("Digit"))
+			if (code.StartsWith("Digit", StringComparison.Ordinal))
 			{
 				// map Digit0 to VirtualKey.Number0, etc.
 				return VirtualKey.Number0 + code[5] - '0';

@@ -157,7 +157,7 @@ internal partial class BrowserRenderer
 			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				Microsoft.UI.Xaml.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
+				Microsoft.UI.Xaml.Window.Current?.Compositor.RenderRootVisual(_surface, rootVisual);
 			}
 		}
 
