@@ -18,6 +18,8 @@ public partial class Compositor
 		}
 
 		rootVisual.RenderRootVisual(surface);
+
+		rootVisual.CompositionTarget?.SetRenderDone();
 	}
 
 	partial void InvalidateRenderPartial(Visual visual)

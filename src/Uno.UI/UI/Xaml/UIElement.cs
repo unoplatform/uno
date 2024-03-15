@@ -529,7 +529,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 #if __SKIA__
-			if (from.Visual?.TotalMatrix is { } fromMatrix && (to is null || to.Visual?.TotalMatrix is { }))
+			if ((!from.XamlRoot?.RenderDirty ?? false) && from.Visual?.TotalMatrix is { } fromMatrix && (to is null || to.Visual?.TotalMatrix is { }))
 			{
 				var finalTransform = (to?.Visual?.TotalMatrix ?? SkiaSharp.SKMatrix.Identity).Invert().PreConcat(fromMatrix);
 

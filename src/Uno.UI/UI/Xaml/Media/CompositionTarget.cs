@@ -36,4 +36,6 @@ public partial class CompositionTarget : ICompositionTarget
 		ContentRoot.InputManager.Pointers.RedirectPointer(pointerPoint, tracker);
 #endif
 	}
+
+	void ICompositionTarget.SetRenderDone() => ContentRoot.XamlRoot?.SetRenderDirty();
 }
