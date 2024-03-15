@@ -133,9 +133,9 @@ internal class UnoRootElementLogic
 #endif
 
 		// At the end of our "up" processing, we reset the flag to make sure that the native handler (iOS, Android and WASM)
-		// won't try to sent it to us again.
+		// won't try to sent it to us again (if not already the case ^^).
 		// (This could be the case if the args was flagged as handled in the ReleaseCaptures call above, like in RatingControl).
-		args.Handled = false; // == isHandled;
+		args.Handled = isAfterHandledUp;
 	}
 
 	private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
