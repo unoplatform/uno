@@ -29,6 +29,7 @@ using _Debug = System.Diagnostics.Debug;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -36,6 +37,12 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
+		public Border()
+		{
+			_borderRenderer = new BorderLayerRenderer(this);
+		}
 
 		/// <summary>
 		/// Support for the C# collection initializer style.
@@ -106,12 +113,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			OnCornerRadiusUpdatedPartial(oldValue, newValue);
-		}
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue);
 		#endregion
 
 		#region ChildTransitions
@@ -172,12 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnPaddingChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -192,11 +190,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnBackgroundSizingChangedPartial(e);
+			UpdateBorder();
 			base.OnBackgroundSizingChangedInner(e);
 		}
-
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
 
 		#region BorderThickness DependencyProperty
@@ -211,12 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnBorderThicknessChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
+		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -249,7 +240,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => OnBorderBrushChangedPartial()));
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => UpdateBorder()));
 #if __WASM__
 			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 			{
@@ -259,9 +250,15 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 
-		partial void OnBorderBrushChangedPartial();
-
 		#endregion
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			UpdateBorder();
+			OnBackgroundChangedPartial();
+		}
+
+		partial void OnBackgroundChangedPartial();
 
 		internal override bool CanHaveChildren() => true;
 
@@ -276,5 +273,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return element.Background != null;
 		}
+
+		private void UpdateBorder()
+		{
+			_borderRenderer.Update();
+			AfterUpdateBorderPartial();
+		}
+
+		partial void AfterUpdateBorderPartial();
 	}
 }
