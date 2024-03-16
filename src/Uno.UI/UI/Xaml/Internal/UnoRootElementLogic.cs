@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
-
+using Uno.Foundation.Logging;
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 
 #if HAS_UNO_WINUI
@@ -102,6 +102,11 @@ internal class UnoRootElementLogic
 			// since those platforms have "implicit capture" and captures are propagated to the OS,
 			// the OriginalSource will be the element that has capture (if any).
 
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Re-dispatching pointer {args.Pointer} to {src.GetDebugName()} to inject exit event.");
+			}
+
 			src.RedispatchPointerExited(args.Reset(canBubbleNatively: false));
 		}
 #endif
@@ -109,9 +114,9 @@ internal class UnoRootElementLogic
 		// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
 		// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
 		// but Uno does not have it on all targets yet.
-		var focusedElement = _rootElement.XamlRoot is null ?
-			FocusManager.GetFocusedElement() :
-			FocusManager.GetFocusedElement(_rootElement.XamlRoot);
+		var focusedElement = _rootElement.XamlRoot is null
+			? FocusManager.GetFocusedElement()
+			: FocusManager.GetFocusedElement(_rootElement.XamlRoot);
 		if (!isHandled // so isAfterHandledUp is false!
 			&& _canUnFocusOnNextLeftPointerRelease
 			&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
@@ -119,7 +124,6 @@ internal class UnoRootElementLogic
 			&& focusedElement is UIElement uiElement)
 		{
 			uiElement.Unfocus();
-			args.Handled = true;
 		}
 
 		ReleaseCaptures(args.Reset(canBubbleNatively: false));
@@ -127,6 +131,11 @@ internal class UnoRootElementLogic
 #if __WASM__
 		PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
+
+		// At the end of our "up" processing, we reset the flag to make sure that the native handler (iOS, Android and WASM)
+		// won't try to sent it to us again (if not already the case ^^).
+		// (This could be the case if the args was flagged as handled in the ReleaseCaptures call above, like in RatingControl).
+		args.Handled = isAfterHandledUp;
 	}
 
 	private static void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
