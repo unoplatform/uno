@@ -5,6 +5,7 @@ public enum UnoFeature
 	Invalid = -1,
 	Maps,
 	Foldable,
+	MediaElement,
 	CSharpMarkup,
 	Extensions,
 	Authentication,
