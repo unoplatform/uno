@@ -1,14 +1,19 @@
 <Project>
 	<PropertyGroup>
-		<ApplicationManifest Condition="$(ApplicationManifest) == ''">$(DesktopProjectFolder)app.manifest</ApplicationManifest>
+		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('$(DesktopProjectFolder)app.manifest')">$(DesktopProjectFolder)app.manifest</ApplicationManifest>
+		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('app.manifest')">app.manifest</ApplicationManifest>
 	</PropertyGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="$(DesktopProjectFolder)Package.appxmanifest"
 			Condition="Exists('$(DesktopProjectFolder)Package.appxmanifest')"
 			Exclude="@(EmbeddedResource)"
 			IsDefaultItem="true" />
-		<Manifest Include="$(DesktopProjectFolder)$(ApplicationManifest)"
-			Condition="Exists('$(DesktopProjectFolder)$(ApplicationManifest)')"
+		<EmbeddedResource Include="Package.appxmanifest"
+			Condition="Exists('Package.appxmanifest')"
+			Exclude="@(EmbeddedResource)"
+			IsDefaultItem="true" />
+		<Manifest Include="$(ApplicationManifest)"
+			Condition="$(ApplicationManifest) != ''"
 			Exclude="@(Manifest)"
 			IsDefaultItem="true" />
 	</ItemGroup>
