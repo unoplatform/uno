@@ -35,12 +35,14 @@
 		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
 		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
 		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
-		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' ">$(PlatformsProjectFolder)Desktop\</DesktopProjectFolder>
-		<DesktopProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
-		<DesktopProjectFolder Condition=" !Exists('$(DesktopProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Desktop'))</DesktopProjectFolder>
-		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
-		<WasmProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
-		<WasmProjectFolder Condition=" !Exists('$(WasmProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Wasm'))</WasmProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Desktop') ">$(PlatformsProjectFolder)Desktop</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('Desktop') ">Desktop</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Wasm') ">$(PlatformsProjectFolder)Wasm</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)WebAssembly') ">$(PlatformsProjectFolder)WebAssembly</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('Wasm\') ">Wasm</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('WebAssembly\') ">WebAssembly</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
 		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
 		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
 		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
