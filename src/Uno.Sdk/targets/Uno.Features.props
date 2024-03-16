@@ -2,12 +2,9 @@
 
 	<PropertyGroup>
 		<UnoFeatures>$([System.Text.RegularExpressions.Regex]::Replace($(UnoFeatures), '\s', ''))</UnoFeatures>
-		<UnoFeatures Condition="$(UnoFeatures) == ''">;None;</UnoFeatures>
+		<UnoFeatures Condition="$(UnoFeatures) == ''">;</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
-		<UnoTheme Condition="$(UnoFeatures.Contains(';Material;'))">Material</UnoTheme>
-		<UnoTheme Condition="$(UnoFeatures.Contains(';Cupertino;'))">Cupertino</UnoTheme>
-		<UnoTheme Condition="$(UnoTheme) == ''">Fluent</UnoTheme>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';MauiEmbedding;'))">
