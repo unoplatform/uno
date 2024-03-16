@@ -44,10 +44,9 @@ public partial class ShapeVisual
 	/// <inheritdoc />
 	internal override void Draw(in DrawingSession session)
 	{
-		var canvas = session.Canvas;
 		if (ViewBox is { } viewBox)
 		{
-			canvas.ClipRect(viewBox.GetRect(), antialias: true);
+			session.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
 		}
 
 		base.Draw(in session);

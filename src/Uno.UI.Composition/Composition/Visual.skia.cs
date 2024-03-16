@@ -20,8 +20,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <returns>true if wasn't dirty</returns>
 	protected internal virtual bool SetMatrixDirty() => _matrixDirty = true;
 
-	public object? Owner { get; set; }
-
 	/// <summary>
 	/// This is the final transformation matrix from the origin for this Visual.
 	/// </summary>

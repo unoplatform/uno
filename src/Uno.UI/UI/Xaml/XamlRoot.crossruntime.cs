@@ -12,11 +12,7 @@ public sealed partial class XamlRoot
 	private bool _isMeasuringOrArranging;
 	private bool _renderQueued;
 
-	internal bool RenderDirty { get; private set; }
-
 	internal event Action InvalidateRender = () => { };
-
-	internal void SetRenderDirty() => RenderDirty = true;
 
 	internal void InvalidateMeasure()
 	{
@@ -42,7 +38,6 @@ public sealed partial class XamlRoot
 		if (!_isMeasuringOrArranging && !_renderQueued)
 		{
 			_renderQueued = true;
-			RenderDirty = true;
 
 			DispatchQueueRender();
 		}
@@ -80,8 +75,6 @@ public sealed partial class XamlRoot
 			// The root element is not loaded, no need to schedule anything.
 			return;
 		}
-
-		RenderDirty = true;
 
 		if (invalidateMeasure)
 		{
