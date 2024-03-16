@@ -26,16 +26,9 @@ namespace Microsoft.UI.Xaml.Controls
 			Initialize_CalendarViewBaseItemChrome();
 			this.Loaded += (_, _) =>
 			{
-#if __ANDROID__ || __IOS__ || __MACOS__
-				_borderRenderer ??= new();
-#elif __SKIA__ || __WASM__
 				_borderRenderer ??= new(this);
-#endif
 				EnterImpl();
 			};
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-			this.Unloaded += (_, _) => _borderRenderer.Clear();
-#endif
 		}
 
 

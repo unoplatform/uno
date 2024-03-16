@@ -5,17 +5,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Panel
 {
-	private readonly BorderLayerRenderer _borderRenderer;
-
-	public Panel()
-	{
-		_borderRenderer = new BorderLayerRenderer(this);
-
-		Initialize();
-	}
-
-	partial void Initialize();
-
 	partial void UpdateBorder() => _borderRenderer.Update();
 
 	protected virtual void OnChildrenChanged() => UpdateBorder();

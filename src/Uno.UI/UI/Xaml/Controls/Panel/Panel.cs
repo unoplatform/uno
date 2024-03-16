@@ -11,6 +11,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 #if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
@@ -25,6 +26,8 @@ namespace Microsoft.UI.Xaml.Controls
 		, ICustomClippingElement
 #endif
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
@@ -33,8 +36,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private PanelTransitionHelper _transitionHelper;
 
-		partial void Initialize()
+		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
 			_children = new UIElementCollection(this);
 		}
 
