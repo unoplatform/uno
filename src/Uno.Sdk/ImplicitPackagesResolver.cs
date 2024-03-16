@@ -205,13 +205,13 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 
 			if (TargetFrameworkIdentifier == UnoTarget.Android)
 			{
-				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.UI", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.Fragment", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.Runtime", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.Common", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Collection", AndroidXCollectionVersion, true);
-				AddPackage("Xamarin.AndroidX.Collection.Ktx", AndroidXCollectionVersion, true);
+				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.UI", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.Fragment", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.Runtime", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.Common", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Collection", AndroidXCollectionVersion);
+				AddPackage("Xamarin.AndroidX.Collection.Ktx", AndroidXCollectionVersion);
 			}
 		}
 

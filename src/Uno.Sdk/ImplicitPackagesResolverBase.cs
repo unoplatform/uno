@@ -147,7 +147,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	protected void AddPackage(string packageId, string version, bool @override = false)
+	protected void AddPackage(string packageId, string version)
 	{
 		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFrameworkIdentifier);
 		if (string.IsNullOrEmpty(version))
@@ -168,18 +168,12 @@ public abstract class ImplicitPackagesResolverBase : Task
 		var existing = _implicitPackages.SingleOrDefault(x => x.PackageId == packageId);
 		if (existing is not null)
 		{
-			Debug("Found an existing implicit reference for '{0}'.", packageId);
-			if (existing.Override == @override || !@override)
-			{
-				return;
-			}
-
-			Debug("Removing duplicate implicit reference.", packageId);
-			_implicitPackages.Remove(existing);
+			Debug("An existing Implicit Package reference has already been added for '{0}'.", packageId);
+			return;
 		}
 
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
-		_implicitPackages.Add(new PackageReference(packageId, version, @override));
+		_implicitPackages.Add(new PackageReference(packageId, version));
 	}
 
 	private void Debug(string message, params object[] args)

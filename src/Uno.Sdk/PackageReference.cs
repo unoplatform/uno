@@ -3,7 +3,7 @@ using Microsoft.Build.Utilities;
 
 namespace Uno.Sdk;
 
-internal record PackageReference(string PackageId, string Version, bool Override)
+internal record PackageReference(string PackageId, string Version)
 {
 	public ITaskItem ToTaskItem()
 	{
@@ -11,8 +11,7 @@ internal record PackageReference(string PackageId, string Version, bool Override
 		{
 			ItemSpec = PackageId,
 		};
-		var versionMetadta = Override ? "VersionOverride" : "Version";
-		taskItem.SetMetadata(versionMetadta, Version);
+		taskItem.SetMetadata("Version", Version);
 		taskItem.SetMetadata("IsImplicitlyDefined", bool.TrueString);
 		return taskItem;
 	}
