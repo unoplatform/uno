@@ -45,7 +45,7 @@ namespace Uno.Helpers
 		/// <returns>Resource's id</returns>
 		internal static int? FindResourceId(string imageName, bool logFailure = true)
 		{
-			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileNameWithoutExtension(imageName));
+			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileName(imageName));
 
 			int id;
 
