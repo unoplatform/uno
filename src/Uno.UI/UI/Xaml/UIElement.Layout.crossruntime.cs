@@ -193,8 +193,6 @@ namespace Microsoft.UI.Xaml
 				SetLayoutFlags(LayoutFlag.FirstMeasureDone);
 			}
 
-			SetLayoutFlags(LayoutFlag.MeasuringSelf);
-
 			var remainingTries = MaxLayoutIterations;
 
 			while (--remainingTries > 0)
@@ -224,7 +222,9 @@ namespace Microsoft.UI.Xaml
 							return;
 						}
 
+						SetLayoutFlags(LayoutFlag.MeasuringSelf);
 						MeasureCore(availableSize);
+						ClearLayoutFlags(LayoutFlag.MeasuringSelf);
 						InvalidateArrange();
 					}
 #if DEBUG
@@ -287,8 +287,6 @@ namespace Microsoft.UI.Xaml
 
 				break;
 			}
-
-			ClearLayoutFlags(LayoutFlag.MeasuringSelf);
 		}
 
 		internal virtual void MeasureCore(Size availableSize)
