@@ -22,16 +22,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Panel : IEnumerable
 {
-	private readonly BorderLayerRenderer _borderRenderer;
-	private Action _backgroundBrushChanged;
-	private Action _borderBrushChanged;
-
-	public Panel()
-	{
-		_borderRenderer = new BorderLayerRenderer(this);
-		Initialize();
-	}
-
 	protected override void OnChildViewAdded(View child)
 	{
 		if (child is IFrameworkElement element)
@@ -41,8 +31,6 @@ public partial class Panel : IEnumerable
 
 		base.OnChildViewAdded(child);
 	}
-
-	partial void Initialize();
 
 	partial void UpdateBorder() => _borderRenderer.Update();
 
