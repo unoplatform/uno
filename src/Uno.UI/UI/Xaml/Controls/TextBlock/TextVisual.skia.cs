@@ -27,7 +27,7 @@ namespace Microsoft.UI.Composition
 			_owner = new WeakReference<TextBlock>(owner);
 		}
 
-		internal override void Draw(in DrawingSession session, SKMatrix initialTransform)
+		internal override void Draw(in DrawingSession session, in SKMatrix initialTransform)
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{

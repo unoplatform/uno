@@ -45,7 +45,7 @@ public partial class ContainerVisual : Visual
 		IsChildrenRenderOrderDirty = false;
 	}
 
-	internal override void Draw(in DrawingSession session, SKMatrix initialTransform)
+	internal override void Draw(in DrawingSession session, in SKMatrix initialTransform)
 	{
 		base.Draw(in session, initialTransform);
 

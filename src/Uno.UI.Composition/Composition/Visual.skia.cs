@@ -1,6 +1,7 @@
 ﻿#nullable enable
 //#define TRACE_COMPOSITION
 
+using System.Diagnostics;
 using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
@@ -23,6 +24,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// This is the final transformation matrix from the origin for this Visual.
 	/// </summary>
+	[DebuggerDisplay("{TotalMatrixString}")]
 	internal SKMatrix TotalMatrix
 	{
 		get
@@ -52,7 +54,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return _totalMatrix;
 		}
 	}
-	internal string? TotalMatrixString => string.Join(", ", TotalMatrix.Values);
+
+#if DEBUG
+	internal string TotalMatrixString => string.Join(", ", TotalMatrix.Values);
+#endif
 
 	public CompositionClip? Clip
 	{
@@ -127,7 +132,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
 	/// <param name="initialTransform">An auxiliary transform matrix that the <see cref="TotalMatrix"/> should be applied on top of.</param>
-	internal virtual void Render(in DrawingSession parentSession, SKMatrix initialTransform)
+	internal virtual void Render(in DrawingSession parentSession, in SKMatrix initialTransform)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -150,14 +155,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
 	/// <param name="initialTransform">An auxiliary transform matrix that the <see cref="TotalMatrix"/> should be applied on top of.</param>
-	internal virtual void Draw(in DrawingSession session, SKMatrix initialTransform)
+	internal virtual void Draw(in DrawingSession session, in SKMatrix initialTransform)
 	{
 	}
 
-	private DrawingSession BeginDrawing(in DrawingSession parentSession, SKMatrix initialTransform)
+	private DrawingSession BeginDrawing(in DrawingSession parentSession, in SKMatrix initialTransform)
 		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, initialTransform);
 
-	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, SKMatrix initialTransform)
+	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in SKMatrix initialTransform)
 	{
 		if (ShadowState is { } shadow)
 		{

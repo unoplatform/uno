@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	internal override void Render(in DrawingSession parentSession, SKMatrix initialTransform)
+	internal override void Render(in DrawingSession parentSession, in SKMatrix initialTransform)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -42,7 +42,7 @@ public partial class ShapeVisual
 	}
 
 	/// <inheritdoc />
-	internal override void Draw(in DrawingSession session, SKMatrix initialTransform)
+	internal override void Draw(in DrawingSession session, in SKMatrix initialTransform)
 	{
 		if (ViewBox is { } viewBox)
 		{
