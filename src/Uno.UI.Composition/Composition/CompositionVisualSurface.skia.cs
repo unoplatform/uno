@@ -57,7 +57,7 @@ namespace Microsoft.UI.Composition
 				bool? previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
 
-				SourceVisual.Draw(_drawingSession.Value);
+				SourceVisual.Draw(_drawingSession.Value, SKMatrix.Identity);
 
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Composition
 					session.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Canvas.DeviceClipBounds.Width, session.Canvas.DeviceClipBounds.Height));
 				}
 
-				SourceVisual.Draw(in session);
+				SourceVisual.Draw(in session, SKMatrix.Identity);
 				session.Canvas.RestoreToCount(save);
 			}
 		}

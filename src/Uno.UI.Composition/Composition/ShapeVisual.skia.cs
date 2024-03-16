@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	internal override void Render(in DrawingSession parentSession)
+	internal override void Render(in DrawingSession parentSession, SKMatrix initialTransform)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -38,18 +38,18 @@ public partial class ShapeVisual
 		}
 
 		// Second we render the children
-		base.Render(in parentSession);
+		base.Render(in parentSession, initialTransform);
 	}
 
 	/// <inheritdoc />
-	internal override void Draw(in DrawingSession session)
+	internal override void Draw(in DrawingSession session, SKMatrix initialTransform)
 	{
 		if (ViewBox is { } viewBox)
 		{
 			session.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
 		}
 
-		base.Draw(in session);
+		base.Draw(in session, initialTransform);
 	}
 
 	private DrawingSession BeginShapesDrawing(in DrawingSession parentSession)

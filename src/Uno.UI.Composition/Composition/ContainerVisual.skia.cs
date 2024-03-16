@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using SkiaSharp;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
@@ -44,15 +45,15 @@ public partial class ContainerVisual : Visual
 		IsChildrenRenderOrderDirty = false;
 	}
 
-	internal override void Draw(in DrawingSession session)
+	internal override void Draw(in DrawingSession session, SKMatrix initialTransform)
 	{
-		base.Draw(in session);
+		base.Draw(in session, initialTransform);
 
 		var children = GetChildrenInRenderOrder();
 		var childrenCount = children.Count;
 		for (var i = 0; i < childrenCount; i++)
 		{
-			children[i].Render(in session);
+			children[i].Render(in session, initialTransform);
 		}
 	}
 
