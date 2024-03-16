@@ -11,6 +11,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 #if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
