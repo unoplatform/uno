@@ -2,6 +2,7 @@
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 
 namespace Uno;
@@ -43,6 +44,10 @@ internal static partial class AndroidResourceNameEncoder
 		{
 			// Specific handling of 9-patch extension
 			key = key.Substring(0, key.Length - 2).Replace(".", "_") + ".9";
+		}
+		if (key.EndsWith(".9.png", StringComparison.OrdinalIgnoreCase))
+		{
+			key = key.Substring(0, key.Length - 6).Replace(".", "_") + "_png.9";
 		}
 		else
 		{
