@@ -8,12 +8,13 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Microsoft.UI.Composition;
+using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.Application­Model;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
-using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -48,7 +49,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
 						UriSource.IsFile)
 					{
-						using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
+						using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
 
 						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
 					}

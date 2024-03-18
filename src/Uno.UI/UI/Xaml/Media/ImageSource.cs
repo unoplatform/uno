@@ -24,7 +24,6 @@ namespace Microsoft.UI.Xaml.Media
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
-		private protected static HttpClient? _httpClient;
 		private protected ImageData _imageData = ImageData.Empty;
 
 		internal event Action? Invalidated;
@@ -191,18 +190,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		internal Uri? AbsoluteUri { get; private set; }
-
-		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
-		{
-			if (uri.IsFile)
-			{
-				return File.Open(uri.LocalPath, FileMode.Open);
-			}
-
-			_httpClient ??= new HttpClient();
-			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-			return await response.Content.ReadAsStreamAsync();
-		}
 
 		internal void UnloadImageData()
 		{
