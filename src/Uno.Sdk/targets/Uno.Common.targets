@@ -12,7 +12,7 @@
 		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
 
 		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
-		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+		<IncludeSourceRevisionInInformationalVersion Condition=" '$(IncludeSourceRevisionInInformationalVersion)' == '' ">false</IncludeSourceRevisionInInformationalVersion>
 
 		<!-- Disable build acceleration until runtime replacement supports it https://github.com/unoplatform/uno/issues/15928 -->
 		<AccelerateBuildsInVisualStudio Condition=" '$(AccelerateBuildsInVisualStudio)' == '' ">false</AccelerateBuildsInVisualStudio>
