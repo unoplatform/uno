@@ -93,7 +93,7 @@ namespace SamplesApp
 			ParseCommandLineFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
-			// TODO JELA RESTORE AssertApplicationData();
+			AssertApplicationData();
 
 			this.InitializeComponent();
 
@@ -146,7 +146,7 @@ namespace SamplesApp
 
 				AssertIssue12936();
 
-				// TODO JELA AssertIssue12937();
+				AssertIssue12937();
 
 				AssertIssue15521();
 			}
@@ -163,7 +163,7 @@ namespace SamplesApp
 
 			InitializeFrame(e.Arguments);
 
-			// TODO JELA AssertIssue8641NativeOverlayInitialized();
+			AssertIssue8641NativeOverlayInitialized();
 
 			ActivateMainWindow();
 

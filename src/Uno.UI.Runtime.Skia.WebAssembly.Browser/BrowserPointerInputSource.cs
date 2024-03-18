@@ -144,7 +144,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
+			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
 		}
 		catch (Exception error)
 		{
@@ -153,7 +153,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				_log.Error($"Failed to dispatch native pointer event: {error}");
 			}
 
-			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
+			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
 		}
 	}
 

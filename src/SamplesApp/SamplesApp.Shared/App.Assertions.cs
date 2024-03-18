@@ -71,6 +71,12 @@ partial class App
 			return;
 		}
 
+		if (OperatingSystem.IsBrowser())
+		{
+			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
+			return;
+		}
+
 		var description = Package.Current.Description;
 		var publisherName = Package.Current.PublisherDisplayName;
 
@@ -143,6 +149,12 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
+		if (OperatingSystem.IsBrowser())
+		{
+			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
+			return;
+		}
+
 		var appName = Package.Current.Id.Name;
 		var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
 
