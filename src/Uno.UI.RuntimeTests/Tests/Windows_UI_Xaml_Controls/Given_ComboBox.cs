@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
-using Windows.UI;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using static Private.Infrastructure.TestServices;
-using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
-using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml.Input;
-using Uno.Extensions;
-using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using System.Reflection;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using MUXControlsTestApp.Utilities;
+using Private.Infrastructure;
+using SamplesApp.UITests;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.ComboBoxTests;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
-
-
+using Windows.UI.Input.Preview.Injection;
+using static Private.Infrastructure.TestServices;
 
 
 
@@ -43,7 +41,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 #elif __MACOS__
 using AppKit;
 #else
-using Uno.UI;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -1183,6 +1180,99 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(!isTextSearchEnabled, comboBox.IsDropDownOpen);
 		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		[DataRow(PopupPlacementMode.Bottom, 0)]
+		[DataRow(PopupPlacementMode.Top, 0)]
+		[DataRow(PopupPlacementMode.Bottom, 20)]
+		[DataRow(PopupPlacementMode.Top, -20)]
+		[UnoWorkItem("https://github.com/unoplatform/nventive-private/issues/509")]
+		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
+		{
+			var grid = new Grid();
+			var comboBox = new PopupPlacementComboBox();
+			comboBox.Margin = new Thickness(150, 150, 0, 0);
+			// Add items as itmes source
+			comboBox.ItemsSource = new List<string> { "Cat", "Dog" };
+			comboBox.DesiredPlacement = mode;
+			comboBox.VerticalOffset = verticalOffset;
+			grid.Children.Add(comboBox);
+			try
+			{
+				TestServices.WindowHelper.WindowContent = grid;
+				await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+				comboBox.ApplyPlacement();
+				comboBox.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(comboBox.XamlRoot).FirstOrDefault();
+				Assert.IsNotNull(popup);
+
+				var child = (FrameworkElement)popup.Child;
+				await WindowHelper.WaitFor(() => child.ActualHeight > 0);
+
+				var popupBounds = child.TransformToVisual(null).TransformBounds(new Rect(0, 0, child.ActualWidth, child.ActualHeight));
+				var comboBoxBounds = comboBox.TransformToVisual(null).TransformBounds(new Rect(0, 0, comboBox.ActualWidth, comboBox.ActualHeight));
+				// For some reason WinUI's ComboBox popup border has a -1 vertical Margin, which pushes it up by 1 pixel, and can be inacurrate due to rounding
+				double tolerance = 1.5;
+				if (mode == PopupPlacementMode.Bottom)
+				{
+					Assert.AreEqual(comboBoxBounds.Bottom + verticalOffset, popupBounds.Top, tolerance);
+				}
+				else
+				{
+					Assert.AreEqual(comboBoxBounds.Top + verticalOffset, popupBounds.Bottom, tolerance);
+				}
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+			}
+		}
+
+#if __SKIA__ // Requires input injection
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15531")]
+		public async Task When_Tap_Twice()
+		{
+			var grid = new Grid();
+			var comboBox = new PopupPlacementComboBox();
+			comboBox.Margin = new Thickness(200);
+			// Add items as itmes source
+			comboBox.ItemsSource = new List<string> { "Cat", "Dog", "Rabbit", "Elephant" };
+			comboBox.DesiredPlacement = PopupPlacementMode.Bottom;
+			comboBox.VerticalOffset = 50;
+			grid.Children.Add(comboBox);
+			try
+			{
+				TestServices.WindowHelper.WindowContent = grid;
+				await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+				comboBox.ApplyPlacement();
+				TestServices.InputHelper.Tap(comboBox);
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(comboBox.IsDropDownOpen);
+
+				TestServices.InputHelper.Tap(comboBox);
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(comboBox.IsDropDownOpen);
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+			}
+		}
+#endif
 
 		public sealed class TwoWayBindingClearViewModel : IDisposable
 		{
