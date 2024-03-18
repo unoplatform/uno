@@ -53,21 +53,6 @@ namespace Microsoft.UI.Xaml.Media
 		public IImageSourceDownloader? Downloader;
 #pragma warning restore CA2211
 
-
-#if __ANDROID__ || __IOS__ || __MACOS__
-		/// <summary>
-		/// Initializes the Uno image downloader.
-		/// </summary>
-		private void InitializeDownloader()
-		{
-			Downloader = DefaultDownloader;
-		}
-#endif
-
-#if !(__CROSSRUNTIME__)
-		internal Stream? Stream { get; set; }
-#endif
-
 		internal string? FilePath { get; private set; }
 
 		public bool UseTargetSize { get; set; }
@@ -203,27 +188,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			UnloadImageData();
 			DisposePartial();
-		}
-
-		/// <summary>
-		/// Downloads an image from the provided Uri.
-		/// </summary>
-		/// <returns>n Uri containing a local path for the downloaded image.</returns>
-		internal async Task<Uri> Download(CancellationToken ct, Uri uri)
-		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("Initiated download from {0}", uri);
-			}
-
-			if (Downloader != null)
-			{
-				return await Downloader.Download(ct, uri);
-			}
-			else
-			{
-				throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
-			}
 		}
 
 		internal Uri? AbsoluteUri { get; private set; }
