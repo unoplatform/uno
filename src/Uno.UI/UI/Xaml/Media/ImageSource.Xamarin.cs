@@ -3,6 +3,8 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Media;
 
