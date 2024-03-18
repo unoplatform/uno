@@ -359,9 +359,12 @@ FileOpenPicker fileOpenPicker = new FileOpenPicker
 {
     SuggestedStartLocation = PickerLocationId.ComputerFolder
 };
-var intent = new Android.Content.Intent(Android.Content.Intent.ActionOpenDocument);
-intent.AddFlags(Android.Content.ActivityFlags.GrantPersistableUriPermission);
-FilePickerHelper.RegisterOnBeforeStartActivity(fileOpenPicker, intent);
+FilePickerHelper.RegisterOnBeforeStartActivity(fileOpenPicker, (intent) =>
+{
+	// your code...
+	// for example
+	intent.AddFlags(Android.Content.ActivityFlags.GrantPersistableUriPermission);
+});
 var result = await fileOpenPicker.PickSingleFileAsync();
 ```
 

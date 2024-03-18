@@ -9,14 +9,14 @@ using Android.Content;
 namespace Windows.Storage.Pickers
 {
 	/// <summary>
-	/// Enables the user to extend the flags of the used intent
+	/// Enables the user to extend the internal intent
 	/// </summary>
 	public static class FilePickerHelper
 	{
-		public static void RegisterOnBeforeStartActivity(FileOpenPicker picker, Intent intent)
-		   => picker.RegisterOnBeforeStartActivity(intent);
+		public static void RegisterOnBeforeStartActivity(FileOpenPicker picker, Action<Intent> intentAction)
+		   => picker.RegisterOnBeforeStartActivity(intentAction);
 
-		public static void RegisterOnBeforeStartActivity(FileSavePicker picker, Intent intent)
-			=> picker.RegisterOnBeforeStartActivity(intent);
+		public static void RegisterOnBeforeStartActivity(FileSavePicker picker, Action<Intent> intentAction)
+			=> picker.RegisterOnBeforeStartActivity(intentAction);
 	}
 }
