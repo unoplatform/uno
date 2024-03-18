@@ -203,6 +203,11 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			AddPackage("Microsoft.Maui.Controls.Compatibility", MauiVersion);
 			AddPackage("Microsoft.Maui.Graphics", MauiVersion);
 
+			if (SingleProject)
+			{
+				AddPackage("Microsoft.Maui.Controls.Build.Tasks", MauiVersion, "all");
+			}
+
 			if (TargetFrameworkIdentifier == UnoTarget.Android)
 			{
 				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);

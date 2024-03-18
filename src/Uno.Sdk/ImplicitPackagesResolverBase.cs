@@ -147,7 +147,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	protected void AddPackage(string packageId, string version)
+	protected void AddPackage(string packageId, string version, string excludeAssets = null)
 	{
 		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFrameworkIdentifier);
 		if (string.IsNullOrEmpty(version))
@@ -173,7 +173,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
-		_implicitPackages.Add(new PackageReference(packageId, version));
+		_implicitPackages.Add(new PackageReference(packageId, version, excludeAssets));
 	}
 
 	private void Debug(string message, params object[] args)
