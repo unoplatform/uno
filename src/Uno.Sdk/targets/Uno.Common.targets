@@ -81,19 +81,19 @@
 
 	<ItemGroup>
 		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
-			Condition=" $(IsAndroid) != 'true' " />
+			Condition=" $(IsAndroid) != 'true' AND '$(AndroidProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(iOSProjectFolder)**"
-			Condition=" $(IsIOS) != 'true' " />
+			Condition=" $(IsIOS) != 'true' AND '$(iOSProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
-			Condition=" $(IsMacCatalyst) != 'true' " />
+			Condition=" $(IsMacCatalyst) != 'true' AND '$(MacCatalystProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"
-			Condition=" $(IsMacOS) != 'true' " />
+			Condition=" $(IsMacOS) != 'true' AND '$(MacOSProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
-			Condition=" $(IsDesktop) != 'true' " />
+			Condition=" $(IsDesktop) != 'true' AND '$(DesktopProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
-			Condition=" $(IsBrowserWasm) != 'true' " />
+			Condition=" $(IsBrowserWasm) != 'true' AND '$(WasmProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
-			Condition=" $(IsWinAppSdk) != 'true' " />
+			Condition=" $(IsWinAppSdk) != 'true' AND '$(WindowsProjectFolder)'!='' " />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
