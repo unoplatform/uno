@@ -1639,6 +1639,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							using (writer.BlockInvariant("public void InitializeComponent()"))
 							{
+								if (_isHotReloadEnabled)
+								{
+									TrySetOriginalSourceLocation(writer, "this", topLevelControl.LineNumber, topLevelControl.LinePosition);
+								}
+
 								BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: false, dictIdentifier: "this");
 								BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: false, dictIdentifier: "this");
 								BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: false, dictIdentifier: "this");
