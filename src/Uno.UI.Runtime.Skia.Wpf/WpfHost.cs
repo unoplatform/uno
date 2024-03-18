@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
@@ -68,13 +69,15 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 		InitializeDispatcher();
 	}
 
-	protected override void RunLoop()
+	protected override Task RunLoop()
 	{
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
 		StartApp();
 
 		_wpfApp?.Run();
+
+		return Task.CompletedTask;
 	}
 
 	private void InitializeDispatcher()

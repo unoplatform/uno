@@ -5,14 +5,14 @@ public abstract class SkiaHost
 {
 	internal Action? AfterInit { get; set; }
 
-	public void Run()
+	public async Task Run()
 	{
 		Initialize();
 		AfterInit?.Invoke();
-		RunLoop();
+		await RunLoop();
 	}
 
 	protected abstract void Initialize();
 
-	protected abstract void RunLoop();
+	protected abstract Task RunLoop();
 }

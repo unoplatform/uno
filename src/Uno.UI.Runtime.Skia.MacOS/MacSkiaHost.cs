@@ -56,13 +56,15 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 		InitializeDispatcher();
 	}
 
-	protected override void RunLoop()
+	protected override Task RunLoop()
 	{
 		StartApp();
 
 		// `argc` and `argv` parameters are ignored by macOS
 		// see https://developer.apple.com/documentation/appkit/1428499-nsapplicationmain?language=objc
 		_ = NativeMac.NSApplicationMain(argc: 0, argv: nint.Zero);
+
+		return Task.CompletedTask;
 	}
 
 	private void InitializeDispatcher()
