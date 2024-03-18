@@ -35,6 +35,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task Setting_Text_From_Background_Thread_Should_Fail(bool disableThreadingCheck)
+		{
+			var originalFlag = FeatureConfiguration.DependencyProperty.DisableThreadingCheck;
+			try
+			{
+				FeatureConfiguration.DependencyProperty.DisableThreadingCheck = disableThreadingCheck;
+				var SUT = new TextBlock();
+				SUT.Text = "Hello1";
+
+				var uiThreadManagedThreadId = Environment.CurrentManagedThreadId;
+				await Task.Delay(1).ConfigureAwait(false);
+				var currentThreadManagedThreadId = Environment.CurrentManagedThreadId;
+				Assert.AreNotEqual(uiThreadManagedThreadId, currentThreadManagedThreadId);
+
+				if (disableThreadingCheck)
+				{
+					SUT.Text = "Hello2";
+				}
+				else
+				{
+					Assert.ThrowsException<InvalidOperationException>(() => SUT.Text = "Hello2");
+				}
+
+			}
+			finally
+			{
+				FeatureConfiguration.DependencyProperty.DisableThreadingCheck = originalFlag;
+			}
+		}
+
 #if __ANDROID__
 		[Ignore("Visually looks good, but fails :(")]
 #elif !HAS_RENDER_TARGET_BITMAP

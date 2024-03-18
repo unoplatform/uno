@@ -1,23 +1,24 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.DataBinding;
+using System.Collections;
 using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
-using System.Linq;
-using System.Threading;
-using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using System.Collections;
-using System.Globalization;
+using Uno.UI.DataBinding;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Calls;
-using Microsoft.UI.Xaml.Controls;
 
 
 #if __ANDROID__
@@ -495,6 +496,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
+			if (!FeatureConfiguration.DependencyProperty.DisableThreadingCheck)
+			{
+				NativeDispatcher.CheckThreadAccess();
+			}
+
 			if (IsTemplatedParentFrozen && property == FrameworkElement.TemplatedParentProperty)
 			{
 				return;
