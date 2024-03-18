@@ -12,10 +12,12 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __IOS__
-using View = UIKit.UIView;
+using System.Collections;
+
+#if __IOS__
+using __View = UIKit.UIView;
+#elif __MACOS__
+using __View = AppKit.NSView;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
@@ -42,14 +44,9 @@ namespace Microsoft.UI.Xaml.Controls
 			_children = new UIElementCollection(this);
 		}
 
-		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-			=> OnChildrenChanged();
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
-			_children.CollectionChanged += OnChildrenCollectionChanged;
 
 			OnLoadedPartial();
 		}
@@ -59,8 +56,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-
-			_children.CollectionChanged -= OnChildrenCollectionChanged;
 
 			OnUnloadedPartial();
 		}
@@ -177,35 +172,25 @@ namespace Microsoft.UI.Xaml.Controls
 			IsItemsHost = itemsOwner != null;
 		}
 
-		protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			OnCornerRadiusChangedPartial(oldValue, newValue);
-		}
+		protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue);
+		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
-		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnPaddingChangedPartial(oldValue, newValue);
-		}
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
-		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnBorderThicknessChangedPartial(oldValue, newValue);
-		}
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
-
-		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-			OnBorderBrushChangedPartial(oldValue, newValue);
-		}
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
+		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue) => UpdateBorder();
 
 		private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
 
 		internal override bool CanHaveChildren() => true;
 
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			UpdateBorder();
+			OnBackgroundChangedPartial();
+		}
+
+		partial void OnBackgroundChangedPartial();
 
 		private protected void OnBackgroundSizingChangedInnerPanel(DependencyPropertyChangedEventArgs e)
 		{
@@ -214,8 +199,26 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		partial void UpdateBorder();
-
 		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
+
+		private void UpdateBorder() => _borderRenderer.Update();
+
+
+		/// <summary>        
+		/// Support for the C# collection initializer style.
+		/// Allows items to be added like this 
+		/// new Panel 
+		/// {
+		///    new Border()
+		/// }
+		/// </summary>
+		/// <param name="view"></param>
+		public void Add(
+#if !__IOS__ && !__MACOS__
+			UIElement view
+#else
+			__View view
+#endif
+			) => Children.Add(view);
 	}
 }
