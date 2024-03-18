@@ -189,11 +189,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnBackgroundSizingChangedPartial(e);
+			UpdateBorder();
 			base.OnBackgroundSizingChangedInner(e);
 		}
 
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
 
 		#region Foreground Dependency Property
@@ -502,12 +501,7 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
-		{
-			OnPaddingChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -531,10 +525,7 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
+		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
 
 		#endregion
 
@@ -584,10 +575,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateCornerRadius(newValue);
-		}
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
 
 		#endregion
 
