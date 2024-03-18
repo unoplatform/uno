@@ -446,13 +446,15 @@ namespace SamplesApp
 #endif
 			var factory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
 			{
+#if __SKIA__ || __WASM__
 				if (OperatingSystem.IsBrowser())
 				{
 					builder.AddProvider(new Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 				}
 				else
+#endif
 				{
-					// builder.AddConsole();
+					builder.AddConsole();
 				}
 
 #if __IOS__

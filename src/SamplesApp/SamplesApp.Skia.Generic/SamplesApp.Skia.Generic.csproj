@@ -148,8 +148,8 @@
 			Adjusts the list of assemblies that are transiently copied to the output directory because Uno.UI does reference the Reference build
 			but the Skia build should be in the output folder.
 			-->
-			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\Uno.UWP\bin\Uno.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
+			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
+			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\bin\Uno.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
 
 			<_ReferenceCopyLocalPathsToRemove Include="@(ReferenceCopyLocalPaths)" CrossFileName="%(_PlatformSpecificFiles.FileName)%(_PlatformSpecificFiles.Extension)" />
 			<_ReferenceCopyLocalPathsToRemove Remove="@(_ReferenceCopyLocalPathsToRemove)" Condition="'%(_ReferenceCopyLocalPathsToRemove.FileName)%(_ReferenceCopyLocalPathsToRemove.Extension)' != '%(_ReferenceCopyLocalPathsToRemove.CrossFileName)'" />
@@ -171,8 +171,8 @@
 			but the Skia build should be in the output folder.
 			-->
 
-			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\Uno.UWP\bin\Uno.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
+			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
+			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\bin\Uno.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
 
 			<_UserRuntimeAssemblyToRemove Include="@(UserRuntimeAssembly)"
 										  CrossFileName="%(_PlatformSpecificFiles2.FileName)%(_PlatformSpecificFiles2.Extension)" />
