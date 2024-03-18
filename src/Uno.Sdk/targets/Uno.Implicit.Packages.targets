@@ -122,14 +122,15 @@
 				PrismVersion="$(PrismVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
-				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)">
+				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
+				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
 		</ImplicitPackagesResolver>
 
-		<ItemGroup>
+		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 		</ItemGroup>
