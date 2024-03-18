@@ -79,6 +79,9 @@
 			element.addEventListener("pointercancel", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true });
+
+			// Disable opening a context menu on right-clicking
+			element.oncontextmenu = ev => ev.preventDefault();
 		}
 
 		private onPointerEventReceived(evt: PointerEvent): void {
