@@ -148,7 +148,8 @@ namespace Microsoft.UI.Xaml
 
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
-#if __WASM__
+
+#if __WASM__ || __SKIA__
 		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
 		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
@@ -440,7 +441,7 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
 
-#if __WASM__
+#if __WASM__ || __SKIA__
 		public event KeyEventHandler PreviewKeyDown
 		{
 			add => AddHandler(PreviewKeyDownEvent, value, false);
@@ -674,6 +675,13 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException($"Flag not defined for routed event {routedEvent.Name}.");
 			}
 
+#if !__WASM__
+			if (routedEvent.IsTunnelingEvent)
+			{
+				throw new InvalidOperationException($"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
+			}
+#endif
+
 			// TODO: This is just temporary workaround before proper
 			// keyboard event infrastructure is implemented everywhere
 			// (issue #6074)
@@ -763,23 +771,57 @@ namespace Microsoft.UI.Xaml
 			return RaiseOnParent(routedEvent, args, parent, ctx);
 		}
 
+		/// <summary>
+		/// Raise a tunneling routed event starting from the root and tunneling down to this element.
+		/// </summary>
+		internal void RaiseTunnelingEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (!routedEvent.Flag.IsTunnelingEvent())
+			{
+				throw new InvalidOperationException($"Event {routedEvent.Name} is not marked as a tunneling event.");
+			}
+
+			// TODO: This is just temporary workaround before proper
+			// keyboard event infrastructure is implemented everywhere
+			// (issue #6074)
+			// The key states will be tracked again in an accompanying bubbling event (e.g. KeyDown for PreviewKeyDown),
+			// but this is fine, since it's idempotent.
+			if (routedEvent.IsKeyEvent)
+			{
+				TrackKeyState(routedEvent, args);
+			}
+
+			// On WinUI, if one of the event handlers reparents this element, the tunneling still goes through the
+			// original path.
+			foreach (var p in this.GetAllParents().Reverse())
+			{
+				if (p is not UIElement parent)
+				{
+					break;
+				}
+
+				if (parent._eventHandlerStore.TryGetValue(routedEvent, out var handlers))
+				{
+					foreach (var handler in handlers.ToArray())
+					{
+						if (IsHandled(args) || handler.HandledEventsToo)
+						{
+							parent.InvokeHandler(handler.Handler, args);
+						}
+					}
+				}
+			}
+		}
+
 		private static void TrackKeyState(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
 			if (args is KeyRoutedEventArgs keyArgs)
 			{
-				if (routedEvent == KeyDownEvent)
+				if (routedEvent == KeyDownEvent || routedEvent == PreviewKeyDownEvent)
 				{
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
-				else if (routedEvent == KeyUpEvent)
-				{
-					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
-				}
-				else if (routedEvent == PreviewKeyDownEvent)
-				{
-					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
-				}
-				else if (routedEvent == PreviewKeyUpEvent)
+				else if (routedEvent == KeyUpEvent || routedEvent == PreviewKeyUpEvent)
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
