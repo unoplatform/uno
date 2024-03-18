@@ -45,6 +45,12 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal XamlRoot? XamlRoot { get; private set; }
 
+	public override string Title
+	{
+		get => NativeMethods.GetWindowTitle();
+		set => NativeMethods.SetWindowTitle(value);
+	}
+
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -94,5 +100,11 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getCanvasId")]
 		public static partial string GetCanvasId([JSMarshalAs<JSType.Any>] object owner);
+
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
+		internal static partial string GetWindowTitle();
+
+		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.setWindowTitle")]
+		internal static partial void SetWindowTitle(string title);
 	}
 }
