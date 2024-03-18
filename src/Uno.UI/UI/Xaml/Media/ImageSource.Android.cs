@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <summary>
 		/// Set ImageLoader to be used for this case.
 		/// </summary>
-		partial void SetImageLoader()
+		private void SetImageLoader()
 		{
 			// Set ImageLoader to be used
 			ImageLoader = ImageLoader ?? DefaultImageLoader;

@@ -226,24 +226,7 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private Uri? _absoluteUri;
-
-		internal Uri? AbsoluteUri
-		{
-			get => _absoluteUri;
-
-			private set
-			{
-				_absoluteUri = value;
-
-				if (value != null)
-				{
-					SetImageLoader();
-				}
-			}
-		}
-
-		partial void SetImageLoader();
+		internal Uri? AbsoluteUri { get; private set; }
 
 		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
 		{

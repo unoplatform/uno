@@ -123,11 +123,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			UriSource = uriSource;
 		}
 
-		internal BitmapImage(string stringSource) : base(stringSource)
-		{
-			UriSource = AbsoluteUri ?? TryCreateUriFromString(stringSource);
-		}
-
 		public BitmapImage() { }
 
 		internal void RaiseImageFailed(Exception ex)
