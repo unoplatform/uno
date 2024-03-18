@@ -109,7 +109,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_IsEditable_False()
 		{
 			// EditableText is only available in fluent style.
-			using var _ = StyleHelper.UseFluentStyles();
 			var SUT = new ComboBox();
 			await UITestHelper.Load(SUT);
 
@@ -121,7 +120,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_IsEditable_True()
 		{
 			// EditableText is only available in fluent style.
-			using var _ = StyleHelper.UseFluentStyles();
 			var SUT = new ComboBox() { IsEditable = true };
 			await UITestHelper.Load(SUT);
 
@@ -138,7 +136,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			// EditableText is only available in fluent style.
-			using var _ = StyleHelper.UseFluentStyles();
 			var SUT = new ComboBox();
 			await UITestHelper.Load(SUT);
 
