@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -80,6 +81,22 @@ namespace Microsoft.UI.Xaml.Controls
 				TryLoadMoreItems(layouter.LastVisibleIndex);
 			}
 		}
+
+#if !__MACOS__
+		public void ScrollIntoView(object item) => ScrollIntoView(item, ScrollIntoViewAlignment.Default);
+
+		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
+		{
+			if (VirtualizingPanel?.GetLayouter() is { } layouter)
+			{
+				layouter.ScrollIntoView(item, alignment);
+			}
+			else if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"{nameof(ScrollIntoView)} not supported when using non-virtualizing panels.");
+			}
+		}
+#endif
 	}
 }
 #endif

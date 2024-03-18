@@ -40,8 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		protected IVectorChangedEventArgs _inProgressVectorChange;
 
-		private ItemsPresenter _itemsPresenter;
-
 		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
@@ -57,6 +55,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private int[] _groupCounts;
 
 		internal ScrollViewer ScrollViewer { get; private set; }
+
+		internal ItemsPresenter ItemsPresenter { get; private set; }
 
 		/// <summary>
 		/// This template is stored here in order to allow for
@@ -979,7 +979,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ItemsPanelRoot = itemsPanel as Panel;
 
 			ItemsPanelRoot?.SetItemsOwner(this);
-			_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
+			ItemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
 
 			UpdateItems(null);
 		}
@@ -1678,10 +1678,10 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </remarks>
 		internal void SetItemsPresenter(ItemsPresenter itemsPresenter)
 		{
-			if (_itemsPresenter != itemsPresenter)
+			if (ItemsPresenter != itemsPresenter)
 			{
-				_itemsPresenter = itemsPresenter;
-				_itemsPresenter?.LoadChildren(InternalItemsPanelRoot);
+				ItemsPresenter = itemsPresenter;
+				ItemsPresenter?.LoadChildren(InternalItemsPanelRoot);
 			}
 		}
 

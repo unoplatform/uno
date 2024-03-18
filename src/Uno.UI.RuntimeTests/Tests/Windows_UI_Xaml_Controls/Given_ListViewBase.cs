@@ -4428,6 +4428,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, global::Foundation.NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#endif
+		public Task When_SelectionChanged_Item_Is_BroughtIntoView_ListView() => When_SelectionChanged_Item_Is_BroughtIntoView<ListView>();
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
+#endif
+		public Task When_SelectionChanged_Item_Is_BroughtIntoView_TabView() => When_SelectionChanged_Item_Is_BroughtIntoView<TabView>();
+
+		public async Task When_SelectionChanged_Item_Is_BroughtIntoView<T>() where T : FrameworkElement, new()
+		{
+			var source = Enumerable.Range(0, 100)
+				.Select(x => typeof(T) == typeof(TabView)
+					? (object)new TabViewItem { Header = x, Content = $"Content of {x}" }
+					: x)
+				.ToArray();
+			var setup = CreateSetup();
+
+			await UITestHelper.Load(setup);
+			await Task.Delay(1000);
+
+			SetSelectedItem(source.ElementAt(50));
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+
+			var lv = setup as ListView ?? setup.FindFirstDescendant<ListView>(); // get the LV itself, or the TabListView within TabView used for header
+			var sv = lv.FindFirstDescendant<ScrollViewer>();
+			var container = lv.ContainerFromIndex(50) as ContentControl;
+
+			var offset = container.TransformToVisual(lv).TransformPoint(default);
+			var (offsetStart, vpExtent) = setup is TabView
+				? (offset.X, sv.ViewportWidth) // horizontal
+				: (offset.Y, sv.ViewportHeight); // vertical
+
+			Assert.IsTrue(0 <= offsetStart && offsetStart <= vpExtent, $"Container#50 should be within viewport: 0 <= {offsetStart} <= {vpExtent}");
+
+			FrameworkElement CreateSetup() => typeof(T).Name switch
+			{
+				nameof(ListView) => new ListView { Width = 400, Height = 200, ItemsSource = source },
+				nameof(TabView) => new TabView { Width = 400, Height = 200, TabItemsSource = source },
+
+				_ => throw new ArgumentOutOfRangeException($"Generic arg not accepted: {typeof(T).Name}")
+			};
+			void SetSelectedItem(object item)
+			{
+				if (setup is ListView lv) { lv.SelectedItem = item; }
+				else if (setup is TabView tv) { tv.SelectedItem = item; }
+				else { throw new NotImplementedException(); }
+			}
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector

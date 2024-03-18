@@ -130,9 +130,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		partial void OnIsSelectedChangedPartial(bool oldIsSelected, bool newIsSelected)
 		{
 			UpdateCommonStates();
+			OnIsSelectedChanged();
 
 			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
 		}
+
+		internal protected virtual void OnIsSelectedChanged() { }
 
 		private void UpdateCommonStatesWithoutNeedsLayout(PointerDeviceType deviceType, ManipulationUpdateKind manipulationUpdate)
 		{
