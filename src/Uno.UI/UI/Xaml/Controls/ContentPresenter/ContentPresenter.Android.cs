@@ -19,23 +19,14 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class ContentPresenter
+partial class ContentPresenter
 {
-	private readonly BorderLayerRenderer _borderRenderer;
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 
-	public ContentPresenter()
-	{
-		_borderRenderer = new BorderLayerRenderer(this);
-		InitializeContentPresenter();
+	partial void InitializePlatform() => IFrameworkElementHelper.Initialize(this);
 
-		IFrameworkElementHelper.Initialize(this);
-	}
-
-	private void SetUpdateTemplate()
-	{
-		UpdateContentTemplateRoot();
-		RequestLayout();
-	}
+	partial void SetUpdateTemplatePartial() => RequestLayout();
 
 	partial void RegisterContentTemplateRoot()
 	{
@@ -49,10 +40,7 @@ public partial class ContentPresenter
 		AddView(ContentTemplateRoot);
 	}
 
-	partial void UnregisterContentTemplateRoot()
-	{
-		this.RemoveViewAndDispose(ContentTemplateRoot);
-	}
+	partial void UnregisterContentTemplateRoot() => this.RemoveViewAndDispose(ContentTemplateRoot);
 
 	partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateBorder();
 
@@ -61,13 +49,4 @@ public partial class ContentPresenter
 		AdjustCornerRadius(canvas, CornerRadius);
 	}
 
-	private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-
-	private void UpdateBorder() => _borderRenderer.Update();
-
-	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => UpdateBorder();
-
-	bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 }

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.UI.DataBinding;
+﻿using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Collections;
-using System.Linq;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
@@ -17,6 +10,8 @@ using Uno.UI.Xaml;
 
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
+using Uno.UI.Xaml.Controls;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -37,7 +32,6 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
-using ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
@@ -55,6 +49,8 @@ namespace Microsoft.UI.Xaml.Controls
 		, ICustomClippingElement
 #endif
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
 
@@ -63,9 +59,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private DataTemplate _dataTemplateUsedLastUpdate;
 
-		private void InitializeContentPresenter()
+		public ContentPresenter()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
 			SetDefaultForeground(ForegroundProperty);
+
 			InitializePlatform();
 		}
 
@@ -628,7 +626,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
 
-
 		protected virtual void OnContentChanged(object oldValue, object newValue)
 		{
 			if (oldValue != null && newValue == null)
@@ -1181,5 +1178,15 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Arranges the native element in the native shell
 		/// </summary>
 		partial void ArrangeNativeElement(Rect arrangeRect);
+
+		private void UpdateBorder() => _borderRenderer.Update();
+
+		private void SetUpdateTemplate()
+		{
+			UpdateContentTemplateRoot();
+			SetUpdateTemplatePartial();
+		}
+
+		partial void SetUpdateTemplatePartial();
 	}
 }

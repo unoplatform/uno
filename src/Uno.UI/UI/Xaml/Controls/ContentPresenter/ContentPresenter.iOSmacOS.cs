@@ -11,13 +11,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {
-	private readonly BorderLayerRenderer _borderRenderer;
-
-	public ContentPresenter()
-	{
-		_borderRenderer = new BorderLayerRenderer(this);
-		InitializeContentPresenter();
-	}
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 
 #if __IOS__
 	public override void LayoutSubviews()
@@ -33,9 +28,8 @@ partial class ContentPresenter
 	}
 #endif
 
-	private void SetUpdateTemplate()
+	partial void SetUpdateTemplatePartial()
 	{
-		UpdateContentTemplateRoot();
 #if __IOS__
 		SetNeedsLayout();
 #else
@@ -68,13 +62,4 @@ partial class ContentPresenter
 		}
 	}
 
-	private void UpdateCornerRadius(CornerRadius radius) => UpdateBorder();
-
-	private void UpdateBorder() => _borderRenderer.Update();
-
-	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => UpdateBorder();
-
-	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
-
-	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 }
