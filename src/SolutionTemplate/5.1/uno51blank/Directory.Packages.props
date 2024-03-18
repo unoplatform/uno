@@ -35,6 +35,6 @@
     <PackageVersion Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.Skia.Wpf" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.WinUI.WebAssembly" Version="$(UnoVersion)" />
-    <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.10.0.2" />
+    <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.10.0.3" />
   </ItemGroup>
 </Project>
