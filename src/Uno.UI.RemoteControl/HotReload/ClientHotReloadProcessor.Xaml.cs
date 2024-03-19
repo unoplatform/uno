@@ -84,6 +84,14 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
 				{
+#if __IOS__ || __CATALYST__
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"iOS/Catalyst do not support C# based XAML hot reload: https://github.com/unoplatform/uno/issues/15918");
+					}
+
+					return false;
+#else
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($".NET Platform Bindings Version: {aiva.InformationalVersion}");
@@ -97,10 +105,8 @@ namespace Uno.UI.RemoteControl.HotReload
 					if (parts.Length > 0 && Version.TryParse(parts[0], out var version))
 					{
 						_isIssue93860Fixed = version >=
-#if __IOS__ || __CATALYST__
-							new Version(17, 2, 8022); // 8.0.200
-#elif __ANDROID__
-							new Version(34, 0, 1, 52); //8.0.102
+#if __ANDROID__
+							new Version(34, 0, 1, 52); // 8.0.102
 #endif
 
 						if (!_isIssue93860Fixed.Value && this.Log().IsEnabled(LogLevel.Warning))
@@ -111,6 +117,7 @@ namespace Uno.UI.RemoteControl.HotReload
 								$"Make sure to upgrade to .NET 8.0.102 or later");
 						}
 					}
+#endif
 				}
 			}
 
