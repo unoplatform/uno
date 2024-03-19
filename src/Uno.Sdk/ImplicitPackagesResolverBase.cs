@@ -54,17 +54,17 @@ public abstract class ImplicitPackagesResolverBase : Task
 		try
 		{
 			_unoFeatures = GetFeatures();
-			var references = CachedReferences.Load(IntermediateOutput);
-			if (references.NeedsUpdate(_unoFeatures))
+			var cachedReferences = CachedReferences.Load(IntermediateOutput);
+			if (cachedReferences.NeedsUpdate(_unoFeatures, UnoVersion))
 			{
 				ExecuteInternal();
-				references = new CachedReferences(DateTimeOffset.Now, _unoFeatures, [.. _implicitPackages]);
-				references.SaveCache(IntermediateOutput);
+				cachedReferences = new CachedReferences(DateTimeOffset.Now, _unoFeatures, [.. _implicitPackages]);
+				cachedReferences.SaveCache(IntermediateOutput);
 			}
 			else
 			{
-				Debug("Adding ({0}) Packages from cache file.", references.References.Length);
-				_implicitPackages.AddRange(references.References);
+				Debug("Adding ({0}) Packages from cache file.", cachedReferences.References.Length);
+				_implicitPackages.AddRange(cachedReferences.References);
 			}
 		}
 		catch (Exception ex)

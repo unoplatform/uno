@@ -20,10 +20,16 @@ internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, 
 		WriteIndented = true
 	};
 
-	public bool NeedsUpdate(IEnumerable<UnoFeature> currentFeatures)
+	public bool NeedsUpdate(IEnumerable<UnoFeature> currentFeatures, string unoVersion)
 	{
 		if (Updated.AddDays(1) < DateTimeOffset.Now
 			|| Features.Length != currentFeatures.Count())
+		{
+			return true;
+		}
+
+		var unoReference = References.SingleOrDefault(r => r.PackageId == "Uno.WinUI");
+		if (unoReference is null || unoReference.Version != unoVersion)
 		{
 			return true;
 		}
