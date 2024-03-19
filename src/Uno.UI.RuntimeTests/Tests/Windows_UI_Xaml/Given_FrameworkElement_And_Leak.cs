@@ -94,7 +94,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
 #if __ANDROID__
-			LeakTestStyles.Default // Fluent styles disabled - #14341
+			LeakTestStyles.Uwp // Fluent styles disabled - #14341
 #else
 			LeakTestStyles.All
 #endif
