@@ -11,10 +11,11 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<_DefaultMicrosoftNETSdk>Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
 		<!-- Legacy Project System Support -->
 		<_DefaultMicrosoftNETSdk Condition="$(SingleProject) != 'true' AND ($(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+
 		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'" >Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<_DefaultMicrosoftNETSdk Condition=" $(_DefaultMicrosoftNETSdk) == '' ">Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
 	</PropertyGroup>
 
 	<PropertyGroup>
