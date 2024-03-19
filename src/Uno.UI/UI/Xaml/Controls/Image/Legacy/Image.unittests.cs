@@ -12,14 +12,13 @@ using System.Runtime.InteropServices;
 
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class Image : FrameworkElement
 {
-	partial class Image : FrameworkElement
-	{
-		partial void OnSourceChanged(ImageSource newValue, bool forceReload = false);
+	partial void OnSourceChanged(ImageSource newValue, bool forceReload = false);
 
-		private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
+	private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
 
-		internal override bool IsViewHit() => Source != null || base.IsViewHit();
-	}
+	internal override bool IsViewHit() => Source != null || base.IsViewHit();
 }

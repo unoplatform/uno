@@ -22,5 +22,4 @@ internal partial class NativeImageView : _UIImageView
 	public void Reset() => Image = null;
 
 	public void SetImage(_UIImage image) => Image = image;
-
 }

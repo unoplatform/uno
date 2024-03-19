@@ -16,7 +16,7 @@ partial class Image
 	}
 
 	/// <summary>
-	/// Identifies the Source  dependency property.
+	/// Identifies the Source dependency property.
 	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(
