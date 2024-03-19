@@ -41,6 +41,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<PropertyGroup>
 		<DisableImplicitUnoPackages Condition=" '$(DisableImplicitUnoPackages)' == '' ">false</DisableImplicitUnoPackages>
+
+		<!-- Disable analyzers provided by Microsoft.AspNetCore.App -->
+		<DisableImplicitAspNetCoreAnalyzers Condition=" '$(DisableImplicitAspNetCoreAnalyzers)' == '' ">true</DisableImplicitAspNetCoreAnalyzers>
 	</PropertyGroup>
 
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
@@ -49,5 +52,16 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
 		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
+
+	<!-- 
+		Remove the implicitly added FrameworkReference from the Web SDK. 
+
+		This needs to be explicitly manipulated here as a global item, and not in a Target. This is for
+		VS to read the global properties and avoid showing a yellow icon being the result of a mismatch 
+		between runs of design-time builds (one build defining a FrameworkReference and another one not).
+	-->
+	<ItemGroup>
+		<FrameworkReference Remove="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
 </Project>

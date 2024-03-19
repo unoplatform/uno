@@ -27,7 +27,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Remove="Microsoft.AspNetCore.*" />
+		<!-- Remove all the usings included by the Microsoft.NET.Sdk.Web SDK -->
+		<_RemoveWebSDKUsing Include="@(Using)" Condition="$([System.String]::Copy(%(DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
+		<Using Remove="@(_RemoveWebSDKUsing)" />
+		<_RemoveWebSDKUsing Remove="@(_RemoveWebSDKUsing)"/>
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
