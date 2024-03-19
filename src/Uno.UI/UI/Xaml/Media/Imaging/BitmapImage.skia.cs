@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.UI.Composition;
+using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.Application­Model;
@@ -34,16 +35,20 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		{
 			try
 			{
-				if (UriSource is not null)
+				var uri = UriSource;
+				if (uri is not null)
 				{
-					if (!UriSource.IsAbsoluteUri)
+					if (!uri.IsAbsoluteUri)
 					{
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					var scaledUri = new Uri(await PlatformImageHelpers.GetScaledPath(UriSource, scaleOverride: null));
+					if (uri.IsLocalResource())
+					{
+						uri = new Uri(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride: null));
+					}
 
-					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(scaledUri, ct);
+					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct);
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						RaiseImageFailed(imageData.Error);
