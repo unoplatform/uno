@@ -4,6 +4,7 @@ namespace Uno.Sdk;
 
 internal static class UnoTarget
 {
+	public const string Reference = "reference";
 	public const string Windows = "windows10";
 	public const string Wasm = "browserwasm";
 	public const string Android = "android";

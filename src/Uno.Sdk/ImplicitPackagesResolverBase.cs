@@ -9,6 +9,7 @@ namespace Uno.Sdk;
 
 public abstract class ImplicitPackagesResolverBase : Task
 {
+	private static readonly string[] _legacyWasmProjectSuffix = [".Wasm", ".WebAssembly"];
 	public bool SdkDebugging { get; set; }
 
 	public bool SingleProject { get; set; }
@@ -122,20 +123,27 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	protected bool IsLegacyWasmHead()
 	{
-		if (string.IsNullOrWhiteSpace(TargetFrameworkIdentifier) || string.IsNullOrEmpty(ProjectName))
+		// Neither of these should ever actually happen...
+		if (string.IsNullOrEmpty(TargetFrameworkIdentifier))
 		{
+			Debug("The TargetFrameworkIdentifier has no value.");
+			return false;
+		}
+		else if (string.IsNullOrEmpty(ProjectName))
+		{
+			Debug("The ProjectName has no value.");
 			return false;
 		}
 
-		var value = ProjectName.EndsWith(".Wasm", StringComparison.InvariantCultureIgnoreCase)
-			|| ProjectName.EndsWith(".WebAssembly", StringComparison.InvariantCultureIgnoreCase);
+		var isLegacyProject = !SingleProject && TargetFrameworkIdentifier == UnoTarget.Reference
+			&& _legacyWasmProjectSuffix.Any(x => ProjectName.EndsWith(x, StringComparison.InvariantCulture));
 
-		if (value)
+		if (isLegacyProject)
 		{
 			Debug("Building a Legacy WASM project.");
 		}
 
-		return value;
+		return isLegacyProject;
 	}
 
 	protected void AddPackageForFeature(UnoFeature feature, string packageId, string packageVersion)
