@@ -194,9 +194,9 @@ namespace Microsoft.UI.Xaml
 			typeof(UIElement),
 			new FrameworkPropertyMetadata(
 				RoutedEventFlag.None,
-				FrameworkPropertyMetadataOptions.Inherits)
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)
 			{
-				CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
+				CoerceValueCallback = CoerceRoutedEventFlag
 			}
 		);
 
@@ -208,54 +208,30 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		#region SubscribedToHandledEventsToo DependencyProperty
-
-		private static DependencyProperty SubscribedToHandledEventsTooProperty { get; } =
-			DependencyProperty.Register(
-				"SubscribedToHandledEventsToo",
-				typeof(RoutedEventFlag),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					RoutedEventFlag.None,
-					FrameworkPropertyMetadataOptions.Inherits)
-				{
-					CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
-				}
-			);
-
-		private RoutedEventFlag SubscribedToHandledEventsToo
+		private static object CoerceRoutedEventFlag(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
-			get => (RoutedEventFlag)GetValue(SubscribedToHandledEventsTooProperty);
-			set => SetValue(SubscribedToHandledEventsTooProperty, value);
-		}
-
-		#endregion
-
-		private static object CoerceRoutedEventFlag(DependencyObject dependencyObject, object baseValue)
-		{
-			// This is a Coerce method for both EventsBubblingInManagedCodeProperty and SubscribedToHandledEventsTooProperty
-
 			var @this = (UIElement)dependencyObject;
 
-			var localValue = @this.GetPrecedenceSpecificValue(
-				SubscribedToHandledEventsTooProperty,
-				DependencyPropertyValuePrecedences.Local); // should be the same than localValue on first assignment
+			// GetPrecedenceSpecificValue will read an outdated value for the precedence currently being set
+			var localValue = precedence is DependencyPropertyValuePrecedences.Local ?
+				baseValue :
+				@this.GetPrecedenceSpecificValue(EventsBubblingInManagedCodeProperty, DependencyPropertyValuePrecedences.Local);
 
-			if (!(localValue is RoutedEventFlag local))
+			var inheritedValue = precedence is DependencyPropertyValuePrecedences.Inheritance ?
+				baseValue :
+				@this.GetPrecedenceSpecificValue(EventsBubblingInManagedCodeProperty, DependencyPropertyValuePrecedences.Inheritance);
+
+			var combinedFlag = RoutedEventFlag.None;
+			if (localValue is RoutedEventFlag local)
 			{
-				return baseValue; // local not set, no coerced value to set
+				combinedFlag |= local;
 			}
-
-			var inheritedValue = @this.GetPrecedenceSpecificValue(
-				SubscribedToHandledEventsTooProperty,
-				DependencyPropertyValuePrecedences.Inheritance);
-
 			if (inheritedValue is RoutedEventFlag inherited)
 			{
-				return local | inherited; // coerced value is a merge between local and inherited
+				combinedFlag |= inherited;
 			}
 
-			return baseValue; // no inherited value, nothing to do
+			return combinedFlag;
 		}
 
 		private readonly Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore
@@ -493,12 +469,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
-
-			if (handledEventsToo
-				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
-			{
-				UpdateSubscribedToHandledEventsToo();
-			}
 		}
 
 		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
@@ -507,12 +477,6 @@ namespace Microsoft.UI.Xaml
 			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
-
-			if (handledEventsToo
-				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
-			{
-				UpdateSubscribedToHandledEventsToo();
-			}
 		}
 
 		private void AddHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
@@ -559,12 +523,6 @@ namespace Microsoft.UI.Xaml
 				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
 					handlers.Remove(matchingHandler);
-
-					if (matchingHandler.HandledEventsToo
-						&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no need to update the flag
-					{
-						UpdateSubscribedToHandledEventsToo();
-					}
 				}
 
 				RemoveHandler(routedEvent, handlers.Count, handler);
@@ -614,31 +572,6 @@ namespace Microsoft.UI.Xaml
 			=> _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
 				? handlers.Count
 				: 0;
-
-		private void UpdateSubscribedToHandledEventsToo()
-		{
-			var subscribedToHandledEventsToo = RoutedEventFlag.None;
-
-			foreach (var eventHandlers in _eventHandlerStore)
-			{
-				if (eventHandlers.Key.IsAlwaysBubbled)
-				{
-					// This event is always bubbled, no need to include it in the SubscribedToHandledEventsToo
-					continue;
-				}
-
-				foreach (var handler in eventHandlers.Value)
-				{
-					if (handler.HandledEventsToo)
-					{
-						subscribedToHandledEventsToo |= eventHandlers.Key.Flag;
-						break;
-					}
-				}
-			}
-
-			SubscribedToHandledEventsToo = subscribedToHandledEventsToo;
-		}
 
 		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
@@ -710,14 +643,6 @@ namespace Microsoft.UI.Xaml
 				// [5] Event handled by local handlers?
 				if (isHandled)
 				{
-					// [9] Any parent interested ?
-					var anyParentInterested = AnyParentInterested(routedEvent);
-					if (!anyParentInterested)
-					{
-						// [12] Event processing finished
-						return true; // reported has handled in managed
-					}
-
 					// Make sure the event is marked as not bubbling natively anymore
 					// --> [10]
 					if (args != null)
@@ -989,22 +914,6 @@ namespace Microsoft.UI.Xaml
 			var flag = routedEvent.Flag;
 
 			return eventsBubblingInManagedCode.HasFlag(flag);
-		}
-
-		private bool AnyParentInterested(RoutedEvent routedEvent)
-		{
-			// Pointer events must always be dispatched to all parents in order to update visual states,
-			// update manipulation, detect gestures, etc.
-			// (They are then interpreted by each parent in the PrepareManagedPointerEventBubbling)
-			if (routedEvent.IsAlwaysBubbled)
-			{
-				return true;
-			}
-
-			// [9] Any parent interested?
-			var subscribedToHandledEventsToo = SubscribedToHandledEventsToo;
-			var flag = routedEvent.Flag;
-			return subscribedToHandledEventsToo.HasFlag(flag);
 		}
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)
