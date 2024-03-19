@@ -50,20 +50,25 @@ partial class InputManager
 
 		private void OnKey(KeyEventArgs args, bool down)
 		{
-			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+			var originalSource1 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
 
-			var args1 = new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
-			{
-				CanBubbleNatively = false
-			};
-			var args2 = new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
+			var args1 = new KeyRoutedEventArgs(originalSource1, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
 			{
 				CanBubbleNatively = false
 			};
 
-			originalSource.RaiseTunnelingEvent(down ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent, args1);
-			args2.Handled = args1.Handled; // WinUI doesn't reuse the same args object, but copies the Handled value
-			originalSource.RaiseEvent(down ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, args2);
+			originalSource1.RaiseTunnelingEvent(down ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent, args1);
+
+			// On WinUI, if the focus changes during PreviewKey<Down|Up>, the Key<Up|Down> event bubbles from the new focused element.
+			var originalSource2 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+
+			var args2 = new KeyRoutedEventArgs(originalSource2, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
+			{
+				CanBubbleNatively = false,
+				Handled = args1.Handled // WinUI doesn't reuse the same args object, but copies the Handled value
+			};
+
+			originalSource2.RaiseEvent(down ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, args2);
 
 			args.Handled = args2.Handled;
 
@@ -79,5 +84,10 @@ partial class InputManager
 				);
 			}
 		}
+
+		/// <summary>
+		/// ONLY USE THIS FOR TESTS
+		/// </summary>
+		internal void OnKeyTestingOnly(KeyEventArgs args, bool down) => OnKey(args, down);
 	}
 }
