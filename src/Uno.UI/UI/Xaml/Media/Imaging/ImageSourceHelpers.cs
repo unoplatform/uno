@@ -31,6 +31,24 @@ internal static class ImageSourceHelpers
 		return ImageData.FromBytes(data);
 	}
 
+#if __SKIA__
+	public static Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct)
+	{
+		var surface = new Microsoft.UI.Composition.SkiaCompositionSurface();
+		var result = surface.LoadFromStream(imageStream);
+
+		if (result.success)
+		{
+			return Task.FromResult(ImageData.FromCompositionSurface(surface));
+		}
+		else
+		{
+			var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
+			return Task.FromResult(ImageData.FromError(exception));
+		}
+	}
+#endif
+
 	public static async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
 	{
 		if (uri.IsFile)
@@ -45,6 +63,11 @@ internal static class ImageSourceHelpers
 
 	public static async Task<ImageData> GetImageDataFromUriAsBytes(Uri uri, CancellationToken ct)
 		=> await GetImageDataFromUri(uri, ReadFromStreamAsBytesAsync, ct);
+
+#if __SKIA__
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct)
+		=> await GetImageDataFromUri(uri, ReadFromStreamAsCompositionSurface, ct);
+#endif
 
 	public static async Task<ImageData> GetImageDataFromUri(Uri uri, Func<Stream, CancellationToken, Task<ImageData>> imageDataCreator, CancellationToken ct)
 	{

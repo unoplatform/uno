@@ -20,8 +20,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
-		private const int MIN_DIMENSION_SYNC_LOADING = 100;
-
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapCache = new();
 
@@ -34,8 +32,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
 		{
-			var surface = new SkiaCompositionSurface();
-
 			try
 			{
 				if (UriSource is not null)
@@ -45,38 +41,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
-						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
-						UriSource.IsFile)
+					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(UriSource, ct);
+					if (imageData.Kind == ImageDataKind.Error)
 					{
-						using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
-
-						return OpenFromStream(surface, imageStream);
+						RaiseImageFailed(imageData.Error);
 					}
-					else if (UriSource.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
+					else if (imageData.Kind == ImageDataKind.CompositionSurface)
 					{
-						var path = UriSource.PathAndQuery;
-
-						if (UriSource.Host is { Length: > 0 } host)
-						{
-							path = host + "/" + path.TrimStart('/');
-						}
-
-						var filePath = GetScaledPath(path);
-						using var fileStream = File.OpenRead(filePath);
-
-						return OpenFromStream(surface, fileStream);
-					}
-					else if (UriSource.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
-					{
-						using var fileStream = File.OpenRead(FilePath);
-
-						return OpenFromStream(surface, fileStream);
+						RaiseImageOpened();
 					}
 				}
 				else if (_stream != null)
 				{
-					return OpenFromStream(surface, _stream.AsStream());
+					return await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(_stream.AsStream(), ct);
 				}
 			}
 			catch (Exception e)
@@ -85,23 +62,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 
 			return default;
-		}
-
-		private ImageData OpenFromStream(SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
-		{
-			var result = surface.LoadFromStream(imageStream);
-
-			if (result.success)
-			{
-				RaiseImageOpened();
-				return ImageData.FromCompositionSurface(surface);
-			}
-			else
-			{
-				var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
-				RaiseImageFailed(exception);
-				return ImageData.FromError(exception);
-			}
 		}
 
 		private static readonly int[] KnownScales =
