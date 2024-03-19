@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -8,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
