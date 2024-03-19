@@ -27,12 +27,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
-			asyncImage = TryOpenSourceAsync(ct, targetWidth, targetHeight);
+			asyncImage = TryOpenSourceAsync(ct);
 
 			return true;
 		}
 
-		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight)
+		private async Task<ImageData> TryOpenSourceAsync(CancellationToken ct)
 		{
 			var surface = new SkiaCompositionSurface();
 
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					{
 						using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
 
-						return OpenFromStream(targetWidth, targetHeight, surface, imageStream);
+						return OpenFromStream(surface, imageStream);
 					}
 					else if (UriSource.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 					{
@@ -65,18 +65,18 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						var filePath = GetScaledPath(path);
 						using var fileStream = File.OpenRead(filePath);
 
-						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
+						return OpenFromStream(surface, fileStream);
 					}
 					else if (UriSource.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
 					{
 						using var fileStream = File.OpenRead(FilePath);
 
-						return OpenFromStream(targetWidth, targetHeight, surface, fileStream);
+						return OpenFromStream(surface, fileStream);
 					}
 				}
 				else if (_stream != null)
 				{
-					return OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
+					return OpenFromStream(surface, _stream.AsStream());
 				}
 			}
 			catch (Exception e)
@@ -87,9 +87,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			return default;
 		}
 
-		private ImageData OpenFromStream(int? targetWidth, int? targetHeight, SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
+		private ImageData OpenFromStream(SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
 		{
-			var result = surface.LoadFromStream(targetWidth, targetHeight, imageStream);
+			var result = surface.LoadFromStream(imageStream);
 
 			if (result.success)
 			{
@@ -102,22 +102,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				RaiseImageFailed(exception);
 				return ImageData.FromError(exception);
 			}
-		}
-
-		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
-		{
-			if (_stream != null &&
-				targetWidth is { } width &&
-				targetHeight is { } height &&
-				height < MIN_DIMENSION_SYNC_LOADING &&
-				width < MIN_DIMENSION_SYNC_LOADING)
-			{
-				var surface = new SkiaCompositionSurface();
-				image = OpenFromStream(targetWidth, targetHeight, surface, _stream.AsStream());
-				return image.CompositionSurface != null;
-			}
-
-			return base.TryOpenSourceSync(targetWidth, targetHeight, out image);
 		}
 
 		private static readonly int[] KnownScales =
