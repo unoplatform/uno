@@ -95,7 +95,7 @@ internal static class X11Helper
 		// TODO: this is a ridiculous amount of indirection, find something better
 		if (AppWindow.GetFromWindowId(view.WindowId) is { } appWindow &&
 			Window.GetFromAppWindow(appWindow) is { } window &&
-			X11WindowWrapper.GetHostFromWindow(window) is { } host)
+			X11XamlRootHost.GetHostFromWindow(window) is { } host)
 		{
 			x11XamlRootHost = host;
 			return true;
@@ -110,7 +110,7 @@ internal static class X11Helper
 		// TODO: this is a ridiculous amount of indirection, find something better
 		if (AppWindow.GetFromWindowId(displayInformation.WindowId) is { } appWindow &&
 			Window.GetFromAppWindow(appWindow) is { } window &&
-			X11WindowWrapper.GetHostFromWindow(window) is { } host)
+			X11XamlRootHost.GetHostFromWindow(window) is { } host)
 		{
 			x11XamlRootHost = host;
 			return true;
