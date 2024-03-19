@@ -16,18 +16,12 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 {
 	private readonly X11XamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
-	private static ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
 
 	internal X11WindowWrapper(Window window, XamlRoot xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
 
-		_host = new X11XamlRootHost(window, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
-		X11Manager.XamlRootMap.Register(xamlRoot, _host);
-
-		_windowToHost[window] = _host;
-		var host = X11XamlRootHost.GetXamlRootHostFromX11Window(_host.X11Window);
-		host?.Closed.ContinueWith(task => _windowToHost.TryRemove(window, out _));
+		_host = new X11XamlRootHost(window, xamlRoot, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
 	}
 
 	public override string Title
@@ -45,9 +39,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			var _2 = XLib.XStoreName(_host.X11Window.Display, _host.X11Window.Window, value);
 		}
 	}
-
-	public static X11XamlRootHost? GetHostFromWindow(Window window)
-		=> _windowToHost.TryGetValue(window, out var host) ? host : null;
 
 	public override object NativeWindow => _host.X11Window;
 
@@ -90,7 +81,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		}
 		using (X11Helper.XLock(x11Window.Display))
 		{
-			X11Manager.XamlRootMap.Unregister(_xamlRoot);
 			X11XamlRootHost.Close(x11Window);
 			var _ = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
 		}

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -37,6 +38,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private static bool _firstWindowCreated;
 	private static object _x11WindowToXamlRootHostMutex = new();
 	private static Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
+	private static ConcurrentDictionary<Window, X11XamlRootHost> _windowToHost = new();
 
 	private readonly TaskCompletionSource _closed; // To keep it simple, only SetResult if you have the lock
 	private readonly ApplicationView _applicationView;
@@ -47,7 +49,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	public X11Window X11Window => _x11Window!.Value;
 
-	public X11XamlRootHost(Window winUIWindow, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_window = winUIWindow;
 
@@ -63,16 +65,32 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		_closed = new TaskCompletionSource();
 		Closed = _closed.Task;
-		Closed.ContinueWith(_ =>
-		{
-			_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
-			coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
-		});
 
 		Initialize();
+
+		// Note: the timing of XamlRootMap.Register is very fragile. It needs to be early enough
+		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
+		// the X11Window is "initialized".
+		X11Manager.XamlRootMap.Register(xamlRoot, this);
+		_windowToHost[winUIWindow] = this;
+
+		Closed.ContinueWith(_ =>
+		{
+			using (X11Helper.XLock(X11Window.Display))
+			{
+				X11Manager.XamlRootMap.Unregister(xamlRoot);
+				_windowToHost.Remove(winUIWindow, out var _);
+				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+				coreApplicationView.TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
+			}
+		});
+
 		UpdateWindowPropertiesFromPackage();
 		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
 	}
+
+	public static X11XamlRootHost? GetHostFromWindow(Window window)
+		=> _windowToHost.TryGetValue(window, out var host) ? host : null;
 
 	public Task Closed { get; }
 
