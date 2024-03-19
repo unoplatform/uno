@@ -20,7 +20,7 @@ public partial class SvgImageSource : ImageSource
 {
 	private SvgImageSourceLoadStatus? _lastStatus;
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 	private IRandomAccessStream? _stream;
 #endif
 
@@ -91,7 +91,7 @@ public partial class SvgImageSource : ImageSource
 
 			_lastStatus = null;
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 			_stream = streamSource.CloneStream();
 
 			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
@@ -107,6 +107,8 @@ public partial class SvgImageSource : ImageSource
 			{
 				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 			}
+#elif IS_UNIT_TESTS
+			return Task.FromResult(SvgImageSourceLoadStatus.Other);
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
