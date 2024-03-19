@@ -5,13 +5,15 @@
 		<DevelopmentDependency>true</DevelopmentDependency>
 		<PackageId>Uno.Sdk</PackageId>
 		<LangVersion>latest</LangVersion>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);NU5128;NU5100</NoWarn>
 		<PackageType>MSBuildSdk</PackageType>
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
 		<PackageIcon>uno.png</PackageIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+
+		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
+		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
