@@ -19,7 +19,7 @@ partial class SvgImageSource
 		try
 		{
 			ImageData imageData = await ImageSourceHelpers.GetImageDataFromUriAsBytes(AbsoluteUri, ct);
-			if (!imageData.HasData)
+			if (!imageData.HasData && _stream is not null)
 			{
 				imageData = await ImageSourceHelpers.ReadFromStreamAsBytesAsync(_stream.AsStream(), ct);
 			}

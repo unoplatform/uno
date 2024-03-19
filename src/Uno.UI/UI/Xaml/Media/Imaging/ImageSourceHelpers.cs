@@ -53,7 +53,7 @@ internal static class ImageSourceHelpers
 	{
 		if (uri.IsFile)
 		{
-			return File.Open(uri.LocalPath, FileMode.Open);
+			return File.OpenRead(uri.LocalPath);
 		}
 
 		_httpClient ??= new HttpClient();
