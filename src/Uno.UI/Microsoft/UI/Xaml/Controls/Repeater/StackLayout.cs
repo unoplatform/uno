@@ -176,7 +176,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (firstRealized != null)
 				{
 					MUX_ASSERT(lastRealized != null);
-					SetMajorStart(ref extent, (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize));
+					var firstRealizedMajor = (float)(MajorStart(firstRealizedLayoutBounds) - firstRealizedItemIndex * averageElementSize);
+					// Uno workaround [BEGIN]: Make sure to not move items above the viewport. This can be the case if an items is significantly higher than previous items (will increase the average items size)
+					firstRealizedMajor = Math.Max(0.0f, firstRealizedMajor);
+					// Uno workaround [END]
+					SetMajorStart(ref extent, firstRealizedMajor);
 					var remainingItems = itemsCount - lastRealizedItemIndex - 1;
 					SetMajorSize(ref extent, MajorEnd(lastRealizedLayoutBounds) - MajorStart(extent) + (float)(remainingItems * averageElementSize));
 				}
