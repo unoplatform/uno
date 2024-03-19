@@ -222,7 +222,11 @@ public partial class Panel : FrameworkElement, IPanel
 	/// }
 	/// </summary>
 	/// <param name="view"></param>
-	public void Add(
+	public
+#if __IOS__
+	new
+#endif
+	void Add(
 #if !__IOS__ && !__MACOS__
 		UIElement view
 #else
