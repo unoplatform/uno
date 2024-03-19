@@ -2569,8 +2569,8 @@ namespace Windows.UI.Tests.Enterprise
 				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
 			});
 #endif
-			double expectedCommandBarCompactClosedHeight = 40;
-			double expectedCommandBarCompactOpenHeight = 40;
+			double expectedCommandBarCompactClosedHeight = 48;
+			double expectedCommandBarCompactOpenHeight = 48;
 
 			double expectedCommandBarMinimalClosedHeight = 24;
 			double expectedCommandBarMinimalOpenHeight = 24;
