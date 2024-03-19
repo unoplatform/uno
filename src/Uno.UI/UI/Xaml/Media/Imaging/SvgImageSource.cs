@@ -91,7 +91,7 @@ public partial class SvgImageSource : ImageSource
 
 			_lastStatus = null;
 
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			_stream = streamSource.CloneStream();
 
 			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
