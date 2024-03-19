@@ -1,8 +1,5 @@
-using System;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
-using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -11,11 +8,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -128,14 +125,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 
 			// TextBlock's size should be roughly the same as the surrounding border.
-			var delta1 = Vector2.Subtract(border.DesiredSize.ToVector2(), SUT.DesiredSize.ToVector2());
+			var delta1 = Vector2.Subtract(Vector2Extensions.ToVector2(border.DesiredSize), Vector2Extensions.ToVector2(SUT.DesiredSize));
 			Assert.IsTrue(Math.Abs(delta1.X) < 1);
 			Assert.IsTrue(Math.Abs(delta1.Y) < 1);
 
 			Assert.IsTrue(SUT.ActualWidth > 0);
 			Assert.IsTrue(SUT.ActualHeight > 0);
 
-			var delta2 = Vector2.Subtract(SUT.DesiredSize.ToVector2(), SUT.ActualSize);
+			var delta2 = Vector2.Subtract(Vector2Extensions.ToVector2(SUT.DesiredSize), SUT.ActualSize);
 			delta2 = Vector2.Subtract(delta2, new Vector2(20, 20)); // TextBlock's ActualSize should not include margins.
 			Assert.IsTrue(Math.Abs(delta2.X) < 1);
 			Assert.IsTrue(Math.Abs(delta2.Y) < 1);
