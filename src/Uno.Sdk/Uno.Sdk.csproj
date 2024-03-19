@@ -20,7 +20,7 @@
 		<SdkFile Include="Sdk\**\*.targets;Sdk\**\*.props" />
 		<TargetFile Include="targets\**\*.props;targets\**\*.targets" />
 
-		<None Include="..\Common\uno.png" Pack="true" PackagePath="" />
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
