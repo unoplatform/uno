@@ -41,9 +41,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					// TODO: VERY IMPORTANT BEFORE MERGING:: GetScaledPath
+					var scaledUri = PlatformImageHelpers.GetScaledPath(UriSource);
 
-					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(UriSource, ct);
+					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(scaledUri, ct);
 					if (imageData.Kind == ImageDataKind.Error)
 					{
 						RaiseImageFailed(imageData.Error);
