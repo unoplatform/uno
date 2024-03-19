@@ -114,6 +114,7 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			{
 				AddPackage("Uno.WinUI.WebAssembly", UnoVersion);
 				AddPackage("Uno.Extensions.Logging.WebAssembly.Console", UnoLoggingVersion);
+				AddPackageForFeature(UnoFeature.MediaElement, "Uno.WinUI.MediaPlayer.WebAssembly", UnoVersion);
 				AddPackage("Microsoft.Windows.Compatibility", WindowsCompatibilityVersion);
 
 				if (IsExecutable && (SingleProject || IsLegacyWasmHead()))
@@ -202,15 +203,20 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			AddPackage("Microsoft.Maui.Controls.Compatibility", MauiVersion);
 			AddPackage("Microsoft.Maui.Graphics", MauiVersion);
 
+			if (SingleProject)
+			{
+				AddPackage("Microsoft.Maui.Controls.Build.Tasks", MauiVersion, "all");
+			}
+
 			if (TargetFrameworkIdentifier == UnoTarget.Android)
 			{
-				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.UI", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.Fragment", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.Runtime", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Navigation.Common", AndroidXNavigationVersion, true);
-				AddPackage("Xamarin.AndroidX.Collection", AndroidXCollectionVersion, true);
-				AddPackage("Xamarin.AndroidX.Collection.Ktx", AndroidXCollectionVersion, true);
+				AddPackage("Xamarin.Google.Android.Material", AndroidMaterialVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.UI", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.Fragment", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.Runtime", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Navigation.Common", AndroidXNavigationVersion);
+				AddPackage("Xamarin.AndroidX.Collection", AndroidXCollectionVersion);
+				AddPackage("Xamarin.AndroidX.Collection.Ktx", AndroidXCollectionVersion);
 			}
 		}
 

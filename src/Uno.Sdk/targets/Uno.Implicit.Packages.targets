@@ -7,7 +7,7 @@
 		<UnoTarget Condition="$(TargetFramework.Contains('windows10'))">windows10</UnoTarget>
 	</PropertyGroup>
 
-	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences">
+	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences;ProcessFrameworkReferences">
 		<Error Code="UNOB0006"
 			HelpLink="https://aka.platform.uno/UNOB0006"
 			Condition="$(UnoFeatures.Contains(';Extensions;')) AND $(UnoExtensionsVersion) == ''"
@@ -122,14 +122,15 @@
 				PrismVersion="$(PrismVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
-				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)">
+				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
+				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
 		</ImplicitPackagesResolver>
 
-		<ItemGroup>
+		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 		</ItemGroup>

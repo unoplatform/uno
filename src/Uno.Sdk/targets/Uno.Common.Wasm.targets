@@ -26,6 +26,10 @@
 		<SdkSupportedTargetPlatformIdentifier Include="browserwasm" DisplayName="BrowserWasm" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Remove="Microsoft.AspNetCore.*" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
 			Condition=" $(SingleProject) == 'true' " />
 </Project>

@@ -29,8 +29,4 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
 
-	<!-- This does a custom load of the Web Sdks that exclude Razor / Blazor dependencies as they are not needed -->
-	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Server.targets" 
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'" />
-
 </Project>
