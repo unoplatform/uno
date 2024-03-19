@@ -20,7 +20,7 @@ public partial class SvgImageSource : ImageSource
 {
 	private SvgImageSourceLoadStatus? _lastStatus;
 
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 	private IRandomAccessStream? _stream;
 #endif
 
