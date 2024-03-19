@@ -164,7 +164,10 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", ""),
     @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "")
+    @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", ""),
+
+    # 5.2 Blank
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "")
 
     ## Note for contributors
     ##
