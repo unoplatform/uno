@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -61,11 +62,21 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				_surface = SKSurface.Create(info, _bitmap.GetPixels(out _));
 			}
 
-			_surface.Canvas.Clear(SKColors.Transparent);
-
-			if (host.RootElement?.Visual is { } rootVisual)
+			var canvas = _surface.Canvas;
+			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
+				canvas.Clear(SKColors.Transparent);
+				var scale = host.RootElement?.XamlRoot is { } root
+					? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+					: 1;
+				canvas.Scale((int)scale);
+
+				if (host.RootElement?.Visual is { } rootVisual)
+				{
+					host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
+				}
+
+				canvas.Flush();
 			}
 
 			_xImage ??= X11Helper.XCreateImage(

@@ -9,6 +9,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -53,6 +54,10 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void RaiseNativeSizeChanged(Size newWindowSize)
 	{
+		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
+			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+			: 1;
+		newWindowSize = new Size(newWindowSize.Width / scale, newWindowSize.Height / scale);
 		Bounds = new Rect(default, newWindowSize);
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
