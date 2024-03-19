@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			Assert.AreEqual(Colors.Black, (SUT.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(Color.FromArgb(0xE4, 0, 0, 0), (SUT.Foreground as SolidColorBrush)?.Color);
 
 			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
