@@ -1638,8 +1638,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			double expectedAppBarWidth = 400;
 
-			double expectedAppBarCompactClosedHeight = 40;
-			double expectedAppBarCompactOpenHeight = 40;
+			double expectedAppBarCompactClosedHeight = 48;
+			double expectedAppBarCompactOpenHeight = 48;
 
 			double expectedAppBarMinimalClosedHeight = 24;
 			double expectedAppBarMinimalOpenHeight = 24;
