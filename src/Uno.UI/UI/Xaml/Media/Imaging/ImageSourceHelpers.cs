@@ -18,7 +18,7 @@ internal static class ImageSourceHelpers
 {
 	private static HttpClient? _httpClient;
 
-	public static async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
+	public static async Task<ImageData> ReadFromStreamAsBytesAsync(Stream stream, CancellationToken ct)
 	{
 		if (stream.CanSeek && stream.Position != 0)
 		{
@@ -43,7 +43,10 @@ internal static class ImageSourceHelpers
 		return await response.Content.ReadAsStreamAsync();
 	}
 
-	public static async Task<ImageData> GetImageDataFromUri(Uri uri, CancellationToken ct)
+	public static async Task<ImageData> GetImageDataFromUriAsBytes(Uri uri, CancellationToken ct)
+		=> await GetImageDataFromUri(uri, ReadFromStreamAsBytesAsync, ct);
+
+	public static async Task<ImageData> GetImageDataFromUri(Uri uri, Func<Stream, CancellationToken, Task<ImageData>> imageDataCreator, CancellationToken ct)
 	{
 		if (uri != null && uri.IsAbsoluteUri)
 		{
@@ -52,18 +55,18 @@ internal static class ImageSourceHelpers
 				uri.IsFile)
 			{
 				using var imageStream = await OpenStreamFromUriAsync(uri, ct);
-				return await ReadFromStreamAsync(imageStream, ct);
+				return await imageDataCreator(imageStream, ct);
 			}
 			else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 			{
 				var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
 				using var fileStream = await file.OpenStreamForReadAsync();
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await imageDataCreator(fileStream, ct);
 			}
 			else if (uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
 			{
 				using var fileStream = File.OpenRead(AppDataUriEvaluator.ToPath(uri));
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await imageDataCreator(fileStream, ct);
 			}
 		}
 
