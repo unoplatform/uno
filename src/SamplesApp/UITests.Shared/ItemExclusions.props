@@ -17,10 +17,6 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
 
-		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
-		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\**" />
-
 		<Page Remove="$(MSBuildThisFileDirectory)Lottie\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Lottie\**" />
 		<None Include="$(MSBuildThisFileDirectory)Lottie\**" />
