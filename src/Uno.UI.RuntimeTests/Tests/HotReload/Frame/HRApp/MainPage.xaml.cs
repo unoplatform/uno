@@ -48,10 +48,11 @@ namespace UnoApp50
 
 			var filters = Environment.GetCommandLineArgs().SkipWhile(a => a != "--filters").Skip(1).FirstOrDefault();
 			Console.WriteLine($"Filters = {filters}");
-			var testConfig = new UnitTestEngineConfig()
+			UnitTestEngineConfig testConfig = new();
+			if (filters is { Length: > 0 })
 			{
-				Filter = filters,
-			};
+				testConfig.Filters = filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+			}
 
 			await testControl.RunTests(CancellationToken.None, testConfig);
 
