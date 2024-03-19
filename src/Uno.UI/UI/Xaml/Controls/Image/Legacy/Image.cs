@@ -28,7 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public bool PreserveStateOnUnload { get; set; }
 
-		private readonly static IEventProvider _imageTrace = Tracing.Get(TraceProvider.Id);
 
 		private readonly SerialDisposable _imageFetchDisposable = new SerialDisposable();
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
@@ -92,8 +91,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			_successfullyOpenedImage = imageSource;
 		}
-
-		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
 
 		private void OnSourceChanged(ImageSource newValue, bool forceReload = false)
 		{
@@ -163,8 +160,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_openedSource = null;
 			TryOpenImage(true);
 		}
-
-		internal override bool IsViewHit() => Source?.HasSource() ?? false;
 
 		private protected override void OnLoaded()
 		{

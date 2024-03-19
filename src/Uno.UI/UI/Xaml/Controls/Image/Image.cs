@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,12 +17,18 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class Image : FrameworkElement
 {
+#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
+	private UIElement? _svgCanvas;
+#endif
+
 	public Image()
 	{
 		InitializePlatform();
 	}
 
 	partial void InitializePlatform();
+
+	internal override bool IsViewHit() => Source?.HasSource() ?? false;
 
 	/// <summary>
 	/// Creates and returns a ImageAutomationPeer object for this Image.

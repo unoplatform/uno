@@ -20,6 +20,4 @@ partial class Image
 			OnSourceChanged(Source, forceReload: true);
 		}
 	}
-
-
 }

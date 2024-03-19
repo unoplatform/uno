@@ -15,9 +15,10 @@ using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class Image : FrameworkElement
+partial class Image
 {
-	private readonly HtmlImage _htmlImage;
+	private HtmlImage _htmlImage;
+
 	private Size _lastMeasuredSize;
 
 	private static readonly Size _zeroSize = new Size(0d, 0d);

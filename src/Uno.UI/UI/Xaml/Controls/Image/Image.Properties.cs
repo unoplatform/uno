@@ -48,6 +48,8 @@ partial class Image
 				Stretch.Uniform,
 				(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
+	partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
+
 #if !__WASM__
 	/// <summary>
 	/// Occurs when there is an error associated with image retrieval or format.

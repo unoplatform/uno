@@ -19,9 +19,10 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class Image
 {
+	private SerialDisposable _childViewDisposable = new SerialDisposable();
+
 	private bool _isInLayout;
 	private double _sourceImageScale = 1;
-	private SerialDisposable _childViewDisposable = new SerialDisposable();
 	private Size _sourceImageSize;
 	private Size SourceImageSize => _sourceImageSize;
 
