@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					var scaledUri = PlatformImageHelpers.GetScaledPath(UriSource);
+					var scaledUri = new Uri(await PlatformImageHelpers.GetScaledPath(UriSource, scaleOverride: null));
 
 					var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(scaledUri, ct);
 					if (imageData.Kind == ImageDataKind.Error)

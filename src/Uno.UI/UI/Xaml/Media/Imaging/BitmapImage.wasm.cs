@@ -8,12 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Helpers;
+using Uno.UI.Xaml.Media;
 using Windows.Graphics.Display;
 using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
-using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
-using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -44,74 +44,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					return ImageData.Empty;
 				}
 
-				var assets = await AssetResolver.Assets;
-
-				return ImageData.FromUrl(GetScaledPath(uri.OriginalString, assets, scaleOverride), source);
+				return ImageData.FromUrl(await PlatformImageHelpers.GetScaledPath(uri, scaleOverride), source);
 			}
 			catch (Exception e)
 			{
 				return ImageData.FromError(e);
 			}
 		}
-
-		private static string GetScaledPath(string path, HashSet<string> assets, ResolutionScale? scaleOverride)
-		{
-			if (!string.IsNullOrEmpty(path))
-			{
-				var directory = Path.GetDirectoryName(path);
-				var filename = Path.GetFileNameWithoutExtension(path);
-				var extension = Path.GetExtension(path);
-
-				var resolutionScale = scaleOverride == null ? (int)DisplayInformation.GetForCurrentView().ResolutionScale : (int)scaleOverride;
-
-				// On Windows, the minimum scale is 100%, however, on Wasm, we can have lower scales.
-				// This condition is to allow Wasm to use the .scale-100 image when the scale is < 100%
-				if (resolutionScale < 100)
-				{
-					resolutionScale = 100;
-				}
-
-
-				for (var i = KnownScales.Length - 1; i >= 0; i--)
-				{
-					var probeScale = KnownScales[i];
-
-					if (resolutionScale >= probeScale)
-					{
-						var filePath = Path.Combine(directory, $"{filename}.scale-{probeScale}{extension}");
-
-						if (assets.Contains(filePath))
-						{
-							return AssetsPathBuilder.BuildAssetUri(filePath);
-						}
-					}
-				}
-
-				return AssetsPathBuilder.BuildAssetUri(path);
-			}
-
-			return path;
-		}
-
-		private static readonly int[] KnownScales =
-		{
-				(int)ResolutionScale.Scale100Percent,
-				(int)ResolutionScale.Scale120Percent,
-				(int)ResolutionScale.Scale125Percent,
-				(int)ResolutionScale.Scale140Percent,
-				(int)ResolutionScale.Scale150Percent,
-				(int)ResolutionScale.Scale160Percent,
-				(int)ResolutionScale.Scale175Percent,
-				(int)ResolutionScale.Scale180Percent,
-				(int)ResolutionScale.Scale200Percent,
-				(int)ResolutionScale.Scale225Percent,
-				(int)ResolutionScale.Scale250Percent,
-				(int)ResolutionScale.Scale300Percent,
-				(int)ResolutionScale.Scale350Percent,
-				(int)ResolutionScale.Scale400Percent,
-				(int)ResolutionScale.Scale450Percent,
-				(int)ResolutionScale.Scale500Percent
-			};
 
 		private protected override bool TryOpenSourceAsync(
 			CancellationToken ct,
@@ -163,27 +102,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				evt?.Invoke(this, new DownloadProgressEventArgs { Progress = progress });
 			}
-		}
-
-		internal static partial class AssetResolver
-		{
-			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);
-
-			// POTENTIAL BUG HERE: if the "fetch" failed, the application
-			// will never retry to fetch it again.
-			public static Task<HashSet<string>> Assets => _assets.Value;
-
-			private static async Task<HashSet<string>> GetAssets()
-			{
-				var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
-
-				var assets = await NativeMethods.DownloadAssetsManifestAsync(assetsUri);
-
-				return new HashSet<string>(LineMatch().Split(assets));
-			}
-
-			[GeneratedRegex("\r\n|\r|\n")]
-			private static partial Regex LineMatch();
 		}
 
 		internal override void ReportImageLoaded()

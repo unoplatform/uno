@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
 
@@ -9,9 +10,9 @@ namespace Uno.Helpers;
 internal static partial class PlatformImageHelpers
 {
 	// TODO: Introduce LRU caching if needed
-	private static readonly Dictionary<string, Uri> _scaledBitmapCache = new();
+	private static readonly Dictionary<string, string> _scaledBitmapCache = new();
 
-	internal static Uri GetScaledPath(Uri uri)
+	internal static Task<string> GetScaledPath(Uri uri, ResolutionScale? scaleOverride)
 	{
 		var path = uri.PathAndQuery;
 		if (uri.Host is { Length: > 0 } host)
@@ -22,7 +23,7 @@ internal static partial class PlatformImageHelpers
 		// Avoid querying filesystem if we already seen this file
 		if (_scaledBitmapCache.TryGetValue(path, out var result))
 		{
-			return result;
+			return Task.FromResult(result);
 		}
 
 		var originalLocalPath =
@@ -40,9 +41,9 @@ internal static partial class PlatformImageHelpers
 			applicableScale = FindApplicableScale(false);
 		}
 
-		result = new(applicableScale ?? originalLocalPath);
+		result = applicableScale ?? originalLocalPath;
 		_scaledBitmapCache[path] = result;
-		return result;
+		return Task.FromResult(result);
 
 		string FindApplicableScale(bool onlyMatching)
 		{
