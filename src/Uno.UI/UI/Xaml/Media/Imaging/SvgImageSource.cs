@@ -120,7 +120,7 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
-#if !__CROSSRUNTIME__
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 	internal event EventHandler? StreamLoaded;
 #endif
 
