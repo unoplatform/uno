@@ -43,8 +43,6 @@ public partial class Image
 		}
 	}
 
-	public Image() { }
-
 	partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
 	{
 		UpdateContentMode(newValue);

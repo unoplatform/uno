@@ -11,16 +11,15 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-partial class Image : FrameworkElement
+partial class Image
 {
-	private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 	private Size _lastMeasuredSize;
 	private SkiaCompositionSurface _currentSurface;
 	private CompositionSurfaceBrush _surfaceBrush;
-	private readonly SpriteVisual _imageSprite;
+	private SpriteVisual _imageSprite;
 	private ImageData _pendingImageData;
 
-	public Image()
+	partial void InitializePlatform()
 	{
 		_imageSprite = Visual.Compositor.CreateSpriteVisual();
 		Visual.Children.InsertAtTop(_imageSprite);

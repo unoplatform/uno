@@ -17,15 +17,13 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Image : FrameworkElement
 {
-	private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
-
 	private readonly HtmlImage _htmlImage;
 	private Size _lastMeasuredSize;
 
 	private static readonly Size _zeroSize = new Size(0d, 0d);
 	private ImageData _currentImg;
 
-	public Image()
+	partial void InitializePlatform()
 	{
 		_htmlImage = new HtmlImage();
 
