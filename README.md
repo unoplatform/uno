@@ -115,6 +115,6 @@ Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [
 # Contributors
 Thanks go to these wonderful people (List made with [contrib.rocks](https://contrib.rocks)):
 
-[![Uno Platform Contributors](https://contrib.rocks/image?repo=unoplatform/uno)](https://github.com/unoplatform/uno/graphs/contributors)
+[![Uno Platform Contributors](https://contrib.rocks/image?repo=unoplatform/uno&max=500)](https://github.com/unoplatform/uno/graphs/contributors)
 
 💖 Thank you.
