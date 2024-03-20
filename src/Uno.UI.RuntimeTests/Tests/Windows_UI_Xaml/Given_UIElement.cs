@@ -338,6 +338,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			button.KeyDown += (_, args) => keyDownArgs = args;
 			button.PreviewKeyDown += (_, args) => previewKeyDownArgs = args;
 
+			await UITestHelper.Load(button);
+			button.Focus(FocusState.Programmatic);
 			await TapKey(VirtualKey.A);
 
 			Assert.IsNotNull(keyDownArgs);
