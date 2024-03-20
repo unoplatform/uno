@@ -75,9 +75,11 @@ namespace Microsoft.UI.Xaml
 		// but it should actually be computed based on clipping vs desired size.
 		internal Point ScrollOffsets { get; private protected set; }
 
+#if !__SKIA__
 		// This is the local viewport of the element, i.e. where the element can draw content once clipping has been applied.
 		// This is expressed in local coordinate space.
 		internal Rect Viewport { get; private set; } = Rect.Infinite;
+#endif
 		#endregion
 
 		/// <summary>
@@ -887,7 +889,12 @@ namespace Microsoft.UI.Xaml
 		partial void ApplyNativeClip(Rect rect);
 
 		private protected virtual void OnViewportUpdated(Rect viewport) // Not "Changed" as it might be the same as previous
-			=> Viewport = viewport.IsEmpty ? Rect.Infinite : viewport; // If not clipped, we consider the viewport as infinite.
+		{
+#if !__SKIA__
+			// If not clipped, we consider the viewport as infinite.
+			Viewport = viewport.IsEmpty ? Rect.Infinite : viewport;
+#endif
+		}
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
