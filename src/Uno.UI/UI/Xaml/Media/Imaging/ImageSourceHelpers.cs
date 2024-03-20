@@ -18,7 +18,7 @@ internal static class ImageSourceHelpers
 {
 	private static HttpClient? _httpClient;
 
-	public static async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
+	public static async Task<ImageData> ReadFromStreamAsBytesAsync(Stream stream, CancellationToken ct)
 	{
 		if (stream.CanSeek && stream.Position != 0)
 		{
@@ -31,11 +31,29 @@ internal static class ImageSourceHelpers
 		return ImageData.FromBytes(data);
 	}
 
+#if __SKIA__
+	public static Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct)
+	{
+		var surface = new Microsoft.UI.Composition.SkiaCompositionSurface();
+		var result = surface.LoadFromStream(imageStream);
+
+		if (result.success)
+		{
+			return Task.FromResult(ImageData.FromCompositionSurface(surface));
+		}
+		else
+		{
+			var exception = new InvalidOperationException($"Image load failed ({result.nativeResult})");
+			return Task.FromResult(ImageData.FromError(exception));
+		}
+	}
+#endif
+
 	public static async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
 	{
 		if (uri.IsFile)
 		{
-			return File.Open(uri.LocalPath, FileMode.Open);
+			return File.OpenRead(uri.LocalPath);
 		}
 
 		_httpClient ??= new HttpClient();
@@ -43,7 +61,15 @@ internal static class ImageSourceHelpers
 		return await response.Content.ReadAsStreamAsync();
 	}
 
-	public static async Task<ImageData> GetImageDataFromUri(Uri uri, CancellationToken ct)
+	public static async Task<ImageData> GetImageDataFromUriAsBytes(Uri uri, CancellationToken ct)
+		=> await GetImageDataFromUri(uri, ReadFromStreamAsBytesAsync, ct);
+
+#if __SKIA__
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct)
+		=> await GetImageDataFromUri(uri, ReadFromStreamAsCompositionSurface, ct);
+#endif
+
+	public static async Task<ImageData> GetImageDataFromUri(Uri uri, Func<Stream, CancellationToken, Task<ImageData>> imageDataCreator, CancellationToken ct)
 	{
 		if (uri != null && uri.IsAbsoluteUri)
 		{
@@ -52,18 +78,18 @@ internal static class ImageSourceHelpers
 				uri.IsFile)
 			{
 				using var imageStream = await OpenStreamFromUriAsync(uri, ct);
-				return await ReadFromStreamAsync(imageStream, ct);
+				return await imageDataCreator(imageStream, ct);
 			}
 			else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
 			{
 				var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
 				using var fileStream = await file.OpenStreamForReadAsync();
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await imageDataCreator(fileStream, ct);
 			}
 			else if (uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase))
 			{
 				using var fileStream = File.OpenRead(AppDataUriEvaluator.ToPath(uri));
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await imageDataCreator(fileStream, ct);
 			}
 		}
 

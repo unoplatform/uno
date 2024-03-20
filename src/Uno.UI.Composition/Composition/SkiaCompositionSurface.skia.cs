@@ -24,6 +24,8 @@ namespace Microsoft.UI.Composition
 			_image = image;
 		}
 
+		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
+
 		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)
 		{
 			using var stream = new SKManagedStream(imageStream);

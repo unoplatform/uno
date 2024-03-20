@@ -36,13 +36,13 @@ partial class SvgImageSource
 		{
 			if (Stream is not null)
 			{
-				return await ImageSourceHelpers.ReadFromStreamAsync(Stream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(Stream, ct);
 			}
 
 			if (!FilePath.IsNullOrEmpty())
 			{
 				using var fileStream = File.OpenRead(FilePath);
-				return await ImageSourceHelpers.ReadFromStreamAsync(fileStream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(fileStream, ct);
 			}
 
 			if (AbsoluteUri is not null)
@@ -55,7 +55,7 @@ partial class SvgImageSource
 						return ImageData.Empty;
 					}
 
-					return await ImageSourceHelpers.ReadFromStreamAsync(stream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(stream, ct);
 				}
 
 				if (AbsoluteUri.IsLocalResource())
@@ -64,7 +64,7 @@ partial class SvgImageSource
 
 					using var fileStream = await file.OpenAsync(FileAccessMode.Read);
 					using var ioStream = fileStream.AsStream();
-					return await ImageSourceHelpers.ReadFromStreamAsync(ioStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(ioStream, ct);
 				}
 
 				if (Downloader is not null)
@@ -77,12 +77,12 @@ partial class SvgImageSource
 					}
 
 					using var fileStream = File.OpenRead(filePath.LocalPath);
-					return await ImageSourceHelpers.ReadFromStreamAsync(fileStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(fileStream, ct);
 				}
 				else
 				{
 					using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
-					return await ImageSourceHelpers.ReadFromStreamAsync(imageStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsBytesAsync(imageStream, ct);
 				}
 			}
 
