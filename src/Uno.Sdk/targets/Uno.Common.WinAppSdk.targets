@@ -12,7 +12,7 @@
 		<EnableDefaultWindowsItems Condition="$(EnableDefaultWindowsItems) == ''">false</EnableDefaultWindowsItems>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" $(_IsExecutable) ">
+	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
 		<EnableMsixTooling Condition=" $(EnableMsixTooling) == '' ">true</EnableMsixTooling>
 	</PropertyGroup>
@@ -33,7 +33,7 @@
 		</Otherwise>
 	</Choose>
 
-	<PropertyGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
+	<PropertyGroup Condition="$(SingleProject)!='true' and $(_IsExecutable) == 'true'">
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
 		<Platform Condition="$(Platform) == 'AnyCPU'">$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
@@ -42,7 +42,7 @@
 	</PropertyGroup>
 
 	<!-- Legacy Project Support -->
-	<ItemGroup Condition="$(SingleProject)!='true' and $(_IsExecutable)">
+	<ItemGroup Condition="$(SingleProject)!='true' and $(_IsExecutable) == 'true'">
 		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
 		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
 	</ItemGroup>

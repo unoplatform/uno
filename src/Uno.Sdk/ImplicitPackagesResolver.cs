@@ -84,7 +84,7 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 				AddPackage("Uno.WinUI.DevServer", UnoVersion);
 			}
 
-			if (TargetFrameworkIdentifier != UnoTarget.Wasm)
+			if (TargetFrameworkIdentifier != UnoTarget.Wasm && !IsLegacyWasmHead())
 			{
 				AddPackage("SkiaSharp.Skottie", SkiaSharpVersion);
 				AddPackage("SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);

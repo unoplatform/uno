@@ -26,9 +26,20 @@
 		<SdkSupportedTargetPlatformIdentifier Include="browserwasm" DisplayName="BrowserWasm" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Using Remove="Microsoft.AspNetCore.*" />
-	</ItemGroup>
+	<Target Name="_UnoFilterWebSdkGlobalUsings"
+			Condition=" '$(UnoDisableFilterWebSdkGlobalUsings)' != 'true' "
+			BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<!-- 
+			Remove all the usings included by the Microsoft.NET.Sdk.Web SDK. Note that 
+			`DefiningProjectDirectory` is not available when used from a global itemgroup, but is 
+			available from an target.
+			-->
+			<_RemoveWebSDKUsing Include="@(Using)" Condition="$([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
+			<Using Remove="@(_RemoveWebSDKUsing)" />
+			<_RemoveWebSDKUsing Remove="@(_RemoveWebSDKUsing)"/>
+		</ItemGroup>
+	</Target>
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
 			Condition=" $(SingleProject) == 'true' " />

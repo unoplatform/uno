@@ -58,6 +58,9 @@
 	<Import Project="Uno.Implicit.Packages.targets"
 		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
 
+	<Import Project="Uno.Implicit.Namespaces.targets"
+		Condition=" $(DisableImplicitUnoNamespaces) != 'true' " />
+
 	<!-- TFM Specific Targets -->
 	<Import Project="Uno.Common.Android.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
