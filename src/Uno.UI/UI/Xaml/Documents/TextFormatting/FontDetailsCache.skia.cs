@@ -38,7 +38,7 @@ internal static class FontDetailsCache
 
 		SKTypeface GetDefaultTypeFace()
 		{
-			// if Segoe UI is not found, it will automatically return a system default
+			// if the specified default font is not found, it will automatically return a system default
 			return SKTypeface.FromFamilyName(FeatureConfiguration.Font.DefaultTextFontFamily, skWeight, skWidth, skSlant);
 		}
 
