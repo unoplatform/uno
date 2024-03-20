@@ -14,12 +14,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Panel : FrameworkElement
+partial class Panel
 {
-	protected virtual void OnChildrenChanged()
-	{
-	}
-
-	public override IEnumerable<View> GetChildren()
-		=> Children.OfType<View>().ToArray<View>();
+	public override IEnumerable<View> GetChildren() => Children.OfType<View>().ToArray<View>();
 }

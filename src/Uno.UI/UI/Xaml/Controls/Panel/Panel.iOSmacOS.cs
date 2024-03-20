@@ -20,23 +20,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Panel
 {
-	partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue) => UpdateBorder();
-
-	partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-	{
-		InvalidateMeasure();
-		UpdateBorder();
-	}
-
-	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => InvalidateMeasure();
-
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args) => UpdateBorder();
-
-	partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
-
-	partial void UpdateBorder() => _borderRenderer.Update(); //TODO: Do we need to pass the image data?
-
-	protected virtual void OnChildrenChanged() => InvalidateMeasure();
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadiusInternal == CornerRadius.None;
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 
 	protected override void OnAfterArrange()
 	{
@@ -55,42 +40,6 @@ partial class Panel
 
 		UpdateBorder();
 	}
-
-	/// <summary>        
-	/// Support for the C# collection initializer style.
-	/// Allows items to be added like this 
-	/// new Panel 
-	/// {
-	///    new Border()
-	/// }
-	/// </summary>
-	/// <param name="view"></param>
-	public
-#if __IOS__
-		new
-#endif
-		void Add(__View view)
-	{
-		Children.Add(view);
-	}
-
-	public bool HitTestOutsideFrame
-	{
-		get;
-		set;
-	}
-
-#if __IOS__
-	// All touches that are on this view (and not its subviews) are ignored
-	public override __View HitTest(CGPoint point, UIEvent uievent)
-	{
-		return HitTestOutsideFrame ? this.HitTestOutsideFrame(point, uievent) : base.HitTest(point, uievent);
-	}
-#else
-	// All touches that are on this view (and not its subviews) are ignored
-	public override __View HitTest(CGPoint point) =>
-		HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
-#endif
 
 #if __IOS__
 	public override void SubviewAdded(__View uiview)
@@ -116,6 +65,21 @@ partial class Panel
 	}
 #endif
 
-	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadiusInternal == CornerRadius.None;
-	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+	public bool HitTestOutsideFrame
+	{
+		get;
+		set;
+	}
+
+#if __IOS__
+	// All touches that are on this view (and not its subviews) are ignored
+	public override __View HitTest(CGPoint point, UIEvent uievent)
+	{
+		return HitTestOutsideFrame ? this.HitTestOutsideFrame(point, uievent) : base.HitTest(point, uievent);
+	}
+#else
+	// All touches that are on this view (and not its subviews) are ignored
+	public override __View HitTest(CGPoint point) =>
+		HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
+#endif
 }
