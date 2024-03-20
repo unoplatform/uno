@@ -109,7 +109,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
 		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
 		// from this visual.
-		SKMatrix initialTransform = Parent?.TotalMatrix.Invert() ?? SKMatrix.Identity;
+		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
+		// an initial global transformation set (e.g. if the renderer sets scaling for dpi)
+		var initialTransform = Parent?.TotalMatrix.Invert() ?? canvas.TotalMatrix;
 
 		if (ignoreLocation)
 		{
