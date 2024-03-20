@@ -111,7 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		public async Task Check_Sizes_After_Loaded()
+		public async Task Check_Sizes_After_Loaded_FullScreen()
 		{
 			var SUT = new TextBlock { Text = "X", Margin = new Thickness(50) };
 			var grid = new Grid { Children = { SUT } };
@@ -126,14 +126,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.DesiredSize.Height > 100);
 
 			// TextBlock's size should be roughly the same as the surrounding border.
-			var desiredSizeDiff = Vector2.Subtract(Vector2Extensions.ToVector2(grid.DesiredSize), Vector2Extensions.ToVector2(SUT.DesiredSize));
+			var desiredSizeDiff = Vector2.Subtract(grid.DesiredSize.ToVector2(), SUT.DesiredSize.ToVector2());
 			Assert.IsTrue(Math.Abs(desiredSizeDiff.X) < 1);
 			Assert.IsTrue(Math.Abs(desiredSizeDiff.Y) < 1);
 
 			Assert.IsTrue(SUT.ActualWidth > 0);
 			Assert.IsTrue(SUT.ActualHeight > 0);
 
-			var actualSizeDiff = Vector2.Subtract(Vector2Extensions.ToVector2(SUT.DesiredSize), SUT.ActualSize);
+			var actualSizeDiff = Vector2.Subtract(SUT.DesiredSize.ToVector2(), SUT.ActualSize);
+			actualSizeDiff = Vector2.Subtract(actualSizeDiff, new Vector2(100, 100)); // TextBlock's ActualSize should not include margins.
+			Assert.IsTrue(Math.Abs(actualSizeDiff.X) < 1);
+			Assert.IsTrue(Math.Abs(actualSizeDiff.Y) < 1);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width, 1);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height, 1);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Check_Sizes_After_Loaded_Aligned()
+		{
+			var SUT = new TextBlock { Text = "X", Margin = new Thickness(50) };
+			var grid = new Grid { Children = { SUT }, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			// layout cycle should be done by now
+
+			Assert.IsTrue(SUT.DesiredSize.Width > 100);
+			Assert.IsTrue(SUT.DesiredSize.Height > 100);
+
+			// TextBlock's size should be roughly the same as the surrounding border.
+			var desiredSizeDiff = Vector2.Subtract(grid.DesiredSize.ToVector2(), SUT.DesiredSize.ToVector2());
+			Assert.IsTrue(Math.Abs(desiredSizeDiff.X) < 1);
+			Assert.IsTrue(Math.Abs(desiredSizeDiff.Y) < 1);
+
+			Assert.IsTrue(SUT.ActualWidth > 0);
+			Assert.IsTrue(SUT.ActualHeight > 0);
+
+			var actualSizeDiff = Vector2.Subtract(SUT.DesiredSize.ToVector2(), SUT.ActualSize);
 			actualSizeDiff = Vector2.Subtract(actualSizeDiff, new Vector2(100, 100)); // TextBlock's ActualSize should not include margins.
 			Assert.IsTrue(Math.Abs(actualSizeDiff.X) < 1);
 			Assert.IsTrue(Math.Abs(actualSizeDiff.Y) < 1);
