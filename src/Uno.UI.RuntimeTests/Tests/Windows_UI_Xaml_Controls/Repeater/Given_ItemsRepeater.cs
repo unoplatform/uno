@@ -318,6 +318,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #elif __ANDROID__ || __SKIA__
 		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
+#elif __WASM__
+		[Ignore("Flaky on CI https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_UnloadAndReload_Then_ReMaterializeItems()
 		{
