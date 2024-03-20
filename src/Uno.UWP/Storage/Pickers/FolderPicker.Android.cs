@@ -12,6 +12,7 @@ namespace Windows.Storage.Pickers
 	public partial class FolderPicker
 	{
 		internal const int RequestCode = 6001;
+		private Action<Intent> _intentAction;
 
 		private static TaskCompletionSource<Intent?>? _currentFolderPickerRequest;
 
@@ -41,6 +42,8 @@ namespace Windows.Storage.Pickers
 			var intent = new Intent(Intent.ActionOpenDocumentTree);
 			_currentFolderPickerRequest = new TaskCompletionSource<Intent?>();
 
+			_intentAction?.Invoke(intent);
+
 			appActivity.StartActivityForResult(intent, RequestCode);
 
 			var resultIntent = await _currentFolderPickerRequest.Task;
@@ -64,5 +67,8 @@ namespace Windows.Storage.Pickers
 
 			return null;
 		}
+
+		internal void RegisterOnBeforeStartActivity(Action<Intent> intentAction)
+			=> _intentAction = intentAction;
 	}
 }
