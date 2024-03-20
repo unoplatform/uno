@@ -37,12 +37,6 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
 
-	/// <summary>
-	/// Provides a display scale to override framebuffer default scale
-	/// </summary>
-	/// <remarks>This value can be overriden by the UNO_DISPLAY_SCALE_OVERRIDE environment variable</remarks>
-	public float? DisplayScale { get; set; }
-
 	public async Task Run()
 	{
 		try
