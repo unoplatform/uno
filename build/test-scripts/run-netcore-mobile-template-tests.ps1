@@ -194,11 +194,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
     else
     {
         Write-Host "MSBuild Building Debug $projectPath with $projectOptions"
-        & $msbuild $debug "$projectPath" $projectOptions
+        & $msbuild $debug /r "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
 
         Write-Host "MSBuild Building Release $projectPath with $projectOptions"
-        & $msbuild $release "$projectPath" $projectOptions
+        & $msbuild $release /r "$projectPath" $projectOptions
         Assert-ExitCodeIsZero
     }
 }
