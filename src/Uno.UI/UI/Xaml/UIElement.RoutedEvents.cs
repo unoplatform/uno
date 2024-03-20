@@ -186,54 +186,6 @@ namespace Microsoft.UI.Xaml
 			internal bool HandledEventsToo { get; }
 		}
 
-		#region EventsBubblingInManagedCode DependencyProperty
-
-		public static DependencyProperty EventsBubblingInManagedCodeProperty { get; } = DependencyProperty.Register(
-			"EventsBubblingInManagedCode",
-			typeof(RoutedEventFlag),
-			typeof(UIElement),
-			new FrameworkPropertyMetadata(
-				RoutedEventFlag.None,
-				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)
-			{
-				CoerceValueCallback = CoerceRoutedEventFlag
-			}
-		);
-
-		public RoutedEventFlag EventsBubblingInManagedCode
-		{
-			get => (RoutedEventFlag)GetValue(EventsBubblingInManagedCodeProperty);
-			set => SetValue(EventsBubblingInManagedCodeProperty, value);
-		}
-
-		#endregion
-
-		private static object CoerceRoutedEventFlag(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence)
-		{
-			var @this = (UIElement)dependencyObject;
-
-			// GetPrecedenceSpecificValue will read an outdated value for the precedence currently being set
-			var localValue = precedence is DependencyPropertyValuePrecedences.Local ?
-				baseValue :
-				@this.GetPrecedenceSpecificValue(EventsBubblingInManagedCodeProperty, DependencyPropertyValuePrecedences.Local);
-
-			var inheritedValue = precedence is DependencyPropertyValuePrecedences.Inheritance ?
-				baseValue :
-				@this.GetPrecedenceSpecificValue(EventsBubblingInManagedCodeProperty, DependencyPropertyValuePrecedences.Inheritance);
-
-			var combinedFlag = RoutedEventFlag.None;
-			if (localValue is RoutedEventFlag local)
-			{
-				combinedFlag |= local;
-			}
-			if (inheritedValue is RoutedEventFlag inherited)
-			{
-				combinedFlag |= inherited;
-			}
-
-			return combinedFlag;
-		}
-
 		private readonly Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore
 			= new Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>>();
 
@@ -658,7 +610,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// [6] & [7] Will the event bubbling natively or in managed code?
-			var isBubblingInManagedCode = IsBubblingInManagedCode(routedEvent, args);
+			var isBubblingInManagedCode = args == null || !args.CanBubbleNatively;
 			if (!isBubblingInManagedCode)
 			{
 				return false; // [8] Return for native bubbling
@@ -898,22 +850,6 @@ namespace Microsoft.UI.Xaml
 		private static bool IsHandled(RoutedEventArgs args)
 		{
 			return args is IHandleableRoutedEventArgs cancellable && cancellable.Handled;
-		}
-
-		private bool IsBubblingInManagedCode(RoutedEvent routedEvent, RoutedEventArgs args)
-		{
-			if (args == null || !args.CanBubbleNatively) // [6] From platform?
-			{
-				// Not from platform
-
-				return true; // -> [10] bubble in managed to parents
-			}
-
-			// [7] Event set to bubble in managed code?
-			var eventsBubblingInManagedCode = EventsBubblingInManagedCode;
-			var flag = routedEvent.Flag;
-
-			return eventsBubblingInManagedCode.HasFlag(flag);
 		}
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)
