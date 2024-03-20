@@ -71,7 +71,7 @@ internal partial class X11XamlRootHost
 
 		while (true)
 		{
-			var ret = X11Helper.poll(fds, 1, 1000);
+			var ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
 
 			if (_closed.Task.IsCompleted)
 			{
