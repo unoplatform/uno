@@ -444,11 +444,176 @@ namespace Microsoft.UI.Xaml.Media
 			return default;
 		}
 
+#if __SKIA__ // optimized implementation for skia that uses visuals directly
+		/// <param name="position">The absolute position relative to the window origin</param>
+		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
+			Point position,
+			UIElement element,
+			GetHitTestability getVisibility,
+			StalePredicate? isStale)
+		{
+			var stale = default(Branch?);
+			HitTestability elementHitTestVisibility;
+			(elementHitTestVisibility, getVisibility) = getVisibility(element);
+
+#if TRACE_HIT_TESTING
+			using var _ = SET_TRACE_SUBJECT(element);
+			TRACE($"- hit test visibility: {elementHitTestVisibility} - point position: {position}");
+#endif
+
+			// If the element is not hit testable, do not even try to validate it nor its children.
+			if (elementHitTestVisibility == HitTestability.Collapsed)
+			{
+				// Even if collapsed, if the element is stale, we search down for the real stale leaf
+				if (isStale?.Method.Invoke(element) ?? false)
+				{
+					stale = SearchDownForStaleBranch(element, isStale.Value);
+				}
+
+				TRACE($"> NOT FOUND (Element is HitTestability.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (default, stale);
+			}
+
+			var transformToElement = element.TransformToVisual(null);
+
+			// The maximum region where the current element and its children might draw themselves
+			// This is expressed in element coordinate space.
+			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
+				? new Rect(rect.Left, rect.Top, rect.Width, rect.Height)
+				: Rect.Infinite;
+			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
+
+			// The region where the current element draws itself.
+			// Be aware that children might be out of this rendering bounds if no clipping defined.
+			// This is expressed in element coordinate space.
+			var renderingBounds = transformToElement.TransformBounds(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
+			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
+
+			// Validate that the pointer is in the bounds of the element
+			if (!clippingBounds.Contains(position))
+			{
+				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
+				if (isStale is not null)
+				{
+					if (isStale.Value.Method(element))
+					{
+						TRACE($"- Is {isStale.Value.Name}");
+
+						stale = SearchDownForStaleBranch(element, isStale.Value);
+					}
+					else
+					{
+						TRACE($"- Is NOT {isStale.Value.Name}");
+					}
+				}
+
+				TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (default, stale);
+			}
+
+			// Validate if any child is an acceptable target
+			var children = GetManagedVisualChildren(element);
+
+			var isChildStale = isStale;
+
+			using var child = children.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
+
+			while (child.MoveNext())
+			{
+				var childResult = SearchDownForTopMostElementAt(position, child.Current!, getVisibility, isChildStale);
+
+				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
+				if (childResult.stale is not null)
+				{
+					stale = childResult.stale;
+					isChildStale = null;
+				}
+
+				// If we found an acceptable element in the child's sub-tree, job is done!
+				if (childResult.element is not null)
+				{
+					if (isChildStale is not null) // Also indicates that stale is null
+					{
+						// If we didn't find any stale root in previous children or in the child's sub tree,
+						// we continue to enumerate sibling children to detect a potential stale root.
+
+						TRACE($"+ Searching for stale {isChildStale.Value.Name} branch.");
+
+						while (child.MoveNext())
+						{
+#if TRACE_HIT_TESTING
+							using var __ = SET_TRACE_SUBJECT(child.Current);
+#endif
+
+							if (isChildStale.Value.Method(child.Current))
+							{
+								TRACE($"- Is {isChildStale.Value.Name}");
+
+								stale = SearchDownForStaleBranch(child.Current!, isChildStale.Value);
+
+#if TRACE_HIT_TESTING
+								while (child.MoveNext())
+								{
+									using var ___ = SET_TRACE_SUBJECT(child.Current);
+									if (isChildStale.Value.Method(child.Current))
+									{
+										//Debug.Assert(false);
+										TRACE($"- Is {isChildStale.Value.Name} ***** INVALID: Only one branch can be considered as stale at once! ****");
+									}
+									TRACE($"> Ignored since leaf and stale branch has already been found.");
+								}
+#endif
+
+								break;
+							}
+							else
+							{
+								TRACE($"- Is NOT {isChildStale.Value.Name}");
+							}
+						}
+					}
+#if TRACE_HIT_TESTING
+					else
+					{
+						while (child.MoveNext())
+						{
+							using var __ = SET_TRACE_SUBJECT(child.Current);
+							TRACE($"> Ignored since leaf has already been found and no stale branch to find.");
+						}
+					}
+#endif
+
+					TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch: {stale?.ToString() ?? "-- none --"}");
+					return (childResult.element, stale);
+				}
+			}
+
+			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
+			// and the position is in actual bounds (which might be different than the clipping bounds)
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(position))
+			{
+				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (element, stale);
+			}
+			else
+			{
+				// If no stale element found yet, validate if the current is stale.
+				// Note: no needs to search down for stale child, we already did it!
+				if (isStale?.Method.Invoke(element) ?? false)
+				{
+					stale = new Branch(element, stale?.Leaf ?? element);
+				}
+
+				TRACE($"> NOT FOUND (HitTestability.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				return (default, stale);
+			}
+		}
+#else
 		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 			Point posRelToParent,
 			UIElement element,
 			GetHitTestability getVisibility,
-			StalePredicate? isStale = null)
+			StalePredicate? isStale)
 		{
 			var stale = default(Branch?);
 			HitTestability elementHitTestVisibility;
@@ -547,11 +712,9 @@ namespace Microsoft.UI.Xaml.Media
 			// Once Canvas.ZIndex renders correctly elsewhere, remove the conditional OrderBy
 			// https://github.com/unoplatform/uno/issues/325
 			using var child = children
-#if __SKIA__
 				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
 				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
-				.GetReverseSortedEnumerator(UIElementToCanvasZIndex);
-#elif __WASM__
+#if __WASM__
 				.GetReverseEnumerator();
 #else
 				.Reverse()
@@ -648,6 +811,7 @@ namespace Microsoft.UI.Xaml.Media
 				return (default, stale);
 			}
 		}
+#endif
 
 		private static Branch SearchDownForStaleBranch(UIElement staleRoot, StalePredicate isStale)
 			=> new(staleRoot, SearchDownForLeafCore(staleRoot, isStale));
