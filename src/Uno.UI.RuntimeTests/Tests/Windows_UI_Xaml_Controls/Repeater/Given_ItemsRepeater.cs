@@ -452,7 +452,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 					Margin = new Thickness(10),
 					Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 				}
-				.Apply(b => b.SetBinding(FrameworkElement.HeightProperty, new Binding{Path = nameof(MyItem.Height)}))
+				.Apply(b => b.SetBinding(FrameworkElement.HeightProperty, new Binding { Path = nameof(MyItem.Height) }))
 				.Apply(b => b.SetBinding(FrameworkElement.BackgroundProperty, new Binding { Path = nameof(MyItem.Color) }))),
 				new Size(100, 500)
 			);
