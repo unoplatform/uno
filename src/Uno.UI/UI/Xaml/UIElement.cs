@@ -545,7 +545,7 @@ namespace Microsoft.UI.Xaml
 				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix3x2FinalTransform}");
 			}
 
-			return @matrix3x2FinalTransform;
+			return matrix3x2FinalTransform;
 #else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
