@@ -128,7 +128,7 @@ if ($assetsCount -ne 2)
 
 
 ## Tests Per versions of uno
-$default = @('-v', 'detailed', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
+$default = @('-v:d', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
 
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
