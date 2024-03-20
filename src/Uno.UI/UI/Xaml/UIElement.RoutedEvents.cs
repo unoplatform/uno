@@ -681,7 +681,7 @@ namespace Microsoft.UI.Xaml
 				{
 					foreach (var handler in handlers.ToArray())
 					{
-						if (IsHandled(args) || handler.HandledEventsToo)
+						if (!IsHandled(args) || handler.HandledEventsToo)
 						{
 							parent.InvokeHandler(handler.Handler, args);
 						}
