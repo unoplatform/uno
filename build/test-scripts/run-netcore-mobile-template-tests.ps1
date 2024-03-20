@@ -128,10 +128,10 @@ if ($assetsCount -ne 2)
 
 
 ## Tests Per versions of uno
-$default = @('-v:d', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
+$default = @('-v:d', '-p:EnableWindowsTargeting=true')
 
-$debug = $default + '-c' + 'Debug'
-$release = $default + '-c' + 'Release'
+$debug = $default + '-p:Configuration=Debug'
+$release = $default + '-p:Configuration=Release'
 
 # replace the uno.sdk field value in global.json, recursively in all folders
 Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
