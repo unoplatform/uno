@@ -13,6 +13,11 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows_Phone\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows_Phone\**" />
 
+		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\FlowLayout_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\FlowLayout_Simple.xaml.cs" />
+		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\FlowLayout_Simple.xaml" />
+		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Repeater\FlowLayout_Simple.xaml.cs" />
+
 		<Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\PagerControlTests\**" />
