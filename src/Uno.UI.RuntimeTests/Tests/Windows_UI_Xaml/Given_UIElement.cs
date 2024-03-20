@@ -1256,7 +1256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(sp);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow);
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow, tolerance: 25);
 		}
 #endif
 

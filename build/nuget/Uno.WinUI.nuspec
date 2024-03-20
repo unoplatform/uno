@@ -34,6 +34,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net9.0-ios17.2 -->
@@ -41,6 +42,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net9.0-maccatalyst17.2 -->
@@ -48,6 +50,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net9.0-macos14.2 -->
@@ -55,6 +58,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net8.0-android30.0 -->
@@ -67,6 +71,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net8.0-ios17.0 -->
@@ -74,6 +79,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net8.0-maccatalyst17.0 -->
@@ -81,6 +87,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- net8.0-macos14.0 -->
@@ -88,6 +95,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- .NET 9 (Reference API) -->
@@ -95,6 +103,7 @@
 				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 
 			<!-- .NET 8 (Reference API) -->
@@ -106,6 +115,7 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="System.Collections.Immutable" version="1.3.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.3.1" />
+				<dependency id="Uno.Fonts.OpenSans" version="2.4.0-dev.6" />
 			</group>
 		</dependencies>
 
