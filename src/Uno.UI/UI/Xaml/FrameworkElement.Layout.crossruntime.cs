@@ -580,14 +580,7 @@ namespace Microsoft.UI.Xaml
 #endif
 
 			var clippedFrame = GetClipRect(needsClipBounds, finalRect, new Size(maxWidth, maxHeight), margin);
-			if (clippedFrame is null)
-			{
-				ArrangeNative(new Point(offsetX, offsetY), false);
-			}
-			else
-			{
-				ArrangeNative(new Point(offsetX, offsetY), true, clippedFrame.Value);
-			}
+			ArrangeNative(new Point(offsetX, offsetY), clippedFrame);
 
 			OnLayoutUpdated();
 		}
@@ -717,9 +710,8 @@ namespace Microsoft.UI.Xaml
 		/// Calculates and applies native arrange properties.
 		/// </summary>
 		/// <param name="offset">Offset of the view from its parent</param>
-		/// <param name="needsClipToSlot">If the control should be clip to its bounds</param>
 		/// <param name="clippedFrame">Zone to clip, if clipping is required</param>
-		private void ArrangeNative(Point offset, bool needsClipToSlot, Rect clippedFrame = default)
+		private void ArrangeNative(Point offset, Rect? clippedFrame)
 		{
 			var newRect = new Rect(offset, RenderSize);
 
@@ -736,7 +728,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var clip = Clip;
-			var clipRect = clip?.Rect ?? (needsClipToSlot ? clippedFrame : default(Rect?));
+			var clipRect = clip?.Rect ?? clippedFrame;
 			if (clipRect.HasValue && clip?.Transform is { } transform)
 			{
 				clipRect = transform.TransformBounds(clipRect.Value);
