@@ -11,6 +11,7 @@ using Android.OS;
 using Android.Provider;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
@@ -35,13 +36,13 @@ partial class SvgImageSource
 		{
 			if (Stream is not null)
 			{
-				return await ReadFromStreamAsync(Stream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsync(Stream, ct);
 			}
 
 			if (!FilePath.IsNullOrEmpty())
 			{
 				using var fileStream = File.OpenRead(FilePath);
-				return await ReadFromStreamAsync(fileStream, ct);
+				return await ImageSourceHelpers.ReadFromStreamAsync(fileStream, ct);
 			}
 
 			if (AbsoluteUri is not null)
@@ -54,7 +55,7 @@ partial class SvgImageSource
 						return ImageData.Empty;
 					}
 
-					return await ReadFromStreamAsync(stream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsync(stream, ct);
 				}
 
 				if (AbsoluteUri.IsLocalResource())
@@ -63,7 +64,7 @@ partial class SvgImageSource
 
 					using var fileStream = await file.OpenAsync(FileAccessMode.Read);
 					using var ioStream = fileStream.AsStream();
-					return await ReadFromStreamAsync(ioStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsync(ioStream, ct);
 				}
 
 				if (Downloader is not null)
@@ -76,12 +77,12 @@ partial class SvgImageSource
 					}
 
 					using var fileStream = File.OpenRead(filePath.LocalPath);
-					return await ReadFromStreamAsync(fileStream, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsync(fileStream, ct);
 				}
 				else
 				{
-					using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
-					return await ReadFromStreamAsync(imageStream, ct);
+					using var imageStream = await ImageSourceHelpers.OpenStreamFromUriAsync(UriSource, ct);
+					return await ImageSourceHelpers.ReadFromStreamAsync(imageStream, ct);
 				}
 			}
 

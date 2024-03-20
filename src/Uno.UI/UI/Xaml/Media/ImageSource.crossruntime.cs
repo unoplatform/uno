@@ -33,6 +33,27 @@ namespace Microsoft.UI.Xaml.Media
 		private readonly SerialDisposable _opening = new SerialDisposable();
 		private readonly List<Action<ImageData>> _subscriptions = new List<Action<ImageData>>();
 
+		protected ImageSource()
+		{
+
+		}
+
+		partial void InitFromResource(Uri uri)
+		{
+			// TODO: Unify
+#if __SKIA__
+			AbsoluteUri = uri;
+#else
+			var path = uri.PathAndQuery.TrimStart("/");
+			AbsoluteUri = new Uri(path, UriKind.Relative);
+#endif
+		}
+
+		partial void CleanupResource()
+		{
+			AbsoluteUri = null;
+		}
+
 		/// <summary>
 		/// Subscribes to this image source
 		/// </summary>

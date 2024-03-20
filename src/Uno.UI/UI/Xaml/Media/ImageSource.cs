@@ -24,7 +24,6 @@ namespace Microsoft.UI.Xaml.Media
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
-		private protected static HttpClient? _httpClient;
 		private protected ImageData _imageData = ImageData.Empty;
 
 		internal event Action? Invalidated;
@@ -52,21 +51,6 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		public IImageSourceDownloader? Downloader;
 #pragma warning restore CA2211
-
-
-#if __ANDROID__ || __IOS__ || __MACOS__
-		/// <summary>
-		/// Initializes the Uno image downloader.
-		/// </summary>
-		private void InitializeDownloader()
-		{
-			Downloader = DefaultDownloader;
-		}
-#endif
-
-#if !(__CROSSRUNTIME__)
-		internal Stream? Stream { get; set; }
-#endif
 
 		internal string? FilePath { get; private set; }
 
@@ -205,27 +189,6 @@ namespace Microsoft.UI.Xaml.Media
 			DisposePartial();
 		}
 
-		/// <summary>
-		/// Downloads an image from the provided Uri.
-		/// </summary>
-		/// <returns>n Uri containing a local path for the downloaded image.</returns>
-		internal async Task<Uri> Download(CancellationToken ct, Uri uri)
-		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("Initiated download from {0}", uri);
-			}
-
-			if (Downloader != null)
-			{
-				return await Downloader.Download(ct, uri);
-			}
-			else
-			{
-				throw new InvalidOperationException("No Downloader has been specified for this ImageSource. An IImageSourceDownloader may be provided to enable image downloads.");
-			}
-		}
-
 		private Uri? _absoluteUri;
 
 		internal Uri? AbsoluteUri
@@ -244,18 +207,6 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		partial void SetImageLoader();
-
-		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
-		{
-			if (uri.IsFile)
-			{
-				return File.Open(uri.LocalPath, FileMode.Open);
-			}
-
-			_httpClient ??= new HttpClient();
-			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-			return await response.Content.ReadAsStreamAsync();
-		}
 
 		internal void UnloadImageData()
 		{
