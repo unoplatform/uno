@@ -47,6 +47,14 @@ The build process has determined that you have specified an UnoFeature that requ
 
 The build process has detected that you have set the value `UnoGenerateAotProfile` to true for a build configuration that has not optimized the assembly (i.e. Debug build Configuration). You should only generate an AOT profile from a build Configuration that will optimize the assembly such as the Release build Configuration.
 
+### UNOB0008: Building a WinUI class library with dotnet build is not supported
+
+Building a `net8.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
+
+To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022**, or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
+
+This particular check can be disabled by setting the msbuild property `UnoDisableValidateWinAppSDK3548` to `true`.
+
 ## Compiler Errors
 
 ### UNO0001

@@ -148,26 +148,26 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
 $projects =
 @(
     # 5.1 Blank
-    @("5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", ""),
+    @("5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", "", $true),
+    @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", "", $true),
+    @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", $true),
+    @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", $true),
+    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true),
+    @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false),
 
     # 5.1 Recommended
-    @("5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", ""),
+    @("5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", $false),
+    @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", $true),
+    @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true),
 
     # 5.2 Blank
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "")
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "", $true)
 
     ## Note for contributors
     ##
@@ -179,12 +179,26 @@ for($i = 0; $i -lt $projects.Length; $i++)
 {
     $projectPath=$projects[$i][0];
     $projectOptions=$projects[$i][1];
+    $buildWithNetCore=$projects[$i][2];
 
-    Write-Host "Building Debug $projectPath with $projectOptions"
-    dotnet build $debug "$projectPath" $projectOptions
-    Assert-ExitCodeIsZero
+    if ($buildWithNetCore)
+    {
+        Write-Host "NetCore Building Debug $projectPath with $projectOptions"
+        dotnet build $debug "$projectPath" $projectOptions
+        Assert-ExitCodeIsZero
 
-    Write-Host "Building Release $projectPath with $projectOptions"
-    dotnet build $release "$projectPath" $projectOptions
-    Assert-ExitCodeIsZero
+        Write-Host "NetCore Building Release $projectPath with $projectOptions"
+        dotnet build $release "$projectPath" $projectOptions
+        Assert-ExitCodeIsZero
+    }
+    else
+    {
+        Write-Host "MSBuild Building Debug $projectPath with $projectOptions"
+        $msbuild $debug "$projectPath" $projectOptions
+        Assert-ExitCodeIsZero
+
+        Write-Host "MSBuild Building Release $projectPath with $projectOptions"
+        $msbuild $release "$projectPath" $projectOptions
+        Assert-ExitCodeIsZero
+    }
 }
