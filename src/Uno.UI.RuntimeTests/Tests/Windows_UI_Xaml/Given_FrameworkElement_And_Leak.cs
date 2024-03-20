@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -418,7 +419,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			~Holder()
 			{
-				_update(--_counter);
+				var counter = Interlocked.Decrement(ref _counter)
+				_update(counter);
 			}
 
 			public static void Reset() => _counter = 0;
