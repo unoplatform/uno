@@ -419,7 +419,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			~Holder()
 			{
-				var counter = Interlocked.Decrement(ref _counter)
+				var counter = Interlocked.Decrement(ref _counter);
 				_update(counter);
 			}
 
