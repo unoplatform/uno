@@ -132,7 +132,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(SUT.ActualWidth > 0);
 			Assert.IsTrue(SUT.ActualHeight > 0);
-
+			//ACTUALSIZE != ActualWidth/Height!!!! :-O!
 			var actualSizeDiff = Vector2.Subtract(SUT.DesiredSize.ToVector2(), SUT.ActualSize);
 			actualSizeDiff = Vector2.Subtract(actualSizeDiff, new Vector2(100, 100)); // TextBlock's ActualSize should not include margins.
 			Assert.IsTrue(Math.Abs(actualSizeDiff.X) < 1);
