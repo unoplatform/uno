@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.Skia;
 
@@ -12,7 +11,7 @@ namespace SkiaSharpExample
 		static SamplesApp.App? _app;
 
 		[STAThread]
-		public static async Task Main(string[] args)
+		public static void Main(string[] args)
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
@@ -42,7 +41,7 @@ namespace SkiaSharpExample
 				.UseMacOS()
 				.Build();
 
-			await host.Run();
+			host.Run();
 		}
 	}
 }
