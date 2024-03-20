@@ -98,6 +98,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			X11Manager.XamlRootMap.Unregister(_xamlRoot);
 			X11XamlRootHost.Close(x11Window);
 			var _ = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
+			XLib.XFlush(x11Window.Display);
 		}
 
 		RaiseClosed();
