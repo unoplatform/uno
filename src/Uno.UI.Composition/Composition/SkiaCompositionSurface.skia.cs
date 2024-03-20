@@ -1,36 +1,40 @@
 ﻿#nullable enable
 
-
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
 	internal partial class SkiaCompositionSurface : CompositionObject, ICompositionSurface
 	{
-		// Don't use field directly. Instead, use Image property.
-		private SKImage? _image;
+		private ImageFrameProvider? _frameProvider;
 
-		public SKImage? Image
+		private ImageFrameProvider? FrameProvider
 		{
-			get => _image;
-			private set
+			get => _frameProvider;
+			set
 			{
-				_image = value;
-				OnPropertyChanged(nameof(Image), isSubPropertyChange: false);
+				_frameProvider?.Dispose();
+				_frameProvider = value;
 			}
 		}
 
+		public SKImage? Image => FrameProvider?.CurrentImage;
+
 		internal SkiaCompositionSurface(SKImage image)
 		{
-			Image = image;
+			_frameProvider = ImageFrameProvider.Create(image);
 		}
 
 		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
@@ -54,7 +58,7 @@ namespace Microsoft.UI.Composition
 
 				if (result == SKCodecResult.Success)
 				{
-					Image = SKImage.FromBitmap(bitmap);
+					FrameProvider = ImageFrameProvider.Create(SKImage.FromBitmap(bitmap));
 				}
 
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
@@ -63,13 +67,20 @@ namespace Microsoft.UI.Composition
 			{
 				try
 				{
-					Image = SKImage.FromEncodedData(stream);
-					return Image is null
-						? (false, "Failed to decode image")
-						: (true, "Success");
+					using var codec = SKCodec.Create(stream);
+					var onFrameChanged = () => NativeDispatcher.Main.Enqueue(() => OnPropertyChanged(nameof(Image), isSubPropertyChange: false), NativeDispatcherPriority.High);
+					if (!ImageFrameProvider.TryCreate(codec, onFrameChanged, out var provider))
+					{
+						FrameProvider = null;
+						return (false, "Failed to decode image");
+					}
+
+					FrameProvider = provider;
+					return (true, "Success");
 				}
 				catch (Exception e)
 				{
+					FrameProvider = null;
 					return (false, e.Message);
 				}
 			}
@@ -84,8 +95,14 @@ namespace Microsoft.UI.Composition
 
 			using (var pData = data.Pin())
 			{
-				Image = SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4);
+				FrameProvider = ImageFrameProvider.Create(SKImage.FromPixelCopy(info, (IntPtr)pData.Pointer, pixelWidth * 4));
 			}
+		}
+
+		private protected override void DisposeInternal()
+		{
+			base.DisposeInternal();
+			FrameProvider = null;
 		}
 	}
 }
