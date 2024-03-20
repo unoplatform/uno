@@ -157,16 +157,15 @@ internal partial class PopupRoot : Panel
 		}
 	}
 
+	// The ESC key closes the topmost light-dismiss-enabled popup.
+	// Handling must be done by CPopupRoot because the popups reparent their children to be under CPopupRoot,
+	// so routed events from beneanth the popups route to CPopupRoot and skip the popups themselves.
 	protected void OnKeyDown(object sender, KeyRoutedEventArgs args)
 	{
 		if (args.Key == VirtualKey.Escape)
 		{
-			var popup = GetTopmostPopup(PopupFilter.LightDismissOrFlyout);
-			if (popup is { })
-			{
-				popup.IsOpen = false;
-				args.Handled = popup.IsOpen;
-			}
+			CloseTopmostPopup(FocusState.Keyboard, PopupFilter.LightDismissOrFlyout, out var didCloseAPopup);
+			args.Handled = didCloseAPopup;
 		}
 	}
 }
