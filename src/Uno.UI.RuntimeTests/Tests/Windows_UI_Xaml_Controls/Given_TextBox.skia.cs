@@ -2208,6 +2208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
 		}
 
