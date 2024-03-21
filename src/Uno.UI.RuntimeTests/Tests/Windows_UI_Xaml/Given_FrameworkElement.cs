@@ -23,6 +23,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
+using System.Numerics;
+
 
 
 
@@ -800,6 +802,126 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(hostPanel._children.Contains(sut));
 #endif
 		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task Check_Sizes_After_Loaded_Stretched_Border()
+		{
+			const int MarginSize = 50;
+			const int ElementSize = 10;
+
+			var SUT = new Border { MinWidth = ElementSize, MinHeight = ElementSize, Background = new SolidColorBrush(Colors.Red), Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+			await Verify_Sizes_After_Loaded_Stretched(SUT, MarginSize, ElementSize);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task Check_Sizes_After_Loaded_Stretched_TextBlock()
+		{
+			const int MarginSize = 50;
+			const int ElementSize = 20;
+
+			var SUT = new TextBlock { MinWidth = ElementSize, MinHeight = ElementSize, Text = "x", Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+			await Verify_Sizes_After_Loaded_Stretched(SUT, MarginSize, ElementSize);
+		}
+
+		private async Task Verify_Sizes_After_Loaded_Stretched(FrameworkElement SUT, int MarginSize, int ElementSize)
+		{
+			const int ContainerSize = 250;
+			var grid = new Grid { Children = { SUT }, Width = ContainerSize, Height = ContainerSize };
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var finalActualSize = ContainerSize - 2 * MarginSize;
+
+			// layout cycle should be done by now
+			if (SUT is TextBlock)
+			{
+				Assert.IsTrue(SUT.DesiredSize.Width >= 2 * MarginSize + ElementSize);
+				Assert.IsTrue(SUT.DesiredSize.Height >= 2 * MarginSize + ElementSize);
+
+				// Even though min width and height are set, the actual size should be smaller than that
+				Assert.IsTrue(SUT.ActualWidth < ElementSize);
+				Assert.IsTrue(SUT.ActualHeight < ElementSize);
+			}
+			else
+			{
+				Assert.AreEqual(2 * MarginSize + ElementSize, SUT.DesiredSize.Width);
+				Assert.AreEqual(2 * MarginSize + ElementSize, SUT.DesiredSize.Height);
+
+				Assert.AreEqual(finalActualSize, SUT.ActualWidth);
+				Assert.AreEqual(finalActualSize, SUT.ActualHeight);
+			}
+
+			Assert.AreEqual(SUT.DesiredSize.Width, ElementSize + 2 * MarginSize, 1);
+			Assert.AreEqual(SUT.DesiredSize.Height, ElementSize + 2 * MarginSize, 1);
+
+			Assert.AreEqual(new Vector2(ContainerSize - 2 * MarginSize, ContainerSize - 2 * MarginSize), SUT.ActualSize);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width, 1);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height, 1);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task Check_Sizes_After_Loaded_Aligned_Border()
+		{
+			const int MarginSize = 50;
+			const int ElementSize = 10;
+			var SUT = new Border { MinWidth = ElementSize, MinHeight = ElementSize, Background = new SolidColorBrush(Colors.Red), Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			await Verify_Sizes_After_Loaded_Aligned(SUT, MarginSize, ElementSize);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task Check_Sizes_After_Loaded_Aligned_TextBlock()
+		{
+			const int MarginSize = 50;
+			const int ElementSize = 4;
+			var SUT = new TextBlock { Width = ElementSize, Height = ElementSize, Text = "Hello, world!", Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			await Verify_Sizes_After_Loaded_Aligned(SUT, MarginSize, ElementSize);
+		}
+
+		private async Task Verify_Sizes_After_Loaded_Aligned(FrameworkElement SUT, int MarginSize, int ElementSize)
+		{
+			const int ContainerSize = 250;
+			var grid = new Grid { Children = { SUT }, Width = ContainerSize, Height = ContainerSize };
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// layout cycle should be done by now
+
+			Assert.AreEqual(2 * MarginSize + ElementSize, SUT.DesiredSize.Width);
+			Assert.AreEqual(2 * MarginSize + ElementSize, SUT.DesiredSize.Height);
+
+			if (SUT is TextBlock)
+			{
+				Assert.IsTrue(SUT.ActualWidth > ElementSize);
+				Assert.IsTrue(SUT.ActualHeight > ElementSize);
+			}
+			else
+			{
+				Assert.AreEqual(ElementSize, SUT.ActualWidth);
+				Assert.AreEqual(ElementSize, SUT.ActualHeight);
+			}
+
+			Assert.AreEqual(SUT.ActualWidth, SUT.ActualSize.X, 1);
+			Assert.AreEqual(SUT.ActualHeight, SUT.ActualSize.Y, 1);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height);
+		}
+
 
 		[TestMethod]
 		[RunsOnUIThread]
