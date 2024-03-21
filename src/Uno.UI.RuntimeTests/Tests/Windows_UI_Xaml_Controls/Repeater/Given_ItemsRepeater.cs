@@ -435,6 +435,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif !__SKIA__
+		[Ignore("Fails due to async native scrolling.")]
 #endif
 		public async Task When_ItemSignificantlyHigher_Then_VirtualizeProperly()
 		{
