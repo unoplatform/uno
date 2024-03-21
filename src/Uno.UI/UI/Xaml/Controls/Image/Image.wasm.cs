@@ -93,7 +93,9 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateHitTest();
 
 			_lastMeasuredSize = _zeroSize;
-			_htmlImage.SetAttribute("src", "");
+			// Hide the old image until the new image is loaded. This is the behaviour on WinUI.
+			// Attempting to set src to "" will incorrectly raise ImageFailed
+			_htmlImage.SetStyle("visibility", "hidden");
 			_currentImg = default;
 
 			if (newValue is ImageSource source)
