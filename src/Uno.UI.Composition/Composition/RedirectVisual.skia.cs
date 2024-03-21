@@ -7,10 +7,10 @@ namespace Microsoft.UI.Composition
 {
 	public partial class RedirectVisual : ContainerVisual
 	{
-		internal override void Draw(in DrawingSession session, in SKMatrix initialTransform)
+		internal override void Draw(in DrawingSession session)
 		{
-			base.Draw(in session, initialTransform);
-			Source?.Draw(session, initialTransform);
+			base.Draw(in session);
+			Source?.Draw(session);
 		}
 	}
 }

@@ -41,7 +41,7 @@ namespace Microsoft.UI.Composition
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
-				_drawingSession = new DrawingSession(_surface, canvas, DrawingFilters.Default);
+				_drawingSession = new DrawingSession(_surface, canvas, DrawingFilters.Default, Matrix4x4.Identity);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Composition
 				bool? previousCompMode = Compositor.IsSoftwareRenderer;
 				Compositor.IsSoftwareRenderer = true;
 
-				SourceVisual.Draw(_drawingSession.Value, SKMatrix.Identity);
+				SourceVisual.Draw(_drawingSession.Value);
 
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Composition
 					session.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Canvas.DeviceClipBounds.Width, session.Canvas.DeviceClipBounds.Height));
 				}
 
-				SourceVisual.Draw(in session, SKMatrix.Identity);
+				SourceVisual.Draw(in session);
 				session.Canvas.RestoreToCount(save);
 			}
 		}

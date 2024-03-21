@@ -39,9 +39,9 @@ namespace Microsoft.UI.Composition
 			UpdatePaint();
 		}
 
-		internal override void Draw(in DrawingSession session, in SKMatrix initialTransform)
+		internal override void Draw(in DrawingSession session)
 		{
-			base.Draw(in session, initialTransform);
+			base.Draw(in session);
 
 			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{

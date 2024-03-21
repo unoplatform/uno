@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Numerics;
 using SkiaSharp;
 
 namespace Uno.UI.Composition;
@@ -8,7 +9,8 @@ namespace Uno.UI.Composition;
 
 // Accessing Surface.Canvas is slow due to SkiaSharp interop.
 // Avoid using .Surface.Canvas and use .Canvas right away.
-internal record struct DrawingSession(SKSurface Surface, SKCanvas Canvas, in DrawingFilters Filters) : IDisposable
+/// <param name="InitialTransform">An auxiliary transform matrix that the "TotalMatrix" should be applied on top of.</param>
+internal record struct DrawingSession(SKSurface Surface, SKCanvas Canvas, in DrawingFilters Filters, in Matrix4x4 InitialTransform) : IDisposable
 {
 	public static void PushOpacity(ref DrawingSession session, float opacity)
 	{

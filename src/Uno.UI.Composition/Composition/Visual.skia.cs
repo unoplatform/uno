@@ -113,22 +113,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// from this visual.
 		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
 		// an initial global transformation set (e.g. if the renderer sets scaling for dpi)
-		var initialTransform = canvas.TotalMatrix;
+		var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
 		if (Parent?.TotalMatrix is { } parentTotalMatrix)
 		{
 			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
-			initialTransform = invertedParentTotalMatrix.ToSKMatrix();
+			initialTransform = invertedParentTotalMatrix;
 		}
 
 		if (ignoreLocation)
 		{
 			canvas.Save();
 			var totalOffset = this.GetTotalOffset();
-			initialTransform = initialTransform.PreConcat(SKMatrix.Identity with { TransX = -(totalOffset.X + AnchorPoint.X), TransY = -(totalOffset.Y + AnchorPoint.Y) });
+			var translation = Matrix4x4.Identity with { M41 = -(totalOffset.X + AnchorPoint.X), M42 = -(totalOffset.Y + AnchorPoint.Y) };
+			initialTransform *= translation;
 		}
 
 		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default, initialTransform);
-		Render(in session, initialTransform);
+		Render(in session);
 
 		if (ignoreLocation)
 		{
@@ -140,8 +141,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	/// <param name="initialTransform">An auxiliary transform matrix that the <see cref="TotalMatrix"/> should be applied on top of.</param>
-	internal virtual void Render(in DrawingSession parentSession, in SKMatrix initialTransform)
+	internal virtual void Render(in DrawingSession parentSession)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -155,23 +155,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			return;
 		}
 
-		using var session = BeginDrawing(in parentSession, initialTransform);
-		Draw(in session, initialTransform);
+		using var session = BeginDrawing(in parentSession);
+		Draw(in session);
 	}
 
 	/// <summary>
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	/// <param name="initialTransform">An auxiliary transform matrix that the <see cref="TotalMatrix"/> should be applied on top of.</param>
-	internal virtual void Draw(in DrawingSession session, in SKMatrix initialTransform)
+	internal virtual void Draw(in DrawingSession session)
 	{
 	}
 
-	private DrawingSession BeginDrawing(in DrawingSession parentSession, in SKMatrix initialTransform)
-		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, initialTransform);
+	private DrawingSession BeginDrawing(in DrawingSession parentSession)
+		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.InitialTransform);
 
-	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in SKMatrix initialTransform)
+	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
 	{
 		if (ShadowState is { } shadow)
 		{
@@ -188,7 +187,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 		else
 		{
-			canvas.SetMatrix(TotalMatrix.ToSKMatrix().PostConcat(initialTransform));
+			canvas.SetMatrix((initialTransform * TotalMatrix).ToSKMatrix());
 		}
 
 		// Apply the clipping defined on the element
@@ -196,7 +195,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
 		Clip?.Apply(canvas, this);
 
-		var session = new DrawingSession(surface, canvas, in filters);
+		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
 
 		DrawingSession.PushOpacity(ref session, Opacity);
 

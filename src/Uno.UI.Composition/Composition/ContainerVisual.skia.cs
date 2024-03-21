@@ -45,15 +45,15 @@ public partial class ContainerVisual : Visual
 		IsChildrenRenderOrderDirty = false;
 	}
 
-	internal override void Draw(in DrawingSession session, in SKMatrix initialTransform)
+	internal override void Draw(in DrawingSession session)
 	{
-		base.Draw(in session, initialTransform);
+		base.Draw(in session);
 
 		var children = GetChildrenInRenderOrder();
 		var childrenCount = children.Count;
 		for (var i = 0; i < childrenCount; i++)
 		{
-			children[i].Render(in session, initialTransform);
+			children[i].Render(in session);
 		}
 	}
 
