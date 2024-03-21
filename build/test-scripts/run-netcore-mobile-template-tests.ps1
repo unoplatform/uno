@@ -147,7 +147,9 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
 
 $projects =
 @(
+    #
     # 5.1 Blank
+    #
     @("5.1/uno51blank/uno51blank.Mobile/uno51blank.Mobile.csproj", "", $true),
     @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", "", $true),
     @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", $true),
@@ -155,7 +157,9 @@ $projects =
     @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true),
     @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false),
 
+    #
     # 5.1 Recommended
+    #
     @("5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", "", $true),
     @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", $false),
     @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", $true),
@@ -166,14 +170,18 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", "", $true),
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true),
 
+    #
     # 5.2 Blank
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0", $true)
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-browserwasm", $true)
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-ios", $true)
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-android", $true)
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-maccatalyst", $true)
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-desktop", $true)
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-p:TargetFramework=net8.0-windows10.0.19041", $false)
+    #
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0"), $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-browserwasm"), $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-ios"), $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-android"), $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-maccatalyst"), $true),
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop"), $true),
+
+    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false)
 
     ## Note for contributors
     ##
