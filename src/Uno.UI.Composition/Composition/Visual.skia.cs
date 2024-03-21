@@ -16,7 +16,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private bool _matrixDirty = true;
-	private SKMatrix _totalMatrix = SKMatrix.Identity;
+	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty() => _matrixDirty = true;
@@ -24,8 +24,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// This is the final transformation matrix from the origin for this Visual.
 	/// </summary>
+#if DEBUG
 	[DebuggerDisplay("{TotalMatrixString}")]
-	internal SKMatrix TotalMatrix
+#endif
+	internal Matrix4x4 TotalMatrix
 	{
 		get
 		{
@@ -34,17 +36,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				_matrixDirty = false;
 
 				// Start out with the final matrix of the parent
-				var matrix = Parent?.TotalMatrix ?? SKMatrix.Identity;
+				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
 
 				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
 				var totalOffset = this.GetTotalOffset();
 				var offsetMatrix = SKMatrix.Identity with { TransX = totalOffset.X + AnchorPoint.X, TransY = totalOffset.Y + AnchorPoint.Y };
-				matrix = matrix.PreConcat(offsetMatrix);
+				matrix = offsetMatrix.ToMatrix4x4() * matrix;
 
 				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
 				if (this.GetTransform() is { IsIdentity: false } transform)
 				{
-					matrix = matrix.PreConcat(transform.ToSKMatrix());
+					matrix = transform * matrix;
 				}
 
 				_totalMatrix = matrix;
@@ -56,7 +58,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 #if DEBUG
-	internal string TotalMatrixString => string.Join(", ", TotalMatrix.Values);
+	internal string TotalMatrixString => $"{(_matrixDirty ? "-dirty-" : "")}{_totalMatrix}";
 #endif
 
 	public CompositionClip? Clip
@@ -111,7 +113,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// from this visual.
 		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
 		// an initial global transformation set (e.g. if the renderer sets scaling for dpi)
-		var initialTransform = Parent?.TotalMatrix.Invert() ?? canvas.TotalMatrix;
+		var initialTransform = canvas.TotalMatrix;
+		if (Parent?.TotalMatrix is { } parentTotalMatrix)
+		{
+			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
+			initialTransform = invertedParentTotalMatrix.ToSKMatrix();
+		}
 
 		if (ignoreLocation)
 		{
@@ -175,13 +182,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.Save();
 		}
 
-		if (!initialTransform.IsIdentity)
+		if (initialTransform.IsIdentity)
 		{
-			canvas.SetMatrix(TotalMatrix.PostConcat(initialTransform));
+			canvas.SetMatrix(TotalMatrix.ToSKMatrix());
 		}
 		else
 		{
-			canvas.SetMatrix(TotalMatrix);
+			canvas.SetMatrix(TotalMatrix.ToSKMatrix().PostConcat(initialTransform));
 		}
 
 		// Apply the clipping defined on the element

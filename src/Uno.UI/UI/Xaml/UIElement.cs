@@ -531,23 +531,15 @@ namespace Microsoft.UI.Xaml
 			}
 
 #if __SKIA__
-			var finalTransform = (to?.Visual?.TotalMatrix ?? SkiaSharp.SKMatrix.Identity).Invert().PreConcat(from.Visual.TotalMatrix);
-
-			var values = finalTransform.Values;
-			var matrix3x2FinalTransform = new Matrix3x2(
-				m11: values[0],
-				m12: values[3],
-				m21: values[1],
-				m22: values[4],
-				m31: values[2],
-				m32: values[5]);
+			Matrix4x4.Invert(to?.Visual?.TotalMatrix ?? Matrix4x4.Identity, out var invertedTotalMatrix);
+			var finalTransform = (invertedTotalMatrix * from.Visual.TotalMatrix).ToMatrix3x2();
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
 			{
-				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix3x2FinalTransform}");
+				from.Log().Trace($"{nameof(GetTransform)} SKIA FAST PATH (from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {finalTransform}");
 			}
 
-			return matrix3x2FinalTransform;
+			return finalTransform;
 #else
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
