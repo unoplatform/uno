@@ -113,6 +113,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					TestServices.WindowHelper.WindowContent = image;
 
 					await TestServices.WindowHelper.WaitForIdle();
+					await Task.Delay(200);
 
 					var result = await imageOpened.Task;
 
