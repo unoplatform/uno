@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -12,6 +13,8 @@ namespace Uno.Sdk;
 public abstract class ImplicitPackagesResolverBase : Task
 {
 	private static readonly string[] _legacyWasmProjectSuffix = [".Wasm", ".WebAssembly"];
+	private List<string> _existingReferences = [];
+
 	public bool SdkDebugging { get; set; }
 
 	public bool SingleProject { get; set; }
@@ -80,6 +83,26 @@ public abstract class ImplicitPackagesResolverBase : Task
 		catch (Exception ex)
 		{
 			Log.LogErrorFromException(ex);
+		}
+
+		if (_existingReferences.Count > 0)
+		{
+			var builder = new StringBuilder();
+			builder.AppendLine("Uno Platform Implicit Package references are enabled, you should remove these references from your csproj:");
+			_existingReferences.Select(x => $"\t<PackageReference Include=\"{x}\" />")
+				.ToList()
+				.ForEach(x => builder.AppendLine(x));
+			builder.AppendLine("See https://aka.platform.uno/UNOB0009 for more information.");
+			Log.LogMessage(subcategory: null,
+				code: "UNOB0009",
+				helpKeyword: null,
+				file: null,
+				lineNumber: 0,
+				columnNumber: 0,
+				endLineNumber: 0,
+				endColumnNumber: 0,
+				MessageImportance.Normal,
+				message: builder.ToString());
 		}
 
 		return !Log.HasLoggedErrors;
@@ -223,7 +246,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 		if (PackageReferences.Any(x => x.ItemSpec == packageId))
 		{
-			Log.LogMessage(MessageImportance.High, "Uno Implicit PackageReferences are enabled, however you have an explicit reference to '{0}'. Please remove the PackageReference.", packageId);
+			_existingReferences.Add(packageId);
 			return;
 		}
 
