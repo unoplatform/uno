@@ -317,6 +317,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				measuredSize = measuredSize.Add(padding);
 
+				_textDesiredSize = measuredSize;
 				return measuredSize;
 			}
 		}

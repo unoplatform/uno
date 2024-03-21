@@ -22,7 +22,6 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
 #if __SKIA__
-using System;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;

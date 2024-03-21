@@ -77,6 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 				//_layoutRoundingHeightAdjustment = desiredSize.Height - pageNodeSize.Height;
 			}
 
+			_textDesiredSize = desiredSize;
 			return desiredSize;
 		}
 

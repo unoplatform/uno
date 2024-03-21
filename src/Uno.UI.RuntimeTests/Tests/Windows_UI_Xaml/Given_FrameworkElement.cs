@@ -823,7 +823,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const int MarginSize = 50;
 			const int ElementSize = 20;
 
-			var SUT = new TextBlock { MinWidth = ElementSize, MinHeight = ElementSize, Text = "x", Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+			var SUT = new TextBlock { MinWidth = ElementSize, MinHeight = ElementSize, Text = "x", Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch, FontSize = 4 };
 			await Verify_Sizes_After_Loaded_Stretched(SUT, MarginSize, ElementSize);
 		}
 
