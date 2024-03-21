@@ -168,7 +168,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	private DrawingSession BeginDrawing(in DrawingSession parentSession)
-		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.InitialTransform);
+		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.RootTransform);
 
 	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
 	{
