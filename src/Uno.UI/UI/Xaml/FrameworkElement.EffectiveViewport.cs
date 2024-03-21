@@ -375,6 +375,7 @@ namespace Microsoft.UI.Xaml
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
+			// the ScrollOffsets check is only relevant on skia. It will only be true when viewportUpdated is also true on other platforms.
 			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated || _lastScrollOffsets != ScrollOffsets))
 			{
 				_isEnumeratingChildrenInterestedInViewportUpdates = true;
