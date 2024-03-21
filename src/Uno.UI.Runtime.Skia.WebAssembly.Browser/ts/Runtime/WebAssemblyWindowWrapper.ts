@@ -3,6 +3,7 @@ namespace Uno.UI.Runtime.Skia {
 	export class WebAssemblyWindowWrapper {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
+		private a11yElement: HTMLDivElement
 		private onResize: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
@@ -37,12 +38,29 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvasElement.id = "uno-canvas";
 			this.containerElement.appendChild(this.canvasElement);
 
+			this.a11yElement = document.createElement("div");
+			this.a11yElement.setAttribute("aria-live", "polite");
+			this.a11yElement.style.position = "fixed";
+			this.a11yElement.style.overflow = "hidden";
+			this.a11yElement.style.transform = "translate(-99999px, -99999px)";
+			this.a11yElement.style.width = "1px";
+			this.a11yElement.style.height = "1px";
+			this.containerElement.appendChild(this.a11yElement);
+
 			document.body.addEventListener("focusin", this.onfocusin);
 			window.addEventListener("resize", x => this.resize());
 
 			this.resize();
 
 			this.removeLoading();
+		}
+
+		public static announceA11y(owner: any, text: string) {
+			const instance = this.getInstance(owner);
+			let child = document.createElement("div");
+			child.innerText = text;
+			instance.a11yElement.appendChild(child);
+			setTimeout(() => instance.a11yElement.removeChild(child), 300);
 		}
 
 		private removeLoading() {

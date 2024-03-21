@@ -12,6 +12,7 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Haptics;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 
@@ -1281,6 +1282,14 @@ namespace Microsoft.UI.Xaml
 
 			if (isOver) // Entered
 			{
+#if __SKIA__
+				if (!wasOver)
+				{
+					// Currently works on Wasm Skia only.
+					string text = (this as TextBlock)?.Text;
+					Uno.Helpers.AccessibilityAnnouncer.Announce(text);
+				}
+#endif
 				return RaisePointerEvent(PointerEnteredEvent, args, ctx);
 			}
 			else // Exited

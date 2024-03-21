@@ -20,6 +20,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
+using Uno.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -37,6 +38,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 			this.Log().Trace($"Initializing {nameof(WebAssemblyWindowWrapper)}");
 		}
 
+		AccessibilityAnnouncer.WindowWrapper = this;
 		NativeMethods.Initialize(this);
 
 		_displayInformation = DisplayInformation.GetForCurrentView();
