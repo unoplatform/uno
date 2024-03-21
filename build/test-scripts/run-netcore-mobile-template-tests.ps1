@@ -10,7 +10,7 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
-$default = @('/ds', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
 $msbuild = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
 
 $debug = $default + '/p:Configuration=Debug' + '/r'
@@ -128,7 +128,7 @@ if ($assetsCount -ne 2)
 
 
 ## Tests Per versions of uno
-$default = @('-v:d', '-p:EnableWindowsTargeting=true')
+$default = @('-v:m', '-p:EnableWindowsTargeting=true')
 
 $debug = $default + '-p:Configuration=Debug'
 $release = $default + '-p:Configuration=Release'
