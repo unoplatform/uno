@@ -228,10 +228,10 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			AddPackageForFeature(UnoFeature.Toolkit, "Uno.Extensions.Navigation.Toolkit.WinUI", UnoExtensionsVersion);
 		}
 
-		if ((useExtensions || HasFeature(UnoFeature.Mvux))
-			&& !HasFeature(UnoFeature.Mvvm))
+		if (useExtensions || HasFeature(UnoFeature.Mvux))
 		{
 			AddPackage("Uno.Extensions.Reactive.WinUI", UnoExtensionsVersion);
+			AddPackage("Uno.Extensions.Reactive.Messaging", UnoExtensionsVersion);
 			AddPackageForFeature(UnoFeature.CSharpMarkup, "Uno.Extensions.Reactive.WinUI.Markup", UnoExtensionsVersion);
 		}
 
