@@ -1328,10 +1328,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+#if HAS_UNO // uses internal ToMatrix
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child.")]
-#endif
 		public async Task When_SCP_TransformToVisual()
 		{
 			var SUT = new ScrollViewer
@@ -1349,15 +1347,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
-			var ttv = scp.TransformToVisual(null).TransformPoint(new Point(0, 0));
-			var childTtvMatrix = ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(new Point(0, 0));
+			var ttv = ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero);
+			var childTtvMatrix = ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero);
 
 			SUT.ScrollToVerticalOffset(100);
 			await WindowHelper.WaitForIdle();
 
 			// The content inside the SCP should move, not the SCP itself
-			Assert.AreEqual(ttv, scp.TransformToVisual(null).TransformPoint(new Point(0, 0)));
-			Assert.AreEqual(childTtvMatrix * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(new Point(0, 0)));
+#if __SKIA__
+			// "Only skia uses Visuals for TransformToVisual. The visual-less implementation adjusts the offset on the SCP itself instead of the child."
+			Assert.AreEqual(ttv, ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
+#else
+			Assert.AreEqual(ttv * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)scp.TransformToVisual(null)).ToMatrix(Point.Zero));
+#endif
+			Assert.AreEqual(childTtvMatrix * new Matrix3x2(1, 0, 0, 1, 0, -100), ((MatrixTransform)((UIElement)scp.Content).TransformToVisual(null)).ToMatrix(Point.Zero));
 		}
 	}
+#endif
 }
