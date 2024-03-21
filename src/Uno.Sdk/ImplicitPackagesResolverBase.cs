@@ -54,6 +54,11 @@ public abstract class ImplicitPackagesResolverBase : Task
 		try
 		{
 			_unoFeatures = GetFeatures();
+			if (Log.HasLoggedErrors)
+			{
+				return false;
+			}
+
 			var cachedReferences = CachedReferences.Load(IntermediateOutput);
 			if (cachedReferences.NeedsUpdate(_unoFeatures, UnoVersion))
 			{
