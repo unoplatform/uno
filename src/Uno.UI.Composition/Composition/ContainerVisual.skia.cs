@@ -57,7 +57,7 @@ public partial class ContainerVisual : Visual
 		}
 	}
 
-	protected internal override bool SetMatrixDirty()
+	internal override bool SetMatrixDirty()
 	{
 		if (base.SetMatrixDirty())
 		{
