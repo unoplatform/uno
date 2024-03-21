@@ -236,6 +236,6 @@ internal class ProfilesObserver : IDisposable
 		}
 	}
 
-	public void Dispose() 
+	public void Dispose()
 		=> _projectRuleSubscriptionLink?.Dispose();
 }
