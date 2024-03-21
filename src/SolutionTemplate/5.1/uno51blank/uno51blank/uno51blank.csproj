@@ -49,4 +49,14 @@
       </ItemGroup>
     </When>
   </Choose>
+
+  <Target Name="_UnoValidateAssemblyResources" 
+          BeforeTargets="AfterBuild" 
+          Condition="'$(TargetFramework)'=='$(DotNetVersion)-windows10.0.19041'">
+
+    <!-- Related to https://github.com/unoplatform/uno/issues/15492 to ensure that library assets are properly generated -->
+    <Error Text="Missing uno51blank\AppResources.xaml"
+          Condition="!exists('$(OutputPath)\uno51blank\AppResources.xaml')" />
+  </Target>
+
 </Project>
