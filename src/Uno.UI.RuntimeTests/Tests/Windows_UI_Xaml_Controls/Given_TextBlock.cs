@@ -917,6 +917,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_CRLF()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "FirstLine\r\n Second",
+				IsTextSelectionEnabled = true,
+				FontFamily = "Arial" // to remain consistent between platforms with different default fonts
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// move to the center of the first line
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 5));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("FirstLine", await Clipboard.GetContent()!.GetTextAsync());
+
+			// move to the center of the second line
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 25));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Second", await Clipboard.GetContent()!.GetTextAsync());
+
+			// move to the start of the second line
+			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(0, 25));
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(" ", await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
 #if !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
