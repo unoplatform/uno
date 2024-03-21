@@ -11,14 +11,6 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 {
 	public string MauiVersion { get; set; }
 
-	public string UnoExtensionsVersion { get; set; }
-
-	public string UnoToolkitVersion { get; set; }
-
-	public string UnoThemesVersion { get; set; }
-
-	public string UnoCSharpMarkupVersion { get; set; }
-
 	public string SkiaSharpVersion { get; set; }
 
 	public string UnoLoggingVersion { get; set; }

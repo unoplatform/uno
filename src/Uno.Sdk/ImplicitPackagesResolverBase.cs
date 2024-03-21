@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -31,6 +33,14 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	[Required]
 	public string UnoVersion { get; set; }
+
+	public string UnoExtensionsVersion { get; set; }
+
+	public string UnoToolkitVersion { get; set; }
+
+	public string UnoThemesVersion { get; set; }
+
+	public string UnoCSharpMarkupVersion { get; set; }
 
 	public ITaskItem[] PackageReferences { get; set; } = [];
 
@@ -114,11 +124,55 @@ public abstract class ImplicitPackagesResolverBase : Task
 		if (Enum.TryParse<UnoFeature>(feature, true, out var unoFeature))
 		{
 			Debug("Parsed UnoFeature: '{0}'.", feature);
+			ValidateFeature(unoFeature);
 			return unoFeature;
 		}
 
 		Log.LogWarning($"Unable to parse '{feature}' to a known Uno Feature.");
 		return UnoFeature.Invalid;
+	}
+
+	public void ValidateFeature(UnoFeature feature)
+	{
+		var area = typeof(UnoFeature).GetMember(feature.ToString())
+			.Single(x => x.DeclaringType == typeof(UnoFeature))
+			.GetCustomAttribute<UnoAreaAttribute>()?.Area;
+
+		switch (area)
+		{
+			case UnoArea.Core:
+				VerifyFeature(feature, UnoVersion);
+				break;
+			case UnoArea.CSharpMarkup:
+				VerifyFeature(feature, UnoCSharpMarkupVersion);
+				break;
+			case UnoArea.Extensions:
+				VerifyFeature(feature, UnoExtensionsVersion);
+				break;
+			case UnoArea.Theme:
+				VerifyFeature(feature, UnoThemesVersion);
+				break;
+			case UnoArea.Toolkit:
+				VerifyFeature(feature, UnoToolkitVersion);
+				break;
+		}
+	}
+
+	private void VerifyFeature(UnoFeature feature, string version, [CallerArgumentExpression(nameof(version))] string versionName = null)
+	{
+		if (string.IsNullOrEmpty(version))
+		{
+			Log.LogError(subcategory: "",
+				errorCode: "UNOB0006",
+				helpKeyword: null,
+				helpLink: "https://aka.platform.uno/UNOB0006",
+				file: null,
+				lineNumber: 0,
+				columnNumber: 0,
+				endLineNumber: 0,
+				endColumnNumber: 0,
+				message: $"The UnoFeature '{feature}' was selected, but the property {versionName} was not set.");
+		}
 	}
 
 	protected bool IsLegacyWasmHead()
