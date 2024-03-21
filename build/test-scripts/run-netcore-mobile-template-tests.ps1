@@ -167,7 +167,13 @@ $projects =
     @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", "", $true),
 
     # 5.2 Blank
-    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-browserwasm", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-ios", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-android", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-maccatalyst", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-f net8.0-desktop", $true)
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-p:TargetFramework=net8.0-windows10.0.19041", $false)
 
     ## Note for contributors
     ##
