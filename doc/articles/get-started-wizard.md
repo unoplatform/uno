@@ -2,19 +2,69 @@
 uid: Uno.GetStarted.Wizard
 ---
 
-# Welcome to Uno Platform
+<!-- markdownlint-disable MD026 -->
+# Done! Important next steps:
 
-**Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!**
+Create a simple cross-platform Counter application.
 
-## Next steps
+Choose one of the 4 variants of the Counter tutorial, combining markup language (XAML or C# Markup) and presentation framework (MVVM or MVUX).
 
-* You can give the [Counter tutorial](xref:Uno.Workshop.Counter) a try
-* Next you can try our [Simple Calc](xref:Workshop.SimpleCalc.Overview) and [Tube Player](xref:Workshop.TubePlayer.Overview) tutorials
-* More advanced examples in our [Uno.Samples repository](https://github.com/unoplatform/uno.samples)
-* Fork a fully-fledged [Ch9 application and source code](https://platform.uno/code-samples/#ch9)
-* You can find detailed documentation on Uno Platform topics [on our web site](https://platform.uno/docs/articles/intro.html).
+<!-- markdownlint-disable MD001 -->
 
-> [!IMPORTANT]
-> Take a look at our [common issues list](xref:Uno.UI.CommonIssues) if you're having trouble with your app.
+<br/>
+
+<div class="row">
+
+<div class="col-md-6 col-xs-12 ">
+<a href="getting-started/counterapp/get-started-counter-xaml-mvux.md">
+<div class="alert alert-info alert-hover">
+
+#### XAML + MVUX
+
+Use XAML for layout and MVUX for state management
+
+</div>
+</a>
+</div>
+
+<div class="col-md-6 col-xs-12 ">
+<a href="getting-started/counterapp/get-started-counter-xaml-mvvm.md">
+<div class="alert alert-info alert-hover">
+
+#### XAML + MVVM
+
+Use XAML for layout and MVVM for state management
+
+</div>
+</a>
+</div>
+
+<div class="col-md-6 col-xs-12 ">
+<a href="getting-started/counterapp/get-started-counter-csharp-mvux.md">
+<div class="alert alert-info alert-hover">
+
+#### C# Markup + MVUX
+
+Use C# Markup for layout and MVUX for state management
+
+</div>
+</a>
+</div>
+
+<div class="col-md-6 col-xs-12 ">
+<a href="getting-started/counterapp/get-started-counter-csharp-mvvm.md">
+<div class="alert alert-info alert-hover">
+
+#### C# Markup + MVVM
+
+Use C# Markup for layout and MVVM for state management
+
+</div>
+</a>
+</div>
+
+</div>
+
+<br/>
 
 [!include[getting-help](includes/getting-help.md)]
