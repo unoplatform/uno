@@ -634,7 +634,7 @@ namespace Microsoft.UI.Xaml.Documents
 					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positionsSpan, x, justifySpaceOffset, fireEvents, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? 1 : 0);
+					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInNewLine(segmentSpan) ? segment.LineBreakLength : 0);
 
 					ArrayPool<SKPoint>.Shared.Return(positions);
 					ArrayPool<ushort>.Shared.Return(glyphs);
@@ -697,7 +697,9 @@ namespace Microsoft.UI.Xaml.Documents
 					right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 
 					var selectionNotEmpty = bg.StartIndex != bg.EndIndex;
-					if (selectionNotEmpty && SpanEndsInNewLine(segmentSpan))
+					// positions.Length doesn't include CRLF, so we specifically check if EndIndex goes past position.Length to know if CRLF is included or not.
+					var newLineIncludedInSelection = SpanEndsInNewLine(segmentSpan) && bg.EndIndex - spanStartingIndex > positions.Length;
+					if (selectionNotEmpty && newLineIncludedInSelection)
 					{
 						// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
 						right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
@@ -1022,12 +1024,14 @@ namespace Microsoft.UI.Xaml.Documents
 				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
 				.Sum(GlyphsLengthWithCR); // all characters in span
 
+			var start = characterCount;
+			var end = characterCount + GlyphsLengthWithCR(span);
 			if (!includeNewline && (SpanEndsInNewLine(span)))
 			{
-				characterCount--;
+				end -= span.Segment.LineBreakLength;
 			}
 
-			return AdjustSelectionForSurrogatePairs(characterCount, characterCount + GlyphsLengthWithCR(span));
+			return AdjustSelectionForSurrogatePairs(start, end);
 		}
 
 		/// <summary>
@@ -1127,7 +1131,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		// RenderSegmentSpan.FullGlyphsLength includes spaces, but not \r
 		private int GlyphsLengthWithCR(RenderSegmentSpan span)
-			=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? 1 : 0);
+			=> span.FullGlyphsLength + (SpanEndsInNewLine(span) ? span.Segment.LineBreakLength : 0);
 
 		private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
 		{
