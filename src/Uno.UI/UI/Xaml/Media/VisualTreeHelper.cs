@@ -479,7 +479,7 @@ namespace Microsoft.UI.Xaml.Media
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in element coordinate space.
 			var clippingBounds = element.Visual.ViewBox?.GetRect() is { } rect
-				? new Rect(rect.Left, rect.Top, rect.Width, rect.Height)
+				? transformToElement.TransformBounds(new Rect(rect.Left, rect.Top, rect.Width, rect.Height))
 				: Rect.Infinite;
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
 
