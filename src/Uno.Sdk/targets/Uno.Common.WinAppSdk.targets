@@ -53,7 +53,7 @@
 	<Import Project="Uno.SingleProject.WinAppSdk.targets"
 			Condition=" $(SingleProject) == 'true' " />
 
-	<Import Project="uUno.SingleProject.WinAppSdk.VS.targets"
+	<Import Project="Uno.SingleProject.WinAppSdk.VS.targets"
 			Condition=" $(BuildingInsideVisualStudio) == 'true' " />
 
 	<Target Name="_UnoValidateWinAppSDK3548"
