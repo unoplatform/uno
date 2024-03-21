@@ -46,6 +46,9 @@
 				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(instance, (ev.target as HTMLInputElement).value)
 			};
 
+			// bubble the key events up to be handled in uno without actually inserting any character
+			input.onkeydown = ev => ev.preventDefault();
+
 			document.body.appendChild(input);
 
 			return input.id;
@@ -53,9 +56,13 @@
 
 		public static focus(id: string, focused: boolean) {
 			if (focused) {
+				// It's necessary to actually focus the native input, not just make it visible. This is particularly
+				// important to mobile browsers (to open the software keyboard) and
+				document.getElementById(id).focus()
 				document.getElementById(id).style.display = "block";
 			} else {
 				document.getElementById(id).style.display = "none";
+				document.getElementById(id).blur()
 			}
 		}
 
