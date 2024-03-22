@@ -58,9 +58,6 @@
 		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
 	</PropertyGroup>
 
-	<Import Project="Uno.Implicit.Packages.targets"
-		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
-
 	<Import Project="Uno.Implicit.Namespaces.targets"
 		Condition=" $(DisableImplicitUnoNamespaces) != 'true' " />
 
@@ -83,6 +80,9 @@
 
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
+
+	<Import Project="Uno.Implicit.Packages.targets"
+		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
 
 	<PropertyGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
 		<OutputType>Library</OutputType>

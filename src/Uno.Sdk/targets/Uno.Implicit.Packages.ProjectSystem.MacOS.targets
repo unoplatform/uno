@@ -1,0 +1,7 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
+
+	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+		
+	</ItemGroup>
+</Project>
