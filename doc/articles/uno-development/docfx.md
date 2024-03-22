@@ -6,7 +6,7 @@ uid: Uno.Contributing.DocFx
 
 # The Uno docs website and DocFX
 
-Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [html files](https://platform.uno/docs/articles/intro.html).
+Uno Platform's docs website uses [DocFX](https://dotnet.github.io/docfx/) to convert Markdown files in the [articles folder](https://github.com/unoplatform/uno/tree/master/doc/articles) into [html files](/articles/intro.md).
 
 ## Adding to the table of contents
 

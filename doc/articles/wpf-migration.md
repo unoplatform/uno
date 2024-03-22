@@ -35,9 +35,9 @@ The vast majority of your codebase will simply "move across". Existing XAML stru
 
 Along the journey to bring your WPF app to the Web, you should become familiar with the Uno Platform documentation. Your team should thoroughly understand what is supported (and where) before you build a feature around it. Learn about:
 
-* [Get started](https://platform.uno/docs/articles/get-started.html)
-* [How-tos and tutorials](https://platform.uno/docs/articles/tutorials-intro.html)
-* [Development deep-dives](https://platform.uno/docs/articles/using-uno-ui.html)
+* [Get started](/articles/get-started.md)
+* [How-tos and tutorials](/articles/tutorials-intro.md)
+* [Development deep-dives](/articles/using-uno-ui.md)
 * [Reference](https://platform.uno/docs/articles/implemented-views.html)
 
 ## Architecture Considerations

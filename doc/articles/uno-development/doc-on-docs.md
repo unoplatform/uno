@@ -62,7 +62,7 @@ It's important to document these novel features when you add them, since they ar
 
 ## Updating the documentation from linked repositories
 
-The Uno Platform documentation is aggregated onto https://platform.uno/docs/articles/intro.html, including some repositories that are in the unoplatform GitHub organization.
+The Uno Platform documentation is aggregated onto [Docs Intro](/articles/intro.md), including some repositories that are in the unoplatform GitHub organization.
 
 ### Updating the documentation for other repositories
 
