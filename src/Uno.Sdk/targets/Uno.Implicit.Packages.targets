@@ -8,9 +8,16 @@
 		<UnoTarget>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</UnoTarget>
 		<UnoTarget Condition="$(TargetFramework.Contains('windows10'))">windows10</UnoTarget>
 		<UnoTarget Condition="$(UnoTarget) == ''">reference</UnoTarget>
+		<UnoImplicitPackages_BeforeTargets>
+			ResolveFrameworkReferencesDesignTime;
+			ResolveProjectReferencesDesignTime2;
+			ResolvePackageDependencies;
+			CollectPackageReferences;
+			ProcessFrameworkReferences;
+		</UnoImplicitPackages_BeforeTargets>
 	</PropertyGroup>
 
-	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences;ProcessFrameworkReferences">
+	<Target Name="UnoImplicitPackages" BeforeTargets="$(UnoImplicitPackages_BeforeTargets)">
 		<PropertyGroup>
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
 		</PropertyGroup>
