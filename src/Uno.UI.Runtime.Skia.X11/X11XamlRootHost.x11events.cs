@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading;
@@ -62,7 +63,6 @@ internal partial class X11XamlRootHost
 		_displayInformationExtension = extension;
 	}
 
-	[DoesNotReturn]
 	private unsafe void Run()
 	{
 		var fds = stackalloc X11Helper.Pollfd[1];
@@ -71,9 +71,20 @@ internal partial class X11XamlRootHost
 
 		while (true)
 		{
-			var ret = X11Helper.poll(fds, 1, -1); // infinite waiting
+			var ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
 
-			if (ret < 0)
+			if (_closed.Task.IsCompleted)
+			{
+				return;
+			}
+
+			if (ret == 0) // timeout
+			{
+				// If the fd becomes "ready" between the timeout and the next poll request, the second poll will
+				// return immediately, not block forever.
+				continue;
+			}
+			else if (ret < 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -93,96 +104,111 @@ internal partial class X11XamlRootHost
 				continue;
 			}
 
-			using (X11Helper.XLock(X11Window.Display))
+			// Only hold the lock when fetching the next event
+			static IEnumerable<XEvent> GetEvents(IntPtr display)
 			{
-				while (X11Helper.XPending(X11Window.Display) > 0)
+				while (true)
 				{
-					XLib.XNextEvent(X11Window.Display, out var event_);
-
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					XEvent @event;
+					using (var @lock = X11Helper.XLock(display))
 					{
-						this.Log().Trace($"XLIB EVENT: {event_.type}");
-					}
+						if (X11Helper.XPending(display) == 0)
+						{
+							yield break;
+						}
 
-					switch (event_.type)
-					{
-						case XEventName.ClientMessage:
-							IntPtr deleteWindow = X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW);
-							if (event_.ClientMessageEvent.ptr1 == deleteWindow)
-							{
-								// This happens when we click the titlebar X, not like xkill,
-								// which, according to the source code, just calls XKillClient
-								// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
-								// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
-								QueueAction(this, _closingCallback);
-							}
-							break;
-						case XEventName.ConfigureNotify:
-							var configureEvent = event_.ConfigureEvent;
-							_displayInformationExtension?.UpdateDetails();
-							QueueAction(this, () => _resizeCallback(new Size(configureEvent.width, configureEvent.height)));
-							break;
-						case XEventName.FocusIn:
-							QueueAction(this, () => _focusCallback(true));
-							break;
-						case XEventName.FocusOut:
-							QueueAction(this, () => _focusCallback(false));
-							break;
-						case XEventName.VisibilityNotify:
-							QueueAction(this, () => _visibilityCallback(event_.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
-							break;
-						case XEventName.Expose:
-							QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
-							break;
-						case XEventName.MotionNotify:
-							_pointerSource?.ProcessMotionNotifyEvent(event_.MotionEvent);
-							break;
-						case XEventName.ButtonPress:
-							_pointerSource?.ProcessButtonPressedEvent(event_.ButtonEvent);
-							break;
-						case XEventName.ButtonRelease:
-							_pointerSource?.ProcessButtonReleasedEvent(event_.ButtonEvent);
-							break;
-						case XEventName.LeaveNotify:
-							_pointerSource?.ProcessLeaveEvent(event_.CrossingEvent);
-							break;
-						case XEventName.EnterNotify:
-							_pointerSource?.ProcessEnterEvent(event_.CrossingEvent);
-							break;
-						case XEventName.KeyPress:
-							_keyboardSource?.ProcessKeyboardEvent(event_.KeyEvent, true);
-							break;
-						case XEventName.KeyRelease:
-							_keyboardSource?.ProcessKeyboardEvent(event_.KeyEvent, false);
-							break;
-						case XEventName.DestroyNotify:
-							// We handle the WM_DELETE_WINDOW message above, so ignore this.
-							break;
-						case XEventName.MapNotify:
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
-							}
-							break;
-						case XEventName.UnmapNotify:
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
-							}
-							break;
-						case XEventName.ReparentNotify:
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} was reparented to parent window {event_.ReparentEvent.parent.ToString("X", CultureInfo.InvariantCulture)}.");
-							}
-							break;
-						default:
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {event_.type} event");
-							}
-							break;
+						XLib.XNextEvent(display, out @event);
 					}
+					yield return @event;
+				}
+			}
+
+			foreach (var @event in GetEvents(X11Window.Display))
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"XLIB EVENT: {@event.type}");
+				}
+
+				switch (@event.type)
+				{
+					case XEventName.ClientMessage:
+						// no locking needed, WM_DELETE_WINDOW is already cached
+						IntPtr deleteWindow = X11Helper.GetAtom(X11Window.Display, X11Helper.WM_DELETE_WINDOW);
+						if (@event.ClientMessageEvent.ptr1 == deleteWindow)
+						{
+							// This happens when we click the titlebar X, not like xkill,
+							// which, according to the source code, just calls XKillClient
+							// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
+							// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
+							QueueAction(this, _closingCallback);
+						}
+						break;
+					case XEventName.ConfigureNotify:
+						var configureEvent = @event.ConfigureEvent;
+						_displayInformationExtension?.UpdateDetails();
+						QueueAction(this, () => _resizeCallback(new Size(configureEvent.width, configureEvent.height)));
+						break;
+					case XEventName.FocusIn:
+						QueueAction(this, () => _focusCallback(true));
+						break;
+					case XEventName.FocusOut:
+						QueueAction(this, () => _focusCallback(false));
+						break;
+					case XEventName.VisibilityNotify:
+						QueueAction(this, () => _visibilityCallback(@event.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
+						break;
+					case XEventName.Expose:
+						QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
+						break;
+					case XEventName.MotionNotify:
+						_pointerSource?.ProcessMotionNotifyEvent(@event.MotionEvent);
+						break;
+					case XEventName.ButtonPress:
+						_pointerSource?.ProcessButtonPressedEvent(@event.ButtonEvent);
+						break;
+					case XEventName.ButtonRelease:
+						_pointerSource?.ProcessButtonReleasedEvent(@event.ButtonEvent);
+						break;
+					case XEventName.LeaveNotify:
+						_pointerSource?.ProcessLeaveEvent(@event.CrossingEvent);
+						break;
+					case XEventName.EnterNotify:
+						_pointerSource?.ProcessEnterEvent(@event.CrossingEvent);
+						break;
+					case XEventName.KeyPress:
+						_keyboardSource?.ProcessKeyboardEvent(@event.KeyEvent, true);
+						break;
+					case XEventName.KeyRelease:
+						_keyboardSource?.ProcessKeyboardEvent(@event.KeyEvent, false);
+						break;
+					case XEventName.DestroyNotify:
+						// We handle the WM_DELETE_WINDOW message above, so ignore this.
+						break;
+					case XEventName.MapNotify:
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is mapped.");
+						}
+						break;
+					case XEventName.UnmapNotify:
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} is unmapped.");
+						}
+						break;
+					case XEventName.ReparentNotify:
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().Debug($"Window {X11Window.Window.ToString("X", CultureInfo.InvariantCulture)} was reparented to parent window {@event.ReparentEvent.parent.ToString("X", CultureInfo.InvariantCulture)}.");
+						}
+						break;
+					default:
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event");
+						}
+						break;
 				}
 			}
 		}

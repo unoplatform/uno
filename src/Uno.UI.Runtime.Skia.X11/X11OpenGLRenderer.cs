@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
+using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -29,7 +30,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_grContext = CreateGRGLContext();
 		}
 
-		public void Dispose() => _grContext?.Dispose();
+		public void Dispose() => _grContext.Dispose();
 
 		void IX11Renderer.InvalidateRender()
 		{
@@ -88,6 +89,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
 				canvas.Clear(SKColors.Transparent);
+
+				var scale = _host.RootElement?.XamlRoot is { } root
+					? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+					: 1;
+				_surface.Canvas.Scale((int)scale);
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
