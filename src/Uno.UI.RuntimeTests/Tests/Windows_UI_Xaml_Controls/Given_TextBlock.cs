@@ -182,6 +182,128 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Check_Sizes_After_Loaded_Aligned_MaxSize_Set()
+		{
+			const int MarginSize = 50;
+			const int PaddingSize = 2;
+			const int ContainerSize = 250;
+			const int MaxSize = 6;
+
+			var SUT = new TextBlock { Text = "Hello world", MaxHeight = MaxSize, MaxWidth = MaxSize, Padding = new Thickness(PaddingSize), Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, FontSize = 40 };
+			var grid = new Grid { Children = { SUT }, Width = ContainerSize, Height = ContainerSize };
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(MarginSize * 2 + MaxSize, SUT.DesiredSize.Width);
+			Assert.AreEqual(MarginSize * 2 + MaxSize, SUT.DesiredSize.Height);
+
+			Assert.IsTrue(SUT.ActualWidth > MaxSize);
+			Assert.IsTrue(SUT.ActualHeight > MaxSize);
+
+			Assert.AreEqual(SUT.ActualWidth, SUT.ActualSize.X, 1);
+			Assert.AreEqual(SUT.ActualHeight, SUT.ActualSize.Y, 1);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width, 1);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height, 1);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Check_Sizes_After_Loaded_Aligned_MinSize_Set()
+		{
+			const int MarginSize = 50;
+			const int PaddingSize = 2;
+			const int ContainerSize = 250;
+			const int MinSize = 20;
+
+			var SUT = new TextBlock { Text = "x", MinHeight = MinSize, MinWidth = MinSize, Padding = new Thickness(PaddingSize), Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, FontSize = 2 };
+			var grid = new Grid { Children = { SUT }, Width = ContainerSize, Height = ContainerSize };
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			// layout cycle should be done by now
+
+			Assert.AreEqual(MarginSize * 2 + MinSize, SUT.DesiredSize.Width);
+			Assert.AreEqual(MarginSize * 2 + MinSize, SUT.DesiredSize.Height);
+
+			Assert.IsTrue(SUT.ActualWidth < MinSize);
+			Assert.IsTrue(SUT.ActualHeight < MinSize);
+
+			Assert.AreEqual(MinSize, SUT.ActualSize.X, 1);
+			Assert.AreEqual(MinSize, SUT.ActualSize.Y, 1);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width, 1);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height, 1);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Check_Sizes_After_Loaded_Aligned_ExplicitSize_Set_Smaller()
+		{
+			const int MarginSize = 50;
+			const int PaddingSize = 2;
+			const int ContainerSize = 250;
+			const int ExplicitSize = 20;
+
+			var SUT = new TextBlock { Text = "x", Height = ExplicitSize, Width = ExplicitSize, Padding = new Thickness(PaddingSize), Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, FontSize = 2 };
+			var grid = new Grid { Children = { SUT }, Width = ContainerSize, Height = ContainerSize };
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(MarginSize * 2 + ExplicitSize, SUT.DesiredSize.Width);
+			Assert.AreEqual(MarginSize * 2 + ExplicitSize, SUT.DesiredSize.Height);
+
+			Assert.IsTrue(SUT.ActualWidth < ExplicitSize);
+			Assert.IsTrue(SUT.ActualHeight < ExplicitSize);
+
+			Assert.AreEqual(ExplicitSize, SUT.ActualSize.X, 1);
+			Assert.AreEqual(ExplicitSize, SUT.ActualSize.Y, 1);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width, 1);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height, 1);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task Check_Sizes_After_Loaded_Aligned_ExplicitSize_Set_Larger()
+		{
+			const int MarginSize = 50;
+			const int PaddingSize = 2;
+			const int ContainerSize = 250;
+			const int ExplicitSize = 20;
+
+			var SUT = new TextBlock { Text = "Hello world", Height = ExplicitSize, Width = ExplicitSize, Padding = new Thickness(PaddingSize), Margin = new Thickness(MarginSize), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, FontSize = 400 };
+			var grid = new Grid { Children = { SUT }, Width = ContainerSize, Height = ContainerSize };
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(MarginSize * 2 + ExplicitSize, SUT.DesiredSize.Width);
+			Assert.AreEqual(MarginSize * 2 + ExplicitSize, SUT.DesiredSize.Height);
+
+			Assert.IsTrue(SUT.ActualWidth > ExplicitSize);
+			Assert.IsTrue(SUT.ActualHeight > ExplicitSize);
+
+			Assert.AreEqual(SUT.ActualWidth, SUT.ActualSize.X, 1);
+			Assert.AreEqual(SUT.ActualHeight, SUT.ActualSize.Y, 1);
+
+			// Render size should match the actual size (apart from rounding).
+			Assert.AreEqual(SUT.ActualSize.X, SUT.RenderSize.Width, 1);
+			Assert.AreEqual(SUT.ActualSize.Y, SUT.RenderSize.Height, 1);
+		}
+
+		[TestMethod]
 		public void Check_Text_When_Having_Inline_Text_In_Span()
 		{
 			var SUT = new InlineTextInSpan();
