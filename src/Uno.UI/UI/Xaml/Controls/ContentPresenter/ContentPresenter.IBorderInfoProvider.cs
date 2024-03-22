@@ -1,4 +1,6 @@
-﻿using Uno.UI.Xaml.Controls;
+﻿#nullable enable
+
+using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;

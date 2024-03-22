@@ -829,6 +829,9 @@ namespace Microsoft.UI.Xaml
 
 		internal void ApplyClip()
 		{
+#if __CROSSRUNTIME__
+			InvalidateArrange();
+#else
 			Rect rect;
 
 			if (Clip == null)
@@ -857,9 +860,6 @@ namespace Microsoft.UI.Xaml
 
 			ApplyNativeClip(rect);
 			OnViewportUpdated(rect);
-
-#if __SKIA__
-			InvalidateArrange();
 #endif
 		}
 
@@ -946,7 +946,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
 		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
-		/// This is the 'finalRect' of the last Arrange.
+		/// This is the 'finalRect' of the last Arrange. However, this doesn't affect clipping (even for children).
 		/// </summary>
 		/// <remarks>This is expressed in parent's coordinate space.</remarks>
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; }

@@ -9,8 +9,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.UI;
+using Microsoft.UI;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.Xaml.Controls;
+
+// TODO: Remove Android-specific code when BorderLayerRenderer can handle brush changes on its own.
 
 /// <summary>
 /// Represents a state of border layer.
@@ -27,7 +32,16 @@ internal record struct BorderLayerState(
 	BackgroundSizing BackgroundSizing,
 	Brush? BorderBrush,
 	Thickness BorderThickness,
-	CornerRadius CornerRadius)
+	CornerRadius CornerRadius
+#if __ANDROID__
+	,
+	ImageSource? BackgroundImageSource,
+	Uri? BackgroundImageSourceUri,
+	Color? BackgroundColor,
+	Color? BackgroundFallbackColor,
+	Color? BorderBrushColor
+#endif
+	)
 {
 	internal BorderLayerState(Size elementSize, IBorderInfoProvider borderInfoProvider) : this(
 		elementSize,
@@ -35,7 +49,31 @@ internal record struct BorderLayerState(
 		borderInfoProvider.BackgroundSizing,
 		borderInfoProvider.BorderBrush,
 		borderInfoProvider.BorderThickness,
-		borderInfoProvider.CornerRadius)
+		borderInfoProvider.CornerRadius
+#if __ANDROID__
+		,
+		GetBackgroundImageSource(borderInfoProvider.Background),
+		GetBackgroundImageSourceUri(borderInfoProvider.Background),
+		(borderInfoProvider.Background as SolidColorBrush)?.ColorWithOpacity,
+		(borderInfoProvider.Background as XamlCompositionBrushBase)?.FallbackColorWithOpacity,
+		(borderInfoProvider.BorderBrush as SolidColorBrush)?.ColorWithOpacity
+#endif
+		)
 	{
 	}
+
+#if __ANDROID__
+	private static ImageSource? GetBackgroundImageSource(Brush? background) => (background as ImageBrush)?.ImageSource;
+
+	private static Uri? GetBackgroundImageSourceUri(Brush? background)
+	{
+		var source = GetBackgroundImageSource(background);
+		return source switch
+		{
+			BitmapImage bitmapImage => bitmapImage.UriSource,
+			SvgImageSource svgImageSource => svgImageSource.UriSource,
+			_ => null
+		};
+	}
+#endif
 }

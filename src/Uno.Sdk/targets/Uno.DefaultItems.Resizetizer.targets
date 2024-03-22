@@ -31,8 +31,9 @@
 
 	<ItemGroup>
 		<UnoImage Include="$(AssetsFolder)**\*.svg"
-			Exclude="@(UnoImage);@(UnoIcon);@(UnoSplashScreen);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
+			Exclude="@(UnoImage);@(UnoIcon);@(UnoSplashScreen);$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(AssetsFolder)\**\Svg\*.svg"
 			IsDefaultItem="true"
 			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+		<Content Remove="@(UnoImage);$(UnoIconBackgroundFile);$(UnoIconForegroundFile);$(UnoSplashScreenFile)" />
 	</ItemGroup>
 </Project>

@@ -3,70 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollingZoomAnimationStartingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal ScrollingZoomAnimationStartingEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionAnimation Animation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionAnimation ScrollingZoomAnimationStartingEventArgs.Animation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionAnimation%20ScrollingZoomAnimationStartingEventArgs.Animation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs", "CompositionAnimation ScrollingZoomAnimationStartingEventArgs.Animation");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Vector2 CenterPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 ScrollingZoomAnimationStartingEventArgs.CenterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20ScrollingZoomAnimationStartingEventArgs.CenterPoint");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int ScrollingZoomAnimationStartingEventArgs.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollingZoomAnimationStartingEventArgs.CorrelationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float EndZoomFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ScrollingZoomAnimationStartingEventArgs.EndZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScrollingZoomAnimationStartingEventArgs.EndZoomFactor");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float StartZoomFactor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ScrollingZoomAnimationStartingEventArgs.StartZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ScrollingZoomAnimationStartingEventArgs.StartZoomFactor");
-			}
-		}
-#endif
+		// Skipping already declared property Animation
+		// Skipping already declared property CenterPoint
+		// Skipping already declared property CorrelationId
+		// Skipping already declared property EndZoomFactor
+		// Skipping already declared property StartZoomFactor
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.CenterPoint.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.StartZoomFactor.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs.EndZoomFactor.get

@@ -280,11 +280,20 @@
 	<files>
 		<!-- Icon File -->
 		<file src="..\..\src\Common\uno.png" target="/" />
-		<!-- UAP -->
+
+		<!-- UAP / netprevious -->
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
+
+		<!-- BEGIN UWP-excluded -->
+		<!-- netcurrent, currently using netprevious to avoid netcore build issues -->
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net8.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net8.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net8.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net8.0-windows10.0.19041.0\Uno.UI.Toolkit" />
+		<!-- END UWP-excluded -->
 
 		<!-- net8.0-ios -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios\Uno.dll" target="lib\net8.0-ios" />

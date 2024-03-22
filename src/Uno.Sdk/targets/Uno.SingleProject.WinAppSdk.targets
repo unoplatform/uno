@@ -7,7 +7,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
+		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('$(WindowsProjectFolder)app.manifest')">$(WindowsProjectFolder)app.manifest</ApplicationManifest>
+		<ApplicationManifest Condition="$(ApplicationManifest) == '' AND Exists('app.manifest')">app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
 	</PropertyGroup>
 
@@ -26,7 +27,7 @@
 		<Manifest Include="$(ApplicationManifest)"
 			Exclude="@(Manifest)"
 			IsDefaultItem="true"
-			Link="$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))" />
+			Condition="Exists('$(ApplicationManifest)')" />
 	</ItemGroup>
 
 	<!-- Using .NET MAUI Workaround for AnyCPU https://github.com/dotnet/maui/blob/37ca0c26e39a40f14b4fd60416b90a1a62e28473/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.Before.targets#L12-L22 -->

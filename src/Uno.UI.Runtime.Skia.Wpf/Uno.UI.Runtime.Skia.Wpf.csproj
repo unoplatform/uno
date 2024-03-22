@@ -39,6 +39,12 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views.WPF" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
+
+		<!-- 
+			Required to ensure that this reference is latest and not 
+			transitively flowing through SkiaSharp's dependencies
+		 -->
+		<PackageReference Include="Microsoft.Win32.SystemEvents" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows'">

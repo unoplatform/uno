@@ -5,86 +5,10 @@
 	<PropertyGroup>
 		<UnoTarget>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</UnoTarget>
 		<UnoTarget Condition="$(TargetFramework.Contains('windows10'))">windows10</UnoTarget>
+		<UnoTarget Condition="$(UnoTarget) == ''">reference</UnoTarget>
 	</PropertyGroup>
 
-	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences">
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Extensions;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'Extensions' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Authentication;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';AuthenticationOidc;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';AuthenticationMsal;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Configuration;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';ExtensionsCore;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Hosting;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Http;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Localization;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Logging;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';MauiEmbedding;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Navigation;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Mvux;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Storage;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Serialization;')) AND $(UnoExtensionsVersion) == ''"
-			Text="The UnoFeature 'MauiEmbedding' was selected, but the property UnoExtensionsVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Toolkit;')) AND $(UnoToolkitVersion) == ''"
-			Text="The UnoFeature 'Toolkit' was selected, but the property UnoToolkitVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';CSharpMarkup;')) AND $(UnoCSharpMarkupVersion) == ''"
-			Text="The UnoFeature 'CSharpMarkup' was selected, but the property UnoCSharpMarkupVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Material;')) AND $(UnoThemesVersion) == ''"
-			Text="The UnoFeature 'Material' was selected, but the property UnoThemesVersion was not set." />
-		<Error Code="UNOB0006"
-			HelpLink="https://aka.platform.uno/UNOB0006"
-			Condition="$(UnoFeatures.Contains(';Cupertino;')) AND $(UnoThemesVersion) == ''"
-			Text="The UnoFeature 'Cupertino' was selected, but the property UnoThemesVersion was not set." />
-
+	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences;ProcessFrameworkReferences">
 		<PropertyGroup>
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
 		</PropertyGroup>
@@ -122,14 +46,15 @@
 				PrismVersion="$(PrismVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
-				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)">
+				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
+				Condition=" '$(TargetFramework)' != '' ">
 			<Output ItemName="_UnoImplicitPackageReference"
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
 		</ImplicitPackagesResolver>
 
-		<ItemGroup>
+		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 		</ItemGroup>

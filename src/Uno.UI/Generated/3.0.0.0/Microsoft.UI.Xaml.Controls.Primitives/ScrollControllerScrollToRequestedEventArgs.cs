@@ -3,52 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollControllerScrollToRequestedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int CorrelationId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int ScrollControllerScrollToRequestedEventArgs.CorrelationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ScrollControllerScrollToRequestedEventArgs.CorrelationId");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs", "int ScrollControllerScrollToRequestedEventArgs.CorrelationId");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public double Offset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double ScrollControllerScrollToRequestedEventArgs.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ScrollControllerScrollToRequestedEventArgs.Offset");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.ScrollingScrollOptions Options
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ScrollingScrollOptions ScrollControllerScrollToRequestedEventArgs.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollingScrollOptions%20ScrollControllerScrollToRequestedEventArgs.Options");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ScrollControllerScrollToRequestedEventArgs(double offset, global::Microsoft.UI.Xaml.Controls.ScrollingScrollOptions options)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs", "ScrollControllerScrollToRequestedEventArgs.ScrollControllerScrollToRequestedEventArgs(double offset, ScrollingScrollOptions options)");
-		}
-#endif
+		// Skipping already declared property CorrelationId
+		// Skipping already declared property Offset
+		// Skipping already declared property Options
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.ScrollControllerScrollToRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.ScrollControllerScrollToRequestedEventArgs(double, Microsoft.UI.Xaml.Controls.ScrollingScrollOptions)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.Offset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerScrollToRequestedEventArgs.Options.get

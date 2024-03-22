@@ -84,7 +84,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture} FullScreen: {NativeUno.uno_application_is_full_screen()}");
+			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture}");
 		}
 
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -116,7 +116,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} FullScreen: {NativeUno.uno_application_is_full_screen()}");
+			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight}");
 		}
 
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -240,23 +240,23 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
-	private static KeyEventArgs CreateArgs(VirtualKey key, VirtualKeyModifiers mods, uint scanCode)
+	private static KeyEventArgs CreateArgs(VirtualKey key, VirtualKeyModifiers mods, uint scanCode, ushort unicode)
 	{
 		var status = new CorePhysicalKeyStatus
 		{
 			ScanCode = scanCode,
 		};
-		return new KeyEventArgs("keyboard", key, mods, status);
+		return new KeyEventArgs("keyboard", key, mods, status, unicode == 0 ? null : (char)unicode);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static int OnRawKeyDown(nint handle, VirtualKey key, VirtualKeyModifiers mods, uint scanCode)
+	private static int OnRawKeyDown(nint handle, VirtualKey key, VirtualKeyModifiers mods, uint scanCode, ushort unicode)
 	{
 		try
 		{
 			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(MacOSWindowHost).Log().Trace($"OnRawKeyDown '${key}', mods: '{mods}', scanCode: {scanCode}");
+				typeof(MacOSWindowHost).Log().Trace($"OnRawKeyDown '${key}', mods: '{mods}', scanCode: {scanCode}, unicode: {unicode}");
 			}
 
 			var window = GetWindowHost(handle);
@@ -265,7 +265,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			{
 				return 0;
 			}
-			var args = CreateArgs(key, mods, scanCode);
+			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
 			// we tell macOS it's always handled as WinUI does not mark as handled some keys that would make it beep in common cases
 			return 1;
@@ -278,13 +278,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static int OnRawKeyUp(nint handle, VirtualKey key, VirtualKeyModifiers mods, uint scanCode)
+	private static int OnRawKeyUp(nint handle, VirtualKey key, VirtualKeyModifiers mods, uint scanCode, ushort unicode)
 	{
 		try
 		{
 			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
 			{
-				typeof(MacOSWindowHost).Log().Trace($"OnRawKeyUp '${key}', mods: '{mods}', scanCode: {scanCode}");
+				typeof(MacOSWindowHost).Log().Trace($"OnRawKeyUp '${key}', mods: '{mods}', scanCode: {scanCode}, unicode: {unicode}");
 			}
 
 			var window = GetWindowHost(handle);
@@ -293,7 +293,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			{
 				return 0;
 			}
-			var args = CreateArgs(key, mods, scanCode);
+			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyUp.Invoke(window!, args);
 			return args.Handled ? 1 : 0;
 		}
@@ -342,7 +342,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().LogWarning($"Cursor type '{_pointerCursor.Type}' is not supported on macOS. Default cursor is used instead.");
+						this.Log().LogWarning($"Cursor type '{_pointerCursor.Type}' is not supported on macOS. Closest approximation or default cursor is used instead.");
 					}
 				}
 			}

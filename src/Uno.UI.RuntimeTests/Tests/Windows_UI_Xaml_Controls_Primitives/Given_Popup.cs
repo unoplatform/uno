@@ -8,6 +8,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using Windows.Media.Capture.Core;
+using Windows.System;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
@@ -113,6 +116,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 #if HAS_UNO
+		[TestMethod]
+		public async Task When_Escape_Handled()
+		{
+			var popup = new Popup
+			{
+				Child = new Button { Content = "Test" }
+			};
+			popup.XamlRoot = WindowHelper.XamlRoot;
+
+			Assert.IsFalse(popup.IsOpen);
+
+			popup.IsOpen = true;
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			await WindowHelper.WaitForIdle();
+
+			var args = new KeyRoutedEventArgs(popup, VirtualKey.Escape, VirtualKeyModifiers.None);
+			popup.SafeRaiseEvent(UIElement.KeyDownEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(args.Handled);
+			Assert.IsFalse(popup.IsOpen);
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			popup.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Escape_Canceled()
+		{
+			var menu = new MenuFlyout();
+			menu.Items.Add(new MenuFlyoutItem() { Text = "Text" });
+			menu.XamlRoot = WindowHelper.XamlRoot;
+
+			var trigger = new Button();
+			await UITestHelper.Load(trigger);
+
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			menu.ShowAt(trigger);
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)[0];
+
+			menu.Closing += (_, e) => e.Cancel = true;
+
+			var args = new KeyRoutedEventArgs(popup, VirtualKey.Escape, VirtualKeyModifiers.None);
+			((UIElement)FocusManager.GetFocusedElement(WindowHelper.XamlRoot))!.SafeRaiseEvent(UIElement.KeyDownEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(args.Handled);
+			Assert.IsTrue(popup.IsOpen);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(true)]

@@ -5,14 +5,28 @@ public abstract class SkiaHost
 {
 	internal Action? AfterInit { get; set; }
 
-	public void Run()
+	private Task RunCore()
 	{
 		Initialize();
 		AfterInit?.Invoke();
-		RunLoop();
+		return RunLoop();
+	}
+
+	public void Run()
+	{
+		var task = RunCore();
+		if (task != Task.CompletedTask)
+		{
+			throw new InvalidOperationException($"Running host {this} requires calling 'await host.RunAsync()' instead of 'host.Run()'.");
+		}
+	}
+
+	public async Task RunAsync()
+	{
+		await RunCore();
 	}
 
 	protected abstract void Initialize();
 
-	protected abstract void RunLoop();
+	protected abstract Task RunLoop();
 }

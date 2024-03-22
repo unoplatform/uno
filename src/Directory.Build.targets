@@ -123,6 +123,7 @@
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">

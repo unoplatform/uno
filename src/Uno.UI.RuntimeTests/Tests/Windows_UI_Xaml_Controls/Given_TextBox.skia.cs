@@ -2183,6 +2183,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_SurrogatePair_Copy()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "🚫 Hello world"
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			SUT.CopySelectionToClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+		}
+
+		[TestMethod]
 		public async Task When_Multiline_Pointer_TripleTap()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

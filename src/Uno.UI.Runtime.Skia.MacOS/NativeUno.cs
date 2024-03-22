@@ -185,8 +185,8 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_events_callbacks(
-		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyDownCallback,
-		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, int> keyUpCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyDownCallback,
+		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyUpCallback,
 		delegate* unmanaged[Cdecl]<nint, NativeMouseEventData*, int> pointerCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -205,6 +205,9 @@ internal static partial class NativeUno
 	internal static partial void uno_window_invalidate(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial string uno_window_get_title(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_window_set_title(nint window, string title);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -214,14 +217,41 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_application_is_full_screen();
+	internal static partial bool uno_window_enter_full_screen(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_exit_full_screen(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_maximize(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_minimize(nint window, [MarshalAs(UnmanagedType.I1)] bool activateWindow);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_restore(nint window, [MarshalAs(UnmanagedType.I1)] bool activateWindow);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial int uno_window_get_overlapped_presenter_state(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_always_on_top(nint window, [MarshalAs(UnmanagedType.I1)] bool isAlwaysOnTop);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_border_and_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool hasBorder, [MarshalAs(UnmanagedType.I1)] bool hasTitleBar);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_maximizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isMaximizable);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_minimizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isMinimizable);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_application_enter_full_screen();
+	internal static partial bool uno_window_set_modal(nint window, [MarshalAs(UnmanagedType.I1)] bool isModal);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_application_exit_full_screen();
+	internal static partial void uno_window_set_resizable(nint window, [MarshalAs(UnmanagedType.I1)] bool isResizable);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_window_get_metal_context(nint window);
@@ -234,16 +264,19 @@ internal static partial class NativeUno
 	internal static partial void uno_window_set_min_size(nint window, double width, double height);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder();
+	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_single_file(string? prompt);
+	internal static partial string? /* const char* _Nullable */ uno_pick_single_file(string? prompt, string? identifier, int suggestedStartLocation,
+		string[] filters, int filterSize);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt);
+	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
+		string[] filters, int filterSize);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt);
+	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,
+		string[] filters, int filtersSize);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_clipboard_clear();
@@ -272,5 +305,5 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_cursor_set(CoreCursorType cursor);
+	internal static partial bool uno_cursor_set(CoreCursorType cursorType);
 }

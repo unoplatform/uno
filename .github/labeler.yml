@@ -46,7 +46,10 @@ area/solution-templates:
   - src/SolutionTemplate/**/*
   - src/UnoItemTemplate/*
   - src/UnoItemTemplate/**/*
-  
+
+area/sdk:
+  - src/Uno.Sdk/*
+
 platform/android 🤖:
   - src/Uno.UI.BindingHelper.Android/*
   - src/Uno.UI.BindingHelper.Android/**/*

@@ -93,6 +93,12 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public static extern int XStoreName(IntPtr display, IntPtr window, string window_name);
 
 		[DllImport(libX11)]
+		public static extern int XFetchName(IntPtr display, IntPtr window, ref string window_name);
+
+		[DllImport(libX11)]
+		public static extern void XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
+
+		[DllImport(libX11)]
 		public static extern int XSendEvent(IntPtr display, IntPtr window, bool propagate, IntPtr event_mask,
 			ref XEvent send_event);
 
@@ -124,6 +130,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		[DllImport(libX11)]
 		public static extern int XSetWMProtocols(IntPtr display, IntPtr window, IntPtr[] protocols, int count);
+
+		[DllImport(libX11)]
+		public static extern int XIconifyWindow(IntPtr display, IntPtr window, int screen_number);
 
 		[DllImport(libX11)]
 		public static extern bool XTranslateCoordinates(IntPtr display, IntPtr src_w, IntPtr dest_w, int src_x,

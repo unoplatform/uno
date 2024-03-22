@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -9,6 +12,9 @@ namespace Uno.Sdk;
 
 public abstract class ImplicitPackagesResolverBase : Task
 {
+	private static readonly string[] _legacyWasmProjectSuffix = [".Wasm", ".WebAssembly"];
+	private List<string> _existingReferences = [];
+
 	public bool SdkDebugging { get; set; }
 
 	public bool SingleProject { get; set; }
@@ -30,6 +36,14 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	[Required]
 	public string UnoVersion { get; set; }
+
+	public string UnoExtensionsVersion { get; set; }
+
+	public string UnoToolkitVersion { get; set; }
+
+	public string UnoThemesVersion { get; set; }
+
+	public string UnoCSharpMarkupVersion { get; set; }
 
 	public ITaskItem[] PackageReferences { get; set; } = [];
 
@@ -53,22 +67,47 @@ public abstract class ImplicitPackagesResolverBase : Task
 		try
 		{
 			_unoFeatures = GetFeatures();
-			var references = CachedReferences.Load(IntermediateOutput);
-			if (references.NeedsUpdate(_unoFeatures))
+			if (Log.HasLoggedErrors)
+			{
+				return false;
+			}
+
+			var cachedReferences = CachedReferences.Load(IntermediateOutput);
+			if (cachedReferences.NeedsUpdate(_unoFeatures, UnoVersion))
 			{
 				ExecuteInternal();
-				references = new CachedReferences(DateTimeOffset.Now, _unoFeatures, [.. _implicitPackages]);
-				references.SaveCache(IntermediateOutput);
+				cachedReferences = new CachedReferences(DateTimeOffset.Now, _unoFeatures, [.. _implicitPackages]);
+				cachedReferences.SaveCache(IntermediateOutput);
 			}
 			else
 			{
-				Debug("Adding ({0}) Packages from cache file.", references.References.Length);
-				_implicitPackages.AddRange(references.References);
+				Debug("Adding ({0}) Packages from cache file.", cachedReferences.References.Length);
+				_implicitPackages.AddRange(cachedReferences.References);
 			}
 		}
 		catch (Exception ex)
 		{
 			Log.LogErrorFromException(ex);
+		}
+
+		if (_existingReferences.Count > 0)
+		{
+			var builder = new StringBuilder();
+			builder.AppendLine("Uno Platform Implicit Package references are enabled, you should remove these references from your csproj:");
+			_existingReferences.Select(x => $"\t<PackageReference Include=\"{x}\" />")
+				.ToList()
+				.ForEach(x => builder.AppendLine(x));
+			builder.AppendLine("See https://aka.platform.uno/UNOB0009 for more information.");
+			Log.LogMessage(subcategory: null,
+				code: "UNOB0009",
+				helpKeyword: null,
+				file: null,
+				lineNumber: 0,
+				columnNumber: 0,
+				endLineNumber: 0,
+				endColumnNumber: 0,
+				MessageImportance.Normal,
+				message: builder.ToString());
 		}
 
 		return !Log.HasLoggedErrors;
@@ -113,6 +152,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		if (Enum.TryParse<UnoFeature>(feature, true, out var unoFeature))
 		{
 			Debug("Parsed UnoFeature: '{0}'.", feature);
+			ValidateFeature(unoFeature);
 			return unoFeature;
 		}
 
@@ -120,22 +160,72 @@ public abstract class ImplicitPackagesResolverBase : Task
 		return UnoFeature.Invalid;
 	}
 
+	public void ValidateFeature(UnoFeature feature)
+	{
+		var area = typeof(UnoFeature).GetMember(feature.ToString())
+			.Single(x => x.DeclaringType == typeof(UnoFeature))
+			.GetCustomAttribute<UnoAreaAttribute>()?.Area;
+
+		switch (area)
+		{
+			case UnoArea.Core:
+				VerifyFeature(feature, UnoVersion);
+				break;
+			case UnoArea.CSharpMarkup:
+				VerifyFeature(feature, UnoCSharpMarkupVersion);
+				break;
+			case UnoArea.Extensions:
+				VerifyFeature(feature, UnoExtensionsVersion);
+				break;
+			case UnoArea.Theme:
+				VerifyFeature(feature, UnoThemesVersion);
+				break;
+			case UnoArea.Toolkit:
+				VerifyFeature(feature, UnoToolkitVersion);
+				break;
+		}
+	}
+
+	private void VerifyFeature(UnoFeature feature, string version, [CallerArgumentExpression(nameof(version))] string versionName = null)
+	{
+		if (string.IsNullOrEmpty(version))
+		{
+			Log.LogError(subcategory: "",
+				errorCode: "UNOB0006",
+				helpKeyword: null,
+				helpLink: "https://aka.platform.uno/UNOB0006",
+				file: null,
+				lineNumber: 0,
+				columnNumber: 0,
+				endLineNumber: 0,
+				endColumnNumber: 0,
+				message: $"The UnoFeature '{feature}' was selected, but the property {versionName} was not set.");
+		}
+	}
+
 	protected bool IsLegacyWasmHead()
 	{
-		if (string.IsNullOrWhiteSpace(TargetFrameworkIdentifier) || string.IsNullOrEmpty(ProjectName))
+		// Neither of these should ever actually happen...
+		if (string.IsNullOrEmpty(TargetFrameworkIdentifier))
 		{
+			Debug("The TargetFrameworkIdentifier has no value.");
+			return false;
+		}
+		else if (string.IsNullOrEmpty(ProjectName))
+		{
+			Debug("The ProjectName has no value.");
 			return false;
 		}
 
-		var value = ProjectName.EndsWith(".Wasm", StringComparison.InvariantCultureIgnoreCase)
-			|| ProjectName.EndsWith(".WebAssembly", StringComparison.InvariantCultureIgnoreCase);
+		var isLegacyProject = !SingleProject && TargetFrameworkIdentifier == UnoTarget.Reference
+			&& _legacyWasmProjectSuffix.Any(x => ProjectName.EndsWith(x, StringComparison.InvariantCulture));
 
-		if (value)
+		if (isLegacyProject)
 		{
 			Debug("Building a Legacy WASM project.");
 		}
 
-		return value;
+		return isLegacyProject;
 	}
 
 	protected void AddPackageForFeature(UnoFeature feature, string packageId, string packageVersion)
@@ -147,7 +237,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	protected void AddPackage(string packageId, string version, bool @override = false)
+	protected void AddPackage(string packageId, string version, string excludeAssets = null)
 	{
 		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFrameworkIdentifier);
 		if (string.IsNullOrEmpty(version))
@@ -161,25 +251,19 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 		if (PackageReferences.Any(x => x.ItemSpec == packageId))
 		{
-			Log.LogMessage(MessageImportance.High, "Uno Implicit PackageReferences are enabled, however you have an explicit reference to '{0}'. Please remove the PackageReference.", packageId);
+			_existingReferences.Add(packageId);
 			return;
 		}
 
 		var existing = _implicitPackages.SingleOrDefault(x => x.PackageId == packageId);
 		if (existing is not null)
 		{
-			Debug("Found an existing implicit reference for '{0}'.", packageId);
-			if (existing.Override == @override || !@override)
-			{
-				return;
-			}
-
-			Debug("Removing duplicate implicit reference.", packageId);
-			_implicitPackages.Remove(existing);
+			Debug("An existing Implicit Package reference has already been added for '{0}'.", packageId);
+			return;
 		}
 
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
-		_implicitPackages.Add(new PackageReference(packageId, version, @override));
+		_implicitPackages.Add(new PackageReference(packageId, version, excludeAssets));
 	}
 
 	private void Debug(string message, params object[] args)

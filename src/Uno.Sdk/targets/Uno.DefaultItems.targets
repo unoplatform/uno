@@ -44,7 +44,7 @@
 	<Import Project="Uno.DefaultItems.SingleProject.targets" Condition="$(SingleProject) == 'true'" />
 
 	<!-- Resizetizer -->
-	<Import Project="Uno.DefaultItems.Resizetizer.targets" Condition="$(PkgUno_Resizetizer) != ''" />
+	<Import Project="Uno.DefaultItems.Resizetizer.targets" Condition="$(DisableDefaultUnoResizetizerItems) != 'true'" />
 
 	<!-- Cross Targetting -->
 	<Import Project="Uno.CrossTargeting.targets" />

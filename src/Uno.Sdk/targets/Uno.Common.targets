@@ -12,7 +12,10 @@
 		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
 
 		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
-		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+		<IncludeSourceRevisionInInformationalVersion Condition=" '$(IncludeSourceRevisionInInformationalVersion)' == '' ">false</IncludeSourceRevisionInInformationalVersion>
+
+		<!-- Disable build acceleration until runtime replacement supports it https://github.com/unoplatform/uno/issues/15928 -->
+		<AccelerateBuildsInVisualStudio Condition=" '$(AccelerateBuildsInVisualStudio)' == '' ">false</AccelerateBuildsInVisualStudio>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -35,12 +38,14 @@
 		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
 		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
 		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
-		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' ">$(PlatformsProjectFolder)Desktop\</DesktopProjectFolder>
-		<DesktopProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
-		<DesktopProjectFolder Condition=" !Exists('$(DesktopProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Desktop'))</DesktopProjectFolder>
-		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' ">$(PlatformsProjectFolder)Wasm\</WasmProjectFolder>
-		<WasmProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
-		<WasmProjectFolder Condition=" !Exists('$(WasmProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Wasm'))</WasmProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Desktop') ">$(PlatformsProjectFolder)Desktop</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('Desktop') ">Desktop</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Wasm') ">$(PlatformsProjectFolder)Wasm</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)WebAssembly') ">$(PlatformsProjectFolder)WebAssembly</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('Wasm\') ">Wasm</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('WebAssembly\') ">WebAssembly</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
 		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
 		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
 		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
@@ -51,7 +56,10 @@
 	</PropertyGroup>
 
 	<Import Project="Uno.Implicit.Packages.targets"
-		Condition="$(DisableImplicitUnoPackages) != 'true'" />
+		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
+
+	<Import Project="Uno.Implicit.Namespaces.targets"
+		Condition=" $(DisableImplicitUnoNamespaces) != 'true' " />
 
 	<!-- TFM Specific Targets -->
 	<Import Project="Uno.Common.Android.targets"
@@ -77,21 +85,21 @@
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' != '' ">
 		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
-			Condition=" $(IsAndroid) != 'true' " />
+			Condition=" $(IsAndroid) != 'true' AND '$(AndroidProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(iOSProjectFolder)**"
-			Condition=" $(IsIOS) != 'true' " />
+			Condition=" $(IsIOS) != 'true' AND '$(iOSProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
-			Condition=" $(IsMacCatalyst) != 'true' " />
+			Condition=" $(IsMacCatalyst) != 'true' AND '$(MacCatalystProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"
-			Condition=" $(IsMacOS) != 'true' " />
+			Condition=" $(IsMacOS) != 'true' AND '$(MacOSProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
-			Condition=" $(IsDesktop) != 'true' " />
+			Condition=" $(IsDesktop) != 'true' AND '$(DesktopProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
-			Condition=" $(IsBrowserWasm) != 'true' " />
+			Condition=" $(IsBrowserWasm) != 'true' AND '$(WasmProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
-			Condition=" $(IsWinAppSdk) != 'true' " />
+			Condition=" $(IsWinAppSdk) != 'true' AND '$(WindowsProjectFolder)'!='' " />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
