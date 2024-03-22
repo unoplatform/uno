@@ -20,6 +20,7 @@
 				Optimize="$(Optimize)"
 				OutputType="$(OutputType)"
 				UnoFeatures="$(UnoFeatures)"
+				IsPackable="$(IsPackable)"
 				TargetFrameworkIdentifier="$(UnoTarget)"
 				ProjectName="$(MSBuildProjectName)"
 				PackageReferences="@(PackageReference)"
@@ -57,6 +58,8 @@
 		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
+			<_UnoImplicitPackageReference Remove="@(_UnoImplicitPackageReference)" />
+			<_UnoRemovePackageVersions Remove="@(_UnoRemovePackageVersions)" />
 		</ItemGroup>
 	</Target>
 
