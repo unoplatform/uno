@@ -90,6 +90,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override bool IsItemItsOwnContainerOverride(object item) => item is ComboBoxItem;
 
+		private protected override bool ShouldItemsControlManageChildren => ItemsPanelRoot == InternalItemsPanelRoot;
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
