@@ -21,6 +21,8 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	public string OutputType { get; set; }
 
+	public bool IsPackable { get; set; }
+
 	protected bool IsExecutable => !string.IsNullOrEmpty(OutputType) && OutputType.ToLowerInvariant().Contains("exe");
 
 	public bool Optimize { get; set; }
@@ -228,12 +230,28 @@ public abstract class ImplicitPackagesResolverBase : Task
 		return isLegacyProject;
 	}
 
-	protected void AddPackageForFeature(UnoFeature feature, string packageId, string packageVersion)
+	protected void AddPackageForFeature(UnoFeature feature, string packageId, string version)
 	{
 		if (HasFeature(feature))
 		{
 			Debug("Adding '{0}' for the feature: {1}", packageId, feature);
-			AddPackage(packageId, packageVersion);
+			AddPackage(packageId, version);
+		}
+	}
+
+	protected void AddPackageForFeatureWhen(bool condition, UnoFeature feature, string packageId, string version)
+	{
+		if (condition)
+		{
+			AddPackageForFeature(feature, packageId, version);
+		}
+	}
+
+	protected void AddPackageWhen(bool condition, string packageId, string version, string excludeAssets = null)
+	{
+		if (condition)
+		{
+			AddPackage(packageId, version, excludeAssets);
 		}
 	}
 
