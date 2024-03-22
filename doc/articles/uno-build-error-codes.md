@@ -55,6 +55,18 @@ To work around this, use `msbuild /r` on Windows. You can build using `msbuild` 
 
 This particular check can be disabled by setting the msbuild property `UnoDisableValidateWinAppSDK3548` to `true`.
 
+### UNOB0009: Uno Platform Implicit Package references are enabled
+
+When Uno Implicit Package References are enabled you do not need to provide an explicit PackageReference for the Packages listed in the build message. You should open the csproj file, find and remove the `<PackageReference Include="{Package name}" />` as listed in the build message.
+
+Alternatively you may disable the Implicit Package References
+
+```xml
+<PropertyGroup>
+  <DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001
