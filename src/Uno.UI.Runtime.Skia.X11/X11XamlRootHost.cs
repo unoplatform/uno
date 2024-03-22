@@ -72,6 +72,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		Initialize();
 		UpdateWindowPropertiesFromPackage();
 		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
+
+		// only start listening to events after we're done setting everything up
+		InitializeX11EventsThread();
 	}
 
 	public Task Closed { get; }
@@ -302,8 +305,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			_firstWindowCreated = true;
 			_x11WindowToXamlRootHost[_x11Window.Value] = this;
 		}
-
-		InitializeX11EventsThread();
 
 		// The window must be mapped before DisplayInformationExtension is initialized.
 		var _3 = XLib.XMapWindow(display, window);
