@@ -26,20 +26,35 @@
 		<SdkSupportedTargetPlatformIdentifier Include="browserwasm" DisplayName="BrowserWasm" />
 	</ItemGroup>
 
-	<Target Name="_UnoFilterWebSdkGlobalUsings"
-			Condition=" '$(UnoDisableFilterWebSdkGlobalUsings)' != 'true' "
-			BeforeTargets="BeforeBuild">
+	<Target Name="_UnoGenerateGlobalUsingsMock"
+			BeforeTargets="CoreCompile"
+			Condition=" '$(Optimize)' != 'true' AND '$(UnoDisableGenerateGlobalUsingsMock)'!='true' ">
+		
+		<!-- 
+			This target is present to work around global usings that provided by the .NET Web SDK
+			that we cannot remove reliably, particular during Hot Reload. 
+			As a workaround we generate a temporary file that contains the namespaces and private 
+			types that will make global using namespaces valid at compile time.
+		-->
+
+		<PropertyGroup>
+			<_FakeGlobalUsingsFile>$(IntermediateOutputPath)/FakeGlobalUsings.g.cs</_FakeGlobalUsingsFile>
+			<_AssemblyName>$(AssemblyName.Replace('.','_'))</_AssemblyName>
+		</PropertyGroup>
+
 		<ItemGroup>
-			<!-- 
-			Remove all the usings included by the Microsoft.NET.Sdk.Web SDK. Note that 
-			`DefiningProjectDirectory` is not available when used from a global itemgroup, but is 
-			available from an target.
-			-->
-			<_RemoveWebSDKUsing Include="@(Using)" Condition="$([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
-			<Using Remove="@(_RemoveWebSDKUsing)" />
-			<_RemoveWebSDKUsing Remove="@(_RemoveWebSDKUsing)"/>
+			<_UsingsDedup Include="@(Using)" Name="%(Identity)" KeepDuplicates="false" />
+			<_Lines Include="@(_UsingsDedup->'namespace %(Name) { class __PlaceHolderDoNotUse_$(_AssemblyName) { } }')" />
+		</ItemGroup>
+
+		<WriteLinesToFile File="$(_FakeGlobalUsingsFile)" Lines="@(_Lines)" WriteOnlyWhenDifferent="true" Overwrite="true" />
+
+		<ItemGroup>
+			<Compile Include="$(_FakeGlobalUsingsFile)" Visible="False" />
+			<FileWrites Include="$(_FakeGlobalUsingsFile)" />
 		</ItemGroup>
 	</Target>
+
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Wasm.targets"
 			Condition=" $(SingleProject) == 'true' " />
