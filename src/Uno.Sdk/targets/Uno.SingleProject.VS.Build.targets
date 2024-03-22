@@ -1,0 +1,24 @@
+<Project>
+
+	<Target Name="_UnoFilterTargetFrameworkWithDebuggerTarget"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			Condition="
+				'$(BuildingInsideVisualStudio)'=='true'
+				AND '$(UnoDisableVSFilterTargetFrameworkWithDebuggerTarget)' != 'true'
+				AND $(_IsExecutable)">
+
+		<!-- 
+			This target is used to restrict the number of active target frameworks used when
+			building a head project. This current version uses $(_IsExecutable) in order to
+			allow for faster builds with the uno.templates `Server` project.
+
+			This will be enhanced in the future to support class libraries as well.
+		-->
+
+		<PropertyGroup Condition=" '$(TargetFramework)'=='' AND '$(_SelectedTargetFramework)' != '' ">
+			<TargetFramework>$(_SelectedTargetFramework)</TargetFramework>
+			<TargetFrameworks>$(_SelectedTargetFramework)</TargetFrameworks>
+		</PropertyGroup>
+	</Target>
+
+</Project>
