@@ -512,8 +512,8 @@ namespace Microsoft.UI.Xaml.Media
 			TRACE($"- transform to parent: [{matrix.M11:F2},{matrix.M12:F2} / {matrix.M21:F2},{matrix.M22:F2} / {matrix.M31:F2},{matrix.M32:F2}]");
 
 			// Build 'position' in the current element coordinate space
-			var posRelToElement = matrix.Inverse().Transform(posRelToParent);
-			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {posRelToParent.ToDebugString()}");
+			var posRelToElement = matrix.Inverse().Transform(position);
+			TRACE($"- position relative to element: {posRelToElement.ToDebugString()} | relative to parent: {position.ToDebugString()}");
 
 			// Second compute the transformations applied locally.
 			// This is somehow the difference between the "XAML coordinate space" and the effective coordinate space.
