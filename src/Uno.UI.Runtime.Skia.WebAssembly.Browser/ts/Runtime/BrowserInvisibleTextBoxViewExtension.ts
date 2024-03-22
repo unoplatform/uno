@@ -41,6 +41,8 @@
 			input.style.overflow = "hidden";
 			input.style.pointerEvents = "none";
 			input.style.zIndex = "99";
+			input.style.top = "0px";
+			input.style.left = "0px";
 
 			input.oninput = ev => {
 				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(instance, (ev.target as HTMLInputElement).value)
@@ -58,11 +60,10 @@
 			if (focused) {
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
 				// important to mobile browsers (to open the software keyboard) and
-				document.getElementById(id).focus()
-				document.getElementById(id).style.display = "block";
+				document.getElementById(id).focus();
 			} else {
-				document.getElementById(id).style.display = "none";
-				document.getElementById(id).blur()
+				// reset focus
+				(document.activeElement as HTMLElement)?.blur();
 			}
 		}
 

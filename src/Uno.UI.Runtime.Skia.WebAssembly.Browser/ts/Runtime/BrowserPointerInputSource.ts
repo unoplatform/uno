@@ -79,12 +79,13 @@
 			element.addEventListener("pointercancel", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: true });
-
-			// Disable opening a context menu on right-clicking
-			element.oncontextmenu = ev => ev.preventDefault();
 		}
 
 		private onPointerEventReceived(evt: PointerEvent): void {
+			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
+			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
+			evt.preventDefault();
+
 			const event = BrowserPointerInputSource.toHtmlPointerEvent(evt.type);
 
 			let pointerId: number, pointerType: PointerDeviceType, pressure: number;
