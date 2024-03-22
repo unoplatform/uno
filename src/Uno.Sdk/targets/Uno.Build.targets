@@ -111,6 +111,6 @@
 		</ItemGroup>
 	</Target>
 
-	<Import Project="Uno.Build.VS.targets"
-			Condition=" $(BuildingInsideVisualStudio) == 'true' " />
+	<Import Project="Uno.SingleProject.VS.Build.targets"
+			Condition=" '$(SingleProject)' == 'true' AND '$(BuildingInVisualStudio)' == 'true' " />
 </Project>
