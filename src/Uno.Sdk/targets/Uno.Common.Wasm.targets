@@ -12,6 +12,8 @@
 		<TargetPlatformSupported>true</TargetPlatformSupported>
 		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">8.0</SupportedOSPlatformVersion>
+
+		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_DefaultWasmOutputType)">$([MSBuild]::ValueOrDefault('$(_DefaultWasmOutputType)', 'Library'))</OutputType>
 	</PropertyGroup>
 
 	<!-- Enable the netx.0-browserwasm target -->

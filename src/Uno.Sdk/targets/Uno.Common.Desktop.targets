@@ -25,4 +25,16 @@
 
 	<Import Project="$(MSBuildThisFileDirectory)..\targets\Uno.SingleProject.Desktop.targets"
 			Condition=" $(SingleProject) == 'true' " />
+
+	<Target Name="RemoveTransitiveWindowsDesktopDependencies"
+		AfterTargets="ResolvePackageAssets"
+		BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies"
+		Condition="$(OutputType) == 'Library'">
+		<ItemGroup>
+		<TransitiveFrameworkReference Remove="@(TransitiveFrameworkReference)"
+			Condition="'%(Identity)' == 'Microsoft.WindowsDesktop.App' Or
+					'%(Identity)' == 'Microsoft.WindowsDesktop.App.WPF' Or
+					'%(Identity)' == 'Microsoft.WindowsDesktop.App.WindowsForms'" />
+		</ItemGroup>
+	</Target>
 </Project>

@@ -16,6 +16,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'" >Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
 		<_DefaultMicrosoftNETSdk Condition=" $(_DefaultMicrosoftNETSdk) == '' ">Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
+
+		<_DefaultWasmOutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">$(OutputType)</_DefaultWasmOutputType>
 	</PropertyGroup>
 
 	<PropertyGroup>
