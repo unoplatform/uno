@@ -74,16 +74,14 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 		if (TargetFrameworkIdentifier != UnoTarget.Windows)
 		{
 			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", UnoVersion);
-			if (!Optimize)
-			{
-				// Included for Debug Builds
-				AddPackage("Uno.WinUI.DevServer", UnoVersion);
-			}
 
-			if (TargetFrameworkIdentifier != UnoTarget.Wasm && !IsLegacyWasmHead())
+			// Included for Debug Builds
+			AddPackageWhen(!Optimize, "Uno.WinUI.DevServer", UnoVersion);
+
+			if (TargetFrameworkIdentifier != UnoTarget.Wasm && !IsLegacyWasmHead() && IsExecutable)
 			{
-				AddPackageWhen(IsExecutable, "SkiaSharp.Skottie", SkiaSharpVersion);
-				AddPackageWhen(IsExecutable, "SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
+				AddPackage("SkiaSharp.Skottie", SkiaSharpVersion);
+				AddPackage("SkiaSharp.Views.Uno.WinUI", SkiaSharpVersion);
 			}
 
 			if (TargetFrameworkIdentifier == UnoTarget.Android)
@@ -99,12 +97,12 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			{
 				AddPackageWhen(IsExecutable, "Uno.Extensions.Logging.OSLog", UnoLoggingVersion);
 			}
-			else if (TargetFrameworkIdentifier == UnoTarget.SkiaDesktop)
+			else if (TargetFrameworkIdentifier == UnoTarget.SkiaDesktop && IsExecutable)
 			{
-				AddPackageWhen(IsExecutable, "Uno.WinUI.Skia.Linux.FrameBuffer", UnoVersion);
-				AddPackageWhen(IsExecutable, "Uno.WinUI.Skia.MacOS", UnoVersion);
-				AddPackageWhen(IsExecutable, "Uno.WinUI.Skia.Wpf", UnoVersion);
-				AddPackageWhen(IsExecutable, "Uno.WinUI.Skia.X11", UnoVersion);
+				AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", UnoVersion);
+				AddPackage("Uno.WinUI.Skia.MacOS", UnoVersion);
+				AddPackage("Uno.WinUI.Skia.Wpf", UnoVersion);
+				AddPackage("Uno.WinUI.Skia.X11", UnoVersion);
 			}
 			else if (IsExecutable && (TargetFrameworkIdentifier == UnoTarget.Wasm || IsLegacyWasmHead()))
 			{
