@@ -286,11 +286,8 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	private void Debug(string message, params object[] args)
 	{
-		if (!SdkDebugging)
-		{
-			return;
-		}
+		var importantance = SdkDebugging ? MessageImportance.High : MessageImportance.Low;
 
-		Log.LogMessage(MessageImportance.High, message, args);
+		Log.LogMessage(importantance, message, args);
 	}
 }
