@@ -23,7 +23,7 @@
 							Width="300"
 							Height="300">
 			<Border.Background>
-				<ImageBrush ImageSource="https://upload.wikimedia.org/wikipedia/commons/b/b3/1606_Hondius_and_Mercator_Map_of_Mexico_-_Geographicus_-_HispaniaeNovaMexico-mercator-1606.jpg" />
+				<ImageBrush crossorigin="anonymous" ImageSource="https://upload.wikimedia.org/wikipedia/commons/b/b3/1606_Hondius_and_Mercator_Map_of_Mexico_-_Geographicus_-_HispaniaeNovaMexico-mercator-1606.jpg" />
 			</Border.Background>
 		</Border>
 	</StackPanel>
