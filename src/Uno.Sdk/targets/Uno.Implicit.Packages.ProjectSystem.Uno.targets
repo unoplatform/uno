@@ -1,0 +1,14 @@
+<Project>
+	<ItemGroup Condition="$(Optimize) != 'true'">
+		<PackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsPackable) != 'true'">
+		<PackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsBrowserWasm) != 'true' AND $(_IsExecutable) == 'true'">
+		<PackageReference Include="SkiaSharp.Skottie" ProjectSystem="true" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true" />
+	</ItemGroup>
+</Project>

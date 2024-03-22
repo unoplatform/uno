@@ -1,0 +1,7 @@
+<Project>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.WindowsAppSDK" ProjectSystem="true" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" ProjectSystem="true" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" ProjectSystem="true" Condition="$(_IsExecutable) == 'true'"/>
+	</ItemGroup>
+</Project>

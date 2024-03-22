@@ -1,0 +1,7 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
+
+	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+		<PackageReference Include="Uno.Extensions.Logging.OSLog" ProjectSystem="true" />
+	</ItemGroup>
+</Project>

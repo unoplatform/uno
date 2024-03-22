@@ -1,0 +1,8 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
+
+	<ItemGroup Condition="$(_IsExecutable) == 'true'">
+		<PackageReference Include="Uno.UniversalImageLoader" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.Google.Android.Material" ProjectSystem="true" />
+	</ItemGroup>
+</Project>
