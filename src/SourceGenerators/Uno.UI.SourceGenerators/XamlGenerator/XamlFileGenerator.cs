@@ -1938,7 +1938,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					try
 					{
-						if (isDependencyProperty)
+						var globalizedTargetType = GetGlobalizedTypeName(fullTargetType);
+						var hasMarkupExtension = HasMarkupExtension(valueNode);
+						if (hasMarkupExtension && CurrentResourceOwner is null)
+						{
+							using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.Setter()"))
+							{
+								writer.AppendLineIndented($"Property = {globalizedTargetType}.{property}Property,");
+							}
+
+							using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
+							{
+								applyWriter.Append($"{closureName}.");
+								BuildChild(applyWriter, valueNode, valueObject);
+								applyWriter.Append(";");
+							}
+						}
+						else if (isDependencyProperty)
 						{
 							if (CurrentResourceOwner != null)
 							{
@@ -1947,14 +1963,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								currentResourceOwner = ResourceOwnerScope();
 
 								writer.AppendLineIndented(
-									$"new global::Microsoft.UI.Xaml.Setter({GetGlobalizedTypeName(fullTargetType)}.{property}Property, {currentOwnerName}, {CurrentResourceOwner} => ({propertyType})"
+									$"new global::Microsoft.UI.Xaml.Setter({globalizedTargetType}.{property}Property, {currentOwnerName}, {CurrentResourceOwner} => ({propertyType})"
 								);
 							}
 							else
 							{
 								writer.AppendLineInvariantIndented(
 									"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, () => ({2})",
-									GetGlobalizedTypeName(fullTargetType),
+									globalizedTargetType,
 									property,
 									propertyType
 								);
@@ -1964,24 +1980,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariantIndented(
 								"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {2}.{1} = ",
-								GetGlobalizedTypeName(fullTargetType),
+								globalizedTargetType,
 								property,
 									targetInstance
 							);
 						}
 
-						if (HasMarkupExtension(valueNode))
-						{
-							TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "NonResourceMarkupValueDP" : "MarkupValuePOCO");
-							writer.AppendLineIndented(BuildBindingOption(valueNode, propertyType, isTemplateBindingAttachedProperty: false));
-						}
-						else
+						if (!hasMarkupExtension)
 						{
 							TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "ChildValueDP" : "ChildValuePOCO");
 							BuildChild(writer, valueNode, valueObject);
+							writer.AppendLineIndented(")");
 						}
-
-						writer.AppendLineIndented(")");
 					}
 					finally
 					{
