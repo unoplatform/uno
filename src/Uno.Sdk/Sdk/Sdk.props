@@ -53,6 +53,14 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<AvailableItemName Include="UnoAsset"/>
+		<AvailableItemName Include="UnoImage"/>
+		<AvailableItemName Include="UnoIcon"/>
+		<AvailableItemName Include="UnoSplashScreen"/>
+		<AvailableItemName Include="UnoDspImportColors"/>
+	</ItemGroup>
+
 	<!-- 
 		Remove the implicitly added FrameworkReference from the Web SDK. 
 
