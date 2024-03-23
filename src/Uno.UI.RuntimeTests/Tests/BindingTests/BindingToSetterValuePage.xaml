@@ -11,8 +11,8 @@
     <Grid Width="100" Height="100">
 		<Border x:Name="borderXBind" x:FieldModifier="public">
 			<Border.Style>
-				<Style TargetType="Border">
-					<Setter Property="AutomationProperties.AutomationId"
+				<Style TargetType="Border" x:Name="style1">
+					<Setter Property="AutomationProperties.AutomationId" x:Name="setter1"
 							Value="{x:Bind TestValue}" />
 				</Style>
 			</Border.Style>
@@ -20,8 +20,8 @@
 
 		<Border x:Name="borderBinding" x:FieldModifier="public">
 			<Border.Style>
-				<Style TargetType="Border">
-					<Setter Property="AutomationProperties.AutomationId"
+				<Style TargetType="Border" x:Name="style2">
+					<Setter Property="AutomationProperties.AutomationId" x:Name="setter2"
 							Value="{Binding TestValue}" />
 				</Style>
 			</Border.Style>
