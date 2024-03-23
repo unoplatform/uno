@@ -11,6 +11,11 @@
 		<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
 		<MtouchExtraArgs Condition="!$(MtouchExtraArgs.Contains('--marshal-objectivec-exceptions'))">$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Optimize)'!='true'">
+		<!-- Required for C# Hot Reload -->
+		<UseInterpreter>True</UseInterpreter>
+		<MtouchInterpreter>True</MtouchInterpreter>
+	</PropertyGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
 </Project>
