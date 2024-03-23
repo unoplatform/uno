@@ -213,5 +213,11 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 			return childIsAcceptable;
 		}
+
+		protected IEnumerable<AutomationPeer> GetAutomationPeerCollection(AutomationProperties eProperty)
+		{
+			// UNO TODO: Port GetAutomationPeerCollection for FrameworkElementAutomationPeer
+			return null;
+		}
 	}
 }
