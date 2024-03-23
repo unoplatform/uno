@@ -5846,6 +5846,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 							}
 
+							if (isStyle)
+							{
+								if (_isHotReloadEnabled)
+								{
+									using (var applyWriter = CreateApplyBlock(writer, Generation.StyleSymbol.Value, out string closure))
+									{
+										TrySetOriginalSourceLocation(applyWriter, $"{closure}", xamlObjectDefinition.LineNumber, xamlObjectDefinition.LinePosition);
+									}
+								}
+							}
+
 							BuildExtendedProperties(writer, xamlObjectDefinition);
 						}
 
