@@ -65,7 +65,7 @@
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.MacOS.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Wasm.targets"
-		Condition="$(IsBrowserWasm) == 'true" />
+		Condition=" '$(IsBrowserWasm)' == 'true' " />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Desktop.targets"
 		Condition="$(TargetFramework.Contains('windows10'))" />
 
