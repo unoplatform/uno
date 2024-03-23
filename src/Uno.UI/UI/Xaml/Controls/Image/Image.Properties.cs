@@ -16,7 +16,7 @@ partial class Image
 	}
 
 	/// <summary>
-	/// Identifies the Source  dependency property.
+	/// Identifies the Source dependency property.
 	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(
@@ -47,6 +47,8 @@ partial class Image
 			new FrameworkPropertyMetadata(
 				Stretch.Uniform,
 				(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
+
+	partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
 
 #if !__WASM__
 	/// <summary>
