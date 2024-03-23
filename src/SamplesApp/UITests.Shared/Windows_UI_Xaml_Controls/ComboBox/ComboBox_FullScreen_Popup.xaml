@@ -28,8 +28,6 @@
 					Value="Black" />
 			<Setter Property="BorderThickness"
 					Value="0" />
-			<Setter Property="IsPopupFullscreen"
-					Value="True" />
 			<Setter Property="HorizontalContentAlignment"
 					Value="Stretch" />
 			<Setter Property="Template">
@@ -283,6 +281,7 @@
 	<StackPanel>
 		<ios:ComboBox x:Name="Units1"
 				  Style="{ThemeResource ComboStyle}"
+				  IsPopupFullscreen="true"
 				  ItemsSource="{x:Bind MyItems}">
 		</ios:ComboBox>
 		<ComboBox x:Name="Values2"
