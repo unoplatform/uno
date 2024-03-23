@@ -4837,7 +4837,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "null";
 				}
 
-				Debugger.Launch();
 				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 
 				static string? SplitAndJoin(string? value)
@@ -5050,7 +5049,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						Debugger.Launch();
 						throw new NotSupportedException("MarkupExtension {0} is not supported.".InvariantCultureFormat(expression.Type.Name));
 					}
 				}
@@ -5097,7 +5095,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return $"{_currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
 			}
 
-			Debugger.Launch();
 			throw new InvalidOperationException($"{property} is not a DependencyProperty in type {_currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}");
 		}
 
@@ -5479,7 +5476,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									if (IsRelevantNamespace(member?.Member?.PreferredXamlNamespace)
 										&& IsRelevantProperty(member?.Member, objectDefinition))
 									{
-										Debugger.Launch();
 										GenerateError(
 											writer,
 											"Property {0} does not exist on {1}, name is {2}, preferrednamespace {3}",
