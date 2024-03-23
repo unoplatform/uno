@@ -5069,6 +5069,50 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private INamedTypeSymbol? GetDependencyPropertyTypeForSetter(string property)
+		{
+			property = property.Trim('(', ')');
+			// Handle attached properties
+			var isAttachedProperty = property.Contains(".");
+			if (isAttachedProperty)
+			{
+				var separatorIndex = property.IndexOf('.');
+
+				var target = property.Remove(separatorIndex);
+				property = property.Substring(separatorIndex + 1);
+				var type = FindType(target);
+				return _metadataHelper.GetAttachedPropertyType(type!, property);
+			}
+
+			return _metadataHelper.FindPropertyTypeByOwnerSymbol(_currentStyleTargetType, property);
+		}
+
+		private INamedTypeSymbol? GetTypeForSetterTarget(string target, XamlMemberDefinition? owner)
+		{
+			var ownerControl = GetControlOwner(owner?.Owner);
+			if (ownerControl != null)
+			{
+				// This builds property setters for specified member setter.
+				var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
+				var elementName = target.Substring(0, separatorIndex);
+				var targetElement = FindSubElementByName(ownerControl, elementName);
+				if (targetElement != null)
+				{
+					var propertyName = target.Substring(separatorIndex + 1);
+					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
+					// performed at runtime at a higher cost.
+					propertyName = RewriteAttachedPropertyPath(propertyName);
+					return _metadataHelper.FindPropertyTypeByOwnerSymbol(FindType(targetElement.Type), propertyName);
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			throw new InvalidOperationException("GetControlOwner returned null.");
+		}
+
 		private string BuildDependencyProperty(string property)
 		{
 			property = property.Trim('(', ')');
@@ -5467,9 +5511,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
+								INamedTypeSymbol? setterPropertyType = null;
+								if (member.Owner?.Type.Name == "Setter" &&
+									member.Member.Name == "Value")
+								{
+									if (FindMember(member.Owner, "Property") is { Value: string setterPropertyName })
+									{
+										setterPropertyType = GetDependencyPropertyTypeForSetter(setterPropertyName);
+									}
+									else if (GetMember(member.Owner, "Target") is { Value: string setterTarget })
+									{
+										setterPropertyType = GetTypeForSetterTarget(setterTarget, member);
+									}
+								}
+
 								if (FindPropertyType(member.Member) != null)
 								{
-									writer.AppendLineInvariantIndented("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, objectUid: objectUid ?? ""), closingPunctuation);
+									writer.AppendLineInvariantIndented("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, propertyType: setterPropertyType, objectUid: objectUid ?? ""), closingPunctuation);
 								}
 								else
 								{
