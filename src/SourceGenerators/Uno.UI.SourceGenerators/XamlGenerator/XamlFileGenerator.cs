@@ -116,6 +116,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool _isInSingletonInstance;
 
+		private INamedTypeSymbol? _currentStyleTargetType;
+
 		/// <summary>
 		/// Context to report diagnostics to
 		/// </summary>
@@ -398,6 +400,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildComponentFields(writer);
 
+							if (_fileDefinition.FilePath.Contains("BindingToSetterValuePage"))
+							{
+								//Debugger.Launch();
+							}
 							BuildCompiledBindings(writer);
 
 							BuildXBindTryGetDeclarations(writer);
@@ -1746,273 +1752,251 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private void BuildInlineStyle(IIndentedStringBuilder writer, XamlObjectDefinition style)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			var targetTypeNode = GetMember(style, "TargetType");
+		//private void BuildInlineStyle(IIndentedStringBuilder writer, XamlObjectDefinition style)
+		//{
+		//	TryAnnotateWithGeneratorSource(writer);
+		//	var targetTypeNode = GetMember(style, "TargetType");
 
-			if (targetTypeNode.Value == null)
-			{
-				throw new InvalidOperationException("TargetType cannot be empty");
-			}
+		//	if (targetTypeNode.Value == null)
+		//	{
+		//		throw new InvalidOperationException("TargetType cannot be empty");
+		//	}
 
-			var targetType = targetTypeNode.Value.ToString() ?? "";
-			var fullTargetType = FindType(targetType)?.GetFullyQualifiedTypeExcludingGlobal() ?? targetType;
+		//	var targetType = targetTypeNode.Value.ToString() ?? "";
+		//	var fullTargetType = FindType(targetType)?.GetFullyQualifiedTypeExcludingGlobal() ?? targetType;
 
-			using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.Style(typeof(global::{0}))", fullTargetType))
-			{
-				var basedOnNode = style.Members.FirstOrDefault(o => o.Member.Name == "BasedOn");
+		//	using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.Style(typeof(global::{0}))", fullTargetType))
+		//	{
+		//		var basedOnNode = style.Members.FirstOrDefault(o => o.Member.Name == "BasedOn");
 
-				if (basedOnNode != null)
-				{
-					writer.AppendLineInvariantIndented("BasedOn = (global::Microsoft.UI.Xaml.Style){0},", BuildBindingOption(basedOnNode, Generation.StyleSymbol.Value, isTemplateBindingAttachedProperty: false));
-				}
+		//		if (basedOnNode != null)
+		//		{
+		//			writer.AppendLineInvariantIndented("BasedOn = (global::Microsoft.UI.Xaml.Style){0},", BuildBindingOption(basedOnNode, Generation.StyleSymbol.Value, isTemplateBindingAttachedProperty: false));
+		//		}
 
-				using (writer.BlockInvariant("Setters = ", fullTargetType))
-				{
-					var contentNode = FindMember(style, "_UnknownContent");
+		//		using (writer.BlockInvariant("Setters = ", fullTargetType))
+		//		{
+		//			var contentNode = FindMember(style, "_UnknownContent");
 
-					var settersNode = FindMember(style, "Setters");
+		//			var settersNode = FindMember(style, "Setters");
 
-					if (contentNode != null && settersNode != null)
-					{
-						throw new InvalidOperationException($"The property 'Setters' is set more than once at line {style.LineNumber}:{style.LinePosition} ({_fileDefinition.FilePath}).");
-					}
+		//			if (contentNode != null && settersNode != null)
+		//			{
+		//				throw new InvalidOperationException($"The property 'Setters' is set more than once at line {style.LineNumber}:{style.LinePosition} ({_fileDefinition.FilePath}).");
+		//			}
 
-					contentNode ??= settersNode;
+		//			contentNode ??= settersNode;
 
-					if (contentNode != null)
-					{
-						foreach (var child in contentNode.Objects)
-						{
-							if (child.Type.Name == "Setter")
-							{
-								var propertyNode = FindMember(child, "Property") ?? FindMember(child, "Target");
-								var valueNode = FindMember(child, "Value");
-								var property = propertyNode?.Value?.ToString();
+		//			if (contentNode != null)
+		//			{
+		//				foreach (var child in contentNode.Objects)
+		//				{
+		//					if (child.Type.Name == "Setter")
+		//					{
+		//						var propertyNode = FindMember(child, "Property") ?? FindMember(child, "Target");
+		//						var valueNode = FindMember(child, "Value");
+		//						var property = propertyNode?.Value?.ToString();
 
-								if (valueNode != null && property != null)
-								{
-									BuildPropertySetter(writer, fullTargetType, ",", property, valueNode);
-								}
-								else
-								{
-									GenerateError(writer, $"No value was specified for {property} on {child.Type.Name}");
-								}
-							}
-							else
-							{
-								GenerateError(writer, "Support for {0} is not implemented", child.Type.Name);
-							}
-						}
-					}
-				}
-			}
+		//						if (valueNode != null && property != null)
+		//						{
+		//							BuildPropertySetter(writer, fullTargetType, ",", property, valueNode);
+		//						}
+		//						else
+		//						{
+		//							GenerateError(writer, $"No value was specified for {property} on {child.Type.Name}");
+		//						}
+		//					}
+		//					else
+		//					{
+		//						GenerateError(writer, "Support for {0} is not implemented", child.Type.Name);
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
 
-			if (_isHotReloadEnabled)
-			{
-				using (var applyWriter = CreateApplyBlock(writer, Generation.StyleSymbol.Value, out string closure))
-				{
-					TrySetOriginalSourceLocation(applyWriter, $"{closure}", style.LineNumber, style.LinePosition);
-				}
-			}
-		}
+		//	if (_isHotReloadEnabled)
+		//	{
+		//		using (var applyWriter = CreateApplyBlock(writer, Generation.StyleSymbol.Value, out string closure))
+		//		{
+		//			TrySetOriginalSourceLocation(applyWriter, $"{closure}", style.LineNumber, style.LinePosition);
+		//		}
+		//	}
+		//}
 
 		/// <summary>
 		/// Build Setter inside of a Style declaration.
 		/// </summary>
-		private void BuildPropertySetter(IIndentedStringBuilder writer, string fullTargetType, string lineEnding, string property, XamlMemberDefinition valueNode, string? targetInstance = null)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			targetInstance ??= "o";
+		//private void BuildPropertySetter(IIndentedStringBuilder writer, string fullTargetType, string lineEnding, string property, XamlMemberDefinition valueNode, string? targetInstance = null)
+		//{
+		//	TryAnnotateWithGeneratorSource(writer);
+		//	targetInstance ??= "o";
 
-			property = property.Trim('(', ')');
+		//	var propertyType = GetPropertyType(property);
 
-			// Handle attached properties
-			var isAttachedProperty = property.Contains(".");
-			if (isAttachedProperty)
-			{
-				var separatorIndex = property.IndexOf('.');
+		//	if (propertyType != null)
+		//	{
+		//		bool isDependencyProperty = IsDependencyProperty(targetType, property);
 
-				var target = property.Remove(separatorIndex);
-				property = property.Substring(separatorIndex + 1);
-				var foundFullTargetType = FindType(target)?.GetFullyQualifiedTypeExcludingGlobal();
+		//		if (valueNode.Objects.None())
+		//		{
+		//			if (isDependencyProperty)
+		//			{
+		//				TryAnnotateWithGeneratorSource(writer, suffix: "InlineValueDP");
+		//				writer.AppendLineInvariantIndented(
+		//					"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
+		//					GetGlobalizedTypeName(fullTargetType),
+		//					property,
+		//					propertyType,
+		//					BuildLiteralValue(valueNode, propertyType)
+		//				);
+		//			}
+		//			else
+		//			{
+		//				TryAnnotateWithGeneratorSource(writer, suffix: "InlineValuePOCO");
+		//				writer.AppendLineInvariantIndented(
+		//					"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
+		//					GetGlobalizedTypeName(fullTargetType),
+		//					property,
+		//					BuildLiteralValue(valueNode, propertyType),
+		//					targetInstance
+		//				);
+		//			}
+		//		}
+		//		else if (HasCustomMarkupExtension(valueNode))
+		//		{
+		//			var propertyValue = GetCustomMarkupExtensionValue(valueNode);
+		//			if (isDependencyProperty)
+		//			{
+		//				TryAnnotateWithGeneratorSource(writer, suffix: "CustomMarkupExtensionValueDP");
+		//				writer.AppendLineInvariantIndented(
+		//					"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
+		//					GetGlobalizedTypeName(fullTargetType),
+		//					property,
+		//					propertyType,
+		//					propertyValue
+		//				);
+		//			}
+		//			else
+		//			{
+		//				TryAnnotateWithGeneratorSource(writer, suffix: "CustomMarkupExtensionValuePOCO");
+		//				writer.AppendLineInvariantIndented(
+		//					"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
+		//					GetGlobalizedTypeName(fullTargetType),
+		//					property,
+		//					propertyValue,
+		//					targetInstance
+		//				);
+		//			}
+		//		}
+		//		else if (isDependencyProperty && HasResourceMarkupExtension(valueNode))
+		//		{
+		//			TryAnnotateWithGeneratorSource(writer, suffix: "IsResourceMarkupValueDP");
+		//			var valueObject = valueNode.Objects.First();
+		//			var key = valueObject.Members.FirstOrDefault()?.Value?.ToString();
+		//			if (key == null)
+		//			{
+		//				GenerateError(writer, "Resource markup did not define a key.");
+		//			}
+		//			// Call helper to avoid unnecessary AOT binary footprint of creating a lambda, etc
+		//			writer.AppendLineInvariantIndented("global::Uno.UI.Helpers.Xaml.SetterHelper.GetPropertySetterWithResourceValue({0}.{1}Property, \"{2}\", {3}, default({4}))",
+		//				GetGlobalizedTypeName(fullTargetType),
+		//				property,
+		//				key,
+		//				ParseContextPropertyAccess,
+		//				propertyType
+		//			);
+		//			var isThemeResource = valueObject?.Type.Name == "ThemeResource";
+		//			var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
+		//			if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
+		//			{
+		//				writer.AppendLineInvariantIndented(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
+		//			}
 
-				if (foundFullTargetType == null || property == null)
-				{
-					GenerateError(writer, $"Property {property} on {target} could not be found.");
-					return;
-				}
+		//			writer.AppendLineIndented(lineEnding);
+		//		}
+		//		else
+		//		{
+		//			IDisposable? currentResourceOwner = null;
+		//			var valueObject = valueNode.Objects.First();
 
-				fullTargetType = foundFullTargetType;
-			}
+		//			try
+		//			{
+		//				var globalizedTargetType = GetGlobalizedTypeName(fullTargetType);
+		//				var hasMarkupExtension = HasMarkupExtension(valueNode);
+		//				if (hasMarkupExtension && CurrentResourceOwner is null)
+		//				{
+		//					using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.Setter()"))
+		//					{
+		//						writer.AppendLineIndented($"Property = {globalizedTargetType}.{property}Property,");
+		//					}
 
-			var targetType = _metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol;
-			var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetType, property);
+		//					using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
+		//					{
+		//						applyWriter.Append($"{closureName}.");
+		//						BuildChild(applyWriter, valueNode, valueObject);
+		//						applyWriter.Append(";");
+		//					}
+		//				}
+		//				else if (isDependencyProperty)
+		//				{
+		//					if (CurrentResourceOwner != null)
+		//					{
+		//						var currentOwnerName = CurrentResourceOwner;
 
-			if (propertyType != null)
-			{
-				bool isDependencyProperty = IsDependencyProperty(targetType, property);
+		//						currentResourceOwner = ResourceOwnerScope();
 
-				if (valueNode.Objects.None())
-				{
-					if (isDependencyProperty)
-					{
-						TryAnnotateWithGeneratorSource(writer, suffix: "InlineValueDP");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
-							GetGlobalizedTypeName(fullTargetType),
-							property,
-							propertyType,
-							BuildLiteralValue(valueNode, propertyType)
-						);
-					}
-					else
-					{
-						TryAnnotateWithGeneratorSource(writer, suffix: "InlineValuePOCO");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
-							GetGlobalizedTypeName(fullTargetType),
-							property,
-							BuildLiteralValue(valueNode, propertyType),
-							targetInstance
-						);
-					}
-				}
-				else if (HasCustomMarkupExtension(valueNode))
-				{
-					var propertyValue = GetCustomMarkupExtensionValue(valueNode);
-					if (isDependencyProperty)
-					{
-						TryAnnotateWithGeneratorSource(writer, suffix: "CustomMarkupExtensionValueDP");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, ({2}){3})" + lineEnding,
-							GetGlobalizedTypeName(fullTargetType),
-							property,
-							propertyType,
-							propertyValue
-						);
-					}
-					else
-					{
-						TryAnnotateWithGeneratorSource(writer, suffix: "CustomMarkupExtensionValuePOCO");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
-							GetGlobalizedTypeName(fullTargetType),
-							property,
-							propertyValue,
-							targetInstance
-						);
-					}
-				}
-				else if (isDependencyProperty && HasResourceMarkupExtension(valueNode))
-				{
-					TryAnnotateWithGeneratorSource(writer, suffix: "IsResourceMarkupValueDP");
-					var valueObject = valueNode.Objects.First();
-					var key = valueObject.Members.FirstOrDefault()?.Value?.ToString();
-					if (key == null)
-					{
-						GenerateError(writer, "Resource markup did not define a key.");
-					}
-					// Call helper to avoid unnecessary AOT binary footprint of creating a lambda, etc
-					writer.AppendLineInvariantIndented("global::Uno.UI.Helpers.Xaml.SetterHelper.GetPropertySetterWithResourceValue({0}.{1}Property, \"{2}\", {3}, default({4}))",
-						GetGlobalizedTypeName(fullTargetType),
-						property,
-						key,
-						ParseContextPropertyAccess,
-						propertyType
-					);
-					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
-					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
-					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
-					{
-						writer.AppendLineInvariantIndented(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
-					}
+		//						writer.AppendLineIndented(
+		//							$"new global::Microsoft.UI.Xaml.Setter({globalizedTargetType}.{property}Property, {currentOwnerName}, {CurrentResourceOwner} => ({propertyType})"
+		//						);
+		//					}
+		//					else
+		//					{
+		//						writer.AppendLineInvariantIndented(
+		//							"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, () => ({2})",
+		//							globalizedTargetType,
+		//							property,
+		//							propertyType
+		//						);
+		//					}
+		//				}
+		//				else
+		//				{
+		//					writer.AppendLineInvariantIndented(
+		//						"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {2}.{1} = ",
+		//						globalizedTargetType,
+		//						property,
+		//							targetInstance
+		//					);
+		//				}
 
-					writer.AppendLineIndented(lineEnding);
-				}
-				else
-				{
-					IDisposable? currentResourceOwner = null;
-					var valueObject = valueNode.Objects.First();
+		//				if (!hasMarkupExtension)
+		//				{
+		//					TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "ChildValueDP" : "ChildValuePOCO");
+		//					BuildChild(writer, valueNode, valueObject);
+		//					writer.AppendLineIndented(")");
+		//				}
+		//			}
+		//			finally
+		//			{
+		//				currentResourceOwner?.Dispose();
+		//			}
 
-					try
-					{
-						var globalizedTargetType = GetGlobalizedTypeName(fullTargetType);
-						var hasMarkupExtension = HasMarkupExtension(valueNode);
-						if (hasMarkupExtension && CurrentResourceOwner is null)
-						{
-							using (writer.BlockInvariant("new global::Microsoft.UI.Xaml.Setter()"))
-							{
-								writer.AppendLineIndented($"Property = {globalizedTargetType}.{property}Property,");
-							}
+		//			var isThemeResource = valueObject?.Type.Name == "ThemeResource";
+		//			var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
+		//			if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
+		//			{
+		//				writer.AppendLineInvariantIndented(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
+		//			}
 
-							using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
-							{
-								applyWriter.Append($"{closureName}.");
-								BuildChild(applyWriter, valueNode, valueObject);
-								applyWriter.Append(";");
-							}
-						}
-						else if (isDependencyProperty)
-						{
-							if (CurrentResourceOwner != null)
-							{
-								var currentOwnerName = CurrentResourceOwner;
-
-								currentResourceOwner = ResourceOwnerScope();
-
-								writer.AppendLineIndented(
-									$"new global::Microsoft.UI.Xaml.Setter({globalizedTargetType}.{property}Property, {currentOwnerName}, {CurrentResourceOwner} => ({propertyType})"
-								);
-							}
-							else
-							{
-								writer.AppendLineInvariantIndented(
-									"new global::Microsoft.UI.Xaml.Setter({0}.{1}Property, () => ({2})",
-									globalizedTargetType,
-									property,
-									propertyType
-								);
-							}
-						}
-						else
-						{
-							writer.AppendLineInvariantIndented(
-								"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => {2}.{1} = ",
-								globalizedTargetType,
-								property,
-									targetInstance
-							);
-						}
-
-						if (!hasMarkupExtension)
-						{
-							TryAnnotateWithGeneratorSource(writer, suffix: isDependencyProperty ? "ChildValueDP" : "ChildValuePOCO");
-							BuildChild(writer, valueNode, valueObject);
-							writer.AppendLineIndented(")");
-						}
-					}
-					finally
-					{
-						currentResourceOwner?.Dispose();
-					}
-
-					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
-					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
-					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
-					{
-						writer.AppendLineInvariantIndented(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
-					}
-
-					writer.AppendLineIndented(lineEnding);
-				}
-			}
-			else
-			{
-				GenerateError(writer, "Property for {0} cannot be found on {1}", property, fullTargetType);
-			}
-		}
+		//			writer.AppendLineIndented(lineEnding);
+		//		}
+		//	}
+		//	else
+		//	{
+		//		GenerateError(writer, "Property for {0} cannot be found on {1}", property, fullTargetType);
+		//	}
+		//}
 
 		private void GenerateError(IIndentedStringBuilder writer, string message)
 		{
@@ -4952,6 +4936,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyTypeWithoutGlobal = propertyType.GetFullyQualifiedTypeExcludingGlobal();
 				switch (propertyTypeWithoutGlobal)
 				{
+					case XamlConstants.Types.DependencyProperty:
+						return BuildDependencyProperty(GetMemberValue());
+
 					case XamlConstants.Types.Brush:
 					case XamlConstants.Types.SolidColorBrush:
 						return BuildBrush(GetMemberValue());
@@ -5042,6 +5029,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "Microsoft.UI.Xaml.Media.ImageSource":
 						return RewriteUri(memberValue);
+
+					case "Microsoft.UI.Xaml.TargetPropertyPath":
+						return BuildTargetPropertyPath(GetMemberValue(), owner);
 				}
 
 				var isEnum = propertyType.TypeKind == TypeKind.Enum;
@@ -5116,6 +5106,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return "null";
 				}
 
+				Debugger.Launch();
 				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 
 				static string? SplitAndJoin(string? value)
@@ -5234,6 +5225,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			throw new Exception($"The [{memberValue}] cache mode is not supported");
 		}
 
+		private string BuildTargetPropertyPath(string target, XamlMemberDefinition? owner)
+		{
+			var ownerControl = GetControlOwner(owner?.Owner);
+			if (ownerControl != null)
+			{
+				// This builds property setters for specified member setter.
+				var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
+				var elementName = target.Substring(0, separatorIndex);
+				var targetElement = FindSubElementByName(ownerControl, elementName);
+				if (targetElement != null)
+				{
+					var propertyName = target.Substring(separatorIndex + 1);
+					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
+					// performed at runtime at a higher cost.
+					propertyName = RewriteAttachedPropertyPath(propertyName);
+					return $"new global::Microsoft.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\")";
+				}
+				else
+				{
+					return $"/* target element not found {elementName} */ null";
+				}
+			}
+
+			throw new InvalidOperationException("GetControlOwner returned null.");
+		}
+
 		private static string? DoubleEscape(string? thisString)
 		{
 			//http://stackoverflow.com/questions/366124/inserting-a-tab-character-into-text-using-c-sharp
@@ -5302,6 +5319,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						Debugger.Launch();
 						throw new NotSupportedException("MarkupExtension {0} is not supported.".InvariantCultureFormat(expression.Type.Name));
 					}
 				}
@@ -5320,6 +5338,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return $"global::{XamlConstants.Types.FontWeights}.Normal /* Warning {memberValue} is not supported on this platform */";
 			}
+		}
+
+		private string BuildDependencyProperty(string property)
+		{
+			property = property.Trim('(', ')');
+			// Handle attached properties
+			var isAttachedProperty = property.Contains(".");
+			if (isAttachedProperty)
+			{
+				var separatorIndex = property.IndexOf('.');
+
+				var target = property.Remove(separatorIndex);
+				property = property.Substring(separatorIndex + 1);
+				var foundFullTargetType = FindType(target)?.GetFullyQualifiedTypeIncludingGlobal();
+
+				return $"{foundFullTargetType}.{property}Property";
+			}
+
+			if (_currentStyleTargetType is null)
+			{
+				throw new InvalidOperationException($"Cannot convert '{property}' to DependencyProperty");
+			}
+
+			if (IsDependencyProperty(_currentStyleTargetType, property))
+			{
+				return $"{_currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
+			}
+
+			Debugger.Launch();
+			throw new InvalidOperationException($"{property} is not a DependencyProperty in type {_currentStyleTargetType.GetFullyQualifiedTypeExcludingGlobal()}");
 		}
 
 		private string BuildBrush(string memberValue)
@@ -5698,8 +5746,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								else
 								{
 									if (IsRelevantNamespace(member?.Member?.PreferredXamlNamespace)
-										&& IsRelevantProperty(member?.Member))
+										&& IsRelevantProperty(member?.Member, objectDefinition))
 									{
+										Debugger.Launch();
 										GenerateError(
 											writer,
 											"Property {0} does not exist on {1}, name is {2}, preferrednamespace {3}",
@@ -6003,101 +6052,101 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildInitializer(writer, xamlObjectDefinition, owner);
 					BuildLiteralProperties(writer, xamlObjectDefinition);
 				}
-				else if (fullTypeName == XamlConstants.Types.Style)
-				{
-					BuildInlineStyle(writer, xamlObjectDefinition);
-				}
-				else if (fullTypeName == XamlConstants.Types.Setter)
-				{
-					var propertyNode = FindMember(xamlObjectDefinition, "Property");
-					var targetNode = FindMember(xamlObjectDefinition, "Target");
-					var valueNode = FindMember(xamlObjectDefinition, "Value");
+				//else if (fullTypeName == XamlConstants.Types.Style)
+				//{
+				//	BuildInlineStyle(writer, xamlObjectDefinition);
+				//}
+				//else if (fullTypeName == XamlConstants.Types.Setter)
+				//{
+				//	var propertyNode = FindMember(xamlObjectDefinition, "Property");
+				//	var targetNode = FindMember(xamlObjectDefinition, "Target");
+				//	var valueNode = FindMember(xamlObjectDefinition, "Value");
 
-					if (valueNode == null)
-					{
-						throw new InvalidOperationException($"The Value property on {xamlObjectDefinition} cannot be found");
-					}
+				//	if (valueNode == null)
+				//	{
+				//		throw new InvalidOperationException($"The Value property on {xamlObjectDefinition} cannot be found");
+				//	}
 
-					var property = propertyNode?.Value?.ToString();
-					var target = targetNode?.Value?.ToString();
+				//	var property = propertyNode?.Value?.ToString();
+				//	var target = targetNode?.Value?.ToString();
 
-					if (property != null)
-					{
-						var value = BuildLiteralValue(valueNode);
+				//	if (property != null)
+				//	{
+				//		var value = BuildLiteralValue(valueNode);
 
-						// This builds property setters for the owner of the setter.
-						writer.AppendLineIndented($"new Microsoft.UI.Xaml.Setter(new Microsoft.UI.Xaml.TargetPropertyPath(this, \"{property}\"), {value})");
-					}
-					else if (target != null)
-					{
-						var ownerControl = GetControlOwner(owner?.Owner);
+				//		// This builds property setters for the owner of the setter.
+				//		writer.AppendLineIndented($"new Microsoft.UI.Xaml.Setter(new Microsoft.UI.Xaml.TargetPropertyPath(this, \"{property}\"), {value})");
+				//	}
+				//	else if (target != null)
+				//	{
+				//		var ownerControl = GetControlOwner(owner?.Owner);
 
-						if (ownerControl != null)
-						{
-							// This builds property setters for specified member setter.
-							var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
-							var elementName = target.Substring(0, separatorIndex);
-							var targetElement = FindSubElementByName(ownerControl, elementName);
+				//		if (ownerControl != null)
+				//		{
+				//			// This builds property setters for specified member setter.
+				//			var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
+				//			var elementName = target.Substring(0, separatorIndex);
+				//			var targetElement = FindSubElementByName(ownerControl, elementName);
 
-							if (targetElement != null)
-							{
-								var propertyName = target.Substring(separatorIndex + 1);
-								// Attached properties need to be expanded using the namespace, otherwise the resolution will be
-								// performed at runtime at a higher cost.
-								propertyName = RewriteAttachedPropertyPath(propertyName);
-								writer.AppendLineIndented($"new global::Microsoft.UI.Xaml.Setter(new global::Microsoft.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
+				//			if (targetElement != null)
+				//			{
+				//				var propertyName = target.Substring(separatorIndex + 1);
+				//				// Attached properties need to be expanded using the namespace, otherwise the resolution will be
+				//				// performed at runtime at a higher cost.
+				//				propertyName = RewriteAttachedPropertyPath(propertyName);
+				//				writer.AppendLineIndented($"new global::Microsoft.UI.Xaml.Setter(new global::Microsoft.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
 
-								var targetElementType = GetType(targetElement.Type);
-								var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
+				//				var targetElementType = GetType(targetElement.Type);
+				//				var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
 
-								if (valueNode.Objects.None())
-								{
-									string value = BuildLiteralValue(valueNode);
-									writer.AppendLineIndented(value + ")");
-								}
-								else
-								{
+				//				if (valueNode.Objects.None())
+				//				{
+				//					string value = BuildLiteralValue(valueNode);
+				//					writer.AppendLineIndented(value + ")");
+				//				}
+				//				else
+				//				{
 
-									if (HasBindingMarkupExtension(valueNode))
-									{
-										writer.AppendLineIndented($"null)");
+				//					if (HasBindingMarkupExtension(valueNode))
+				//					{
+				//						writer.AppendLineIndented($"null)");
 
-										using (var applyWriter = CreateApplyBlock(writer, Generation.SetterSymbol.Value, out var setterClosure))
-										{
-											applyWriter.AppendLineIndented($"{setterClosure}.");
-											BuildChild(applyWriter, valueNode, valueNode.Objects.First(), outerClosure: setterClosure);
-											applyWriter.AppendLineIndented($";");
-										}
-									}
-									else if (HasCustomMarkupExtension(valueNode))
-									{
-										var propertyValue = GetCustomMarkupExtensionValue(valueNode);
-										writer.AppendLineIndented($"{propertyValue})");
-									}
-									else
-									{
-										BuildChild(writer, valueNode, valueNode.Objects.First(), outerClosure: null);
-										writer.AppendLineIndented($")");
-									}
-								}
-							}
-							else
-							{
-								writer.AppendLineIndented($"/* target element not found {elementName} */");
-								writer.AppendLineIndented($"new global::Microsoft.UI.Xaml.Setter()");
-							}
-						}
-					}
+				//						using (var applyWriter = CreateApplyBlock(writer, Generation.SetterSymbol.Value, out var setterClosure))
+				//						{
+				//							applyWriter.AppendLineIndented($"{setterClosure}.");
+				//							BuildChild(applyWriter, valueNode, valueNode.Objects.First(), outerClosure: setterClosure);
+				//							applyWriter.AppendLineIndented($";");
+				//						}
+				//					}
+				//					else if (HasCustomMarkupExtension(valueNode))
+				//					{
+				//						var propertyValue = GetCustomMarkupExtensionValue(valueNode);
+				//						writer.AppendLineIndented($"{propertyValue})");
+				//					}
+				//					else
+				//					{
+				//						BuildChild(writer, valueNode, valueNode.Objects.First(), outerClosure: null);
+				//						writer.AppendLineIndented($")");
+				//					}
+				//				}
+				//			}
+				//			else
+				//			{
+				//				writer.AppendLineIndented($"/* target element not found {elementName} */");
+				//				writer.AppendLineIndented($"new global::Microsoft.UI.Xaml.Setter()");
+				//			}
+				//		}
+				//	}
 
-					// Set ThemeResource information, if any, on Setter
-					var valueObject = valueNode.Objects.FirstOrDefault();
-					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
-					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
-					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
-					{
-						writer.AppendLineInvariantIndented(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
-					}
-				}
+				//	// Set ThemeResource information, if any, on Setter
+				//	var valueObject = valueNode.Objects.FirstOrDefault();
+				//	var isThemeResource = valueObject?.Type.Name == "ThemeResource";
+				//	var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
+				//	if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))
+				//	{
+				//		writer.AppendLineInvariantIndented(".ApplyThemeResourceUpdateValues(\"{0}\", {1}, {2}, {3})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess, isThemeResource ? "true" : "false", _isHotReloadEnabled ? "true" : "false");
+				//	}
+				//}
 				else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 				{
 					InitializeAndBuildResourceDictionary(writer, xamlObjectDefinition, setIsParsing: true);
@@ -6119,10 +6168,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						var isStyle = fullTypeName == XamlConstants.Types.Style;
+						if (isStyle)
+						{
+							var targetTypeNode = GetMember(xamlObjectDefinition, "TargetType");
+
+							if (targetTypeNode.Value == null)
+							{
+								throw new InvalidOperationException("TargetType cannot be empty");
+							}
+
+							var targetType = targetTypeNode.Value.ToString();
+							_currentStyleTargetType = FindType(targetType);
+						}
+
 						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
 							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
 							{
+								if (fullTypeName == XamlConstants.Types.Setter && FindMember(xamlObjectDefinition, "Value") is { } valueNode &&
+									valueNode.Objects.Count == 1 && valueNode.Objects[0].Type.Name == "Bind")
+								{
+									writer.AppendLineIndented("IsMutable = true,");
+								}
+
 								TrySetParsing(writer, knownType, isInitializer: true);
 								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 								BuildLiteralProperties(writer, xamlObjectDefinition);
@@ -6131,6 +6200,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 
 							BuildExtendedProperties(writer, xamlObjectDefinition);
+						}
+
+						if (isStyle)
+						{
+							_currentStyleTargetType = null;
 						}
 					}
 				}

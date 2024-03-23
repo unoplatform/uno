@@ -298,9 +298,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private static bool IsRelevantProperty(XamlMember? member)
+		private static bool IsRelevantProperty(XamlMember? member, XamlObjectDefinition objectDefinition)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
+			{
+				return false;
+			}
+
+			if (objectDefinition.Type.Name == "Style" && member?.Name == "IsNativeStyle")
 			{
 				return false;
 			}

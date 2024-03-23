@@ -56,11 +56,22 @@ namespace Microsoft.UI.Xaml
 			}
 			set
 			{
-				ValidateIsSealed();
+				if (!IsMutable)
+				{
+					ValidateIsSealed();
+				}
 
 				_value = value;
 			}
 		}
+
+		/// <summary>
+		/// This should never be called from user code.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		// Uno docs: As WinUI parses XAML files at runtime, they can set this while it's not public.
+		// In our case, we can't because this needs to be set by XAML generator.
+		public bool IsMutable { get; set; }
 
 		private void ValidateIsSealed()
 		{
