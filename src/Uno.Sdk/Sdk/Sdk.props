@@ -43,9 +43,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	</PropertyGroup>
 
 	<!-- We want to try to avoid having AnyCPU passed-->
-	<PropertyGroup Condition="'$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' > '10.0'">
-		<AvailablePlatforms Condition=" '$(TargetFramework.Contains('windows10'))' != 'true' ">AnyCPU,x86,x64,arm64</AvailablePlatforms>
-		<AvailablePlatforms Condition=" '$(TargetFramework.Contains('windows10'))' == 'true' ">x86,x64,arm64</AvailablePlatforms>
+	<PropertyGroup Condition=" '$(VisualStudioVersion)' != '' AND '$(VisualStudioVersion)' > '10.0' AND '$(AvailablePlatforms)' == '' ">
+		<AvailablePlatforms Condition=" '$(TargetFramework)' == '' OR !$(TargetFramework.Contains('windows10')) ">AnyCPU,x86,x64,arm64</AvailablePlatforms>
+		<AvailablePlatforms Condition=" '$(TargetFramework)' != '' AND $(TargetFramework.Contains('windows10')) ">x86,x64,arm64</AvailablePlatforms>
 	</PropertyGroup>
 
 	<PropertyGroup>
