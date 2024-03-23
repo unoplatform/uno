@@ -38,7 +38,14 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.IsPlatform.props</CustomAfterDirectoryBuildProps>
 		<CustomAfterDirectoryBuildProps>$(CustomAfterDirectoryBuildProps);$(_UnoSdkTargetsDirectory)Uno.Features.props</CustomAfterDirectoryBuildProps>
 
-		<AvailablePlatforms Condition="'$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' > '10.0'">Any CPU,x86,x64</AvailablePlatforms>
+		<!-- We do this to make sure that we include Resizetizer by default. Libraries using Uno.Sdk should have this set to true -->
+		<IsPackable Condition=" '$(IsPackable)' == '' ">false</IsPackable>
+	</PropertyGroup>
+
+	<!-- We want to try to avoid having AnyCPU passed-->
+	<PropertyGroup Condition="'$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' > '10.0'">
+		<AvailablePlatforms Condition=" '$(TargetFramework.Contains('windows10'))' != 'true' ">AnyCPU,x86,x64,arm64</AvailablePlatforms>
+		<AvailablePlatforms Condition=" '$(TargetFramework.Contains('windows10'))' == 'true' ">x86,x64,arm64</AvailablePlatforms>
 	</PropertyGroup>
 
 	<PropertyGroup>
