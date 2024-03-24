@@ -4957,6 +4957,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildTargetPropertyPath(string target, XamlMemberDefinition? owner)
 		{
+			// https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.setter.target?view=winrt-22621
+			// The Setter.Target property can be used in either a Style or a VisualState, but in different ways.
+			// - When used in a Style, the property that needs to be modified can be specified directly.
+			// - When used in VisualState, the Target property must be given a TargetPropertyPath(dotted syntax with a target element and property explicitly specified).
+			if (_currentStyleTargetType is not null)
+			{
+				// Target is used in a style, so it defines the DP directly.
+				return BuildDependencyProperty(target);
+			}
+
 			var ownerControl = GetControlOwner(owner?.Owner);
 			if (ownerControl != null)
 			{
@@ -5523,6 +5533,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										setterPropertyType = _currentStyleTargetType is null ? GetTypeForSetterTarget(setterTarget, member) : GetDependencyPropertyTypeForSetter(setterTarget);
 									}
+								}
+								else if (member.Owner?.Type.Name == "Setter" && member.Member.Name == "Target" && _currentStyleTargetType is not null)
+								{
+									// A setter's Target inside a style will set Property instead of Target
+									fullValueSetter = string.IsNullOrWhiteSpace(closureName) ? "Property" : $"{closureName}.Property";
 								}
 
 								if (FindPropertyType(member.Member) != null)
