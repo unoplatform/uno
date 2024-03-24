@@ -68,7 +68,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Setter
 						{
 							Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
-							Value = @"Red",
+							Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
 							// Source 0\MainPage.xaml (Line 8:8)
 						}
 						,
@@ -94,7 +94,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Setter
 						{
 							Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
-							Value = @"Azure",
+							Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
 							// Source 0\MainPage.xaml (Line 11:8)
 						}
 						,
@@ -200,7 +200,7 @@ namespace TestRepro
 										new global::Microsoft.UI.Xaml.Setter
 										{
 											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
-											Value = @"Red",
+											Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
 											// Source 0\MainPage.xaml (Line 27:12)
 										}
 									);
@@ -242,7 +242,7 @@ namespace TestRepro
 										new global::Microsoft.UI.Xaml.Setter
 										{
 											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
-											Value = @"Green",
+											Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Green),
 											// Source 0\MainPage.xaml (Line 35:12)
 										}
 									);

@@ -5521,7 +5521,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 									else if (GetMember(member.Owner, "Target") is { Value: string setterTarget })
 									{
-										setterPropertyType = GetTypeForSetterTarget(setterTarget, member);
+										setterPropertyType = _currentStyleTargetType is null ? GetTypeForSetterTarget(setterTarget, member) : GetDependencyPropertyTypeForSetter(setterTarget);
 									}
 								}
 

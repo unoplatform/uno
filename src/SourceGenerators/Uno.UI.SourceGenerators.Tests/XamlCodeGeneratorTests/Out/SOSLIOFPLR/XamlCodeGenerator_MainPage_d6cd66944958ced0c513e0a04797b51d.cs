@@ -68,7 +68,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Setter
 						{
 							Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
-							Value = @"Red",
+							Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
 							// Source 0\MainPage.xaml (Line 8:8)
 						}
 						,
@@ -94,7 +94,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Setter
 						{
 							Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
-							Value = @"Azure",
+							Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
 							// Source 0\MainPage.xaml (Line 11:8)
 						}
 						,
