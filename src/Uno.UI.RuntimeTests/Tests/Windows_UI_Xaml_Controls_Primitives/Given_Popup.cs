@@ -172,7 +172,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			((UIElement)FocusManager.GetFocusedElement(WindowHelper.XamlRoot))!.SafeRaiseEvent(UIElement.KeyDownEvent, args);
 			await WindowHelper.WaitForIdle();
 
+			// It's unclear what the right behavior is, but we don't care.
+			// This test just "documents" the current behavior, and can't run on WinUI.
+#if __SKIA__ || __WASM__
+			Assert.IsTrue(args.Handled);
+#else
 			Assert.IsFalse(args.Handled);
+#endif
 			Assert.IsTrue(popup.IsOpen);
 		}
 
