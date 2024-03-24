@@ -216,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(
 								(Android.Graphics.Color)color,
-								BlendModeCompat.SrcAtop);
+								BlendModeCompat.SrcAtop)!;
 							drawable?.SetColorFilter(colorFilter);
 						}
 					}
