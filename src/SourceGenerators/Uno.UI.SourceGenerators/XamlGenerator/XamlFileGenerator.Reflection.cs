@@ -305,7 +305,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
-			if (objectDefinition.Type.Name == "Style" && member?.Name == "IsNativeStyle")
+			if (member?.Name == "IsNativeStyle" && objectDefinition.Type.Name == "Style")
 			{
 				return false;
 			}
