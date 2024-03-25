@@ -2,7 +2,7 @@
 
 	<!-- Default Versions of packages that may be implicitly defined -->
 	<PropertyGroup>
-		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.4.0-dev.19</UnoResizetizerVersion>
+		<UnoResizetizerVersion Condition="$(UnoResizetizerVersion) == ''">1.4.0-dev.21</UnoResizetizerVersion>
 		<UnoDspTasksVersion Condition="$(UnoDspTasksVersion) == ''">1.2.9</UnoDspTasksVersion>
 		<UnoLoggingVersion Condition="$(UnoLoggingVersion) == ''">1.7.0</UnoLoggingVersion>
 		<UnoCoreLoggingSingletonVersion Condition="$(UnoCoreLoggingSingletonVersion) == ''">4.0.1</UnoCoreLoggingSingletonVersion>
