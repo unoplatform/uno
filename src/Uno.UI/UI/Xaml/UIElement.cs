@@ -1022,11 +1022,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
 			((ILayouterElement)fwe).Layouter.Measure(availableSize);
 #if IS_UNIT_TESTS
 			OnMeasurePartial(availableSize);

@@ -379,10 +379,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
-
+#if HAS_UNO
+				// Unlike WinUI, we don't crash.
+				SUT.Measure(new Size(double.NaN, double.NaN));
+				SUT.Measure(new Size(42.0, double.NaN));
+				SUT.Measure(new Size(double.NaN, 42.0));
+#else
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+#endif
 			});
 
 		[TestMethod]
@@ -476,14 +482,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// This is matching Windows and is important to keep the behavior of this test like this.
 			Assert.AreEqual(new Size(120, 50), grid.AvailableSizeUsedForMeasure);
 
-#if __SKIA__
-			// https://github.com/unoplatform/uno/issues/7271
-			// This assert is NOT correct. The correct size is 50, 15
-			// It's happening because ContentControl is measuring incorrectly because GetFirstChild is returning null instead of the Border.
-			Assert.AreEqual(new Size(50, 0), grid.DesiredSize);
-#else
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-#endif
 
 #if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
