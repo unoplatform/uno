@@ -112,8 +112,8 @@ namespace Microsoft.UI.Xaml
 
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
-#if !__WASM__
-		[global::Uno.NotImplemented]
+#if !__CROSSRUNTIME__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 #endif
 		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
 
@@ -341,8 +341,8 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(PointerReleasedEvent, value);
 		}
 
-#if !__WASM__ && !__SKIA__
-		[global::Uno.NotImplemented]
+#if !__CROSSRUNTIME__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 #endif
 		public event PointerEventHandler PointerWheelChanged
 		{
