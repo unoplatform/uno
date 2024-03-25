@@ -45,7 +45,7 @@ namespace UITests.Windows_ApplicationModel
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
-		private BitmapImage _bmp;
+		private BitmapSource _bmp;
 
 		public ClipboardTestsViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
@@ -88,7 +88,7 @@ namespace UITests.Windows_ApplicationModel
 			}
 		}
 
-		public BitmapImage Bitmap
+		public BitmapSource Bitmap
 		{
 			get => _bmp;
 			private set
@@ -149,6 +149,11 @@ namespace UITests.Windows_ApplicationModel
 		{
 			var dataPackageView = Clipboard.GetContent();
 
+			if (dataPackageView is null)
+			{
+				return;
+			}
+
 			var formats = new[]
 			{
 				"image/png",
@@ -161,26 +166,19 @@ namespace UITests.Windows_ApplicationModel
 				{
 					if (await dataPackageView.GetDataAsync("image/png") is byte[] bytes)
 					{
-						var ims = new InMemoryRandomAccessStream();
-						DataWriter dataWriter = new DataWriter(ims);
-						dataWriter.WriteBytes(bytes);
-						await dataWriter.StoreAsync();
-						ims.Seek(0);
-
-						var bitmapImage = new BitmapImage();
-						bitmapImage.SetSource(ims);
+						var fileName = Path.GetTempPath() + Guid.NewGuid() + "." + format.Split("/")[1];
+						await File.WriteAllBytesAsync(fileName, bytes);
+						var bitmapImage = new BitmapImage(new Uri(fileName));
 						Bitmap = bitmapImage;
-						return;
 					}
 				}
 			}
 
-			if (dataPackageView.Contains(StandardDataFormats.Bitmap))
+			if (Bitmap is null && dataPackageView.Contains(StandardDataFormats.Bitmap))
 			{
 				var bitmapReference = await dataPackageView.GetBitmapAsync();
-				var stream = await bitmapReference.OpenReadAsync();
 				var bitmapImage = new BitmapImage();
-				await bitmapImage.SetSourceAsync(stream);
+				bitmapImage.SetSource(await bitmapReference.OpenReadAsync());
 				Bitmap = bitmapImage;
 			}
 		}
