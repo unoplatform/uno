@@ -4,9 +4,10 @@ using Uno.WinUI.Runtime.Skia.X11;
 
 namespace Uno.UI.Runtime.Skia;
 
-internal class X11HostBuilder : IPlatformHostBuilder
+internal partial class X11HostBuilder : IPlatformHostBuilder
 {
-	private static readonly Regex DisplayRegex = new Regex(@"^(?:(?<hostname>[\w\.-]+):)?(?<displaynumber>\d+)(?:\.(?<screennumber>\d+))?$", RegexOptions.Compiled);
+	[GeneratedRegex(@"^(?:(?<hostname>[\w\.-]+):)?(?<displaynumber>\d+)(?:\.(?<screennumber>\d+))?$")]
+	private static partial Regex DisplayRegex();
 
 	public X11HostBuilder()
 	{
@@ -15,7 +16,7 @@ internal class X11HostBuilder : IPlatformHostBuilder
 	public bool IsSupported
 		=> OperatingSystem.IsLinux() &&
 			Environment.GetEnvironmentVariable("DISPLAY") is { } displayString &&
-			DisplayRegex.Match(displayString).Success;
+			DisplayRegex().Match(displayString).Success;
 
 	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
 		=> new X11ApplicationHost(appBuilder);
