@@ -32,7 +32,21 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.StateChanged += OnNativeStateChanged;
 		_wpfWindow.Host.SizeChanged += (_, e) => OnHostSizeChanged(e.NewSize);
 		OnHostSizeChanged(new Size(_wpfWindow.Width, _wpfWindow.Height));
+		_wpfWindow.LocationChanged += OnNativeLocationChanged;
+		_wpfWindow.SizeChanged += OnNativeSizeChanged;
+		UpdateSizeFromNative();
+		UpdatePositionFromNative();
 	}
+	
+	private void OnNativeSizeChanged(object sender, SizeChangedEventArgs e) => UpdateSizeFromNative();
+
+	private void UpdateSizeFromNative() =>
+		Size = new() { Width = (int)_wpfWindow.Width, Height = (int)_wpfWindow.Height };
+
+	private void OnNativeLocationChanged(object? sender, EventArgs e) => UpdatePositionFromNative();
+
+	private void UpdatePositionFromNative() =>
+		Position = new() { X = (int)_wpfWindow.Left, Y = (int)_wpfWindow.Top };
 
 	private void OnNativeStateChanged(object? sender, EventArgs e) => UpdateIsVisible();
 
@@ -50,6 +64,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
 		_wpfWindow.Show();
+		UpdatePositionFromNative();
 	}
 
 	public override void Activate() => _wpfWindow.Activate();
@@ -111,11 +126,11 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 		if (isVisible)
 		{
-			WinUIApplication.Current?.RaiseLeavingBackground(() => Visible = isVisible);
+			WinUIApplication.Current?.RaiseLeavingBackground(() => IsVisible = isVisible);
 		}
 		else
 		{
-			Visible = isVisible;
+			IsVisible = isVisible;
 			WinUIApplication.Current?.RaiseEnteredBackground(null);
 		}
 	}
@@ -143,5 +158,17 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		presenter.SetNative(new NativeOverlappedPresenter(_wpfWindow));
 		return Disposable.Create(() => presenter.SetNative(null));
+	}
+
+	public override void Move(PointInt32 position)
+	{
+		_wpfWindow.Left = position.X;
+		_wpfWindow.Top = position.Y;
+	}
+
+	public override void Resize(SizeInt32 size)
+	{
+		_wpfWindow.Width = size.Width;
+		_wpfWindow.Height = size.Height;
 	}
 }

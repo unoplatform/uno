@@ -48,7 +48,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	public abstract CoreWindow? CoreWindow { get; }
 
-	public bool Visible => NativeWindowWrapper?.Visible ?? false;
+	public bool Visible => NativeWindowWrapper?.IsVisible ?? false;
 
 	public abstract UIElement? Content { get; set; }
 

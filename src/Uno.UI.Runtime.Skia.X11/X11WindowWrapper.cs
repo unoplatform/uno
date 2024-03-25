@@ -122,7 +122,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeActivated(bool focused) => ActivationState = focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;
 
-	private void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	private void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	protected override void ShowCore()
 	{

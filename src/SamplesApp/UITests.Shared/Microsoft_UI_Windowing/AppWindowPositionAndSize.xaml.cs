@@ -30,7 +30,10 @@ public sealed partial class AppWindowPositionAndSize : Page
 	private void AppWindowPositionAndSize_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
 	{
 		ViewModel = args.NewValue as AppWindowPositionAndSizeViewModel;
-		ViewModel.XamlRoot = XamlRoot;
+		if (ViewModel is not null)
+		{
+			ViewModel.XamlRoot = XamlRoot;
+		}
 	}
 }
 
