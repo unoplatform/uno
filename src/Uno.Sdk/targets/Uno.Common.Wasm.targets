@@ -60,8 +60,8 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_UsingsDedup Include="@(Using)" Name="%(Identity)" KeepDuplicates="false" />
-			<_GlobalUsingMocksLines Include="@(_UsingsDedup->'namespace %(Name) { class __HotReloadWorkaround__$(_FakeGlobalUsingsAssemblyName) { } }')" />
+			<_UsingsDedup Include="%(Using.Identity)" KeepDuplicates="false" />
+			<_GlobalUsingMocksLines Include="@(_UsingsDedup->'namespace %(Identity) { class __HotReloadWorkaround__$(_FakeGlobalUsingsAssemblyName) { } }')" />
 		</ItemGroup>
 
 		<WriteLinesToFile File="$(_FakeGlobalUsingsFile)" Lines="@(_GlobalUsingMocksLines)" WriteOnlyWhenDifferent="true" Overwrite="true" />
