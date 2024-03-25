@@ -3,7 +3,8 @@ namespace Uno.UI.Runtime.Skia {
 	export class WebAssemblyWindowWrapper {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
-		private a11yElement: HTMLDivElement
+		private a11yElement: HTMLDivElement;
+		private enableA11y: HTMLDivElement;
 		private onResize: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
@@ -36,6 +37,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.canvasElement = document.createElement("canvas");
 			this.canvasElement.id = "uno-canvas";
+			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
 			this.a11yElement = document.createElement("div");
@@ -46,6 +48,22 @@ namespace Uno.UI.Runtime.Skia {
 			this.a11yElement.style.width = "1px";
 			this.a11yElement.style.height = "1px";
 			this.containerElement.appendChild(this.a11yElement);
+
+			this.enableA11y = document.createElement("div");
+			this.enableA11y.setAttribute("aria-live", "polite");
+			this.enableA11y.setAttribute("role", "button");
+			this.enableA11y.setAttribute("tabindex", "0");
+			this.enableA11y.setAttribute("aria-label", "Enable accessibility");
+			this.enableA11y.style.position = "absolute";
+			this.enableA11y.style.left = "-1px";
+			this.enableA11y.style.top = "-1px";
+			this.enableA11y.style.width = "1px";
+			this.enableA11y.style.height = "1px";
+			this.enableA11y.onclick = function () {
+				console.log("Enable accessibility clicked!");
+			};
+
+			this.containerElement.appendChild(this.enableA11y);
 
 			document.body.addEventListener("focusin", this.onfocusin);
 			window.addEventListener("resize", x => this.resize());
