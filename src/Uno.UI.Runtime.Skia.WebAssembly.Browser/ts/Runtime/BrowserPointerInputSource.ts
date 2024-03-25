@@ -82,6 +82,13 @@
 		}
 
 		private onPointerEventReceived(evt: PointerEvent): void {
+			if ((evt.target as HTMLElement)?.id != "uno-canvas") {
+				// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
+				// Pressing space on keyboard to click it will trigger pointer event which we want to ignore.
+				// So, we only care about events that come from uno-canvas.
+				return;
+			}
+
 			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
 			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
 			evt.preventDefault();

@@ -5,7 +5,9 @@ namespace Uno.UI.Runtime.Skia {
 		private canvasElement: HTMLCanvasElement;
 		private a11yElement: HTMLDivElement;
 		private enableA11y: HTMLDivElement;
+		private semanticsRoot: HTMLDivElement;
 		private onResize: any;
+		private managedEnableA11y: any;
 		private owner: any;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
@@ -37,6 +39,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.canvasElement = document.createElement("canvas");
 			this.canvasElement.id = "uno-canvas";
+			this.canvasElement.style.position = "absolute";
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
@@ -59,11 +62,13 @@ namespace Uno.UI.Runtime.Skia {
 			this.enableA11y.style.top = "-1px";
 			this.enableA11y.style.width = "1px";
 			this.enableA11y.style.height = "1px";
-			this.enableA11y.onclick = function () {
-				console.log("Enable accessibility clicked!");
-			};
-
+			this.enableA11y.addEventListener("click", this.onEnableA11yClicked.bind(this));
 			this.containerElement.appendChild(this.enableA11y);
+
+			this.semanticsRoot = document.createElement("div");
+			this.semanticsRoot.id = "uno-semantics-root";
+			this.semanticsRoot.style.filter = "opacity(0%)";
+			this.containerElement.appendChild(this.semanticsRoot);
 
 			document.body.addEventListener("focusin", this.onfocusin);
 			window.addEventListener("resize", x => this.resize());
@@ -79,6 +84,34 @@ namespace Uno.UI.Runtime.Skia {
 			child.innerText = text;
 			instance.a11yElement.appendChild(child);
 			setTimeout(() => instance.a11yElement.removeChild(child), 300);
+		}
+
+		private onEnableA11yClicked(evt: MouseEvent) {
+			this.containerElement.removeChild(this.enableA11y);
+			this.managedEnableA11y(this.owner);
+		}
+
+		public static addRootElementToSemanticsRoot(owner: any, rootHashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
+			let element = document.createElement("div");
+			element.style.position = "fixed";
+			element.style.left = `${x}px`;
+			element.style.top = `${y}px`;
+			element.style.width = `${width}px`;
+			element.style.height = `${height}px`;
+			element.id = `uno-semantics-${rootHashCode}`;
+
+			WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot.appendChild(element);
+		}
+
+		public static addSemanticElement(owner: any, parentHashCode: Number, hashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
+			let element = document.createElement("div");
+			element.style.position = "relative";
+			element.style.left = `${x}px`;
+			element.style.top = `${y}px`;
+			element.style.width = `${width}px`;
+			element.style.height = `${height}px`;
+			element.id = `uno-semantics-${hashCode}`;
+			document.getElementById(`uno-semantics-${parentHashCode}`).appendChild(element);
 		}
 
 		private removeLoading() {
@@ -101,6 +134,7 @@ namespace Uno.UI.Runtime.Skia {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 				this.onResize = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+				this.managedEnableA11y = browserExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.EnableA11y;
 			}
 		}
 

@@ -29,7 +29,7 @@
 		}
 
 		private onKeyboardEvent(evt: KeyboardEvent): void {
-			evt.preventDefault(); // We don't need any native browser hotkeys, prevent everything
+			console.log("Dispatching keyboard event...");
 			BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
 				this._source,
 				evt.type == "keydown",

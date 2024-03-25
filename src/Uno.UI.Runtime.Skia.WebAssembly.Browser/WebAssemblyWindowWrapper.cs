@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.Helpers;
+using System.Numerics;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -69,6 +70,31 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
+	internal void EnableA11y()
+	{
+		// We build an AOM (Accessibility Object Model):
+		// https://wicg.github.io/aom/explainer.html
+		if (Window?.RootElement is { } rootElement)
+		{
+			var rootHashCode = rootElement.GetHashCode();
+			NativeMethods.AddRootElementToSemanticsRoot(this, rootHashCode, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, rootElement.Visual.Offset.X, rootElement.Visual.Offset.Y);
+			foreach (var child in rootElement.GetChildren())
+			{
+				BuildSemanticsTreeRecursive(rootHashCode, child);
+			}
+		}
+	}
+
+	internal void BuildSemanticsTreeRecursive(int parentHashCode, UIElement child)
+	{
+		var hashCode = child.GetHashCode();
+		NativeMethods.AddSemanticElement(this, parentHashCode, hashCode, child.Visual.Size.X, child.Visual.Size.Y, child.Visual.Offset.X, child.Visual.Offset.Y);
+		foreach (var childChild in child.GetChildren())
+		{
+			BuildSemanticsTreeRecursive(hashCode, childChild);
+		}
+	}
+
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
@@ -94,6 +120,19 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	[JSExport]
+	private static void EnableA11y([JSMarshalAs<JSType.Any>] object instance)
+	{
+		if (instance is WebAssemblyWindowWrapper windowWrapper)
+		{
+			windowWrapper.EnableA11y();
+		}
+		else
+		{
+			Console.WriteLine($"EnableA11y target for {instance} does not exist");
+		}
+	}
+
 	internal string CanvasId
 		=> NativeMethods.GetCanvasId(this);
 
@@ -107,6 +146,12 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getCanvasId")]
 		public static partial string GetCanvasId([JSMarshalAs<JSType.Any>] object owner);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addRootElementToSemanticsRoot")]
+		internal static partial void AddRootElementToSemanticsRoot([JSMarshalAs<JSType.Any>] object owner, int rootHashCode, float width, float height, float x, float y);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addSemanticElement")]
+		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, int parentHashCode, int hashCode, float width, float height, float x, float y);
 
 		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();
