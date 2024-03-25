@@ -4626,6 +4626,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MixTransformCliPropertyAndClippedByParentWithBorders_Then_RenderingIsValid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\TransformElementClippedByParentWithBorder_Then_ClippingAppliedPostRendering.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\TransformElementClippedByParent_Then_ClippingAppliedPostRendering.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
 	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8122,6 +8134,15 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml.cs">
       <DependentUpon>MaskBrushTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\TransformElementClippedByParent_Then_ClippingAppliedPostRendering.xaml.cs">
+      <DependentUpon>TransformElementClippedByParent_Then_ClippingAppliedPostRendering.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\TransformElementClippedByParentWithBorder_Then_ClippingAppliedPostRendering.xaml.cs">
+      <DependentUpon>TransformElementClippedByParentWithBorder_Then_ClippingAppliedPostRendering.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MixTransformCliPropertyAndClippedByParentWithBorders_Then_RenderingIsValid.xaml.cs">
+      <DependentUpon>MixTransformCliPropertyAndClippedByParentWithBorders_Then_RenderingIsValid.xaml</DependentUpon>
     </Compile>
 	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\EffectBrushTests.xaml.cs">
       <DependentUpon>EffectBrushTests.xaml</DependentUpon>
