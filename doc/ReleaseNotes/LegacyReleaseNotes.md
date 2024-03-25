@@ -542,7 +542,7 @@ uid: Uno.ReleaseNotes.Legacy
 - Add support for `MediaPlaybackList`
 - Update Uno.SourceGenerationTasks to improve build performance
   - Move to the latest Uno.SourceGenerationTasks to improve project parsing performance, and allows for the removal of unused targets caused by unoplatform/uno.SourceGeneration#2. Uno.Xaml and Uno.UI.BindingHelpers now only build the required targets.
-  - Move to IS_UNIT_TESTS for test projects so the the Uno.Xaml project can be referenced properly
+  - Move to IS_UNIT_TESTS for test projects so the Uno.Xaml project can be referenced properly
   - Use the latest MSBuild.Sdk.Extras for actual parallel cross-targeted builds
   - Move the nuget package versions to the Directory.Build.targets file so it's easier to change all versions at once.
 - Add support for NavigationView Top Navigation

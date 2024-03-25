@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SetupSelectionIndicator()
 		{
-			// The "selection indicator" refers the the thin lines above and below the selected item in the spinner.
+			// The "selection indicator" refers the thin lines above and below the selected item in the spinner.
 
 			// Setting this flag should be enough but it isn't.
 			ShowSelectionIndicator = true;

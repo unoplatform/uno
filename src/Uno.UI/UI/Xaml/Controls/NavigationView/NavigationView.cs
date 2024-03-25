@@ -2799,7 +2799,7 @@ namespace Windows.UI.Xaml.Controls
 			// ***************************** Uno only - begin
 			// When the OnSplitViewClosedCompactChanged callback is invoked (registered on SplitView.IsPaneOpen),
 			// the two-way binding between SplitView.IsOpen and NavView.IsPaneOpen has not been updated yet,
-			// the the local NavView.IsPaneOpen is still == true. (cf. https://github.com/unoplatform/uno/issues/3774)
+			// the local NavView.IsPaneOpen is still == true. (cf. https://github.com/unoplatform/uno/issues/3774)
 			// (Yeah ... there is 2 code path to track the IsPaneOpen of the SplitView: callback and 2-way binding :/)
 			// So we make sure to request an update of the back button visibility also when the local IsPaneOpen is being updated.
 			UpdateBackButtonVisibility();

@@ -158,7 +158,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			foreach (var childPosition in _childsInitialPositions)
 			{
-				//If the elements were just added do not set the the layoutUpdated transition
+				//If the elements were just added do not set the layoutUpdated transition
 				if (_previouslyAddedElements.Contains(childPosition.Key as IFrameworkElement))
 				{
 					continue;

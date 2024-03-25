@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Input
 		internal VirtualKeyModifiers KeyboardModifiers { get; }
 
 		/// <summary>
-		/// This gets the the Unicode Key associated with the event. This is not limited to the
+		/// This gets the Unicode Key associated with the event. This is not limited to the
 		/// VirtualKey options. Currently, this is implemented for Skia and pretty much approximated on other platforms.
 		/// </summary>
 		internal char? UnicodeKey { get; }

@@ -576,7 +576,7 @@ partial class TimePicker
 		spSecondTextBlockColumn = GetTemplateChild<ColumnDefinition>("SecondTextBlockColumn");
 		spThirdTextBlockColumn = GetTemplateChild<ColumnDefinition>("ThirdTextBlockColumn");
 
-		// Get the the column dividers between the hour/minute/period textblocks.
+		// Get the column dividers between the hour/minute/period textblocks.
 		spFirstColumnDivider = GetTemplateChild<UIElement>("FirstColumnDivider");
 		spSecondColumnDivider = GetTemplateChild<UIElement>("SecondColumnDivider");
 

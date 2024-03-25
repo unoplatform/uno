@@ -156,7 +156,7 @@
 			if (elt
 				&& element.contains(elt)
 				&& (
-					// on capture, we just check if it has the the capture
+					// on capture, we just check if it has the capture
 					elt.hasPointerCapture(evt.pointerId)
 					// on release, the target is the element itself
 					|| evt.target == element)

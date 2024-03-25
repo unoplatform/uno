@@ -99,7 +99,7 @@ public static partial class CoreApplication
 	internal static SystemTheme RequestedTheme { get; set; }
 
 	/// <summary>
-	/// Gets a value indicating whether the the app is running as a full fledged app or as Uno islands only.
+	/// Gets a value indicating whether the app is running as a full fledged app or as Uno islands only.
 	/// </summary>
 	internal static bool IsFullFledgedApp { get; set; } = true;
 }

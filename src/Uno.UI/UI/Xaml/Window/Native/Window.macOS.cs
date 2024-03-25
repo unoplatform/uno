@@ -264,7 +264,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Method invoked when the pointer is released and data is dropped over the the <see cref="NSWindow"/>.
+		/// Method invoked when the pointer is released and data is dropped over the <see cref="NSWindow"/>.
 		/// </summary>
 		/// <param name="draggingInfo">Information about the dragging session from the sender.</param>
 		/// <returns>True if the destination accepts the data; otherwise, false.</returns>

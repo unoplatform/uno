@@ -43,7 +43,7 @@ namespace Uno.UI.Runtime.Skia.Extensions.System
 				}
 				catch (Exception exception)
 				{
-					// Failure here does not affect the the query.
+					// Failure here does not affect the query.
 					if (typeof(LinuxLauncherExtension).Log().IsEnabled(LogLevel.Error))
 					{
 						typeof(LinuxLauncherExtension).Log().Error($"Failed to invoke xdg-settings", exception);

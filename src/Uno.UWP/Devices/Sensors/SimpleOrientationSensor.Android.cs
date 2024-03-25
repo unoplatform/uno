@@ -95,7 +95,7 @@ namespace Windows.Devices.Sensors
 						// Therefore, only use it in Oreo+ 
 						var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
 
-						// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+						// If the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
 						if (gravitySensor != null && useGravitySensor)
 						{
 							_sensorManager.RegisterListener(new OrientationListener(this), _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
@@ -138,7 +138,7 @@ namespace Windows.Devices.Sensors
 						// Therefore, only use it in Oreo+ 
 						var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
 
-						// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+						// If the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
 						if (gravitySensor != null && useGravitySensor)
 						{
 							_sensorEventListener = new OrientationListener(this);
@@ -175,7 +175,7 @@ namespace Windows.Devices.Sensors
 				// Therefore, only use it in Oreo+ 
 				var useGravitySensor = Build.VERSION.SdkInt >= BuildVersionCodes.O;
 
-				// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
+				// If the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
 				if (gravitySensor != null && useGravitySensor)
 				{
 					_sensorManager.UnregisterListener(_sensorEventListener, _sensorManager.GetDefaultSensor(_gravitySensorType));

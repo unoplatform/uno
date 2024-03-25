@@ -2111,7 +2111,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DateTimeOffset maxCalendarDate = default;
 			DateTimeOffset minCalendarDate = default;
 
-			// Create a calendar with the the current CalendarIdentifier
+			// Create a calendar with the current CalendarIdentifier
 			m_tpCalendar = null;
 			strCalendarIdentifier = CalendarIdentifier;
 			CreateNewCalendar(strCalendarIdentifier, out spCalendar);

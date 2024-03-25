@@ -396,7 +396,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var button = _app.Marked("HideButton");
 			var physicalRect = _app.GetPhysicalRect(panel);
 
-			// Copy of the rect, as the panel will be hidden, so the the X & Y coords would become negative
+			// Copy of the rect, as the panel will be hidden, so the X & Y coords would become negative
 			var originalRect = new AppRect(physicalRect.X, physicalRect.Y, physicalRect.Width, physicalRect.Height);
 
 			using var beforeHide = TakeScreenshot("image_invalid_before_hide");

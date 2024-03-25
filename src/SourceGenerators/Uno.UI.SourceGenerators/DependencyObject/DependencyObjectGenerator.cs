@@ -774,7 +774,7 @@ public void SuspendBindings() =>
 					builder.AppendMultiLineIndented($@"
 public override int GetHashCode()
 {{
-	// For the the current kind of type, we do not need to call back
+	// For the current kind of type, we do not need to call back
 	// to android for the GetHashCode implementation. The .NET proxy hash is
 	// enough. This way, we do not get to pay the price of the interop to get
 	// this value.
@@ -783,7 +783,7 @@ public override int GetHashCode()
 
 public override bool Equals(object other)
 {{
-	// For the the current kind of type, we do not need to call back
+	// For the current kind of type, we do not need to call back
 	// to android for the Equals implementation. We assume that proxies are
 	// one-to-one mapping with native instances, making the reference comparison
 	// of proxies enough to do the job.

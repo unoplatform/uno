@@ -326,7 +326,7 @@ partial class Shape
 					.NumberOrDefault(userMaxSize)
 					.AtLeast(userMinSize);
 
-				// By default we align if UniformToFill, EXCEPT if the the userSize (or max, lowered by min) is lower than the finalSize
+				// By default we align if UniformToFill, EXCEPT if the userSize (or max, lowered by min) is lower than the finalSize
 				// For reference, it's almost equivalent to:
 				// var horizontally = IsNaN(userSize.Width) || (!IsInfinity(userSize.Width) && userSize.Width > finalSize.Width) || userMinSize.Width > 0;
 				// shouldAlign = (horizontally || vertically, horizontally || vertically);

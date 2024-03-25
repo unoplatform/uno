@@ -1656,7 +1656,7 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateVisualState();
 			}
 
-			// Bug# 1292039: in the CanFlipWithMouse test, the mouse enters the the flipper button
+			// Bug# 1292039: in the CanFlipWithMouse test, the mouse enters the flipper button
 			// directly which will set m_showNavigationButtons to true
 			// this will not initialize m_tpButtonsFadeOutTimer
 			m_tpButtonsFadeOutTimer?.Start();

@@ -2168,7 +2168,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await CanCloseAppBarHelper(async (expectedHandledValue, appbar) =>
 			{
-				// We want to make sure the the key press gets handled/not handled as expected.
+				// We want to make sure the key press gets handled/not handled as expected.
 				// We cannot listen to the Page.KeyDown event, because Page.TopAppBar/Page.BottomAppBar is not
 				// actually a visual child of the Page (they are hosted in a Popup), so events don't route
 				// from the AppBar to the Page.

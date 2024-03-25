@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Sets the source value for the the specified <paramref name="property"/>
+		/// Sets the source value for the specified <paramref name="property"/>
 		/// </summary>
 		internal void SetSourceValue(DependencyProperty property, object value)
 		{
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Sets the source value for the the specified <paramref name="details"/> 
+		/// Sets the source value for the specified <paramref name="details"/>
 		/// </summary>
 		internal void SetSourceValue(DependencyPropertyDetails details, object value)
 		{

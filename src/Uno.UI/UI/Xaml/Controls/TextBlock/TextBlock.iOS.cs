@@ -235,7 +235,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Because we're trying to move the text up (toward the top of the line box), 
 				// we only set BaselineOffset to a positive value. 
-				// A negative value indicates that the the text is already bottom-aligned.
+				// A negative value indicates that the text is already bottom-aligned.
 				attributes.BaselineOffset = Math.Max(0, (float)verticalOffset);
 			}
 

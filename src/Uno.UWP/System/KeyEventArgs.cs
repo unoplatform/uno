@@ -28,7 +28,7 @@ namespace Windows.UI.Core
 		internal VirtualKeyModifiers KeyboardModifiers { get; }
 
 		/// <summary>
-		/// This gets the the Unicode Key associated with the event. This is not limited to the
+		/// This gets the Unicode Key associated with the event. This is not limited to the
 		/// VirtualKey options. Currently, this is only implemented for skia.
 		/// </summary>
 		internal char? UnicodeKey { get; }

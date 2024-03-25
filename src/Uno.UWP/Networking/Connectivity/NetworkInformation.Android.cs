@@ -150,7 +150,7 @@ namespace Windows.Networking.Connectivity
 		{
 			try
 			{
-				// await 300ms to ensure that the the connection manager updates
+				// await 300ms to ensure that the connection manager updates
 				await Task.Delay(300);
 				OnNetworkStatusChanged();
 			}

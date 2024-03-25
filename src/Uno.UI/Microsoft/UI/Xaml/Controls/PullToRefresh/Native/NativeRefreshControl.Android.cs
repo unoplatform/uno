@@ -220,7 +220,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 
 				desiredChildSize = MeasureChild(child, scrollSpace);
 
-				// Give opportunity to the the content to define the viewport size itself
+				// Give opportunity to the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
 			}
 
@@ -240,7 +240,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 					slotSize.Height
 				));
 
-				// Give opportunity to the the content to define the viewport size itself
+				// Give opportunity to the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
 
 			}

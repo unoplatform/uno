@@ -485,7 +485,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.TreeViewTests
 		[AutoRetry]
 		public void TreeViewSelectRegressionTest()
 		{
-			// Running 5 times since the the bug doesn't repro consistently.
+			// Running 5 times since the bug doesn't repro consistently.
 			for (int i = 0; i < 5; i++)
 			{
 				{

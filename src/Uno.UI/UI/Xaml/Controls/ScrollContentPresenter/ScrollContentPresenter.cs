@@ -194,7 +194,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var desired = child.DesiredSize;
 
-				// Give opportunity to the the content to define the viewport size itself
+				// Give opportunity to the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
 
 				return new Size(
@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				child.Arrange(childRect);
 
-				// Give opportunity to the the content to define the viewport size itself
+				// Give opportunity to the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 

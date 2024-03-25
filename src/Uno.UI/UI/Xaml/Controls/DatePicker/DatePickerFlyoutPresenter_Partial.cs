@@ -1902,7 +1902,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Calendar spCalendar;
 			Calendar spBaselineCalendar;
 
-			// Create a calendar with the the current CalendarIdentifier
+			// Create a calendar with the current CalendarIdentifier
 			spCalendar = CreateNewCalendar(_calendarIdentifier);
 			spBaselineCalendar = CreateNewCalendar(_calendarIdentifier);
 			_tpCalendar = spCalendar;
