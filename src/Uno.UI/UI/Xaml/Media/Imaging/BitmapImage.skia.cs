@@ -62,6 +62,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				}
 				else if (_stream != null)
 				{
+					_stream.Seek(0);
 					return await ImageSourceHelpers.ReadFromStreamAsCompositionSurface(_stream.AsStream(), ct);
 				}
 			}
