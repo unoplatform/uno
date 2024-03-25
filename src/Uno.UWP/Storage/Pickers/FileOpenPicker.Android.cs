@@ -21,7 +21,7 @@ namespace Windows.Storage.Pickers
 		private const string AnyWildcard = "*/*";
 		private const string ImageWildcard = "image/*";
 		private const string VideoWildcard = "video/*";
-		private Action<Intent> _intentAction;
+		private Action<Intent>? _intentAction;
 
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{

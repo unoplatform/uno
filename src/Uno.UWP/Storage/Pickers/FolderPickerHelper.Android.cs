@@ -8,6 +8,9 @@ using Android.Content;
 
 namespace Windows.Storage.Pickers
 {
+	/// <summary>
+	/// Enables the user to extend the internal intent
+	/// </summary>
 	public static class FolderPickerHelper
 	{
 		public static void RegisterOnBeforeStartActivity(FolderPicker picker, Action<Intent> intentAction)

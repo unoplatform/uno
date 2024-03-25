@@ -12,7 +12,7 @@ namespace Windows.Storage.Pickers
 	public partial class FolderPicker
 	{
 		internal const int RequestCode = 6001;
-		private Action<Intent> _intentAction;
+		private Action<Intent>? _intentAction;
 
 		private static TaskCompletionSource<Intent?>? _currentFolderPickerRequest;
 
