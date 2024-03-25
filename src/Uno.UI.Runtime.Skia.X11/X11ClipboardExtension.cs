@@ -50,6 +50,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
@@ -372,8 +373,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 			}
 		}
 		// TODO: support image copying.
-		// Image conversion is broken in SkiaSharp on Linux as of 29/12/2023, so no need to
-		// implement this right now.
 		else if (_clipboardData.AvailableFormats.Contains(targetName))
 		{
 			// last-ditch effort
@@ -586,14 +585,12 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (formats.FirstOrDefault(f => _imageFormats.Contains(f.name)) is var f1 && f1.atom != IntPtr.Zero)
 		{
-			dataPackage.SetDataProvider(StandardDataFormats.Bitmap,
-				async _ => await Task.FromResult(WaitForBmp(f1.atom)));
+			dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromStream(new MemoryStream(WaitForBmp(f1.atom)).AsRandomAccessStream()));
 		}
 
 		if (formats.FirstOrDefault(f => _textFormats.ContainsKey(f.name)) is var f2 && f2.atom != IntPtr.Zero)
 		{
-			dataPackage.SetDataProvider(StandardDataFormats.Text,
-				async ct => await Task.Run(() => WaitForText(f2.atom), ct));
+			dataPackage.SetText(WaitForText(f2.atom));
 		}
 
 		return dataPackage.GetView();
@@ -904,10 +901,32 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 	private byte[] WaitForBmp(IntPtr format)
 	{
-		// Note: this will most likely crash on Linux due to a bug in skia/skiasharp.
-		// Either Decode or Encode will return null
 		var bytes = WaitForBytes(format);
-		var bitmap = SKBitmap.Decode(bytes);
+
+		using var stream = new MemoryStream(bytes);
+		using var codec = SKCodec.Create(stream);
+		if (codec is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Unable to create an SKCodec instance from received clipboard data.");
+			}
+			return null;
+		}
+
+		using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+		var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
+		if (result != SKCodecResult.Success)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Unable to decode clipboard data into an image.");
+			}
+			return null;
+		}
+
+		// This will throw on Linux as of 2024/03/25. It seems that Skia by default don't come with bmp codecs.
+		// https://github.com/mono/SkiaSharp/issues/320#issuecomment-310805723
 		return bitmap.Encode(SKEncodedImageFormat.Bmp, 100).ToArray();
 	}
 
