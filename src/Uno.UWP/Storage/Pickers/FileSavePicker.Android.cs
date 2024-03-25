@@ -18,7 +18,7 @@ public partial class FileSavePicker
 {
 	private const string XmlCorrectMimeToActionCreateDocument = "application/xhtml+xml";
 	private const string XmlIncorrectMimeToActionCreateDocument = "application/xml";
-	private Action<Intent> _intentAction;
+	private Action<Intent>? _intentAction;
 
 	private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 	{
