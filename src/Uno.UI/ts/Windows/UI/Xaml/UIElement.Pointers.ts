@@ -167,20 +167,22 @@
 			}
 
 			// Finally, here we filter out the events that are being raised when the pointer is leaving a nested element (which is bubbling in browser)
-			const elementBounds = (evt.target as HTMLElement | SVGElement).getBoundingClientRect();
+			const targetBounds = (evt.target as HTMLElement | SVGElement).getBoundingClientRect();
 			elt = evt.target as HTMLElement | SVGElement;
 			while (elt && elt != element) {
-				const bounds = elt.getBoundingClientRect();
-				if (
-					(evt.clientY > bounds.top && (Math.abs(elementBounds.top - bounds.top) > 1))
-					&& (evt.clientY < bounds.bottom && (Math.abs(elementBounds.bottom - bounds.bottom) > 1))
-					&& (evt.clientX > bounds.left && (Math.abs(elementBounds.left - bounds.left) > 1))
-					&& (evt.clientX < bounds.right && (Math.abs(elementBounds.right - bounds.right) > 1))
-				) {
-					// There is child that is still under the pointer, so we should not propagate the event.
-					// Note: If the child is sharing the bounds with the target, we consider that the pointer is also leaving the intermediate child.
-					evt.stopPropagation();
-					return;
+				if (elt.style.pointerEvents != "none") {
+					const bounds = elt.getBoundingClientRect();
+					if (
+						(evt.clientY > bounds.top && (Math.abs(targetBounds.top - bounds.top) > 1))
+						&& (evt.clientY < bounds.bottom && (Math.abs(targetBounds.bottom - bounds.bottom) > 1))
+						&& (evt.clientX > bounds.left && (Math.abs(targetBounds.left - bounds.left) > 1))
+						&& (evt.clientX < bounds.right && (Math.abs(targetBounds.right - bounds.right) > 1))
+					) {
+						// There is child that is still under the pointer (and which will raise pointer events), so we should not propagate the event.
+						// Note: If the child is sharing the bounds with the target, we consider that the pointer is also leaving the intermediate child.
+						evt.stopPropagation();
+						return;
+					}
 				}
 				elt = elt.parentElement;
 			}
