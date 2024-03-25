@@ -28,7 +28,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
+			// We clear the old image first. We do NOT wait for the new image to load
+			// for it to replace the old one. This is what happens on WinUI.
 			_sourceDisposable.Disposable = null;
+			_lastMeasuredSize = default;
+			_imageSprite.Brush = null;
+			_currentSurface = null;
+			_pendingImageData = new();
+			InvalidateMeasure();
 
 			if (newValue is SvgImageSource svgImageSource)
 			{
@@ -37,13 +44,6 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (newValue is ImageSource source)
 			{
 				InitializeImageSource(source);
-			}
-			else
-			{
-				// Null or unsupported source
-				_sourceDisposable.Disposable = null;
-				_imageSprite.Brush = null;
-				InvalidateMeasure();
 			}
 		}
 
