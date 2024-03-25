@@ -66,6 +66,7 @@
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
+		<PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" />
 	</ItemGroup>
 
 	<!-- This condition is **explicitly** for net7.0 -->
