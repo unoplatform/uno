@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml
 
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
-#if !__WASM__
+#if !__CROSSRUNTIME__
 		[global::Uno.NotImplemented]
 #endif
 		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
@@ -341,7 +341,7 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(PointerReleasedEvent, value);
 		}
 
-#if !__WASM__ && !__SKIA__
+#if !__CROSSRUNTIME__
 		[global::Uno.NotImplemented]
 #endif
 		public event PointerEventHandler PointerWheelChanged
