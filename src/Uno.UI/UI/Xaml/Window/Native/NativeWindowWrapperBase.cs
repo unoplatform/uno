@@ -8,6 +8,8 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.Graphics;
+using Microsoft.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -128,6 +130,16 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
+	public bool IsVisible => throw new NotImplementedException();
+
+	public PointInt32 Position => throw new NotImplementedException();
+
+	public SizeInt32 Size => throw new NotImplementedException();
+
+	public SizeInt32 ClientSize => throw new NotImplementedException();
+
+	public DispatcherQueue DispatcherQueue => throw new NotImplementedException();
+
 	public event EventHandler<Size>? SizeChanged;
 	public event EventHandler<Rect>? VisibleBoundsChanged;
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
@@ -190,4 +202,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 		XamlRoot?.VisualTree.ContentRoot.CompositionContent?.RaiseStateChanged(args);
 	}
+	public void Destroy() => throw new NotImplementedException();
+	public void Hide() => throw new NotImplementedException();
+	public void Move(PointInt32 position) => throw new NotImplementedException();
+	public void Resize(SizeInt32 size) => throw new NotImplementedException();
+	public void Show(bool activateWindow) => throw new NotImplementedException();
 }
