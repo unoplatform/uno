@@ -1,34 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Uno.UI.Samples.Controls;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+namespace UITests.Windows_UI_Xaml.XamlRoot;
 
-namespace UITests.Windows_UI_Xaml.XamlRoot
+[Sample(
+	"Windowing",
+	Description =
+		"Shows current values of various XamlRoot properties and their changes in time." +
+		"Test RasterizationScale by changing the display DPI scaling in OS settings.",
+	IsManualTest = true)]
+public sealed partial class XamlRoot_Properties : UserControl
 {
-	[Sample("Windowing", Description = "")]
-	public sealed partial class XamlRoot_Properties : UserControl
+	public XamlRoot_Properties()
 	{
-		public XamlRoot_Properties()
-		{
-			this.InitializeComponent();
+		this.InitializeComponent();
 
-			Loaded += (s, e) =>
-			{
-				rasterizationScale.Text = XamlRoot.RasterizationScale.ToString();
-			};
-		}
+		Loaded += (s, e) =>
+		{
+			UpdateProperties();
+			XamlRoot.Changed += XamlRoot_Changed;
+		};
+
+		Unloaded += (s, e) =>
+		{
+			XamlRoot.Changed -= XamlRoot_Changed;
+		};
 	}
+
+	public ObservableCollection<string> ChangeLog { get; } = new();
+
+	private void XamlRoot_Changed(Microsoft.UI.Xaml.XamlRoot sender, XamlRootChangedEventArgs args) => 
+		UpdateProperties();
+
+	private void UpdateProperties()
+	{
+		RasterizationScaleRun.Text = XamlRoot.RasterizationScale.ToString();
+		IsHostVisibleRun.Text = XamlRoot.IsHostVisible.ToString();
+		SizeRun.Text = XamlRoot.Size.ToString();
+
+		ChangeLog.Insert(0, $"[{DateTimeOffset.Now.ToString("HH:mm:ss")}] RasterizationScale: {XamlRoot.RasterizationScale}, IsHostVisible: {XamlRoot.IsHostVisible}, Size: {XamlRoot.Size}");
+	}
+
+	private void ClearClick() => ChangeLog.Clear();
 }
