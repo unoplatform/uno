@@ -6,7 +6,8 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class X11HostBuilder : IPlatformHostBuilder
 {
-	[GeneratedRegex(@"^(?:(?<hostname>[\w\.-]+):)?(?<displaynumber>\d+)(?:\.(?<screennumber>\d+))?$")]
+	// [hostname]:display[.screen], e.g. 127.0.0.1:0.0 or most likely just :0
+	[GeneratedRegex(@"^(?:(?<hostname>[\w\.-]+))?:(?<displaynumber>\d+)(?:\.(?<screennumber>\d+))?$")]
 	private static partial Regex DisplayRegex();
 
 	public X11HostBuilder()
