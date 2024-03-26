@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
@@ -92,4 +93,25 @@ internal static class DTEHelper
 		}
 	}
 
+	public static async Task<Project[]?> GetStartupProjectsAsync(this DTE dte)
+	{
+		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+		if (dte.Solution.SolutionBuild.StartupProjects is object[] startupProjects
+			&& startupProjects.Length > 0)
+		{
+			var projects = await dte.GetProjectsAsync();
+
+			return startupProjects
+				.OfType<string>()
+				.Select(p => projects.FirstOrDefault(p2 =>
+				{
+					Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+					return p2.UniqueName == p;
+				}))
+				.Where(p => p is not null).ToArray();
+		}
+
+		return null;
+	}
 }

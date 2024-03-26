@@ -20,6 +20,7 @@ using Microsoft.VisualStudio.ProjectSystem.Debug;
 using System.Reflection;
 using System.Management.Instrumentation;
 using Microsoft.VisualStudio.RpcContracts.Build;
+using EnvDTE80;
 namespace Uno.UI.RemoteControl.VS.DebuggerHelper;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
@@ -27,16 +28,23 @@ namespace Uno.UI.RemoteControl.VS.DebuggerHelper;
 internal class ProfilesObserver : IDisposable
 {
 	private readonly AsyncPackage _asyncPackage;
+	private readonly Action<string> _debugLog;
 	private readonly DTE _dte;
 	private readonly Func<string?, string, Task> _onDebugFrameworkChanged;
 	private readonly Func<string?, string, Task> _onDebugProfileChanged;
+
+	private record FrameworkServices(object? ActiveDebugFrameworkServices, MethodInfo? SetActiveFrameworkMethod, MethodInfo? GetProjectFrameworksAsyncMethod);
+	private FrameworkServices? _projectFrameworkServices;
+
 	private string? _currentActiveDebugProfile;
 	private string? _currentActiveDebugFramework;
 	private IDisposable? _projectRuleSubscriptionLink;
 	private UnconfiguredProject? _unconfiguredProject;
-	private object? _activeDebugFrameworkServices;
-	private MethodInfo? _setActiveFrameworkMethod;
-	private MethodInfo? _getProjectFrameworksAsyncMethod;
+
+	_dispSolutionEvents_ProjectAddedEventHandler? _projectAdded;
+	_dispSolutionEvents_ProjectRemovedEventHandler? _projectRemoved;
+	_dispSolutionEvents_ProjectRenamedEventHandler? _projectRenamed;
+	_dispCommandEvents_AfterExecuteEventHandler? _afterExecute;
 
 	public string? CurrentActiveDebugProfile
 		=> _currentActiveDebugProfile;
@@ -44,52 +52,140 @@ internal class ProfilesObserver : IDisposable
 	public string? CurrentActiveDebugFramework
 		=> _currentActiveDebugFramework;
 
-	public ProfilesObserver(AsyncPackage asyncPackage, EnvDTE.DTE dte, Func<string?, string, Task> onDebugFrameworkChanged, Func<string?, string, Task> onDebugProfileChanged)
+	public ProfilesObserver(
+		AsyncPackage asyncPackage
+		, EnvDTE.DTE dte
+		, Func<string?, string, Task> onDebugFrameworkChanged
+		, Func<string?, string, Task> onDebugProfileChanged
+		, Action<string> debugLog)
 	{
 		_asyncPackage = asyncPackage;
+		_debugLog = debugLog;
 		_dte = dte;
 		_onDebugFrameworkChanged = onDebugFrameworkChanged;
 		_onDebugProfileChanged = onDebugProfileChanged;
+
+		ObserveSolutionEvents();
+	}
+
+	object[]? _existingStartupProjects = [];
+
+	private void TryUpdateSolution()
+	{
+		if (_dte.Solution.SolutionBuild.StartupProjects is object[] newStartupProjects)
+		{
+			if (!newStartupProjects.SequenceEqual(_existingStartupProjects))
+			{
+				// log all projects
+				_existingStartupProjects = newStartupProjects;
+			}
+
+			if (_unconfiguredProject is null)
+			{
+				_ = ObserveProfilesAsync();
+			}
+		}
 	}
 
 	public async Task ObserveProfilesAsync()
 	{
-		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-		if (_dte.Solution.SolutionBuild.StartupProjects is object[] startupProjects
-			&& startupProjects.Length > 0)
+		try
 		{
-			var startupProject = (string)startupProjects[0];
+			_debugLog("Starting observing profile");
 
-			if ((await _dte.GetProjectsAsync()).FirstOrDefault(p => p.UniqueName == startupProject) is Project dteProject
-				&& (await GetUnconfiguredProjectAsync(dteProject)) is { } unconfiguredProject)
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			if ((await _dte.GetStartupProjectsAsync()) is { } startupProjects)
 			{
-				_unconfiguredProject = unconfiguredProject;
-
-				var configuredProject = unconfiguredProject.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject;
-				var projectSubscriptionService = configuredProject?.Services.ActiveConfiguredProjectSubscription;
-
-				if (projectSubscriptionService is not null)
+				if (startupProjects.FirstOrDefault() is Project dteProject
+					&& (await GetUnconfiguredProjectAsync(dteProject)) is { } unconfiguredProject)
 				{
-					var projectChangesBlock = DataflowBlockSlim.CreateActionBlock(
-						CaptureAndApplyExecutionContext<IProjectVersionedValue<Tuple<IProjectSubscriptionUpdate, IProjectCapabilitiesSnapshot>>>(ProjectRuleBlock_ChangedAsync));
+					_debugLog($"Observing {unconfiguredProject.FullPath}");
 
-					var evaluationLinkOptions = new StandardRuleDataflowLinkOptions
+					_unconfiguredProject = unconfiguredProject;
+					_unconfiguredProject.ProjectUnloading += OnUnconfiguredProject_ProjectUnloadingAsync;
+
+					var configuredProject = unconfiguredProject.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject;
+					var projectSubscriptionService = configuredProject?.Services.ActiveConfiguredProjectSubscription;
+
+					if (projectSubscriptionService is not null)
 					{
-						RuleNames = ImmutableHashSet.Create("ProjectDebugger"),
-						PropagateCompletion = true
-					};
+						var projectChangesBlock = DataflowBlockSlim.CreateActionBlock(
+							CaptureAndApplyExecutionContext<IProjectVersionedValue<Tuple<IProjectSubscriptionUpdate, IProjectCapabilitiesSnapshot>>>(ProjectRuleBlock_ChangedAsync));
 
-					var projectBlock = projectSubscriptionService.ProjectRuleSource.SourceBlock.SyncLinkOptions(evaluationLinkOptions, true);
-					var unconfiguredProjectBlock = ProjectDataSources.SyncLinkOptions(unconfiguredProject.Capabilities.SourceBlock);
+						var evaluationLinkOptions = new StandardRuleDataflowLinkOptions
+						{
+							RuleNames = ImmutableHashSet.Create("ProjectDebugger"),
+							PropagateCompletion = true
+						};
 
-					_projectRuleSubscriptionLink = ProjectDataSources.SyncLinkTo(
-						projectBlock,
-						unconfiguredProjectBlock,
-						projectChangesBlock,
-						new() { PropagateCompletion = true });
+						var projectBlock = projectSubscriptionService.ProjectRuleSource.SourceBlock.SyncLinkOptions(evaluationLinkOptions, true);
+						var unconfiguredProjectBlock = ProjectDataSources.SyncLinkOptions(unconfiguredProject.Capabilities.SourceBlock);
+
+						_projectRuleSubscriptionLink = ProjectDataSources.SyncLinkTo(
+							projectBlock,
+							unconfiguredProjectBlock,
+							projectChangesBlock,
+							new() { PropagateCompletion = true });
+					}
 				}
 			}
+		}
+		catch (Exception ex)
+		{
+			_debugLog($"Failed to observe {ex}");
+		}
+	}
+
+	private void ObserveSolutionEvents()
+	{
+		_projectAdded = (s) =>
+		{
+			_debugLog($"_projectAdded: {s}");
+			TryUpdateSolution();
+		};
+		_projectRemoved = (s) =>
+		{
+			_debugLog($"_projectRemoved: {s}");
+			TryUpdateSolution();
+		};
+		_projectRenamed = (s, v) =>
+		{
+			_debugLog($"_projectRenamed: {s}");
+			TryUpdateSolution();
+		};
+		_afterExecute = (s, c, o, m) =>
+		{
+			_debugLog($"_afterExecute: {s} {c} {o} {m}");
+			TryUpdateSolution();
+		};
+
+		_debugLog("Observing solution");
+		_dte.Events.SolutionEvents.ProjectAdded += _projectAdded;
+		_dte.Events.SolutionEvents.ProjectRemoved += _projectRemoved;
+		_dte.Events.SolutionEvents.ProjectRenamed += _projectRenamed;
+		_dte.Events.CommandEvents.AfterExecute += _afterExecute;
+	}
+
+	private async Task OnUnconfiguredProject_ProjectUnloadingAsync(object? sender, EventArgs args)
+	{
+		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+		_debugLog($"unconfiguredProject was unloaded");
+
+		_currentActiveDebugFramework = null;
+		_currentActiveDebugProfile = null;
+
+		// Force a refresh of reflection calls
+		_projectFrameworkServices = null;
+
+		_projectRuleSubscriptionLink?.Dispose();
+		_projectRuleSubscriptionLink = null;
+
+		if (_unconfiguredProject is not null)
+		{
+			_unconfiguredProject.ProjectUnloading -= OnUnconfiguredProject_ProjectUnloadingAsync;
+			_unconfiguredProject = null;
 		}
 	}
 
@@ -115,34 +211,43 @@ internal class ProfilesObserver : IDisposable
 
 	private async Task ProjectRuleBlock_ChangedAsync(IProjectVersionedValue<Tuple<IProjectSubscriptionUpdate, IProjectCapabilitiesSnapshot>> projectSnapshot)
 	{
-		if (projectSnapshot.Value.Item1.CurrentState.TryGetValue("ProjectDebugger", out var ruleSnapshot))
+		try
 		{
-			ruleSnapshot.Properties.TryGetValue("ActiveDebugProfile", out var activeDebugProfile);
-			ruleSnapshot.Properties.TryGetValue("ActiveDebugFramework", out var activeDebugFramework);
-
-			if (!string.IsNullOrEmpty(activeDebugProfile) && activeDebugProfile != _currentActiveDebugProfile)
+			if (projectSnapshot.Value.Item1.CurrentState.TryGetValue("ProjectDebugger", out var ruleSnapshot))
 			{
-				var previousProfile = _currentActiveDebugProfile;
-				_currentActiveDebugProfile = activeDebugProfile;
+				ruleSnapshot.Properties.TryGetValue("ActiveDebugProfile", out var activeDebugProfile);
+				ruleSnapshot.Properties.TryGetValue("ActiveDebugFramework", out var activeDebugFramework);
 
-				await _onDebugProfileChanged(previousProfile, _currentActiveDebugProfile);
+				if (!string.IsNullOrEmpty(activeDebugProfile) && activeDebugProfile != _currentActiveDebugProfile)
+				{
+					var previousProfile = _currentActiveDebugProfile;
+					_currentActiveDebugProfile = activeDebugProfile;
+
+					await _onDebugProfileChanged(previousProfile, _currentActiveDebugProfile);
+				}
+
+				if (!string.IsNullOrEmpty(activeDebugFramework) && activeDebugFramework != _currentActiveDebugFramework)
+				{
+					var previousDebugFramework = _currentActiveDebugFramework;
+					_currentActiveDebugFramework = activeDebugFramework;
+
+					await _onDebugFrameworkChanged(previousDebugFramework, _currentActiveDebugFramework);
+				}
 			}
-
-			if (!string.IsNullOrEmpty(activeDebugFramework) && activeDebugFramework != _currentActiveDebugFramework)
-			{
-				var previousDebugFramework = _currentActiveDebugProfile;
-				_currentActiveDebugFramework = activeDebugFramework;
-
-				await _onDebugFrameworkChanged(previousDebugFramework, _currentActiveDebugFramework);
-			}
+		}
+		catch (Exception e)
+		{
+			_debugLog($"Failed to process changedAsync: {e}");
 		}
 	}
 
 	public async Task SetActiveTargetFrameworkAsync(string targetFramework)
 	{
+		_debugLog($"SetActiveTargetFrameworkAsync({targetFramework})");
+
 		EnsureActiveDebugFrameworkServices();
 
-		if (_setActiveFrameworkMethod?.Invoke(_activeDebugFrameworkServices, [targetFramework]) is Task t)
+		if (_projectFrameworkServices?.SetActiveFrameworkMethod?.Invoke(_projectFrameworkServices.ActiveDebugFrameworkServices, [targetFramework]) is Task t)
 		{
 			await t;
 		}
@@ -150,9 +255,11 @@ internal class ProfilesObserver : IDisposable
 
 	public async Task<List<string>?> GetActiveTargetFrameworksAsync()
 	{
+		_debugLog($"GetActiveTargetFrameworksAsync()");
+
 		EnsureActiveDebugFrameworkServices();
 
-		if (_getProjectFrameworksAsyncMethod?.Invoke(_activeDebugFrameworkServices, []) is Task<List<string>?> listTask)
+		if (_projectFrameworkServices?.GetProjectFrameworksAsyncMethod?.Invoke(_projectFrameworkServices.ActiveDebugFrameworkServices, []) is Task<List<string>?> listTask)
 		{
 			return await listTask;
 		}
@@ -210,27 +317,25 @@ internal class ProfilesObserver : IDisposable
 
 	private void EnsureActiveDebugFrameworkServices()
 	{
-		if (_setActiveFrameworkMethod is null)
-		{
-			var provider = _unconfiguredProject?.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject?.Services.ExportProvider;
+		var provider = _unconfiguredProject?.Services.ActiveConfiguredProjectProvider?.ActiveConfiguredProject?.Services.ExportProvider;
 
+		if (_projectFrameworkServices is null && provider is not null)
+		{
 			var type = Type.GetType("Microsoft.VisualStudio.ProjectSystem.Debug.IActiveDebugFrameworkServices, Microsoft.VisualStudio.ProjectSystem.Managed");
+
 			if (typeof(MefExtensions).GetMethods().FirstOrDefault(m => m.Name == "GetService") is { } getServiceMethod)
 			{
 				var typedMethod = getServiceMethod.MakeGenericMethod(type);
 
-				_activeDebugFrameworkServices = typedMethod.Invoke(null, [provider, /*allow default*/false]);
+				var activeDebugFrameworkServices = typedMethod.Invoke(null, [provider, /*allow default*/false]);
 
 				// https://github.com/dotnet/project-system/blob/34eb57b35962367b71c2a1d79f6c486945586e24/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Debug/IActiveDebugFrameworkServices.cs#L20-L21
-				if (_activeDebugFrameworkServices.GetType().GetMethod("SetActiveDebuggingFrameworkPropertyAsync") is { } setActiveFrameworkMethod)
-				{
-					_setActiveFrameworkMethod = setActiveFrameworkMethod;
-				}
+				if (activeDebugFrameworkServices.GetType().GetMethod("SetActiveDebuggingFrameworkPropertyAsync") is { } setActiveFrameworkMethod
 
-				// https://github.com/dotnet/project-system/blob/34eb57b35962367b71c2a1d79f6c486945586e24/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Debug/IActiveDebugFrameworkServices.cs#L20-L21
-				if (_activeDebugFrameworkServices.GetType().GetMethod("GetProjectFrameworksAsync") is { } getProjectFrameworksAsyncMethod)
+					// https://github.com/dotnet/project-system/blob/34eb57b35962367b71c2a1d79f6c486945586e24/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Debug/IActiveDebugFrameworkServices.cs#L20-L21
+					&& activeDebugFrameworkServices.GetType().GetMethod("GetProjectFrameworksAsync") is { } getProjectFrameworksAsyncMethod)
 				{
-					_getProjectFrameworksAsyncMethod = getProjectFrameworksAsyncMethod;
+					_projectFrameworkServices = new(activeDebugFrameworkServices, setActiveFrameworkMethod, getProjectFrameworksAsyncMethod);
 				}
 			}
 		}
