@@ -1,6 +1,8 @@
 <Project>
 
 	<PropertyGroup>
+		<_InitialOutputType>$(OutputType)</_InitialOutputType>
+		<_InitialOutputType Condition="$(TargetFramework) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">Library</_InitialOutputType>
 		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
 		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
 		<_IsExecutable>false</_IsExecutable>
@@ -81,7 +83,7 @@
 	<Import Project="Uno.Implicit.Packages.targets"
 		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
 
-	<PropertyGroup Condition="$(SingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+	<PropertyGroup Condition="$(SingleProject) == 'true' AND '$(TargetFramework)' != '' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
