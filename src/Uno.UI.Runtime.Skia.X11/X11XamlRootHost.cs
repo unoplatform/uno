@@ -272,9 +272,19 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void Initialize()
 	{
+		using var _1 = Disposable.Create(() =>
+		{
+			// set _firstWindowCreated even if we crash. This prevents the Main thread from being
+			// kept alive forever even if the main window creation crashed.
+			lock (_x11WindowToXamlRootHostMutex)
+			{
+				_firstWindowCreated = true;
+			}
+		});
+
 		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
 
-		using var _1 = X11Helper.XLock(display);
+		using var _2 = X11Helper.XLock(display);
 
 		if (display == IntPtr.Zero)
 		{
@@ -282,6 +292,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			{
 				this.Log().Error("XLIB ERROR: Cannot connect to X server");
 			}
+			throw new InvalidOperationException("XLIB ERROR: Cannot connect to X server");
 		}
 
 		int screen = XLib.XDefaultScreen(display);
@@ -316,7 +327,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		var _2 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
+		var _3 = XLib.XSetWMProtocols(display, window, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -325,7 +336,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		// The window must be mapped before DisplayInformationExtension is initialized.
-		var _3 = XLib.XMapWindow(display, window);
+		var _4 = XLib.XMapWindow(display, window);
 
 		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
 		{
