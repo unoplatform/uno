@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -8,7 +9,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Uno.Sdk;
+namespace Uno.Sdk.Tasks;
 
 public abstract class ImplicitPackagesResolverBase : Task
 {
@@ -32,7 +33,11 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	public string UnoFeatures { get; set; }
 
-	public string TargetFrameworkIdentifier { get; set; }
+	public string TargetFramework { get; set; }
+
+	protected string TargetFrameworkVersion { get; private set; }
+
+	protected string TargetRuntime { get; private set; }
 
 	public string ProjectName { get; set; }
 
@@ -68,6 +73,18 @@ public abstract class ImplicitPackagesResolverBase : Task
 	{
 		try
 		{
+			if (TargetFramework.Contains('-'))
+			{
+				var frameworkParts = TargetFramework.Split('-');
+				TargetFrameworkVersion = frameworkParts[0];
+				TargetRuntime = frameworkParts[1].StartsWith(UnoTarget.Windows, StringComparison.InvariantCultureIgnoreCase) ? UnoTarget.Windows : frameworkParts[1].ToLower(CultureInfo.InvariantCulture);
+			}
+			else
+			{
+				TargetFrameworkVersion = TargetFramework;
+				TargetRuntime = UnoTarget.Reference;
+			}
+
 			_unoFeatures = GetFeatures();
 			if (Log.HasLoggedErrors)
 			{
@@ -112,6 +129,17 @@ public abstract class ImplicitPackagesResolverBase : Task
 				message: builder.ToString());
 		}
 
+#if DEBUG
+		var missingImplicitPackages = PackageReferences.Where(x => !string.IsNullOrEmpty(x.GetMetadata("ProjectSystem"))
+			&& !_implicitPackages.Any(p => p.PackageId == x.ItemSpec))
+			.ToArray();
+
+		if (missingImplicitPackages.Length > 0)
+		{
+			System.Diagnostics.Debugger.Launch();
+		}
+#endif
+
 		return !Log.HasLoggedErrors;
 	}
 
@@ -145,7 +173,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 			.Where(x => x != UnoFeature.Invalid)
 			.ToArray();
 
-		Debug("Found {0} UnoFeatures for platform {1}.", unoFeatures.Length, TargetFrameworkIdentifier ?? "Default");
+		Debug("Found {0} UnoFeatures for platform {1}.", unoFeatures.Length, TargetFramework ?? "Default");
 		return unoFeatures;
 	}
 
@@ -207,19 +235,13 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	protected bool IsLegacyWasmHead()
 	{
-		// Neither of these should ever actually happen...
-		if (string.IsNullOrEmpty(TargetFrameworkIdentifier))
-		{
-			Debug("The TargetFrameworkIdentifier has no value.");
-			return false;
-		}
-		else if (string.IsNullOrEmpty(ProjectName))
+		if (string.IsNullOrEmpty(ProjectName))
 		{
 			Debug("The ProjectName has no value.");
 			return false;
 		}
 
-		var isLegacyProject = !SingleProject && TargetFrameworkIdentifier == UnoTarget.Reference
+		var isLegacyProject = !SingleProject && TargetRuntime == UnoTarget.Reference
 			&& _legacyWasmProjectSuffix.Any(x => ProjectName.EndsWith(x, StringComparison.InvariantCulture));
 
 		if (isLegacyProject)
@@ -257,7 +279,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	protected void AddPackage(string packageId, string version, string excludeAssets = null)
 	{
-		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFrameworkIdentifier);
+		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFramework);
 		if (string.IsNullOrEmpty(version))
 		{
 			Log.LogWarning("The package '{0}' has no available version.", packageId);
@@ -267,7 +289,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
 
-		if (PackageReferences.Any(x => x.ItemSpec == packageId))
+		if (PackageReferences.Any(x => x.ItemSpec == packageId && string.IsNullOrEmpty(x.GetMetadata("ProjectSystem"))))
 		{
 			_existingReferences.Add(packageId);
 			return;
@@ -284,7 +306,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		_implicitPackages.Add(new PackageReference(packageId, version, excludeAssets));
 	}
 
-	private void Debug(string message, params object[] args)
+	protected void Debug(string message, params object[] args)
 	{
 		var importantance = SdkDebugging ? MessageImportance.High : MessageImportance.Low;
 

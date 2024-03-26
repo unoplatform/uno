@@ -2,7 +2,7 @@
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Default.PackageVersions.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.targets" />
 
-	<UsingTask TaskName="Uno.Sdk.ImplicitPackagesResolver"
+	<UsingTask TaskName="Uno.Sdk.Tasks.ImplicitPackagesResolver"
 		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk.dll" />
 	<PropertyGroup>
 		<UnoTarget>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</UnoTarget>
@@ -30,7 +30,7 @@
 				OutputType="$(OutputType)"
 				UnoFeatures="$(UnoFeatures)"
 				IsPackable="$(IsPackable)"
-				TargetFrameworkIdentifier="$(UnoTarget)"
+				TargetFramework="$(TargetFramework)"
 				ProjectName="$(MSBuildProjectName)"
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"
@@ -46,6 +46,12 @@
 				UnoWasmBootstrapVersion="$(UnoWasmBootstrapVersion)"
 				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
 				AndroidMaterialVersion="$(AndroidMaterialVersion)"
+				AndroidXLegacySupportV4Version="@(AndroidXLegacySupportV4Version)"
+				AndroidXAppCompatVersion="@(AndroidXAppCompatVersion)"
+				AndroidXRecyclerViewVersion="@(AndroidXRecyclerViewVersion)"
+				AndroidXActivityVersion="@(AndroidXActivityVersion)"
+				AndroidXBrowserVersion="@(AndroidXBrowserVersion)"
+				AndroidXSwipeRefreshLayoutVersion="@(AndroidXSwipeRefreshLayoutVersion)"
 				UnoResizetizerVersion="$(UnoResizetizerVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
@@ -63,6 +69,14 @@
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
 		</ImplicitPackagesResolver>
+
+		<!--
+			Remove all placeholder references so that implicit references can be created with
+			actual versions using the `UnoImplicitPackages` target.
+		-->
+		<ItemGroup>
+			<PackageReference Remove="@(PackageReference->HasMetaData('ProjectSystem'))" />
+		</ItemGroup>
 
 		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />

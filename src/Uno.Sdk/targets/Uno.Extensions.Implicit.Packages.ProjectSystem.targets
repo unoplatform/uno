@@ -63,7 +63,6 @@
 		<PackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
 		<PackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
 
-		<PackageReference Include="Xamarin.Google.Android.Material" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<PackageReference Include="Xamarin.AndroidX.Navigation.UI" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<PackageReference Include="Xamarin.AndroidX.Navigation.Fragment" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<PackageReference Include="Xamarin.AndroidX.Navigation.Runtime" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
