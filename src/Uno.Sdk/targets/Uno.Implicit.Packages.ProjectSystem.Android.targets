@@ -9,5 +9,11 @@
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
 		<PackageReference Include="Uno.UniversalImageLoader" ProjectSystem="true" />
 		<PackageReference Include="Xamarin.Google.Android.Material" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.Activity" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" ProjectSystem="true" />
+		<PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

@@ -8,12 +8,18 @@
 		<UnoCoreLoggingSingletonVersion Condition="$(UnoCoreLoggingSingletonVersion) == ''">4.0.1</UnoCoreLoggingSingletonVersion>
 		<UnoUniversalImageLoaderVersion Condition="$(UnoUniversalImageLoaderVersion) == ''">1.9.36</UnoUniversalImageLoaderVersion>
 		<SkiaSharpVersion Condition="$(SkiaSharpVersion) == ''">2.88.7</SkiaSharpVersion>
-		<AndroidMaterialVersion Condition="$(AndroidMaterialVersion) == ''">1.10.0.3</AndroidMaterialVersion>
 		<WinAppSdkVersion Condition="$(WinAppSdkVersion) == ''">1.5.240227000</WinAppSdkVersion>
 		<WinAppSdkBuildToolsVersion Condition="$(WinAppSdkBuildToolsVersion) == ''">10.0.22621.3233</WinAppSdkBuildToolsVersion>
 		<CommunityToolkitMvvmVersion Condition="$(CommunityToolkitMvvmVersion) == ''">8.2.2</CommunityToolkitMvvmVersion>
 		<PrismVersion Condition="$(PrismVersion) == ''">9.0.401-pre</PrismVersion>
 		<MicrosoftIdentityClientVersion Condition="$(MicrosoftIdentityClientVersion) == ''">4.59.0</MicrosoftIdentityClientVersion>
+		<AndroidMaterialVersion Condition="$(AndroidMaterialVersion) == ''">1.10.0.2</AndroidMaterialVersion>
+		<AndroidXLegacySupportV4Version Condition="$(AndroidXLegacySupportV4Version) == ''">1.0.0.22</AndroidXLegacySupportV4Version>
+		<AndroidXAppCompatVersion Condition="$(AndroidXAppCompatVersion) == ''">1.6.1.6</AndroidXAppCompatVersion>
+		<AndroidXRecyclerViewVersion Condition="$(AndroidXRecyclerViewVersion) == ''">1.3.2.1</AndroidXRecyclerViewVersion>
+		<AndroidXActivityVersion Condition="$(AndroidXActivityVersion) == ''">1.8.1.1</AndroidXActivityVersion>
+		<AndroidXBrowserVersion Condition="$(AndroidXBrowserVersion) == ''">1.7.0.1</AndroidXBrowserVersion>
+		<AndroidXSwipeRefreshLayoutVersion Condition="$(AndroidXSwipeRefreshLayoutVersion) == ''">1.1.0.17</AndroidXSwipeRefreshLayoutVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('net8.0'))">
