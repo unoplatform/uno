@@ -18,6 +18,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
+		MacOSBadgeUpdaterExtension.Register();
 		MacOSClipboardExtension.Register();
 		MacOSCoreApplicationExtension.Register();
 		MacOSFileOpenPickerExtension.Register();
