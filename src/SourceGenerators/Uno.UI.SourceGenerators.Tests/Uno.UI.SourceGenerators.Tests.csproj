@@ -291,5 +291,6 @@
 		<Compile Remove="Verifiers\CSGenerator.cs" />
 		<Compile Remove="Verifiers\CSHelper.cs" />
 		<Compile Remove="XamlCodeGeneratorTests\**\*.cs" />
+		<Compile Remove="WeakEventGeneratorTests\**\*.cs" />
 	</ItemGroup>
 </Project>
