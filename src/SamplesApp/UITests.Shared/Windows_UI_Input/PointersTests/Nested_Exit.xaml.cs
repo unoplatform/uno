@@ -25,7 +25,7 @@ public sealed partial class Nested_Exit : Page
 
 	private void Case1_OnPointerExited(object sender, PointerRoutedEventArgs e)
 	{
-		switch((sender as FrameworkElement)?.Name)
+		switch ((sender as FrameworkElement)?.Name)
 		{
 			case "Case1_Blue":
 				_case1_exitedBlue = true;
