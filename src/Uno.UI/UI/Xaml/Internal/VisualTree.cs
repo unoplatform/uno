@@ -5,16 +5,16 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if __IOS__
@@ -108,8 +108,6 @@ namespace Uno.UI.Xaml.Core
 		/// For XamlIsland content, it's the XamlIsland.
 		/// </summary>
 		public UIElement RootElement { get; }
-
-		public XamlRoot? XamlRoot { get; private set; }
 
 		/// <summary>
 		/// Gets the currently active root visual - can be either public root visual or full-window
@@ -781,6 +779,68 @@ namespace Uno.UI.Xaml.Core
 			}
 
 			return XamlRoot;
+		}
+
+		public XamlRoot? XamlRoot { get; private set; }
+
+		internal RootScale RootScale { get; private set; }
+
+		internal double RasterizationScale
+		{
+			get
+			{
+				if (RootScale is { } rootScale)
+				{
+					return rootScale.EffectiveRasterizationScale;
+				}
+				else
+				{
+					return 1.0;
+				}
+			}
+		}
+
+		internal Size Size
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.GetSize();
+				}
+				else if (RootElement is RootVisual rootVisual)
+				{
+					if (Window.CurrentSafe is null)
+					{
+						throw new InvalidOperationException("Window.Current must be set.");
+					}
+
+					return Window.CurrentSafe.Bounds.Size;
+				}
+				else
+				{
+					return default;
+				}
+			}
+		}
+
+		internal bool IsVisible
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIslandRoot)
+				{
+					return xamlIslandRoot.IsVisible;
+				}
+				else if (RootElement is RootVisual rootVisual)
+				{
+					return rootVisual.IsXamlVisible;
+				}
+				else
+				{
+					return false;
+				}
+			}
 		}
 
 		private static void VisualTreeNotFoundWarning()

@@ -130,19 +130,6 @@ public sealed partial class XamlRoot
 
 	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
 
-	internal static XamlRoot? GetForElement(DependencyObject element)
-	{
-		XamlRoot? result = null;
-
-		var visualTree = VisualTree.GetForElement(element);
-		if (visualTree is not null)
-		{
-			result = visualTree.GetOrCreateXamlRoot();
-		}
-
-		return result;
-	}
-
 	internal static void SetForElement(DependencyObject element, XamlRoot? currentRoot, XamlRoot? newRoot)
 	{
 		if (currentRoot == newRoot)
