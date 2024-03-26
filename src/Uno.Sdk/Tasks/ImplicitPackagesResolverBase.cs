@@ -8,13 +8,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using Uno.Sdk.Models;
+using Uno.Sdk.Services;
 
 namespace Uno.Sdk.Tasks;
 
 public abstract class ImplicitPackagesResolverBase : Task
 {
 	private static readonly string[] _legacyWasmProjectSuffix = [".Wasm", ".WebAssembly"];
-	private List<string> _existingReferences = [];
+	private readonly List<string> _existingReferences = [];
 
 	public bool SdkDebugging { get; set; }
 

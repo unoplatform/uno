@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Uno.Sdk;
+namespace Uno.Sdk.Models;
 
 #nullable enable
 internal readonly struct NuGetVersion
