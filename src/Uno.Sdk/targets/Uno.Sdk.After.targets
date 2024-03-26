@@ -48,4 +48,7 @@
 				 Text="The browserwasm TargetFramework must not be placed first in the TargetFrameworks property in order for HotReload to work properly. (See https://aka.platform.uno/UNOB0010)" />
 	</Target>
 
+	<!-- Include any additional targets that packages defined by other packages -->
+	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
+
 </Project>
