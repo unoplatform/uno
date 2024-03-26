@@ -27,7 +27,7 @@
 				SdkDebugging="$(UnoSdkDebugging)"
 				SingleProject="$(_IsUnoSingleProjectAndLegacy)"
 				Optimize="$(Optimize)"
-				OutputType="$(OutputType)"
+				OutputType="$(_InitialOutputType)"
 				UnoFeatures="$(UnoFeatures)"
 				IsPackable="$(IsPackable)"
 				TargetFramework="$(TargetFramework)"
