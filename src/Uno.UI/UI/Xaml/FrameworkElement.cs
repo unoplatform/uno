@@ -21,6 +21,7 @@ using Uno.Disposables;
 using Windows.UI.Core;
 using System.ComponentModel;
 using Uno.UI.DataBinding;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
@@ -882,6 +883,15 @@ namespace Microsoft.UI.Xaml
 				if (ActualThemeChanged != null && RequestedTheme == ElementTheme.Default)
 				{
 					ActualThemeChanged?.Invoke(this, null);
+				}
+
+				if (this is Control @this && @this.GetTemplateRoot() is { } templateRoot)
+				{
+					var groups = VisualStateManager.GetVisualStateGroups(templateRoot);
+					foreach (var group in groups)
+					{
+						NativeDispatcher.Main.Enqueue(() => group.ReevaluateAppliedPropertySetters(@this));
+					}
 				}
 			}
 		}

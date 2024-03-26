@@ -282,6 +282,18 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
+				if (precedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0)
+				{
+					// When setting BindingPath.Value, we do the following check:
+					// DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
+					// Now, consider the following case:
+					// Animation value set to some value x, then Local value is set to some value y,
+					// then BindingPath.Value is trying to set Animation value to x
+					// in this case, we want to consider the values as different.
+					// So, we need to return the Local value when we are asked for Animation as the Local value is effectively overwriting the animation value.
+					precedence = DependencyPropertyValuePrecedences.Local;
+				}
+
 				return Unwrap(Stack[(int)precedence]);
 			}
 		}

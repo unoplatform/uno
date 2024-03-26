@@ -141,6 +141,28 @@ namespace Microsoft.UI.Xaml
 			RefreshStateTriggers();
 		}
 
+		internal void ReevaluateAppliedPropertySetters(Control control)
+		{
+			var state = VisualStateManager.GetCurrentState(control, Name);
+			if (state is null)
+			{
+				return;
+			}
+
+			try
+			{
+				ResourceResolver.PushNewScope(_xamlScope);
+				foreach (var setter in state.Setters)
+				{
+					(setter as Setter)?.ApplyValue(DependencyPropertyValuePrecedences.Animations, control);
+				}
+			}
+			finally
+			{
+				ResourceResolver.PopScope();
+			}
+		}
+
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
 			RefreshStateTriggers(force: true);
