@@ -108,7 +108,7 @@ namespace Private.Infrastructure
 			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
 			public static UIElement RootElement => UseActualWindowRoot ?
-				CurrentTestWindow.Content : EmbeddedTestRoot.control;
+				XamlRoot.Content : EmbeddedTestRoot.control;
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.

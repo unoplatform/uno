@@ -69,8 +69,7 @@ public class Given_FlowDirection
 		Assert.AreEqual(rect1.Height, rect2.Height, delta: 2);
 	}
 
-	private static Rect GetWindowBounds() =>
-		TestServices.WindowHelper.CurrentTestWindow.Bounds;
+	private static Rect GetWindowBounds() => TestServices.WindowHelper.XamlRoot.Bounds;
 
 	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));
 	private static Rect Get50x50RectAt(double x, double y) => new Rect(new Point(x, y), new Size(50, 50));
