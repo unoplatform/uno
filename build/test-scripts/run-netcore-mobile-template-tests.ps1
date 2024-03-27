@@ -183,6 +183,32 @@ $projects =
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false)
 
+    #
+    # 5.2 Uno Lib
+    #
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0"), $true),
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-browserwasm"), $true),
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-ios"), $true),
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-android"), $true),
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-maccatalyst"), $true),
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-f", "net8.0-desktop"), $true),
+
+    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
+    @("5.2/uno52Lib/uno52Lib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false)
+
+    #
+    # 5.2 Uno SingleProject Lib
+    #
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0"), $true),
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-browserwasm"), $true),
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-ios"), $true),
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-android"), $true),
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-maccatalyst"), $true),
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-desktop"), $true),
+
+    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
+    @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), $false)
+
     ## Note for contributors
     ##
     ## When adding new template versions, create them in a separate version named folder
