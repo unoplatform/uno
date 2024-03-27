@@ -99,8 +99,21 @@ internal partial class ContentManager
 			return;
 		}
 
+#if !IS_UNIT_TESTS
 		// Even if we're on the main thread, we need to delay this enough so that the window is initialized (i.e. Application._initializationComplete is true)
 		_ = rootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
+#else
+		var dispatcher = rootElement.Dispatcher;
+
+		if (dispatcher.HasThreadAccess)
+		{
+			LoadRootElementPlatform(xamlRoot, rootElement);
+		}
+		else
+		{
+			_ = dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
+		}
+#endif
 	}
 
 	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);
