@@ -21,7 +21,7 @@
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
 		</PropertyGroup>
 
-		<ImplicitPackagesResolver
+		<ImplicitPackagesResolverr_V0
 				IntermediateOutput="$(_UnoCacheFolder)"
 				SdkDebugging="$(UnoSdkDebugging)"
 				SingleProject="$(_IsUnoSingleProjectAndLegacy)"

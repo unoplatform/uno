@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<BuildOutputTargetFolder>targets</BuildOutputTargetFolder>
@@ -71,9 +71,19 @@
 			ReplacementText="$(PackageVersion)" />
 
 		<ReplaceFileText
+			Filename="%(_IntermediateTargetFile.Identity)"
+			MatchExpression="_V0"
+			ReplacementText="_V$(SourceRevisionId)" />
+
+		<ReplaceFileText
 			Filename="%(_PackageManifestPackFile.Identity)"
 			MatchExpression="DefaultUnoVersion"
 			ReplacementText="$(PackageVersion)" />
+
+		<ReplaceFileText
+			Filename="%(_TemporaryCodeFile.Identity)"
+			MatchExpression="_V0"
+			ReplacementText="_V$(SourceRevisionId)" />
 
 		<ReplaceFileText
 			Filename="%(_TemporaryCodeFile.Identity)"
