@@ -114,7 +114,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 
-			ProtectedCursor = Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam);
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
 
@@ -229,6 +228,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
 			{
 				_deleteButton = new WeakReference<Button>(button);
+			}
+
+			if (_contentElement is { })
+			{
+				_contentElement.SetProtectedCursor(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursor.Create(Microsoft/* UWP don't rename */.UI.Input.InputSystemCursorShape.IBeam));
 			}
 
 			UpdateTextBoxView();
