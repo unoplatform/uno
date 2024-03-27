@@ -22,7 +22,7 @@
 						  VerticalScrollBarVisibility="Disabled"
 						  HorizontalScrollMode="Disabled"
 						  HorizontalScrollBarVisibility="Disabled">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+				<Image Source="ms-appx:///Assets/testing.jpg"
 					   Stretch="None"
 					   Width="300"
 					   Height="300"
@@ -35,7 +35,7 @@
 						  Width="150"
 						  Margin="10"
 						  Background="White">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+				<Image Source="ms-appx:///Assets/testing.jpg"
 					   Stretch="None"
 					   Width="300"
 					   Height="300"
@@ -51,7 +51,7 @@
 						  VerticalScrollBarVisibility="Visible"
 						  HorizontalScrollMode="Enabled"
 						  HorizontalScrollBarVisibility="Visible">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+				<Image Source="ms-appx:///Assets/testing.jpg"
 					   VerticalAlignment="Bottom"
 					   HorizontalAlignment="Right"
 					   Stretch="None"
@@ -63,7 +63,7 @@
 			<Border Height="150"
 					Width="150"
 					Background="White">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+				<Image Source="ms-appx:///Assets/testing.jpg"
 					   VerticalAlignment="Bottom"
 					   HorizontalAlignment="Right"
 					   Stretch="None"
@@ -75,7 +75,7 @@
 			<StackPanel Height="150"
 						Width="150"
 						Background="White">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+				<Image Source="ms-appx:///Assets/testing.jpg"
 					   VerticalAlignment="Bottom"
 					   HorizontalAlignment="Right"
 					   Stretch="None"

@@ -19,7 +19,7 @@
 			   Width="100"
 			   Height="100"
 			   Stretch="UniformToFill"
-			   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+			   Source="ms-appx:///Assets/google.jpg" />
 
 		<ContentControl x:Name="firstControl"
 						Content="{Binding}"
@@ -41,7 +41,7 @@
 								   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 								   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 								   Stretch="UniformToFill"
-								   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+								   Source="ms-appx:///Assets/google.jpg" />
 						</Grid>
 					</Border>
 
