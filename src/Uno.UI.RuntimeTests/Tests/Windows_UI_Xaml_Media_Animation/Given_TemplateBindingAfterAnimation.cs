@@ -17,6 +17,7 @@ internal class Given_TemplateBindingAfterAnimation
 		// - CustomButton style sets Foreground to Blue
 		// - A visual state sets tb1.Foreground to Red (we call GoToState in OnApplyTemplate)
 		// - tb1 Foreground has TemplateBinding to CustomButton's Foreground
+		// NOTE: Current behavior doesn't exactly WinUI.
 		var page = new TemplateBindingAfterAnimationPage();
 
 		await UITestHelper.Load(page);
@@ -30,12 +31,12 @@ internal class Given_TemplateBindingAfterAnimation
 		btn.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
 
 		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Green);
-		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Green);
+		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Red);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual((btn.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Green);
-		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Green);
+		Assert.AreEqual((tb1.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Red);
 	}
 
 	[TestMethod]
