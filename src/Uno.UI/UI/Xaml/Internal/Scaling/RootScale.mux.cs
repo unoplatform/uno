@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\components\scaling\RootScale.cpp, tag winui3/release/1.5.1
 
 #nullable enable
 
@@ -10,7 +11,7 @@ using static Uno.UI.Xaml.Internal.Inlined;
 
 namespace Uno.UI.Xaml.Core.Scaling;
 
-internal partial class RootScale
+internal abstract partial class RootScale
 {
 	public RootScale(RootScaleConfig config, CoreServices coreServices, VisualTree visualTree)
 	{
@@ -134,12 +135,12 @@ internal partial class RootScale
 
 		if (scaleChanged)
 		{
-			foreach (var displayListener in _displayListeners)
-			{
-				displayListener.OnScaleChanged();
-			}
-
 			// TODO Uno: Reload images on scale change!
+			//foreach (var displayListener in _displayListeners)
+			//{
+			//	displayListener.OnScaleChanged();
+			//}
+
 			//if (IsInitialized())
 			//{
 			//	// Reload images.
@@ -150,24 +151,24 @@ internal partial class RootScale
 		}
 	}
 
-	private void AddDisplayListener(DisplayListener displayListener)
-	{
-		MUX_ASSERT(!_displayListeners.Contains(displayListener));
-		_displayListeners.Add(displayListener);
-	}
+	//private void AddDisplayListener(DisplayListener displayListener)
+	//{
+	//	MUX_ASSERT(!_displayListeners.Contains(displayListener));
+	//	_displayListeners.Add(displayListener);
+	//}
 
-	private void RemoveDisplayListener(DisplayListener displayListener)
-	{
-		MUX_ASSERT(_displayListeners.Count(d => d == displayListener) == 1);
-		_displayListeners.Remove(displayListener);
-	}
+	//private void RemoveDisplayListener(DisplayListener displayListener)
+	//{
+	//	MUX_ASSERT(_displayListeners.Count(d => d == displayListener) == 1);
+	//	_displayListeners.Remove(displayListener);
+	//}
 
 	//CImageReloadManager& RootScale::GetImageReloadManager()
 	//{
 	//	return m_imageReloadManager;
 	//}
 
-	private RootScale? GetRootScaleForElement(DependencyObject pDO)
+	private static RootScale? GetRootScaleForElement(DependencyObject pDO)
 	{
 		if (VisualTree.GetContentRootForElement(pDO) is { } contentRoot)
 		{
@@ -177,7 +178,7 @@ internal partial class RootScale
 		return null;
 	}
 
-	private RootScale? GetRootScaleForContentRoot(ContentRoot contentRoot)
+	private static RootScale? GetRootScaleForContentRoot(ContentRoot? contentRoot)
 	{
 		if (contentRoot is not null)
 		{
@@ -190,7 +191,7 @@ internal partial class RootScale
 		return null;
 	}
 
-	private RootScale? GetRootScaleForElementWithFallback(DependencyObject? pDO)
+	private static RootScale? GetRootScaleForElementWithFallback(DependencyObject? pDO)
 	{
 		RootScale? result = null;
 		if (pDO is not null)

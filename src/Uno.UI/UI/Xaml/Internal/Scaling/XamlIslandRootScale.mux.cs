@@ -1,4 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\components\scaling\XamlIslandRootScale.cpp, tag winui3/release/1.5.1
+
+#nullable enable
+
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Uno.UI.Xaml.Core.Scaling;
