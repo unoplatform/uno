@@ -195,7 +195,7 @@ public partial class TextBox
 						}
 					};
 
-					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight));
+					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
 					bool lastFoundCaret = false;
 					bool currentFoundCaret = false;
@@ -373,7 +373,7 @@ public partial class TextBox
 			var rect = DisplayBlockInlines.GetRectForIndex(selectionEnd);
 
 			// TODO: we are sometimes horizontally overscrolling, but it's more visually pleasant that underscrolling as we want the caret to be fully showing.
-			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight)));
+			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + InlineCollection.CaretThickness));
 			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportWidth);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
