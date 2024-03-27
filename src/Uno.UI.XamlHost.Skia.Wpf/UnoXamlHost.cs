@@ -30,6 +30,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			Child = CreateXamlContent();
 			TryLoadContent();
+
+			// Specifically on Uno islands, the UnoXamlHost isn't focused by default
+			Focus();
 		}
 
 		/// <summary>
