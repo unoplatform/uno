@@ -3310,6 +3310,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(i < 20);
 		}
 
+		[TestMethod]
+		public async Task When_PasswordBox_TextRevealed()
+		{
+			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			using var _1 = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
+
+			var SUT = new PasswordBox()
+			{
+				Width = 150
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 'e'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 's'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: 't'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("●●●●", SUT.TextBoxView.DisplayBlock.Text);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var revealButton = (Button)SUT.FindName("RevealButton");
+			mouse.MoveTo(revealButton.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
+		}
+
 		private static bool HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor)
 		{
 			for (var x = rect.Left; x < rect.Right; x++)
