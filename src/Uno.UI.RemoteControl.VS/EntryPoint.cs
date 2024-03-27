@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
@@ -19,10 +20,13 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.ProjectSystem.Debug;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using StreamJsonRpc;
@@ -93,7 +97,7 @@ public class EntryPoint : IDisposable
 		// This will can possibly be removed when all projects are migrated to the sdk project system.
 		_ = UpdateProjectsAsync();
 
-		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync);
+		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync, _debugAction);
 		_ = _debuggerObserver.ObserveProfilesAsync();
 	}
 
@@ -111,6 +115,12 @@ public class EntryPoint : IDisposable
 		});
 	}
 
+	[MemberNotNull(
+		nameof(_debugAction)
+		, nameof(_infoAction)
+		, nameof(_verboseAction)
+		, nameof(_warningAction)
+		, nameof(_errorAction))]
 	private void SetupOutputWindow()
 	{
 		var ow = _dte2.ToolWindows.OutputWindow;
@@ -406,8 +416,9 @@ public class EntryPoint : IDisposable
 
 	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework)
 	{
-		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
+		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
+		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
 		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier)
 		{
 			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier})");
@@ -446,6 +457,51 @@ public class EntryPoint : IDisposable
 					await _debuggerObserver.SetActiveLaunchProfileAsync(msixProfile.Name);
 				}
 			}
+
+			await TryReloadWebAssemblyTargetAsync(previousFramework, targetFrameworkIdentifier);
+		}
+	}
+
+	private async Task TryReloadWebAssemblyTargetAsync(string? previousFramework, string targetFrameworkIdentifier)
+	{
+		try
+		{
+			if (previousFramework is not null
+				&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
+				&& (
+					previousTargetFrameworkIdentifier == WasmTargetFrameworkIdentifier
+					|| targetFrameworkIdentifier == WasmTargetFrameworkIdentifier)
+				&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
+			)
+			{
+				_warningAction?.Invoke($"Detected that the active framework was changed from/to WebAssembly, reloading the project (See https://aka.platform.uno/singleproject-vs-wasm-reload)");
+
+				// In this context, in order to work around the fact that VS does not handle Wasm
+				// to be in the same project as other target framework, we're using the `_SelectedTargetFramework`
+				// to reorder the list and make browser-wasm first or not.
+
+				// Assuming serviceProvider is an IServiceProvider instance available in your context
+				if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
+					&& solution is IVsSolution4 solution4)
+				{
+					if (solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var startupProject) == 0)
+					{
+						if (startupProject.GetGuidProperty((uint)VSConstants.VSITEMID.Root, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out var guidObj) == 0
+							&& guidObj is Guid projectGuid)
+						{
+							// Unload project
+							solution4.UnloadProject(ref projectGuid, (uint)_VSProjectUnloadStatus.UNLOADSTATUS_UnloadedByUser);
+
+							// Reload project
+							solution4.ReloadProject(ref projectGuid);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_errorAction?.Invoke($"Failed to reload project {e}");
 		}
 	}
 
@@ -463,7 +519,7 @@ public class EntryPoint : IDisposable
 			if (profile.LaunchBrowser
 				&& FindTargetFramework(WasmTargetFrameworkIdentifier) is { } targetFramework)
 			{
-				_debugAction?.Invoke($"Setting framework {targetFramework}");
+				_errorAction?.Invoke($"Setting framework {targetFramework}");
 
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(targetFramework);
 			}
@@ -471,7 +527,7 @@ public class EntryPoint : IDisposable
 				&& compatibleTargetObject is string compatibleTarget
 				&& FindTargetFramework(compatibleTarget) is { } compatibleTargetFramework)
 			{
-				_debugAction?.Invoke($"Setting framework {compatibleTarget}");
+				_errorAction?.Invoke($"Setting framework {compatibleTarget}");
 
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(compatibleTargetFramework);
 			}
