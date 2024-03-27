@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -156,6 +156,17 @@ static partial class ViewExtensions
 	public static T? FindFirstDescendant<T>(this _View? reference, Func<T, bool> predicate) => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault(predicate);
+
+	/// <summary>
+	/// Returns the first descendant of a specified type.
+	/// </summary>
+	/// <typeparam name="T">The type of descendant to find.</typeparam>
+	/// <param name="reference">Any node of the visual tree</param>
+	/// <param name="name">x:Name of the node</param>
+	/// <remarks>The crawling is done depth first.</remarks>
+	public static T? FindFirstDescendant<T>(this _View? reference, string name) where T : FrameworkElement => EnumerateDescendants(reference)
+		.OfType<T>()
+		.FirstOrDefault(x => x.Name == name);
 
 	/// <summary>
 	/// Returns the first descendant of a specified type that satisfies the <paramref name="predicate"/> whose ancestors (up to <paramref name="reference"/>) and itself satisfy the <paramref name="hierarchyPredicate"/>.
