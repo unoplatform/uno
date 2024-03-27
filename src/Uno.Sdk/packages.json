@@ -62,7 +62,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.4.0-dev.26",
+		"version": "1.4.0-dev.28",
 		"packages": [
 			"Uno.Resizetizer"
 		]
