@@ -98,7 +98,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsDropDownOpen = true;
 			await TestServices.WindowHelper.WaitForIdle();
 			var container = (ComboBoxItem)SUT.ContainerFromItem(items[selectedIndex]);
+#if __ANDROID__ || __IOS__
+			Assert.AreEqual("SelectedUnfocused", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
+#else
 			Assert.AreEqual("Selected", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
+#endif
 		}
 
 		[TestMethod]
