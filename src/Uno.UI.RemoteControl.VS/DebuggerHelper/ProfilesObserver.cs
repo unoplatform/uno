@@ -41,6 +41,8 @@ internal class ProfilesObserver : IDisposable
 	private IDisposable? _projectRuleSubscriptionLink;
 	private UnconfiguredProject? _unconfiguredProject;
 
+	// Keep the handlers below in order to avoid collection
+	// and allow DTE to call them.
 	_dispSolutionEvents_ProjectAddedEventHandler? _projectAdded;
 	_dispSolutionEvents_ProjectRemovedEventHandler? _projectRemoved;
 	_dispSolutionEvents_ProjectRenamedEventHandler? _projectRenamed;

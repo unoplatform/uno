@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
@@ -96,7 +97,7 @@ public class EntryPoint : IDisposable
 		// This will can possibly be removed when all projects are migrated to the sdk project system.
 		_ = UpdateProjectsAsync();
 
-		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync, _warningAction!);
+		_debuggerObserver = new ProfilesObserver(asyncPackage, _dte, OnDebugFrameworkChangedAsync, OnDebugProfileChangedAsync, _debugAction!);
 		_ = _debuggerObserver.ObserveProfilesAsync();
 	}
 
@@ -114,6 +115,12 @@ public class EntryPoint : IDisposable
 		});
 	}
 
+	[MemberNotNull(
+		nameof(_debugAction)
+		, nameof(_infoAction)
+		, nameof(_verboseAction)
+		, nameof(_warningAction)
+		, nameof(_errorAction))]
 	private void SetupOutputWindow()
 	{
 		var ow = _dte2.ToolWindows.OutputWindow;
