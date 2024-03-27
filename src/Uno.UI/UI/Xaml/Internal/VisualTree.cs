@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
@@ -82,6 +83,27 @@ namespace Uno.UI.Xaml.Core
 				RootVisual.AssociatedVisualTree = this;
 				RootVisual.SetBackgroundColor(backgroundColor);
 				RootElement = RootVisual;
+			}
+
+			if (ContentRoot.Type == ContentRootType.CoreWindow)
+			{
+				var config = RootScaleConfig.ParentApply; //XamlOneCoreTransforms.IsEnabled ? RootScaleConfig::ParentApply : RootScaleConfig::ParentInvert;
+				RootScale = new CoreWindowRootScale(config, coreServices, this);
+			}
+			else if (ContentRoot.Type == ContentRootType.XamlIsland)
+			{
+				RootScale = new XamlIslandRootScale(coreServices, this);
+
+				// If an override scale was set earlier for tests, apply it to this new island.
+				//float testOverrideScale = m_pCoreNoRef->GetTestOverrideScale();
+				//if (testOverrideScale != 0.0f)
+				//{
+				//	IFCFAILFAST(m_rootScale->SetTestOverride(testOverrideScale));
+				//}
+			}
+			else
+			{
+				throw new InvalidOperationException("Invalid ContentRoot type.");
 			}
 
 			_focusInputHandler = new UnoFocusInputHandler(RootElement);
@@ -249,6 +271,8 @@ namespace Uno.UI.Xaml.Core
 			//{
 			//	AddRoot(_renderTargetBitmapRoot));
 			//}
+
+			ContentRoot.AddPendingXamlRootChangedEvent(ContentRoot.ChangeType.Content);
 		}
 
 		/// <summary>
@@ -550,6 +574,19 @@ namespace Uno.UI.Xaml.Core
 			return false;
 		}
 
+		internal static XamlIsland? GetXamlIslandRootForElement(DependencyObject? pObject)
+		{
+			if (pObject is null) // || !pObject.GetContext().HasXamlIslandRoots())
+			{
+				return null;
+			}
+			if (GetForElement(pObject) is { } visualTree)
+			{
+				return visualTree.RootElement as XamlIsland;
+			}
+			return null;
+		}
+
 #if false
 		/// <summary>
 		/// Removes the given root from the implicit root visual, and potentially 'Leave' it
@@ -590,20 +627,6 @@ namespace Uno.UI.Xaml.Core
 			// publicRoot.LeavePCSceneRecursive();
 		}
 #endif
-
-		[NotImplemented]
-		private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)
-		{
-			//if (!pObject || !pObject->GetContext()->HasXamlIslands())
-			//{
-			//	return nullptr;
-			//}
-			if (GetForElement(pObject) is VisualTree visualTree)
-			{
-				return visualTree.RootElement;
-			}
-			return null;
-		}
 
 		internal static VisualTree? GetForElement(DependencyObject? element, LookupOptions options = LookupOptions.WarningIfNotFound)
 		{
@@ -785,13 +808,14 @@ namespace Uno.UI.Xaml.Core
 
 		internal RootScale RootScale { get; private set; }
 
+		//GetDisplayInformation(this).RawPixelsPerViewPixel;
 		internal double RasterizationScale
 		{
 			get
 			{
 				if (RootScale is { } rootScale)
 				{
-					return rootScale.EffectiveRasterizationScale;
+					return rootScale.GetEffectiveRasterizationScale();
 				}
 				else
 				{
@@ -799,6 +823,36 @@ namespace Uno.UI.Xaml.Core
 				}
 			}
 		}
+
+		//public Size Size
+		//{
+		//	get
+		//	{
+		//		if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
+		//		{
+		//			return Content?.RenderSize ?? Size.Empty;
+		//		}
+
+		//		var rootElement = VisualTree.RootElement;
+		//		if (rootElement is RootVisual)
+		//		{
+		//			if (Window.CurrentSafe is null)
+		//			{
+		//				throw new InvalidOperationException("Window.Current must be set.");
+		//			}
+
+		//			return Window.CurrentSafe.Bounds.Size;
+		//		}
+		//		else if (rootElement is XamlIsland xamlIslandRoot)
+		//		{
+		//			var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
+		//			var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
+		//			return new Size(width, height);
+		//		}
+
+		//		return default;
+		//	}
+		//}
 
 		internal Size Size
 		{
@@ -808,7 +862,7 @@ namespace Uno.UI.Xaml.Core
 				{
 					return xamlIslandRoot.GetSize();
 				}
-				else if (RootElement is RootVisual rootVisual)
+				else if (RootElement is RootVisual)
 				{
 					if (Window.CurrentSafe is null)
 					{
@@ -830,11 +884,11 @@ namespace Uno.UI.Xaml.Core
 			{
 				if (RootElement is XamlIsland xamlIslandRoot)
 				{
-					return xamlIslandRoot.IsVisible;
+					return true; // TODO: MZ: FIX IN THIS PR //xamlIslandRoot.IsVisible;
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					return rootVisual.IsXamlVisible;
+					return true;  // TODO: MZ: FIX IN THIS PR //xamlIslandRoot.IsVisible; rootVisual.IsXamlVisible;
 				}
 				else
 				{

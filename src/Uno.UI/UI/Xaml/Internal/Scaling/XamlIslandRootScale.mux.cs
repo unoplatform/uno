@@ -11,8 +11,8 @@ namespace Uno.UI.Xaml.Core.Scaling;
 
 internal class XamlIslandRootScale : RootScale
 {
-	public XamlIslandRootScale(RootScaleConfig config, CoreServices coreServices, VisualTree visualTree) :
-		base(config, coreServices, visualTree)
+	public XamlIslandRootScale(CoreServices coreServices, VisualTree visualTree) :
+		base(RootScaleConfig.ParentApply, coreServices, visualTree)
 	{
 	}
 
