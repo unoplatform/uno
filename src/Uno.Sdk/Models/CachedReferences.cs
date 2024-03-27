@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Uno.Sdk.Services;
 
 #nullable enable
 namespace Uno.Sdk.Models;
@@ -20,7 +21,7 @@ internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, 
 		WriteIndented = true
 	};
 
-	public bool NeedsUpdate(IEnumerable<UnoFeature> currentFeatures, string unoVersion)
+	public bool NeedsUpdate(IEnumerable<UnoFeature> currentFeatures, PackageManifest manifest)
 	{
 		if (Updated.AddDays(1) < DateTimeOffset.Now
 			|| Features.Length != currentFeatures.Count())
@@ -28,10 +29,13 @@ internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, 
 			return true;
 		}
 
-		var unoReference = References.SingleOrDefault(r => r.PackageId == "Uno.WinUI");
-		if (unoReference is null || unoReference.Version != unoVersion)
+		foreach (var reference in References)
 		{
-			return true;
+			var version = manifest.GetPackageVersion(reference.PackageId);
+			if (string.IsNullOrEmpty(version) || !reference.Version.Equals(version, StringComparison.InvariantCulture))
+			{
+				return true;
+			}
 		}
 
 		return currentFeatures.Any(x => !Features.Contains(x));

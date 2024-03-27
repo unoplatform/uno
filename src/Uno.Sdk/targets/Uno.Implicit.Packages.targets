@@ -1,5 +1,4 @@
 <Project>
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Default.PackageVersions.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.targets" />
 
 	<UsingTask TaskName="Uno.Sdk.Tasks.ImplicitPackagesResolver"
@@ -34,7 +33,6 @@
 				ProjectName="$(MSBuildProjectName)"
 				PackageReferences="@(PackageReference)"
 				PackageVersions="@(PackageVersion)"
-				UnoVersion="$(UnoVersion)"
 				MauiVersion="$(MauiVersion)"
 				UnoExtensionsVersion="$(UnoExtensionsVersion)"
 				UnoToolkitVersion="$(UnoToolkitVersion)"
