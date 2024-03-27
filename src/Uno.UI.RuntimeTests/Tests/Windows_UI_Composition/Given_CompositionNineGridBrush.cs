@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 #if HAS_UNO
 using Uno.UI.Dispatching;
@@ -17,7 +18,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [TestClass]
 public class Given_CompositionNineGridBrush
 {
-#if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Source_Changes()
@@ -28,17 +28,17 @@ public class Given_CompositionNineGridBrush
 		await TestServices.WindowHelper.WaitFor(() => expectedThreadId != -1);
 #endif
 
-		var compositor = Window.Current.Compositor;
+		var compositor = ElementCompositionPreview.GetElementVisual(TestServices.WindowHelper.RootElement).Compositor;
 
 		var onlineSource = new Image
 		{
 			Width = 100,
 			Height = 100,
 			Stretch = Stretch.UniformToFill,
-			Source = ImageSource.TryCreateUriFromString("ms-appx:///Assets/test_image_100_100.png")
+			Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_100.png"))
 		};
 
-		var online = new Grid
+		var online = new Border
 		{
 			Width = 200,
 			Height = 200
@@ -108,29 +108,22 @@ public class Given_CompositionNineGridBrush
 
 	private async Task<(RawBitmap expected, RawBitmap actual)> Render(FrameworkElement source, FrameworkElement online, FrameworkElement offline)
 	{
-		await UITestHelper.Load(new Grid
+		await UITestHelper.Load(new StackPanel
 		{
 			Children =
 			{
 				source,
-				online
+				// we need to put the children in borders to work around our limited implementation of RenderTargetBitmap
+				// not taking the offsets of the Visuals into account. This way, the Child will not have any offset
+				// relative to its parent (the border)
+				new Border { Child = online },
+				new Border { Child = offline }
 			}
 		});
 
 		var onlineImg = await UITestHelper.ScreenShot(online);
-
-		await UITestHelper.Load(new Grid
-		{
-			Children =
-			{
-				source,
-				offline
-			}
-		});
-
 		var offlineImg = await UITestHelper.ScreenShot(offline);
 
 		return (onlineImg, offlineImg);
 	}
-#endif
 }
