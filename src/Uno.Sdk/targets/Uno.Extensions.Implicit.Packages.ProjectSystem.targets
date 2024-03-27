@@ -13,9 +13,10 @@
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
 				<PackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
+				<PackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
 			</ItemGroup>
 		</When>
-		<When Condition="!$(_UseUnoExtensions) AND $(UnoFeatures.Contains(';AuthenticationMsal;'))">
+		<When Condition="!$(_UseUnoExtensions) AND $(UnoFeatures.Contains(';AuthenticationOidc;'))">
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
 			</ItemGroup>
@@ -26,6 +27,7 @@
 				<PackageReference Include="Uno.Extensions.Authentication.Oidc.WinUI" ProjectSystem="true" />
 				<PackageReference Include="Uno.Extensions.Authentication.MSAL.WinUI" ProjectSystem="true" />
 				<PackageReference Include="Microsoft.Identity.Client" ProjectSystem="true" />
+				<PackageReference Include="Uno.WinUI.MSAL" ProjectSystem="true" />
 			</ItemGroup>
 		</When>
 	</Choose>
