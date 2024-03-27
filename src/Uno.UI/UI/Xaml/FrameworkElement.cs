@@ -890,7 +890,7 @@ namespace Microsoft.UI.Xaml
 					var groups = VisualStateManager.GetVisualStateGroups(templateRoot);
 					foreach (var group in groups)
 					{
-						NativeDispatcher.Main.Enqueue(() => group.ReevaluateAppliedPropertySetters(@this));
+						DispatcherQueue.TryEnqueue(() => group.ReevaluateAppliedPropertySetters(@this));
 					}
 				}
 			}
