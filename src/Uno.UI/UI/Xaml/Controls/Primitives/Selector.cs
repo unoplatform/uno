@@ -470,6 +470,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			else
 			{
 				_collectionViewSubscription.Disposable = null;
+
+				if (IsSynchronizedWithCurrentItem is { } value && !value)
+				{
+					ResetIndexIfNeeded();
+				}
 			}
 		}
 
