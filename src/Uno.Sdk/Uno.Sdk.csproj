@@ -54,7 +54,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="ReplacePackageVersion" BeforeTargets="Build" AfterTargets="CopySdkFiles">
+	<Target Name="ReplacePackageVersion" BeforeTargets="CoreCompile" AfterTargets="CopySdkFiles">
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
 			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.props;$(IntermediateOutputPath)targets\*.targets" />
