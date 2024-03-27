@@ -140,7 +140,10 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
-			if (_localCanDefeatAnimationSuppressed == 0 && precedence == DependencyPropertyValuePrecedences.Local && value is not UnsetValue)
+			if (_localCanDefeatAnimationSuppressed == 0 &&
+				precedence == DependencyPropertyValuePrecedences.Local &&
+				_highestPrecedence == DependencyPropertyValuePrecedences.Animations &&
+				value is not UnsetValue)
 			{
 				_flags |= Flags.LocalValueNewerThanAnimationsValue;
 			}
