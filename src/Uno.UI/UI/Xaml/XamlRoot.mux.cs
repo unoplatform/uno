@@ -9,13 +9,22 @@ public sealed partial class XamlRoot
 {
 	internal VisualTree VisualTree { get; set; }
 
+	/// <summary>
+	/// Gets the width and height of the content area.
+	/// </summary>
 	internal Size Size => VisualTree.Size;
 
-	internal double RasterizationScale => VisualTree.RasterizationScale;
+	/// <summary>
+	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
+	/// </summary>
+	public double RasterizationScale => VisualTree.RasterizationScale;
 
-	internal bool IsHostVisible => VisualTree.IsVisible;
+	/// <summary>
+	/// Gets a value that indicates whether the XamlRoot is visible.
+	/// </summary>
+	public bool IsHostVisible => VisualTree.IsVisible;
 
-	internal void RaiseChangedEvent() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
+	internal void RaiseChangedEvent() => Changed?.Invoke(this, new());
 
 	internal static XamlRoot? GetForElement(DependencyObject element)
 	{

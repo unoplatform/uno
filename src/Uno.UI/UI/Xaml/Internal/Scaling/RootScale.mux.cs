@@ -60,7 +60,7 @@ internal abstract partial class RootScale
 		}
 	}
 
-	private float GetEffectiveRasterizationScale()
+	internal float GetEffectiveRasterizationScale()
 	{
 		if (!IsInitialized && !_updating)
 		{

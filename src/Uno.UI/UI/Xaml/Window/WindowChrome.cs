@@ -1,4 +1,7 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿#nullable enable
+
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -11,4 +14,14 @@ internal sealed partial class WindowChrome : ContentControl
 		HorizontalContentAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch;
 		VerticalContentAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch;
 	}
+
+	protected override void OnContentChanged(object oldContent, object newContent)
+	{
+		base.OnContentChanged(oldContent, newContent);
+
+		// Fire XamlRoot.Changed
+		var xamlIslandRoot = VisualTree.GetXamlIslandRootForElement(this);
+		xamlIslandRoot!.ContentRoot.AddPendingXamlRootChangedEvent(ContentRoot.ChangeType.Content);
+	}
 }
+

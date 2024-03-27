@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using DirectUI;
+using Windows.Foundation;
 
 /*
     +----------------------------------------------------------------------------------+
@@ -125,6 +127,34 @@ internal partial class ContentRoot
 	internal bool IsShuttingDown() => false;
 
 	internal XamlRoot GetOrCreateXamlRoot() => VisualTree.GetOrCreateXamlRoot();
+
+	internal void RaiseXamlRootChanged(ContentRoot.ChangeType changeType)
+	{
+		AddPendingXamlRootChangedEvent(changeType);
+		bool shouldRaiseWindowChangedEvent = (changeType != ContentRoot.ChangeType.Content) ? true : false;
+		RaisePendingXamlRootChangedEventIfNeeded();
+	}
+
+	internal void RaisePendingXamlRootChangedEventIfNeeded()
+	{
+		if (_hasPendingChangedEvent)
+		{
+			_hasPendingChangedEvent = false;
+			if (XamlRoot is { } xamlRoot)
+			{
+				FxCallbacks.XamlRoot_RaiseChanged(xamlRoot);
+			}
+
+			// TODO Uno: Port QualifierContext
+			//if (shouldRaiseWindowChangedEvent)
+			//{
+			//	const wf::Size size = m_visualTree.GetSize();
+			//	m_visualTree.GetQualifierContext()->OnWindowChanged(
+			//		static_cast<XUINT32>(lround(size.Width)),
+			//		static_cast<XUINT32>(lround(size.Height)));
+			//}
+		}
+	}
 
 	internal Window? GetOwnerWindow()
 	{

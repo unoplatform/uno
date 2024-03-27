@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
 
 #nullable enable
 
