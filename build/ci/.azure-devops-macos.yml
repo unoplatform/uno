@@ -14,12 +14,16 @@ jobs:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
 
+    UNO_UWP_BUILD: false
+
   pool:
     vmImage: ${{ parameters.vmImage }}
 
   steps:
   - checkout: self
     clean: true
+
+  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/dotnet7-mobile-install-mac.yml
 
