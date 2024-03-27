@@ -268,9 +268,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// ListView to get a clicked container.
 			ClearValue(ItemsControl.IndexForItemContainerProperty);
 
-			// Reset visual state so that the container doesn't come back looking like it's hovered or clicked.
-			VisualStateManager.GoToState(this, "Normal", false);
-
 			base.PrepareForRecycle();
 		}
 
