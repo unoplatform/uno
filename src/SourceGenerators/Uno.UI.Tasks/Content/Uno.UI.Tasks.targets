@@ -11,6 +11,8 @@
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
@@ -45,7 +47,7 @@
 	<Target Name="UnoResourcesGeneration"
 				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
-				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
+				Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
 
@@ -178,16 +180,51 @@
 	</Target>
 
 	<!--
-	  XAML Resources Trimming
+	  Upri Resources Trimming
+	-->
+
+	<Target Name="_UnoLinkerUpriSubstitutions"
+		Condition="'$(DesignTimeBuild)' != 'true'"
+		AfterTargets="UnoResourcesGeneration">
+
+		<ItemGroup>
+			<_UnoUpriResource Condition="'%(GeneratedFiles.UnoResourceTarget)' == 'Uno'" Include="@(GeneratedFiles->'%(LogicalName)')">
+				<Language>%(GeneratedFiles.Language)</Language>
+			</_UnoUpriResource>
+		</ItemGroup>
+
+		<UpriSubstitutionsGeneratorTask_v0
+			AssemblyName="$(AssemblyName)"
+			Resources="@(_UnoUpriResource)"
+			OutputFile="$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml" />
+
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml" />
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="_UnoLinkerUpriFeatures"
+		Condition="'$(IsUnoHead)'=='true'"
+		BeforeTargets="BuildDist">
+
+		<UpriFeaturesGeneratorTask_v0
+			Languages="@(UnoSupportedLanguage)">
+			<Output TaskParameter="OutputFeatures" ItemName="_UpriOutputFeatures" />
+		</UpriFeaturesGeneratorTask_v0>
+
+		<ItemGroup>
+			<RuntimeHostConfigurationOption Include="@(_UpriOutputFeatures)" Trim="true" />
+		</ItemGroup>
+
+	</Target>
+
+	<!--
+	  Linker Substitutions Merge
 	  -->
 
-	<Target Name="_UnoLinkerHintsSubstitutionsMerge"
-		Condition="
-		'$(DesignTimeBuild)' != 'true'
-		and '$(BuildingInsideUnoSourceGenerator)' == ''
-		and '$(SkipCompilerExecution)' == ''
-		and '$(UnoXamlResourcesTrimming)'=='true'
-		and $(_IsXamlTrimmingAvailable)"
+	<Target Name="_UnoLinkerCollectSubstitutions"
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true'"
 		AfterTargets="CoreCompile">
 
 		<ItemGroup>
@@ -195,48 +232,60 @@
 			<_SubstitutionFiles Include="$(IntermediateOutputPath)\Substitutions\*.Substitutions.xml" />
 		</ItemGroup>
 
+	</Target>
+
+	<Target Name="_UnoLinkerSubstitutionsMerge"
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true' and @(_SubstitutionFiles->Count()) > 0"
+		DependsOnTargets="_UnoLinkerCollectSubstitutions"
+		BeforeTargets="_UnoEmbeddedResourcesInjection">
+
 		<LinkerDefinitionMergerTask_v0
 			DefinitionFiles="@(_SubstitutionFiles)"
-			TargetDefinitionFile="$(IntermediateOutputPath)ILLink.Substitutions.xml"
-		/>
+			TargetDefinitionFile="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 
 		<ItemGroup>
 			<EmbeddedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
-			
+
 			<FileWrites Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 		</ItemGroup>
 
 	</Target>
 
+	<PropertyGroup>
+		<TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);_UnoSetupEmbeddedResourcesInjection</TargetsTriggeredByCompilation>
+	</PropertyGroup>
+
+	<Target Name="_UnoSetupEmbeddedResourcesInjection">
+
+		<PropertyGroup Condition="'$(DesignTimeBuild)' != 'true' and '$(SkipCompilerExecution)' == ''">
+			<_UnoRequiresEmbeddedResourcesInjection>true</_UnoRequiresEmbeddedResourcesInjection>
+		</PropertyGroup>
+
+	</Target>
+
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CoreCompile" />
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="_UnoLinkerHintsSubstitutionsMerge" />
 	</ItemGroup>
 
 	<Target Name="_UnoEmbeddedResourcesInjection"
-	  Inputs="@(ReferencePath);@(EmbeddedResource)"
-	  Outputs="$(IntermediateOutputPath)$(TargetFileName)"
-	  Condition="
-		'$(DesignTimeBuild)' != 'true'
-		and '$(BuildingInsideUnoSourceGenerator)' == ''
-		and '$(SkipCompilerExecution)' == ''
-		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')
-		and $(_IsXamlTrimmingAvailable)"
+		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true'"
 		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
-			<_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths
-					Include="@(ReferencePath)"
-				  Condition="'%(Extension)' == '.dll'" />
+			<_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths Include="@(ReferencePath)" Condition="'%(Extension)' == '.dll'" />
 		</ItemGroup>
 
 		<EmbeddedResourceInjectorTask_v0
 			EmbeddedResources="@(EmbeddedResource)"
 			TargetAssembly="$(IntermediateOutputPath)$(TargetFileName)"
-			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)"
-			  />
+			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)" />
+
 	</Target>
+
+	<!--
+	  XAML Resources Trimming
+	  -->
 
 	<Target Name="_UnoLinkerHintsPass1"
 		  Condition="
