@@ -1,8 +1,8 @@
 <Project>
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.targets" />
 
-	<UsingTask TaskName="Uno.Sdk.Tasks.ImplicitPackagesResolver_V0"
-		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_V0.dll" />
+	<UsingTask TaskName="Uno.Sdk.Tasks.ImplicitPackagesResolver_v0"
+		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_v0.dll" />
 	<PropertyGroup>
 		<UnoTarget>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</UnoTarget>
 		<UnoTarget Condition="$(TargetFramework.Contains('windows10'))">windows10</UnoTarget>
