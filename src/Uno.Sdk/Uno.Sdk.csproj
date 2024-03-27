@@ -36,13 +36,25 @@
 	<Target Name="CopySdkFiles" BeforeTargets="Pack;ReplacePackageVersion">
 		<ItemGroup>
 			<_ExistingSdkFile Include="$(IntermediateOutputPath)targets\**;$(IntermediateOutputPath)Sdk\**" />
+			<_ExistingCodeFile Include="@(Compile)" TemporaryCode="$(IntermediateOutputPath)code\%(RecursiveDir)%(Filename)%(Extension)" Exclude="$(IntermediateOutputPath)**" />
+			<Compile Remove="@(_ExistingCodeFile)" />
+			<_PackageManifestSource Include="packages.json" BuildOutput="$(IntermediateOutputPath)packages\packages.json" />
 		</ItemGroup>
-		<Delete Files="@(_ExistingSdkFile)" />
+		<Delete Files="@(_ExistingSdkFile);$(IntermediateOutputPath)code\**\*;$(IntermediateOutputPath)packages\packages.json" />
 		<Copy SourceFiles="@(SdkFile)" DestinationFolder="$(IntermediateOutputPath)Sdk" SkipUnchangedFiles="true" />
 		<Copy SourceFiles="@(TargetFile)" DestinationFolder="$(IntermediateOutputPath)targets" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(_ExistingCodeFile)" DestinationFiles="%(_ExistingCodeFile.TemporaryCode)" SkipUnchangedFiles="false" />
+		<Copy SourceFiles="@(_PackageManifestSource)" DestinationFiles="%(_PackageManifestSource.BuildOutput)" SkipUnchangedFiles="false" />
+
+		<ItemGroup>
+			<_PackageManifestPackFile Include="%(_PackageManifestSource.BuildOutput)" />
+			<_PackageManifestSource Remove="@(_PackageManifestSource)" />
+			<_TemporaryCodeFile Include="$(IntermediateOutputPath)code\**\*.cs" />
+			<_ExistingCodeFile Remove="@(_ExistingCodeFile)" />
+		</ItemGroup>
 	</Target>
 
-	<Target Name="ReplacePackageVersion" BeforeTargets="Pack;_IntermediatePack" AfterTargets="CopySdkFiles">
+	<Target Name="ReplacePackageVersion" BeforeTargets="Build" AfterTargets="CopySdkFiles">
 		<ItemGroup>
 			<_IntermediateSdkFile Include="$(IntermediateOutputPath)Sdk\*.props;$(IntermediateOutputPath)Sdk\*.targets" />
 			<_IntermediateTargetFile Include="$(IntermediateOutputPath)targets\*.props;$(IntermediateOutputPath)targets\*.targets" />
@@ -58,9 +70,25 @@
 			MatchExpression="DefaultUnoVersion"
 			ReplacementText="$(PackageVersion)" />
 
+		<ReplaceFileText
+			Filename="%(_PackageManifestPackFile.Identity)"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
+		<ReplaceFileText
+			Filename="%(_TemporaryCodeFile.Identity)"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
 		<ItemGroup>
+			<None Include="@(_PackageManifestPackFile)" Pack="true" PackagePath="targets\$(TargetFramework)\%(Filename)%(Extension)" />
 			<None Include="%(_IntermediateSdkFile.Identity)" Pack="true" PackagePath="Sdk\%(_IntermediateSdkFile.Filename)%(_IntermediateSdkFile.Extension)" />
 			<None Include="%(_IntermediateTargetFile.Identity)" Pack="true" PackagePath="targets\%(_IntermediateTargetFile.Filename)%(_IntermediateTargetFile.Extension)" />
+			<Compile Include="@(_TemporaryCodeFile)" />
+			<_TemporaryCodeFile Remove="@(_TemporaryCodeFile)" />
+			<_PackageManifestPackFile Remove="@(_PackageManifestPackFile)" />
+			<_IntermediateSdkFile Remove="@(_IntermediateSdkFile)" />
+			<_IntermediateTargetFile Remove="@(_IntermediateTargetFile)" />
 		</ItemGroup>
 	</Target>
 

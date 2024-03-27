@@ -2,54 +2,6 @@ namespace Uno.Sdk.Tasks;
 
 public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 {
-	public string MauiVersion { get; set; }
-
-	public string SkiaSharpVersion { get; set; }
-
-	public string UnoLoggingVersion { get; set; }
-
-	public string WindowsCompatibilityVersion { get; set; }
-
-	public string UnoWasmBootstrapVersion { get; set; }
-
-	public string UnoUniversalImageLoaderVersion { get; set; }
-
-	public string AndroidMaterialVersion { get; set; }
-
-	public string AndroidXLegacySupportV4Version { get; set; }
-
-	public string AndroidXAppCompatVersion { get; set; }
-
-	public string AndroidXRecyclerViewVersion { get; set; }
-
-	public string AndroidXActivityVersion { get; set; }
-
-	public string AndroidXBrowserVersion { get; set; }
-
-	public string AndroidXSwipeRefreshLayoutVersion { get; set; }
-
-	public string UnoResizetizerVersion { get; set; }
-
-	public string MicrosoftLoggingVersion { get; set; }
-
-	public string WinAppSdkVersion { get; set; }
-
-	public string WinAppSdkBuildToolsVersion { get; set; }
-
-	public string UnoCoreLoggingSingletonVersion { get; set; }
-
-	public string UnoDspTasksVersion { get; set; }
-
-	public string CommunityToolkitMvvmVersion { get; set; }
-
-	public string PrismVersion { get; set; }
-
-	public string AndroidXNavigationVersion { get; set; }
-
-	public string AndroidXCollectionVersion { get; set; }
-
-	public string MicrosoftIdentityClientVersion { get; set; }
-
 	protected override void ExecuteInternal()
 	{
 		AddUnoCorePackages();
@@ -64,24 +16,24 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 
 	private void AddUnoCorePackages()
 	{
-		AddPackage("Uno.WinUI", UnoVersion);
+		AddPackage("Uno.WinUI", null);
 
 		if (!IsPackable)
 		{
-			AddPackage("Uno.UI.Adapter.Microsoft.Extensions.Logging", UnoVersion);
+			AddPackage("Uno.UI.Adapter.Microsoft.Extensions.Logging", null);
 			AddPackage("Uno.Resizetizer", UnoResizetizerVersion);
 			AddPackage("Microsoft.Extensions.Logging.Console", MicrosoftLoggingVersion);
 		}
 
-		AddPackageForFeature(UnoFeature.Maps, "Uno.WinUI.Maps", UnoVersion);
-		AddPackageForFeature(UnoFeature.Foldable, "Uno.WinUI.Foldable", UnoVersion);
+		AddPackageForFeature(UnoFeature.Maps, "Uno.WinUI.Maps", null);
+		AddPackageForFeature(UnoFeature.Foldable, "Uno.WinUI.Foldable", null);
 
 		if (TargetRuntime != UnoTarget.Windows)
 		{
-			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", UnoVersion);
+			AddPackageWhen(!IsPackable, "Uno.WinUI.Lottie", null);
 
 			// Included for Debug Builds
-			AddPackageWhen(!Optimize, "Uno.WinUI.DevServer", UnoVersion);
+			AddPackageWhen(!Optimize, "Uno.WinUI.DevServer", null);
 
 			if (TargetRuntime != UnoTarget.Wasm && !IsLegacyWasmHead() && !IsPackable)
 			{
@@ -128,15 +80,15 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 		}
 		else if (TargetRuntime == UnoTarget.SkiaDesktop)
 		{
-			AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", UnoVersion);
-			AddPackage("Uno.WinUI.Skia.MacOS", UnoVersion);
-			AddPackage("Uno.WinUI.Skia.Wpf", UnoVersion);
-			AddPackage("Uno.WinUI.Skia.X11", UnoVersion);
+			AddPackage("Uno.WinUI.Skia.Linux.FrameBuffer", null);
+			AddPackage("Uno.WinUI.Skia.MacOS", null);
+			AddPackage("Uno.WinUI.Skia.Wpf", null);
+			AddPackage("Uno.WinUI.Skia.X11", null);
 		}
 		else if (TargetRuntime == UnoTarget.Wasm || IsLegacyWasmHead())
 		{
-			AddPackage("Uno.WinUI.WebAssembly", UnoVersion);
-			AddPackageForFeature(UnoFeature.MediaElement, "Uno.WinUI.MediaPlayer.WebAssembly", UnoVersion);
+			AddPackage("Uno.WinUI.WebAssembly", null);
+			AddPackageForFeature(UnoFeature.MediaElement, "Uno.WinUI.MediaPlayer.WebAssembly", null);
 			AddPackage("Microsoft.Windows.Compatibility", WindowsCompatibilityVersion);
 
 			AddPackage("Uno.Extensions.Logging.WebAssembly.Console", UnoLoggingVersion);
@@ -165,11 +117,13 @@ public sealed class ImplicitPackagesResolver : ImplicitPackagesResolverBase
 			AddPackage("Uno.Extensions.Authentication.MSAL.WinUI", UnoExtensionsVersion);
 			AddPackage("Uno.Extensions.Authentication.Oidc.WinUI", UnoExtensionsVersion);
 			AddPackage("Microsoft.Identity.Client", MicrosoftIdentityClientVersion);
+			AddPackage("Uno.WinUI.MSAL", null);
 		}
 		else if (HasFeature(UnoFeature.AuthenticationMsal))
 		{
 			AddPackage("Uno.Extensions.Authentication.MSAL.WinUI", UnoExtensionsVersion);
 			AddPackage("Microsoft.Identity.Client", MicrosoftIdentityClientVersion);
+			AddPackage("Uno.WinUI.MSAL", null);
 		}
 		else if (HasFeature(UnoFeature.AuthenticationOidc))
 		{

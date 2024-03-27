@@ -1,0 +1,202 @@
+[
+	{
+		"group": "Core",
+		"version": "DefaultUnoVersion",
+		"packages": [
+			"Uno.WinUI",
+			"Uno.UI.Adapter.Microsoft.Extensions.Logging",
+			"Uno.WinUI.Maps",
+			"Uno.WinUI.Foldable",
+			"Uno.WinUI.MSAL",
+			"Uno.WinUI.Svg",
+			"Uno.WinUI.Lottie",
+			"Uno.WinUI.DevServer",
+			"Uno.WinUI.Skia.Linux.FrameBuffer",
+			"Uno.WinUI.Skia.MacOS",
+			"Uno.WinUI.Skia.Wpf",
+			"Uno.WinUI.Skia.X11",
+			"Uno.WinUI.WebAssembly",
+			"Uno.WinUI.MediaPlayer.WebAssembly"
+		]
+	},
+	{
+		"group": "WasmBootstrap",
+		"version": "8.0.11",
+		"packages": [
+			"Uno.Wasm.Bootstrap",
+			"Uno.Wasm.Bootstrap.DevServer",
+			"Uno.Wasm.Bootstrap.Server"
+		],
+		"versionOverride": {
+			"net9.0": "9.0.0-dev.35"
+		}
+	},
+	{
+		"group": "OSLogging",
+		"version": "1.7.0",
+		"packages": [
+			"Uno.Extensions.Logging.OSLog",
+			"Uno.Extensions.Logging.WebAssembly.Console"
+		]
+	},
+	{
+		"group": "CoreLogging",
+		"version": "4.0.1",
+		"packages": [
+			"Uno.Core.Extensions.Logging.Singleton"
+		]
+	},
+	{
+		"group": "UniversalImageLoading",
+		"version": "1.9.36",
+		"packages": [
+			"Uno.UniversalImageLoader"
+		]
+	},
+	{
+		"group": "Dsp",
+		"version": "1.2.9",
+		"packages": [
+			"Uno.Dsp.Tasks"
+		]
+	},
+	{
+		"group": "Resizetizer",
+		"version": "1.4.0-dev.26",
+		"packages": [
+			"Uno.Resizetizer"
+		]
+	},
+	{
+		"group": "SkiaSharp",
+		"version": "2.88.7",
+		"packages": [
+			"SkiaSharp.Skottie",
+			"SkiaSharp.Views.Uno.WinUI"
+		]
+	},
+	{
+		"group": "WinAppSdk",
+		"version": "1.5.240311000",
+		"packages": [
+			"Microsoft.WindowsAppSDK"
+		]
+	},
+	{
+		"group": "WinAppSdkBuildTools",
+		"version": "10.0.22621.3233",
+		"packages": [
+			"Microsoft.Windows.SDK.BuildTools"
+		]
+	},
+	{
+		"group": "MicrosoftLoggingConsole",
+		"version": "8.0.0",
+		"packages": [
+			"Microsoft.Extensions.Logging.Console"
+		],
+		"versionOverride": {
+			"net9.0": "9.0.0-preview.2.24128.5"
+		}
+	},
+	{
+		"group": "WindowsCompatibility",
+		"version": "8.0.3",
+		"packages": [
+			"Microsoft.Windows.Compatibility"
+		],
+		"versionOverride": {
+			"net9.0": "9.0.0-preview.2.24128.10"
+		}
+	},
+	{
+		"group": "MsalClient",
+		"version": "4.59.0",
+		"packages": [
+			"Microsoft.Identity.Client"
+		]
+	},
+	{
+		"group": "Mvvm",
+		"version": "8.2.2",
+		"packages": [
+			"CommunityToolkit.Mvvm"
+		]
+	},
+	{
+		"group": "Prism",
+		"version": "9.0.401-pre",
+		"packages": [
+			"Prism.DryIoc.Uno.WinUI",
+			"Prism.Uno.WinUI",
+			"Prism.Uno.WinUI.Markup"
+		]
+	},
+	{
+		"group": "AndroidMaterial",
+		"version": "1.10.0.2",
+		"packages": [
+			"Xamarin.Google.Android.Material"
+		]
+	},
+	{
+		"group": "AndroidXLegacySupportV4",
+		"version": "1.0.0.22",
+		"packages": [
+			"Xamarin.AndroidX.Legacy.Support.V4"
+		]
+	},
+	{
+		"group": "AndroidXAppCompat",
+		"version": "1.6.1.6",
+		"packages": [
+			"Xamarin.AndroidX.AppCompat"
+		]
+	},
+	{
+		"group": "AndroidXRecyclerView",
+		"version": "1.3.2.1",
+		"packages": [
+			"Xamarin.AndroidX.RecyclerView"
+		]
+	},
+	{
+		"group": "AndroidXActivity",
+		"version": "1.8.1.1",
+		"packages": [
+			"Xamarin.AndroidX.Activity"
+		]
+	},
+	{
+		"group": "AndroidXBrowser",
+		"version": "1.7.0.1",
+		"packages": [
+			"Xamarin.AndroidX.Browser"
+		]
+	},
+	{
+		"group": "AndroidXSwipeRefreshLayout",
+		"version": "1.1.0.17",
+		"packages": [
+			"Xamarin.AndroidX.SwipeRefreshLayout"
+		]
+	},
+	{
+		"group": "AndroidXNavigation",
+		"version": "2.6.0.1",
+		"packages": [
+			"Xamarin.AndroidX.Navigation.UI",
+			"Xamarin.AndroidX.Navigation.Fragment",
+			"Xamarin.AndroidX.Navigation.Runtime",
+			"Xamarin.AndroidX.Navigation.Common"
+		]
+	},
+	{
+		"group": "AndroidXCollection",
+		"version": "1.3.0.1",
+		"packages": [
+			"Xamarin.AndroidX.Collection",
+			"Xamarin.AndroidX.Collection.Ktx"
+		]
+	}
+]
