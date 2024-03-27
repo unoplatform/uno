@@ -1,4 +1,10 @@
-﻿namespace Uno.UI.Xaml.Core.Scaling;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\components\scaling\CoreWindowRootScale.cpp, tag winui3/release/1.5.1
+
+#nullable enable
+
+namespace Uno.UI.Xaml.Core.Scaling;
 
 internal class CoreWindowRootScale : RootScale
 {

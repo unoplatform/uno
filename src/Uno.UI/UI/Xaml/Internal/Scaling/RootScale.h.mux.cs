@@ -28,7 +28,7 @@ partial class RootScale
 
 	internal static float GetRasterizationScaleForContentRoot(ContentRoot? coreContextRoot)
 	{
-		if (GetRootScaleForElement(coreContextRoot) is { } rootScale)
+		if (GetRootScaleForContentRoot(coreContextRoot) is { } rootScale)
 		{
 			return rootScale.GetEffectiveRasterizationScale();
 		}
@@ -56,7 +56,7 @@ partial class RootScale
 
 	protected abstract void ApplyScaleProtected(bool scaleChanged);
 
-	private protected VisualTree? VisualTree => _visualTree;
+	private protected VisualTree VisualTree => _visualTree;
 
 	internal enum ScaleKind
 	{
@@ -71,11 +71,11 @@ partial class RootScale
 	// Used only for testing, it replaces the system DPI scale with a value
 	// This can only be used when config is RootScaleConfig::ParentInvert
 	private float _testOverrideScale;
-	private readonly List<DisplayListener> _displayListeners = new();
+	//private readonly List<DisplayListener> _displayListeners = new();
 	private readonly VisualTree _visualTree;
 	private bool _initialized;
 	private bool _updating;
-	private ImageReloadManager? _imageReloadManager;
+	//private ImageReloadManager? _imageReloadManager;
 	private ContentIsland? _content;  // IExpCompositionContent
 
 	protected readonly CoreServices _coreServices;
