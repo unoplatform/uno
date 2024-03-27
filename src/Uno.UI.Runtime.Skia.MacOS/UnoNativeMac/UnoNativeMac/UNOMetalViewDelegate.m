@@ -35,13 +35,11 @@
 #if DEBUG
     NSLog (@"drawInMTKView: %f %f", view.drawableSize.width, view.drawableSize.height);
 #endif
-    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
-    if (renderPassDescriptor == nil)
+    id<CAMetalDrawable> drawable = view.currentDrawable;
+    if (drawable == nil)
     {
         return;
     }
-
-    id<CAMetalDrawable> drawable = view.currentDrawable;
 
     CGSize size = view.drawableSize;
     // call managed code
