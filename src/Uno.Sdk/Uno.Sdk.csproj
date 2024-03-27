@@ -11,6 +11,9 @@
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
 		<PackageIcon>uno.png</PackageIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<UnoSdkVersionSuffix>_V0</UnoSdkVersionSuffix>
+		<UnoSdkVersionSuffix Condition="$(GitVersion_Sha) != ''">_V$(GitVersion_Sha)</UnoSdkVersionSuffix>
+		<AssemblyName>$(PackageId)$(UnoSdkVersionSuffix)</AssemblyName>
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
 		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
@@ -73,7 +76,7 @@
 		<ReplaceFileText
 			Filename="%(_IntermediateTargetFile.Identity)"
 			MatchExpression="_V0"
-			ReplacementText="_V$(SourceRevisionId)" />
+			ReplacementText="$(UnoSdkVersionSuffix)" />
 
 		<ReplaceFileText
 			Filename="%(_PackageManifestPackFile.Identity)"
@@ -83,7 +86,7 @@
 		<ReplaceFileText
 			Filename="%(_TemporaryCodeFile.Identity)"
 			MatchExpression="_V0"
-			ReplacementText="_V$(SourceRevisionId)" />
+			ReplacementText="$(UnoSdkVersionSuffix)" />
 
 		<ReplaceFileText
 			Filename="%(_TemporaryCodeFile.Identity)"
