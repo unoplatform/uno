@@ -97,7 +97,9 @@ public partial class UnitTestDispatcherCompat
 #endif
 
 	public static UnitTestDispatcherCompat Instance { get; } =
-#if HAS_UNO_WINUI || WINDOWS_WINUI
+#if HAS_UNO_WINUI
+		new UnitTestDispatcherCompat(_Impl.Main);
+#elif WINDOWS_WINUI
 		new UnitTestDispatcherCompat(_Impl.GetForCurrentThread());
 #else
 		new UnitTestDispatcherCompat(CoreDispatcher.Main);
