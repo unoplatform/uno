@@ -11,8 +11,11 @@
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
 		<PackageIcon>uno.png</PackageIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<UnoSdkVersionSuffix>_V0</UnoSdkVersionSuffix>
-		<UnoSdkVersionSuffix Condition="$(GitVersion_Sha) != ''">_V$(GitVersion_Sha)</UnoSdkVersionSuffix>
+		<UnoSdkVersionSuffix>_v0</UnoSdkVersionSuffix>
+		<!-- This is better but Jerome made me take it out -->
+		<!-- <UnoSdkVersionSuffix Condition="$(GitVersion_Sha) != ''">_v$(GitVersion_Sha)</UnoSdkVersionSuffix> -->
+		<!-- Use the VersionSource SHA to avoid conflicts for PR builds that span merges on master -->
+		<!-- <UnoSdkVersionSuffix Condition="$(GITVERSION_INFORMATIONALVERSION.Contains('PullRequest'))">$(GITVERSION_VersionSourceSha)</UnoSdkVersionSuffix> -->
 		<AssemblyName>$(PackageId)$(UnoSdkVersionSuffix)</AssemblyName>
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
@@ -74,24 +77,25 @@
 			ReplacementText="$(PackageVersion)" />
 
 		<ReplaceFileText
-			Filename="%(_IntermediateTargetFile.Identity)"
-			MatchExpression="_V0"
-			ReplacementText="$(UnoSdkVersionSuffix)" />
-
-		<ReplaceFileText
 			Filename="%(_PackageManifestPackFile.Identity)"
 			MatchExpression="DefaultUnoVersion"
 			ReplacementText="$(PackageVersion)" />
 
 		<ReplaceFileText
 			Filename="%(_TemporaryCodeFile.Identity)"
-			MatchExpression="_V0"
+			MatchExpression="DefaultUnoVersion"
+			ReplacementText="$(PackageVersion)" />
+
+		<!-- This is better but Jerome made me take it out -->
+		<!-- <ReplaceFileText
+			Filename="%(_IntermediateTargetFile.Identity)"
+			MatchExpression="_v0"
 			ReplacementText="$(UnoSdkVersionSuffix)" />
 
 		<ReplaceFileText
 			Filename="%(_TemporaryCodeFile.Identity)"
-			MatchExpression="DefaultUnoVersion"
-			ReplacementText="$(PackageVersion)" />
+			MatchExpression="_v0"
+			ReplacementText="$(UnoSdkVersionSuffix)" /> -->
 
 		<ItemGroup>
 			<None Include="@(_PackageManifestPackFile)" Pack="true" PackagePath="targets\$(TargetFramework)\%(Filename)%(Extension)" />

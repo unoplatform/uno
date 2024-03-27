@@ -1,6 +1,6 @@
 namespace Uno.Sdk.Tasks;
 
-public sealed class ImplicitPackagesResolver_V0 : ImplicitPackagesResolverBase
+public sealed class ImplicitPackagesResolver_v0 : ImplicitPackagesResolverBase
 {
 	protected override void ExecuteInternal()
 	{
