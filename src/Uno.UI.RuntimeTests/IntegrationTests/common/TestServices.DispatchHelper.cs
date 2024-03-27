@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Uno.UI.Dispatching;
+
 
 #if HAS_UNO_WINUI || WINDOWS_WINUI
 using Microsoft.UI.Xaml;
@@ -17,6 +16,8 @@ using _Priority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 #else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 using _Impl = Windows.UI.Core.CoreDispatcher;
 using _Handler = Windows.UI.Core.DispatchedHandler;
