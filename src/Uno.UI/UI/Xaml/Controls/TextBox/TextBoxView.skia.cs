@@ -22,11 +22,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public TextBoxView(TextBox textBox)
 		{
+			_textBox = new WeakReference<TextBox>(textBox);
+			_isPasswordBox = textBox is PasswordBox;
+
 			DisplayBlock = new TextBlock();
 			SetFlowDirectionAndTextAlignment();
 
-			_textBox = new WeakReference<TextBox>(textBox);
-			_isPasswordBox = textBox is PasswordBox;
 			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -63,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetTextNative(string text)
 		{
-			SetDisplayBlockText(text);
+			UpdateDisplayBlockText(text);
 
 			_textBoxExtension?.SetText(text);
 		}
@@ -75,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetFlowDirectionAndTextAlignment()
 		{
-			if (_textBox?.GetTarget() is not { } textBox)
+			if (TextBox is not { } textBox)
 			{
 				return;
 			}
@@ -98,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetWrapping()
 		{
-			if (_textBox?.GetTarget() is { } textBox)
+			if (TextBox is { } textBox)
 			{
 				DisplayBlock.TextWrapping = textBox.TextWrapping;
 			}
@@ -146,8 +147,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateFont()
 		{
-			var textBox = _textBox?.GetTarget();
-			if (textBox != null)
+			if (TextBox is { } textBox)
 			{
 				DisplayBlock.FontFamily = textBox.FontFamily;
 				DisplayBlock.FontSize = textBox.FontSize;
@@ -162,17 +162,20 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
 			_textBoxExtension?.SetPasswordRevealState(revealState);
+			if (TextBox is { } textBox)
+			{
+				UpdateDisplayBlockText(textBox.Text);
+			}
 		}
 
 		internal void UpdateTextFromNative(string newText)
 		{
-			var textBox = _textBox?.GetTarget();
-			if (textBox != null)
+			if (TextBox is { } textBox)
 			{
 				var oldText = textBox.Text; // preexisting text
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
 				var modifiedText = textBox.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
-				SetDisplayBlockText(modifiedText);
+				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{
 					SetTextNative(modifiedText);
@@ -195,7 +198,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
 
-		private void SetDisplayBlockText(string text)
+		private void UpdateDisplayBlockText(string text)
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.

@@ -457,7 +457,7 @@ namespace Microsoft.UI.Xaml.Documents
 		internal void Draw(in DrawingSession session)
 		{
 			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
-			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && !_lastDrawingState.Equals(newDrawingState);
+			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } || !_lastDrawingState.Equals(newDrawingState);
 			var fireEvents = FireDrawingEventsOnEveryRedraw || somethingChanged;
 			_drawingValid.wentThroughDraw = true;
 			_lastDrawingState = newDrawingState;
