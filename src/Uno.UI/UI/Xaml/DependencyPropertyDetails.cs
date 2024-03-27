@@ -35,6 +35,8 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly object[] _unsetStack;
 
+		private static bool _isLocalCanDefeatAnimationSuppressed;
+
 		static DependencyPropertyDetails()
 		{
 			_unsetStack = new object[StackSize];
@@ -76,6 +78,12 @@ namespace Microsoft.UI.Xaml
 			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
 			_flags |= hasInherits ? Flags.Inherits : Flags.None;
 		}
+
+		internal static void SuppressLocalCanDefeatAnimations()
+			=> _isLocalCanDefeatAnimationSuppressed = true;
+
+		internal static void ContinueLocalCanDefeatAnimations()
+			=> _isLocalCanDefeatAnimationSuppressed = false;
 
 		private void GetPropertyInheritanceConfiguration(
 			bool isTemplatedParentOrDataContext,
@@ -132,7 +140,7 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
-			if (precedence == DependencyPropertyValuePrecedences.Local && value is not UnsetValue)
+			if (!_isLocalCanDefeatAnimationSuppressed && precedence == DependencyPropertyValuePrecedences.Local && value is not UnsetValue)
 			{
 				_flags |= Flags.LocalValueNewerThanAnimationsValue;
 			}
