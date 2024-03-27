@@ -78,7 +78,7 @@ partial class App
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = UnitTestDispatcherCompat.From(_mainWindow).RunAsync(
+			_ = UnitTestDispatcherCompat.Instance.RunAsync(
 				UnitTestDispatcherCompat.Priority.Normal,
 				async () =>
 				{
@@ -182,10 +182,10 @@ partial class App
 					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 				}
 
-				var n = UnitTestDispatcherCompat.From(MainWindow).RunIdleAsync(
+				var n = UnitTestDispatcherCompat.Instance.RunIdleAsync(
 					_ =>
 					{
-						var n = UnitTestDispatcherCompat.From(MainWindow).RunAsync(
+						var n = UnitTestDispatcherCompat.Instance.RunAsync(
 							UnitTestDispatcherCompat.Priority.Normal,
 							async () =>
 							{

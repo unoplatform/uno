@@ -113,7 +113,7 @@ namespace Private.Infrastructure
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
 			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
-				? UnitTestDispatcherCompat.From(CurrentTestWindow)
+				? (CurrentTestWindow is { } ? UnitTestDispatcherCompat.From(CurrentTestWindow) : UnitTestDispatcherCompat.Instance)
 				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
 
 			internal static Page SetupSimulatedAppPage()

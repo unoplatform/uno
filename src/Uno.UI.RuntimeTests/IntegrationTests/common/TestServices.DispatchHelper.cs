@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 #if HAS_UNO_WINUI || WINDOWS_WINUI
 using Microsoft.UI.Xaml;
@@ -92,6 +94,14 @@ public partial class UnitTestDispatcherCompat
 #else
 		new UnitTestDispatcherCompat(x.Dispatcher);
 #endif
+
+	public static UnitTestDispatcherCompat Instance { get; } =
+#if HAS_UNO_WINUI || WINDOWS_WINUI
+		new UnitTestDispatcherCompat(_Impl.GetForCurrentThread());
+#else
+		new UnitTestDispatcherCompat(CoreDispatcher.Main);
+#endif
+
 
 	public bool HasThreadAccess => _impl.HasThreadAccess;
 
