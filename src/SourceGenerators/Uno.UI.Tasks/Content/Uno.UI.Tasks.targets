@@ -11,6 +11,8 @@
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriFeaturesGeneratorTask_v0" />
+	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.UpriSubstitutionsGeneratorTask_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.Assets.RetargetAssets_v0" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerHintGeneratorTask_v0" TaskFactory="TaskHostFactory" />
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.LinkerHintsGenerator.LinkerDefinitionMergerTask_v0" TaskFactory="TaskHostFactory" />
@@ -178,22 +180,74 @@
 	</Target>
 
 	<!--
-	  XAML Resources Trimming
+	  Upri Resources Trimming
+	-->
+
+	<Target Name="_UnoLinkerUpriSubstitutions"
+		Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''"
+		AfterTargets="UnoResourcesGeneration">
+
+		<ItemGroup>
+			<_UnoUpriResource Condition="'%(GeneratedFiles.UnoResourceTarget)' == 'Uno'" Include="@(GeneratedFiles->'%(LogicalName)')">
+				<Language>%(GeneratedFiles.Language)</Language>
+			</_UnoUpriResource>
+		</ItemGroup>
+
+		<UpriSubstitutionsGeneratorTask_v0
+			AssemblyName="$(AssemblyName)"
+			Resources="@(_UnoUpriResource)"
+			OutputFile="$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml" />
+
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)\Substitutions\UpriResources.Substitutions.xml" />
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="_UnoLinkerUpriFeatures"
+		Condition="'$(IsUnoHead)'=='true'"
+		BeforeTargets="BuildDist">
+
+		<UpriFeaturesGeneratorTask_v0
+			Languages="@(UnoSupportedLanguage)">
+			<Output TaskParameter="OutputFeatures" ItemName="_UpriOutputFeatures" />
+		</UpriFeaturesGeneratorTask_v0>
+
+		<ItemGroup>
+			<RuntimeHostConfigurationOption Include="@(_UpriOutputFeatures)" Trim="true" />
+		</ItemGroup>
+
+	</Target>
+
+	<!--
+	  Linker Substitutions Merge
 	  -->
 
-	<Target Name="_UnoLinkerHintsSubstitutionsMerge"
+	<Target Name="_UnoLinkerCollectSubstitutions"
 		Condition="
-		'$(DesignTimeBuild)' != 'true'
-		and '$(BuildingInsideUnoSourceGenerator)' == ''
-		and '$(SkipCompilerExecution)' == ''
-		and '$(UnoXamlResourcesTrimming)'=='true'
-		and $(_IsXamlTrimmingAvailable)"
+			'$(DesignTimeBuild)' != 'true'
+			and '$(BuildingInsideUnoSourceGenerator)' == ''
+			and '$(SkipCompilerExecution)' == ''"
 		AfterTargets="CoreCompile">
 
 		<ItemGroup>
 			<_SubstitutionFiles Include="@(UnoLinkerSubstitution)" />
 			<_SubstitutionFiles Include="$(IntermediateOutputPath)\Substitutions\*.Substitutions.xml" />
 		</ItemGroup>
+		
+	</Target>
+	
+	<Target Name="_UnoLinkerSubstitutionsMerge"
+		Condition="
+			'$(DesignTimeBuild)' != 'true'
+			and '$(BuildingInsideUnoSourceGenerator)' == ''
+			and '$(SkipCompilerExecution)' == ''
+			and @(_SubstitutionFiles->Count()) > 0"
+		AfterTargets="_UnoLinkerCollectSubstitutions">
+
+		<PropertyGroup>
+			<_RequiresSubstitutionsInjection>true</_RequiresSubstitutionsInjection>
+		</PropertyGroup>
 
 		<LinkerDefinitionMergerTask_v0
 			DefinitionFiles="@(_SubstitutionFiles)"
@@ -210,18 +264,17 @@
 
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CoreCompile" />
-		<_UnoEmbeddedResourcesInjectionAfterTargets Include="_UnoLinkerHintsSubstitutionsMerge" />
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="_UnoLinkerSubstitutionsMerge" />
 	</ItemGroup>
 
 	<Target Name="_UnoEmbeddedResourcesInjection"
-	  Inputs="@(ReferencePath);@(EmbeddedResource)"
-	  Outputs="$(IntermediateOutputPath)$(TargetFileName)"
-	  Condition="
-		'$(DesignTimeBuild)' != 'true'
-		and '$(BuildingInsideUnoSourceGenerator)' == ''
-		and '$(SkipCompilerExecution)' == ''
-		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')
-		and $(_IsXamlTrimmingAvailable)"
+		Inputs="@(ReferencePath);@(EmbeddedResource)"
+		Outputs="$(IntermediateOutputPath)$(TargetFileName)"
+		Condition="
+			'$(DesignTimeBuild)' != 'true'
+			and '$(BuildingInsideUnoSourceGenerator)' == ''
+			and '$(SkipCompilerExecution)' == ''
+			and ('$(_RequiresSubstitutionsInjection)' == 'true' or '$(UnoRewriteEmbeddedResources)' == 'true')"
 		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
 
 		<ItemGroup>
@@ -237,6 +290,10 @@
 			ReferencePath="@(_UnoEmbeddedResourcesInjectionAssembliesForReferencePaths)"
 			  />
 	</Target>
+
+	<!--
+	  XAML Resources Trimming
+	  -->
 
 	<Target Name="_UnoLinkerHintsPass1"
 		  Condition="
