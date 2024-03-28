@@ -21,8 +21,6 @@
 	  <!-- Default Windows Value + changed 12 to 10 to match TextBox padding -->
 	  <Setter Property="Padding"
 				  Value="10,10,0,7" />
-	  <ios:Setter Property="IsPopupFullscreen"
-				  Value="True" />
 	  <Setter Property="HorizontalContentAlignment"
 			  Value="Stretch" />
 	  <Setter Property="Template">
@@ -362,6 +360,7 @@
 	<ios:ComboBox x:Name="theComboBox"
 				  ItemsSource="{Binding VariableLengthItems}"
 				  Style="{StaticResource PickerComboBoxStyle}"
+				  IsPopupFullscreen="true"
 				  SelectedItem="{Binding test}" />
 
   </StackPanel>

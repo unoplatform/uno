@@ -44,5 +44,13 @@ namespace Uno.UI.Helpers.Xaml
 
 			return setter;
 		}
+
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Setter MakeSetterMutable(this Setter setter)
+		{
+			setter.IsMutable = true;
+			return setter;
+		}
 	}
 }
