@@ -2266,12 +2266,12 @@ namespace Microsoft.UI.Xaml.Controls
 		/* static */
 
 		private static DateTimeOffset NullDateSentinel { get; } =
-			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+			default(WindowsFoundationDateTime);
 
 		/* static */
 
 		private static DateTimeOffset NullDateSentinelValue { get; } =
-			new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+			default(WindowsFoundationDateTime);
 
 		void GetTodaysDate(out DateTimeOffset? todaysDate)
 		{
