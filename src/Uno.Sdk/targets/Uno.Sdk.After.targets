@@ -21,7 +21,7 @@
 		This is required by a WebAssembly support issue in VS, where both Publishing/Debugging and other 
 		targets hot reload is not supported. See https://aka.platform.uno/singleproject-vs-wasm-reload.
 	-->
-	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">
+	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' AND '$(TargetFrameworks)' != '' ">
 		<_UnoTargetFrameworkCount>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries).Length)</_UnoTargetFrameworkCount>
 		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0])</_UnoFirstOriginalTargetFramework>
 	</PropertyGroup>
@@ -29,6 +29,7 @@
 	<PropertyGroup
 		Condition="
 			$([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'browserwasm'
+			AND '$(TargetFrameworks)' != ''
 			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
 			AND '$(BuildingInsideVisualStudio)' == 'true'">
 
