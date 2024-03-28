@@ -21,6 +21,7 @@ using Windows.Globalization;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_DatePicker
 	{
 		[TestInitialize]
@@ -31,8 +32,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
+#if HAS_UNO
 		[TestMethod]
-		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS")]
+#endif
+		public async Task When_Time_Zone()
+		{
+			for (int offset = -14; offset <= 14; offset++)
+			{
+				var now = DateTimeOffset.Now;
+				now = now.Add(TimeSpan.FromHours(offset) - now.Offset);
+				using (new TimeZoneModifier(TimeZoneInfo.CreateCustomTimeZone("FakeTestTimeZone", TimeSpan.FromHours(offset), "FakeTestTimeZone", "FakeTestTimeZone")))
+				{
+					var datePicker = new DatePicker();
+					await UITestHelper.Load(datePicker);
+
+					await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+					var openFlyouts = FlyoutBase.OpenFlyouts;
+					Assert.AreEqual(1, openFlyouts.Count);
+					var associatedFlyout = (DatePickerFlyout)openFlyouts[0];
+					Assert.IsNotNull(associatedFlyout);
+
+					await ControlHelper.ClickFlyoutCloseButton(datePicker, isAccept: true);
+
+					Assert.AreEqual(datePicker.Date, associatedFlyout.Date);
+					Assert.AreEqual(now.Year, associatedFlyout.Date.Year);
+					Assert.AreEqual(now.Month, associatedFlyout.Date.Month);
+					Assert.AreEqual(now.Day, associatedFlyout.Date.Day);
+
+					bool unloaded = false;
+					datePicker.Unloaded += (s, e) => unloaded = true;
+
+					TestServices.WindowHelper.WindowContent = null;
+
+					await TestServices.WindowHelper.WaitFor(() => unloaded, message: "DatePicker did not unload");
+
+				}
+			}
+		}
+#endif
+
+		[TestMethod]
 		public async Task When_United_States_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -51,7 +93,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_CanadaEnglish_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -70,7 +111,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_CanadaFrench_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -89,7 +129,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Czech_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -108,7 +147,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Hungarian_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -127,7 +165,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15409")]
 		public async Task When_Opened_From_Button_Flyout()
 		{
@@ -166,12 +203,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Native() => await When_Opened_And_Unloaded(true);
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Opened_And_Unloaded_Managed() => await When_Opened_And_Unloaded(false);
 
@@ -220,12 +255,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Native() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(true);
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]
 		public async Task When_Flyout_Closed_FlyoutBase_Closed_Invoked_Managed() => await When_Flyout_Closed_FlyoutBase_Closed_Invoked(false);
 
@@ -272,7 +305,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __IOS__
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
 		{
@@ -281,7 +313,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
 

@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
 #if HAS_UNO
@@ -27,7 +28,8 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 	[TestClass]
 	public class DatePickerIntegrationTests
 	{
-		private const long DEFAULT_DATE_TICKS = 504910368000000000;
+		// https://github.com/microsoft/CsWinRT/blob/7dc82799c7afeaf862c9fb7af78ad0e2fc03c48e/src/WinRT.Runtime/Projections/SystemTypes.cs#L71
+		private const long ManagedUtcTicksAtNativeZero = 504911232000000000;
 
 		[TestInitialize]
 		void ClassSetup()
@@ -103,7 +105,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				today.SetToNow();
 
 				// Default value of Date should be the null sentinel value.
-				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS); // 1600-12-31, as per MS documentation
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 				datePicker.SelectedDate.Should().BeNull();
 
 				// Default value of MinYear should be 100 years ago.
@@ -991,7 +993,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				this.Log().Info("Setting SelectedDate to null.  Date should be the null sentinel value.");
 				datePicker.SelectedDate = null;
 
-				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 
 				this.Log().Info("Setting SelectedDate to February 2, 2018. Date should change to this value.");
 				datePicker.SelectedDate = (date2);
@@ -1008,7 +1010,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date to the null sentinel value. SelectedDate should become null.");
-				datePicker.Date = new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+				datePicker.Date = new DateTimeOffset(ManagedUtcTicksAtNativeZero, TimeSpan.Zero).ToLocalTime();
 
 				datePicker.SelectedDate.Should().BeNull("SelectedDate should be back to null");
 			});
@@ -1081,7 +1083,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			{
 				datePicker.CalendarIdentifier = "JapaneseCalendar";
 
-				datePicker.Date.Ticks.Should().Be(DEFAULT_DATE_TICKS);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 
 				this.Log().Info("Setting SelectedDate to January 9, 2019. Date should change to this value.");
 				datePicker.SelectedDate = (date);
@@ -1091,7 +1093,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date back to the null sentinel value. SelectedDate should become null.");
-				datePicker.Date = new DateTimeOffset(DEFAULT_DATE_TICKS, TimeSpan.Zero);
+				datePicker.Date = new DateTimeOffset(ManagedUtcTicksAtNativeZero, TimeSpan.Zero).ToLocalTime();
 				datePicker.SelectedDate.Should().BeNull();
 			});
 		}

@@ -510,12 +510,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			string calendarIdentifier;
 			string title = default;
-			DateTimeOffset date = default;
+			DateTime date = default;
 			bool monthVisible = false;
 			bool yearVisible = false;
 			bool dayVisible = false;
-			DateTimeOffset minYear = default;
-			DateTimeOffset maxYear = default;
+			DateTime minYear = default;
+			DateTime maxYear = default;
 			string dayFormat;
 			string monthFormat;
 			string yearFormat;
