@@ -1330,6 +1330,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO // uses internal ToMatrix
 		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
 		public async Task When_SCP_TransformToVisual()
 		{
 			var SUT = new ScrollViewer

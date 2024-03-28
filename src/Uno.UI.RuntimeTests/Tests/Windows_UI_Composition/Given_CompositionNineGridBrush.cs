@@ -20,6 +20,9 @@ public class Given_CompositionNineGridBrush
 {
 	[TestMethod]
 	[RunsOnUIThread]
+#if !__SKIA__
+	[Ignore("LoadedImageSurface is only implemented on skia")]
+#endif
 	public async Task When_Source_Changes()
 	{
 #if HAS_UNO
