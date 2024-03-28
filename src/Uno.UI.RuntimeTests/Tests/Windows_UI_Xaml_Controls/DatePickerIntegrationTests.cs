@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
 #if HAS_UNO
@@ -101,7 +102,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				today.SetToNow();
 
 				// Default value of Date should be the null sentinel value.
-				((WindowsFoundationDateTime)datePicker.Date).UniversalTime.Should().Be(0);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 				datePicker.SelectedDate.Should().BeNull();
 
 				// Default value of MinYear should be 100 years ago.
@@ -989,7 +990,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				this.Log().Info("Setting SelectedDate to null.  Date should be the null sentinel value.");
 				datePicker.SelectedDate = null;
 
-				((WindowsFoundationDateTime)datePicker.Date).UniversalTime.Should().Be(0);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 
 				this.Log().Info("Setting SelectedDate to February 2, 2018. Date should change to this value.");
 				datePicker.SelectedDate = (date2);
@@ -1079,7 +1080,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 			{
 				datePicker.CalendarIdentifier = "JapaneseCalendar";
 
-				((WindowsFoundationDateTime)datePicker.Date).UniversalTime.Should().Be(0);
+				datePicker.Date.WindowsFoundationUniversalTime().Should().Be(0);
 
 				this.Log().Info("Setting SelectedDate to January 9, 2019. Date should change to this value.");
 				datePicker.SelectedDate = (date);
