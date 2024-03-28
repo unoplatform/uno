@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Gtk;
 using Uno.Helpers;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Windows;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
@@ -10,12 +11,18 @@ namespace Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 internal class DpiHelper
 {
 	private readonly StartStopEventWrapper<EventHandler> _dpiChangedWrapper;
+	private readonly UnoGtkWindow _window;
 
 	private float? _dpi;
 
 	public DpiHelper()
 	{
 		_dpiChangedWrapper = new(StartDpiChanged, StopDpiChanged);
+	}
+
+	public DpiHelper(UnoGtkWindow window) : this()
+	{
+		_window = window;
 	}
 
 	public event EventHandler DpiChanged
@@ -43,7 +50,7 @@ internal class DpiHelper
 		GetWindow().Screen.SizeChanged -= OnScreenSizeChanged;
 	}
 
-	private Window GetWindow() => GtkHost.Current.InitialWindow;
+	private Window GetWindow() => _window ?? GtkHost.Current.InitialWindow;
 
 	private void OnWindowConfigure(object o, ConfigureEventArgs args) => CheckDpiUpdate();
 
@@ -83,4 +90,6 @@ internal class DpiHelper
 		}
 		return dpi;
 	}
+
+	internal float RasterizationScale => (_dpi ?? GetNativeDpi()) / DisplayInformation.BaseDpi;
 }
