@@ -1,11 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollViewerAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference ScrollViewerAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
+
 using System;
 using DirectUI;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
+/// <summary>
+/// Exposes ScrollViewer types to UI Automation.
+/// </summary>
 public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer, Provider.IScrollProvider
 {
 	private const double MinimumPercent = 0.0f;
@@ -61,16 +65,16 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 		switch (horizontalAmount)
 		{
 			case ScrollAmount.LargeDecrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->PageLeft());
+				owner.PageLeft();
 				break;
 			case ScrollAmount.SmallDecrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->LineLeft());
+				owner.LineLeft();
 				break;
 			case ScrollAmount.SmallIncrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->LineRight());
+				owner.LineRight();
 				break;
 			case ScrollAmount.LargeIncrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->PageRight());
+				owner.PageRight();
 				break;
 			case ScrollAmount.NoAmount:
 				break;
@@ -81,16 +85,16 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 		switch (verticalAmount)
 		{
 			case ScrollAmount.LargeDecrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->PageUp());
+				owner.PageUp();
 				break;
 			case ScrollAmount.SmallDecrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->LineUp());
+				owner.LineUp();
 				break;
 			case ScrollAmount.SmallIncrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->LineDown());
+				owner.LineDown();
 				break;
 			case ScrollAmount.LargeIncrement:
-				//		IFC((static_cast<ScrollViewer*>(pOwner))->PageDown());
+				owner.PageDown();
 				break;
 			case ScrollAmount.NoAmount:
 				break;
@@ -166,6 +170,16 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_MinHorizontalOffset(&minHorizontalOffset));
 			//	*pValue = AutomationIsScrollable(extentWidth, viewportWidth, minHorizontalOffset);
 			//}
+
+			var owner = Owner as Controls.ScrollViewer;
+
+			if (
+				/*UNO TODO: Implement owner.ScrollInfo is { }*/
+				true
+				)
+			{
+				return AutomationIsScrollable(owner.ExtentWidth, owner.ViewportWidth, owner.MinHorizontalOffset);
+			}
 		}
 	}
 
@@ -174,30 +188,16 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 	{
 		get
 		{
-			//HRESULT hr = S_OK;
-			//DOUBLE extentWidth = 0.0;
-			//DOUBLE viewportWidth = 0.0;
-			//DOUBLE horizontalOffset = 0.0;
-			//DOUBLE minHorizontalOffset = 0.0;
-			//xaml::IUIElement* pOwner = NULL;
-			//IScrollInfo* pScrollInfo = NULL;
-
-			//IFCPTR(pValue);
-			//*pValue = noScroll;
-			//IFC(get_Owner(&pOwner));
-			//IFCPTR(pOwner);
-
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ScrollInfo(&pScrollInfo));
-			//if (pScrollInfo)
-			//{
-			//	// Make sure to take minimum offset into account in horizontal dimension to subtract from actual offset,
-			//	// minimum offset is new concept introduced for headered controls.
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ExtentWidth(&extentWidth));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ViewportWidth(&viewportWidth));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_HorizontalOffset(&horizontalOffset));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_MinHorizontalOffset(&minHorizontalOffset));
-			//	*pValue = AutomationGetScrollPercent(extentWidth, viewportWidth, horizontalOffset, minHorizontalOffset);
-			//}
+			var owner = Owner as Controls.ScrollViewer;
+			if (
+				/*UNO TODO: Implement owner.ScrollInfo is { }*/
+				true
+				)
+			{
+				// Make sure to take minimum offset into account in horizontal dimension to subtract from actual offset,
+				// minimum offset is new concept introduced for headered controls.
+				return AutomationGetScrollPercent(owner.ExtentWidth, owner.ViewportWidth, owner.HorizontalOffset, owner.MinHorizontalOffset);
+			}
 		}
 	}
 
@@ -206,26 +206,15 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 	{
 		get
 		{
-			//HRESULT hr = S_OK;
-			//DOUBLE extentWidth = 0.0;
-			//DOUBLE viewportWidth = 0.0;
-			//DOUBLE minHorizontalOffset = 0.0;
-			//xaml::IUIElement* pOwner = NULL;
-			//IScrollInfo* pScrollInfo = NULL;
+			var owner = Owner as Controls.ScrollViewer;
 
-			//IFCPTR(pValue);
-			//*pValue = 100.0;
-			//IFC(get_Owner(&pOwner));
-			//IFCPTR(pOwner);
-
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ScrollInfo(&pScrollInfo));
-			//if (pScrollInfo)
-			//{
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ExtentWidth(&extentWidth));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ViewportWidth(&viewportWidth));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_MinHorizontalOffset(&minHorizontalOffset));
-			//	*pValue = AutomationGetViewSize(extentWidth, viewportWidth, minHorizontalOffset);
-			//}
+			if (
+				/*UNO TODO: Implement owner.ScrollInfo is { }*/
+				true
+				)
+			{
+				return AutomationGetViewSize(owner.ExtentWidth, owner.ViewportWidth, owner.MinHorizontalOffset);
+			}
 		}
 	}
 
@@ -234,26 +223,15 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 	{
 		get
 		{
-			//HRESULT hr = S_OK;
-			//DOUBLE extentHeight = 0.0;
-			//DOUBLE viewportHeight = 0.0;
-			//DOUBLE minVerticalOffset = 0.0;
-			//xaml::IUIElement* pOwner = NULL;
-			//IScrollInfo* pScrollInfo = NULL;
+			var owner = Owner as Controls.ScrollViewer;
 
-			//IFCPTR(pValue);
-			//*pValue = FALSE;
-			//IFC(get_Owner(&pOwner));
-			//IFCPTR(pOwner);
-
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ScrollInfo(&pScrollInfo));
-			//if (pScrollInfo)
-			//{
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ExtentHeight(&extentHeight));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ViewportHeight(&viewportHeight));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_MinVerticalOffset(&minVerticalOffset));
-			//	*pValue = AutomationIsScrollable(extentHeight, viewportHeight, minVerticalOffset);
-			//}
+			if (
+				/*UNO TODO: Implement owner.ScrollInfo is { }*/
+				true
+				)
+			{
+				return AutomationIsScrollable(owner.ExtentHeight, owner.ViewportHeight, owner.MinVerticalOffset);
+			}
 		}
 	}
 
@@ -261,31 +239,15 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 	{
 		get
 		{
-			//HRESULT hr = S_OK;
-			//DOUBLE extentHeight = 0.0;
-			//DOUBLE viewportHeight = 0.0;
-			//DOUBLE verticalOffset = 0.0;
-			//DOUBLE minVerticalOffset = 0.0;
-			//xaml::IUIElement* pOwner = NULL;
-			//IScrollInfo* pScrollInfo = NULL;
+			var owner = Owner as Controls.ScrollViewer;
 
-			//IFCPTR(pValue);
-			//*pValue = noScroll;
-			//IFC(get_Owner(&pOwner));
-			//IFCPTR(pOwner);
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ScrollInfo(&pScrollInfo));
-
-			//if (pScrollInfo)
-			//{
-			//	// Make sure to take minimum offset into account in veritcal dimension to subtract from actual offset,
-			//	// minimum offset is new concept introduced for headered controls.
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ExtentHeight(&extentHeight));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ViewportHeight(&viewportHeight));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_VerticalOffset(&verticalOffset));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_MinVerticalOffset(&minVerticalOffset));
-
-			//	*pValue = AutomationGetScrollPercent(extentHeight, viewportHeight, verticalOffset, minVerticalOffset);
-			//}
+			if (
+				/*UNO TODO: Implement owner.ScrollInfo is { }*/
+				true
+				)
+			{
+				return AutomationGetScrollPercent(owner.ExtentHeight, owner.ViewportHeight, owner.VerticalOffset, owner.MinVerticalOffset);
+			}
 		}
 	}
 
@@ -294,26 +256,15 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 	{
 		get
 		{
-			//HRESULT hr = S_OK;
-			//DOUBLE extentHeight = 0.0;
-			//DOUBLE viewportHeight = 0.0;
-			//DOUBLE minVerticalOffset = 0.0;
-			//xaml::IUIElement* pOwner = NULL;
-			//IScrollInfo* pScrollInfo = NULL;
+			var owner = Owner as Controls.ScrollViewer;
 
-			//IFCPTR(pValue);
-			//*pValue = 100.0;
-			//IFC(get_Owner(&pOwner));
-			//IFCPTR(pOwner);
-
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ScrollInfo(&pScrollInfo));
-			//if (pScrollInfo)
-			//{
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ExtentHeight(&extentHeight));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_ViewportHeight(&viewportHeight));
-			//	IFC((static_cast<ScrollViewer*>(pOwner))->get_MinVerticalOffset(&minVerticalOffset));
-			//	*pValue = AutomationGetViewSize(extentHeight, viewportHeight, minVerticalOffset);
-			//}
+			if (
+				/*UNO TODO: Implement owner.ScrollInfo is { }*/
+				true
+				)
+			{
+				return AutomationGetViewSize(owner.ExtentHeight, owner.ViewportHeight, owner.MinVerticalOffset);
+			}
 		}
 	}
 
@@ -351,14 +302,12 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 		{
 			var owner = Owner as Controls.ScrollViewer;
 
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ElementHorizontalScrollBar(&pElementHorizontalScrollBar));
-			//IFC((static_cast<ScrollViewer*>(pOwner))->get_ElementVerticalScrollBar(&pElementVerticalScrollBar));
-
-			//if (pElement == pElementHorizontalScrollBar || pElement == pElementVerticalScrollBar)
-			//{
-			//	IFC((static_cast<UIElement*>(pElement))->get_Visibility(&visibility));
-			//	*bchildIsAcceptable = visibility == xaml::Visibility_Visible;
-			//}
+			if (element == owner.ElementHorizontalScrollBar() || element == owner.ElementVerticalScrollBar())
+			{
+				return element.Visibility == Visibility.Visible;
+			}
 		}
+
+		return childIsAcceptable;
 	}
 }
