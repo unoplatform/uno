@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference RichEditBoxAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference RichEditBoxAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
 using System.Collections.Generic;
+using Uno.UI.DirectUI;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -22,11 +23,8 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer
 	protected override IEnumerable<AutomationPeer> GetDescribedByCore()
 	{
 		var owner = Owner as Controls.RichEditBox;
+		TextBoxPlaceholderTextHelper.SetupPlaceholderTextBlockDescribedBy(owner);
 
-		//IFC_RETURN(get_Owner(spOwner.GetAddressOf()));
-
-		//IFC_RETURN(TextBoxPlaceholderTextHelper::SetupPlaceholderTextBlockDescribedBy(spOwner));
-
-		//IFC_RETURN(GetAutomationPeerCollection(UIAXcp::APDescribedByProperty, returnValue));
+		return GetAutomationPeerCollection(AutomationProperties.DescribedByProperty);
 	}
 }
