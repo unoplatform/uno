@@ -11,4 +11,7 @@ internal static class Inlined
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static bool IsCloseReal(float a, float b) => Math.Abs(a - b) < float.Epsilon; // TODO Uno: The original logic is more complex, but might not be necessary in Uno.
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	internal static bool IsCloseReal(double a, double b) => Math.Abs(a - b) < double.Epsilon; // TODO Uno: The original logic is more complex, but might not be necessary in Uno.
 }

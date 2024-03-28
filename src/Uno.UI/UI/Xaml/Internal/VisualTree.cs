@@ -90,7 +90,7 @@ namespace Uno.UI.Xaml.Core
 				var config = RootScaleConfig.ParentApply; //XamlOneCoreTransforms.IsEnabled ? RootScaleConfig::ParentApply : RootScaleConfig::ParentInvert;
 				RootScale = new CoreWindowRootScale(config, coreServices, this);
 			}
-			else if (ContentRoot.Type == ContentRootType.XamlIsland)
+			else if (ContentRoot.Type == ContentRootType.XamlIslandRoot)
 			{
 				RootScale = new XamlIslandRootScale(coreServices, this);
 
