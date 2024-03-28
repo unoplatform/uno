@@ -5887,21 +5887,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							_currentStyleTargetType = FindType(targetType);
 						}
 
-						XamlObjectDefinition? setterValueObject = null;
 						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
 							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
 							{
-								if (fullTypeName == XamlConstants.Types.Setter && FindMember(xamlObjectDefinition, "Value") is { } valueNode &&
-									valueNode.Objects.Count == 1)
-								{
-									setterValueObject = valueNode.Objects[0];
-									if (setterValueObject.Type.Name == "Bind")
-									{
-										writer.AppendLineIndented("IsMutable = true,");
-									}
-								}
-
 								TrySetParsing(writer, knownType, isInitializer: true);
 								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 								BuildLiteralProperties(writer, xamlObjectDefinition);
@@ -5909,8 +5898,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType);
 							}
 
-							if (setterValueObject is not null)
+							if (fullTypeName == XamlConstants.Types.Setter && FindMember(xamlObjectDefinition, "Value") is { } valueNode &&
+									valueNode.Objects.Count == 1)
 							{
+								var setterValueObject = valueNode.Objects[0];
+								if (setterValueObject.Type.Name == "Bind")
+								{
+									writer.AppendLineIndented(".MakeSetterMutable()");
+								}
+
 								var isThemeResource = setterValueObject.Type.Name == "ThemeResource";
 								var isStaticResourceForHotReload = _isHotReloadEnabled && setterValueObject.Type.Name == "StaticResource";
 								if (isThemeResource || isStaticResourceForHotReload)
