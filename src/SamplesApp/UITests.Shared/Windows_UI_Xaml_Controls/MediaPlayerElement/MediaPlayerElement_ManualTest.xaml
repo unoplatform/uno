@@ -32,6 +32,7 @@
 					x:Name="mpe"
 					Stretch="UniformToFill"
 					Source="https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4"
+					crossorigin="anonymous"
 					AreTransportControlsEnabled="True"
 					AutoPlay="False">
 			<MediaPlayerElement.TransportControls>

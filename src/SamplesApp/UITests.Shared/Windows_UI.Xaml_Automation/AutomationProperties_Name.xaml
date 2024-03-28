@@ -30,7 +30,8 @@
 							AutomationProperties.Name="My Border"/>
 					<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 						   AutomationProperties.Name="My Image"
-						   Stretch="None" />
+						   Stretch="None"
+						   crossorigin="anonymous" />
 
 					<!-- Duplicates tests -->
 					<TextBlock AutomationProperties.Name="My Duplicate TextBlock"

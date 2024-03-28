@@ -56,6 +56,7 @@
 			<TextBlock Text="None" />
 			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 				   Stretch="None"
+				   crossorigin="anonymous"
 				   Width="300"
 				   Height="250"
 				   VerticalAlignment="Bottom"
@@ -64,6 +65,7 @@
 			<TextBlock Text="Uniform" />
 			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 				   Stretch="Uniform"
+				   crossorigin="anonymous"
 				   Width="300"
 				   Height="250"
 				   VerticalAlignment="Bottom"
@@ -72,6 +74,7 @@
 			<TextBlock Text="UniformToFill" />
 			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 				   Stretch="UniformToFill"
+				   crossorigin="anonymous"
 				   Width="300"
 				   Height="250"
 				   VerticalAlignment="Bottom"
@@ -80,6 +83,7 @@
 			<TextBlock Text="Fill" />
 			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 				   Stretch="Fill"
+				   crossorigin="anonymous"
 				   Width="300"
 				   Height="250"
 				   VerticalAlignment="Bottom"

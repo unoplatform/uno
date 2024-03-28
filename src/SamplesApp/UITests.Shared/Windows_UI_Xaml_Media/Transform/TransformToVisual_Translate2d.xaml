@@ -39,6 +39,7 @@
 										BorderBrush="Black"
 										BorderThickness="2">
 							<Image Width="40"
+										 crossorigin="anonymous"
 										 Source="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Elder_Duck_1_%28PSF%29.png/269px-Elder_Duck_1_%28PSF%29.png" />
 						</Border>
 					</Border>

@@ -39,6 +39,7 @@
 
 						<!-- Value -->
 						<WebView x:Name="PART_WebView"
+								 crossorigin="anonymous"
 								 Source="https://web.archive.org/web/20181010203846/https://www.bloomberg.com/view/articles/2018-10-09/google-is-big-and-google-was-small" />
 					</Grid>
 				</ControlTemplate>

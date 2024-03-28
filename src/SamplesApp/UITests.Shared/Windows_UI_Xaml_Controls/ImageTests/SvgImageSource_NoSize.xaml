@@ -11,7 +11,7 @@
 	<Grid>
 		<Image>
 			<Image.Source>
-				<SvgImageSource UriSource="https://raw.githubusercontent.com/unoplatform/uno/56069e83325786e0a652fdedfda7bbd9f0cee224/src/SamplesApp/UITests.Shared/Assets/Formats/apple.svg" />
+				<SvgImageSource UriSource="https://raw.githubusercontent.com/unoplatform/uno/56069e83325786e0a652fdedfda7bbd9f0cee224/src/SamplesApp/UITests.Shared/Assets/Formats/apple.svg" crossorigin="anonymous" />
 			</Image.Source>
 		</Image>
 	</Grid>

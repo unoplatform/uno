@@ -15,6 +15,7 @@
 
 	<Grid>
 		<Image Source="https://s3.amazonaws.com/uno-website-assets/wp-content/uploads/2018/08/22113759/UnoLogoSmall.png"
+			   crossorigin="anonymous"
 			   Width="100"
 			   Height="100"
 			   Margin="10" />

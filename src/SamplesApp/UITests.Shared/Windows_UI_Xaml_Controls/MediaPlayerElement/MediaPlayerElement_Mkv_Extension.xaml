@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="">
 
-	<MediaPlayerElement Source="https://sample-videos.com/video123/mkv/720/big_buck_bunny_720p_5mb.mkv"
+	<MediaPlayerElement crossorigin="anonymous" Source="https://sample-videos.com/video123/mkv/720/big_buck_bunny_720p_5mb.mkv"
 						AreTransportControlsEnabled="True"
 						AutoPlay="True" />
 </UserControl>

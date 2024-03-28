@@ -157,7 +157,7 @@
 						<GradientStop Color="White" Offset=".6"/>
 						<GradientStop Color="Red" Offset="1"/>
 					</LinearGradientBrush>
-					<!--<ImageBrush ImageSource="https://pbs.twimg.com/profile_images/908795482067144705/xFHjZZNS_400x400.jpg" />-->
+					<!--<ImageBrush crossorigin="anonymous" ImageSource="https://pbs.twimg.com/profile_images/908795482067144705/xFHjZZNS_400x400.jpg" />-->
 				</Border.Background>
 			</Border>
 			<Border HorizontalAlignment="Center" BorderThickness="3" BorderBrush="BlueViolet" Background="Pink">
@@ -172,7 +172,7 @@
 							<GradientStop Color="Blue" Offset=".4"/>
 							<GradientStop Color="#FF51FF70" Offset="1"/>
 						</LinearGradientBrush>
-						<!--<ImageBrush ImageSource="https://pbs.twimg.com/profile_images/908795482067144705/xFHjZZNS_400x400.jpg" />-->
+						<!--<ImageBrush crossorigin="anonymous" ImageSource="https://pbs.twimg.com/profile_images/908795482067144705/xFHjZZNS_400x400.jpg" />-->
 					</Polygon.Fill>
 				</Polygon>
 			</Border>

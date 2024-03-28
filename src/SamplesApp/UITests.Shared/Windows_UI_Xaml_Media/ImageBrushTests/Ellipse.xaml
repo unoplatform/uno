@@ -18,6 +18,7 @@
 			<Ellipse.Fill>
 				<ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
 				            AlignmentX="Right"
+							crossorigin="anonymous"
 				            AlignmentY="Bottom"/>
 			</Ellipse.Fill>
 		</Ellipse>
@@ -26,6 +27,7 @@
 			<Border.Background>
 				<ImageBrush ImageSource="https://uno-assets.platform.uno/tests/images/uno-overalls.bmp"
 				            Stretch="None"
+							crossorigin="anonymous"
 				            AlignmentX="Right"
 				            AlignmentY="Bottom"/>
 			</Border.Background>

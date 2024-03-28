@@ -15,7 +15,8 @@
 									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
 									AreTransportControlsEnabled="True"
 									AutoPlay="False"
-									MaxWidth="720">
+									MaxWidth="720"
+									crossorigin="anonymous">
 				<MediaPlayerElement.TransportControls>
 					<MediaTransportControls IsCompact="False" 
 											ShowAndHideAutomatically="False"/>
@@ -26,7 +27,8 @@
 									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
 									AreTransportControlsEnabled="True"
 									AutoPlay="False"
-									MaxWidth="720">
+									MaxWidth="720"
+									crossorigin="anonymous">
 				<MediaPlayerElement.TransportControls>
 					<MediaTransportControls IsCompact="True" 
 											ShowAndHideAutomatically="False"/>

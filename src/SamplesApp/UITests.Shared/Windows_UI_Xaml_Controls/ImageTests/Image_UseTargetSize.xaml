@@ -13,6 +13,7 @@
 			<Image Width="100"
 				   Height="100"
 				   Stretch="UniformToFill"
+				   crossorigin="anonymous"
 				   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
 
 			<ContentControl Content="{Binding}"
@@ -34,6 +35,7 @@
 									   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 									   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 									   Stretch="UniformToFill"
+									   crossorigin="anonymous"
 									   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
 							</Grid>
 						</Border>
@@ -61,6 +63,7 @@
 									   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 									   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 									   Stretch="Uniform"
+									   crossorigin="anonymous"
 									   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
 							</Grid>
 						</Border>
@@ -88,6 +91,7 @@
 									   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 									   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
 									   Stretch="None"
+									   crossorigin="anonymous"
 									   Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
 							</Grid>
 						</Border>

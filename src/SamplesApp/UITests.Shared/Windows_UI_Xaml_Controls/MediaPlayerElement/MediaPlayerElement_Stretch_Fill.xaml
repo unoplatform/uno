@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="">
 
-	<MediaPlayerElement Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
+	<MediaPlayerElement crossorigin="anonymous" Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
 						Stretch="Fill"
 						AreTransportControlsEnabled="True"
 						AutoPlay="True" />
