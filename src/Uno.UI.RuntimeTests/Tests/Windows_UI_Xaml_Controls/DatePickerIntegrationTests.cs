@@ -28,6 +28,9 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 	[TestClass]
 	public class DatePickerIntegrationTests
 	{
+		// https://github.com/microsoft/CsWinRT/blob/7dc82799c7afeaf862c9fb7af78ad0e2fc03c48e/src/WinRT.Runtime/Projections/SystemTypes.cs#L71
+		private const long ManagedUtcTicksAtNativeZero = 504911232000000000;
+
 		[TestInitialize]
 		void ClassSetup()
 		{
@@ -1007,7 +1010,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date to the null sentinel value. SelectedDate should become null.");
-				datePicker.Date = default(WindowsFoundationDateTime);
+				datePicker.Date = new DateTimeOffset(ManagedUtcTicksAtNativeZero, TimeSpan.Zero).ToLocalTime();
 
 				datePicker.SelectedDate.Should().BeNull("SelectedDate should be back to null");
 			});
@@ -1090,7 +1093,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 				VerifyDatesAreEqual(date, datePicker.SelectedDate.Value);
 
 				this.Log().Info("Setting Date back to the null sentinel value. SelectedDate should become null.");
-				datePicker.Date = default(WindowsFoundationDateTime);
+				datePicker.Date = new DateTimeOffset(ManagedUtcTicksAtNativeZero, TimeSpan.Zero).ToLocalTime();
 				datePicker.SelectedDate.Should().BeNull();
 			});
 		}
