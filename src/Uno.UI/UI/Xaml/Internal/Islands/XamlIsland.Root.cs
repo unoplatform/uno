@@ -6,6 +6,7 @@ using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI;
@@ -108,9 +109,9 @@ internal partial class XamlIsland
 	// TODO Uno: Implement focus on island.
 	public bool TrySetFocus() => true;
 	
-	internal ContentIsland? CompositionContent => ContentRoot?.CompositionContent;
+	internal ContentIsland? ContentIsland => ContentRoot?.CompositionContent;
 
-	private void OnStateChanged()
+	internal void OnStateChanged()
 	{
 		// In the scope if this handler, we may find the the XamlRoot has changed in various ways.  This RAII
 		// helper ensures we call CContentRoot::RaisePendingXamlRootChangedEventIfNeeded before exiting this function.
@@ -122,9 +123,9 @@ internal partial class XamlIsland
 		bool isSiteVisible = false;
 		// Don't consider content visibility. That's a separate concept and that property is exposed to apps. The site
 		// visibility is the equivalent of CoreWindow visibility in XamlIslands mode.    
-		if (CompositionContent is { } compContent)
+		if (ContentIsland is { } contentIsland)
 		{
-			isSiteVisible = compContent.IsSiteVisible;
+			isSiteVisible = contentIsland.IsSiteVisible;
 		}
 
 		if (_isVisible != isSiteVisible)
@@ -135,8 +136,9 @@ internal partial class XamlIsland
 			{
 				_contentRoot.AddPendingXamlRootChangedEvent(ContentRoot.ChangeType.IsVisible);
 
-				CoreServices coreServices = GetContext();
-				coreServices.OnVisibilityChanged(false /* isStartingUp */, false /* freezeDWMSnapshotIfHidden */);
+				// TODO MZ: Implement this maybe
+				//CoreServices coreServices = GetContext();
+				//coreServices.OnVisibilityChanged(false /* isStartingUp */, false /* freezeDWMSnapshotIfHidden */);
 			}
 		}
 	}
@@ -162,13 +164,13 @@ internal partial class XamlIsland
 		{
 			InvalidateMeasure();
 
-			CUIElement* parent = GetUIElementParentInternal(false /*publicOnly*/);
-			if (parent)
+			var parent = this.GetParentInternal(false);
+			if (parent is not null)
 			{
-				parent->InvalidateMeasure();
+				parent.InvalidateMeasure();
 			}
 
-			FxCallbacks.XamlIsland_OnSizeChanged(this);
+			FxCallbacks.XamlIslandRoot_OnSizeChanged(this);
 
 			if (_contentRoot != null)
 			{
@@ -179,18 +181,25 @@ internal partial class XamlIsland
 				// The XamlIslandRoot itself will release its visual tree immediately when it leaves the live tree,
 				// but will be kept alive until the end of the frame. If any CompositionContent::StateChanged events
 				// are raised in the meantime, we will ignore them.
-				MUX_ASSERT(!IsActive());
+				// MUX_ASSERT(!IsActive());
 			}
 
-			const float newArea = newSize.Width * newSize.Height;
-			if (IsLessThanReal(m_maxIslandArea, newArea))
-			{
-				m_maxIslandArea = newArea;
+			// TODO Uno: Implement later
+			//float newArea = newSize.Width * newSize.Height;
+			//if (IsLessThanReal(m_maxIslandArea, newArea))
+			//{
+			//	m_maxIslandArea = newArea;
 
-				InstrumentationNewAreaMax(newSize.Width, newSize.Height);
-			}
+			//	InstrumentationNewAreaMax(newSize.Width, newSize.Height);
+			//}
 
 			_previousIslandSize = newSize;
 		}
+	}
+
+	internal static void OnSizeChangedStatic(XamlIsland xamlIslandRoot)
+	{
+		// TODO MZ: Implement this maybe
+		//xamlIslandRoot.ContentManager.OnWindowSizeChanged();
 	}
 }

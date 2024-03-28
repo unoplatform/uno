@@ -7,7 +7,7 @@ namespace DirectUI;
 internal static class FxCallbacks
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	internal static void XamlRoot_OnSizeChanged(XamlIsland xamlRoot) => XamlRoot.OnSizeChangedStatic(xamlIsland);
+	internal static void XamlIslandRoot_OnSizeChanged(XamlIsland xamlIslandRoot) => XamlIsland.OnSizeChangedStatic(xamlIslandRoot);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static void XamlRoot_RaiseChanged(XamlRoot xamlRoot) => xamlRoot.RaiseChangedEvent();

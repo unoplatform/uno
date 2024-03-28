@@ -177,17 +177,16 @@ internal partial class ContentRoot
 				_compositionContentStateChangedToken.Disposable = null;
 			}
 
-			//if (m_automationProviderRequestedToken.value != 0)
-			//{
-			//	IFC_RETURN(m_compositionContent->remove_AutomationProviderRequested(m_automationProviderRequestedToken));
-			//	m_automationProviderRequestedToken = { };
-			//}
+			if (_automationProviderRequestedToken.Disposable is not null)
+			{
+				_automationProviderRequestedToken.Disposable = null;
+			}
 
 			_compositionContent = null;
 		}
 	}
 
-	private void SetContentIsland(ContentIsland compositionContent)
+	internal void SetContentIsland(ContentIsland compositionContent)
 	{
 		// ContentRoot is re-used through the life time of an application. Hence, CompositionContent can be set multiple time.
 		// ResetCompositionContent will make sure to remove handlers and reset previous CompositionContent.
@@ -209,7 +208,7 @@ internal partial class ContentRoot
 	{
 		AddPendingXamlRootChangedEvent(changeType);
 		bool shouldRaiseWindowChangedEvent = (changeType != ContentRoot.ChangeType.Content) ? true : false;
-		RaisePendingXamlRootChangedEventIfNeeded();
+		RaisePendingXamlRootChangedEventIfNeeded(shouldRaiseWindowChangedEvent);
 	}
 
 	internal void RaisePendingXamlRootChangedEventIfNeeded(bool shouldRaiseWindowChangedEvent)

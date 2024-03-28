@@ -4,9 +4,11 @@
 
 #nullable enable
 
+using System;
 using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Windows.Graphics.Display;
 using static Uno.UI.Xaml.Internal.Inlined;
 
 namespace Uno.UI.Xaml.Core.Scaling;
@@ -42,13 +44,12 @@ internal abstract partial class RootScale
 			// we're also in the middle of tearing down the tree.
 			rasterizationScale = _content.RasterizationScale;
 		}
-
 		return rasterizationScale;
 	}
 
 	internal void SetContentIsland(ContentIsland? content) => _content = content;
 
-	private void UpdateSystemScale()
+	internal void UpdateSystemScale()
 	{
 		// Remove SuspendFailFastOnStowedException
 		//     Bug 19696972: QueryScaleFactor silently fails at statup
@@ -178,7 +179,7 @@ internal abstract partial class RootScale
 		return null;
 	}
 
-	private static RootScale? GetRootScaleForContentRoot(ContentRoot? contentRoot)
+	internal static RootScale? GetRootScaleForContentRoot(ContentRoot? contentRoot)
 	{
 		if (contentRoot is not null)
 		{
