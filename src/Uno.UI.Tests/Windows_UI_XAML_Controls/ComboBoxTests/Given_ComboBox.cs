@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.ComboBoxTests
 {
@@ -158,6 +159,125 @@ namespace Uno.UI.Tests.ComboBoxTests
 
 			Assert.AreEqual(3, test[0].SelectedNumber);
 			Assert.AreEqual(3, comboBox.SelectedItem);
+		}
+
+		[TestMethod]
+		public void When_SelectedItem_PreSelected()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4" };
+
+			int selectionChangedCount = 0;
+			comboBox.SelectionChanged += (s, e) =>
+			{
+				selectionChangedCount++;
+			};
+
+			comboBox.SelectedIndex = 2;
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+
+			comboBox.ItemsSource = items;
+
+			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+			Assert.AreEqual<int>(1, selectionChangedCount);
+		}
+
+		[TestMethod]
+		public void When_SelectedItem_PreSelected_OutOfBounds()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4" };
+
+			int selectionChangedCount = 0;
+			comboBox.SelectionChanged += (s, e) =>
+			{
+				selectionChangedCount++;
+			};
+
+			comboBox.SelectedIndex = 10;
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+
+			comboBox.ItemsSource = items;
+
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+			Assert.AreEqual<int>(0, selectionChangedCount);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_With_No_Items_Repeated()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = 1;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+			comboBox.Items.Clear();
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.SelectedIndex = 2;
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(2, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = 2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.ThrowsException<ArgumentException>(() => comboBox.SelectedIndex = -2);
+		}
+
+		[TestMethod]
+		public void When_Index_Set_Negative_Out_Of_Range_When_Items_Do_Not_Exist()
+		{
+			var comboBox = new ComboBox();
+			comboBox.SelectedIndex = -2;
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+			comboBox.Items.Add(new ComboBoxItem());
+			Assert.AreEqual(-1, comboBox.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_SelectedItem_And_CollectionView_Then_Array()
+		{
+			var comboBox = new ComboBox();
+			string[] items = new string[] { "string1", "string2", "string3", "string4" };
+
+			int selectionChangedCount = 0;
+			comboBox.SelectionChanged += (s, e) =>
+			{
+				selectionChangedCount++;
+			};
+
+			comboBox.SelectedIndex = 2;
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+
+			var cvs = new CollectionViewSource();
+			cvs.Source = new string[] { "string1_cv", "string2_cv", "string3_cv", "string4_cv" };
+			cvs.View.MoveCurrentToPosition(2);
+
+			comboBox.ItemsSource = cvs.View;
+
+			Assert.AreEqual<int>(2, comboBox.SelectedIndex);
+			Assert.AreEqual<int>(1, selectionChangedCount);
+
+			comboBox.ItemsSource = items;
+
+			Assert.AreEqual<int>(-1, comboBox.SelectedIndex);
+			Assert.AreEqual<int>(2, selectionChangedCount);
 		}
 
 		public class TwoWayBindingItem : System.ComponentModel.INotifyPropertyChanged
