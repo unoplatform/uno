@@ -22,13 +22,35 @@ using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.Helpers;
 using System.Numerics;
+using Microsoft.UI.Composition;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Automation;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 {
+	private sealed class CompositionListener : CompositionObject
+	{
+		private readonly WebAssemblyWindowWrapper _owner;
+		private readonly UIElement _rootElement;
+
+		public CompositionListener(WebAssemblyWindowWrapper owner, UIElement rootElement) : base(rootElement.Visual.Compositor)
+		{
+			_owner = owner;
+			_rootElement = rootElement;
+		}
+
+		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+		{
+			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+			_owner.CreateAOM(_rootElement);
+		}
+	}
+
 	private static readonly Lazy<WebAssemblyWindowWrapper> _instance = new Lazy<WebAssemblyWindowWrapper>(() => new());
 	private DisplayInformation _displayInformation;
+	private CompositionListener? _compositionListener;
 
 	internal static WebAssemblyWindowWrapper Instance => _instance.Value;
 
@@ -72,27 +94,72 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal void EnableA11y()
 	{
+		if (_compositionListener is not null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("EnableA11y is called for the second time. This shouldn't happen.");
+			}
+
+			return;
+		}
+
+		if (Window?.RootElement is not { } rootElement)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("EnableA11y is called while either Window or its RootElement is null. This shouldn't happen.");
+			}
+
+			return;
+		}
+
+		AutomationProperties.OnAutomationIdChangedCallback = OnAutomationIdChanged;
+		_compositionListener = new CompositionListener(this, rootElement);
+		CreateAOM(rootElement);
+	}
+
+	internal void CreateAOM(UIElement rootElement)
+	{
+		Debug.Assert(_compositionListener is not null);
+
 		// We build an AOM (Accessibility Object Model):
 		// https://wicg.github.io/aom/explainer.html
-		if (Window?.RootElement is { } rootElement)
+		var rootHashCode = rootElement.Visual.GetHashCode();
+		rootElement.Visual.RemoveContext(_compositionListener, null);
+		rootElement.Visual.AddContext(_compositionListener, null);
+
+		var totalOffset = rootElement.Visual.GetTotalOffset();
+		NativeMethods.AddRootElementToSemanticsRoot(this, rootHashCode, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, totalOffset.X, totalOffset.Y);
+		foreach (var child in rootElement.GetChildren())
 		{
-			var rootHashCode = rootElement.GetHashCode();
-			NativeMethods.AddRootElementToSemanticsRoot(this, rootHashCode, rootElement.Visual.Size.X, rootElement.Visual.Size.Y, rootElement.Visual.Offset.X, rootElement.Visual.Offset.Y);
-			foreach (var child in rootElement.GetChildren())
-			{
-				BuildSemanticsTreeRecursive(rootHashCode, child);
-			}
+			BuildSemanticsTreeRecursive(rootHashCode, child);
 		}
 	}
 
 	internal void BuildSemanticsTreeRecursive(int parentHashCode, UIElement child)
 	{
-		var hashCode = child.GetHashCode();
-		NativeMethods.AddSemanticElement(this, parentHashCode, hashCode, child.Visual.Size.X, child.Visual.Size.Y, child.Visual.Offset.X, child.Visual.Offset.Y);
+		Debug.Assert(_compositionListener is not null);
+
+		var hashCode = child.Visual.GetHashCode();
+		child.Visual.RemoveContext(_compositionListener, null);
+		child.Visual.AddContext(_compositionListener, null);
+
+		var totalOffset = child.Visual.GetTotalOffset();
+
+		var role = AutomationProperties.FindHtmlRole(child);
+		var automationId = AutomationProperties.GetAutomationId(child);
+
+		NativeMethods.AddSemanticElement(this, parentHashCode, hashCode, child.Visual.Size.X, child.Visual.Size.Y, totalOffset.X, totalOffset.Y, role, automationId);
 		foreach (var childChild in child.GetChildren())
 		{
 			BuildSemanticsTreeRecursive(hashCode, childChild);
 		}
+	}
+
+	internal void OnAutomationIdChanged(UIElement element, string automationId)
+	{
+		NativeMethods.UpdateAriaLabel(this, element.Visual.GetHashCode(), automationId);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
@@ -151,7 +218,10 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		internal static partial void AddRootElementToSemanticsRoot([JSMarshalAs<JSType.Any>] object owner, int rootHashCode, float width, float height, float x, float y);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.addSemanticElement")]
-		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, int parentHashCode, int hashCode, float width, float height, float x, float y);
+		internal static partial void AddSemanticElement([JSMarshalAs<JSType.Any>] object owner, int parentHashCode, int hashCode, float width, float height, float x, float y, string role, string automationId);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.updateAriaLabel")]
+		internal static partial void UpdateAriaLabel([JSMarshalAs<JSType.Any>] object owner, int hashCode, string automationId);
 
 		[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationView.getWindowTitle")]
 		internal static partial string GetWindowTitle();

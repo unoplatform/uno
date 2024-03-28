@@ -95,6 +95,7 @@ namespace Uno.UI.Runtime.Skia {
 		private static createAccessibilityElement(x: Number, y: Number, width: Number, height: Number, hashCode: Number) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";
+			element.tabIndex = 0;
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
 			element.style.width = `${width}px`;
@@ -105,12 +106,32 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static addRootElementToSemanticsRoot(owner: any, rootHashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
 			let element = this.createAccessibilityElement(x, y, width, height, rootHashCode);
-			WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot.appendChild(element);
+			let semanticsRoot = WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot;
+
+			// For now, we re-create the whole tree every time.
+			// TODO: Optimize this for better perf.
+			if (semanticsRoot.childNodes.length === 1) {
+				semanticsRoot.removeChild(semanticsRoot.childNodes[0]);
+			}
+
+			semanticsRoot.appendChild(element);
 		}
 
-		public static addSemanticElement(owner: any, parentHashCode: Number, hashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
+		public static addSemanticElement(owner: any, parentHashCode: Number, hashCode: Number, width: Number, height: Number, x: Number, y: Number, role: string, automationId: string): void {
 			let element = this.createAccessibilityElement(x, y, width, height, hashCode);
+			if (role) {
+				element.setAttribute("role", role);
+			}
+
+			if (automationId) {
+				element.setAttribute("aria-label", automationId);
+			}
+
 			document.getElementById(`uno-semantics-${parentHashCode}`).appendChild(element);
+		}
+
+		public static updateAriaLabel(owner: any, hashCode: Number, automationId: string): void {
+			document.getElementById(`uno-semantics-${hashCode}`).setAttribute("aria-label", automationId);
 		}
 
 		private removeLoading() {

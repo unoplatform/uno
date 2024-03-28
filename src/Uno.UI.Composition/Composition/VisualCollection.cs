@@ -29,6 +29,7 @@ namespace Microsoft.UI.Composition
 			InsertAbovePartial(newChild, sibling);
 
 			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			_owner.RaiseContextStoreChanged();
 		}
 
 		partial void InsertAbovePartial(Visual newChild, Visual sibling);
@@ -40,6 +41,7 @@ namespace Microsoft.UI.Composition
 			InsertAtBottomPartial(newChild);
 
 			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			_owner.RaiseContextStoreChanged();
 		}
 		partial void InsertAtBottomPartial(Visual newChild);
 
@@ -50,6 +52,7 @@ namespace Microsoft.UI.Composition
 			InsertAtTopPartial(newChild);
 
 			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			_owner.RaiseContextStoreChanged();
 		}
 		partial void InsertAtTopPartial(Visual newChild);
 
@@ -61,6 +64,7 @@ namespace Microsoft.UI.Composition
 			InsertBelowPartial(newChild, sibling);
 
 			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			_owner.RaiseContextStoreChanged();
 		}
 		partial void InsertBelowPartial(Visual newChild, Visual sibling);
 
@@ -72,6 +76,7 @@ namespace Microsoft.UI.Composition
 				RemovePartial(child);
 
 				CollectionChanged?.Invoke(this, EventArgs.Empty);
+				_owner.RaiseContextStoreChanged();
 			}
 		}
 		partial void RemovePartial(Visual child);
@@ -86,6 +91,7 @@ namespace Microsoft.UI.Composition
 			RemoveAllPartial();
 
 			CollectionChanged?.Invoke(this, EventArgs.Empty);
+			_owner.RaiseContextStoreChanged();
 		}
 		partial void RemoveAllPartial();
 

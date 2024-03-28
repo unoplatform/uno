@@ -42,7 +42,7 @@
 			);
 
 			if (isHandled) {
-				evt.preventDefault();
+				//evt.preventDefault();
 			}
 		}
 	}

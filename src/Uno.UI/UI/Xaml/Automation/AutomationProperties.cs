@@ -2,11 +2,14 @@
 using Uno.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
+using System;
 
 namespace Microsoft.UI.Xaml.Automation
 {
 	public sealed partial class AutomationProperties
 	{
+		internal static Action<UIElement, string> OnAutomationIdChangedCallback;
+
 		#region Name
 
 		public static void SetName(DependencyObject element, string value)
@@ -159,6 +162,11 @@ namespace Microsoft.UI.Xaml.Automation
 						("role", role));
 				}
 			}
+#elif __SKIA__
+			if (OperatingSystem.IsBrowser() && dependencyObject is UIElement uiElement)
+			{
+				OnAutomationIdChangedCallback?.Invoke(uiElement, (string)args.NewValue);
+			}
 #endif
 		}
 
@@ -199,8 +207,8 @@ namespace Microsoft.UI.Xaml.Automation
 				typeof(AutomationProperties),
 				new FrameworkPropertyMetadata(default(AutomationLandmarkType)));
 
-#if __WASM__
-		private static string FindHtmlRole(UIElement uIElement)
+#if __WASM__ || __SKIA__
+		internal static string FindHtmlRole(UIElement uIElement)
 		{
 			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Button_Available && uIElement is Button)
 			{
