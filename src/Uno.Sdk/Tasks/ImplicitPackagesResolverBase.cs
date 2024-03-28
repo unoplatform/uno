@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -223,54 +223,16 @@ public abstract class ImplicitPackagesResolverBase : Task
 			.UpdateManifest(PackageManifest.Group.AndroidXBrowser, AndroidXBrowserVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXSwipeRefreshLayout, AndroidXSwipeRefreshLayoutVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXNavigation, AndroidXNavigationVersion)
-			.UpdateManifest(PackageManifest.Group.AndroidXCollection, AndroidXCollectionVersion);
+			.UpdateManifest(PackageManifest.Group.AndroidXCollection, AndroidXCollectionVersion)
+			.UpdateManifest(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion)
+			.UpdateManifest(PackageManifest.Group.Extensions, UnoExtensionsVersion)
+			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
+			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion);
 
 		if (HasFeature(UnoFeature.MauiEmbedding))
 		{
-			manifest.AddManifestGroup(PackageManifest.Group.Maui, MauiVersion,
-				"Microsoft.Maui.Controls",
-				"Microsoft.Maui.Controls.Compatibility",
-				"Microsoft.Maui.Graphics");
+			manifest.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
 		}
-
-		manifest.AddManifestGroup(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion,
-				"Uno.WinUI.Markup",
-				"Uno.Extensions.Markup.Generators")
-			.AddManifestGroup(PackageManifest.Group.Extensions, UnoExtensionsVersion,
-				"Uno.Extensions.Authentication.WinUI",
-				"Uno.Extensions.Authentication.MSAL.WinUI",
-				"Uno.Extensions.Authentication.Oidc.WinUI",
-				"Uno.Extensions.Configuration",
-				"Uno.Extensions.Core.WinUI",
-				"Uno.Extensions.Hosting.WinUI",
-				"Uno.Extensions.Http.WinUI",
-				"Uno.Extensions.Http.Refit",
-				"Uno.Extensions.Localization.WinUI",
-				"Uno.Extensions.Logging.WinUI",
-				"Uno.Extensions.Maui.WinUI",
-				"Uno.Extensions.Maui.WinUI.Markup",
-				"Uno.Extensions.Navigation.WinUI",
-				"Uno.Extensions.Navigation.WinUI.Markup",
-				"Uno.Extensions.Navigation.Toolkit.WinUI",
-				"Uno.Extensions.Reactive.WinUI",
-				"Uno.Extensions.Reactive.Messaging",
-				"Uno.Extensions.Reactive.WinUI.Markup",
-				"Uno.Extensions.Serialization.Http",
-				"Uno.Extensions.Serialization.Refit",
-				"Uno.Extensions.Logging.Serilog",
-				"Uno.Extensions.Storage.WinUI")
-			.AddManifestGroup(PackageManifest.Group.Toolkit, UnoToolkitVersion,
-				"Uno.Toolkit.WinUI",
-				"Uno.Toolkit.WinUI.Cupertino",
-				"Uno.Toolkit.WinUI.Material",
-				"Uno.Toolkit.WinUI.Material.Markup",
-				"Uno.Toolkit.WinUI.Markup",
-				"Uno.Toolkit.Skia.WinUI")
-			.AddManifestGroup(PackageManifest.Group.Themes, UnoThemesVersion,
-				"Uno.Material.WinUI",
-				"Uno.Material.WinUI.Markup",
-				"Uno.Themes.WinUI.Markup",
-				"Uno.Cupertino.WinUI");
 	}
 
 	protected bool HasFeature(UnoFeature feature) =>

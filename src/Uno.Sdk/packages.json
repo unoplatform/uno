@@ -198,5 +198,72 @@
 			"Xamarin.AndroidX.Collection",
 			"Xamarin.AndroidX.Collection.Ktx"
 		]
+	},
+	{
+		"group": "Maui",
+		"version": "",
+		"packages": [
+			"Microsoft.Maui.Controls",
+			"Microsoft.Maui.Controls.Compatibility",
+			"Microsoft.Maui.Graphics"
+		]
+	},
+	{
+		"group": "CSharpMarkup",
+		"version": "",
+		"packages": [
+			"Uno.WinUI.Markup",
+			"Uno.Extensions.Markup.Generators"
+		]
+	},
+	{
+		"group": "Extensions",
+		"version": "",
+		"packages": [
+			"Uno.Extensions.Authentication.WinUI",
+			"Uno.Extensions.Authentication.MSAL.WinUI",
+			"Uno.Extensions.Authentication.Oidc.WinUI",
+			"Uno.Extensions.Configuration",
+			"Uno.Extensions.Core.WinUI",
+			"Uno.Extensions.Hosting.WinUI",
+			"Uno.Extensions.Http.WinUI",
+			"Uno.Extensions.Http.Refit",
+			"Uno.Extensions.Localization.WinUI",
+			"Uno.Extensions.Logging.WinUI",
+			"Uno.Extensions.Maui.WinUI",
+			"Uno.Extensions.Maui.WinUI.Markup",
+			"Uno.Extensions.Navigation.WinUI",
+			"Uno.Extensions.Navigation.WinUI.Markup",
+			"Uno.Extensions.Navigation.Toolkit.WinUI",
+			"Uno.Extensions.Reactive.WinUI",
+			"Uno.Extensions.Reactive.Messaging",
+			"Uno.Extensions.Reactive.WinUI.Markup",
+			"Uno.Extensions.Serialization.Http",
+			"Uno.Extensions.Serialization.Refit",
+			"Uno.Extensions.Logging.Serilog",
+			"Uno.Extensions.Storage.WinUI"
+		]
+	},
+	{
+		"group": "Toolkit",
+		"version": "",
+		"packages": [
+			"Uno.Toolkit.WinUI",
+			"Uno.Toolkit.WinUI.Cupertino",
+			"Uno.Toolkit.WinUI.Material",
+			"Uno.Toolkit.WinUI.Material.Markup",
+			"Uno.Toolkit.WinUI.Markup",
+			"Uno.Toolkit.Skia.WinUI"
+		]
+	},
+	{
+		"group": "Themes",
+		"version": "",
+		"packages": [
+			"Uno.Material.WinUI",
+			"Uno.Material.WinUI.Markup",
+			"Uno.Themes.WinUI.Markup",
+			"Uno.Cupertino.WinUI"
+		]
 	}
 ]
