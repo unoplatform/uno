@@ -12,7 +12,8 @@
 
 	<Import Project="../uno.winui.common.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
 	<Import Project="../uno.winui.cross-runtime.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
-	<Import Project="../uno.winui.single-project.targets" />
+	<Import Project="../uno.winui.single-project.targets" Condition=" $(UsingUnoSdk) != 'true' and '$(_UnoIsWinAppSDKDefined)'!='true'" />
 	<Import Project="../uno.winui.runtime-replace.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
+
 	<Import Project="../uno.winui.winappsdk.targets" Condition="'$(_UnoIsWinAppSDKDefined)'=='true'" />
 </Project>
