@@ -36,9 +36,12 @@ using Uno.UI;
 using Foundation;
 #endif
 
+using Point = Windows.Foundation.Point;
+using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
+
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
-using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

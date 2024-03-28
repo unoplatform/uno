@@ -3,14 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI;
 
+#if HAS_UNO_WINUI || WINAPPSDK
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
+
 namespace Uno.UI.Extensions;
 
+
+#if WINAPPSDK || WINDOWS_UWP
 internal static class PrettyPrint
+#else
+public static class PrettyPrint
+#endif
 {
 	private static readonly Lazy<Dictionary<Color, string>> _knownColors = new(() => typeof(Colors)
 		.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)

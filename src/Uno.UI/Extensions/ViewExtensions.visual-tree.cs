@@ -1,5 +1,8 @@
 ﻿#nullable enable
 
+// note: This file is selectively included on windows build in: src\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj
+// Any other source file that we depends here should also be made available there.
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

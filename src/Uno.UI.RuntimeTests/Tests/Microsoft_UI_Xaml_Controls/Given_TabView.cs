@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Windows.UI.Input.Preview.Injection;
-using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+
+using TabView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabView;
+using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem;
 
 using static Uno.UI.Extensions.ViewExtensions;
 using static Private.Infrastructure.TestServices;

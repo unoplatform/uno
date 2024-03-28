@@ -4,10 +4,11 @@
 	  xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TabViewTests"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:controls="using:Microsoft.UI.Xaml.Controls"
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
-		<Style TargetType="TabViewItem">
+		<Style TargetType="controls:TabViewItem">
 			<Setter Property="HeaderTemplate">
 				<Setter.Value>
 					<DataTemplate>
@@ -53,11 +54,11 @@
 				<Button Content="Last" Tag="99" Click="ScrollToLeading" />
 			</StackPanel>
 		</StackPanel>
-		
-		<TabView Grid.Row="2"
-				 x:Name="SUT"
-				 TabItemsSource="{Binding Tabs}"
-				 SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
-				 TabCloseRequested="TabView_TabCloseRequested" />
+
+		<controls:TabView Grid.Row="2" 
+						  x:Name="SUT"
+						  TabItemsSource="{Binding Tabs}"
+						  SelectedItem="{Binding SelectedTab, Mode=TwoWay}"
+						  TabCloseRequested="TabView_TabCloseRequested" />
 	</Grid>
 </Page>

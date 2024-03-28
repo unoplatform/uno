@@ -29,10 +29,11 @@
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
 
+		<Compile Include="..\Uno.UI\Extensions\PrettyPrint.cs" Link="Uno.UI\Extensions\PrettyPrint.cs" />
 		<Compile Include="..\Uno.UI\Extensions\ViewExtensions.visual-tree.cs" Link="Uno.UI\Extensions\ViewExtensions.visual-tree.cs" />
 		<Compile Include="..\Uno.UI\Extensions\UIElementExtensions.Debug.cs" Link="Uno.UI\Extensions\UIElementExtensions.Debug.cs" />
-		<Compile Include="..\Uno.UI\Helpers\XamlHelper.cs" Link="Uno.UI\Helpers\XamlHelper.cs" />
 
+		<Compile Include="..\Uno.UI\Helpers\XamlHelper.cs" Link="Uno.UI\Helpers\XamlHelper.cs" />
 		<Compile Include="..\Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" Link="Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" />
 		<Compile Include="..\Uno.UI\Helpers\TypeMappings.cs" Link="Uno.UI\Helpers\TypeMappings.cs" />
 
