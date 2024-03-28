@@ -29,8 +29,8 @@
 		}
 
 		private onKeyboardEvent(evt: KeyboardEvent): void {
-			console.log("Dispatching keyboard event...");
-			BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
+			console.log(`Keyboard event target: ${evt.target}`);
+			let isHandled = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
 				this._source,
 				evt.type == "keydown",
 				evt.ctrlKey,
@@ -39,7 +39,11 @@
 				evt.metaKey,
 				evt.code,
 				evt.key
-			)
+			);
+
+			if (isHandled) {
+				evt.preventDefault();
+			}
 		}
 	}
 }

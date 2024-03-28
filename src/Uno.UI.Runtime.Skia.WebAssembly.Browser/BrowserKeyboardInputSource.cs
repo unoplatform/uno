@@ -23,7 +23,7 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 	}
 
 	[JSExport]
-	private static void OnNativeKeyboardEvent(
+	private static bool OnNativeKeyboardEvent(
 		[JSMarshalAs<JSType.Any>] object inputSource,
 		bool down,
 		bool ctrl,
@@ -60,5 +60,7 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		{
 			((BrowserKeyboardInputSource)inputSource).KeyUp?.Invoke(inputSource, args);
 		}
+
+		return args.Handled;
 	}
 }

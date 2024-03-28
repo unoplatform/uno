@@ -68,6 +68,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.semanticsRoot = document.createElement("div");
 			this.semanticsRoot.id = "uno-semantics-root";
 			this.semanticsRoot.style.filter = "opacity(0%)";
+			this.semanticsRoot.style.pointerEvents = "none";
 			this.containerElement.appendChild(this.semanticsRoot);
 
 			document.body.addEventListener("focusin", this.onfocusin);
@@ -91,26 +92,24 @@ namespace Uno.UI.Runtime.Skia {
 			this.managedEnableA11y(this.owner);
 		}
 
-		public static addRootElementToSemanticsRoot(owner: any, rootHashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
+		private static createAccessibilityElement(x: Number, y: Number, width: Number, height: Number, hashCode: Number) {
 			let element = document.createElement("div");
-			element.style.position = "fixed";
-			element.style.left = `${x}px`;
-			element.style.top = `${y}px`;
-			element.style.width = `${width}px`;
-			element.style.height = `${height}px`;
-			element.id = `uno-semantics-${rootHashCode}`;
-
-			WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot.appendChild(element);
-		}
-
-		public static addSemanticElement(owner: any, parentHashCode: Number, hashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
-			let element = document.createElement("div");
-			element.style.position = "relative";
+			element.style.position = "absolute";
 			element.style.left = `${x}px`;
 			element.style.top = `${y}px`;
 			element.style.width = `${width}px`;
 			element.style.height = `${height}px`;
 			element.id = `uno-semantics-${hashCode}`;
+			return element;
+		}
+
+		public static addRootElementToSemanticsRoot(owner: any, rootHashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
+			let element = this.createAccessibilityElement(x, y, width, height, rootHashCode);
+			WebAssemblyWindowWrapper.getInstance(owner).semanticsRoot.appendChild(element);
+		}
+
+		public static addSemanticElement(owner: any, parentHashCode: Number, hashCode: Number, width: Number, height: Number, x: Number, y: Number): void {
+			let element = this.createAccessibilityElement(x, y, width, height, hashCode);
 			document.getElementById(`uno-semantics-${parentHashCode}`).appendChild(element);
 		}
 
