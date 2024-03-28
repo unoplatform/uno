@@ -501,7 +501,7 @@ partial void UpdateBinderDetails()
 private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 private BinderReferenceHolder _refHolder;
 
-public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
+public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 
 partial void InitializeBinder();
 
@@ -796,7 +796,7 @@ public override bool Equals(object other)
 			private void GenerateDependencyObjectImplementation(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder, bool hasDispatcherQueue)
 			{
 				builder.AppendLineIndented(@"private DependencyObjectStore __storeBackingField;");
-				builder.AppendLineIndented(@"public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
+				builder.AppendLineIndented(@"public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;");
 
 				if (hasDispatcherQueue)
 				{

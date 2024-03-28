@@ -31,11 +31,11 @@ public partial class CompositionShape
 			return default; // Use the session without saving it, nothing to dispose
 		}
 
-		session.Surface.Canvas.Save();
+		session.Canvas.Save();
 
 		if (offset != Vector2.Zero)
 		{
-			session.Surface.Canvas.Translate(offset.X, offset.Y);
+			session.Canvas.Translate(offset.X, offset.Y);
 		}
 
 		// Intentionally not applying transform here.

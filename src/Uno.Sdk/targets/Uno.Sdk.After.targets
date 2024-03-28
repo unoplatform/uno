@@ -3,4 +3,52 @@
 		<!-- Removes native usings to avoid Ambiguous reference -->
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
 	</ItemGroup>
+
+	<!-- Sanity check ensure that platform files for other targets are not included -->
+	<ItemGroup Condition="$(SingleProject) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Content Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+		<AppxManifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
+
+	<!--
+		Adjust the first target framework to be browserwasm, if the current debugging
+		target is browserwasm. This portion is linked to the TryReloadWebAssemblyTargetAsync in
+		the Uno.UI.RemoteControl.VS project.
+	
+		This is required by a WebAssembly support issue in VS, where both Publishing/Debugging and other 
+		targets hot reload is not supported. See https://aka.platform.uno/singleproject-vs-wasm-reload.
+	-->
+	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">
+		<_UnoTargetFrameworkCount>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries).Length)</_UnoTargetFrameworkCount>
+		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0])</_UnoFirstOriginalTargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup
+		Condition="
+			$([MSBuild]::GetTargetPlatformIdentifier($(ActiveDebugFramework))) == 'browserwasm'
+			AND !$(TargetFrameworks.StartsWith($(ActiveDebugFramework)))
+			AND '$(BuildingInsideVisualStudio)' == 'true'">
+
+		<_UnoTargetFrameworksWasmFiltered>$(TargetFrameworks.Replace($(ActiveDebugFramework),''))</_UnoTargetFrameworksWasmFiltered>
+
+		<TargetFrameworks>$([MSBuild]::Unescape('$(ActiveDebugFramework);$(_UnoTargetFrameworksWasmFiltered)'))</TargetFrameworks>
+	</PropertyGroup>
+
+	<Target Name="_UnoVSWarnBrowserNotFirst"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			Condition=" 
+			'$(UnoDisableVSWarnBrowserNotFirst)' != 'true'
+			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'browserwasm'">
+
+		<Warning Code="UNOB0010"
+				 Text="The browserwasm TargetFramework must not be placed first in the TargetFrameworks property in order for HotReload to work properly. (See https://aka.platform.uno/UNOB0010)" />
+	</Target>
+
+	<!-- Include any additional targets that packages defined by other packages -->
+	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
+
 </Project>

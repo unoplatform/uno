@@ -2,14 +2,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Windows.Storage.Streams;
 using Color = Windows.UI.Color;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionPropertySet : CompositionObject
 	{
-		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
+		private readonly Dictionary<string, object> _properties = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
 		internal CompositionPropertySet(Compositor compositor) : base(compositor)
 		{
@@ -51,7 +53,7 @@ namespace Microsoft.UI.Composition
 
 		public CompositionGetValueStatus TryGetBoolean(string propertyName, out bool value) => TryGetValue(propertyName, out value);
 
-		private CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
+		internal CompositionGetValueStatus TryGetValue<T>(string propertyName, out T value)
 			where T : struct
 		{
 			value = default;
@@ -67,12 +69,17 @@ namespace Microsoft.UI.Composition
 			return CompositionGetValueStatus.NotFound;
 		}
 
+		internal bool TryGetValueNonGeneric(string propertyName, [NotNullWhen(true)] out object? value)
+		{
+			return _properties.TryGetValue(propertyName, out value);
+		}
+
 		private void SetValue<T>(string propertyName, T value)
 			where T : struct
 		{
 			if (_properties.TryGetValue(propertyName, out var existingValue) && !(existingValue is T _))
 			{
-				throw new ArgumentException("Canot insert a different type for an existing property.");
+				throw new ArgumentException("Cannot insert a different type for an existing property.");
 			}
 
 			_properties[propertyName] = value;

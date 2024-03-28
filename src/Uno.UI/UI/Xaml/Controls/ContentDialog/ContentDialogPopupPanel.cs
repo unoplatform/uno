@@ -89,9 +89,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var actualWidth = Math.Min(desiredSize.Width, maximumWidth);
 			var actualHeight = Math.Min(desiredSize.Height, maximumHeight);
 
+			var xOffset = Math.Max((maximumWidth - actualWidth) / 2, visibleBounds.X);
+			var yOffset = Math.Max((maximumHeight - actualHeight) / 2, visibleBounds.Y);
+
 			var finalRect = new Rect(
-				(maximumWidth - actualWidth) / 2,
-				(maximumHeight - actualHeight) / 2,
+				xOffset,
+				yOffset,
 				actualWidth,
 				actualHeight
 			);

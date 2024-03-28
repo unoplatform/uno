@@ -1,24 +1,26 @@
 ﻿using System;
-using Uno;
-using Uno.UI;
-using Uno.Diagnostics.Eventing;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation.Metadata;
-using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel;
-using Windows.Globalization;
-using Uno.Helpers.Theming;
-using Windows.UI.ViewManagement;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Data;
+using Uno;
+using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
-using Windows.UI.Popups.Internal;
-using Windows.UI.Popups;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
+using Uno.UI;
 using Uno.UI.WinRT.Extensions.UI.Popups;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.Globalization;
+using Windows.Storage;
+using Windows.UI.Popups;
+using Windows.UI.Popups.Internal;
+using Windows.UI.ViewManagement;
+
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
@@ -63,7 +65,7 @@ namespace Microsoft.UI.Xaml
 		static Application()
 		{
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
-			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
+			ApiInformation.RegisterAssembly(typeof(ApplicationData).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
@@ -438,32 +440,44 @@ namespace Microsoft.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
-			DefaultBrushes.ResetDefaultThemeBrushes();
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
+			try
 			{
-				if (GetTreeRoot(contentRoot) is { } root)
+				// When we change theme, we may update properties and set them with Local precedence
+				// with the newly evaluated ThemeResource value.
+				// In this case, if we previously had Animation value in effect, we don't want the new Local value to take effect.
+				// So, we avoid setting LocalValueNewerThanAnimationsValue
+				DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+				DefaultBrushes.ResetDefaultThemeBrushes();
+				foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 				{
-					// Update theme bindings in application resources
-					Resources?.UpdateThemeBindings(updateReason);
-
-					// Update theme bindings in system resources
-					ResourceResolver.UpdateSystemThemeBindings(updateReason);
-
-					PropagateResourcesChanged(root, updateReason);
-				}
-
-				// Start from the real root, which may not be a FrameworkElement on some platforms
-				View GetTreeRoot(ContentRoot contentRoot)
-				{
-					View current = contentRoot.XamlRoot.Content;
-					var parent = current?.GetVisualTreeParent();
-					while (parent != null)
+					if (GetTreeRoot(contentRoot) is { } root)
 					{
-						current = parent;
-						parent = current?.GetVisualTreeParent();
+						// Update theme bindings in application resources
+						Resources?.UpdateThemeBindings(updateReason);
+
+						// Update theme bindings in system resources
+						ResourceResolver.UpdateSystemThemeBindings(updateReason);
+
+						PropagateResourcesChanged(root, updateReason);
 					}
-					return current;
+
+					// Start from the real root, which may not be a FrameworkElement on some platforms
+					View GetTreeRoot(ContentRoot contentRoot)
+					{
+						View current = contentRoot.XamlRoot.Content;
+						var parent = current?.GetVisualTreeParent();
+						while (parent != null)
+						{
+							current = parent;
+							parent = current?.GetVisualTreeParent();
+						}
+						return current;
+					}
 				}
+			}
+			finally
+			{
+				DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
 			}
 		}
 

@@ -14,12 +14,14 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.Extensions;
 
 #if HAS_UNO
 using DirectUI;
@@ -181,6 +183,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Grid_Child_Canvas_ZIndex()
+		{
+			var btn = new Button();
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				Width = 200,
+				Height = 200
+			};
+			var SUT = new Grid
+			{
+				Children =
+				{
+					btn,
+					border
+				}
+			};
+
+			btn.SetValue(Canvas.ZIndexProperty, 1);
+
+			var buttonClickCount = 0;
+			btn.Click += (_, _) => buttonClickCount++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(btn.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, buttonClickCount);
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -287,6 +331,194 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_Row_After_Load()
+		{
+			Border firstBorder;
+			Border secondBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				RowDefinitions =
+				{
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+					(secondBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Green) }),
+				}
+			};
+
+			Grid.SetRow(firstBorder, 0);
+			Grid.SetRow(secondBorder, 1);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Point GetRelativePosition(FrameworkElement element)
+			{
+				var position = element.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+				return position;
+			}
+
+			var firstPosition = GetRelativePosition(firstBorder);
+			var secondPosition = GetRelativePosition(secondBorder);
+			Assert.AreEqual(0, firstPosition.Y);
+			Assert.AreEqual(100, secondPosition.Y);
+
+			Grid.SetRow(firstBorder, 2);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			firstPosition = GetRelativePosition(firstBorder);
+			secondPosition = GetRelativePosition(secondBorder);
+
+			Assert.AreEqual(100, firstPosition.Y);
+			Assert.AreEqual(0, secondPosition.Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_Column_After_Load()
+		{
+			Border firstBorder;
+			Border secondBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+					(secondBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Green) }),
+				}
+			};
+
+			Grid.SetColumn(firstBorder, 0);
+			Grid.SetColumn(secondBorder, 1);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Point GetRelativePosition(FrameworkElement element)
+			{
+				var position = element.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+				return position;
+			}
+
+			var firstPosition = GetRelativePosition(firstBorder);
+			var secondPosition = GetRelativePosition(secondBorder);
+			Assert.AreEqual(0, firstPosition.X);
+			Assert.AreEqual(100, secondPosition.X);
+
+			Grid.SetColumn(firstBorder, 2);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			firstPosition = GetRelativePosition(firstBorder);
+			secondPosition = GetRelativePosition(secondBorder);
+
+			Assert.AreEqual(100, firstPosition.X);
+			Assert.AreEqual(0, secondPosition.X);
+
+			await Task.Delay(1000);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_RowSpan_After_Load()
+		{
+			Border firstBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Background = new SolidColorBrush(Colors.Blue),
+				RowSpacing = 10,
+				RowDefinitions =
+				{
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) },
+					new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) }
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+				}
+			};
+
+			Grid.SetRowSpan(firstBorder, 2);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(100, SUT.ActualHeight);
+
+			Grid.SetRowSpan(firstBorder, 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(110, SUT.ActualHeight);
+
+			await Task.Delay(1000);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task Change_Grid_ColumnSpan_After_Load()
+		{
+			Border firstBorder;
+			var container = new Grid();
+			var SUT = new Grid
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Background = new SolidColorBrush(Colors.Blue),
+				ColumnSpacing = 10,
+				ColumnDefinitions =
+				{
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) },
+					new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) }
+				},
+				Children =
+				{
+					(firstBorder = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) }),
+				}
+			};
+
+			Grid.SetColumnSpan(firstBorder, 2);
+			container.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = container;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(100, SUT.ActualWidth);
+
+			Grid.SetColumnSpan(firstBorder, 1);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(110, SUT.ActualWidth);
+
+			await Task.Delay(1000);
 		}
 
 		[TestMethod]

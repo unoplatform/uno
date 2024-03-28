@@ -3,18 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	public enum CompositionGetValueStatus
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Succeeded = 0,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		TypeMismatch = 1,
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NotFound = 2,
-#endif
+		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.Succeeded
+		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.TypeMismatch
+		// Skipping already declared field Microsoft.UI.Composition.CompositionGetValueStatus.NotFound
 	}
 #endif
 }

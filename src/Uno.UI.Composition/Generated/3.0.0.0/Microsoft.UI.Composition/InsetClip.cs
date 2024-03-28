@@ -12,13 +12,13 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property RightInset
 		// Skipping already declared property LeftInset
 		// Skipping already declared property BottomInset
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.LeftInset.get
+		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.RightInset.set
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.get
+		// Forced skipping of method Microsoft.UI.Composition.InsetClip.TopInset.set
+		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.set
+		// Forced skipping of method Microsoft.UI.Composition.InsetClip.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.LeftInset.set
 		// Forced skipping of method Microsoft.UI.Composition.InsetClip.RightInset.get
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.set
-		// Forced skipping of method Microsoft.UI.Composition.InsetClip.BottomInset.get
 	}
 }

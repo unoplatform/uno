@@ -265,7 +265,7 @@ namespace Microsoft.CodeAnalysis
 			}
 		}
 
-		public static ISymbol? GetMemberInlcudingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
+		public static ISymbol? GetMemberIncludingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
 		{
 			if (symbol is INamespaceSymbol)
 			{
@@ -286,15 +286,15 @@ namespace Microsoft.CodeAnalysis
 			return null;
 		}
 
-		public static ISymbol? GetMemberInlcudingBaseTypes<TArg>(this INamespaceOrTypeSymbol symbol, TArg arg, Func<ISymbol, TArg, bool> predicate)
+		public static ISymbol? GetMemberIncludingBaseTypes<TArg>(this INamespaceOrTypeSymbol symbol, TArg arg, Func<ISymbol, TArg, bool> predicate)
 		{
 			if (symbol is INamespaceSymbol)
 			{
-				foreach (var candicate in symbol.GetMembers())
+				foreach (var candidate in symbol.GetMembers())
 				{
-					if (predicate(candicate, arg))
+					if (predicate(candidate, arg))
 					{
-						return candicate;
+						return candidate;
 					}
 				}
 

@@ -41,9 +41,9 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion.Condition.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion.NaturalMotion.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion.NaturalMotion.set
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion.Condition.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.InteractionTrackerInertiaNaturalMotion.Condition.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

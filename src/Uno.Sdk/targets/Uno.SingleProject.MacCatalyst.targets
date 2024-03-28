@@ -1,0 +1,21 @@
+<Project>
+	<PropertyGroup>
+		<!-- Full globalization is required for Uno -->
+		<InvariantGlobalization Condition="$(InvariantGlobalization) == ''">false</InvariantGlobalization>
+
+		<IPhoneResourcePrefix Condition="$(IPhoneResourcePrefix) == ''">$(MacCatalystProjectFolder)Resources</IPhoneResourcePrefix>
+		<CodesignEntitlements Condition=" Exists('$(MacCatalystProjectFolder)Entitlements.plist') ">$(MacCatalystProjectFolder)Entitlements.plist</CodesignEntitlements>
+		<CodesignEntitlements Condition=" Exists('$(MacCatalystProjectFolder)Entitlements-$(Configuration).plist') ">$(MacCatalystProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Optimize)'=='true'">
+		<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
+		<MtouchExtraArgs Condition="!$(MtouchExtraArgs.Contains('--marshal-objectivec-exceptions'))">$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Optimize)'!='true'">
+		<!-- Required for C# Hot Reload -->
+		<UseInterpreter>True</UseInterpreter>
+		<MtouchInterpreter>True</MtouchInterpreter>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
+</Project>

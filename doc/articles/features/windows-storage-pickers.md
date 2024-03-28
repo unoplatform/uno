@@ -352,6 +352,25 @@ The `SuggestedStartLocation` property has no effect on certain Android devices, 
 
 The `FileSavePicker` API, which uses `ACTION_CREATE_DOCUMENT` on Android, has various limitations. To allow for the best possible compatibility across different Android versions, you should always add your file type extension to `FileTypeChoices`, and, if possible, provide only one such file type. In addition, if the `SuggestedFileName` or the user-typed file name matches an existing file, the resulting file will be renamed with `(1)` in the name, e.g., `test.txt` will become `test (1).txt` and the existing file will not be overwritten. However, if the user explicitly taps an existing file in the file browser, the system will show a dialog allowing the app to overwrite the existing file. This inconsistent behavior is caused by Android itself, so there is, unfortunately, no way to work around it from our side. See [this issue](https://issuetracker.google.com/issues/37136466) for more information.
 
+If you want to have further influence on the pickers and, for example, create permanent access to the file for the `FileOpenPicker` (flag with GrantPersistableUriPermission), you can do this with the `FilePickerHelper`. The `FolderPicker` can be extended analogue, the `FolderPickerHelper` is available for this purpose.
+
+```csharp
+FileOpenPicker fileOpenPicker = new FileOpenPicker
+{
+    SuggestedStartLocation = PickerLocationId.ComputerFolder
+};
+
+#if __ANDROID__
+FilePickerHelper.RegisterOnBeforeStartActivity(fileOpenPicker, (intent) =>
+{
+    // your code... for example
+    intent.AddFlags(Android.Content.ActivityFlags.GrantPersistableUriPermission);
+});
+#endif
+
+var result = await fileOpenPicker.PickSingleFileAsync();
+```
+
 ## iOS
 
 iOS does not offer a built-in `FileSavePicker` experience. Luckily, it is possible to implement this functionality, for example, using a combination of a `FolderPicker` and `ContentDialog`.
@@ -396,3 +415,7 @@ public App()
 ```
 
 As this is quite complex, you can find a working implementation of a folder-based save file picker in [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/FileSavePickeriOS). You can modify and adjust this implementation as you see fit for your specific use case.
+
+## Catalyst
+
+For a Catalyst app, when using `FileOpenPicker` or `FileSavePicker`, you'll need to add the [com.apple.security.files.user-selected.read-write](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_files_user-selected_read-write) entitlement.

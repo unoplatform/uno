@@ -69,14 +69,14 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.get
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingVMode.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.Surface.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.WrappingUMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput.BitmapInterpolationMode.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput Create(global::Microsoft.UI.Composition.Compositor compositor)

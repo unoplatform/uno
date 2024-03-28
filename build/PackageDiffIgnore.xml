@@ -1793,15 +1793,27 @@
 
 	<IgnoreSet baseVersion="5.1">
 		<Types>
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueue" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueController" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueShutdownStartingEventArgs" reason="Only in UWP build. It shouldn't have existed." />
+			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueTimer" reason="Only in UWP build. It shouldn't have existed." />
+
+			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
+			
+			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
 		</Types>
 
 		<Events>
 		</Events>
 
 		<Fields>
+			<Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyValuePrecedences Windows.UI.Xaml.DependencyPropertyValuePrecedences::FillingAnimations" reason="Not needed, and API isn't in WinUI" />
 		</Fields>
 
 		<Properties>
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView::IsFullScreen()" reason="Not in WinUI" />
 		</Properties>
 
 		<Methods>
@@ -1813,6 +1825,19 @@
 			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
+			
+			<!-- Begin Skia Builder-->
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost.Run()" reason="Non-breaking API, moved to SkiaHost" />
+			<!-- End Skia Builder-->
+
+			<!-- Begin Composition target updates -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.CompositionTarget..ctor()" reason="Not in UWP" />
+			<!-- End Composition target updates -->
+
+			<!-- AppWindow presenters -->
+			<Member fullName="System.Void Windows.UI.ViewManagement.ApplicationView..ctor()" reason="Not in WinUI" />
+			<Member fullName="System.Boolean Windows.UI.ViewManagement.ApplicationView.get_IsFullScreen()" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
 

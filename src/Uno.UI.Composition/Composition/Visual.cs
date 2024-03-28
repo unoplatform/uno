@@ -1,8 +1,12 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
+using Microsoft.UI.Composition.Interactions;
 using Uno.Extensions;
 using Uno.UI.Composition;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition
 {
@@ -19,7 +23,7 @@ namespace Microsoft.UI.Composition
 		private bool _isVisible = true;
 		private float _opacity = 1.0f;
 		private CompositionCompositeMode _compositeMode;
-		private object? _compositionTarget; // this should be a Microsoft.UI.Xaml.Media.CompositionTarget
+		private ICompositionTarget? _compositionTarget;
 
 		internal Visual(Compositor compositor) : base(compositor)
 		{
@@ -27,6 +31,10 @@ namespace Microsoft.UI.Composition
 		}
 
 		partial void InitializePartial();
+
+		internal VisualInteractionSource? VisualInteractionSource { get; set; }
+
+		internal bool IsTranslationEnabled { get; set; }
 
 		public Matrix4x4 TransformMatrix
 		{
@@ -116,7 +124,7 @@ namespace Microsoft.UI.Composition
 
 		public ContainerVisual? Parent { get; set; }
 
-		internal object? CompositionTarget
+		internal ICompositionTarget? CompositionTarget
 		{
 			get => _compositionTarget ?? Parent?.CompositionTarget; // TODO: can this be cached?
 			set => _compositionTarget = value;
@@ -127,6 +135,104 @@ namespace Microsoft.UI.Composition
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			Compositor.InvalidateRender(this);
+		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(AnchorPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, AnchorPoint);
+			}
+			else if (propertyName.Equals(nameof(CenterPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector3(subPropertyName, CenterPoint);
+			}
+			else if (propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector3(subPropertyName, Offset);
+			}
+			else if (propertyName.Equals(nameof(Opacity), StringComparison.OrdinalIgnoreCase))
+			{
+				return Opacity;
+			}
+			else if (propertyName.Equals(nameof(Orientation), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetQuaternion(subPropertyName, Orientation);
+			}
+			else if (propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase))
+			{
+				return RotationAngle;
+			}
+			else if (propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector3(subPropertyName, RotationAxis);
+			}
+			else if (propertyName.Equals(nameof(Size), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetVector2(subPropertyName, Size);
+			}
+			else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetMatrix4x4(subPropertyName, TransformMatrix);
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(AnchorPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				AnchorPoint = UpdateVector2(subPropertyName, AnchorPoint, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(CenterPoint), StringComparison.OrdinalIgnoreCase))
+			{
+				CenterPoint = UpdateVector3(subPropertyName, CenterPoint, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase))
+			{
+				Offset = UpdateVector3(subPropertyName, Offset, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Opacity), StringComparison.OrdinalIgnoreCase))
+			{
+				Opacity = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Orientation), StringComparison.OrdinalIgnoreCase))
+			{
+				Orientation = UpdateQuaternion(subPropertyName, Orientation, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(RotationAngle), StringComparison.OrdinalIgnoreCase))
+			{
+				RotationAngle = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(RotationAxis), StringComparison.OrdinalIgnoreCase))
+			{
+				RotationAxis = UpdateVector3(subPropertyName, RotationAxis, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Size), StringComparison.OrdinalIgnoreCase))
+			{
+				Size = UpdateVector2(subPropertyName, Size, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(TransformMatrix), StringComparison.OrdinalIgnoreCase))
+			{
+				TransformMatrix = UpdateMatrix4x4(subPropertyName, TransformMatrix, propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Scale), StringComparison.OrdinalIgnoreCase))
+			{
+				Scale = UpdateVector3(subPropertyName, Scale, propertyValue);
+			}
+			else if (IsTranslationEnabled && propertyName.Equals("Translation", StringComparison.OrdinalIgnoreCase))
+			{
+				_ = Properties.TryGetVector3("Translation", out var translation);
+				Properties.InsertVector3("Translation", UpdateVector3(subPropertyName, translation, propertyValue));
+				Compositor.InvalidateRender(this);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
 		}
 	}
 }

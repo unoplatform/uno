@@ -1,5 +1,4 @@
 <Project>
-	<Import Project="TargetFrameworkSelection.targets" />
 	<Import Project="uno.mobile-cross-targeting-disable.props" />
 	<Import Project="Uno.CrossTargetting.targets" />
 
@@ -87,34 +86,28 @@
 		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
 		<PackageReference Update="Uno.Resizetizer" Version="1.2.0-dev.72" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-		<PackageReference Update="Xamarin.UITest" Version="4.3.3" />
+		<PackageReference Update="Xamarin.UITest" Version="4.3.4" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
-		<!-- 
-			NoWarn="NU1903" is added to avoid .NET 7 discrepancies added when workloads
-			are incorrectly upgraded by dependencies. This will change in .NET 8, at which
-			time we'll be able to upgrade SkiaSharp.
-			Note that project templats are updated, which means that end users won't
-			be affected.
-		-->
-		<PackageReference Update="SkiaSharp.Views" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.3" NoWarn="NU1903"  />
-		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" NoWarn="NU1903" />
+		<PackageReference Update="SkiaSharp.Views" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.7"  />
+		<PackageReference Update="SkiaSharp" Version="2.88.7"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.7"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.7" />
+		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.7" />
+		
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.7" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
-
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
@@ -130,6 +123,7 @@
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
@@ -137,6 +131,7 @@
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.17" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
@@ -147,6 +142,7 @@
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
+		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.17" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">

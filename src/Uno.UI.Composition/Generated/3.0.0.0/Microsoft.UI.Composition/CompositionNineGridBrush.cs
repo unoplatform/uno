@@ -18,20 +18,20 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared property IsCenterHollow
 		// Skipping already declared property BottomInsetScale
 		// Skipping already declared property BottomInset
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Source.set
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsCenterHollow.get
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float, float, float, float)
-		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsetScales(float)
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInsetScale.get
-		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsCenterHollow.get
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.Source.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsets(float)
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInsetScale.get
+		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsetScales(float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionNineGridBrush.SetInsetScales(float, float, float, float)
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInset.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInsetScale.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.BottomInsetScale.set
+		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.TopInset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.IsCenterHollow.set
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInset.get
 		// Forced skipping of method Microsoft.UI.Composition.CompositionNineGridBrush.LeftInset.set

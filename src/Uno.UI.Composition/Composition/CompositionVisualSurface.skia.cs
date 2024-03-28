@@ -22,6 +22,7 @@ namespace Microsoft.UI.Composition
 
 		void ISkiaSurface.UpdateSurface(bool recreateSurface)
 		{
+			SKCanvas? canvas = null;
 			if (_surface is null || _drawingSession is null || recreateSurface)
 			{
 				_drawingSession?.Dispose();
@@ -39,34 +40,42 @@ namespace Microsoft.UI.Composition
 
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
-				_drawingSession = new DrawingSession(_surface, DrawingFilters.Default);
+				canvas = _surface.Canvas;
+				_drawingSession = new DrawingSession(_surface, canvas, DrawingFilters.Default);
 			}
+
+			canvas ??= _surface.Canvas;
 
 			if (SourceVisual is not null && _surface is not null)
 			{
-				_surface.Canvas.Clear();
+				canvas.Clear();
 				if (SourceOffset != default)
 				{
-					_surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
+					canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
 				}
 
+				bool? previousCompMode = Compositor.IsSoftwareRenderer;
+				Compositor.IsSoftwareRenderer = true;
+
 				SourceVisual.Draw(_drawingSession.Value);
+
+				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
 
 		void ISkiaSurface.UpdateSurface(in DrawingSession session)
 		{
-			if (SourceVisual is not null && session.Surface is not null)
+			if (SourceVisual is not null && session.Canvas is not null)
 			{
-				int save = session.Surface.Canvas.Save();
+				int save = session.Canvas.Save();
 				if (SourceOffset != default)
 				{
-					session.Surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
-					session.Surface.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Surface.Canvas.DeviceClipBounds.Width, session.Surface.Canvas.DeviceClipBounds.Height));
+					session.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
+					session.Canvas.ClipRect(new SKRect(SourceOffset.X, SourceOffset.Y, session.Canvas.DeviceClipBounds.Width, session.Canvas.DeviceClipBounds.Height));
 				}
 
 				SourceVisual.Draw(in session);
-				session.Surface.Canvas.RestoreToCount(save);
+				session.Canvas.RestoreToCount(save);
 			}
 		}
 

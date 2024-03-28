@@ -1,0 +1,63 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Default.PackageVersions.targets" />
+	<UsingTask TaskName="Uno.Sdk.ImplicitPackagesResolver"
+		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk.dll" />
+	<PropertyGroup>
+		<UnoTarget>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</UnoTarget>
+		<UnoTarget Condition="$(TargetFramework.Contains('windows10'))">windows10</UnoTarget>
+		<UnoTarget Condition="$(UnoTarget) == ''">reference</UnoTarget>
+	</PropertyGroup>
+
+	<Target Name="UnoImplicitPackages" BeforeTargets="ResolvePackageDependencies;CollectPackageReferences;ProcessFrameworkReferences">
+		<PropertyGroup>
+			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
+		</PropertyGroup>
+
+		<ImplicitPackagesResolver
+				IntermediateOutput="$(_UnoCacheFolder)"
+				SdkDebugging="$(UnoSdkDebugging)"
+				SingleProject="$(SingleProject)"
+				Optimize="$(Optimize)"
+				OutputType="$(OutputType)"
+				UnoFeatures="$(UnoFeatures)"
+				TargetFrameworkIdentifier="$(UnoTarget)"
+				ProjectName="$(MSBuildProjectName)"
+				PackageReferences="@(PackageReference)"
+				PackageVersions="@(PackageVersion)"
+				UnoVersion="$(UnoVersion)"
+				MauiVersion="$(MauiVersion)"
+				UnoExtensionsVersion="$(UnoExtensionsVersion)"
+				UnoToolkitVersion="$(UnoToolkitVersion)"
+				UnoThemesVersion="$(UnoThemesVersion)"
+				UnoCSharpMarkupVersion="$(UnoCSharpMarkupVersion)"
+				SkiaSharpVersion="$(SkiaSharpVersion)"
+				UnoLoggingVersion="$(UnoLoggingVersion)"
+				WindowsCompatibilityVersion="$(WindowsCompatibilityVersion)"
+				UnoWasmBootstrapVersion="$(UnoWasmBootstrapVersion)"
+				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
+				AndroidMaterialVersion="$(AndroidMaterialVersion)"
+				UnoResizetizerVersion="$(UnoResizetizerVersion)"
+				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
+				WinAppSdkVersion="$(WinAppSdkVersion)"
+				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"
+				UnoCoreLoggingSingletonVersion="$(UnoCoreLoggingSingletonVersion)"
+				UnoDspTasksVersion="$(UnoDspTasksVersion)"
+				CommunityToolkitMvvmVersion="$(CommunityToolkitMvvmVersion)"
+				PrismVersion="$(PrismVersion)"
+				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
+				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
+				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
+				Condition=" '$(TargetFramework)' != '' ">
+			<Output ItemName="_UnoImplicitPackageReference"
+					TaskParameter="ImplicitPackages" />
+			<Output ItemName="_UnoRemovePackageVersions"
+					TaskParameter="RemovePackageVersions" />
+		</ImplicitPackagesResolver>
+
+		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
+			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
+			<PackageReference Include="@(_UnoImplicitPackageReference)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

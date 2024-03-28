@@ -10,6 +10,9 @@ using Windows.Storage.Streams;
 using Uno.Storage.Internal;
 using Uno.Storage.Streams.Internal;
 using System.IO;
+using System.Linq;
+using MobileCoreServices;
+using SystemPath = System.IO.Path;
 
 namespace Windows.Storage
 {

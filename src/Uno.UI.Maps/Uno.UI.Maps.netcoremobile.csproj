@@ -31,9 +31,17 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
+		<!-- Required for the empty net7.0 target -->
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Make the package installable on net7.0 targets as a noop -->
+		<None Include="..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />

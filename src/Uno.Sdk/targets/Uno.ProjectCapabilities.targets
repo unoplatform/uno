@@ -9,26 +9,6 @@
     	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
-	<!-- Taken from: https://github.com/dotnet/maui/blob/c02a6706534888ccea577d771c9edfc820bfc001/src/Workload/Microsoft.Maui.Sdk/Sdk/Microsoft.Maui.Sdk.After.targets#L16C3-L26C15 -->
-	<!-- SingleProject-specific features -->
-	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
-		<ProjectCapability Include="Msix" />
-		<ProjectCapability Include="MauiSingleProject" />
-		<ProjectCapability Include="LaunchProfiles" />
-		<!-- If VS is older than Dev17 -->
-		<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
-		<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
-		<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
-		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
-
-		<!-- Required since VS 2022 17.4 Preview 1 -->
-		<ProjectCapability Include="MauiCore" />
-		<ProjectCapability Include="Maui" />
-		<ProjectCapability Include="UseMauiCore" />
-	</ItemGroup>
-
-	<Import Project="Uno.ProjectCapabilities.WinAppSdk.targets" Condition="$(IsWinAppSdk)" />
-
 	<!-- Additional capabilities to enable XAML Intellisense for non WinUI native projects -->
 	<ItemGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
 		<AvailableItemName Include="PRIResource" />
@@ -48,4 +28,10 @@
 		<ProjectCapability Include="WindowsXamlUserControl"/>
 		<ProjectCapability Include="WindowsUniversalMultiViews"/>
 	</ItemGroup>
+
+	<Import Project="Uno.ProjectCapabilities.WinAppSdk.targets" Condition="$(IsWinAppSdk)" />
+
+	<Import Project="Uno.ProjectCapabilities.Wasm.targets" Condition="$(IsBrowserWasm)" />
+
+	<Import Project="Uno.ProjectCapabilities.SingleProject.targets" Condition=" '$(SingleProject)' == 'true' " />
 </Project>

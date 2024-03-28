@@ -146,6 +146,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLine();
 				writer.AppendLineIndented("#pragma warning disable 618  // Ignore obsolete members warnings");
 				writer.AppendLineIndented("#pragma warning disable 1591 // Ignore missing XML comment warnings");
+				writer.AppendLineIndented("#pragma warning disable XAOBS001 // Ignore obsolete Android members");
 				writer.AppendLineIndented("#pragma warning disable Uno0001 // Ignore not implemented members");
 				AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, AnalyzerSuppressions);
 				writer.AppendLineIndented("using System;");
@@ -375,12 +376,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								&& property.SetMethod.IsLocallyPublic(_currentModule!)
 								)
 							{
-								if (property.Type.IsValueType)
+								writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
+								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
+
+								if (property.Type.IsValueType && property.Type.OriginalDefinition.SpecialType != SpecialType.System_Nullable_T)
 								{
-									writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
-
-									postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
-
 									using (postWriter.BlockInvariant($@"private static void Set{propertyName}(object instance, object value, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence)"))
 									{
 										using (postWriter.BlockInvariant($"if(value != null)"))
@@ -391,9 +391,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								}
 								else
 								{
-									writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
-
-									postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance,  Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
 									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
 								}
 

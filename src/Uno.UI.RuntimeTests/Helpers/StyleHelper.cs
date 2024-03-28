@@ -76,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseFluentStyles()
 		{
-#if WINAPPSDK // Disabled on UWP for now because 19041 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
+#if WINAPPSDK // Disabled on Windows for now because 19041 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.Windows
 			return null;
 #else
 

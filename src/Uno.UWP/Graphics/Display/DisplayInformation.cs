@@ -16,6 +16,7 @@ namespace Windows.Graphics.Display
 	{
 		internal const float BaseDpi = 96.0f;
 
+		private static object _windowIdMapLock = new object();
 		private static readonly Dictionary<WindowId, DisplayInformation> _windowIdMap = new();
 
 #if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
@@ -30,10 +31,21 @@ namespace Windows.Graphics.Display
 		private TypedEventHandler<DisplayInformation, object> _orientationChanged;
 		private TypedEventHandler<DisplayInformation, object> _dpiChanged;
 
-		private DisplayInformation()
+		private DisplayInformation(
+#if !ANDROID
+			WindowId windowId
+#endif
+			)
 		{
+#if !ANDROID
+			WindowId = windowId;
+#endif
 			Initialize();
 		}
+
+#if !ANDROID
+		internal WindowId WindowId { get; }
+#endif
 
 		public static DisplayInformation GetForCurrentView()
 		{
@@ -63,13 +75,20 @@ namespace Windows.Graphics.Display
 
 		internal static DisplayInformation GetOrCreateForWindowId(WindowId windowId)
 		{
-			if (!_windowIdMap.TryGetValue(windowId, out var appView))
+			lock (_windowIdMapLock)
 			{
-				appView = new();
-				_windowIdMap[windowId] = appView;
-			}
+				if (!_windowIdMap.TryGetValue(windowId, out var appView))
+				{
+					appView = new(
+#if !ANDROID
+						windowId
+#endif
+					);
+					_windowIdMap[windowId] = appView;
+				}
 
-			return appView;
+				return appView;
+			}
 		}
 
 		public static DisplayOrientations AutoRotationPreferences

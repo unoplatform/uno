@@ -105,6 +105,9 @@ The Windows Community Toolkit (WCT) is a collection of helper functions, control
 
 Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, macOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
 
+> [!NOTE]
+> Uno Platform is not built on top of .NET MAUI.
+
 ## Uno Toolkit
 
 In addition to hundreds of UI controls available from 3rd party UI vendors as described above, we offer our own set of [higher-level UI Controls](https://platform.uno/uno-toolkit/) designed specifically for multi-platform, responsive applications.
@@ -223,6 +226,9 @@ Uno Platform supports SQLite for all platforms, including WebAssembly, to allow 
 ## Proven migration path for Xamarin.Forms
 
 In addition to providing 3rd party control MAUI Embedding, Uno Platform is a proven modernization path for Xamarin.Forms apps. We've collated numerous [docs](https://platform.uno/xamarin.forms) to aid you in the migration. Big brands such as **TOYOTA** have already migrated some of their apps to Uno Platform.
+
+> [!NOTE]
+> Uno Platform is not built on top of .NET MAUI.
 
 Watch TOYOTA's [video testimonial](https://youtu.be/TeA6zEq5MGk?t=1449).
 

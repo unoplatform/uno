@@ -62,7 +62,7 @@ Uno Platform is supported by several 3rd-party packages and libraries, including
 
 ### Where can I get support?
 
-Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord) - #uno-platform channel where our engineering team and community will be able to help you.  
+Support is available through [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord Server](https://www.platform.uno/discord) - where our engineering team and community will be able to help you.  
 Paid support is also available and allows you to collaborate with our engineering team to ensure the success of your projects and address your GitHub issues faster. [Contact us for more details.](https://platform.uno/contact/)
 
 ### How can I get involved?
@@ -81,7 +81,7 @@ Consult [the list of supported WinUI controls](implemented-views.md).
 
 ### What do I need to develop Uno Platform applications?
 
-You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details.
+You can develop Uno Platform applications on Windows, macOS, or Linux. Supported IDEs include Visual Studio, Visual Studio Code, and Rider. Consult the [setup guide](get-started.md) for more details. If you need help with issues specific to your developer environment or hardware, check out [Common Issues](xref:Uno.UI.CommonIssues).
 
 ### Can I use VB.NET for Uno Platform applications?
 

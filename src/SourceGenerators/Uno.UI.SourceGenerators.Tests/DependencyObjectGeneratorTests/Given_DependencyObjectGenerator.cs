@@ -114,7 +114,7 @@ public class Given_DependencyObjectGenerator
 	 	partial class Inner : IDependencyObjectStoreProvider, IWeakReferenceProvider
 	 	{
 	 		private DependencyObjectStore __storeBackingField;
-	 		public Windows.UI.Core.CoreDispatcher Dispatcher => Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
+	 		public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
 	 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 	 		private DependencyObjectStore __Store
 	 		{
@@ -141,7 +141,7 @@ public class Given_DependencyObjectGenerator
 	 		private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 	 		private BinderReferenceHolder _refHolder;
 	 		
-	 		public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
+	 		public event global::Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
 	 		
 	 		partial void InitializeBinder();
 	 		

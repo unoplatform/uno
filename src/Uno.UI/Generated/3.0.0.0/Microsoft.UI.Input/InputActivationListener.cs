@@ -28,6 +28,13 @@ namespace Microsoft.UI.Input
 		// Forced skipping of method Microsoft.UI.Input.InputActivationListener.InputActivationChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Microsoft.UI.Input.InputActivationListener GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
+		{
+			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListener.GetForIsland(ContentIsland island) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationListener%20InputActivationListener.GetForIsland%28ContentIsland%20island%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.InputActivationListener GetForWindowId(global::Microsoft.UI.WindowId windowId)
 		{
 			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListener.GetForWindowId(WindowId windowId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputActivationListener%20InputActivationListener.GetForWindowId%28WindowId%20windowId%29");

@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TeachingTip : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string Title
 		{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.FrameworkElement Target
 		{
@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.TeachingTipTailVisibility TailVisibility
 		{
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string Subtitle
 		{
@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool ShouldConstrainToRootBounds
 		{
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode PreferredPlacement
 		{
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Thickness PlacementMargin
 		{
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsOpen
 		{
@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsLightDismissEnabled
 		{
@@ -134,7 +134,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.IconSource IconSource
 		{
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode HeroContentPlacement
 		{
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.UIElement HeroContent
 		{
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Style CloseButtonStyle
 		{
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public object CloseButtonContent
 		{
@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public object CloseButtonCommandParameter
 		{
@@ -218,7 +218,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Windows.Input.ICommand CloseButtonCommand
 		{
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Style ActionButtonStyle
 		{
@@ -246,7 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public object ActionButtonContent
 		{
@@ -260,7 +260,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public object ActionButtonCommandParameter
 		{
@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Windows.Input.ICommand ActionButtonCommand
 		{
@@ -288,7 +288,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings TemplateSettings
 		{
@@ -298,7 +298,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActionButtonCommandParameterProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActionButtonCommandProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -314,7 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActionButtonContentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -322,7 +322,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActionButtonStyleProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -330,7 +330,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Style)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CloseButtonCommandParameterProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -338,7 +338,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CloseButtonCommandProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -346,7 +346,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CloseButtonContentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -354,7 +354,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CloseButtonStyleProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -362,7 +362,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Style)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeroContentPlacementProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -370,7 +370,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.TeachingTipHeroContentPlacementMode)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeroContentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -378,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IconSourceProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -386,7 +386,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconSource)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsLightDismissEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -394,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsOpenProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -402,7 +402,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PlacementMarginProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -410,7 +410,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Thickness)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PreferredPlacementProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -418,7 +418,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -426,7 +426,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SubtitleProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -434,7 +434,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TailVisibilityProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -442,7 +442,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.TeachingTipTailVisibility)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TargetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -450,7 +450,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FrameworkElement)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TemplateSettingsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -458,7 +458,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TitleProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -466,7 +466,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public TeachingTip() : base()
 		{
@@ -544,7 +544,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.HeroContentProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.IconSourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TeachingTip.TemplateSettingsProperty.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TeachingTip, object> ActionButtonClick
 		{
@@ -560,7 +560,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TeachingTip, object> CloseButtonClick
 		{
@@ -576,7 +576,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TeachingTip, global::Microsoft.UI.Xaml.Controls.TeachingTipClosedEventArgs> Closed
 		{
@@ -592,7 +592,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TeachingTip, global::Microsoft.UI.Xaml.Controls.TeachingTipClosingEventArgs> Closing
 		{

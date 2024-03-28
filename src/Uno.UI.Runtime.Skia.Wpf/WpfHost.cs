@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
@@ -13,21 +14,32 @@ using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf;
 
-public class WpfHost : IWpfApplicationHost
+public class WpfHost : SkiaHost, IWpfApplicationHost
 {
 	private readonly Dispatcher _dispatcher;
 	private readonly Func<WinUIApplication> _appBuilder;
+	private readonly WpfApplication? _wpfApp;
 
 	[ThreadStatic] private static WpfHost? _current;
 
 	private bool _ignorePixelScaling;
 
-	static WpfHost() => WpfExtensionsRegistrar.Register();
+	static WpfHost()
+		=> WpfExtensionsRegistrar.Register();
 
 	public WpfHost(Dispatcher dispatcher, Func<WinUIApplication> appBuilder)
 	{
 		_current = this;
 		_dispatcher = dispatcher;
+		_appBuilder = appBuilder;
+	}
+
+	internal WpfHost(Func<WinUIApplication> appBuilder, Func<WpfApplication>? wpfAppBuilder)
+	{
+		_wpfApp = wpfAppBuilder?.Invoke() ?? new WpfApplication();
+
+		_current = this;
+		_dispatcher = _wpfApp.Dispatcher;
 		_appBuilder = appBuilder;
 	}
 
@@ -52,13 +64,20 @@ public class WpfHost : IWpfApplicationHost
 		}
 	}
 
-	public void Run()
+	protected override void Initialize()
 	{
 		InitializeDispatcher();
+	}
 
+	protected override Task RunLoop()
+	{
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
 		StartApp();
+
+		_wpfApp?.Run();
+
+		return Task.CompletedTask;
 	}
 
 	private void InitializeDispatcher()

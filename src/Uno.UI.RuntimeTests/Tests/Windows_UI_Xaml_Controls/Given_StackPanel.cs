@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Windows.Foundation;
-using Windows.UI;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
-using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Private.Infrastructure;
 using SamplesApp.UITests;
+using Windows.Foundation;
+using Windows.UI;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -405,6 +402,253 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
+		public async Task When_Spacing_All_Visible(Orientation orientation)
+		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var stackPanel = new StackPanel()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Orientation = orientation,
+				Spacing = itemSpacing,
+				Children =
+				{
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue) }
+				}
+			};
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(itemSize * 3 + itemSpacing * 2, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
+		public async Task When_Spacing_All_Collapsed(Orientation orientation)
+		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var stackPanel = new StackPanel()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Orientation = orientation,
+				Spacing = itemSpacing,
+				Children =
+				{
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+				}
+			};
+
+			bool isLoaded = false;
+			stackPanel.Loaded += (s, e) => isLoaded = true;
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitFor(() => isLoaded);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
+		public async Task When_Spacing_Middle_Collapsed(Orientation orientation)
+		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var stackPanel = new StackPanel()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Orientation = orientation,
+				Spacing = itemSpacing,
+				Children =
+				{
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue) }
+				}
+			};
+
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(itemSize * 2 + itemSpacing, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
+		public async Task When_Spacing_Last_Two_Collapsed(Orientation orientation)
+		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var stackPanel = new StackPanel()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Orientation = orientation,
+				Spacing = itemSpacing,
+				Children =
+				{
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+				}
+			};
+
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(itemSize, orientation == Orientation.Vertical ? stackPanel.DesiredSize.Height : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
+		public async Task When_Spacing_Outer_Collapsed(Orientation orientation)
+		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var stackPanel = new StackPanel()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Orientation = orientation,
+				Spacing = itemSpacing,
+				Children =
+				{
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed }
+				}
+			};
+
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(itemSize, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		[RequiresFullWindow]
+		public async Task When_Spacing_Multiple_Collapsed(Orientation orientation)
+		{
+			int itemSpacing = 12;
+			int itemSize = 20;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var stackPanel = new StackPanel()
+			{
+				Background = new SolidColorBrush(Colors.Yellow),
+				Orientation = orientation,
+				Spacing = itemSpacing,
+				Children =
+				{
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Red) },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Green), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Blue), Visibility = Visibility.Collapsed },
+					new Border() { Width = itemSize, Height = itemSize, Background = new SolidColorBrush(Colors.Pink) },
+				}
+			};
+
+			grid.Children.Add(stackPanel);
+
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(stackPanel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2 * itemSize + itemSpacing, orientation == Orientation.Vertical ? stackPanel.ActualHeight : stackPanel.ActualWidth);
+			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
+		}
+
+		private static void ValidateSpacingPositions(Orientation orientation, StackPanel stackPanel, int itemSpacing, int itemSize)
+		{
+			var expectedPosition = 0;
+			foreach (var border in stackPanel.Children)
+			{
+				if (border.Visibility == Visibility.Collapsed)
+				{
+					continue;
+				}
+
+				var position = border.TransformToVisual(stackPanel).TransformPoint(new Point(0, 0));
+				Assert.AreEqual(expectedPosition, orientation == Orientation.Vertical ? position.Y : position.X);
+				Assert.AreEqual(0, orientation == Orientation.Vertical ? position.X : position.Y);
+				expectedPosition += itemSize + itemSpacing;
+			}
 		}
 	}
 }

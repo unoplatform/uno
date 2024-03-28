@@ -1,0 +1,112 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<RollForward>Major</RollForward>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+
+		<!-- Required in CI to avoid dependency issues -->
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
+
+		<!--
+		Enable implicit dotnet runtime forward rolling, as the specifed target framework
+		project may run with only a later version of the .NET runtime installed.
+		-->
+		<RollForward>Major</RollForward>
+		
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Required to use WPF types in the head-->
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Manifest Include="$(ApplicationManifest)" />
+	</ItemGroup>
+	
+	<ItemGroup Label="AssemblyInfo">
+		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
+			<_Parameter1>false</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Windows.ThemeInfo">
+			<_Parameter1>System.Windows.ResourceDictionaryLocation.None</_Parameter1>
+			<_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+			<_Parameter2>System.Windows.ResourceDictionaryLocation.SourceAssembly</_Parameter2>
+			<_Parameter2_IsLiteral>true</_Parameter2_IsLiteral>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Wpf\Uno.UI.Runtime.Skia.Wpf.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Program.cs" />
+	</ItemGroup>
+
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
+
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
+
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+		<Copy
+			SourceFiles="$(MSBuildThisFileDirectory)../../Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/$(Configuration)/libUnoNativeMac.dylib"
+			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
+	</Target>
+
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
+		<ItemGroup>
+			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
+			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
+		</ItemGroup>
+
+		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')" Text="Failed to find published filed: %(_validationPath.Identity)" />
+	</Target>
+
+	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
+		<ItemGroup>
+			<!--
+			This removes the transitive dependency to WPF which has a requirement to 
+			have net8.0-windows and not net8.0.
+			-->
+			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoRemoveRuntimeFrameworkInRuntimeConfigurationFiles" BeforeTargets="GenerateBuildRuntimeConfigurationFiles">
+		<ItemGroup>
+			<!--
+			This removes the Microsoft.WindowsDesktop.App from the runtime configuration file in the output layout.
+			Uno relies on loading WPF dynamically by searching for the WPF assemblies in the .NET SDK install folder.
+			-->
+			<_RuntimeFrameworkToRemove Include="@(RuntimeFramework)" Condition="'%(Identity)'=='Microsoft.WindowsDesktop.App'" />
+			<RuntimeFramework Remove="@(_RuntimeFrameworkToRemove)" />
+		</ItemGroup>
+	</Target>
+</Project>

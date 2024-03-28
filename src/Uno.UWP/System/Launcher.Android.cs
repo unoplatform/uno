@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using AndroidX.Core.Content.PM;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-
 
 namespace Windows.System
 {
@@ -59,14 +60,29 @@ namespace Windows.System
 				var intent = new Intent(Intent.ActionView, androidUri);
 
 				var manager = Uno.UI.ContextHelper.Current.PackageManager;
+				var activity = intent.ResolveActivity(manager);
+
+				IList<ResolveInfo> supportedResolvedInfos = null;
+				// Use new overload of QueryIntentActivities on API 33 and newer
+				// to avoid obsolete warning
+				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Tiramisu)
+				{
+					supportedResolvedInfos = manager.QueryIntentActivities(
+						intent,
+						PackageManager.ResolveInfoFlags.Of((long)PackageInfoFlags.MatchDefaultOnly));
+				}
+				else
+				{
 #pragma warning disable CS0618 // Type or member is obsolete
 #pragma warning disable CA1422 // Validate platform compatibility
-				var supportedResolvedInfos = manager.QueryIntentActivities(
+					supportedResolvedInfos = manager.QueryIntentActivities(
 						intent,
 						PackageInfoFlags.MatchDefaultOnly);
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
-				canOpenUri = supportedResolvedInfos.Any();
+				}
+
+				canOpenUri = supportedResolvedInfos?.Any() == true;
 			}
 			else
 			{

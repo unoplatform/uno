@@ -11,6 +11,7 @@ using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -104,7 +105,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 				pathIconSource = new PathIconSource();
 				var geometry = new RectangleGeometry();
-				geometry.Rect = new Windows.Foundation.Rect { Width = 5, Height = 2, X = 0, Y = 0 };
+				geometry.Rect = new Rect { Width = 5, Height = 2, X = 0, Y = 0 };
 				pathIconSource.Data = geometry;
 
 				animatedIconSource = new AnimatedIconSource();

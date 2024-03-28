@@ -12,6 +12,9 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Foldable</PackageId>
 
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<!-- Required for the empty net7.0 target -->
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -35,6 +38,11 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
 		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Make the package installable on net7.0 targets as a noop -->
+		<None Include="..\..\build\nuget\_._" Pack="true" PackagePath="lib/net7.0" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

@@ -26,6 +26,8 @@ using Microsoft.UI.Xaml.Shapes;
 
 using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -1523,6 +1525,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_CloseLightDismissablePopups(bool isLightDismissEnabled)
+		{
+			var flyout = new Flyout()
+			{
+				Content = new Button() { Content = "Test" }
+			};
+			bool opened = false;
+			flyout.Opened += (s, e) =>
+			{
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout.XamlRoot).FirstOrDefault(p => p.AssociatedFlyout == flyout);
+				Assert.IsNotNull(popup);
+				popup.IsLightDismissEnabled = isLightDismissEnabled;
+				opened = true;
+			};
+			try
+			{
+				var ownerButton = new Button()
+				{
+					Content = "Owner",
+					Flyout = flyout
+				};
+				TestServices.WindowHelper.WindowContent = ownerButton;
+				await TestServices.WindowHelper.WaitForLoaded(ownerButton);
+				((IInvokeProvider)ownerButton.GetAutomationPeer()).Invoke();
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				var popupRoot = ownerButton.XamlRoot.VisualTree.PopupRoot;
+				popupRoot.CloseLightDismissablePopups();
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual(!isLightDismissEnabled, flyout.IsOpen);
+			}
+			finally
+			{
+				flyout?.Hide();
+			}
+		}
+#endif
+
 #if __IOS__
 		[TestMethod]
 		[RequiresFullWindow]
@@ -1627,6 +1671,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				host.Flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Open_In_GotFocus()
+		{
+			bool keepOpening = true;
+			var flyout = new Flyout
+			{
+				Content = new Button { Content = "Test" }
+			};
+			try
+			{
+				bool closed = false;
+
+				var container = new StackPanel();
+				var host = new Button
+				{
+					Content = "Asd",
+					Flyout = flyout
+				};
+				var unfocusButton = new Button();
+				container.Children.Add(unfocusButton);
+				container.Children.Add(host);
+
+				TestServices.WindowHelper.WindowContent = container;
+				await TestServices.WindowHelper.WaitForLoaded(container);
+				await TestServices.WindowHelper.WaitForIdle();
+				unfocusButton.Focus(FocusState.Programmatic);
+				await TestServices.WindowHelper.WaitForIdle();
+				bool gotFocus = false;
+				bool wasClosedWhenHostGotFocus = false;
+				host.GotFocus += (s, e) =>
+				{
+					gotFocus = true;
+					if (closed)
+					{
+						wasClosedWhenHostGotFocus = true;
+					}
+					if (!host.Flyout.IsOpen && keepOpening)
+					{
+						host.Flyout.ShowAt(host);
+					}
+				};
+
+				bool opened = false;
+				flyout.Opened += (s, e) => opened = true;
+
+				host.Focus(FocusState.Programmatic);
+
+				await TestServices.WindowHelper.WaitFor(() => opened);
+				Assert.AreNotEqual(host, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
+
+				opened = false;
+				flyout.Closed += (s, e) => closed = true;
+
+				gotFocus = false;
+				flyout.Hide();
+
+				await TestServices.WindowHelper.WaitFor(() => gotFocus);
+				await TestServices.WindowHelper.WaitFor(() => closed);
+				Assert.IsFalse(wasClosedWhenHostGotFocus);
+				Assert.IsFalse(flyout.IsOpen);
+			}
+			finally
+			{
+				keepOpening = false;
+				flyout.Hide();
 			}
 		}
 

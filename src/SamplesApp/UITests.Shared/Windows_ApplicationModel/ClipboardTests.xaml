@@ -11,7 +11,8 @@
     <StackPanel Padding="12" Spacing="8">
         <TextBox Text="{x:Bind Model.Text, Mode=TwoWay}" />
         <Button Command="{x:Bind Model.CopyCommand}">Copy to clipboard</Button>
-        <Button Command="{x:Bind Model.PasteCommand}">Paste from clipboard</Button>
+        <Button Command="{x:Bind Model.PasteTextCommand}">Paste text from clipboard</Button>
+        <Button Command="{x:Bind Model.PasteImageCommand}">Paste image from clipboard</Button>
         <Button Command="{x:Bind Model.ClearCommand}">Clear clipboard</Button>
         <Button Command="{x:Bind Model.FlushCommand}">Flush clipboard</Button>
         <ToggleButton Command="{x:Bind Model.ToggleContentChangedCommand}" IsChecked="{x:Bind Model.IsObservingContentChanged, Mode=OneWay}">Observe ContentChanged</ToggleButton>
@@ -19,5 +20,6 @@
             <Run FontWeight="Bold">Last content change:</Run>
             <Run Text="{x:Bind Model.LastContentChangedDate, Mode=OneWay}" />
         </TextBlock>
+        <Image Source="{x:Bind Model.Bitmap, Mode=OneWay}" x:Name="image" />
     </StackPanel>
 </Page>

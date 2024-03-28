@@ -1,17 +1,67 @@
 <Project>
 
-	<PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+	<PropertyGroup>
+		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
+		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
+		<_IsExecutable>false</_IsExecutable>
+		<_IsExecutable Condition=" '$(OutputType)' == 'WinExe' OR '$(OutputType)' == 'Exe' ">true</_IsExecutable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" $(Optimize) != 'true' ">
 		<DebugType Condition=" $(DebugType) == '' ">portable</DebugType>
 		<DebugSymbols Condition=" $(DebugSymbols) == '' ">True</DebugSymbols>
 
 		<!-- Required for Hot Reload (See https://github.com/dotnet/sdk/issues/36666) -->
-		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+		<IncludeSourceRevisionInInformationalVersion Condition=" '$(IncludeSourceRevisionInInformationalVersion)' == '' ">false</IncludeSourceRevisionInInformationalVersion>
+
+		<!-- Disable build acceleration until runtime replacement supports it https://github.com/unoplatform/uno/issues/15928 -->
+		<AccelerateBuildsInVisualStudio Condition=" '$(AccelerateBuildsInVisualStudio)' == '' ">false</AccelerateBuildsInVisualStudio>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
+		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
+		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
+		<IsUnoHead Condition="$(SingleProject) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AndroidProjectFolder Condition=" '$(AndroidProjectFolder)' == '' ">$(PlatformsProjectFolder)Android\</AndroidProjectFolder>
+		<AndroidProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(AndroidProjectFolder)'))</AndroidProjectFolder>
+		<AndroidProjectFolder Condition=" !Exists('$(AndroidProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Android'))</AndroidProjectFolder>
+		<iOSProjectFolder Condition=" '$(iOSProjectFolder)' == '' ">$(PlatformsProjectFolder)iOS\</iOSProjectFolder>
+		<iOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(iOSProjectFolder)'))</iOSProjectFolder>
+		<iOSProjectFolder Condition=" !Exists($(iOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('iOS'))</iOSProjectFolder>
+		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">$(PlatformsProjectFolder)MacCatalyst\</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacCatalystProjectFolder)'))</MacCatalystProjectFolder>
+		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
+		<MacOSProjectFolder Condition=" '$(MacOSProjectFolder)' == '' ">$(PlatformsProjectFolder)MacOS\</MacOSProjectFolder>
+		<MacOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacOSProjectFolder)'))</MacOSProjectFolder>
+		<MacOSProjectFolder Condition=" !Exists('$(MacOSProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacOS'))</MacOSProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Desktop') ">$(PlatformsProjectFolder)Desktop</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' == '' AND Exists('Desktop') ">Desktop</DesktopProjectFolder>
+		<DesktopProjectFolder Condition=" '$(DesktopProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(DesktopProjectFolder)'))</DesktopProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)Wasm') ">$(PlatformsProjectFolder)Wasm</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('$(PlatformsProjectFolder)WebAssembly') ">$(PlatformsProjectFolder)WebAssembly</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('Wasm\') ">Wasm</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' == '' AND Exists('WebAssembly\') ">WebAssembly</WasmProjectFolder>
+		<WasmProjectFolder Condition=" '$(WasmProjectFolder)' != '' ">$([MSBuild]::EnsureTrailingSlash('$(WasmProjectFolder)'))</WasmProjectFolder>
+		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
+		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
+		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<DefaultLanguage Condition=" $(DefaultLanguage) == '' ">en</DefaultLanguage>
 	</PropertyGroup>
 
+	<Import Project="Uno.Implicit.Packages.targets"
+		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
+
+	<Import Project="Uno.Implicit.Namespaces.targets"
+		Condition=" $(DisableImplicitUnoNamespaces) != 'true' " />
+
+	<!-- TFM Specific Targets -->
 	<Import Project="Uno.Common.Android.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
 	<Import Project="Uno.Common.iOS.targets"
@@ -20,16 +70,49 @@
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' " />
 	<Import Project="Uno.Common.MacOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' " />
-	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'skia' " />
-	<Import Project="Uno.Common.Skia.targets"
-		Condition=" $(MSBuildProjectName.Contains('.Skia.')) " />
+	<Import Project="Uno.Common.Desktop.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' " />
 	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser' " />
-	<Import Project="Uno.Common.Wasm.targets"
-		Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) " />
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' " />
 	<!-- Evaluate windows10 instead of using GetTargetPlatformIdentifier because of duplicate value for WPF -->
 	<Import Project="Uno.Common.WinAppSdk.targets"
 		Condition=" $(TargetFramework.Contains('windows10')) " />
 
+	<Import Project="Uno.GenerateAot.targets"
+		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
+
+	<PropertyGroup Condition="$(SingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+		<OutputType>Library</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' != '' ">
+		<_IgnorePlatformFiles Include="$(AndroidProjectFolder)**"
+			Condition=" $(IsAndroid) != 'true' AND '$(AndroidProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(iOSProjectFolder)**"
+			Condition=" $(IsIOS) != 'true' AND '$(iOSProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
+			Condition=" $(IsMacCatalyst) != 'true' AND '$(MacCatalystProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"
+			Condition=" $(IsMacOS) != 'true' AND '$(MacOSProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(DesktopProjectFolder)**"
+			Condition=" $(IsDesktop) != 'true' AND '$(DesktopProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(WasmProjectFolder)**"
+			Condition=" $(IsBrowserWasm) != 'true' AND '$(WasmProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
+			Condition=" $(IsWinAppSdk) != 'true' AND '$(WindowsProjectFolder)'!='' " />
+		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Content Remove="@(_IgnorePlatformFiles)" />
+		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
+		<Manifest Remove="@(_IgnorePlatformFiles)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';Dsp;'))">
+		<UnoDspImportColors Include="Styles\*.zip" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+		<UnoDspImportColors Include="Styles\*.zip" Generator="CSharp" Condition="$(UnoFeatures.Contains(';CSharpMarkup;'))" />
+	</ItemGroup>
+
+	<ItemGroup Condition="($(UnoFeatures.Contains(';Configuration;')) OR $(UnoFeatures.Contains(';Extensions;'))) AND Exists('appsettings.json')">
+		<EmbeddedResource Include="appsettings.json" />
+		<EmbeddedResource Include="appsettings.*.json" DependentUpon="appsettings.json" />
+	</ItemGroup>
 </Project>

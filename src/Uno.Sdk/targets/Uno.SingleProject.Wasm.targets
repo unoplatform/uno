@@ -1,3 +1,50 @@
 <Project>
+	<PropertyGroup>
+		<UnoIsWebAssemblyBrowserHead>true</UnoIsWebAssemblyBrowserHead>
+		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmProjectFolder)manifest.webmanifest</WasmPWAManifestFile>
+		<!--
+			Supports Deep Linking Routes
+			https://aka.platform.uno/wasm-deeplink
+		-->
+		<WasmShellWebAppBasePath Condition="$(WasmShellWebAppBasePath) == ''">/</WasmShellWebAppBasePath>
+	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Optimize)'!='true'">
+		<MonoRuntimeDebuggerEnabled Condition="$(MonoRuntimeDebuggerEnabled) == ''">true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants Condition="!$(DefineConstants.Contains(DEBUG))">$(DefineConstants);DEBUG</DefineConstants>
+		<DefineConstants Condition="!$(DefineConstants.Contains(TRACE))">$(DefineConstants);TRACE</DefineConstants>
+		<!--
+			IL Linking is disabled in Debug configuration.
+			When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-WebAssembly.html
+		-->
+		<WasmShellILLinkerEnabled Condition="$(WasmShellILLinkerEnabled) == ''">false</WasmShellILLinkerEnabled>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Optimize)'=='true'">
+		<WasmAotFileName Condition="$(WasmAotFileName) == ''">aot.profile</WasmAotFileName>
+		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmProjectFolder)$(WasmAotFileName)') ">$(WasmProjectFolder)$(WasmAotFileName)</WasmAotProfilePath>
+		<WasmAotProfilePath Condition=" $(WasmAotProfilePath) == '' AND Exists('$(WasmAotFileName)') ">$(WasmAotFileName)</WasmAotProfilePath>
+	</PropertyGroup>
+
+	<ItemGroup Condition="$(EnableDefaultUnoItems) == 'true'">
+		<Content Include="$(WasmProjectFolder)manifest.webmanifest"
+			Condition="Exists('$(WasmProjectFolder)manifest.webmanifest')"
+			Exclude="@(Content)"
+			IsDefaultItem="true" />
+		<EmbeddedResource Include="$(WasmProjectFolder)WasmCSS\Fonts.css"
+			Condition="Exists('$(WasmProjectFolder)WasmCSS\Fonts.css')"
+			Exclude="@(EmbeddedResource)"
+			IsDefaultItem="true" />
+		<EmbeddedResource Include="$(WasmProjectFolder)WasmScripts\AppManifest.js"
+			Condition="Exists('$(WasmProjectFolder)WasmScripts\AppManifest.js')"
+			Exclude="@(EmbeddedResource)"
+			IsDefaultItem="true" />
+		<LinkerDescriptor Include="$(WasmProjectFolder)LinkerConfig.xml"
+			Condition="Exists('$(WasmProjectFolder)LinkerConfig.xml')"
+			Exclude="@(LinkerDescriptor)"
+			IsDefaultItem="true" />
+		<WasmShellEnableAotProfile Include="$(WasmAotProfilePath)"
+			Condition="$(WasmAotProfilePath) != ''"
+			IsDefaultItem="true" />
+	</ItemGroup>
 </Project>

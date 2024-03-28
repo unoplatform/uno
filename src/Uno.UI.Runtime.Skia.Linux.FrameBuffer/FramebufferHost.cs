@@ -10,14 +10,15 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
-using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
+using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
+using System.Threading.Tasks;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
-	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
+	public class FrameBufferHost : SkiaHost, ISkiaApplicationHost, IXamlRootHost, IDisposable
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
@@ -52,18 +53,23 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		/// <remarks>This value can be overriden by the UNO_DISPLAY_SCALE_OVERRIDE environment variable</remarks>
 		public float? DisplayScale { get; set; }
 
-		public void Run()
+		protected override void Initialize()
 		{
 			StartConsoleInterception();
 
-			_eventLoop.Schedule(Initialize);
+			_eventLoop.Schedule(InnerInitialize);
+		}
 
+		protected override Task RunLoop()
+		{
 			_terminationGate.WaitOne();
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"Application is exiting");
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private void StartConsoleInterception()
@@ -89,7 +95,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			_consoleInterceptionThread.Start();
 		}
 
-		private void Initialize()
+		private void InnerInitialize()
 		{
 			_isDispatcherThread = true;
 
@@ -146,5 +152,9 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
 		WUX.UIElement? IXamlRootHost.RootElement => FrameBufferWindowWrapper.Instance.Window?.RootElement;
+
+		public void Dispose()
+		{
+		}
 	}
 }

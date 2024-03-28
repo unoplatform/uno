@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
@@ -254,13 +255,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName)
+		private INamedTypeSymbol GetPropertyTypeByOwnerSymbol(INamedTypeSymbol ownerType, string propertyName, int lineNumber, int linePosition, [CallerMemberName] string caller = "")
 		{
 			var definition = _metadataHelper.FindPropertyTypeByOwnerSymbol(ownerType, propertyName);
 
 			if (definition == null)
 			{
-				throw new Exception("The property {0}.{1} is unknown".InvariantCultureFormat(ownerType, propertyName));
+				throw new Exception($"The property {ownerType}.{propertyName} is unknown. Line number: {lineNumber}, Line position: {linePosition}, Caller: {caller}, File: {_fileDefinition.FilePath}");
 			}
 
 			return definition;
@@ -711,7 +712,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static string GetTrimmedNamespace(string nsNamespace)
 		{
 			var nsName = nsNamespace.TrimStart("using:");
-
 			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");

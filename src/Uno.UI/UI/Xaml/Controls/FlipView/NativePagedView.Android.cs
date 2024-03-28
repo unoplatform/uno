@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_lastLayoutSize = newSize;
 
-				_layouter.Arrange(new Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
+				_layouter.Arrange(new global::Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
 			}
 		}
 

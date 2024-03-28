@@ -76,6 +76,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItem.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItems.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionChanged.add
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanDragItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanReorderItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.ItemTemplateProperty.get
@@ -91,5 +93,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.ItemInvoked
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.DragItemsCompleted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.DragItemsStarting
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.SelectionChanged
 	}
 }

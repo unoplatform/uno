@@ -120,7 +120,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .PlaceholderText("Step Size")
-        .Text(x => x.Bind(() => vm.Step).TwoWay())
+        .Text(x => x.Binding(() => vm.Step).TwoWay())
     ```
 
 - Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
@@ -159,7 +159,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
                                 .HorizontalAlignment(HorizontalAlignment.Center)
                                 .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
                                 .PlaceholderText("Step Size")
-                                .Text(x => x.Bind(() => vm.Step).TwoWay()),
+                                .Text(x => x.Binding(() => vm.Step).TwoWay()),
                             new TextBlock()
                                 .Margin(12)
                                 .HorizontalAlignment(HorizontalAlignment.Center)

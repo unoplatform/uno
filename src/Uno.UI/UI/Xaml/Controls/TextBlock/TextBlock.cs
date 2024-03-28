@@ -706,10 +706,31 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region DependencyProperty: IsTextTrimmed
+		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
+
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged;
+		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
+		{
+			add
+			{
+#if __WASM__
+				if (!_shouldUpdateIsTextTrimmed)
+				{
+					UpdateIsTextTrimmed();
+
+					_shouldUpdateIsTextTrimmed = true;
+				}
+#endif
+
+				_isTextTrimmedChanged += value;
+			}
+			remove
+			{
+				_isTextTrimmedChanged -= value;
+			}
+		}
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -725,14 +746,27 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		public bool IsTextTrimmed
 		{
-			get => (bool)GetValue(IsTextTrimmedProperty);
+			get
+			{
+#if __WASM__
+				if (!_shouldUpdateIsTextTrimmed)
+				{
+					UpdateIsTextTrimmed();
+
+					_shouldUpdateIsTextTrimmed = true;
+				}
+#endif
+
+				return (bool)GetValue(IsTextTrimmedProperty);
+			}
+
 			private set => SetValue(IsTextTrimmedProperty, value);
 		}
 
 		private void OnIsTextTrimmedChanged()
 		{
 			OnIsTextTrimmedChangedPartial();
-			IsTextTrimmedChanged?.Invoke(this, new());
+			_isTextTrimmedChanged?.Invoke(this, new());
 		}
 
 		partial void OnIsTextTrimmedChangedPartial();
@@ -912,6 +946,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				e.Handled = true;
 				that.Focus(FocusState.Pointer);
+
+				that.CapturePointer(e.Pointer);
 			}
 		};
 
@@ -923,7 +959,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 
-			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) is Hyperlink hyperlink)
+			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) is { })
 			{
 				// if we release on a hyperlink, we don't select anything
 				that.Selection = new Range(0, 0);
@@ -933,8 +969,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (that.IsCaptured(e.Pointer))
 			{
-				// On UWP we don't get the Tapped event, so make sure to abort it.
-				that.CompleteGesture();
+				var hyperlink = that.FindHyperlinkAt(e.GetCurrentPoint(that).Position);
+				// On UWP we don't get the Tapped event if we tapped a hyperlink, so make sure to abort it.
+				if (hyperlink is { })
+				{
+					that.CompleteGesture();
+				}
 
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
 				that.ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
@@ -942,7 +982,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// KNOWN ISSUE:
 				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher
 				// would move it after the PointerExited. So prefer to raise it before (actually like a Button).
-				if (!(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position)?.ReleasePointerPressed(e.Pointer) ?? false))
+				if (!(hyperlink?.ReleasePointerPressed(e.Pointer) ?? false))
 				{
 					// We failed to find the hyperlink that made this capture but we ** silently ** removed the capture,
 					// so we won't receive the CaptureLost. So make sure to AbortPointerPressed on the Hyperlink which made the capture.

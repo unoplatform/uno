@@ -24,6 +24,8 @@ namespace Microsoft.UI.Composition
 			_image = image;
 		}
 
+		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
+
 		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)
 		{
 			using var stream = new SKManagedStream(imageStream);
@@ -39,6 +41,11 @@ namespace Microsoft.UI.Composition
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"Image load result {result}");
+				}
+
+				if (result == SKCodecResult.Success)
+				{
+					_image = SKImage.FromBitmap(bitmap);
 				}
 
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);

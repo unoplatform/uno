@@ -43,8 +43,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Springiness.get
-		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Oscillations.get
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Mode.get
+		// Forced skipping of method Microsoft.UI.Composition.ElasticEasingFunction.Springiness.get
 	}
 }

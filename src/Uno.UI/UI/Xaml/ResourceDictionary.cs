@@ -133,11 +133,29 @@ namespace Microsoft.UI.Xaml
 		public bool Remove(object key)
 		{
 			var keyToRemove = new ResourceKey(key);
+#if __SKIA__ || __WASM__ || __ANDROID__
+			if (_values.TryGetValue(keyToRemove, out var value))
+			{
+				_values.Remove(keyToRemove);
+				if (value is FrameworkElement fe)
+				{
+#if __SKIA__ || __WASM__
+					fe.OnElementUnloaded();
+#else
+					fe.PerformOnUnloaded(isFromResources: true);
+#endif
+				}
+
+				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
+				return true;
+			}
+#else
 			if (_values.Remove(keyToRemove))
 			{
 				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				return true;
 			}
+#endif
 
 			return false;
 		}

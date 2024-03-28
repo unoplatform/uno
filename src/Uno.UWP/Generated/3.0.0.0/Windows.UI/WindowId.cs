@@ -3,14 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct WindowId
 	{
 		// Forced skipping of method Windows.UI.WindowId.WindowId()
-#if false
-		public ulong Value;
-#endif
+		// Skipping already declared field Windows.UI.WindowId.Value
 	}
 }

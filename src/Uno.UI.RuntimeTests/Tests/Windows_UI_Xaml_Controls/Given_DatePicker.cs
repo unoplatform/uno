@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -13,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Globalization;
 
@@ -267,6 +269,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 #endif
 		}
+
+#if __IOS__
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
+		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
+		{
+			using var _ = ThemeHelper.UseDarkTheme();
+			await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Dark);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15263")]
+		public async Task When_App_Theme_Light_Native_Flyout_Theme() => await When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle.Light);
+
+		private async Task When_Native_Flyout_Theme(UIKit.UIUserInterfaceStyle expectedStyle)
+		{
+			var datePicker = new Microsoft.UI.Xaml.Controls.DatePicker();
+			datePicker.UseNativeStyle = true;
+
+			TestServices.WindowHelper.WindowContent = datePicker;
+
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			Assert.AreEqual(1, openFlyouts.Count);
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(Microsoft.UI.Xaml.Controls.DatePickerFlyout));
+			var datePickerFlyout = (DatePickerFlyout)associatedFlyout;
+
+			var nativeDatePickerFlyout = (NativeDatePickerFlyout)datePickerFlyout;
+
+			var nativeDatePicker = nativeDatePickerFlyout._selector;
+			Assert.AreEqual(expectedStyle, nativeDatePicker.OverrideUserInterfaceStyle);
+		}
+#endif
 
 		private static IDisposable SetAmbiantLanguage(string language)
 		{

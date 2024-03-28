@@ -39,6 +39,34 @@ The build process has determined that the version of the Uno.WinUI NuGet package
 
 Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 
+### UNOB0006: The UnoFeature 'XX' was selected, but the property XXXVersion was not set
+
+The build process has determined that you have specified an UnoFeature that requires a version to be set for a Package group such as Uno.Extensions, Uno.Toolkit.WinUI, Uno Themes, or C# Markup. Update your `csproj` file or `Directory.Build.props` with the property specified in the error along with the version that you would like to pin your build to.
+
+### UNOB0007: AOT compilation is only supported in Release mode. Please set the 'Optimize' property to 'true' in the project file
+
+The build process has detected that you have set the value `UnoGenerateAotProfile` to true for a build configuration that has not optimized the assembly (i.e. Debug build Configuration). You should only generate an AOT profile from a build Configuration that will optimize the assembly such as the Release build Configuration.
+
+### UNOB0008: Building a WinUI class library with dotnet build is not supported
+
+Building a `net8.0-windows10.x.x` class library using `dotnet build` is not supported at this time because of a [Windows App SDK issue](https://github.com/microsoft/WindowsAppSDK/issues/3548), when the library contains XAML files.
+
+To work around this, use `msbuild /r` on Windows. You can build using `msbuild` with a **Developer Command Prompt for VS 2022**, or by using `vswhere` or using [GitHub actions scripts](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3?pivots=winui3-packaged-csharp) in a CI environment.
+
+This particular check can be disabled by setting the msbuild property `UnoDisableValidateWinAppSDK3548` to `true`.
+
+### UNOB0009: Uno Platform Implicit Package references are enabled
+
+When Uno Implicit Package References are enabled you do not need to provide an explicit PackageReference for the Packages listed in the build message. You should open the csproj file, find and remove the `<PackageReference Include="{Package name}" />` as listed in the build message.
+
+Alternatively you may disable the Implicit Package References
+
+```xml
+<PropertyGroup>
+  <DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001

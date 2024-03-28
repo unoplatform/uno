@@ -13,6 +13,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
+using Uno.Disposables;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
@@ -48,6 +49,22 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		ObserveOrientationAndSize();
 	}
+
+	public override string Title
+	{
+		get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : base.Title;
+		set
+		{
+			if (IsKeyWindowInitialized())
+			{
+				NSApplication.SharedApplication.KeyWindow.Title = value;
+			}
+
+			base.Title = value;
+		}
+	}
+
+	private bool IsKeyWindowInitialized() => NSApplication.SharedApplication.KeyWindow != null;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
@@ -92,4 +109,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private void ResizeObserver(NSNotification obj) => RaiseNativeSizeChanged();
+
+	protected override IDisposable ApplyFullScreenPresenter()
+	{
+		NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null);
+		return Disposable.Create(() => NSApplication.SharedApplication.KeyWindow.ToggleFullScreen(null));
+	}
 }

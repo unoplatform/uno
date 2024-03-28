@@ -271,9 +271,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// ListView to get a clicked container.
 			ClearValue(ItemsControl.IndexForItemContainerProperty);
 
-			// Reset visual state so that the container doesn't come back looking like it's hovered or clicked.
-			VisualStateManager.GoToState(this, "Normal", false);
-
 			base.PrepareForRecycle();
 		}
 
@@ -318,7 +315,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
 			base.OnPointerEntered(args);
-			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -339,7 +336,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerPressed(args);
-			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -368,7 +365,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerReleased(args);
-			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
+			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
 		}
 
 		/// <inheritdoc />
@@ -379,7 +376,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 
 			base.OnPointerExited(args);
-			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
@@ -388,7 +385,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCanceled(args);
-			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
@@ -397,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCaptureLost(args);
-			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)

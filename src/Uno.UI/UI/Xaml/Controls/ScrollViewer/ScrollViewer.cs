@@ -1326,7 +1326,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						if (_snapPointsTimer == null)
 						{
-							_snapPointsTimer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
+							_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 							_snapPointsTimer.IsRepeating = false;
 							_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
 							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();

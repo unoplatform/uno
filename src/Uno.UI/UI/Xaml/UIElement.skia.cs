@@ -32,8 +32,8 @@ namespace Microsoft.UI.Xaml
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
 		private ShapeVisual _visual;
-		private Rect _currentFinalRect;
-		private Rect? _currentClippedFrame;
+		private Rect _lastFinalRect;
+		private Rect? _lastClippedFrame;
 
 		public UIElement()
 		{
@@ -263,10 +263,10 @@ namespace Microsoft.UI.Xaml
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
-			var oldFinalRect = _currentFinalRect;
-			var oldClippedFrame = _currentClippedFrame;
-			_currentFinalRect = finalRect;
-			_currentClippedFrame = clippedFrame;
+			var oldFinalRect = _lastFinalRect;
+			var oldClippedFrame = _lastClippedFrame;
+			_lastFinalRect = finalRect;
+			_lastClippedFrame = clippedFrame;
 
 			var oldRect = oldFinalRect;
 			var newRect = finalRect;
@@ -288,24 +288,14 @@ namespace Microsoft.UI.Xaml
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 				}
 
-				Rect? clip;
-				if (this is Controls.ScrollViewer)
-				{
-					clip = (Rect?)null;
-				}
-				else
-				{
-					clip = clippedFrame;
-				}
-
-				OnArrangeVisual(newRect, clip);
+				OnArrangeVisual(newRect, clippedFrame);
 				OnViewportUpdated(clippedFrame ?? Rect.Empty);
 			}
 			else
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
+					this.Log().Debug($"{this}: ArrangeVisual({_lastFinalRect}) -- SKIPPED (no change)");
 				}
 			}
 		}
@@ -359,11 +349,11 @@ namespace Microsoft.UI.Xaml
 					roundedRectClip = LayoutRound(roundedRectClip);
 				}
 
-				Visual.Clip = Visual.Compositor.CreateInsetClip(
-					topInset: (float)roundedRectClip.Top,
-					leftInset: (float)roundedRectClip.Left,
-					bottomInset: (float)roundedRectClip.Bottom,
-					rightInset: (float)roundedRectClip.Right
+				Visual.Clip = Visual.Compositor.CreateRectangleClip(
+					top: (float)roundedRectClip.Top,
+					left: (float)roundedRectClip.Left,
+					bottom: (float)roundedRectClip.Bottom,
+					right: (float)roundedRectClip.Right
 				);
 			}
 		}
@@ -373,6 +363,36 @@ namespace Microsoft.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+		public void StartAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is ExpressionAnimation expressionAnimation)
+			{
+				if (expressionAnimation.Target.Equals("Translation", StringComparison.OrdinalIgnoreCase) ||
+					expressionAnimation.Target.StartsWith("Translation.", StringComparison.OrdinalIgnoreCase))
+				{
+					ElementCompositionPreview.SetIsTranslationEnabled(this, true);
+				}
+
+				Visual.StartAnimation(expressionAnimation.Target, expressionAnimation);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+			}
+		}
+
+		public void StopAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is ExpressionAnimation expressionAnimation)
+			{
+				Visual.StopAnimation(expressionAnimation.Target);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'ExpressionAnimation'.");
+			}
+		}
 
 		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
 

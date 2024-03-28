@@ -2,20 +2,10 @@
 	<PropertyGroup>
 		<IsAndroid>true</IsAndroid>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
-		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'AndroidManifest.xml'))) ">Android\AndroidManifest.xml</AndroidManifest>
-		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'AndroidManifest.xml'))) ">Platforms\Android\AndroidManifest.xml</AndroidManifest>
+		<EnableDefaultAndroidItems Condition="$(EnableDefaultAndroidItems) == ''">false</EnableDefaultAndroidItems>
+
+		<AndroidManifest Condition=" $(AndroidManifest) == '' AND '$(SingleProject)' == 'true' AND Exists('$(AndroidProjectFolder)AndroidManifest.xml') ">$(AndroidProjectFolder)AndroidManifest.xml</AndroidManifest>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<AndroidEnvironment Include="Android\environment.conf"
-			Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Android', 'environment.conf'))) ">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</AndroidEnvironment>
-		<AndroidEnvironment Include="Platforms\Android\environment.conf"
-			Condition=" '$(SingleProject)' == 'true' AND Exists($([System.IO.Path]::Combine('$(MSBuildProjectDirectory)', 'Platforms', 'Android', 'environment.conf'))) ">
-			<Link>$([MSBuild]::MakeRelative ('$(MSBuildProjectDirectory)', '%(Identity)'))</Link>
-			<IsDefaultItem>true</IsDefaultItem>
-		</AndroidEnvironment>
-	</ItemGroup>
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition="$(SingleProject) == 'true'" />
 </Project>

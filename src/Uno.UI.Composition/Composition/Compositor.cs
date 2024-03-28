@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
+using Windows.Graphics.Effects;
 using Windows.UI;
 
 namespace Microsoft.UI.Composition
@@ -158,7 +160,21 @@ namespace Microsoft.UI.Composition
 		public CompositionNineGridBrush CreateNineGridBrush()
 			=> new CompositionNineGridBrush(this);
 
+		public ExpressionAnimation CreateExpressionAnimation(string expression)
+			=> new ExpressionAnimation(this) { Expression = expression };
+
+		public ExpressionAnimation CreateExpressionAnimation()
+			=> new ExpressionAnimation(this);
+
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
+		public CompositionBackdropBrush CreateBackdropBrush()
+			=> new CompositionBackdropBrush(this);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect)
+			=> new CompositionEffectFactory(this, graphicsEffect);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties)
+			=> new CompositionEffectFactory(this, graphicsEffect, animatableProperties);
 
 		partial void InvalidateRenderPartial(Visual visual);
 	}

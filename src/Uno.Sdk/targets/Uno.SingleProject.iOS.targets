@@ -1,0 +1,15 @@
+<Project>
+	<PropertyGroup>
+		<!-- Required for C# Hot Reload -->
+		<UseInterpreter Condition="'$(Optimize)' != 'true'">True</UseInterpreter>
+
+		<IPhoneResourcePrefix Condition="$(IPhoneResourcePrefix) == ''">$(iOSProjectFolder)Resources</IPhoneResourcePrefix>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(CodesignEntitlements) == ''">
+		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements.plist') ">$(iOSProjectFolder)Entitlements.plist</CodesignEntitlements>
+		<CodesignEntitlements Condition=" Exists('$(iOSProjectFolder)Entitlements-$(Configuration).plist') ">$(iOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)xamarin-ios-maccatalyst-workarounds.targets" />
+</Project>

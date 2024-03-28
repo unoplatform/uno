@@ -56,6 +56,7 @@ stages:
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
 
@@ -86,6 +87,7 @@ stages:
   - template: .azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      macOSImageName: '$(macOSVMImage)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
@@ -141,6 +143,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
@@ -155,6 +158,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
@@ -180,7 +184,9 @@ stages:
   - template: .azure-devops-android-tests.yml
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
       vmMacOSImage: '$(macOSVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
       XamarinSDKVersion: '$(XamarinSDKVersion)'
   

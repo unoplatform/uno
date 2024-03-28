@@ -34,10 +34,13 @@ namespace Microsoft.UI.Xaml
 		partial void Initialize();
 
 		protected override void OnNativeLoaded()
+			=> OnNativeLoaded(isFromResources: false);
+
+		private void OnNativeLoaded(bool isFromResources)
 		{
 			try
 			{
-				PerformOnLoaded();
+				PerformOnLoaded(isFromResources);
 
 				base.OnNativeLoaded();
 			}
@@ -48,10 +51,26 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void PerformOnLoaded()
+		private void PerformOnLoaded(bool isFromResources = false)
 		{
-			((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
-			OnLoading();
+			if (!isFromResources)
+			{
+				((IDependencyObjectStoreProvider)this).Store.Parent = base.Parent;
+				OnLoading();
+			}
+
+			if (this.Resources is not null)
+			{
+				foreach (var resource in Resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsFrameworkElement)
+					{
+						resourceAsFrameworkElement.XamlRoot = XamlRoot;
+						resourceAsFrameworkElement.PerformOnLoaded(isFromResources: true);
+					}
+				}
+			}
+
 			OnLoaded();
 
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
@@ -67,17 +86,20 @@ namespace Microsoft.UI.Xaml
 						// Calling this method is acceptable as it is an abstract method that
 						// will never do interop with the java class. It is required to invoke
 						// Loaded/Unloaded actions.
-						e.OnNativeLoaded();
+						e.OnNativeLoaded(isFromResources);
 					}
 				}
 			}
 		}
 
 		protected override void OnNativeUnloaded()
+			=> OnNativeUnloaded();
+
+		private void OnNativeUnloaded(bool isFromResources = false)
 		{
 			try
 			{
-				PerformOnUnloaded();
+				PerformOnUnloaded(isFromResources);
 
 				base.OnNativeUnloaded();
 			}
@@ -88,11 +110,22 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void PerformOnUnloaded()
+		internal void PerformOnUnloaded(bool isFromResources = false)
 		{
+			if (this.Resources is not null)
+			{
+				foreach (var resource in this.Resources.Values)
+				{
+					if (resource is FrameworkElement fe)
+					{
+						fe.PerformOnUnloaded(isFromResources: true);
+					}
+				}
+			}
+
 			if (FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded)
 			{
-				if (IsNativeLoaded)
+				if (isFromResources || IsNativeLoaded)
 				{
 					OnUnloaded();
 
@@ -107,7 +140,7 @@ namespace Microsoft.UI.Xaml
 							// Calling this method is acceptable as it is an abstract method that
 							// will never do interop with the java class. It is required to invoke
 							// Loaded/Unloaded actions.
-							e.OnNativeUnloaded();
+							e.OnNativeUnloaded(isFromResources);
 						}
 						else if (view is ViewGroup childViewGroup)
 						{

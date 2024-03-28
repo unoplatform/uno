@@ -8,14 +8,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutPresenter : Control
 	{
-		private const long DEFAULT_DATE_TICKS = 504910368000000000;
-
 		const bool PICKER_SHOULD_LOOP = true;
 
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
@@ -665,7 +663,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If we're setting the date to the null sentinel value,
 			// we'll instead set it to the current date for the purposes
 			// of where to place the user's position in the looping selectors.
-			if (newDate.Ticks == DEFAULT_DATE_TICKS)
+			if (newDate.UniversalTime == 0)
 			{
 				//DateTime dateTime = default;
 				Calendar calendar;
@@ -675,7 +673,7 @@ namespace Microsoft.UI.Xaml.Controls
 				newDate = calendar.GetDateTime();
 			}
 
-			if (newDate != _date)
+			if (newDate.UniversalTime != _date.UniversalTime)
 			{
 				DateTime oldDate = _date;
 				_date = newDate;
@@ -1151,7 +1149,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// The DateTime value set may be out of our acceptable range.
 				clampedNewDate = ClampDate(newValue, _startDate, _endDate);
 				clampedOldDate = ClampDate(oldValue, _startDate, _endDate);
-				if (clampedNewDate.ToUniversalTime() != newValue.ToUniversalTime())
+				if (clampedNewDate.UniversalTime != newValue.UniversalTime)
 				{
 					// We need to coerce the date into the acceptable range. This will trigger another OnDateChanged which
 					// will take care of executing the logic needed.
@@ -1159,7 +1157,7 @@ namespace Microsoft.UI.Xaml.Controls
 					return;
 				}
 
-				if (clampedNewDate.ToUniversalTime() == clampedOldDate.ToUniversalTime())
+				if (clampedNewDate.UniversalTime == clampedOldDate.UniversalTime)
 				{
 					// It looks like we clamped an invalid date into an acceptable one, we need to refresh the sources.
 					refreshMonth = true;
@@ -1402,11 +1400,11 @@ namespace Microsoft.UI.Xaml.Controls
 				DateTime minDate,
 				DateTime maxDate)
 		{
-			if (date.ToUniversalTime() < minDate.ToUniversalTime())
+			if (date.UniversalTime < minDate.UniversalTime)
 			{
 				return minDate;
 			}
-			else if (date.ToUniversalTime() > maxDate.ToUniversalTime())
+			else if (date.UniversalTime > maxDate.UniversalTime)
 			{
 				return maxDate;
 			}
@@ -1910,7 +1908,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_tpCalendar = spCalendar;
 			_tpBaselineCalendar = spBaselineCalendar;
 			// We do not have a valid range if our MinYear is later than our MaxYear
-			_hasValidYearRange = _minYear.ToUniversalTime() <= _maxYear.ToUniversalTime();
+			_hasValidYearRange = _minYear.UniversalTime <= _maxYear.UniversalTime;
 
 			if (_hasValidYearRange)
 			{

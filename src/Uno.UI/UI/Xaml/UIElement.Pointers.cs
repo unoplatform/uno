@@ -592,7 +592,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void UpdateRaisedEventFlags(PointerRoutedEventArgs args)
+		private void UpdateRaisedGestureEventsFlag(PointerRoutedEventArgs args)
 		{
 			if (!IsGestureRecognizerCreated)
 			{
@@ -916,7 +916,7 @@ namespace Microsoft.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
-			UpdateRaisedEventFlags(args);
+			UpdateRaisedGestureEventsFlag(args);
 			var handledInManaged = SetOver(args, true, ctx);
 
 			return handledInManaged;
@@ -940,7 +940,7 @@ namespace Microsoft.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
-			UpdateRaisedEventFlags(args);
+			UpdateRaisedGestureEventsFlag(args);
 			var handledInManaged = SetPressed(args, true, ctx);
 
 			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !ctx.IsInternal && !isOverOrCaptured)
@@ -1022,7 +1022,7 @@ namespace Microsoft.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
-			UpdateRaisedEventFlags(args);
+			UpdateRaisedGestureEventsFlag(args);
 			if (!ctx.IsInternal && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
@@ -1066,7 +1066,7 @@ namespace Microsoft.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				currentPoint = args.GetCurrentPoint(this);
-				UpdateRaisedEventFlags(args);
+				UpdateRaisedGestureEventsFlag(args);
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 			}
 
@@ -1087,16 +1087,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
-			// We release the captures on up but only after the released event and processed the gesture
-			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
-			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'isOverOrCaptured' would have been false.
-			if (!isOver || args.Pointer.PointerDeviceType != PointerDeviceType.Touch)
-			{
-				handledInManaged |= SetNotCaptured(args);
-			}
-#endif
-
 			return handledInManaged;
 		}
 
@@ -1114,22 +1104,13 @@ namespace Microsoft.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
-			UpdateRaisedEventFlags(args);
+			UpdateRaisedGestureEventsFlag(args);
 			handledInManaged |= SetOver(args, false, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
 				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 			}
-
-#if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
-			// We release the captures on exit when pointer if not pressed
-			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
-			if (!IsPressed(args.Pointer))
-			{
-				handledInManaged |= SetNotCaptured(args);
-			}
-#endif
 
 			return handledInManaged;
 		}
@@ -1151,7 +1132,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
 
-			UpdateRaisedEventFlags(args);
+			UpdateRaisedGestureEventsFlag(args);
 
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			// We update only local state as the Cancel is bubbling itself
@@ -1444,7 +1425,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="pointer">The pointer to release.</param>
 		/// <param name="muteEvent">Determines if the event should be raised or not.</param>
 		/// <param name="kinds">The kind of captures to release.</param>
-		internal void ReleasePointerCapture(Windows.Devices.Input.PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
+		internal void ReleasePointerCapture(global::Windows.Devices.Input.PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
 		{
 			if (!Release(pointer, kinds, muteEvent: muteEvent)
 				&& this.Log().IsEnabled(LogLevel.Information))
@@ -1537,7 +1518,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private bool Release(Windows.Devices.Input.PointerIdentifier pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedArgs = null, bool muteEvent = false)
+		private bool Release(global::Windows.Devices.Input.PointerIdentifier pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedArgs = null, bool muteEvent = false)
 		{
 			return PointerCapture.TryGet(pointer, out var capture)
 				&& Release(capture, kinds, relatedArgs, muteEvent);

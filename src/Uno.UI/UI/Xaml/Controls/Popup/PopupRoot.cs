@@ -29,7 +29,7 @@ internal partial class PopupRoot : Panel
 	{
 		if (XamlRoot is { } xamlRoot)
 		{
-			void OnChanged(object sender, object args) => CloseFlyouts();
+			void OnChanged(object sender, object args) => CloseLightDismissablePopups();
 
 			CompositeDisposable disposables = new();
 			xamlRoot.Changed += OnChanged;
@@ -50,15 +50,21 @@ internal partial class PopupRoot : Panel
 		_subscriptions.Disposable = null;
 	}
 
-	private void CloseFlyouts()
+	internal void CloseLightDismissablePopups()
 	{
 		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
 			var reference = _openPopups[i];
-			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			if (!reference.IsDisposed && reference.Target is Popup { IsLightDismissEnabled: true } popup)
 			{
-				var f = popup.AssociatedFlyout;
-				f.Hide();
+				if (popup.AssociatedFlyout is { } flyout)
+				{
+					flyout.Hide();
+				}
+				else
+				{
+					popup.IsOpen = false;
+				}
 			}
 		}
 	}
@@ -151,16 +157,15 @@ internal partial class PopupRoot : Panel
 		}
 	}
 
+	// The ESC key closes the topmost light-dismiss-enabled popup.
+	// Handling must be done by CPopupRoot because the popups reparent their children to be under CPopupRoot,
+	// so routed events from beneanth the popups route to CPopupRoot and skip the popups themselves.
 	protected void OnKeyDown(object sender, KeyRoutedEventArgs args)
 	{
 		if (args.Key == VirtualKey.Escape)
 		{
-			var popup = GetTopmostPopup(PopupFilter.LightDismissOrFlyout);
-			if (popup is { })
-			{
-				popup.IsOpen = false;
-				args.Handled = popup.IsOpen;
-			}
+			CloseTopmostPopup(FocusState.Keyboard, PopupFilter.LightDismissOrFlyout, out var didCloseAPopup);
+			args.Handled = didCloseAPopup;
 		}
 	}
 }

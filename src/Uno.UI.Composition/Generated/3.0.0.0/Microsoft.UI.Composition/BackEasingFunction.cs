@@ -33,7 +33,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.Mode.get
 		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.Amplitude.get
+		// Forced skipping of method Microsoft.UI.Composition.BackEasingFunction.Mode.get
 	}
 }

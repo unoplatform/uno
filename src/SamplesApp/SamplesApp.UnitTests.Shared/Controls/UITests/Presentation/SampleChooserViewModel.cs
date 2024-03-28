@@ -33,7 +33,6 @@ using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using SamplesApp;
 using Uno.UI.Extensions;
-using Microsoft.UI.Dispatching;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
 
@@ -65,6 +64,8 @@ namespace SampleControl.Presentation
 
 
 		private List<SampleChooserCategory> _categories;
+		private List<SampleChooserCategory> _unfilteredCategories;
+		private List<SampleChooserCategory> _manualTestsCategories;
 
 		private readonly Uno.Threading.AsyncLock _fileLock = new Uno.Threading.AsyncLock();
 #if !__NETSTD_REFERENCE__
@@ -77,8 +78,6 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
-		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
-	new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White);
 
 		private readonly UnitTestDispatcherCompat _dispatcher;
 
@@ -116,7 +115,7 @@ namespace SampleControl.Presentation
 			InitializeCommands();
 			ObserveChanges();
 
-			_categories = GetSamples();
+			RefreshSamples();
 
 			if (_log.IsEnabled(LogLevel.Information))
 			{
@@ -247,49 +246,6 @@ namespace SampleControl.Presentation
 			IsAnyContentVisible = ContentVisibility;
 		}
 
-		private class SampleInfo
-		{
-			public SampleChooserCategory Category { get; set; }
-			public SampleChooserContent Sample { get; set; }
-
-			public bool Matches(string path)
-			{
-				var pathMembers = path.Split(new char[] { '.' });
-				return Matches(category: pathMembers.ElementAtOrDefault(0), sampleName: pathMembers.ElementAtOrDefault(1));
-			}
-
-			private bool Matches(string category, string sampleName)
-			{
-				return !category.IsNullOrEmpty() &&
-						Category.Category.Equals(category, StringComparison.OrdinalIgnoreCase) &&
-						(sampleName.IsNullOrEmpty() || (Sample?.ControlName?.Equals(sampleName, StringComparison.OrdinalIgnoreCase) ?? false));
-			}
-		}
-
-		// Targets can either be a Category or a Sample (formatted as [Category].[SampleName])
-		private const string _firstTargetToRun = "";
-
-		private static readonly string[] _targetsToSkip =
-		{
-			/*Will be fixed along with bug #29117 */
-			"GridView.GridViewEmptyGroups",
-			"GridView.GridViewGrouped",
-			"GridView.GridViewGroupedMaxRowsTwo",
-
-			/*Will be fixed along with bug #29132 */
-			"ListView.ListViewGrouped_ItemContainerStyleSelector",
-
-			/*Will be fixed along with bug #29134 */
-			"TimePicker.TimePickerSelector_Simple",
-
-			"ScrollViewer.ScrollViewer_Padding",
-
-			/* Will befixed along with bug #118190 */
-			"Animations.DoubleAnimation_TranslateX",
-			"Animations.DoubleAnimationUsingKeyFrames_TranslateX",
-			"Animations.EasingDoubleKeyFrame_CompositeTransform",
-		};
-
 		internal async Task RecordAllTests(CancellationToken ct, string screenShotPath = "", int totalGroups = 1, int currentGroupIndex = 0, Action doneAction = null)
 		{
 			try
@@ -332,30 +288,8 @@ namespace SampleControl.Presentation
 				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
 				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
-				var testQuery = from category in _categories
-								from sample in category.SamplesContent
-								where !sample.IgnoreInSnapshotTests
-								// where sample.ControlName.Equals("GridViewVerticalGrouped")
-								select new SampleInfo
-								{
-									Category = category,
-									Sample = sample,
-								};
 
-				Debug.Assert(
-					_firstTargetToRun.IsNullOrEmpty() || testQuery.Any(testInfo => testInfo.Matches(_firstTargetToRun)),
-					"First target to run must be either a Category or a Sample that is present in the app."
-				);
-
-				Debug.Assert(
-					_targetsToSkip.Where(target => !target.IsNullOrWhiteSpace()).None(target => target.Equals(_firstTargetToRun, StringComparison.OrdinalIgnoreCase)),
-					"First test to run cannot be skipped"
-				);
-
-				var tests = testQuery
-					.SkipWhile(testInfo => !_firstTargetToRun.IsNullOrEmpty() && !testInfo.Matches(_firstTargetToRun))
-					.Where(testInfo => _targetsToSkip.None(testInfo.Matches))
-					.ToArray();
+				var tests = GetSampleChooserContentsForSnapshotTests().ToArray();
 
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
@@ -380,7 +314,7 @@ namespace SampleControl.Presentation
 						var activeStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
-						var fileName = $"{SanitizeScreenshotFileName(sample.Category.Category + "-" + sample.Sample.ControlName)}.png";
+						var fileName = $"{SanitizeScreenshotFileName(sample.ControlName)}.png";
 
 						try
 						{
@@ -395,19 +329,24 @@ namespace SampleControl.Presentation
 
 							ShowNewSection(ct, Section.SamplesContent);
 
-							SelectedLibrarySample = sample.Sample;
+							SelectedLibrarySample = sample;
 
-							var content = await UpdateContent(ct, sample.Sample) as FrameworkElement;
+							var content = await UpdateContent(ct, sample) as FrameworkElement;
 
 							ContentPhone = content;
 
+#if HAS_UNO
+							await _dispatcher.RunIdleAsync(_ => { });
+							await _dispatcher.RunIdleAsync(_ => { });
+#else
 							await Task.Delay(500, ct);
+#endif
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
 							var file = await rootFolder.CreateFileAsync(fileName + ".png",
 								CreationCollisionOption.ReplaceExisting
 								).AsTask(ct);
-							await GenerateBitmap(ct, target, file, content, GetScreenshotConstraints());
+							await GenerateBitmap(ct, target, file, content);
 						}
 						catch (Exception e)
 						{
@@ -473,7 +412,7 @@ namespace SampleControl.Presentation
 
 		internal void CreateNewWindow()
 		{
-#if HAS_UNO //TODO: Enable UWP-style new window #8978
+#if HAS_UNO || WINAPPSDK //TODO: Enable UWP-style new window #8978
 			var newWindow = new Window();
 			newWindow.Content = new MainPage();
 			newWindow.Activate();
@@ -489,12 +428,7 @@ namespace SampleControl.Presentation
 		{
 			IsSplitVisible = false;
 
-			var testQuery = from category in _categories
-							from sample in category.SamplesContent
-							where sample.ControlType == typeof(SamplesApp.Samples.UnitTests.UnitTestsPage)
-							select sample;
-
-			var runtimeTests = testQuery.FirstOrDefault();
+			var runtimeTests = GetContent(typeof(SamplesApp.Samples.UnitTests.UnitTestsPage).GetTypeInfo());
 
 			if (runtimeTests == null)
 			{
@@ -641,7 +575,7 @@ namespace SampleControl.Presentation
 						return;
 					}
 
-					var results = await SearchAsync(search, Categories, currentSearch.Token);
+					var results = await SearchAsync(search, _unfilteredCategories, currentSearch.Token);
 
 					if (results is null || currentSearch.IsCancellationRequested)
 					{
@@ -747,16 +681,47 @@ namespace SampleControl.Presentation
 #endif
 		}
 
+		private void RefreshSamples()
+		{
+			if (_unfilteredCategories is null)
+			{
+				_unfilteredCategories = GetSamples(false);
+				_manualTestsCategories = GetSamples(true);
+			}
+
+			if (_manualTestsOnly)
+			{
+				Categories = _manualTestsCategories;
+			}
+			else
+			{
+				Categories = _unfilteredCategories;
+			}
+		}
+
+		private IEnumerable<SampleChooserContent> GetSampleChooserContentsForSnapshotTests()
+		{
+			foreach (var sample in _allSamples)
+			{
+				var typeInfo = sample.GetTypeInfo();
+				var sampleAttribute = FindSampleAttribute(typeInfo);
+				if (sampleAttribute is { IgnoreInSnapshotTests: false })
+				{
+					yield return GetContent(typeInfo, sampleAttribute);
+				}
+			}
+		}
+
 		/// <summary>
 		/// This method retreives all the categories and sample contents associated with them throughout the app.
 		/// </summary>
 		/// <returns></returns>
-		private List<SampleChooserCategory> GetSamples()
+		private List<SampleChooserCategory> GetSamples(bool manualTestsOnly)
 		{
 			var categories =
 				from type in _allSamples
 				let sampleAttribute = FindSampleAttribute(type.GetTypeInfo())
-				where sampleAttribute != null
+				where sampleAttribute != null && (!manualTestsOnly || sampleAttribute.IsManualTest)
 				let content = GetContent(type.GetTypeInfo(), sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
@@ -764,22 +729,25 @@ namespace SampleControl.Presentation
 				select new SampleChooserCategory(contentByCategory);
 
 			return categories.ToList();
-
-			SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
-				=> new SampleChooserContent
-				{
-					ControlName = attribute.Name ?? type.Name,
-					Categories = attribute.Categories?.Where(c => !string.IsNullOrWhiteSpace(c)).Any() ?? false
-						? attribute.Categories.Where(c => !string.IsNullOrWhiteSpace(c)).ToArray()
-						: new[] { type.Namespace.Split('.').Last().TrimStart("Windows_UI_Xaml").TrimStart("Windows_UI") },
-					ViewModelType = attribute.ViewModelType,
-					Description = attribute.Description,
-					ControlType = type.AsType(),
-					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
-					IsManualTest = attribute.IsManualTest,
-					UsesFrame = attribute.UsesFrame
-				};
 		}
+
+		private static SampleChooserContent GetContent(TypeInfo type)
+			=> GetContent(type, FindSampleAttribute(type));
+
+		private static SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
+			=> new SampleChooserContent
+			{
+				ControlName = attribute.Name ?? type.Name,
+				Categories = attribute.Categories?.Where(c => !string.IsNullOrWhiteSpace(c)).Any() ?? false
+					? attribute.Categories.Where(c => !string.IsNullOrWhiteSpace(c)).ToArray()
+					: new[] { type.Namespace.Split('.').Last().TrimStart("Windows_UI_Xaml").TrimStart("Windows_UI") },
+				ViewModelType = attribute.ViewModelType,
+				Description = attribute.Description,
+				ControlType = type.AsType(),
+				IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests,
+				IsManualTest = attribute.IsManualTest,
+				UsesFrame = attribute.UsesFrame
+			};
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
 		{
@@ -827,7 +795,7 @@ namespace SampleControl.Presentation
 		{
 			// If true, load all samples and not just those of a selected category
 			var samples = getAllSamples
-				? _categories.SelectMany(cat => cat.SamplesContent).ToList()
+				? _unfilteredCategories.SelectMany(cat => cat.SamplesContent).ToList()
 				: SampleContents;
 
 			var favorites = (favoriteSamples != null)
@@ -1026,7 +994,7 @@ namespace SampleControl.Presentation
 
 		private SampleChooserCategory GetCategory(SampleChooserContent content)
 		{
-			return _categories.FirstOrDefault(cat =>
+			return _unfilteredCategories.FirstOrDefault(cat =>
 						cat.SamplesContent.Any(
 							sample => sample.Equals(content)));
 		}
@@ -1042,7 +1010,8 @@ namespace SampleControl.Presentation
 
 		public string GetAllSamplesNames()
 		{
-			var q = from category in _categories
+			// TODO: This might not be returning samples without a category (i.e, attributed just with [Sample] without any arguments)
+			var q = from category in _unfilteredCategories
 					from test in category.SamplesContent
 					where !test.IgnoreInSnapshotTests && !test.IsManualTest
 					select test.ControlType.FullName;
@@ -1052,7 +1021,7 @@ namespace SampleControl.Presentation
 
 		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
 		{
-			var category = _categories.FirstOrDefault(
+			var category = _unfilteredCategories.FirstOrDefault(
 				c => c.Category != null &&
 				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
 
@@ -1080,7 +1049,7 @@ namespace SampleControl.Presentation
 
 			try
 			{
-				var q = from category in _categories
+				var q = from category in _unfilteredCategories
 						from test in category.SamplesContent
 						where test.ControlType.FullName == metadataName
 						select test;
@@ -1221,44 +1190,18 @@ namespace SampleControl.Presentation
 			Task GenerateBitmap(CancellationToken ct
 			, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
 			, StorageFile file
-			, FrameworkElement content
-			, (double MinWidth, double MinHeight, double Width, double Height) constraints)
+			, FrameworkElement content)
 		{
 #if __WASM__
 			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
 #else
-			var element = content?.Parent is FrameworkElement parent
-				? parent
-				: (FrameworkElement)content ?? throw new Exception("Invalid element");
+			var element = SamplesApp.App.MainWindow.Content;
 
-			(double oldMinWidth, double oldMinHeight, double oldWidth, double oldHeight)
-				= (element.MinWidth, element.MinHeight, element.Width, element.Height);
 			try
 			{
-				element.MinWidth = constraints.MinWidth;
-				element.MinHeight = constraints.MinHeight;
-				element.Width = constraints.Width;
-				element.Height = constraints.Height;
-
-				var border = element.FindFirstChild<Border>();
-
-				if (border != null)
-				{
-					border.Background = _screenshotBackground;
-				}
-
-				element.InvalidateMeasure();
-				element.InvalidateArrange();
-				await Task.Yield();
-				element.Measure(new Windows.Foundation.Size(constraints.Width, constraints.Height));
-				element.Arrange(new Windows.Foundation.Rect(0, 0, constraints.Width, constraints.Height));
-
-				await Task.Yield();
 				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				await targetBitmap.RenderAsync(element).AsTask(ct);
-
-				content.DataContext = null;
 
 				var pixels = await targetBitmap.GetPixelsAsync().AsTask(ct);
 
@@ -1275,8 +1218,8 @@ namespace SampleControl.Presentation
 						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiX,
 						XamlRoot.GetDisplayInformation(content.XamlRoot).RawDpiY,
 #else
-						DisplayInformation.GetForCurrentView().RawDpiX,
-						DisplayInformation.GetForCurrentView().RawDpiY,
+						GetDpi(),
+						GetDpi(),
 #endif
 						pixels.ToArray()
 					);
@@ -1287,12 +1230,6 @@ namespace SampleControl.Presentation
 			catch (Exception ex)
 			{
 				_log.Error(ex.Message);
-			}
-			finally
-			{
-				(element.MinWidth, element.MinHeight, element.Width, element.Height) =
-					(oldMinWidth, oldMinHeight, oldWidth, oldHeight);
-				await Task.Yield();
 			}
 #endif
 		}

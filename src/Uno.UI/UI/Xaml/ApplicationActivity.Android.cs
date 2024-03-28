@@ -320,7 +320,7 @@ namespace Microsoft.UI.Xaml
 #pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
-			var handled = Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
+			var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
 			if (!handled)
 			{
 				base.OnBackPressed();

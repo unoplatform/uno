@@ -43,9 +43,10 @@ namespace Uno.UI.Tests.BinderTests
 			sut.Value = "Animations";
 			sut.SetLocalValue("Local");
 
-			Assert.AreEqual("Animations", target.Value);
+			// Local value takes over Animations if it's newer.
+			Assert.AreEqual("Local", target.Value);
 
-			Assert.AreEqual("Animations", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
+			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
 			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 

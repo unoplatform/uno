@@ -21,6 +21,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

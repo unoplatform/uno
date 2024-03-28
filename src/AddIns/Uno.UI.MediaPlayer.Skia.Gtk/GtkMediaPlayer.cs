@@ -200,13 +200,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 				this.Log().Debug("Stop");
 			}
 
-			_ = Task.Run(() =>
-			{
-				// Required to be on a background thread
-				// to avoid deadlocks
-				_mediaPlayer.Stop();
-			});
-
+			_mediaPlayer.Stop();
 			_videoView.SetVisible(false);
 		}
 		else
@@ -227,13 +221,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 				this.Log().Debug("Pause");
 			}
 
-			_ = Task.Run(() =>
-			{
-				// Required to be on a background thread
-				// to avoid deadlocks
-				_mediaPlayer.Pause();
-			});
-
+			_mediaPlayer.Pause();
 			_videoView.SetVisible(true);
 		}
 		else

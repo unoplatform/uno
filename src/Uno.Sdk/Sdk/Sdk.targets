@@ -10,10 +10,6 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<PropertyGroup>
-		<AfterMicrosoftNETSdkTargets>$(AfterMicrosoftNETSdkTargets);$(_UnoSdkTargetsDirectory)Uno.Sdk.After.targets</AfterMicrosoftNETSdkTargets>
-	</PropertyGroup>
-
 	<!-- Common Includes -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Common.targets" />
 
@@ -28,5 +24,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
+	
+	<!-- Targets and props to be executed last after the default .NET SDK has been imported -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Sdk.After.targets" />
 
 </Project>

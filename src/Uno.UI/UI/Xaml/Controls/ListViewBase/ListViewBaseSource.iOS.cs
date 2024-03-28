@@ -839,9 +839,9 @@ namespace Microsoft.UI.Xaml.Controls
 					base.Frame = value;
 					UpdateContentViewFrame();
 				}
-				catch
+				catch (Exception ex)
 				{
-					Console.WriteLine("ListViewBaseInternalContainer set failed");
+					Console.WriteLine("ListViewBaseInternalContainer set failed: " + ex);
 				}
 			}
 		}

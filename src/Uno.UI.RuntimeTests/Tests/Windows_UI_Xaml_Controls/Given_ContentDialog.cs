@@ -382,6 +382,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+#if __SKIA__ || __WASM__
+		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
+#endif
+		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
+		{
+			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
+
+			using (ScreenHelper.OverrideVisibleBounds(new Thickness(27, 38, 14, 72), skipIfHasNativeUnsafeArea: (nativeUnsafeArea.Top + nativeUnsafeArea.Bottom) > 50))
+			{
+				var SUT = new MyContentDialog
+				{
+					Title = "Dialog title",
+					Content = "Hello",
+					PrimaryButtonText = "Accept",
+					SecondaryButtonText = "Nope"
+				};
+
+				SetXamlRootForIslandsOrWinUI(SUT);
+
+				try
+				{
+					await ShowDialog(SUT);
+
+					var layoutRootBounds = SUT.LayoutRoot.GetRelativeBounds((FrameworkElement)WindowHelper.EmbeddedTestRoot.control.XamlRoot.Content);
+					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					RectAssert.Contains(visibleBounds, layoutRootBounds);
+				}
+				finally
+				{
+					SUT.Hide();
+				}
+			}
+		}
+
 #if HAS_UNO
 		[DataTestMethod]
 		[DataRow(true)]
@@ -572,6 +607,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public Button PrimaryButton { get; private set; }
 		public Border BackgroundElement { get; private set; }
+		public Grid LayoutRoot { get; private set; }
 
 		protected override void OnApplyTemplate()
 		{
@@ -579,6 +615,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			PrimaryButton = GetTemplateChild("PrimaryButton") as Button;
 			BackgroundElement = GetTemplateChild("BackgroundElement") as Border;
+			LayoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 		}
 	}
 }

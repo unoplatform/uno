@@ -1402,7 +1402,7 @@ namespace Microsoft.UI.Xaml.Controls
 		void HandlePointerLostOrCanceled(PointerRoutedEventArgs pArgs)
 		{
 			PointerPoint spPointerPoint;
-			Windows.Devices.Input.PointerDevice spPointerDevice;
+			global::Windows.Devices.Input.PointerDevice spPointerDevice;
 			PointerDeviceType nPointerDeviceType = PointerDeviceType.Touch;
 
 			if (pArgs == null) throw new ArgumentNullException();

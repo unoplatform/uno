@@ -273,6 +273,8 @@
             href: uno-development/listviewbase-internals.md
           - name: ThemeResource
             href: uno-development/themeresource-internals.md
+          - name: InteractionTracker internals
+            href: uno-development/interaction-tracker-internals.md
       - name: Building Uno.UI
         href: uno-development/building-uno-ui.md
       - name: Debugging Uno.UI
@@ -400,6 +402,8 @@
               href: controls/MediaPlayerElement.md
             - name: MenuFlyout
               href: controls/MenuFlyout.md
+            - name: NavigationView
+              href: controls/NavigationView.md
             - name: Pivot
               href: controls/Pivot.md
             - name: Popup
@@ -537,6 +541,8 @@
         href: features/gyrometer.md
       - name: Haptics
         href: features/windows-devices-haptics.md
+      - name: Hardware back button
+        href: features/hardware-back-button.md
       - name: Keeping Screen On
         href: features/windows-system-display.md
       - name: Light Sensor

@@ -20,26 +20,27 @@
 		private static _dispatchPointerEventMethod: any;
 		private static _dispatchPointerEventArgs: number;
 		private static _dispatchPointerEventResult: number;
+		private static _isManualyDispatchingOut: boolean = false;
 
-		public static setPointerEventArgs(pArgs: number): void {
+		private static ensurePointersInit(): void {
 			if (!UIElement._dispatchPointerEventMethod) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.UIElement.OnNativePointerEvent;
 				} else {
 					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:OnNativePointerEvent");
 				}
+
+				document.getRootNode().addEventListener("pointerover", UIElement_Pointers.onRootPointerOverDispatching, { capture: true, passive: true });
 			}
+		}
+
+		public static setPointerEventArgs(pArgs: number): void {
+			UIElement_Pointers.ensurePointersInit();
 			UIElement._dispatchPointerEventArgs = pArgs;
 		}
 
 		public static setPointerEventResult(pArgs: number): void {
-			if (!UIElement._dispatchPointerEventMethod) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.UIElement.OnNativePointerEvent;
-				} else {
-					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:OnNativePointerEvent");
-				}
-			}
+			UIElement_Pointers.ensurePointersInit();
 			UIElement._dispatchPointerEventResult = pArgs;
 		}
 
@@ -105,20 +106,85 @@
 			UIElement.dispatchPointerEvent(evt.currentTarget as HTMLElement | SVGElement, evt);
 		}
 
+		private static onRootPointerOverDispatching(evt: PointerEvent): void {
+			const target = evt.target as HTMLElement | SVGElement;
+			if (!target) {
+				return;
+			}
+
+			if (target.hasPointerCapture(evt.pointerId)) {
+				return;
+			}
+
+			let prevElt: Element = null;
+			for (let elt of document.elementsFromPoint(evt.clientX, evt.clientY)) {
+				if (!elt.contains(target) // The elt is under the target (not a parent!)
+					&& !elt.contains(prevElt) // The elt is not a parent of the previous element (so it has already been processed!)
+				) {
+					// The element is under the target (not a parent!), with chromium browsers, if the target just popped up,
+					// it happens that the pointerout event is not raised on those elemnts under.
+					// Here we ensure to raise it manually before the pointerover event is being dispatched.
+					try {
+						UIElement._isManualyDispatchingOut = true;
+						elt.dispatchEvent(new PointerEvent("pointerout", evt));
+					}
+					finally {
+						UIElement._isManualyDispatchingOut = false;
+					}
+				}
+				prevElt = elt;
+			}
+		}
+
 		private static onPointerOutReceived(evt: PointerEvent): void {
+			if (UIElement._isManualyDispatchingOut) {
+				UIElement.onPointerEventReceived(evt);
+				return;
+			}
+
 			const element = evt.currentTarget as HTMLElement | SVGElement;
 
-			if (evt.relatedTarget && evt.isDirectlyOver(element)) {
-				// The 'pointerout' event is bubbling so we get the event when the pointer is going out of a nested element,
-				// but pointer is still over the current element.
-				// So here we check if the event is effectively because the pointer is leaving the bounds of the current element.
-				// If not, we stopPropagation so parent won't have to check it again and again.
-				// Note: We don't have to do that for the "enter" as we anyway maintain the IsOver state in managed.
-				// Note: If relatedTarget is null it means that pointer is no longer on the app at all
-				//		 (alt + tab for mouse, finger removed from screen, pen out of detection range)
-				//		 If so, we have to forward the exit in all cases.
+			// When we capture the pointer, browser will raise an "out" event on nested elements
+			// and then an "over" on the element that captured the pointer.
+			// But those events will be raise right BEFORE the NEXT pointer event (e.g. a move).
+			// Note: We don't filter out the "over" event because it's handled in managed by tracking the IsOver state.
+
+			// Here we filter the "out" event that is being raised after capture or release
+			// If the relatedTarget (the element that capture or release the pointer) is a child of (or is) the current element,
+			// it means pointer might not leaving the current element!
+			let elt = evt.relatedTarget as HTMLElement | SVGElement;
+			if (elt
+				&& element.contains(elt)
+				&& (
+					// on capture, we just check if it has the the capture
+					elt.hasPointerCapture(evt.pointerId)
+					// on release, the target is the element itself
+					|| evt.target == element)
+				)
+			{
 				evt.stopPropagation();
 				return;
+			}
+
+			// Finally, here we filter out the events that are being raised when the pointer is leaving a nested element (which is bubbling in browser)
+			const targetBounds = (evt.target as HTMLElement | SVGElement).getBoundingClientRect();
+			elt = evt.target as HTMLElement | SVGElement;
+			while (elt && elt != element) {
+				if (elt.style.pointerEvents != "none") {
+					const bounds = elt.getBoundingClientRect();
+					if (
+						(evt.clientY > bounds.top && (Math.abs(targetBounds.top - bounds.top) > 1))
+						&& (evt.clientY < bounds.bottom && (Math.abs(targetBounds.bottom - bounds.bottom) > 1))
+						&& (evt.clientX > bounds.left && (Math.abs(targetBounds.left - bounds.left) > 1))
+						&& (evt.clientX < bounds.right && (Math.abs(targetBounds.right - bounds.right) > 1))
+					) {
+						// There is child that is still under the pointer (and which will raise pointer events), so we should not propagate the event.
+						// Note: If the child is sharing the bounds with the target, we consider that the pointer is also leaving the intermediate child.
+						evt.stopPropagation();
+						return;
+					}
+				}
+				elt = elt.parentElement;
 			}
 
 			UIElement.onPointerEventReceived(evt);

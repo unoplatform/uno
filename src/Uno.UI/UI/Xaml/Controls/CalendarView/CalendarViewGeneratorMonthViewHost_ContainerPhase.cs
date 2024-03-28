@@ -9,7 +9,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using DirectUI;
 using CalendarViewDayItemChangingEventSourceType = Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.CalendarView, Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs>;
-using DateTime = System.DateTimeOffset;
+using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
 {
