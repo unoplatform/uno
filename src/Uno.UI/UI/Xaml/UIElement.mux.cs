@@ -474,6 +474,11 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Override this method and return TRUE in order to navigate among automation children in reverse order.
+		/// </summary>
+		internal virtual bool AreAutomationPeerChildrenReversed() => false
+
+		/// <summary>
 		/// Default to FALSE and expose as needed.  Elements that don't support having children will never
 		/// allocate children collections.  Elements that do support children may do so as an implementation
 		/// detail (e.g. selection grippers for TextBlock), or to support public API exposure (e.g. Panel.Children).
