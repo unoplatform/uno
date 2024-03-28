@@ -808,7 +808,6 @@ namespace Uno.UI.Xaml.Core
 
 		internal RootScale RootScale { get; private set; }
 
-		//GetDisplayInformation(this).RawPixelsPerViewPixel;
 		internal double RasterizationScale
 		{
 			get

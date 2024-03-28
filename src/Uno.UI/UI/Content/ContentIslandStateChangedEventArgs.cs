@@ -5,9 +5,15 @@ namespace Microsoft.UI.Content;
 /// </summary>
 public partial class ContentIslandStateChangedEventArgs
 {
-	internal ContentIslandStateChangedEventArgs()
+	private ContentIslandStateChangedEventArgs()
 	{
 	}
+
+	internal static ContentIslandStateChangedEventArgs RasterizationScaleChange { get; } = new() { DidRasterizationScaleChange = true };
+
+	internal static ContentIslandStateChangedEventArgs ActualSizeChange { get; } = new() { DidActualSizeChange = true };
+
+	internal static ContentIslandStateChangedEventArgs SiteVisibleChange { get; } = new() { DidSiteVisibleChange = true };
 
 	/// <summary>
 	/// Gets whether the ContentIsland size changed.

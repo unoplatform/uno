@@ -1,14 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Windowing.Native;
 using Windows.UI.Core;
-using Microsoft.UI.Content;
-using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -21,6 +20,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private string _title = "";
 	private CoreWindowActivationState _activationState;
 	private XamlRoot? _xamlRoot;
+	private float _rasterizationScale;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
 	protected NativeWindowWrapperBase(XamlRoot xamlRoot) : this()
@@ -52,6 +52,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			{
 				_bounds = value;
 				SizeChanged?.Invoke(this, value.Size);
+
+				_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
 			}
 		}
 	}
@@ -91,6 +93,22 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			{
 				_visible = value;
 				VisibilityChanged?.Invoke(this, value);
+
+				_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.SiteVisibleChange);
+			}
+		}
+	}
+
+	public float RasterizationScale
+	{
+		get => _rasterizationScale;
+		set
+		{
+			if (_rasterizationScale != value)
+			{
+				_rasterizationScale = value;
+
+				_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
 			}
 		}
 	}
