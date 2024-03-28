@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Threading;
@@ -10,6 +10,7 @@ using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
 using Uno.UI.Dispatching;
 using Uno.Foundation.Logging;
+using System.Linq;
 
 namespace Windows.Storage.Pickers
 {
@@ -89,7 +90,11 @@ namespace Windows.Storage.Pickers
 				=> _taskCompletionSource.SetResult(null);
 
 			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl url)
+			public override void DidPickDocument(UIDocumentPickerViewController controller, NSUrl[] urls)
+			{
 				=> _taskCompletionSource.SetResult(url);
+				_taskCompletionSource.SetResult(urls?.FirstOrDefault());
+			}
 		}
 
 		private class FolderPickerPresentationControllerDelegate : UIAdaptivePresentationControllerDelegate
