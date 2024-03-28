@@ -57,6 +57,13 @@ namespace Microsoft.UI.Composition
 			return ret;
 		}
 
+		public static Matrix4x4 ToMatrix4x4(this SKMatrix44 m)
+			=> new(
+				m[0, 0], m[1, 0], m[2, 0], m[3, 0],
+				m[0, 1], m[1, 1], m[2, 1], m[3, 1],
+				m[0, 2], m[1, 2], m[2, 2], m[3, 2],
+				m[0, 3], m[1, 3], m[2, 3], m[3, 3]);
+
 		public static SKMatrix44 ToSKMatrix44(this Matrix3x2 m)
 		{
 			var ret = new SKMatrix44();
@@ -98,11 +105,24 @@ namespace Microsoft.UI.Composition
 			return ret;
 		}
 
+		public static Matrix3x2 ToMatrix3x2(this Matrix4x4 m)
+			=> new Matrix3x2(m.M11, m.M12, m.M21, m.M22, m.M41, m.M42);
+
 		public static SKMatrix ToSKMatrix(this Matrix4x4 m)
 			=> new(
 				m.M11, m.M21, m.M41,
 				m.M12, m.M22, m.M42,
 				m.M14, m.M24, m.M44);
+
+		public static Matrix4x4 ToMatrix4x4(this SKMatrix m)
+		{
+			var vals = m.Values;
+			return new(
+				vals[0], vals[3], 0, vals[6],
+				vals[1], vals[4], 0, vals[7],
+				/* */ 0, /* */ 0, 1, /* */ 0,
+				vals[2], vals[5], 0, vals[8]);
+		}
 
 		/// <summary>
 		/// This is an alternative to the built-in SKBitmap.FromImage.

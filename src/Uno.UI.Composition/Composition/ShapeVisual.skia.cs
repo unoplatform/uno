@@ -1,10 +1,7 @@
 ﻿#nullable enable
 
-using System.Numerics;
-using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
-using System.Xml.Xsl;
 using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;

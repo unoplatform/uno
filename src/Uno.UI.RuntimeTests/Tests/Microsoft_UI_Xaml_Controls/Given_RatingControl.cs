@@ -41,7 +41,8 @@ public class Given_RatingControl
 
 		// Tap RatingControl
 		ratingControl.Value = 1;
-		var tapTarget = ratingControl.TransformToVisual(null).TransformPoint(new Point(ratingControl.ActualWidth * 0.9, ratingControl.ActualHeight / 2));
+		// We don't use ActualWidth because of https://github.com/unoplatform/uno/issues/15982
+		var tapTarget = ratingControl.TransformToVisual(null).TransformPoint(new Point(112 * 0.9, ratingControl.ActualHeight / 2));
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetFinger();
 

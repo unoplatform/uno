@@ -1,8 +1,7 @@
 ﻿#nullable enable
 //#define TRACE_COMPOSITION
 
-using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
@@ -16,6 +15,51 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private CompositionClip? _clip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
+	private bool _matrixDirty = true;
+	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+
+	/// <returns>true if wasn't dirty</returns>
+	internal virtual bool SetMatrixDirty() => _matrixDirty = true;
+
+	/// <summary>
+	/// This is the final transformation matrix from the origin for this Visual.
+	/// </summary>
+#if DEBUG
+	[DebuggerDisplay("{TotalMatrixString}")]
+#endif
+	internal Matrix4x4 TotalMatrix
+	{
+		get
+		{
+			if (_matrixDirty)
+			{
+				_matrixDirty = false;
+
+				// Start out with the final matrix of the parent
+				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
+
+				// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
+				var totalOffset = this.GetTotalOffset();
+				var offsetMatrix = SKMatrix.Identity with { TransX = totalOffset.X + AnchorPoint.X, TransY = totalOffset.Y + AnchorPoint.Y };
+				matrix = offsetMatrix.ToMatrix4x4() * matrix;
+
+				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
+				if (this.GetTransform() is { IsIdentity: false } transform)
+				{
+					matrix = transform * matrix;
+				}
+
+				_totalMatrix = matrix;
+
+			}
+
+			return _totalMatrix;
+		}
+	}
+
+#if DEBUG
+	internal string TotalMatrixString => $"{(_matrixDirty ? "-dirty-" : "")}{_totalMatrix}";
+#endif
 
 	public CompositionClip? Clip
 	{
@@ -29,7 +73,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		set
 		{
 			SetProperty(ref _anchorPoint, value);
-			Compositor.InvalidateRender(this);
 		}
 	}
 
@@ -52,7 +95,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal ShadowState? ShadowState { get; set; }
 
 	/// <summary>
-	/// Render a root visual.
+	/// Render a visual as if it's the root visual.
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="ignoreLocation">A boolean which indicates if the location of the root visual should be ignored (so it will be rendered at 0,0).</param>
@@ -64,14 +107,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		var canvas = surface.Canvas;
+
+		// Since we're acting as if this visual is a root visual, we undo the parent's TotalMatrix
+		// so that when concatenated with this visual's TotalMatrix, the result is only the transforms
+		// from this visual.
+		// It's important to set the default to canvas.TotalMatrix not SKMatrix.Identity in case there's
+		// an initial global transformation set (e.g. if the renderer sets scaling for dpi)
+		var initialTransform = canvas.TotalMatrix.ToMatrix4x4();
+		if (Parent?.TotalMatrix is { } parentTotalMatrix)
+		{
+			Matrix4x4.Invert(parentTotalMatrix, out var invertedParentTotalMatrix);
+			initialTransform = invertedParentTotalMatrix;
+		}
+
 		if (ignoreLocation)
 		{
 			canvas.Save();
 			var totalOffset = this.GetTotalOffset();
-			canvas.Translate(-(totalOffset.X + AnchorPoint.X), -(totalOffset.Y + AnchorPoint.Y));
+			var translation = Matrix4x4.Identity with { M41 = -(totalOffset.X + AnchorPoint.X), M42 = -(totalOffset.Y + AnchorPoint.Y) };
+			initialTransform *= translation;
 		}
 
-		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default);
+		using var session = BeginDrawing(surface, canvas, DrawingFilters.Default, initialTransform);
 		Render(in session);
 
 		if (ignoreLocation)
@@ -110,10 +167,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 	}
 
-	private protected DrawingSession BeginDrawing(in DrawingSession parentSession)
-		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters);
+	private DrawingSession BeginDrawing(in DrawingSession parentSession)
+		=> BeginDrawing(parentSession.Surface, parentSession.Canvas, parentSession.Filters, parentSession.RootTransform);
 
-	private protected DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters)
+	private DrawingSession BeginDrawing(SKSurface surface, SKCanvas canvas, in DrawingFilters filters, in Matrix4x4 initialTransform)
 	{
 		if (ShadowState is { } shadow)
 		{
@@ -124,15 +181,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.Save();
 		}
 
-		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		var totalOffset = this.GetTotalOffset();
-		canvas.Translate(totalOffset.X + AnchorPoint.X, totalOffset.Y + AnchorPoint.Y);
-
-		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-		if (this.GetTransform() is { IsIdentity: false } transform)
+		if (initialTransform.IsIdentity)
 		{
-			var skTransform = transform.ToSKMatrix();
-			canvas.Concat(ref skTransform);
+			canvas.SetMatrix(TotalMatrix.ToSKMatrix());
+		}
+		else
+		{
+			canvas.SetMatrix((initialTransform * TotalMatrix).ToSKMatrix());
 		}
 
 		// Apply the clipping defined on the element
@@ -140,7 +195,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
 		Clip?.Apply(canvas, this);
 
-		var session = new DrawingSession(surface, canvas, in filters);
+		var session = new DrawingSession(surface, canvas, in filters, in initialTransform);
 
 		DrawingSession.PushOpacity(ref session, Opacity);
 

@@ -22,6 +22,7 @@ public partial class Compositor
 
 	partial void InvalidateRenderPartial(Visual visual)
 	{
+		visual.SetMatrixDirty();
 		CoreApplication.QueueInvalidateRender(visual.CompositionTarget);
 	}
 }
