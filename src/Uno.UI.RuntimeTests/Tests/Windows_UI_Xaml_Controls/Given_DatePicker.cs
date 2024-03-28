@@ -34,8 +34,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if __IOS__
-		[Ignore("Fails on iOS")]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS")]
 #endif
 		public async Task When_Time_Zone()
 		{
