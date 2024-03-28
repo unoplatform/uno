@@ -26,7 +26,7 @@
 	-->
 	<Target Name="RemoveUnoSingleProjectPlatformFiles"
 		BeforeTargets="PrepareForBuild"
-		Condition="$(SingleProject) == 'true'">
+		Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
 		<ItemGroup>
 			<None Remove="@(_IgnorePlatformFiles)" />
 			<Compile Remove="@(_IgnorePlatformFiles)" />
@@ -112,5 +112,5 @@
 	</Target>
 
 	<Import Project="Uno.SingleProject.VS.Build.targets"
-			Condition=" '$(SingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
+			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
 </Project>

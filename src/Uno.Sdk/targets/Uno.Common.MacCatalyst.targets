@@ -7,5 +7,5 @@
 		<EnableDefaultMacCatalystItems Condition="$(EnableDefaultMacCatalystItems) == ''">false</EnableDefaultMacCatalystItems>
 	</PropertyGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacCatalyst.targets" Condition="$(SingleProject) == 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.MacCatalyst.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
 </Project>

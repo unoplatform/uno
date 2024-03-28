@@ -22,7 +22,7 @@
 		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
 		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
 		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
-		<IsUnoHead Condition="$(SingleProject) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
+		<IsUnoHead Condition="$(_IsUnoSingleProjectAndLegacy) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -81,7 +81,7 @@
 	<Import Project="Uno.GenerateAot.targets"
 		Condition=" $(UnoGenerateAotProfile) == 'true' AND $(IsUnoHead) == 'true' " />
 
-	<PropertyGroup Condition="$(SingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+	<PropertyGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 

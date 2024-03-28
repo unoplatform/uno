@@ -13,8 +13,11 @@
 	<Import Project="../uno.winui.common.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
 	<Import Project="../uno.winui.cross-runtime.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
 
-	<!-- Assume that if PlatformsProjectFolder is empty, we're in a 5.1 or earlier template -->
-	<Import Project="../uno.winui.single-project.targets" Condition=" '$(PlatformsProjectFolder)' == '' AND '$(_UnoIsWinAppSDKDefined)'!='true'" />
+	<!-- 
+		If SingleProject is set, we're in a 5.1 or earlier template. 
+		Starting 5.2, `SingleProject` is named `UnoSingleProject`
+	-->
+	<Import Project="../uno.winui.single-project.targets" Condition=" $(SingleProject) == 'true' AND '$(_UnoIsWinAppSDKDefined)'!='true'" />
 	<Import Project="../uno.winui.runtime-replace.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
 
 	<Import Project="../uno.winui.winappsdk.targets" Condition="'$(_UnoIsWinAppSDKDefined)'=='true'" />
