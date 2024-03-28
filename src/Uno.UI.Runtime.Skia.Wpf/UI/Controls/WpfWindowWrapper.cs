@@ -29,14 +29,9 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.Closing += OnNativeClosing;
 		_wpfWindow.Closed += OnNativeClosed;
 		_wpfWindow.DpiChanged += OnDpiChanged;
-		_wpfWindow.SizeChanged += OnWindowSizeChanged;
 	}
 
-	private void OnWindowSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) =>
-		_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.ActualSizeChange);
-
-	private void OnDpiChanged(object sender, DpiChangedEventArgs e) =>
-		_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.RasterizationScaleChange);
+	private void OnDpiChanged(object sender, DpiChangedEventArgs e) => RasterizationScale = (float)e.NewDpi.DpiScaleX;
 
 	public override string Title
 	{
@@ -101,8 +96,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 			Visible = isVisible;
 			WinUIApplication.Current?.RaiseEnteredBackground(null);
 		}
-
-		_contentIsland.RaiseStateChanged(ContentIslandStateChangedEventArgs.SiteVisibleChange);
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()
