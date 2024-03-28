@@ -5,16 +5,18 @@
 #nullable enable
 
 using System;
-using Uno.UI.Xaml.Input;
-using Uno.UI.Xaml.Islands;
-using Windows.UI;
+using DirectUI;
+using Microsoft.UI.Content;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.UI.Xaml.Core.Scaling;
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Islands;
+using Windows.UI;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
-using DirectUI;
-using Windows.Foundation;
 
 /*
     +----------------------------------------------------------------------------------+
@@ -84,7 +86,7 @@ internal partial class ContentRoot
 				MUX_ASSERT(coreServices.ContentRootCoordinator.CoreWindowContentRoot == null);
 				coreServices.ContentRootCoordinator.CoreWindowContentRoot = this;
 				break;
-			case ContentRootType.XamlIsland:
+			case ContentRootType.XamlIslandRoot:
 				break;
 		}
 	}
@@ -123,6 +125,78 @@ internal partial class ContentRoot
 
 	internal XamlIsland? XamlIslandRoot { get; set; }
 
+	private void OnStateChanged()
+	{
+		switch (Type)
+		{
+			case ContentRootType.XamlIslandRoot:
+				XamlIslandRoot?.OnStateChanged();
+				break;
+			case ContentRootType.CoreWindow:
+				// TODO MZ: Implement this path!
+				//FxCallbacks::DxamlCore_OnCompositionContentStateChangedForUWP());
+				break;
+			default:
+				throw new InvalidOperationException("Unknown ContentRootType");
+		}
+	}
+
+	private void OnAutomationProviderRequested(
+		ContentIsland content,
+		ContentIslandAutomationProviderRequestedEventArgs args)
+	{
+		if (Type == ContentRootType.XamlIslandRoot)
+		{
+			// XamlislandRoot.OnContentAutomationProviderRequested(content, args));
+		}
+	}
+
+	private void RegisterCompositionContent(ContentIsland compositionContent)
+	{
+		_compositionContent = compositionContent;
+
+		void OnStateChangedHandler(ContentIsland content, ContentIslandStateChangedEventArgs args) => OnStateChanged();
+
+		_compositionContent.StateChanged += OnStateChangedHandler;
+		_compositionContentStateChangedToken.Disposable = Disposable.Create(() => _compositionContent.StateChanged -= OnStateChangedHandler);
+
+		// Accessibility
+		_compositionContent.AutomationProviderRequested += OnAutomationProviderRequested;
+		_automationProviderRequestedToken.Disposable = Disposable.Create(() => _compositionContent.AutomationProviderRequested -= OnAutomationProviderRequested);
+	}
+
+	private void ResetCompositionContent()
+	{
+		if (_compositionContent is not null)
+		{
+			if (_compositionContentStateChangedToken.Disposable is not null)
+			{
+				_compositionContentStateChangedToken.Disposable = null;
+			}
+
+			//if (m_automationProviderRequestedToken.value != 0)
+			//{
+			//	IFC_RETURN(m_compositionContent->remove_AutomationProviderRequested(m_automationProviderRequestedToken));
+			//	m_automationProviderRequestedToken = { };
+			//}
+
+			_compositionContent = null;
+		}
+	}
+
+	private void SetContentIsland(ContentIsland compositionContent)
+	{
+		// ContentRoot is re-used through the life time of an application. Hence, CompositionContent can be set multiple time.
+		// ResetCompositionContent will make sure to remove handlers and reset previous CompositionContent.
+		ResetCompositionContent();
+		RegisterCompositionContent(compositionContent);
+
+		if (RootScale.GetRootScaleForContentRoot(this) is { } rootScale) // Check that we still have an active tree
+		{
+			rootScale.SetContentIsland(compositionContent);
+		}
+	}
+
 	//TODO Uno: This might need to be adjusted when we have proper lifetime handling
 	internal bool IsShuttingDown() => false;
 
@@ -135,7 +209,7 @@ internal partial class ContentRoot
 		RaisePendingXamlRootChangedEventIfNeeded();
 	}
 
-	internal void RaisePendingXamlRootChangedEventIfNeeded()
+	internal void RaisePendingXamlRootChangedEventIfNeeded(bool shouldRaiseWindowChangedEvent)
 	{
 		if (_hasPendingChangedEvent)
 		{
@@ -161,7 +235,7 @@ internal partial class ContentRoot
 		return Type switch
 		{
 			ContentRootType.CoreWindow => Window.CurrentSafe,
-			ContentRootType.XamlIsland when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
+			ContentRootType.XamlIslandRoot when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
 			_ => null
 		};
 	}
