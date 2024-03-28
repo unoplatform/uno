@@ -35,7 +35,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected XamlRoot? XamlRoot => _xamlRoot;
 
-	protected void SetXamlRoot(XamlRoot xamlRoot)
+	internal void SetXamlRoot(XamlRoot xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
 		xamlRoot.VisualTree.ContentRoot.SetContentIsland(_contentIsland);
