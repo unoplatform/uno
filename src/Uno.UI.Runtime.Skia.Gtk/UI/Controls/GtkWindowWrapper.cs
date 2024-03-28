@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -20,8 +22,9 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	private bool _wasShown;
 	private readonly UnoGtkWindow _gtkWindow;
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
+	private DpiHelper _dpiHelper;
 
-	public GtkWindowWrapper(UnoGtkWindow gtkWindow)
+	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_gtkWindow = gtkWindow ?? throw new ArgumentNullException(nameof(gtkWindow));
 		_gtkWindow.Shown += OnWindowShown;
@@ -29,7 +32,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		_gtkWindow.DeleteEvent += OnWindowClosing;
 		_gtkWindow.Destroyed += OnWindowClosed;
 		_gtkWindow.WindowStateEvent += OnWindowStateChanged;
+		_dpiHelper = new DpiHelper(_gtkWindow);
+		_dpiHelper.DpiChanged += OnDpiChanged;
 	}
+
+	private void OnDpiChanged(object? sender, EventArgs e) => RasterizationScale = _dpiHelper.RasterizationScale;
 
 	public override string Title
 	{
