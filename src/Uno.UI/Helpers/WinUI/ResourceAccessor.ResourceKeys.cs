@@ -146,6 +146,8 @@
 		public const string SR_NumberBoxDownSpinButtonName = "NumberBoxDownSpinButtonName";
 		public const string SR_NumberBoxMaximumValueStatus = "NumberBoxMaximumValueStatus";
 		public const string SR_NumberBoxMinimumValueStatus = "NumberBoxMinimumValueStatus";
+		public const string SR_ItemContainerDefaultControlName = "ItemContainerDefaultControlName";
+
 		public const string SR_InfoBarCloseButtonName = "InfoBarCloseButtonName";
 		public const string SR_InfoBarOpenedNotification = "InfoBarOpenedNotification";
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
