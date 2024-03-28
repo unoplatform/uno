@@ -181,7 +181,7 @@ static partial class ViewExtensions
 	/// </summary>
 	/// <typeparam name="T">The type of descendant to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
-	/// <remarks>The crawling is done depth first.</remarks>
+	/// <remarks>The nodes are visited in depth-first order.</remarks>
 	public static T? FindFirstDescendant<T>(this _View? reference) => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault();
@@ -192,7 +192,7 @@ static partial class ViewExtensions
 	/// <typeparam name="T">The type of descendant to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="predicate">A function to test each node for a condition.</param>
-	/// <remarks>The crawling is done depth first.</remarks>
+	/// <remarks>The nodes are visited in depth-first order.</remarks>
 	public static T? FindFirstDescendant<T>(this _View? reference, Func<T, bool> predicate) => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault(predicate);
@@ -203,7 +203,7 @@ static partial class ViewExtensions
 	/// <typeparam name="T">The type of descendant to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="name">x:Name of the node</param>
-	/// <remarks>The crawling is done depth first.</remarks>
+	/// <remarks>The nodes are visited in depth-first order.</remarks>
 	public static T? FindFirstDescendant<T>(this _View? reference, string name) where T : FrameworkElement => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault(x => x.Name == name);
@@ -215,7 +215,7 @@ static partial class ViewExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="hierarchyPredicate">A function to test each ancestor for a condition.</param>
 	/// <param name="predicate">A function to test each descendant for a condition.</param>
-	/// <remarks>The crawling is done depth first.</remarks>
+	/// <remarks>The nodes are visited in depth-first order.</remarks>
 	public static T? FindFirstDescendant<T>(this _View? reference, Func<_View, bool> hierarchyPredicate, Func<T, bool> predicate) => EnumerateDescendants(reference, hierarchyPredicate)
 		.OfType<T>()
 		.FirstOrDefault(predicate);

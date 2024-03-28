@@ -342,7 +342,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (!shouldSnapToEnd && !shouldSnapToStart &&
 				FirstVisibleIndex == 0 && LastVisibleIndex + 1 == ItemCount)
 			{
-				// The item may be within materialized ranged (having not scroll at all in step-1) or
+				// The item may be within materialized range (having not scrolled at all in step-1) or
 				// the entire list is materialized (non-virtualized). In such case, we need to set either
 				// of the snapping flags, and this depends on where the item sits relative to the viewport:
 				// + exception: item is taller/bigger than viewport -> shouldSnapToStart
