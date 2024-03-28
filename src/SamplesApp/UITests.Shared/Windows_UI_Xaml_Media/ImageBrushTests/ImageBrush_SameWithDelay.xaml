@@ -22,7 +22,7 @@
 			<Ellipse Width="200"
 				 Height="200">
 				<Ellipse.Fill>
-					<ImageBrush ImageSource="{Binding ImgSource2}" Stretch="UniformToFill"/>
+					<ImageBrush x:Name="imageBrush2"  ImageSource="{Binding ImgSource2}" Stretch="UniformToFill"/>
 				</Ellipse.Fill>
 			</Ellipse>
 		</StackPanel>

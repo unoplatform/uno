@@ -26,7 +26,7 @@
 							Width="200"
 							Height="100">
                         <Border.Background>
-                            <ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+                            <ImageBrush x:Name="imageBrush1" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
                         </Border.Background>
                     </Border>
 
@@ -37,7 +37,7 @@
 							Width="200"
 							Height="100">
                         <Border.BorderBrush>
-                            <ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+							<ImageBrush x:Name="imageBrush2" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
                         </Border.BorderBrush>
                     </Border>
 					
@@ -48,7 +48,7 @@
 							Width="200"
 							Height="200">
                         <Border.Background>
-                            <ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+							<ImageBrush x:Name="imageBrush3" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
                         </Border.Background>
                     </Border>
 					
@@ -58,7 +58,7 @@
 							Width="200"
 							Height="100">
                         <Border.Background>
-                            <ImageBrush ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
+							<ImageBrush x:Name="imageBrush4" ImageSource="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg" />
                         </Border.Background>
                     </Border>
                 </StackPanel>

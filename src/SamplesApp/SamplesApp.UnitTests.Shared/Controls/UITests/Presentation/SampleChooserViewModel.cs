@@ -35,6 +35,7 @@ using SamplesApp;
 using Uno.UI.Extensions;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
+using UITests.Shared.Helpers;
 
 namespace SampleControl.Presentation
 {
@@ -331,7 +332,7 @@ namespace SampleControl.Presentation
 
 							SelectedLibrarySample = sample;
 
-							var content = await UpdateContent(ct, sample) as FrameworkElement;
+							var (content, control) = await UpdateContent(ct, sample);
 
 							ContentPhone = content;
 
@@ -341,6 +342,11 @@ namespace SampleControl.Presentation
 #else
 							await Task.Delay(500, ct);
 #endif
+
+							if (control is IWaitableSample waitableSample)
+							{
+								await waitableSample.SamplePreparedTask;
+							}
 
 							Console.WriteLine($"Generating screenshot for {fileName}");
 							var file = await rootFolder.CreateFileAsync(fileName + ".png",
@@ -435,7 +441,8 @@ namespace SampleControl.Presentation
 				throw new InvalidOperationException($"Unable to find UnitTestsPage");
 			}
 
-			var content = await UpdateContent(ct, runtimeTests) as FrameworkElement;
+			var (content, _) = await UpdateContent(ct, runtimeTests);
+
 			if (!Equals(SelectedLibrarySample, runtimeTests))
 			{
 				SelectedLibrarySample = null;
@@ -506,7 +513,7 @@ namespace SampleControl.Presentation
 							if (newContent != null)
 							{
 								CurrentSelectedSample = newContent;
-								ContentPhone = await UpdateContent(CancellationToken.None, newContent);
+								(ContentPhone, _) = await UpdateContent(CancellationToken.None, newContent);
 							}
 						}
 					);
@@ -835,7 +842,7 @@ namespace SampleControl.Presentation
 		{
 			if (PreviousSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, PreviousSample);
+				(ContentPhone, _) = await UpdateContent(ct, PreviousSample);
 			}
 		}
 
@@ -843,7 +850,7 @@ namespace SampleControl.Presentation
 		{
 			if (CurrentSelectedSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, CurrentSelectedSample);
+				(ContentPhone, _) = await UpdateContent(ct, CurrentSelectedSample);
 			}
 		}
 
@@ -851,7 +858,7 @@ namespace SampleControl.Presentation
 		{
 			if (NextSample != null)
 			{
-				ContentPhone = await UpdateContent(ct, NextSample);
+				(ContentPhone, _) = await UpdateContent(ct, NextSample);
 			}
 		}
 
@@ -898,12 +905,13 @@ namespace SampleControl.Presentation
 		/// <param name="ct"></param>
 		/// <param name="newContent"></param>
 		/// <returns>The updated content</returns>
-		public async Task<object> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
+		public async Task<(FrameworkElement Content, object Control)> UpdateContent(CancellationToken ct, SampleChooserContent newContent)
 		{
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
 			FrameworkElement container = null;
 
+			object control;
 			var frameRequested =
 				newContent.UsesFrame &&
 				typeof(Page).IsAssignableFrom(newContent.ControlType);
@@ -912,11 +920,12 @@ namespace SampleControl.Presentation
 				var frame = new Frame();
 				frame.Navigate(newContent.ControlType);
 				container = frame;
+				control = frame.Content;
 			}
 			else
 			{
 				//Activator is used here in order to generate the view and bind it directly with the proper view model
-				var control = Activator.CreateInstance(newContent.ControlType);
+				control = Activator.CreateInstance(newContent.ControlType);
 
 				if (control is ContentControl controlAsContentControl && !(controlAsContentControl.Content is Uno.UI.Samples.Controls.SampleControl))
 				{
@@ -989,7 +998,7 @@ namespace SampleControl.Presentation
 				RecentSamples = recents;
 			}
 
-			return container;
+			return (container, control);
 		}
 
 		private SampleChooserCategory GetCategory(SampleChooserContent content)

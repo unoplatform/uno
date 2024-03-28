@@ -16,15 +16,17 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Private.Infrastructure;
+using UITests.Shared.Helpers;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 {
 	[SampleControlInfo(category: "Brushes")]
-	public sealed partial class ImageBrush_SameWithDelay : UserControl
+	public sealed partial class ImageBrush_SameWithDelay : UserControl, IWaitableSample
 	{
-		BrushContext _ctx = new BrushContext();
+		private BrushContext _ctx = new BrushContext();
+		private TaskCompletionSource _tcs = new();
 
 		public ImageBrush_SameWithDelay()
 		{
@@ -36,9 +38,17 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 
 			imageBrush.ImageOpened += (s, e) =>
 			{
+				// _tcs.SetResult() shouldn't be called here. We wait for imageBrush2 to be loaded so that screenshot comparison is stable.
 				_ctx.ImgSource2 = "https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
 			};
+
+			imageBrush.ImageFailed += (_, _) => _tcs.SetResult();
+
+			imageBrush2.ImageOpened += (_, _) => _tcs.SetResult();
+			imageBrush2.ImageFailed += (_, _) => _tcs.SetResult();
 		}
+
+		public Task SamplePreparedTask => _tcs.Task;
 	}
 
 	public class BrushContext : System.ComponentModel.INotifyPropertyChanged
