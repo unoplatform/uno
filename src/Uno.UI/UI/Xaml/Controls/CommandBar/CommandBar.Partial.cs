@@ -32,6 +32,7 @@ using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
+using Uno.UI.Helpers.WinUI;
 #if __ANDROID__
 using Android.Views;
 #endif
@@ -635,7 +636,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool isGamepadNavigationEvent = false;
 			bool shouldHandleGamepadNavigationEvent = false;
 
-			if (IsGamepadNavigationDirection(originalKey))
+			if (SharedHelpers.IsGamepadNavigationDirection(originalKey))
 			{
 				isGamepadNavigationEvent = true;
 
@@ -1362,37 +1363,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		//    return S_OK;
 		//}
-
-
-		private bool IsGamepadNavigationDirection(VirtualKey key)
-		{
-			return
-				IsGamepadNavigationRight(key) ||
-				IsGamepadNavigationLeft(key) ||
-				IsGamepadNavigationUp(key) ||
-				IsGamepadNavigationDown(key);
-		}
-
-		bool IsGamepadNavigationRight(VirtualKey key)
-		{
-			return key == VirtualKey.GamepadLeftThumbstickRight || key == VirtualKey.GamepadDPadRight;
-		}
-
-		bool IsGamepadNavigationLeft(VirtualKey key)
-		{
-			return key == VirtualKey.GamepadLeftThumbstickLeft || key == VirtualKey.GamepadDPadLeft;
-		}
-
-		bool IsGamepadNavigationUp(VirtualKey key)
-		{
-			return key == VirtualKey.GamepadLeftThumbstickUp || key == VirtualKey.GamepadDPadUp;
-		}
-
-		bool IsGamepadNavigationDown(VirtualKey key)
-		{
-			return key == VirtualKey.GamepadLeftThumbstickDown || key == VirtualKey.GamepadDPadDown;
-		}
-
 
 		private void OnPrimaryCommandsChanged(IObservableVector<ICommandBarElement> sender, IVectorChangedEventArgs pArgs)
 		{

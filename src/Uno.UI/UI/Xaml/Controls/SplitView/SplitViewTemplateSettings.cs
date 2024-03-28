@@ -8,38 +8,108 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public sealed partial class SplitViewTemplateSettings : DependencyObject
 	{
-		public SplitViewTemplateSettings(SplitView splitView)
+		internal SplitViewTemplateSettings()
 		{
-			InitializeBinder();
-
-			if (splitView != null)
-			{
-				CompactPaneLength = splitView.CompactPaneLength;
-				OpenPaneLength = splitView.OpenPaneLength;
-			}
-			else
-			{
-				CompactPaneLength = (double)SplitView.CompactPaneLengthProperty.GetMetadata(typeof(SplitView)).DefaultValue;
-				OpenPaneLength = (double)SplitView.OpenPaneLengthProperty.GetMetadata(typeof(SplitView)).DefaultValue;
-			}
 		}
 
-		public GridLength CompactPaneGridLength { get { return new GridLength((float)CompactPaneLength, GridUnitType.Pixel); } }
-		public GridLength OpenPaneGridLength { get { return new GridLength((float)OpenPaneLength, GridUnitType.Pixel); } }
-		public double NegativeOpenPaneLength { get { return -OpenPaneLength; } }
-		public double NegativeOpenPaneLengthMinusCompactLength { get { return NegativeOpenPaneLength - CompactPaneLength; } }
-		public double OpenPaneLengthMinusCompactLength { get { return OpenPaneLength - CompactPaneLength; } }
+		public static DependencyProperty CompactPaneGridLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CompactPaneGridLength),
+				typeof(GridLength),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength))
+			);
 
-		public double OpenPaneLength { get; }
-		public double CompactPaneLength { get; }
+		public GridLength CompactPaneGridLength
+		{
+			get => (GridLength)GetValue(CompactPaneGridLengthProperty);
+			internal set => SetValue(CompactPaneGridLengthProperty, value);
+		}
 
-		/// <summary>
-		/// These properties were added to facilitate clipping while RectangleGeometry.Transform is not supported
-		/// TODO: Remove and use NegativeOpenPaneLengthMinusCompactLength and OpenPaneLengthMinusCompactLength instead
-		/// </summary>
-		public RectangleGeometry LeftClip { get { return new RectangleGeometry { Rect = new Rect(0, 0, CompactPaneLength, ViewHeight) }; } }
-		public RectangleGeometry RightClip { get { return new RectangleGeometry { Rect = new Rect(OpenPaneLengthMinusCompactLength, 0, CompactPaneLength, ViewHeight) }; } }
+		public static DependencyProperty OpenPaneGridLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(OpenPaneGridLength),
+				typeof(GridLength),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength), propertyChangedCallback: (dependencyObject, args) =>
+				{
 
-		public double ViewHeight { get; internal set; } = 2000;
+				}));
+
+		public GridLength OpenPaneGridLength
+		{
+			get => (GridLength)GetValue(OpenPaneGridLengthProperty);
+			internal set => SetValue(OpenPaneGridLengthProperty, value);
+		}
+
+		public static DependencyProperty NegativeOpenPaneLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(NegativeOpenPaneLength),
+				typeof(double),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength))
+			);
+
+		public double NegativeOpenPaneLength
+		{
+			get => (double)GetValue(NegativeOpenPaneLengthProperty);
+			internal set => SetValue(NegativeOpenPaneLengthProperty, value);
+		}
+
+		public static DependencyProperty NegativeOpenPaneLengthMinusCompactLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(NegativeOpenPaneLengthMinusCompactLength),
+				typeof(double),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength))
+			);
+
+		public double NegativeOpenPaneLengthMinusCompactLength
+		{
+			get => (double)GetValue(NegativeOpenPaneLengthMinusCompactLengthProperty);
+			internal set => SetValue(NegativeOpenPaneLengthMinusCompactLengthProperty, value);
+		}
+
+		public static DependencyProperty OpenPaneLengthMinusCompactLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(OpenPaneLengthMinusCompactLength),
+				typeof(double),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength))
+			);
+
+		public double OpenPaneLengthMinusCompactLength
+		{
+			get => (double)GetValue(OpenPaneLengthMinusCompactLengthProperty);
+			internal set => SetValue(OpenPaneLengthMinusCompactLengthProperty, value);
+		}
+
+		public static DependencyProperty OpenPaneLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(OpenPaneLength),
+				typeof(double),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength))
+			);
+
+		public double OpenPaneLength
+		{
+			get => (double)GetValue(OpenPaneLengthProperty);
+			internal set => SetValue(OpenPaneLengthProperty, value);
+		}
+
+		public static DependencyProperty CompactPaneLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CompactPaneLength),
+				typeof(double),
+				typeof(SplitViewTemplateSettings),
+				new FrameworkPropertyMetadata(default(GridLength))
+			);
+
+		public double CompactPaneLength
+		{
+			get => (double)GetValue(CompactPaneLengthProperty);
+			internal set => SetValue(CompactPaneLengthProperty, value);
+		}
 	}
 }
