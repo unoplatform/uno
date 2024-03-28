@@ -427,7 +427,7 @@ namespace Uno.UI.Tests.BinderTests
 			var testProperty = DependencyProperty.Register(nameof(When_Two_Precedences_Set_Then_Only_Highest_Returned), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
 
 			SUT.SetValue(testProperty, "Not42");
-			SUT.SetValue(testProperty, "ALowPriorityValue", DependencyPropertyValuePrecedences.ImplicitStyle);
+			SUT.SetValue(testProperty, "ALowPriorityValue", DependencyPropertyValuePrecedences.DefaultStyle);
 
 			Assert.AreEqual("Not42", SUT.GetValue(testProperty));
 		}
@@ -1622,7 +1622,7 @@ namespace Uno.UI.Tests.BinderTests
 				(o, e) =>
 				{
 					e.BypassesPropagation.Should().BeFalse();
-					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ImplicitStyle);
+					e.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.DefaultStyle);
 					button.Content = "Frogurt";
 				});
 
@@ -1675,7 +1675,7 @@ namespace Uno.UI.Tests.BinderTests
 				(dependencyObject, args) =>
 				{
 					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
-					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle);
 				});
 
 			using var _ = new AssertionScope();
@@ -1693,7 +1693,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Local value is cleared, fallback to style value
 			sut.BorderThickness.Should().Be(new Thickness(10d), "After removing local value");
-			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle, "After applying style");
+			sut.Tag.Should().Be(DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle, "After applying style");
 
 			registration2.Dispose();
 
@@ -1745,7 +1745,7 @@ namespace Uno.UI.Tests.BinderTests
 				(dependencyObject, args) =>
 				{
 					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.Local);
-					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewValue.Should().Be(DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle);
 				});
 
 			using var _ = new AssertionScope();
@@ -1775,7 +1775,7 @@ namespace Uno.UI.Tests.BinderTests
 				Border.BorderThicknessProperty,
 				(dependencyObject, args) =>
 				{
-					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
+					args.NewPrecedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle);
 					args.NewValue.Should().Be(new Thickness(10d));
 					sut.Child = new Rectangle();
 				});
@@ -1874,12 +1874,12 @@ namespace Uno.UI.Tests.BinderTests
 #if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
 			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
 				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle, "StyleValue")
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, "LocalValue");
 
 			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
 				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle, "StyleValueForB")
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
 #endif
 
@@ -1904,12 +1904,12 @@ namespace Uno.UI.Tests.BinderTests
 #if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
 			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
 				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle, UnsetValue.Instance)
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
 
 			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
 				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
+				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitOrImplicitStyle, UnsetValue.Instance)
 				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, null); // because of the callback ;-)
 #endif
 		}

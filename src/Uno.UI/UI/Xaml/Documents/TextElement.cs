@@ -345,7 +345,7 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				// Hyperlink doesn't appear to inherit foreground from the parent.
 				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
-				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.ImplicitStyle);
+				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.DefaultStyle);
 			}
 			else
 			{
