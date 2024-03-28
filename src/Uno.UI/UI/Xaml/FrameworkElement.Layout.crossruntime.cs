@@ -14,6 +14,7 @@ using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.Scaling;
 
 namespace Microsoft.UI.Xaml
 {

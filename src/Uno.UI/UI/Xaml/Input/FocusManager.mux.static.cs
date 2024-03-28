@@ -15,6 +15,7 @@ using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core.Scaling;
 
 namespace Microsoft.UI.Xaml.Input
 {

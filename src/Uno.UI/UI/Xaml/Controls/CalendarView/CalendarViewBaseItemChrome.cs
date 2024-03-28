@@ -19,6 +19,7 @@ using DirectUI;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.Scaling;
 
 namespace Microsoft.UI.Xaml.Controls
 {

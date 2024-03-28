@@ -7,11 +7,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.Xaml.Input
 {
@@ -323,7 +323,7 @@ namespace Uno.UI.Xaml.Input
 				var uielement = element as UIElement;
 				if (uielement != null && uielement is ScrollViewer scrollViewer)
 				{
-					//TODO Uno: Check for actual scrollability here, instead of just scroll mode.					
+					//TODO Uno: Check for actual scrollability here, instead of just scroll mode.
 					horizontally = scrollViewer.HorizontalScrollMode == ScrollMode.Enabled;
 					vertically = scrollViewer.VerticalScrollMode == ScrollMode.Enabled;
 

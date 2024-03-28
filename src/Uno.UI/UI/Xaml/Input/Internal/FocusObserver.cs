@@ -139,7 +139,7 @@ namespace Uno.UI.Xaml.Input
 
 			pRoot = _contentRoot.Type switch
 			{
-				ContentRootType.XamlIsland => _contentRoot.VisualTree.RootScrollViewer ?? _contentRoot.VisualTree.ActiveRootVisual,
+				ContentRootType.XamlIslandRoot => _contentRoot.VisualTree.RootScrollViewer ?? _contentRoot.VisualTree.ActiveRootVisual,
 				_ => _contentRoot.VisualTree.ActiveRootVisual,
 			};
 

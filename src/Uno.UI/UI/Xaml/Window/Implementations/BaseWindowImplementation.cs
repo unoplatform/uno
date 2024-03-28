@@ -29,6 +29,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 {
 	private bool _wasShown;
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
+	private Size _lastSize = new Size(-1, -1);
 
 #pragma warning disable CS0649
 	public BaseWindowImplementation(Window window)
@@ -121,11 +122,17 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
+		if (_lastSize == size)
+		{
+			return;
+		}
+
+		_lastSize = size;
+
 		OnSizeChanged(size);
 #if __SKIA__ || __WASM__
 		XamlRoot?.InvalidateMeasure(); //TODO:MZ: Should notify before or after?
 #endif
-		XamlRoot?.NotifyChanged();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 #if HAS_UNO_WINUI
 		// There are two "versions" of WindowSizeChangedEventArgs in Uno currently
@@ -139,6 +146,8 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnSizeChanged(coreWindowSizeChangedEventArgs);
 #endif
 		SizeChanged?.Invoke(this, windowSizeChanged);
+
+		XamlRoot?.RaiseChangedEvent();
 	}
 
 	private void OnNativeVisibleBoundsChanged(object? sender, Rect args) => SetVisibleBoundsFromNative();

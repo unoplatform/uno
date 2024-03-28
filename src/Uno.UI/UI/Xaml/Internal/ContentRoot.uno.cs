@@ -6,7 +6,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Core;
 
-internal partial class ContentRoot
+partial class ContentRoot
 {
 	private object? _host;
 

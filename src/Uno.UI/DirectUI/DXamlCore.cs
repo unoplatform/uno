@@ -12,6 +12,7 @@ using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core.Scaling;
 
 namespace DirectUI
 {
@@ -77,6 +78,25 @@ namespace DirectUI
 			}
 
 			return _radioButtonGroupsByName;
+		}
+
+		internal void OnCompositionContentStateChangedForUWP()
+		{
+			var contentRootCoordinator = CoreServices.Instance.ContentRootCoordinator;
+			var root = contentRootCoordinator.CoreWindowContentRoot;
+			var rootScale = RootScale.GetRootScaleForContentRoot(root);
+			if (rootScale is null) // Check that we still have an active tree
+			{
+				return;
+			}
+			rootScale.UpdateSystemScale();
+
+			// TODO Uno: Adjusting for visibility changes on CoreWindow is not supported yet.
+			root?.AddPendingXamlRootChangedEvent(default);
+			root?.RaisePendingXamlRootChangedEventIfNeeded(false);
+
+			// TODO Uno: Not needed now.
+			// OnUWPWindowSizeChanged();
 		}
 	}
 }

@@ -36,59 +36,37 @@ internal partial class VisualTree : IWeakReferenceProvider
 	ManagedWeakReference IWeakReferenceProvider.WeakReference =>
 		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
-	internal bool IsVisible
-	{
-		get
-		{
-			if (RootElement is XamlIsland xamlIsland)
-			{
-				if (xamlIsland.OwnerWindow is Window) // For full window XamlIsland we don't need to check visibility
-				{
-					return true;
-				}
+	//internal Size Size
+	//{
+	//	get
+	//	{
+	//		if (RootElement is XamlIsland xamlIsland)
+	//		{
+	//			// If the size is set explicitly, prefer this, as ActualSize property values may be
+	//			// a frame behind.
+	//			if (!double.IsNaN(xamlIsland.Width) && !double.IsNaN(xamlIsland.Height))
+	//			{
+	//				return new(xamlIsland.Width, xamlIsland.Height);
+	//			}
 
-				return xamlIsland.IsSiteVisible;
-			}
-			else if (RootElement is RootVisual)
-			{
-				return true;
-			}
+	//			var actualSize = xamlIsland.ActualSize;
+	//			return new Size(actualSize.X, actualSize.Y);
+	//		}
+	//		else if (RootElement is RootVisual rootVisual)
+	//		{
+	//			if (Window.CurrentSafe is null)
+	//			{
+	//				throw new InvalidOperationException("Window.Current must be set.");
+	//			}
 
-			return false;
-		}
-	}
-
-	internal Size Size
-	{
-		get
-		{
-			if (RootElement is XamlIsland xamlIsland)
-			{
-				// If the size is set explicitly, prefer this, as ActualSize property values may be
-				// a frame behind.
-				if (!double.IsNaN(xamlIsland.Width) && !double.IsNaN(xamlIsland.Height))
-				{
-					return new(xamlIsland.Width, xamlIsland.Height);
-				}
-
-				var actualSize = xamlIsland.ActualSize;
-				return new Size(actualSize.X, actualSize.Y);
-			}
-			else if (RootElement is RootVisual rootVisual)
-			{
-				if (Window.CurrentSafe is null)
-				{
-					throw new InvalidOperationException("Window.Current must be set.");
-				}
-
-				return Window.CurrentSafe.Bounds.Size;
-			}
-			else
-			{
-				throw new InvalidOperationException("Invalid VisualTree root type");
-			}
-		}
-	}
+	//			return Window.CurrentSafe.Bounds.Size;
+	//		}
+	//		else
+	//		{
+	//			throw new InvalidOperationException("Invalid VisualTree root type");
+	//		}
+	//	}
+	//}
 
 	internal Rect VisibleBounds
 	{
