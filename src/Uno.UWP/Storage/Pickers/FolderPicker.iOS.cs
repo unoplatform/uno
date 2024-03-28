@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Threading;
@@ -18,63 +18,67 @@ namespace Windows.Storage.Pickers
 	{
 		private Task<StorageFolder?> PickSingleFolderTaskAsync(CancellationToken token)
 		{
-			async Task<StorageFolder?> PickFolderAsync()
-			{
-				var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
-				if (rootController is null)
-				{
-					throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
-				}
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug("Picking Folder.");
-				}
-
-				var documentTypes = new string[] { UTType.Folder };
-				using var documentPicker = new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open);
-
-				var completionSource = new TaskCompletionSource<NSUrl?>();
-
-				documentPicker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
-					UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
-
-				documentPicker.Delegate = new FolderPickerDelegate(completionSource);
-
-				if (documentPicker.PresentationController is not null)
-				{
-					documentPicker.PresentationController.Delegate = new FolderPickerPresentationControllerDelegate(completionSource);
-				}
-
-				await rootController.PresentViewControllerAsync(documentPicker, true);
-
-				var nsUrl = await completionSource.Task;
-				if (nsUrl is null)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug("User cancelled folder picking.");
-					}
-					return null;
-				}
-
-				var folder = StorageFolder.GetFromSecurityScopedUrl(nsUrl, null);
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Picked folder: {folder.Path} from Url: {nsUrl}.");
-				}
-
-				return folder;
-			}
-
 			var tcs = new TaskCompletionSource<StorageFolder?>();
 			NativeDispatcher.Main.Enqueue(async () =>
 			{
-				var folder = await PickFolderAsync();
+				var folder = await PickFolderAsync(token);
 				tcs.SetResult(folder);
 			});
 
 			return tcs.Task;
+		}
+
+		private async Task<StorageFolder?> PickFolderAsync(CancellationToken token)
+		{
+			var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
+			if (rootController is null)
+			{
+				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("PickFolderAsync() Picking Folder.");
+			}
+
+			var documentTypes = new string[] { UTType.Folder };
+			var completionSource = new TaskCompletionSource<NSUrl?>();
+
+			using var documentPicker = new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open)
+			{
+				Delegate = new FolderPickerDelegate(completionSource),
+			};
+
+			documentPicker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
+				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
+
+			if (documentPicker.PresentationController is not null)
+			{
+				documentPicker.PresentationController.Delegate = new FolderPickerPresentationControllerDelegate(completionSource);
+			}
+
+			await rootController.PresentViewControllerAsync(documentPicker, true);
+
+			var nsUrl = await completionSource.Task;
+
+			rootController.DismissViewController(true, null);
+
+			if (nsUrl is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("User cancelled folder picking.");
+				}
+				return null;
+			}
+
+			var folder = StorageFolder.GetFromSecurityScopedUrl(nsUrl, null);
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Picked folder: {folder?.Path} from Url: {nsUrl}.");
+			}
+
+			return folder;
 		}
 
 		private class FolderPickerDelegate : UIDocumentPickerDelegate
