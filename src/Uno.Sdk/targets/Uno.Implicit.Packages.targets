@@ -16,7 +16,7 @@
 		</UnoImplicitPackages_BeforeTargets>
 	</PropertyGroup>
 
-	<Target Name="UnoImplicitPackages" BeforeTargets="$(UnoImplicitPackages_BeforeTargets)">
+	<Target Name="UnoImplicitPackages" BeforeTargets="$(UnoImplicitPackages_BeforeTargets)" Condition=" '$(TargetFramework)' != '' ">
 		<PropertyGroup>
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
 		</PropertyGroup>
@@ -76,7 +76,7 @@
 			<PackageReference Remove="@(PackageReference->HasMetaData('ProjectSystem'))" />
 		</ItemGroup>
 
-		<ItemGroup Condition=" '$(TargetFramework)' != '' ">
+		<ItemGroup>
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 			<_UnoImplicitPackageReference Remove="@(_UnoImplicitPackageReference)" />

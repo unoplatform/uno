@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Uno.Sdk.Services;
 
-#nullable enable
 namespace Uno.Sdk.Models;
 
 internal record CachedReferences(DateTimeOffset Updated, UnoFeature[] Features, PackageReference[] References)

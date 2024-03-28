@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<BuildOutputTargetFolder>targets</BuildOutputTargetFolder>
@@ -20,6 +20,7 @@
 
 		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
 		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
