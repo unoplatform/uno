@@ -130,7 +130,6 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- Using Regex Replace prevents XmlPoke from replacing Tabs with Spaces -->
 	<UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<Filename ParameterType="System.String" Required="true" />
