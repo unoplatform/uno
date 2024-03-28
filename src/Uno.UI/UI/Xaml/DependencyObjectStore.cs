@@ -17,6 +17,7 @@ using Uno.UI;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
+using Uno.UI.Dispatching;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -442,6 +443,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
+			if (!FeatureConfiguration.DependencyProperty.DisableThreadingCheck)
+			{
+				NativeDispatcher.CheckThreadAccess();
+			}
+
 			if (IsTemplatedParentFrozen && property == FrameworkElement.TemplatedParentProperty)
 			{
 				return;
