@@ -37,7 +37,7 @@ namespace Uno.Helpers
 		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName)
 		{
-			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileNameWithoutExtension(imageName));
+			var key = AndroidResourceNameEncoder.Encode(System.IO.Path.GetFileName(imageName));
 
 			int id;
 
