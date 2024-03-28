@@ -1,5 +1,5 @@
 <Project>
-	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.targets" />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.targets" Condition=" '$(TargetFramework)' != '' " />
 
 	<UsingTask TaskName="Uno.Sdk.Tasks.ImplicitPackagesResolver_v0"
 		AssemblyFile="$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_v0.dll" />
@@ -66,6 +66,8 @@
 					TaskParameter="ImplicitPackages" />
 			<Output ItemName="_UnoRemovePackageVersions"
 					TaskParameter="RemovePackageVersions" />
+			<Output ItemName="_UnoImplicitRemovePackageReference"
+					TaskParameter="RemovePackageReferences" />
 		</ImplicitPackagesResolver_V0>
 
 		<!--
@@ -73,7 +75,8 @@
 			actual versions using the `UnoImplicitPackages` target.
 		-->
 		<ItemGroup>
-			<PackageReference Remove="@(PackageReference->HasMetaData('ProjectSystem'))" />
+			<PackageReference Remove="@(_UnoImplicitRemovePackageReference)" />
+			<_UnoImplicitRemovePackageReference Remove="@(_UnoImplicitRemovePackageReference)" />
 		</ItemGroup>
 
 		<ItemGroup>

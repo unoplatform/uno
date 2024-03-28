@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -111,6 +111,10 @@ public abstract class ImplicitPackagesResolverBase : Task
 	[Output]
 	public ITaskItem[] ImplicitPackages => [.. _implicitPackages.Distinct()
 		.Select(x => x.ToTaskItem())];
+
+	private readonly List<ITaskItem> _removePackageReference = [];
+	[Output]
+	public ITaskItem[] RemovePackageReferences => _removePackageReference.Distinct().ToArray();
 
 	[Output]
 	public ITaskItem[] RemovePackageVersions =>
@@ -371,8 +375,34 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 	protected void AddPackage(string packageId, string? version, string? excludeAssets = null)
 	{
+		// 1) Remove ProjectSystem Reference. This was only added to help Visual Studio
+		var sdkReference = PackageReferences.SingleOrDefault(x => !string.IsNullOrEmpty(x.GetMetadata("ProjectSystem")));
+		if (sdkReference is not null && !_removePackageReference.Contains(sdkReference))
+		{
+			_removePackageReference.Add(sdkReference);
+		}
+
+		// 2) Check for Existing References
+		var existingReference = PackageReferences.SingleOrDefault(x => string.IsNullOrEmpty(x.GetMetadata("ProjectSystem")));
+		if (existingReference is not null)
+		{
+			// 2.1) Validate it has a version available
+			if (PackageVersions.Any(x => x.ItemSpec == existingReference.ItemSpec) || !string.IsNullOrEmpty(existingReference.GetMetadata("Version"))
+				|| !string.IsNullOrEmpty(existingReference.GetMetadata("VersionOverride")))
+			{
+				// 2.2) Add the PackageId to the ExistingReferences so that we can log a warning at the end.
+				_existingReferences.Add(packageId);
+				return;
+			}
+
+			Log.LogWarning("The Package '{0}' has an existing PackageReference with no Version attribute or associated PackageVersion. The Uno.Sdk is removing this and adding an implicit reference.", packageId);
+			_removePackageReference.Add(existingReference);
+		}
+
+		// 3) Load the Version from the PackageManifest. This will get the version whether it was set through MSBuild or the bundled packages.json
 		version = _manifest!.GetPackageVersion(packageId, TargetFrameworkVersion, version);
 
+		// 4) Validate the version has a value. If not attempt to get the latest version from NuGet.org
 		if (string.IsNullOrEmpty(version))
 		{
 			Log.LogWarning("The package '{0}' has no available version.", packageId);
@@ -385,14 +415,6 @@ public abstract class ImplicitPackagesResolverBase : Task
 		if (version is null || string.IsNullOrEmpty(version))
 		{
 			Debug("Unable to locate package version for '{0}'.", packageId);
-			return;
-		}
-
-		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFramework);
-
-		if (PackageReferences.Any(x => x.ItemSpec == packageId && string.IsNullOrEmpty(x.GetMetadata("ProjectSystem"))))
-		{
-			_existingReferences.Add(packageId);
 			return;
 		}
 
