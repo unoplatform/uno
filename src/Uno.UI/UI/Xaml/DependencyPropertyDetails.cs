@@ -35,6 +35,8 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly object[] _unsetStack;
 
+		private static int _localCanDefeatAnimationSuppressed;
+
 		static DependencyPropertyDetails()
 		{
 			_unsetStack = new object[StackSize];
@@ -76,6 +78,12 @@ namespace Microsoft.UI.Xaml
 			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
 			_flags |= hasInherits ? Flags.Inherits : Flags.None;
 		}
+
+		internal static void SuppressLocalCanDefeatAnimations()
+			=> _localCanDefeatAnimationSuppressed++;
+
+		internal static void ContinueLocalCanDefeatAnimations()
+			=> _localCanDefeatAnimationSuppressed--;
 
 		private void GetPropertyInheritanceConfiguration(
 			bool isTemplatedParentOrDataContext,
@@ -132,7 +140,10 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
-			if (precedence == DependencyPropertyValuePrecedences.Local && value is not UnsetValue)
+			if (_localCanDefeatAnimationSuppressed == 0 &&
+				precedence == DependencyPropertyValuePrecedences.Local &&
+				_highestPrecedence == DependencyPropertyValuePrecedences.Animations &&
+				value is not UnsetValue)
 			{
 				_flags |= Flags.LocalValueNewerThanAnimationsValue;
 			}
@@ -282,6 +293,18 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
+				if (precedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0)
+				{
+					// When setting BindingPath.Value, we do the following check:
+					// DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
+					// Now, consider the following case:
+					// Animation value set to some value x, then Local value is set to some value y,
+					// then BindingPath.Value is trying to set Animation value to x
+					// in this case, we want to consider the values as different.
+					// So, we need to return the Local value when we are asked for Animation as the Local value is effectively overwriting the animation value.
+					precedence = DependencyPropertyValuePrecedences.Local;
+				}
+
 				return Unwrap(Stack[(int)precedence]);
 			}
 		}
