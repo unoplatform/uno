@@ -14,7 +14,7 @@ public class TimeZoneModifier : IDisposable
 	}
 
 	private static object GetCachedData()
- 	{
+	{
 		var cachedDataField = typeof(TimeZoneInfo).GetField("s_cachedData", BindingFlags.Static | BindingFlags.NonPublic);
 		if (cachedDataField is null)
 		{
