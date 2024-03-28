@@ -4,9 +4,11 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.Graphics.Display;
+using Visibility = System.Windows.Visibility;
 using WinUI = Microsoft.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 
@@ -15,14 +17,15 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 internal class SoftwareWpfRenderer : IWpfRenderer
 {
 	private WpfControl _hostControl;
-	private DisplayInformation? _displayInformation;
 	private WriteableBitmap? _bitmap;
 	private IWpfXamlRootHost _host;
+	private readonly XamlRoot _xamlRoot;
 
 	public SoftwareWpfRenderer(IWpfXamlRootHost host)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
+		_xamlRoot = WpfManager.XamlRootMap.GetRootForHost(host) ?? throw new InvalidOperationException("XamlRoot must not be null when renderer is initialized");
 	}
 
 	public SKColor BackgroundColor { get; set; } = SKColors.White;
@@ -47,13 +50,7 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 
 		int width, height;
 
-		if (_displayInformation == null)
-		{
-			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost(_host);
-			_displayInformation = WinUI.XamlRoot.GetDisplayInformation(xamlRoot);
-		}
-
-		var dpi = _displayInformation.RawPixelsPerViewPixel;
+		var dpi = _xamlRoot.RasterizationScale;
 		double dpiScaleX = dpi;
 		double dpiScaleY = dpi;
 		if (_host.IgnorePixelScaling)
