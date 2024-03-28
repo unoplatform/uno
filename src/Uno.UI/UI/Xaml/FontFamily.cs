@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Makes introduction of FontFamily a non-breaking change (for now)
 		public static implicit operator FontFamily(string familyName) => new FontFamily(familyName);
 
-		public static FontFamily Default { get; } = new FontFamily("Segoe UI");
+		public static FontFamily Default { get; } = new FontFamily("ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans-Regular-VariableFont_wdth,wght.ttf");
 
 		public static FontFamily XamlAutoFontFamily => Default;
 
