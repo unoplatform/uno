@@ -102,77 +102,50 @@
 		<None Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
-	<Choose>
-		<When Condition="'$(_UnoIsWinAppSDKDefined)'!='true' and $(UsingUnoSdk) != 'true'">
-			<!-- IDE capabilities -->
+	<!-- IDE capabilities -->
 
-			<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
-			<PropertyGroup>
-				<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
-				<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
-			</PropertyGroup>
+	<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
+	<PropertyGroup>
+		<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
+		<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
+	</PropertyGroup>
 
-			<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
-				<ProjectCapability Include="Msix" />
-				<ProjectCapability Include="MauiSingleProject" />
-				<ProjectCapability Include="LaunchProfiles" />
-				<!-- If VS is older than Dev17 -->
-				<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
-				<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
-				<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
-				<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
+	<ItemGroup Condition=" '$(SingleProject)' == 'true' ">
+		<ProjectCapability Include="Msix" />
+		<ProjectCapability Include="MauiSingleProject" />
+		<ProjectCapability Include="LaunchProfiles" />
+		<!-- If VS is older than Dev17 -->
+		<ProjectCapability Include="XamarinStaticLaunchProfiles" Condition=" '$(VisualStudioVersion)' != '' and '$(VisualStudioVersion)' &lt; '17.0' " />
+		<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
+		<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " />
+		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " />
 
-				<ProjectCapability Include="UseMauiCore" />
+		<ProjectCapability Include="UseMauiCore" />
 
-				<!-- Required since VS 2022 17.4 Preview 1 -->
-				<ProjectCapability Include="MauiCore" />
-				<ProjectCapability Include="Maui" />
-			</ItemGroup>
+		<!-- Required since VS 2022 17.4 Preview 1 -->
+		<ProjectCapability Include="MauiCore" />
+		<ProjectCapability Include="Maui" />
+	</ItemGroup>
 
 
-			<!-- Additional capabilities to enable XAML Intellisense for non UWP/WinUI native projects -->
-			<ItemGroup Condition="'$(BuildingInsideVisualStudio)'=='true'">
-				<AvailableItemName Include="PRIResource" />
-				<AvailableItemName Include="AppxManifest" />
-				<AvailableItemName Include="ApplicationDefinition" />
-				<AvailableItemName Include="Page" />
-				<AvailableItemName Include="DesignData" />
-				<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
-			</ItemGroup>
+	<!-- Additional capabilities to enable XAML Intellisense for non UWP/WinUI native projects -->
+	<ItemGroup Condition="'$(BuildingInsideVisualStudio)'=='true'">
+		<AvailableItemName Include="PRIResource" />
+		<AvailableItemName Include="AppxManifest" />
+		<AvailableItemName Include="ApplicationDefinition" />
+		<AvailableItemName Include="Page" />
+		<AvailableItemName Include="DesignData" />
+		<AvailableItemName Include="DesignDataWithDesignTimeCreatableTypes" />
+	</ItemGroup>
 
-			<ItemGroup>
-				<ProjectCapability Include="WindowsXaml"/>
-				<ProjectCapability Include="WindowsXamlPage"/>
-				<ProjectCapability Include="WindowsXamlCodeBehind"/>
-				<ProjectCapability Include="WindowsXamlResourceDictionary"/>
-				<ProjectCapability Include="WindowsXamlUserControl"/>
-				<ProjectCapability Include="WindowsUniversalMultiViews"/>
-			</ItemGroup>
-		</When>
-	</Choose>
+	<ItemGroup>
+		<ProjectCapability Include="WindowsXaml"/>
+		<ProjectCapability Include="WindowsXamlPage"/>
+		<ProjectCapability Include="WindowsXamlCodeBehind"/>
+		<ProjectCapability Include="WindowsXamlResourceDictionary"/>
+		<ProjectCapability Include="WindowsXamlUserControl"/>
+		<ProjectCapability Include="WindowsUniversalMultiViews"/>
+	</ItemGroup>
 
-	<Target Name="_RemoveRoslynUnoSourceGenerationWinUI" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(_UnoIsWinAppSDKDefined)'=='true'">
-		<!---
-		Remove uno source generators when building under WinAppSDK
-		-->
-		<ItemGroup>
-			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
-			<Analyzer Remove="@(_AnalyzerToRemove)"/>
-		</ItemGroup>
-	</Target>
-
-	<Target Name="CleanupMarkupPass1" BeforeTargets="MarkupCompilePass1" Condition="'$(UseWPF)'=='true'">
-		<!--
-		Remove Uno files when building for WPF, and move those files to the
-		UnoPage and UnoApplicationDefinition to avoid conflicts with the WPF ones.
-		-->
-		<ItemGroup>
-			<UnoPage Include="@(Page)" Condition="%(Page.XamlRuntime)=='WinUI'" />
-			<UnoApplicationDefinition Include="@(ApplicationDefinition)" Condition="%(ApplicationDefinition.XamlRuntime)=='WinUI'" />
-
-			<Page Remove="@(Page)" Condition="%(Page.XamlRuntime)=='WinUI'" />
-			<ApplicationDefinition Remove="@(ApplicationDefinition)" Condition="%(ApplicationDefinition.XamlRuntime)=='WinUI'" />
-		</ItemGroup>
-	</Target>
 
 </Project>
