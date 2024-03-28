@@ -17,13 +17,14 @@ public abstract class ImplicitPackagesResolverBase : Task
 {
 	private static readonly string[] _legacyWasmProjectSuffix = [".Wasm", ".WebAssembly"];
 	private readonly List<string> _existingReferences = [];
-	private PackageManifest _manifest;
+	private PackageManifest? _manifest;
 
 	public bool SdkDebugging { get; set; }
 
 	public bool SingleProject { get; set; }
 
-	public string OutputType { get; set; }
+	[Required]
+	public string OutputType { get; set; } = null!;
 
 	public bool IsPackable { get; set; }
 
@@ -32,73 +33,75 @@ public abstract class ImplicitPackagesResolverBase : Task
 	public bool Optimize { get; set; }
 
 	[Required]
-	public string IntermediateOutput { get; set; }
+	public string IntermediateOutput { get; set; } = null!;
 
-	public string UnoFeatures { get; set; }
+	public string? UnoFeatures { get; set; }
 
-	public string TargetFramework { get; set; }
+	[Required]
+	public string TargetFramework { get; set; } = null!;
 
-	protected string TargetFrameworkVersion { get; private set; }
+	protected string TargetFrameworkVersion { get; private set; } = null!;
 
-	protected string TargetRuntime { get; private set; }
+	protected string TargetRuntime { get; private set; } = null!;
 
-	public string ProjectName { get; set; }
+	[Required]
+	public string ProjectName { get; set; } = null!;
 
-	public string UnoExtensionsVersion { get; set; }
+	public string? UnoExtensionsVersion { get; set; }
 
-	public string UnoToolkitVersion { get; set; }
+	public string? UnoToolkitVersion { get; set; }
 
-	public string UnoThemesVersion { get; set; }
+	public string? UnoThemesVersion { get; set; }
 
-	public string UnoCSharpMarkupVersion { get; set; }
+	public string? UnoCSharpMarkupVersion { get; set; }
 
-	public string MauiVersion { get; set; }
+	public string? MauiVersion { get; set; }
 
-	public string SkiaSharpVersion { get; set; }
+	public string? SkiaSharpVersion { get; set; }
 
-	public string UnoLoggingVersion { get; set; }
+	public string? UnoLoggingVersion { get; set; }
 
-	public string WindowsCompatibilityVersion { get; set; }
+	public string? WindowsCompatibilityVersion { get; set; }
 
-	public string UnoWasmBootstrapVersion { get; set; }
+	public string? UnoWasmBootstrapVersion { get; set; }
 
-	public string UnoUniversalImageLoaderVersion { get; set; }
+	public string? UnoUniversalImageLoaderVersion { get; set; }
 
-	public string AndroidMaterialVersion { get; set; }
+	public string? AndroidMaterialVersion { get; set; }
 
-	public string AndroidXLegacySupportV4Version { get; set; }
+	public string? AndroidXLegacySupportV4Version { get; set; }
 
-	public string AndroidXAppCompatVersion { get; set; }
+	public string? AndroidXAppCompatVersion { get; set; }
 
-	public string AndroidXRecyclerViewVersion { get; set; }
+	public string? AndroidXRecyclerViewVersion { get; set; }
 
-	public string AndroidXActivityVersion { get; set; }
+	public string? AndroidXActivityVersion { get; set; }
 
-	public string AndroidXBrowserVersion { get; set; }
+	public string? AndroidXBrowserVersion { get; set; }
 
-	public string AndroidXSwipeRefreshLayoutVersion { get; set; }
+	public string? AndroidXSwipeRefreshLayoutVersion { get; set; }
 
-	public string UnoResizetizerVersion { get; set; }
+	public string? UnoResizetizerVersion { get; set; }
 
-	public string MicrosoftLoggingVersion { get; set; }
+	public string? MicrosoftLoggingVersion { get; set; }
 
-	public string WinAppSdkVersion { get; set; }
+	public string? WinAppSdkVersion { get; set; }
 
-	public string WinAppSdkBuildToolsVersion { get; set; }
+	public string? WinAppSdkBuildToolsVersion { get; set; }
 
-	public string UnoCoreLoggingSingletonVersion { get; set; }
+	public string? UnoCoreLoggingSingletonVersion { get; set; }
 
-	public string UnoDspTasksVersion { get; set; }
+	public string? UnoDspTasksVersion { get; set; }
 
-	public string CommunityToolkitMvvmVersion { get; set; }
+	public string? CommunityToolkitMvvmVersion { get; set; }
 
-	public string PrismVersion { get; set; }
+	public string? PrismVersion { get; set; }
 
-	public string AndroidXNavigationVersion { get; set; }
+	public string? AndroidXNavigationVersion { get; set; }
 
-	public string AndroidXCollectionVersion { get; set; }
+	public string? AndroidXCollectionVersion { get; set; }
 
-	public string MicrosoftIdentityClientVersion { get; set; }
+	public string? MicrosoftIdentityClientVersion { get; set; }
 
 	public ITaskItem[] PackageReferences { get; set; } = [];
 
@@ -142,7 +145,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 			}
 
 			// TODO: Add update from Manifest that can ship via nuget.org
-			SetupRuntimePackageManifestUpdates();
+			SetupRuntimePackageManifestUpdates(_manifest);
 			var cachedReferences = CachedReferences.Load(IntermediateOutput);
 			if (cachedReferences.NeedsUpdate(_unoFeatures, _manifest))
 			{
@@ -195,10 +198,10 @@ public abstract class ImplicitPackagesResolverBase : Task
 		return !Log.HasLoggedErrors;
 	}
 
-	private void SetupRuntimePackageManifestUpdates()
+	private void SetupRuntimePackageManifestUpdates(PackageManifest manifest)
 	{
 		// Checks any MSBuild parameters passed to the task to override the default versions from the bundled packages.json
-		_manifest.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
+		manifest.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
 			.UpdateManifest(PackageManifest.Group.OSLogging, UnoLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.CoreLogging, UnoCoreLoggingSingletonVersion)
 			.UpdateManifest(PackageManifest.Group.UniversalImageLoading, UnoUniversalImageLoaderVersion)
@@ -224,13 +227,13 @@ public abstract class ImplicitPackagesResolverBase : Task
 
 		if (HasFeature(UnoFeature.MauiEmbedding))
 		{
-			_manifest.AddManifestGroup(PackageManifest.Group.Maui, MauiVersion,
+			manifest.AddManifestGroup(PackageManifest.Group.Maui, MauiVersion,
 				"Microsoft.Maui.Controls",
 				"Microsoft.Maui.Controls.Compatibility",
 				"Microsoft.Maui.Graphics");
 		}
 
-		_manifest.AddManifestGroup(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion,
+		manifest.AddManifestGroup(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion,
 				"Uno.WinUI.Markup",
 				"Uno.Extensions.Markup.Generators")
 			.AddManifestGroup(PackageManifest.Group.Extensions, UnoExtensionsVersion,
@@ -326,7 +329,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		switch (area)
 		{
 			case UnoArea.Core:
-				VerifyFeature(feature, _manifest.UnoVersion);
+				VerifyFeature(feature, _manifest!.UnoVersion);
 				break;
 			case UnoArea.CSharpMarkup:
 				VerifyFeature(feature, UnoCSharpMarkupVersion);
@@ -343,7 +346,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	private void VerifyFeature(UnoFeature feature, string version, [CallerArgumentExpression(nameof(version))] string versionName = null)
+	private void VerifyFeature(UnoFeature feature, string? version, [CallerArgumentExpression(nameof(version))] string? versionName = null)
 	{
 		if (string.IsNullOrEmpty(version))
 		{
@@ -379,7 +382,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		return isLegacyProject;
 	}
 
-	protected void AddPackageForFeature(UnoFeature feature, string packageId, string version)
+	protected void AddPackageForFeature(UnoFeature feature, string packageId, string? version)
 	{
 		if (HasFeature(feature))
 		{
@@ -388,7 +391,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	protected void AddPackageForFeatureWhen(bool condition, UnoFeature feature, string packageId, string version)
+	protected void AddPackageForFeatureWhen(bool condition, UnoFeature feature, string packageId, string? version)
 	{
 		if (condition)
 		{
@@ -396,7 +399,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	protected void AddPackageWhen(bool condition, string packageId, string version, string excludeAssets = null)
+	protected void AddPackageWhen(bool condition, string packageId, string? version, string? excludeAssets = null)
 	{
 		if (condition)
 		{
@@ -404,11 +407,10 @@ public abstract class ImplicitPackagesResolverBase : Task
 		}
 	}
 
-	protected void AddPackage(string packageId, string version, string excludeAssets = null)
+	protected void AddPackage(string packageId, string? version, string? excludeAssets = null)
 	{
-		version = _manifest.GetPackageVersion(packageId, TargetFrameworkVersion, version);
+		version = _manifest!.GetPackageVersion(packageId, TargetFrameworkVersion, version);
 
-		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFramework);
 		if (string.IsNullOrEmpty(version))
 		{
 			Log.LogWarning("The package '{0}' has no available version.", packageId);
@@ -417,6 +419,14 @@ public abstract class ImplicitPackagesResolverBase : Task
 			version = client.GetVersion(packageId, preview);
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
 		}
+
+		if (version is null || string.IsNullOrEmpty(version))
+		{
+			Debug("Unable to locate package version for '{0}'.", packageId);
+			return;
+		}
+
+		Debug("Attempting to add package '{0}' with version '{1}' for platform ({2}).", packageId, version, TargetFramework);
 
 		if (PackageReferences.Any(x => x.ItemSpec == packageId && string.IsNullOrEmpty(x.GetMetadata("ProjectSystem"))))
 		{

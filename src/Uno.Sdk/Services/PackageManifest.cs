@@ -7,7 +7,6 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Uno.Sdk.Models;
 
-#nullable enable
 namespace Uno.Sdk.Services;
 
 internal class PackageManifest
@@ -17,8 +16,19 @@ internal class PackageManifest
 	static PackageManifest()
 	{
 		var location = Path.GetDirectoryName(typeof(PackageManifest).Assembly.Location);
-		var path = Path.Combine(location, "packages.json");
-		_defaultManifest = JsonSerializer.Deserialize<IEnumerable<ManifestGroup>>(File.ReadAllText(path)).ToArray();
+		IEnumerable<ManifestGroup> manifest = [];
+		if (!string.IsNullOrEmpty(location))
+		{
+			// Disable warning: we only do this once
+#pragma warning disable CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+			var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+#pragma warning restore CA1869 // Cache and reuse 'JsonSerializerOptions' instances
+			var path = Path.Combine(location, "packages.json");
+			var json = File.ReadAllText(path);
+			manifest = JsonSerializer.Deserialize<IEnumerable<ManifestGroup>>(json, options) ?? [];
+		}
+
+		_defaultManifest = manifest.ToArray();
 	}
 
 	private readonly TaskLoggingHelper _log;
@@ -29,12 +39,14 @@ internal class PackageManifest
 
 		Manifest = new List<ManifestGroup>(_defaultManifest);
 
-		UnoVersion = GetGroupVersion(Group.Core);
-		if (string.IsNullOrEmpty(UnoVersion))
+		var unoVersion = GetGroupVersion(Group.Core);
+		if (string.IsNullOrEmpty(unoVersion))
 		{
 			// This should never happen.
 			throw new InvalidOperationException("No Uno Version was set.");
 		}
+
+		UnoVersion = unoVersion;
 	}
 
 	public string UnoVersion { get; }
@@ -59,7 +71,7 @@ internal class PackageManifest
 		return group.VersionOverride is not null && group.VersionOverride.TryGetValue(targetFrameworkVersion, out var versionOverride) ? versionOverride : group.Version;
 	}
 
-	public PackageManifest UpdateManifest(string groupName, string version)
+	public PackageManifest UpdateManifest(string groupName, string? version)
 	{
 		if (groupName.Equals(Group.Core, StringComparison.InvariantCultureIgnoreCase))
 		{
@@ -71,7 +83,7 @@ internal class PackageManifest
 			if (Manifest.Any(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase)))
 			{
 				var group = Manifest.Single(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
-				var updated = group with { Version = version };
+				var updated = group with { Version = version! };
 				Manifest.Remove(group);
 				Manifest.Add(updated);
 			}
@@ -84,7 +96,7 @@ internal class PackageManifest
 		return this;
 	}
 
-	public PackageManifest AddManifestGroup(string groupName, string version, params string[] packages)
+	public PackageManifest AddManifestGroup(string groupName, string? version, params string[] packages)
 	{
 		// This needs to work even when no version is specified
 		if (!string.IsNullOrEmpty(version))
@@ -94,7 +106,7 @@ internal class PackageManifest
 				throw new InvalidOperationException($"Cannot add the Manifest Group '{groupName}' as it already exists in the Package Manifest");
 			}
 
-			Manifest.Add(new ManifestGroup(groupName, version, packages));
+			Manifest.Add(new ManifestGroup(groupName, version!, packages));
 		}
 
 		return this;
@@ -104,10 +116,10 @@ internal class PackageManifest
 		Manifest.SingleOrDefault(group => group.Packages.Any(p => p.Equals(packageId, StringComparison.InvariantCulture)))
 			?.Version;
 
-	private string GetGroupVersion(string groupName)
+	private string? GetGroupVersion(string groupName)
 	{
 		var group = Manifest.SingleOrDefault(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
-		return group.Group;
+		return group?.Group;
 	}
 
 	public class Group
