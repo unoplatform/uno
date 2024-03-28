@@ -10,7 +10,7 @@ using Uno.Sdk.Models;
 
 namespace Uno.Sdk.Services;
 
-public class NuGetClient : IDisposable
+public class NuGetApiClient : IDisposable
 {
 	private HttpClient Client { get; } = new HttpClient
 	{

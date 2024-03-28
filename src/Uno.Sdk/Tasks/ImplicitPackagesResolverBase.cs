@@ -414,7 +414,7 @@ public abstract class ImplicitPackagesResolverBase : Task
 		if (string.IsNullOrEmpty(version))
 		{
 			Log.LogWarning("The package '{0}' has no available version.", packageId);
-			using var client = new NuGetClient();
+			using var client = new NuGetApiClient();
 			var preview = packageId.StartsWith("Uno.", StringComparison.InvariantCulture) && new NuGetVersion(_manifest.UnoVersion).IsPreview;
 			version = client.GetVersion(packageId, preview);
 			Log.LogMessage(MessageImportance.High, "Retrieved the latest package version '{0}' for the package '{1}'.", version, packageId);
