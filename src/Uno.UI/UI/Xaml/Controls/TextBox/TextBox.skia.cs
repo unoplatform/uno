@@ -195,7 +195,7 @@ public partial class TextBox
 						}
 					};
 
-					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight));
+					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.DesiredSize.Width + Math.Ceiling(DisplayBlockInlines.AverageLineHeight * InlineCollection.CaretThicknessAsRatioOfLineHeight));
 
 					bool lastFoundCaret = false;
 					bool currentFoundCaret = false;

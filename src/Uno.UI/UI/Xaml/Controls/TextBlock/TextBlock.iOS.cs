@@ -94,11 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 				&& _previousDesiredSize.Width <= Math.Ceiling(size.Width)
 				&& _previousDesiredSize.Height == Math.Ceiling(size.Height);
 
-			if (isSameOrNarrower)
-			{
-				return _previousDesiredSize;
-			}
-			else
+			if (!isSameOrNarrower)
 			{
 				_previousAvailableSize = size;
 				_measureInvalidated = false;
@@ -125,8 +121,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				result = result.Add(padding);
 
-				return _previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+				_previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
+
+			_textDesiredSize = _previousDesiredSize;
+			return _previousDesiredSize;
 		}
 
 		protected override Size ArrangeOverride(Size size)
