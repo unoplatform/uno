@@ -182,11 +182,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		{
 			if (isVisible)
 			{
-				winUIApplication?.RaiseLeavingBackground(() => Visible = _gtkWindow.IsVisible);
+				winUIApplication?.RaiseLeavingBackground(() => Visible = isVisible);
 			}
 			else
 			{
-				Visible = _gtkWindow.IsVisible;
+				Visible = isVisible;
 				winUIApplication?.RaiseEnteredBackground(null);
 			}
 		}
