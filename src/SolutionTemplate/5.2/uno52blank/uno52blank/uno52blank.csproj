@@ -28,4 +28,13 @@
     <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
   </PropertyGroup>
 
+  <Target Name="_UnoValidateSelfAssets" 
+          BeforeTargets="AfterBuild" 
+          Condition="'$(TargetFramework)'=='$(DotNetVersion)-windows10.0.19041'">
+
+    <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
+    <Error Text="Missing asset $(OutputPath)\Assets\SharedAssets.md"
+          Condition="!exists('$(OutputPath)\Assets\SharedAssets.md')" />
+  </Target>
+
 </Project>

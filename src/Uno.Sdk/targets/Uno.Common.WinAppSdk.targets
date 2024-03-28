@@ -46,6 +46,13 @@
 		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<!-- Replicates the original globbing from WinAppSDK (See microsoft.windowsappsdk\1.4.240211001\buildTransitive\Microsoft.WinUI.props)-->
+		<Content Update="Assets/**/*.*" Condition="'$(EnableDefaultAssets)'=='true'">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
 	<Import Project="winappsdk-workaround.targets"
 			Condition=" '$(SingleProject)' != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
