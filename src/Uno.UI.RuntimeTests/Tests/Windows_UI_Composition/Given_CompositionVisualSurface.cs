@@ -47,7 +47,7 @@ public class Given_CompositionVisualSurface
 		ElementCompositionPreview.SetElementChildVisual(sut, spriteVisual);
 
 		var result = await Render(expected, sut);
-		await ImageAssert.AreEqualAsync(result.actual, result.expected);
+		await ImageAssert.AreEqual(result.actual, result.expected);
 	}
 
 	private async Task<(RawBitmap expected, RawBitmap actual)> Render(FrameworkElement expected, FrameworkElement sut)

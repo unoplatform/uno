@@ -52,9 +52,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.RuntimeTests\Helpers\InjectedPointerAttribute.cs">
-			<Link>TestFramework\InjectedPointerAttribute.cs</Link>
-		</Compile>
 		<Compile Include="$(MSBuildThisFileDirectory)..\..\Uno.UWP\Devices\Input\PointerDeviceType.cs">
 			<Link>TestFramework\PointerDeviceType.cs</Link>
 		</Compile>

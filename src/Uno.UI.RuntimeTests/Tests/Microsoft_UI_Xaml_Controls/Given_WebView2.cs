@@ -202,7 +202,7 @@ public class Given_WebView2
 			await act.Should().NotThrowAsync();
 		}
 
-		await TestHelper.RetryAssert(Do, 3);
+		await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
@@ -233,7 +233,7 @@ public class Given_WebView2
 			Assert.AreEqual("{\"color\":\"red\"}", color);
 		}
 
-		await TestHelper.RetryAssert(Do, 3);
+		await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
@@ -259,7 +259,7 @@ public class Given_WebView2
 			Assert.AreEqual("\"hello \\\"world\\\"\"", result);
 		}
 
-		await TestHelper.RetryAssert(Do, 3);
+		await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
@@ -286,7 +286,7 @@ public class Given_WebView2
 			Assert.AreEqual("\"2\"", result);
 		}
 
-		await TestHelper.RetryAssert(Do, 3);
+		await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
@@ -321,7 +321,7 @@ public class Given_WebView2
 			Assert.AreEqual(@"""rgb(255, 0, 0)""", message);
 		}
 
-		await TestHelper.RetryAssert(Do, 3);
+		await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
@@ -347,7 +347,7 @@ public class Given_WebView2
 			Assert.AreEqual("2", result);
 		}
 
-		await TestHelper.RetryAssert(Do, 3);
+		await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 	}
 #endif
 

@@ -57,7 +57,7 @@ public class Given_XamlCompositionBrushBase
 		var result = await RenderElements(expected, sut);
 		if (dpi == 1.0d)
 		{
-			await ImageAssert.AreEqualAsync(result.actual, result.expected);
+			await ImageAssert.AreEqual(result.actual, result.expected);
 		}
 		else
 		{

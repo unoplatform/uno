@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -128,8 +129,8 @@ public class Given_SystemFocusVisual
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var screenShot = await UITestHelper.ScreenShot(border, true);
-			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rectangle(0, 0, 5, 30), ((SolidColorBrush)buttons[1].FocusVisualPrimaryBrush).Color);
-			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rectangle(0, screenShot.Height - 30, 5, 30), ((SolidColorBrush)buttons[2].FocusVisualPrimaryBrush).Color);
+			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rect(0, 0, 5, 30), ((SolidColorBrush)buttons[1].FocusVisualPrimaryBrush).Color);
+			ImageAssert.DoesNotHaveColorInRectangle(screenShot, new Rect(0, screenShot.Height - 30, 5, 30), ((SolidColorBrush)buttons[2].FocusVisualPrimaryBrush).Color);
 		}
 	}
 

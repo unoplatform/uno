@@ -111,7 +111,7 @@ internal class Given_CompositionClip
 		ImageAssert.HasColorAt(actual, 150, 299, Colors.Chartreuse);
 
 		// Second we do a full comparison of something that should be identical but drawn using another (simpler ?) mechanism
-		await ImageAssert.AreEqualAsync(actual, expectedImg);
+		await ImageAssert.AreEqual(actual, expectedImg);
 	}
 
 	[TestMethod]

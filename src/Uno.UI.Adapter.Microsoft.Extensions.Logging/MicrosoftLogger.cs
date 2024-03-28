@@ -1,11 +1,13 @@
 ﻿#nullable enable
 
+using Microsoft.Extensions.Logging;
+
 namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 {
 	using System;
 	using Uno.Foundation.Logging;
 
-	class MicrosoftLogger : IExternalLogger
+	class MicrosoftLogger : IExternalLogger, global::Microsoft.Extensions.Logging.ILogger
 	{
 		private global::Microsoft.Extensions.Logging.ILogger _logger;
 		private static readonly global::Microsoft.Extensions.Logging.LogLevel[] _levelsList = new[] {
@@ -62,5 +64,19 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 
 		public void Log(LogLevel logLevel, string? message, Exception? exception = null)
 			=> _logger.Log<object>(Convert(logLevel), 0, null!, exception, (_, __) => message);
+
+		#region Implement global::Microsoft.Extensions.Logging.ILogger to allow down cast from apps (e.g. runtime tests)
+		/// <inheritdoc />
+		void global::Microsoft.Extensions.Logging.ILogger.Log<TState>(global::Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+			=> _logger.Log(logLevel, eventId, state, exception, formatter);
+
+		/// <inheritdoc />
+		bool global::Microsoft.Extensions.Logging.ILogger.IsEnabled(global::Microsoft.Extensions.Logging.LogLevel logLevel)
+			=> _logger.IsEnabled(logLevel);
+
+		/// <inheritdoc />
+		IDisposable global::Microsoft.Extensions.Logging.ILogger.BeginScope<TState>(TState state)
+			=> _logger.BeginScope(state);
+		#endregion
 	}
 }

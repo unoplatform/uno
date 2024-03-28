@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
@@ -2346,7 +2347,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var canvas = SUT.FindVisualChildByType<Canvas>();
 			var initial = await UITestHelper.ScreenShot(canvas);
-			ImageAssert.HasColorInRectangle(initial, new Rectangle(System.Drawing.Point.Empty, initial.Size), SUT.SelectionHighlightColor.Color);
+			ImageAssert.HasColorInRectangle(initial, new Rect(default, initial.Size), SUT.SelectionHighlightColor.Color);
 
 			SUT.Text = "";
 			await WindowHelper.WaitForIdle();
@@ -2354,7 +2355,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// No residual colors on canvas
 			var cleared = await UITestHelper.ScreenShot(canvas);
-			ImageAssert.DoesNotHaveColorInRectangle(cleared, new Rectangle(System.Drawing.Point.Empty, cleared.Size), SUT.SelectionHighlightColor.Color);
+			ImageAssert.DoesNotHaveColorInRectangle(cleared, new Rect(default, cleared.Size), SUT.SelectionHighlightColor.Color);
 		}
 
 		[TestMethod]

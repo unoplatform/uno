@@ -80,6 +80,23 @@ namespace SamplesApp
 
 #if __SKIA__
 			ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1024, 768);
+
+			// Manual initialize connection to the dev-server is required within the Uno project
+			Uno.UI.RemoteControl.RemoteControlClient.Initialize(typeof(App));
+#if IS_CI
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultConnectionTimeout *= 25;
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout *= 25;
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultMetadataUpdateTimeout *= 25;
+#else
+			Uno.UI.RuntimeTests.HotReloadHelper.DefaultWorkspaceTimeout = TimeSpan.FromSeconds(300);
+#endif
+
+#if HAS_UNO_WINUI
+			if (Environment.GetEnvironmentVariable("UNO_RUNTIME_TESTS_DEV_SERVER_PATH") is null or { Length: 0 })
+			{
+				Uno.UI.RuntimeTests.Internal.Helpers.DevServer.SetDefaultPath($@"..\..\..\..\..\Uno.UI.RemoteControl.Host\bin\Debug\net{Environment.Version.Major}.{Environment.Version.Minor}\Uno.UI.RemoteControl.Host.dll");
+			}
+#endif
 #endif
 
 			ConfigureFeatureFlags();
@@ -461,7 +478,11 @@ namespace SamplesApp
 				builder.AddFilter("Microsoft", LogLevel.Warning);
 
 				// RemoteControl and HotReload related
-				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Trace);
+				builder.AddFilter("Uno.UI.RuntimeTests.HotReload", LogLevel.Debug);
+				builder.AddFilter("Uno.UI.RuntimeTests.Internal.Helpers", LogLevel.Debug); // DevServer and SecondaryApp
+				builder.AddFilter("Uno.UI.RuntimeTests.HotReloadHelper", LogLevel.Trace); // Helper used by tests in secondary app instances (non debuggable)
+				builder.AddFilter("Uno.UI.RuntimeTests.UnitTestsControl", LogLevel.Information); // Dumps the runner status
 
 				// Adjust logging when debugging the Given_HotReloadWorkspace tests
 				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Debug);
@@ -556,10 +577,9 @@ namespace SamplesApp
 				}
 			}
 
-#pragma warning disable SYSLIB1045
+#pragma warning disable SYSLIB1045 // Use generated regex attribute: irrelevant for the sample app
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
 #pragma warning restore SYSLIB1045
-
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);

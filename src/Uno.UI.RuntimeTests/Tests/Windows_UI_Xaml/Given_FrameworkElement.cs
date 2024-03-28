@@ -243,7 +243,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(expected);
 			var expectedBitmap = await UITestHelper.ScreenShot(expected);
 
-			await ImageAssert.AreEqualAsync(actualBitmap, expectedBitmap);
+			await ImageAssert.AreEqual(actualBitmap, expectedBitmap);
 		}
 
 		[TestMethod]

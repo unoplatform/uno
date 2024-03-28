@@ -79,6 +79,7 @@
 		<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 		<PackageReference Update="NUnit" Version="3.14.0" />
 		<PackageReference Update="NUnit3TestAdapter" Version="4.5.0" />
+		<PackageReference Update="Uno.UI.RuntimeTests.Engine" Version="0.34.0-dev.120" />
 		<PackageReference Update="Uno.UITest" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
@@ -111,6 +112,7 @@
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />

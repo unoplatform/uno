@@ -1,12 +1,23 @@
 {
-  "profiles": {
-    "SamplesApp.Skia.Gtk": {
-      "commandName": "Project",
-      "nativeDebugging": false
-    },
-    "WSL": {
-      "commandName": "WSL2",
-      "distributionName": ""
-    }
-  }
+	"profiles": {
+		"SamplesApp.Skia.Gtk": {
+			"commandName": "Project",
+			"nativeDebugging": false
+		},
+		"SamplesApp.Skia.Gtk - Hot Reload tests": {
+			"commandName": "Project",
+			"environmentVariables": {
+				"UNO_RUNTIME_TESTS_RUN_TESTS": "{\"Filter\":{\"Value\":\"Uno.UI.RuntimeTests.Tests.HotReload\"},\"Attempts\":1}",
+				"UNO_RUNTIME_TESTS_OUTPUT_PATH": "hot_reload_test_results.tmp",
+				"UNO_RUNTIME_TESTS_IS_SECONDARY_APP": "True",
+				"UNO_DEV_SERVER_HOST": "127.0.0.1",
+				"UNO_DEV_SERVER_PORT": "53487"
+			},
+			"nativeDebugging": false
+		},
+		"WSL": {
+			"commandName": "WSL2",
+			"distributionName": ""
+		}
+	}
 }

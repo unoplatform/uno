@@ -4,7 +4,7 @@
 	  xmlns:local="using:SamplesApp.Samples.UnitTests"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:controls="using:Uno.UI.Samples.Tests"
+	  xmlns:controls="using:Uno.UI.RuntimeTests"
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 

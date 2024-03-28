@@ -4,6 +4,9 @@
   <assembly fullname="Uno.UI.Wasm.Tests" />
   <assembly fullname="Microsoft.Graph" />
 
+  <!-- Make sure to keep test attributes (like DataRow). -->
+  <assembly fullname="Microsoft.VisualStudio.TestPlatform.TestFramework" />
+
   <!-- Required for Microsoft.Extensions.Logging v5+ -->
   <assembly fullname="Microsoft.Extensions.Options" />
 

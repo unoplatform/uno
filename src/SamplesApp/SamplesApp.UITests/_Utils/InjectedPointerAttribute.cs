@@ -2,11 +2,11 @@
 using System.Linq;
 using Windows.Devices.Input;
 
-namespace Uno.Testing;
+namespace Uno.UI.RuntimeTests;
 
 /// <summary>
-/// Specify the type of pointer to use for that test.
-/// WARNING: This has no effects on UI tests, cf. remarks.
+/// Clone of the Uno.UI.RuntimeTests.InjectedPointerAttribute to be used in SamplesApp.UITests.
+/// This ias NO EFFECT, see remarks.
 /// </summary>
 /// <remarks>
 /// This attribute is used only for inputs injected from the app itself (i.e. runtime tests).
@@ -16,7 +16,6 @@ namespace Uno.Testing;
 /// and "runtime tests (with input injection)" on Skia.
 /// Injected inputs are not supported yet on wasm, iOS and Android.
 /// </remarks>
-/// <remarks>You can add this attributes multiple times to run the test with multiple pointer types.</remarks>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class InjectedPointerAttribute : Attribute
 {
@@ -26,11 +25,4 @@ public class InjectedPointerAttribute : Attribute
 	{
 		Type = type;
 	}
-}
-
-public interface IInjectPointers
-{
-	public void CleanupPointers();
-
-	public IDisposable SetPointer(PointerDeviceType type);
 }

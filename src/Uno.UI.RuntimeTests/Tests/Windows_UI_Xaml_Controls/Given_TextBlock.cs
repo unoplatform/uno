@@ -14,6 +14,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using Windows.Foundation;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -580,7 +581,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
+			ImageAssert.HasColorInRectangle(bitmap, new Rect(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
 		}
 
 		[TestMethod]
@@ -783,7 +784,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ImageAssert.DoesNotHaveColorInRectangle(
 					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					new Rect(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
 			// skip 5 for relaxed tolerance
@@ -791,7 +792,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ImageAssert.HasColorInRectangle(
 					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					new Rect(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
 		}
@@ -828,7 +829,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ImageAssert.HasColorInRectangle(
 					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					new Rect(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
 			// skip 5 for relaxed tolerance
@@ -836,7 +837,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ImageAssert.DoesNotHaveColorInRectangle(
 					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					new Rect(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
 		}
@@ -1040,7 +1041,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ImageAssert.HasColorInRectangle(
 					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					new Rect(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
 
@@ -1084,7 +1085,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ImageAssert.HasColorInRectangle(
 					bitmap,
-					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
+					new Rect(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
 		}

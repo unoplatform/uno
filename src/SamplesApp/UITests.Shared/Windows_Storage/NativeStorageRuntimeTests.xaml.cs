@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Tests.Windows_Storage;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Tests;

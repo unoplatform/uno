@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Private.Infrastructure;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
@@ -72,7 +73,7 @@ public class Given_BitmapIcon
 
 		// Foreground is ignored when ShowAsMonochrome is false
 		var sc = await UITestHelper.ScreenShot(bitmapIcon);
-		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.Green);
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rect(0, 0, sc.Width, sc.Height), Colors.Green);
 	}
 
 	[TestMethod]
@@ -90,7 +91,7 @@ public class Given_BitmapIcon
 		await UITestHelper.Load(bitmapIcon);
 
 		var sc = await UITestHelper.ScreenShot(bitmapIcon);
-		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
-		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 255, 255, 255));
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rect(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rect(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 255, 255, 255));
 	}
 }

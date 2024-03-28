@@ -31,6 +31,7 @@
 
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Windows_UI_Xaml_Controls\ListView\MeasureDetectorControl\MeasureDetectorControl.xaml" />
+				<ResourceDictionary Source="ms-appx:///Uno.UI.RuntimeTests/Tests/HotReload/Views/AppResources.xaml" />
 				<MapResources xmlns="using:Uno.UI.Maps"/>
 			</ResourceDictionary.MergedDictionaries>
 

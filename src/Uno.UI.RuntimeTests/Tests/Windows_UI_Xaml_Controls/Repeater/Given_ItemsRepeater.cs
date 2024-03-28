@@ -59,7 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			try
 			{
-				await TestHelper.RetryAssert(() =>
+				await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(() =>
 				{
 					var second = sut
 						.GetAllChildren()
@@ -196,7 +196,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				afterVisibleItems.Should().NotContain(beforeVisibleItems);
 			}
 
-			await TestHelper.RetryAssert(Do, 3);
+			await Uno.UI.RuntimeTests.Helpers.TestHelper.RetryAssert(Do, 3);
 		}
 
 		[TestMethod]

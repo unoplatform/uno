@@ -1,5 +1,8 @@
-﻿
+﻿#nullable enable
+
+using System;
 using System.Reflection.Metadata;
+using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 [assembly: ElementMetadataUpdateHandler(typeof(TestingUpdateHandler))]

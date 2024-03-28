@@ -8,7 +8,7 @@ using Windows.Devices.Input;
 using NUnit.Framework;
 using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
-using Uno.Testing;
+using Uno.UI.RuntimeTests;
 using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests

@@ -19,6 +19,8 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="Uno.UI.RuntimeTests.Engine" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 		<ProjectReference Include="..\Uno.UI.Runtime.WebAssembly\Uno.UI.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 	</ItemGroup>

@@ -20,6 +20,7 @@ using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using System.Linq;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -185,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await WindowHelper.WaitForIdle();
 
 			ImageAssert.DoesNotHaveColorInRectangle(
-				snapshot, new System.Drawing.Rectangle((int)coords.X, (int)coords.Y, (int)coords.Width, (int)coords.Height), Colors.Blue);
+				snapshot, new Rect((int)coords.X, (int)coords.Y, (int)coords.Width, (int)coords.Height), Colors.Blue);
 		}
 
 		[TestMethod]

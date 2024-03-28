@@ -711,7 +711,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var firstBorderRect = SUT.GetRelativeCoords(SUT.FirstBorder);
 			var secondBorderRect = SUT.GetRelativeCoords(SUT.SecondBorder);
-			var rect = new System.Drawing.Rectangle((int)firstBorderRect.X, (int)firstBorderRect.Y,
+			var rect = new Rect((int)firstBorderRect.X, (int)firstBorderRect.Y,
 				(int)firstBorderRect.Width + 1, (int)firstBorderRect.Height + 1);
 
 			await WindowHelper.WaitForIdle();
