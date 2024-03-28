@@ -15,14 +15,13 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
-		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 		public TextBoxView(TextBox textBox)
 		{
-			_textBox = new WeakReference<TextBox>(textBox);
+			TextBox = textBox;
 			_isPasswordBox = textBox is PasswordBox;
 
 			DisplayBlock = new TextBlock();
@@ -44,17 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
-		public TextBox? TextBox
-		{
-			get
-			{
-				if (_textBox.TryGetTarget(out var target))
-				{
-					return target;
-				}
-				return null;
-			}
-		}
+		public TextBox? TextBox { get; private set; }
 
 		internal int GetSelectionStart() => _textBoxExtension?.GetSelectionStart() ?? 0;
 
