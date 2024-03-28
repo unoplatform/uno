@@ -28,10 +28,13 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
 		_wpfWindow.Closing += OnNativeClosing;
 		_wpfWindow.Closed += OnNativeClosed;
-		_wpfWindow.DpiChanged += OnDpiChanged;
+		_wpfWindow.DpiChanged += OnNativeDpiChanged;
+		_wpfWindow.StateChanged += OnNativeStateChanged;
 	}
 
-	private void OnDpiChanged(object sender, DpiChangedEventArgs e) => RasterizationScale = (float)e.NewDpi.DpiScaleX;
+	private void OnNativeStateChanged(object? sender, EventArgs e) => UpdateIsVisible();
+
+	private void OnNativeDpiChanged(object sender, DpiChangedEventArgs e) => RasterizationScale = (float)e.NewDpi.DpiScaleX;
 
 	public override string Title
 	{
@@ -90,9 +93,16 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	private void OnNativeActivated(object? sender, EventArgs e) =>
 		ActivationState = CoreWindowActivationState.PointerActivated;
 
-	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) => UpdateIsVisible();
+
+	private void UpdateIsVisible()
 	{
-		var isVisible = (bool)e.NewValue;
+		var isVisible = _wpfWindow.IsVisible && _wpfWindow.WindowState != WindowState.Minimized;
+		if (isVisible == Visible)
+		{
+			return;
+		}
+
 		if (isVisible)
 		{
 			WinUIApplication.Current?.RaiseLeavingBackground(() => Visible = isVisible);

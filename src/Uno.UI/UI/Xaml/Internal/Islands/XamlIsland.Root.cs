@@ -106,6 +106,8 @@ internal partial class XamlIsland
 
 	public Size GetSize() => new Size(ActualWidth, ActualHeight);
 
+	public new bool IsVisible() => _isVisible;
+
 	// TODO Uno: Implement focus on island.
 	public bool TrySetFocus() => true;
 	
