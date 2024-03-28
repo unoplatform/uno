@@ -7,17 +7,39 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Microsoft.UI.Windowing.Native;
 using Windows.UI.Core;
+using Microsoft.UI.Content;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
+	protected readonly ContentIsland _contentIsland;
 	private Rect _bounds;
 	private Rect _visibleBounds;
 	private bool _visible;
 	private string _title = "";
 	private CoreWindowActivationState _activationState;
+	private XamlRoot? _xamlRoot;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
+
+	protected NativeWindowWrapperBase(XamlRoot xamlRoot) : this()
+	{
+		SetXamlRoot(xamlRoot);
+	}
+
+	protected NativeWindowWrapperBase()
+	{
+		_contentIsland = new ContentIsland(this);
+	}
+
+	protected XamlRoot? XamlRoot => _xamlRoot;
+
+	protected void SetXamlRoot(XamlRoot xamlRoot)
+	{
+		_xamlRoot = xamlRoot;
+		xamlRoot.VisualTree.ContentRoot.SetContentIsland(_contentIsland);
+	}
 
 	public abstract object? NativeWindow { get; }
 

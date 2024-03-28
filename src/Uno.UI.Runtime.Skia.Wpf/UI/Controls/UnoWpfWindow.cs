@@ -21,9 +21,6 @@ internal class UnoWpfWindow : WpfWindow
 
 	private static readonly ConcurrentDictionary<WinUI.Window, WpfWindow> _windowToWpfWindow = new();
 
-	public static WpfWindow? GetWpfWindowFromWindow(WinUI.Window window)
-		=> _windowToWpfWindow.TryGetValue(window, out var gtkWindow) ? gtkWindow : null;
-
 	public UnoWpfWindow(WinUI.Window winUIWindow, WinUI.XamlRoot xamlRoot)
 	{
 		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
@@ -47,6 +44,9 @@ internal class UnoWpfWindow : WpfWindow
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}
+
+	public static WpfWindow? GetFromWinUIWindow(WinUI.Window window)
+		=> _windowToWpfWindow.TryGetValue(window, out var wpfWindow) ? wpfWindow : null;
 
 	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
 	{

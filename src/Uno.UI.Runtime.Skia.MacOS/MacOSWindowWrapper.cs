@@ -6,6 +6,7 @@ using Windows.UI.Core.Preview;
 
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -13,7 +14,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 {
 	private readonly MacOSWindowNative _window;
 
-	public MacOSWindowWrapper(MacOSWindowNative window)
+	public MacOSWindowWrapper(MacOSWindowNative window, XamlRoot xamlRoot) : base(xamlRoot)
 	{
 		_window = window;
 
